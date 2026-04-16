@@ -1,0 +1,76 @@
+/*
+ * MD3 Color Tokens — Iron Med Academy
+ * LIGHT THEME — Professional medical app style
+ * Pure white background, clean grays, subtle borders
+ * Inspired by modern medical/health UI
+ */
+
+:root {
+  /* Primary — muted medical blue-gray (professional, not flashy) */
+  --md-sys-color-primary: #1A6B5A;
+  --md-sys-color-on-primary: #FFFFFF;
+  --md-sys-color-primary-container: #DCF5ED;
+  --md-sys-color-on-primary-container: #0D3A2F;
+
+  /* Secondary — warm neutral gray */
+  --md-sys-color-secondary: #6B6B6B;
+  --md-sys-color-on-secondary: #FFFFFF;
+  --md-sys-color-secondary-container: #F0F0F0;
+  --md-sys-color-on-secondary-container: #1F1F1F;
+
+  /* Tertiary — soft amber for accents */
+  --md-sys-color-tertiary: #8B6914;
+  --md-sys-color-on-tertiary: #FFFFFF;
+  --md-sys-color-tertiary-container: #FFF0C7;
+  --md-sys-color-on-tertiary-container: #2C2000;
+
+  /* Error — standard red */
+  --md-sys-color-error: #D32F2F;
+  --md-sys-color-on-error: #FFFFFF;
+  --md-sys-color-error-container: #FFDAD6;
+  --md-sys-color-on-error-container: #410002;
+
+  /* Surface — #F0F1F5 page background, white cards */
+  --md-sys-color-surface: #FFFFFF;
+  --md-sys-color-surface-dim: #E4E5E9;
+  --md-sys-color-surface-bright: #FFFFFF;
+  --md-sys-color-surface-variant: #EAEBEF;
+  --md-sys-color-on-surface: #1A1A1A;
+  --md-sys-color-on-surface-variant: #6E6E6E;
+
+  /* Surface containers */
+  --md-sys-color-surface-container-lowest: #FFFFFF;
+  --md-sys-color-surface-container-low: #FFFFFF;
+  --md-sys-color-surface-container: #FFFFFF;
+  --md-sys-color-surface-container-high: #F5F6F8;
+  --md-sys-color-surface-container-highest: #EAEBEF;
+
+  /* Outline — light, subtle */
+  --md-sys-color-outline: #C0C0BE;
+  --md-sys-color-outline-variant: #E0E0DE;
+
+  /* Background — #F0F1F5 gray page bg */
+  --md-sys-color-background: #F0F1F5;
+  --md-sys-color-on-background: #1A1A1A;
+
+  /* Inverse */
+  --md-sys-color-inverse-surface: #2F2F2F;
+  --md-sys-color-inverse-on-surface: #F5F5F5;
+  --md-sys-color-inverse-primary: #A0D8C8;
+
+  /* Scrim */
+  --md-sys-color-scrim: #000000;
+
+  /* Tonal elevation — very subtle */
+  --md-elevation-1: color-mix(in srgb, var(--md-sys-color-primary) 3%, var(--md-sys-color-surface));
+  --md-elevation-2: color-mix(in srgb, var(--md-sys-color-primary) 5%, var(--md-sys-color-surface));
+  --md-elevation-3: color-mix(in srgb, var(--md-sys-color-primary) 7%, var(--md-sys-color-surface));
+  --md-elevation-4: color-mix(in srgb, var(--md-sys-color-primary) 8%, var(--md-sys-color-surface));
+  --md-elevation-5: color-mix(in srgb, var(--md-sys-color-primary) 10%, var(--md-sys-color-surface));
+
+  /* State layers */
+  --md-sys-state-hover: 0.06;
+  --md-sys-state-pressed: 0.1;
+  --md-sys-state-dragged: 0.14;
+  --md-sys-state-focus: 0.1;
+}

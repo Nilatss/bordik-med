@@ -1,0 +1,31 @@
+/*
+ * Spacing Tokens — 4px base grid
+ * All spacing values are multiples of 4px
+ */
+
+:root {
+  --space-unit: 4px;
+  --space-1: 4px;    /* 1× */
+  --space-2: 8px;    /* 2× */
+  --space-3: 12px;   /* 3× */
+  --space-4: 16px;   /* 4× */
+  --space-5: 20px;   /* 5× */
+  --space-6: 24px;   /* 6× */
+  --space-8: 32px;   /* 8× */
+  --space-10: 40px;  /* 10× */
+  --space-12: 48px;  /* 12× */
+  --space-16: 64px;  /* 16× */
+  --space-20: 80px;  /* 20× */
+  --space-24: 96px;  /* 24× */
+
+  /* Layout */
+  --container-max: 1440px;
+  --content-max: 720px;
+  --container-padding: var(--space-6);
+  --grid-gap: var(--space-6);
+  --grid-gap-mobile: var(--space-4);
+
+  /* Component-specific */
+  --card-padding: var(--space-4);
+  --section-padding: var(--space-6);
+}

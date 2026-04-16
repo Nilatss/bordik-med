@@ -1,0 +1,191 @@
+@import "tailwindcss";
+
+/* MD3 Design System Tokens */
+@import "../design-system/tokens/colors.css";
+@import "../design-system/tokens/typography.css";
+@import "../design-system/tokens/spacing.css";
+@import "../design-system/tokens/motion.css";
+@import "../design-system/tokens/shape.css";
+
+/* Fontsource variable fonts */
+@import "@fontsource-variable/montserrat";
+@import "@fontsource-variable/jetbrains-mono";
+
+/* Copy/select protection */
+@layer base {
+  body {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    font-family: var(--font-body);
+    font-size: 100%;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--md-sys-color-background);
+    color: var(--md-sys-color-on-background);
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+  }
+
+  code, pre, kbd, samp {
+    font-family: var(--font-mono);
+  }
+}
+
+/* Scrollbar — minimal, Apple-style */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--md-sys-color-outline-variant);
+  border-radius: var(--md-sys-shape-corner-full);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--md-sys-color-outline);
+}
+
+/* Markdown lesson content */
+.lesson-content h1 {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface);
+  margin-bottom: var(--space-4);
+  letter-spacing: -0.01em;
+}
+.lesson-content h2 {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface);
+  margin-top: var(--space-8);
+  margin-bottom: var(--space-3);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+}
+.lesson-content h3 {
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface);
+  margin-top: var(--space-6);
+  margin-bottom: var(--space-2);
+}
+.lesson-content h4 {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--md-sys-color-secondary);
+  margin-top: var(--space-4);
+  margin-bottom: var(--space-2);
+}
+.lesson-content p {
+  margin-bottom: var(--space-3);
+  line-height: 1.7;
+  color: var(--md-sys-color-on-surface-variant);
+}
+.lesson-content ul,
+.lesson-content ol {
+  margin-bottom: var(--space-3);
+  padding-left: var(--space-6);
+}
+.lesson-content li {
+  margin-bottom: var(--space-1);
+  line-height: 1.6;
+  color: var(--md-sys-color-on-surface-variant);
+}
+.lesson-content ul li {
+  list-style-type: disc;
+}
+.lesson-content ol li {
+  list-style-type: decimal;
+}
+.lesson-content blockquote {
+  border-left: 3px solid var(--md-sys-color-primary);
+  background: var(--md-sys-color-surface-container);
+  border-radius: 0 var(--md-sys-shape-corner-small) var(--md-sys-shape-corner-small) 0;
+  padding: var(--space-3) var(--space-4);
+  margin: var(--space-4) 0;
+}
+.lesson-content blockquote p {
+  color: var(--md-sys-color-on-surface);
+}
+.lesson-content table {
+  width: 100%;
+  font-size: var(--text-sm);
+  border-collapse: collapse;
+  margin: var(--space-4) 0;
+}
+.lesson-content th {
+  background: var(--md-sys-color-surface-container-high);
+  padding: var(--space-2) var(--space-3);
+  text-align: left;
+  font-weight: 500;
+  font-family: var(--font-body);
+  color: var(--md-sys-color-on-surface);
+  border: 1px solid var(--md-sys-color-outline-variant);
+}
+.lesson-content td {
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  color: var(--md-sys-color-on-surface-variant);
+}
+.lesson-content code {
+  background: var(--md-sys-color-surface-container-high);
+  padding: 2px var(--space-2);
+  border-radius: var(--md-sys-shape-corner-extra-small);
+  font-size: 0.85em;
+  font-family: var(--font-mono);
+}
+.lesson-content pre {
+  background: var(--md-sys-color-surface-container-low);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--md-sys-shape-corner-medium);
+  padding: var(--space-4);
+  overflow-x: auto;
+  margin: var(--space-4) 0;
+}
+.lesson-content pre code {
+  background: none;
+  padding: 0;
+}
+.lesson-content strong {
+  color: var(--md-sys-color-on-surface);
+  font-weight: 600;
+}
+.lesson-content em {
+  color: var(--md-sys-color-on-surface-variant);
+}
+.lesson-content hr {
+  border: none;
+  border-top: 1px solid var(--md-sys-color-outline-variant);
+  margin: var(--space-6) 0;
+}
