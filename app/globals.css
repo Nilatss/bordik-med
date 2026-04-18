@@ -502,13 +502,13 @@ main:has(.stats-page) {
   font-family: var(--font-mono);
 }
 
-/* ── Formula card: when a <p> has ONLY a <code> child (line-formula), render as clean info card ── */
+/* ── Formula card: styled like the course 'ИНФОРМАЦИЯ' callout (blue) ── */
 .lesson-content.tool-info p:has(> code:only-child) {
-  background: #F8FAFC;
-  border: 1px solid #E2E8F0;
-  border-left: 3px solid #6B7280;
+  background: #EEF4FF;
+  border: none;
+  border-left: 3px solid #3B82F6;
   border-radius: 12px;
-  padding: 16px 20px 16px 18px;
+  padding: 32px 18px 16px 18px;
   margin: 16px 0;
   position: relative;
   overflow-x: auto;
@@ -516,19 +516,20 @@ main:has(.stats-page) {
 .lesson-content.tool-info p:has(> code:only-child)::before {
   content: 'ФОРМУЛА';
   position: absolute;
-  top: 8px;
+  top: 12px;
   left: 18px;
-  font-family: var(--font-mono);
-  font-size: 9px;
+  font-family: var(--font-display);
+  font-size: 12px;
   font-weight: 700;
-  color: #9CA3AF;
-  letter-spacing: 0.12em;
+  color: #1D4ED8;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 .lesson-content.tool-info p:has(> code:only-child) code {
   display: block;
   background: transparent;
-  padding: 14px 0 0 0;
-  color: #111827;
+  padding: 0;
+  color: #1A1A1A;
   font-size: 15px;
   font-weight: 500;
   letter-spacing: -0.005em;
@@ -537,23 +538,36 @@ main:has(.stats-page) {
   word-break: break-word;
 }
 
-/* ── Fenced code block (triple-backtick) — rarely used, same formula style ── */
+/* ── Fenced code block (triple-backtick) — same callout-info style ── */
 .lesson-content.tool-info pre {
-  background: #F8FAFC;
-  border: 1px solid #E2E8F0;
-  border-left: 3px solid #6B7280;
-  color: #111827;
-  padding: 18px 22px;
+  background: #EEF4FF;
+  border: none;
+  border-left: 3px solid #3B82F6;
+  color: #1A1A1A;
+  padding: 32px 22px 18px 22px;
   font-size: 15px;
   font-weight: 500;
   letter-spacing: -0.005em;
   border-radius: 12px;
   margin: 16px 0;
+  position: relative;
+}
+.lesson-content.tool-info pre::before {
+  content: 'ФОРМУЛА';
+  position: absolute;
+  top: 12px;
+  left: 22px;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  color: #1D4ED8;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 .lesson-content.tool-info pre code {
   background: transparent;
   border: none;
-  color: #111827;
+  color: #1A1A1A;
   font-weight: 500;
   padding: 0;
   font-size: 15px;
