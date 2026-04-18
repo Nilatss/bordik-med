@@ -34,7 +34,7 @@ export default function CoursePage({ courseId }: CoursePageProps) {
   const hasTests = !NO_TEST_MODULES.includes(moduleId);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+    <div>
       <CourseHeader courseId={courseId} />
       {isPediatricCalc && (
         <div style={{ marginBottom: 20 }}>

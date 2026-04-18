@@ -246,7 +246,7 @@ export default function Home() {
           )}
 
           {view === 'course' && (
-            <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100%' }}>
+            <div>
               <BackButton onClick={closeCourse} label="Назад" />
               <CoursePage courseId={currentCourseId!} />
             </div>
