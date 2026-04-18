@@ -179,11 +179,11 @@ export default function ToolView({ toolId }: { toolId: string }) {
         </div>
       )}
 
-      {/* Article-like info content */}
+      {/* Article-like info content — uses the same .lesson-content styles as course pages */}
       {runner.info && (
         <>
           <SectionLabel>Клиническая справка</SectionLabel>
-          <div style={{ maxWidth: 'var(--content-max)' }}>
+          <div className="lesson-content tool-info">
             <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
               {runner.info}
             </ReactMarkdown>
@@ -226,142 +226,24 @@ function headingIcon(text: string): React.ReactNode {
   return ic(<><rect x={3} y={4} width={18} height={18} rx={2}/><line x1={3} y1={10} x2={21} y2={10}/></>);
 }
 
+/**
+ * Custom markdown components — ONLY override h3 to add the section icon.
+ * All other elements (p, code, pre, table, ul/ol/li, blockquote, hr, a) are
+ * styled by .lesson-content CSS (same styles as course pages) to avoid
+ * hydration errors and keep 1:1 visual parity with lessons.
+ */
 const mdComponents = {
-  h1: ({ children }: { children?: React.ReactNode }) => (
-    <h2 style={{
-      fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 700,
-      color: '#1A1A1A', letterSpacing: '-0.01em', marginTop: 28, marginBottom: 12,
-    }}>{children}</h2>
-  ),
-  h2: ({ children }: { children?: React.ReactNode }) => (
-    <h3 style={{
-      fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 700,
-      color: '#1A1A1A', letterSpacing: '-0.01em', marginTop: 24, marginBottom: 10,
-    }}>{children}</h3>
-  ),
   h3: ({ children }: { children?: React.ReactNode }) => {
     const txt = String(Array.isArray(children) ? children.join('') : children || '');
     return (
-      <div style={{
-        display: 'flex', alignItems: 'center', gap: 10,
-        marginTop: 24, marginBottom: 12,
-        color: '#1A1A1A',
-      }}>
-        <span style={{
-          width: 28, height: 28, borderRadius: 8,
-          background: '#F5F6F8', display: 'flex', alignItems: 'center', justifyContent: 'center',
-          color: '#374151', flexShrink: 0,
-        }}>
+      <h3 className="tool-info-h3">
+        <span className="tool-info-h3-icon" aria-hidden>
           {headingIcon(txt)}
         </span>
-        <span style={{
-          fontFamily: 'var(--font-display)', fontSize: 16, fontWeight: 700,
-          letterSpacing: '-0.005em',
-        }}>{children}</span>
-      </div>
+        <span>{children}</span>
+      </h3>
     );
   },
-  h4: ({ children }: { children?: React.ReactNode }) => (
-    <h5 style={{
-      fontFamily: 'var(--font-display)', fontSize: 14, fontWeight: 700,
-      color: '#374151', marginTop: 16, marginBottom: 6,
-    }}>{children}</h5>
-  ),
-  p: ({ children }: { children?: React.ReactNode }) => (
-    <p style={{
-      fontFamily: 'var(--font-body)', fontSize: 14, color: '#1A1A1A',
-      lineHeight: 1.65, marginBottom: 12,
-    }}>{children}</p>
-  ),
-  strong: ({ children }: { children?: React.ReactNode }) => (
-    <strong style={{ color: '#1A1A1A', fontWeight: 700 }}>{children}</strong>
-  ),
-  em: ({ children }: { children?: React.ReactNode }) => (
-    <em style={{ color: '#374151', fontStyle: 'italic' }}>{children}</em>
-  ),
-  a: ({ children, href }: { children?: React.ReactNode; href?: string }) => (
-    <a href={href} target="_blank" rel="noreferrer"
-      style={{
-        color: '#1A1A1A', textDecoration: 'underline', textDecorationColor: '#9CA3AF',
-        textDecorationThickness: 1, textUnderlineOffset: 3,
-      }}>{children}</a>
-  ),
-  ul: ({ children }: { children?: React.ReactNode }) => (
-    <ul className="tool-md-ul">{children}</ul>
-  ),
-  ol: ({ children }: { children?: React.ReactNode }) => (
-    <ol className="tool-md-ol">{children}</ol>
-  ),
-  li: ({ children }: { children?: React.ReactNode }) => (
-    <li className="tool-md-li">{children}</li>
-  ),
-  blockquote: ({ children }: { children?: React.ReactNode }) => (
-    <div style={{
-      margin: '14px 0',
-      padding: '14px 18px',
-      background: '#FFF7E6',
-      borderRadius: 12,
-      color: '#7A4F00',
-      fontFamily: 'var(--font-body)', fontSize: 14, lineHeight: 1.6,
-    }}>{children}</div>
-  ),
-  code: ({ children, inline }: { children?: React.ReactNode; inline?: boolean }) => {
-    if (inline) return (
-      <code style={{
-        fontFamily: 'var(--font-mono)', fontSize: 13,
-        padding: '2px 6px', borderRadius: 5,
-        background: '#F0F1F5', color: '#1A1A1A',
-      }}>{children}</code>
-    );
-    return (
-      <pre style={{
-        background: '#0F1115', color: '#E5E7EB',
-        padding: '14px 18px', borderRadius: 12,
-        fontFamily: 'var(--font-mono)', fontSize: 13, lineHeight: 1.5,
-        overflow: 'auto', margin: '12px 0',
-      }}>
-        <code>{children}</code>
-      </pre>
-    );
-  },
-  hr: () => <div style={{ height: 1, background: '#F0F1F5', margin: '20px 0' }} />,
-  table: ({ children }: { children?: React.ReactNode }) => (
-    <div style={{
-      margin: '14px 0',
-      background: '#FFFFFF',
-      borderRadius: 12,
-      overflow: 'hidden',
-      boxShadow: '0 0 0 1px #F0F1F5',
-    }}>
-      <div style={{ overflowX: 'auto' }}>
-        <table style={{
-          width: '100%', borderCollapse: 'collapse',
-          fontFamily: 'var(--font-body)', fontSize: 13,
-        }}>{children}</table>
-      </div>
-    </div>
-  ),
-  thead: ({ children }: { children?: React.ReactNode }) => (
-    <thead style={{ background: '#F5F6F8' }}>{children}</thead>
-  ),
-  tr: ({ children }: { children?: React.ReactNode }) => (
-    <tr style={{ borderBottom: '1px solid #F0F1F5' }}>{children}</tr>
-  ),
-  th: ({ children }: { children?: React.ReactNode }) => (
-    <th style={{
-      padding: '10px 14px', textAlign: 'left',
-      fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700,
-      color: '#374151', textTransform: 'uppercase', letterSpacing: '0.05em',
-    }}>{children}</th>
-  ),
-  td: ({ children }: { children?: React.ReactNode }) => (
-    <td style={{
-      padding: '10px 14px',
-      fontFamily: 'var(--font-body)', fontSize: 13,
-      color: '#1A1A1A', lineHeight: 1.5,
-      verticalAlign: 'top',
-    }}>{children}</td>
-  ),
 };
 
 /* ════════════════ atoms ════════════════ */

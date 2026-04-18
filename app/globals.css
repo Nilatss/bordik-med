@@ -447,57 +447,75 @@ main:has(.stats-page) {
   overflow-y: hidden;
 }
 
-/* ───────────── Tool calculator markdown ───────────── */
-.tool-md-ul,
-.tool-md-ol {
-  margin: 6px 0 14px 0;
-  padding: 0;
-  list-style: none;
+/* ═══════════════════════════════════════════════
+   TOOL INFO (Клиническая справка)
+   Shares .lesson-content base styles with course pages.
+   Only adds: iconed H3 section headings; enhanced formula blocks; no dark bg.
+   ═══════════════════════════════════════════════ */
+
+.lesson-content.tool-info {
+  /* match course page max-width but a touch wider for side-by-side tables */
+  max-width: 760px;
+}
+
+/* H3 with icon badge — visually distinguishes content sections
+   (What is it / Formula / Interpretation / Tactics / Limitations / ...) */
+.lesson-content .tool-info-h3 {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.tool-md-ol {
-  counter-reset: tool-md-counter;
-}
-.tool-md-li {
-  position: relative;
-  padding-left: 24px;
-  font-family: var(--font-body);
-  font-size: 14px;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
   color: #1A1A1A;
-  line-height: 1.6;
+  margin: 28px 0 12px;
+  line-height: 1.35;
 }
-.tool-md-ul > .tool-md-li::before {
-  content: '';
-  position: absolute;
-  left: 8px;
-  top: 10px;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: #1A1A1A;
-}
-.tool-md-ol > .tool-md-li {
-  counter-increment: tool-md-counter;
-  padding-left: 28px;
-}
-.tool-md-ol > .tool-md-li::before {
-  content: counter(tool-md-counter);
-  position: absolute;
-  left: 0;
-  top: 0;
-  min-width: 20px;
-  height: 20px;
-  padding: 0 6px;
+.lesson-content .tool-info-h3-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: #F0F1F5;
+  color: #374151;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: #1A1A1A;
-  color: #FFFFFF;
-  border-radius: 999px;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 700;
-  line-height: 1;
+  flex-shrink: 0;
+}
+
+/* Inline code in tool info — softer tint so short formulas read as "data",
+   not as a code block */
+.lesson-content.tool-info code {
+  background: #F0F4FF;
+  color: #1E40AF;
+  font-weight: 500;
+  border: 1px solid #E0E7FF;
+}
+
+/* Multiline fenced blocks — used for the formula in "### Формула".
+   Clean card on very light grey, matching course styling (NO dark bg). */
+.lesson-content.tool-info pre {
+  background: #F5F6F8;
+  border: 1px solid #EAECEF;
+  color: #1A1A1A;
+  padding: 16px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+.lesson-content.tool-info pre code {
+  background: transparent;
+  border: none;
+  color: #1A1A1A;
+  font-weight: 500;
+  padding: 0;
+  font-size: 14px;
+}
+
+/* Subtle highlight for parenthetical dimensional notes like
+   "(кг)/рост² (м)" — achieved via CSS targeting em inside code */
+.lesson-content.tool-info code em {
+  color: #64748B;
+  font-style: normal;
+  font-weight: 400;
 }
