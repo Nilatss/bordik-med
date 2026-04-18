@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { CATALOG_TOOLS } from '@/lib/tools-catalog';
@@ -8,11 +8,32 @@ import { getRunner, findBand, type ToolInput } from '@/lib/tools-runners';
 import { useAppStore } from '@/lib/store';
 import { ArrowLeft } from '@/components/icons';
 
+/** Slugify heading text for anchor id */
+function slugify(s: string): string {
+  return s.toLowerCase().replace(/[^a-zа-я0-9]+/gi, '-').replace(/^-+|-+$/g, '');
+}
+
+/** Extract H3 headings from markdown for TOC */
+function extractSections(md: string): { id: string; title: string }[] {
+  const out: { id: string; title: string }[] = [];
+  const lines = md.split('\n');
+  for (const line of lines) {
+    const m = line.match(/^###\s+(.+?)\s*$/);
+    if (m) {
+      const title = m[1].trim();
+      out.push({ id: slugify(title), title });
+    }
+  }
+  return out;
+}
+
 export default function ToolView({ toolId }: { toolId: string }) {
   const { closeTool } = useAppStore();
   const tool = useMemo(() => CATALOG_TOOLS.find((t) => t.id === toolId), [toolId]);
   const runner = useMemo(() => getRunner(toolId), [toolId]);
   const [values, setValues] = useState<Record<string, number | boolean | string>>({});
+  const contentRef = useRef<HTMLDivElement | null>(null);
+  const [activeSection, setActiveSection] = useState<string>('calculator');
 
   useEffect(() => {
     if (!runner) return;
@@ -24,6 +45,40 @@ export default function ToolView({ toolId }: { toolId: string }) {
     }
     setValues(init);
   }, [runner]);
+
+  const sections = useMemo(
+    () => (runner?.info ? extractSections(runner.info) : []),
+    [runner?.info]
+  );
+
+  /** Scroll-spy: track which section is visible */
+  useEffect(() => {
+    if (!runner?.info) return;
+    const ids = ['calculator', 'result', 'info-top', ...sections.map((s) => s.id)];
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+            break;
+          }
+        }
+      },
+      { rootMargin: '-20% 0% -60% 0%', threshold: 0 }
+    );
+    for (const id of ids) {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    }
+    return () => observer.disconnect();
+  }, [runner?.info, sections]);
+
+  const scrollToId = useCallback((id: string) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    // find nearest scrollable ancestor (main)
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, []);
 
   if (!tool) {
     return (
@@ -38,7 +93,7 @@ export default function ToolView({ toolId }: { toolId: string }) {
 
   if (!runner) {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', maxWidth: 760 }}>
         <BackButton onClick={closeTool} />
         <Header tool={tool} />
         <div style={{
@@ -88,155 +143,236 @@ export default function ToolView({ toolId }: { toolId: string }) {
   const kindLabel = runner.kind === 'score' ? 'Шкала' : 'Калькулятор';
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', maxWidth: 760 }}>
-      <BackButton onClick={closeTool} />
-      <Header tool={tool} kind={kindLabel} />
+    <div style={{
+      display: 'grid',
+      gridTemplateColumns: 'minmax(0, 1fr) 260px',
+      gap: 32,
+      alignItems: 'start',
+    }}>
+      {/* LEFT: main content */}
+      <div ref={contentRef} style={{ minWidth: 0 }}>
+        <BackButton onClick={closeTool} />
+        <Header tool={tool} kind={kindLabel} />
 
-      {/* InfoPills row — like CourseHeader */}
-      <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 16, marginBottom: 28 }}>
-        <InfoPill
-          icon={
-            <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="22,12 18,12 15,21 9,3 6,12 2,12" />
-            </svg>
-          }
-          label="Тип"
-          value={kindLabel}
-        />
-        <InfoPill
-          icon={
-            <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-            </svg>
-          }
-          label="Раздел"
-          value={tool.subcategory}
-        />
-        <InfoPill
-          icon={
-            <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 6.253v13M12 6.253C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-            </svg>
-          }
-          label="Источник"
-          value={shortRef(runner.reference)}
-        />
-      </div>
-
-      {/* Section: Calculator */}
-      <SectionLabel>Калькулятор</SectionLabel>
-      <div style={{
-        display: 'flex', flexDirection: 'column', gap: 10,
-        marginBottom: result ? 16 : 28,
-      }}>
-        {runner.inputs.map((inp) => (
-          <InputField
-            key={inp.id}
-            input={inp}
-            value={values[inp.id]}
-            onChange={(v) => setValues((prev) => ({ ...prev, [inp.id]: v }))}
+        {/* InfoPills row */}
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 16, marginBottom: 32 }}>
+          <InfoPill
+            icon={<IconBolt />}
+            label="Тип"
+            value={kindLabel}
           />
-        ))}
-      </div>
-
-      {result && (
-        <div style={{
-          padding: '20px 24px',
-          borderRadius: 16,
-          background: `${result.color}10`,
-          marginBottom: 28,
-        }}>
-          <p style={{
-            fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-            color: result.color, textTransform: 'uppercase', letterSpacing: '0.08em',
-            marginBottom: 8,
-          }}>
-            Результат
-          </p>
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, flexWrap: 'wrap' }}>
-            <span style={{
-              fontFamily: 'var(--font-display)', fontSize: 40, fontWeight: 800,
-              color: result.color, letterSpacing: '-0.02em', lineHeight: 1,
-            }}>
-              {result.value}
-            </span>
-            {result.unit && (
-              <span style={{
-                fontFamily: 'var(--font-body)', fontSize: 16, color: '#6B7280',
-                fontWeight: 500,
-              }}>
-                {result.unit}
-              </span>
-            )}
-          </div>
-          <p style={{
-            marginTop: 12,
-            fontFamily: 'var(--font-body)', fontSize: 14, color: '#1A1A1A',
-            lineHeight: 1.55, fontWeight: 500,
-          }}>
-            {result.interpretation}
-          </p>
+          <InfoPill
+            icon={<IconTag />}
+            label="Раздел"
+            value={tool.subcategory}
+          />
+          <InfoPill
+            icon={<IconBook />}
+            label="Источник"
+            value={shortRef(runner.reference)}
+          />
         </div>
-      )}
 
-      {/* Article-like info content — uses the same .lesson-content styles as course pages */}
-      {runner.info && (
-        <>
-          <SectionLabel>Клиническая справка</SectionLabel>
-          <div className="lesson-content tool-info">
-            <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
-              {runner.info}
-            </ReactMarkdown>
+        {/* ═══ Calculator section ═══ */}
+        <section id="calculator" style={{ scrollMarginTop: 20, marginBottom: 28 }}>
+          <SectionLabel>Калькулятор</SectionLabel>
+          <div style={{
+            display: 'flex', flexDirection: 'column', gap: 10,
+          }}>
+            {runner.inputs.map((inp) => (
+              <InputField
+                key={inp.id}
+                input={inp}
+                value={values[inp.id]}
+                onChange={(v) => setValues((prev) => ({ ...prev, [inp.id]: v }))}
+              />
+            ))}
           </div>
-        </>
-      )}
+        </section>
 
-      {/* Reference */}
-      <div style={{
-        marginTop: 24, paddingTop: 20,
-        background: '#F5F6F8', borderRadius: 12, padding: '14px 18px',
-        fontFamily: 'var(--font-body)', fontSize: 12, color: '#6B7280',
-        lineHeight: 1.55,
-      }}>
-        <strong style={{ color: '#374151', fontWeight: 700 }}>Источник:</strong> {runner.reference}
+        {/* ═══ Result section ═══ */}
+        {result && (
+          <section id="result" style={{ scrollMarginTop: 20, marginBottom: 32 }}>
+            <div style={{
+              padding: '22px 26px',
+              borderRadius: 16,
+              background: `${result.color}0F`,
+              borderLeft: `4px solid ${result.color}`,
+            }}>
+              <p style={{
+                fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
+                color: result.color, textTransform: 'uppercase', letterSpacing: '0.1em',
+                marginBottom: 10,
+              }}>
+                Результат
+              </p>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, flexWrap: 'wrap' }}>
+                <span style={{
+                  fontFamily: 'var(--font-display)', fontSize: 44, fontWeight: 800,
+                  color: result.color, letterSpacing: '-0.02em', lineHeight: 1,
+                }}>
+                  {result.value}
+                </span>
+                {result.unit && (
+                  <span style={{
+                    fontFamily: 'var(--font-body)', fontSize: 16, color: '#6B7280',
+                    fontWeight: 500,
+                  }}>
+                    {result.unit}
+                  </span>
+                )}
+              </div>
+              <p style={{
+                marginTop: 14,
+                fontFamily: 'var(--font-body)', fontSize: 14, color: '#1A1A1A',
+                lineHeight: 1.6, fontWeight: 500,
+              }}>
+                {result.interpretation}
+              </p>
+            </div>
+          </section>
+        )}
+
+        {/* ═══ Info: clinical reference ═══ */}
+        {runner.info && (
+          <section id="info-top" style={{ scrollMarginTop: 20 }}>
+            <SectionLabel>Клиническая справка</SectionLabel>
+            <div className="lesson-content tool-info">
+              <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
+                {runner.info}
+              </ReactMarkdown>
+            </div>
+          </section>
+        )}
+
+        {/* Reference footer */}
+        <div style={{
+          marginTop: 32,
+          background: '#F5F6F8', borderRadius: 12, padding: '14px 18px',
+          fontFamily: 'var(--font-body)', fontSize: 12, color: '#6B7280',
+          lineHeight: 1.55,
+        }}>
+          <strong style={{ color: '#374151', fontWeight: 700 }}>Источник:</strong> {runner.reference}
+        </div>
       </div>
+
+      {/* RIGHT: TOC sidebar — like course pages */}
+      <aside style={{
+        position: 'sticky', top: 20,
+        background: '#F5F6F8',
+        borderRadius: 'var(--md-sys-shape-corner-extra-large, 20px)',
+        padding: 16,
+        display: 'flex', flexDirection: 'column', gap: 2,
+      }}>
+        <p style={{
+          fontFamily: 'var(--font-body)', fontSize: 11,
+          fontWeight: 600, color: '#888',
+          textTransform: 'uppercase', letterSpacing: '0.08em',
+          padding: '4px 12px 10px',
+          margin: 0,
+        }}>
+          Содержание
+        </p>
+
+        <TocItem
+          id="calculator"
+          title="Калькулятор"
+          icon={<IconCalculator />}
+          active={activeSection === 'calculator'}
+          onClick={scrollToId}
+        />
+        {result && (
+          <TocItem
+            id="result"
+            title="Результат"
+            icon={<IconSparkle />}
+            active={activeSection === 'result'}
+            onClick={scrollToId}
+          />
+        )}
+        {runner.info && sections.length > 0 && (
+          <>
+            <div style={{ height: 8 }} />
+            <p style={{
+              fontFamily: 'var(--font-body)', fontSize: 11,
+              fontWeight: 600, color: '#888',
+              textTransform: 'uppercase', letterSpacing: '0.08em',
+              padding: '4px 12px 6px',
+              margin: 0,
+            }}>
+              Справка
+            </p>
+            {sections.map((s) => (
+              <TocItem
+                key={s.id}
+                id={s.id}
+                title={s.title}
+                icon={headingIcon(s.title)}
+                active={activeSection === s.id}
+                onClick={scrollToId}
+              />
+            ))}
+          </>
+        )}
+      </aside>
     </div>
   );
 }
 
-/* ════════════════ Markdown renderer (professional clinical-style) ════════════════ */
+/* ════════════════ TOC Item ════════════════ */
 
-/** Pick an icon by heading text */
-function headingIcon(text: string): React.ReactNode {
-  const t = text.toLowerCase();
-  const stroke = { fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const };
-  const ic = (path: React.ReactNode) => (
-    <svg width={16} height={16} viewBox="0 0 24 24" {...stroke}>{path}</svg>
+function TocItem({ id, title, icon, active, onClick }: {
+  id: string; title: string; icon: React.ReactNode;
+  active: boolean; onClick: (id: string) => void;
+}) {
+  return (
+    <button
+      onClick={() => onClick(id)}
+      style={{
+        display: 'flex', alignItems: 'center', gap: 10,
+        padding: '9px 12px',
+        background: active ? '#1A1A1A' : 'transparent',
+        color: active ? '#FFFFFF' : '#333',
+        border: 'none', borderRadius: 10,
+        cursor: 'pointer', textAlign: 'left',
+        fontFamily: 'var(--font-body)', fontSize: 12.5,
+        fontWeight: active ? 600 : 500,
+        transition: 'background 150ms ease, color 150ms ease',
+        width: '100%',
+      }}
+      onMouseEnter={(e) => { if (!active) e.currentTarget.style.background = '#E8E9ED'; }}
+      onMouseLeave={(e) => { if (!active) e.currentTarget.style.background = 'transparent'; }}
+    >
+      <span style={{
+        display: 'flex', flexShrink: 0,
+        color: active ? '#FFF' : '#6B7280',
+      }}>
+        {icon}
+      </span>
+      <span style={{
+        overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+        minWidth: 0, flex: 1,
+      }}>
+        {title}
+      </span>
+    </button>
   );
-  if (/что (с|п)|описание/.test(t))           return ic(<><circle cx={12} cy={12} r={10}/><line x1={12} y1={16} x2={12} y2={12}/><line x1={12} y1={8} x2={12.01} y2={8}/></>);
-  if (/когда|применени|показани/.test(t))      return ic(<><circle cx={12} cy={12} r={10}/><polyline points="12,6 12,12 16,14"/></>);
-  if (/формул|расч/.test(t))                   return ic(<><rect x={4} y={4} width={16} height={16} rx={2}/><line x1={9} y1={9} x2={15} y2={15}/><line x1={15} y1={9} x2={9} y2={15}/></>);
-  if (/интерпрет|значени|шкал|стади|групп/.test(t)) return ic(<><line x1={12} y1={20} x2={12} y2={10}/><line x1={18} y1={20} x2={18} y2={4}/><line x1={6} y1={20} x2={6} y2={16}/></>);
-  if (/тактик|лечени|терапи|алгоритм|действи/.test(t)) return ic(<><path d="M9 11H1l8-8 8 8h-8v8z"/></>);
-  if (/преимущ|сравнени|альтернатив/.test(t)) return ic(<><polyline points="3,17 9,11 13,15 21,7"/><polyline points="14,7 21,7 21,14"/></>);
-  if (/ограничени|противопоказ/.test(t))       return ic(<><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1={12} y1={9} x2={12} y2={13}/><line x1={12} y1={17} x2={12.01} y2={17}/></>);
-  if (/связ|допол|дальше|итог|зам/.test(t))    return ic(<><line x1={10} y1={13} x2={14} y2={11}/><line x1={10} y1={11} x2={14} y2={13}/><circle cx={12} cy={12} r={10}/></>);
-  if (/критер|компонент|критич|ключев/.test(t))return ic(<><polyline points="9,11 12,14 22,4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></>);
-  if (/возбуд|инфекц|микро/.test(t))           return ic(<><circle cx={12} cy={12} r={4}/><line x1={12} y1={2} x2={12} y2={5}/><line x1={12} y1={19} x2={12} y2={22}/><line x1={2} y1={12} x2={5} y2={12}/><line x1={19} y1={12} x2={22} y2={12}/></>);
-  return ic(<><rect x={3} y={4} width={18} height={18} rx={2}/><line x1={3} y1={10} x2={21} y2={10}/></>);
 }
 
+/* ════════════════ Markdown components ════════════════ */
+
 /**
- * Custom markdown components — ONLY override h3 to add the section icon.
- * All other elements (p, code, pre, table, ul/ol/li, blockquote, hr, a) are
- * styled by .lesson-content CSS (same styles as course pages) to avoid
- * hydration errors and keep 1:1 visual parity with lessons.
+ * Only override H3 to: (a) add an icon badge; (b) inject an anchor id
+ * so the TOC sidebar can scroll to it.
+ * All other elements (p, strong, em, code, pre, tables, lists, hr, a, blockquote)
+ * are styled via .lesson-content CSS → identical to course lessons.
  */
 const mdComponents = {
   h3: ({ children }: { children?: React.ReactNode }) => {
     const txt = String(Array.isArray(children) ? children.join('') : children || '');
+    const id = slugify(txt);
     return (
-      <h3 className="tool-info-h3">
+      <h3 id={id} className="tool-info-h3" style={{ scrollMarginTop: 20 }}>
         <span className="tool-info-h3-icon" aria-hidden>
           {headingIcon(txt)}
         </span>
@@ -246,10 +382,64 @@ const mdComponents = {
   },
 };
 
+/* ════════════════ Icons for TOC and H3 ════════════════ */
+
+function headingIcon(text: string): React.ReactNode {
+  const t = text.toLowerCase();
+  const p = { fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const };
+  const ic = (path: React.ReactNode) => <svg width={16} height={16} viewBox="0 0 24 24" {...p}>{path}</svg>;
+
+  if (/для чего|описани|что (с|и|о)/.test(t))
+    return ic(<><circle cx={12} cy={12} r={10}/><line x1={12} y1={16} x2={12} y2={12}/><line x1={12} y1={8} x2={12.01} y2={8}/></>);
+  if (/когда|применени|показани|время/.test(t))
+    return ic(<><circle cx={12} cy={12} r={10}/><polyline points="12,6 12,12 16,14"/></>);
+  if (/формул|расч|уравнен/.test(t))
+    return ic(<><rect x={3} y={4} width={18} height={16} rx={2}/><line x1={8} y1={10} x2={16} y2={10}/><line x1={8} y1={14} x2={13} y2={14}/></>);
+  if (/интерпрет|значени|шкал|класс|оцен|стади|групп|класс/.test(t))
+    return ic(<><line x1={12} y1={20} x2={12} y2={10}/><line x1={18} y1={20} x2={18} y2={4}/><line x1={6} y1={20} x2={6} y2={16}/></>);
+  if (/тактик|лечени|терапи|алгоритм|действи|ведени/.test(t))
+    return ic(<><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></>);
+  if (/преимущ|сравнени|альтернатив|vs/.test(t))
+    return ic(<><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></>);
+  if (/ограничени|противопоказ|предостер|ошиб|не работ/.test(t))
+    return ic(<><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1={12} y1={9} x2={12} y2={13}/><line x1={12} y1={17} x2={12.01} y2={17}/></>);
+  if (/связ|допол|дальше|итог|зам/.test(t))
+    return ic(<><circle cx={12} cy={12} r={10}/><line x1={8} y1={12} x2={16} y2={12}/><line x1={12} y1={8} x2={12} y2={16}/></>);
+  if (/критер|компонент|ключев|состав/.test(t))
+    return ic(<><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></>);
+  if (/возбуд|инфекц|микро|бактер|вирус/.test(t))
+    return ic(<><circle cx={12} cy={12} r={4}/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.93 4.93l2.12 2.12M16.95 16.95l2.12 2.12M4.93 19.07l2.12-2.12M16.95 7.05l2.12-2.12"/></>);
+  if (/педиатр|дет/.test(t))
+    return ic(<><circle cx={12} cy={8} r={4}/><path d="M6 22v-3c0-2 2-4 6-4s6 2 6 4v3"/></>);
+  if (/беремен|акушер/.test(t))
+    return ic(<><circle cx={12} cy={7} r={3}/><path d="M9 22c0-5 1-8 3-8s3 3 3 8"/></>);
+  if (/мониторинг|контрол|отслеж/.test(t))
+    return ic(<><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></>);
+  if (/профилакт|предупрежд/.test(t))
+    return ic(<><path d="M12 2l9 4v6c0 5.5-4 10-9 10S3 17.5 3 12V6z"/></>);
+  // default: document
+  return ic(<><rect x={4} y={3} width={16} height={18} rx={2}/><line x1={8} y1={9} x2={16} y2={9}/><line x1={8} y1={13} x2={16} y2={13}/><line x1={8} y1={17} x2={12} y2={17}/></>);
+}
+
+function IconBolt() {
+  return <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>;
+}
+function IconTag() {
+  return <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1={7} y1={7} x2={7.01} y2={7}/></svg>;
+}
+function IconBook() {
+  return <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>;
+}
+function IconCalculator() {
+  return <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"><rect x={4} y={2} width={16} height={20} rx={2}/><line x1={8} y1={6} x2={16} y2={6}/><line x1={8} y1={10} x2={8} y2={10}/><line x1={12} y1={10} x2={12} y2={10}/><line x1={16} y1={10} x2={16} y2={10}/><line x1={8} y1={14} x2={8} y2={14}/><line x1={12} y1={14} x2={12} y2={14}/><line x1={16} y1={14} x2={16} y2={14}/><line x1={8} y1={18} x2={8} y2={18}/><line x1={12} y1={18} x2={12} y2={18}/><line x1={16} y1={18} x2={16} y2={18}/></svg>;
+}
+function IconSparkle() {
+  return <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"><path d="M12 3l1.9 5.8L20 10.7l-5 3.6L16.5 21 12 17.5 7.5 21 9 14.3 4 10.7l6.1-1.9L12 3z"/></svg>;
+}
+
 /* ════════════════ atoms ════════════════ */
 
 function shortRef(ref: string): string {
-  // First sentence or first 50 chars
   const s = ref.split('.')[0];
   return s.length > 50 ? s.slice(0, 50) + '…' : s;
 }
@@ -259,14 +449,14 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
     <h3 style={{
       fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700,
       color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
-      marginBottom: 12,
+      marginBottom: 14, marginTop: 0,
     }}>
       {children}
     </h3>
   );
 }
 
-function Header({ tool, kind }: { tool: { title: string; subcategory: string; category: string }; kind?: string }) {
+function Header({ tool, kind }: { tool: { title: string; subcategory: string; category: string; description?: string }; kind?: string }) {
   return (
     <div>
       <div style={{
@@ -301,7 +491,7 @@ function Header({ tool, kind }: { tool: { title: string; subcategory: string; ca
       }}>
         {tool.title}
       </h1>
-      {tool && (
+      {tool.description && (
         <p style={{
           fontFamily: 'var(--font-body)',
           fontSize: 'var(--text-sm)',
@@ -309,7 +499,7 @@ function Header({ tool, kind }: { tool: { title: string; subcategory: string; ca
           maxWidth: 'var(--content-max)',
           lineHeight: 1.6,
         }}>
-          {(tool as { description?: string }).description}
+          {tool.description}
         </p>
       )}
     </div>
@@ -367,7 +557,116 @@ function BackButton({ onClick }: { onClick: () => void }) {
   );
 }
 
-/* ════════════════ Inputs (BORDERLESS — filled style) ════════════════ */
+/* ════════════════ Inputs ════════════════ */
+
+function InlineHintIcon({ hint }: { hint: string }) {
+  return (
+    <span
+      tabIndex={0}
+      title={hint}
+      onClick={(e) => e.preventDefault()}
+      style={{
+        position: 'relative',
+        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+        width: 14, height: 14, borderRadius: '50%',
+        background: '#FFFFFF', color: '#6B7280',
+        cursor: 'help', flexShrink: 0,
+      }}
+      onMouseEnter={(e) => {
+        const tip = e.currentTarget.querySelector('.tool-tooltip') as HTMLElement | null;
+        if (tip) tip.style.opacity = '1';
+      }}
+      onMouseLeave={(e) => {
+        const tip = e.currentTarget.querySelector('.tool-tooltip') as HTMLElement | null;
+        if (tip) tip.style.opacity = '0';
+      }}
+    >
+      <svg width={9} height={9} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
+        <circle cx={12} cy={12} r={10}/>
+        <line x1={12} y1={16} x2={12} y2={12}/>
+        <line x1={12} y1={8} x2={12.01} y2={8}/>
+      </svg>
+      <span
+        className="tool-tooltip"
+        style={{
+          position: 'absolute', bottom: 'calc(100% + 8px)', left: '50%',
+          transform: 'translateX(-50%)',
+          background: '#1A1A1A', color: '#FFFFFF',
+          padding: '8px 12px', borderRadius: 8,
+          fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 400,
+          lineHeight: 1.4, whiteSpace: 'normal',
+          width: 220,
+          opacity: 0, pointerEvents: 'none',
+          transition: 'opacity 150ms',
+          zIndex: 10,
+          boxShadow: '0 8px 24px rgba(0,0,0,0.18)',
+        }}
+      >
+        {hint}
+      </span>
+    </span>
+  );
+}
+
+function LabelWithHint({ label, hint }: { label: React.ReactNode; hint?: string }) {
+  return (
+    <div style={{
+      display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8,
+    }}>
+      <label style={{
+        fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
+        color: '#374151',
+      }}>
+        {label}
+      </label>
+      {hint && (
+        <span
+          tabIndex={0}
+          title={hint}
+          style={{
+            position: 'relative',
+            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+            width: 16, height: 16, borderRadius: '50%',
+            background: '#F0F1F5', color: '#6B7280',
+            cursor: 'help', flexShrink: 0,
+          }}
+          onMouseEnter={(e) => {
+            const tip = e.currentTarget.querySelector('.tool-tooltip') as HTMLElement | null;
+            if (tip) tip.style.opacity = '1';
+          }}
+          onMouseLeave={(e) => {
+            const tip = e.currentTarget.querySelector('.tool-tooltip') as HTMLElement | null;
+            if (tip) tip.style.opacity = '0';
+          }}
+        >
+          <svg width={10} height={10} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
+            <circle cx={12} cy={12} r={10}/>
+            <line x1={12} y1={16} x2={12} y2={12}/>
+            <line x1={12} y1={8} x2={12.01} y2={8}/>
+          </svg>
+          <span
+            className="tool-tooltip"
+            style={{
+              position: 'absolute', bottom: 'calc(100% + 8px)', left: '50%',
+              transform: 'translateX(-50%)',
+              background: '#1A1A1A', color: '#FFFFFF',
+              padding: '8px 12px', borderRadius: 8,
+              fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 400,
+              lineHeight: 1.4, whiteSpace: 'normal',
+              width: 240,
+              opacity: 0, pointerEvents: 'none',
+              transition: 'opacity 150ms',
+              zIndex: 10,
+              boxShadow: '0 8px 24px rgba(0,0,0,0.18)',
+            }}
+          >
+            {hint}
+          </span>
+        </span>
+      )}
+    </div>
+  );
+}
 
 function InputField({ input, value, onChange }: {
   input: ToolInput;
@@ -477,7 +776,7 @@ function InputField({ input, value, onChange }: {
     );
   }
 
-  // Number — borderless filled input
+  // Number input — borderless filled
   return (
     <div>
       <LabelWithHint
@@ -511,115 +810,6 @@ function InputField({ input, value, onChange }: {
         onFocus={(e) => { e.currentTarget.style.background = '#E8E9ED'; }}
         onBlur={(e) => { e.currentTarget.style.background = '#F5F6F8'; }}
       />
-    </div>
-  );
-}
-
-function InlineHintIcon({ hint }: { hint: string }) {
-  return (
-    <span
-      tabIndex={0}
-      title={hint}
-      onClick={(e) => e.preventDefault()}
-      style={{
-        position: 'relative',
-        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-        width: 14, height: 14, borderRadius: '50%',
-        background: '#FFFFFF', color: '#6B7280',
-        cursor: 'help', flexShrink: 0,
-      }}
-      onMouseEnter={(e) => {
-        const tip = e.currentTarget.querySelector('.tool-tooltip') as HTMLElement | null;
-        if (tip) tip.style.opacity = '1';
-      }}
-      onMouseLeave={(e) => {
-        const tip = e.currentTarget.querySelector('.tool-tooltip') as HTMLElement | null;
-        if (tip) tip.style.opacity = '0';
-      }}
-    >
-      <svg width={9} height={9} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
-        <circle cx={12} cy={12} r={10}/>
-        <line x1={12} y1={16} x2={12} y2={12}/>
-        <line x1={12} y1={8} x2={12.01} y2={8}/>
-      </svg>
-      <span
-        className="tool-tooltip"
-        style={{
-          position: 'absolute', bottom: 'calc(100% + 8px)', left: '50%',
-          transform: 'translateX(-50%)',
-          background: '#1A1A1A', color: '#FFFFFF',
-          padding: '8px 12px', borderRadius: 8,
-          fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 400,
-          lineHeight: 1.4, whiteSpace: 'normal',
-          width: 220,
-          opacity: 0, pointerEvents: 'none',
-          transition: 'opacity 150ms',
-          zIndex: 10,
-          boxShadow: '0 8px 24px rgba(0,0,0,0.18)',
-        }}
-      >
-        {hint}
-      </span>
-    </span>
-  );
-}
-
-function LabelWithHint({ label, hint }: { label: React.ReactNode; hint?: string }) {
-  return (
-    <div style={{
-      display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8,
-    }}>
-      <label style={{
-        fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
-        color: '#374151',
-      }}>
-        {label}
-      </label>
-      {hint && (
-        <span
-          tabIndex={0}
-          title={hint}
-          style={{
-            position: 'relative',
-            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-            width: 16, height: 16, borderRadius: '50%',
-            background: '#F0F1F5', color: '#6B7280',
-            cursor: 'help', flexShrink: 0,
-          }}
-          onMouseEnter={(e) => {
-            const tip = e.currentTarget.querySelector('.tool-tooltip') as HTMLElement | null;
-            if (tip) tip.style.opacity = '1';
-          }}
-          onMouseLeave={(e) => {
-            const tip = e.currentTarget.querySelector('.tool-tooltip') as HTMLElement | null;
-            if (tip) tip.style.opacity = '0';
-          }}
-        >
-          <svg width={10} height={10} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
-            <circle cx={12} cy={12} r={10}/>
-            <line x1={12} y1={16} x2={12} y2={12}/>
-            <line x1={12} y1={8} x2={12.01} y2={8}/>
-          </svg>
-          <span
-            className="tool-tooltip"
-            style={{
-              position: 'absolute', bottom: 'calc(100% + 8px)', left: '50%',
-              transform: 'translateX(-50%)',
-              background: '#1A1A1A', color: '#FFFFFF',
-              padding: '8px 12px', borderRadius: 8,
-              fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 400,
-              lineHeight: 1.4, whiteSpace: 'normal',
-              width: 240,
-              opacity: 0, pointerEvents: 'none',
-              transition: 'opacity 150ms',
-              zIndex: 10,
-              boxShadow: '0 8px 24px rgba(0,0,0,0.18)',
-            }}
-          >
-            {hint}
-          </span>
-        </span>
-      )}
     </div>
   );
 }
