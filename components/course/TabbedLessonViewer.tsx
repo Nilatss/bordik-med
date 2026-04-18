@@ -453,7 +453,7 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
       <div key={active.id} style={{
         background: '#FFFFFF',
         borderRadius: 'var(--md-sys-shape-corner-extra-large)',
-        padding: 'var(--space-6) var(--space-7)',
+        padding: 'var(--space-6)',
         minHeight: 300,
       }}>
         <div style={{
