@@ -22,6 +22,8 @@ export interface ToolInput {
   options?: { value: string | number; label: string; points?: number }[];
   /** Help hint */
   hint?: string;
+  /** Quick-pick values rendered as chips below a number input */
+  quickValues?: number[];
 }
 
 export interface ScoreBand {
@@ -117,8 +119,8 @@ export const TOOL_RUNNERS: Record<string, ToolRunner> = {
   bmi: {
     kind: 'calculator',
     inputs: [
-      { id: 'weight', label: 'Вес', type: 'number', unit: 'кг', min: 1, max: 500, step: 0.1 },
-      { id: 'height', label: 'Рост', type: 'number', unit: 'см', min: 30, max: 250, step: 0.1 },
+      { id: 'weight', label: 'Вес', type: 'number', unit: 'кг', min: 1, max: 500, step: 0.1, quickValues: [50, 60, 70, 80, 90, 100, 120] },
+      { id: 'height', label: 'Рост', type: 'number', unit: 'см', min: 30, max: 250, step: 0.1, quickValues: [155, 160, 165, 170, 175, 180, 185, 190] },
     ],
     compute: (v) => {
       const w = Number(v.weight), h = Number(v.height) / 100;
@@ -201,8 +203,8 @@ export const TOOL_RUNNERS: Record<string, ToolRunner> = {
   'bsa-mosteller': {
     kind: 'calculator',
     inputs: [
-      { id: 'weight', label: 'Вес', type: 'number', unit: 'кг', min: 1, max: 300, step: 0.1 },
-      { id: 'height', label: 'Рост', type: 'number', unit: 'см', min: 30, max: 250, step: 0.1 },
+      { id: 'weight', label: 'Вес', type: 'number', unit: 'кг', min: 1, max: 300, step: 0.1, quickValues: [3.5, 10, 20, 40, 60, 70, 80, 90] },
+      { id: 'height', label: 'Рост', type: 'number', unit: 'см', min: 30, max: 250, step: 0.1, quickValues: [50, 75, 110, 140, 160, 170, 175, 185] },
     ],
     compute: (v) => {
       const w = Number(v.weight), h = Number(v.height);
@@ -269,8 +271,8 @@ export const TOOL_RUNNERS: Record<string, ToolRunner> = {
   'bsa-dubois': {
     kind: 'calculator',
     inputs: [
-      { id: 'weight', label: 'Вес', type: 'number', unit: 'кг', min: 1, max: 300, step: 0.1 },
-      { id: 'height', label: 'Рост', type: 'number', unit: 'см', min: 30, max: 250, step: 0.1 },
+      { id: 'weight', label: 'Вес', type: 'number', unit: 'кг', min: 1, max: 300, step: 0.1, quickValues: [50, 60, 70, 80, 90, 100] },
+      { id: 'height', label: 'Рост', type: 'number', unit: 'см', min: 30, max: 250, step: 0.1, quickValues: [160, 165, 170, 175, 180, 185] },
     ],
     compute: (v) => {
       const w = Number(v.weight), h = Number(v.height);
@@ -339,9 +341,9 @@ export const TOOL_RUNNERS: Record<string, ToolRunner> = {
   cockcroft: {
     kind: 'calculator',
     inputs: [
-      { id: 'age', label: 'Возраст', type: 'number', unit: 'лет', min: 18, max: 120 },
-      { id: 'weight', label: 'Вес', type: 'number', unit: 'кг', min: 30, max: 300, step: 0.1 },
-      { id: 'creatinine', label: 'Креатинин сыворотки', type: 'number', unit: 'мкмоль/л', min: 10, max: 2000, step: 1, hint: 'В СИ: ×88.4 от mg/dL' },
+      { id: 'age', label: 'Возраст', type: 'number', unit: 'лет', min: 18, max: 120, quickValues: [25, 40, 55, 65, 75, 85] },
+      { id: 'weight', label: 'Вес', type: 'number', unit: 'кг', min: 30, max: 300, step: 0.1, quickValues: [50, 60, 70, 80, 90, 100] },
+      { id: 'creatinine', label: 'Креатинин сыворотки', type: 'number', unit: 'мкмоль/л', min: 10, max: 2000, step: 1, hint: 'В СИ: ×88.4 от mg/dL', quickValues: [70, 90, 110, 140, 180, 250, 400] },
       { id: 'female', label: 'Женский пол', type: 'checkbox' },
     ],
     compute: (v) => {
@@ -427,8 +429,8 @@ export const TOOL_RUNNERS: Record<string, ToolRunner> = {
   'ckd-epi': {
     kind: 'calculator',
     inputs: [
-      { id: 'age', label: 'Возраст', type: 'number', unit: 'лет', min: 18, max: 120 },
-      { id: 'creatinine', label: 'Креатинин сыворотки', type: 'number', unit: 'мкмоль/л', min: 10, max: 2000, step: 1 },
+      { id: 'age', label: 'Возраст', type: 'number', unit: 'лет', min: 18, max: 120, quickValues: [30, 45, 60, 70, 80] },
+      { id: 'creatinine', label: 'Креатинин сыворотки', type: 'number', unit: 'мкмоль/л', min: 10, max: 2000, step: 1, quickValues: [70, 90, 120, 160, 220, 350] },
       { id: 'female', label: 'Женский пол', type: 'checkbox' },
     ],
     compute: (v) => {
@@ -533,8 +535,8 @@ eGFR = 142 × min(SCr/κ, 1)^α × max(SCr/κ, 1)^(−1,200) × 0,9938^возр�
   mdrd: {
     kind: 'calculator',
     inputs: [
-      { id: 'age', label: 'Возраст', type: 'number', unit: 'лет', min: 18, max: 120 },
-      { id: 'creatinine', label: 'Креатинин сыворотки', type: 'number', unit: 'мкмоль/л', min: 10, max: 2000, step: 1 },
+      { id: 'age', label: 'Возраст', type: 'number', unit: 'лет', min: 18, max: 120, quickValues: [30, 45, 60, 70, 80] },
+      { id: 'creatinine', label: 'Креатинин сыворотки', type: 'number', unit: 'мкмоль/л', min: 10, max: 2000, step: 1, quickValues: [70, 90, 120, 160, 220, 350] },
       { id: 'female', label: 'Женский пол', type: 'checkbox' },
     ],
     compute: (v) => {
@@ -602,9 +604,9 @@ eGFR = 142 × min(SCr/κ, 1)^α × max(SCr/κ, 1)^(−1,200) × 0,9938^возр�
   'anion-gap': {
     kind: 'calculator',
     inputs: [
-      { id: 'na', label: 'Na⁺', type: 'number', unit: 'ммоль/л', min: 100, max: 180, step: 0.1 },
-      { id: 'cl', label: 'Cl⁻', type: 'number', unit: 'ммоль/л', min: 60, max: 140, step: 0.1 },
-      { id: 'hco3', label: 'HCO₃⁻', type: 'number', unit: 'ммоль/л', min: 3, max: 50, step: 0.1 },
+      { id: 'na', label: 'Na⁺', type: 'number', unit: 'ммоль/л', min: 100, max: 180, step: 0.1, quickValues: [135, 138, 140, 142, 145] },
+      { id: 'cl', label: 'Cl⁻', type: 'number', unit: 'ммоль/л', min: 60, max: 140, step: 0.1, quickValues: [98, 102, 105, 110, 115] },
+      { id: 'hco3', label: 'HCO₃⁻', type: 'number', unit: 'ммоль/л', min: 3, max: 50, step: 0.1, quickValues: [10, 15, 18, 22, 24, 28] },
     ],
     compute: (v) => {
       const ag = Number(v.na) - (Number(v.cl) + Number(v.hco3));
@@ -702,8 +704,8 @@ eGFR = 142 × min(SCr/κ, 1)^α × max(SCr/κ, 1)^(−1,200) × 0,9938^возр�
   'ca-corrected': {
     kind: 'calculator',
     inputs: [
-      { id: 'ca', label: 'Ca²⁺ общий', type: 'number', unit: 'ммоль/л', min: 0.5, max: 5, step: 0.01 },
-      { id: 'alb', label: 'Альбумин', type: 'number', unit: 'г/л', min: 10, max: 60, step: 0.1 },
+      { id: 'ca', label: 'Ca²⁺ общий', type: 'number', unit: 'ммоль/л', min: 0.5, max: 5, step: 0.01, quickValues: [1.8, 2.0, 2.2, 2.35, 2.5, 2.8] },
+      { id: 'alb', label: 'Альбумин', type: 'number', unit: 'г/л', min: 10, max: 60, step: 0.1, quickValues: [20, 25, 30, 35, 40, 45] },
     ],
     compute: (v) => {
       const ca = Number(v.ca), alb = Number(v.alb);
@@ -794,9 +796,9 @@ eGFR = 142 × min(SCr/κ, 1)^α × max(SCr/κ, 1)^(−1,200) × 0,9938^возр�
   meld: {
     kind: 'calculator',
     inputs: [
-      { id: 'bili', label: 'Билирубин', type: 'number', unit: 'мкмоль/л', min: 1, max: 1000, step: 0.1 },
-      { id: 'inr', label: 'INR', type: 'number', unit: '', min: 0.5, max: 10, step: 0.01 },
-      { id: 'creat', label: 'Креатинин', type: 'number', unit: 'мкмоль/л', min: 10, max: 1500, step: 1 },
+      { id: 'bili', label: 'Билирубин', type: 'number', unit: 'мкмоль/л', min: 1, max: 1000, step: 0.1, quickValues: [20, 40, 80, 120, 200, 300] },
+      { id: 'inr', label: 'INR', type: 'number', unit: '', min: 0.5, max: 10, step: 0.01, quickValues: [1.0, 1.3, 1.5, 1.8, 2.2, 2.8] },
+      { id: 'creat', label: 'Креатинин', type: 'number', unit: 'мкмоль/л', min: 10, max: 1500, step: 1, quickValues: [80, 110, 140, 180, 250, 350] },
       { id: 'dialysis', label: 'Диализ ≥2 раз/нед за последнюю неделю', type: 'checkbox' },
     ],
     compute: (v) => {
@@ -900,8 +902,8 @@ Na зажат 125–137. Добавление Na улучшает предска
   parkland: {
     kind: 'calculator',
     inputs: [
-      { id: 'weight', label: 'Вес', type: 'number', unit: 'кг', min: 1, max: 300, step: 0.1 },
-      { id: 'tbsa', label: '% TBSA (площадь ожога)', type: 'number', unit: '%', min: 0, max: 100, step: 0.5 },
+      { id: 'weight', label: 'Вес', type: 'number', unit: 'кг', min: 1, max: 300, step: 0.1, quickValues: [20, 40, 60, 70, 80, 90, 100] },
+      { id: 'tbsa', label: '% TBSA (площадь ожога)', type: 'number', unit: '%', min: 0, max: 100, step: 0.5, quickValues: [10, 15, 20, 30, 40, 50, 60] },
     ],
     compute: (v) => {
       const w = Number(v.weight), tbsa = Number(v.tbsa);
@@ -1007,7 +1009,7 @@ Na зажат 125–137. Добавление Na улучшает предска
   'holliday-segar': {
     kind: 'calculator',
     inputs: [
-      { id: 'weight', label: 'Вес ребёнка', type: 'number', unit: 'кг', min: 1, max: 100, step: 0.1 },
+      { id: 'weight', label: 'Вес ребёнка', type: 'number', unit: 'кг', min: 1, max: 100, step: 0.1, quickValues: [3, 5, 10, 15, 20, 30, 40, 60, 70] },
     ],
     compute: (v) => {
       const w = Number(v.weight);
@@ -1109,10 +1111,10 @@ Holliday-Segar используется как база, к которой до�
   'aa-gradient': {
     kind: 'calculator',
     inputs: [
-      { id: 'fio2', label: 'FiO₂', type: 'number', unit: '%', min: 21, max: 100, step: 1 },
-      { id: 'paco2', label: 'PaCO₂', type: 'number', unit: 'мм рт.ст.', min: 10, max: 100, step: 0.1 },
-      { id: 'pao2', label: 'PaO₂', type: 'number', unit: 'мм рт.ст.', min: 20, max: 700, step: 0.1 },
-      { id: 'age', label: 'Возраст', type: 'number', unit: 'лет', min: 0, max: 120 },
+      { id: 'fio2', label: 'FiO₂', type: 'number', unit: '%', min: 21, max: 100, step: 1, quickValues: [21, 24, 28, 40, 60, 100] },
+      { id: 'paco2', label: 'PaCO₂', type: 'number', unit: 'мм рт.ст.', min: 10, max: 100, step: 0.1, quickValues: [30, 35, 40, 45, 55, 70] },
+      { id: 'pao2', label: 'PaO₂', type: 'number', unit: 'мм рт.ст.', min: 20, max: 700, step: 0.1, quickValues: [50, 60, 70, 85, 95, 120] },
+      { id: 'age', label: 'Возраст', type: 'number', unit: 'лет', min: 0, max: 120, quickValues: [20, 40, 60, 80] },
     ],
     compute: (v) => {
       const fio2 = Number(v.fio2) / 100;
@@ -2832,7 +2834,7 @@ Object.assign(TOOL_RUNNERS, {
   'ibw-devine': {
     kind: 'calculator',
     inputs: [
-      { id: 'height', label: 'Рост', type: 'number', unit: 'см', min: 120, max: 220, step: 0.1 },
+      { id: 'height', label: 'Рост', type: 'number', unit: 'см', min: 120, max: 220, step: 0.1, quickValues: [155, 160, 165, 170, 175, 180, 185, 190] },
       { id: 'female', label: 'Женский пол', type: 'checkbox' },
     ],
     compute: (v) => {
@@ -2850,9 +2852,9 @@ Object.assign(TOOL_RUNNERS, {
   'plasma-osm': {
     kind: 'calculator',
     inputs: [
-      { id: 'na', label: 'Na⁺', type: 'number', unit: 'ммоль/л', min: 100, max: 180, step: 0.1 },
-      { id: 'glu', label: 'Глюкоза', type: 'number', unit: 'ммоль/л', min: 1, max: 50, step: 0.1 },
-      { id: 'urea', label: 'Мочевина', type: 'number', unit: 'ммоль/л', min: 0.5, max: 50, step: 0.1 },
+      { id: 'na', label: 'Na⁺', type: 'number', unit: 'ммоль/л', min: 100, max: 180, step: 0.1, quickValues: [130, 135, 140, 145] },
+      { id: 'glu', label: 'Глюкоза', type: 'number', unit: 'ммоль/л', min: 1, max: 50, step: 0.1, quickValues: [5, 7, 10, 15, 20, 30] },
+      { id: 'urea', label: 'Мочевина', type: 'number', unit: 'ммоль/л', min: 0.5, max: 50, step: 0.1, quickValues: [4, 7, 10, 15, 25] },
     ],
     compute: (v) => {
       const osm = 2 * Number(v.na) + Number(v.glu) + Number(v.urea);
@@ -2869,8 +2871,8 @@ Object.assign(TOOL_RUNNERS, {
   'na-corrected': {
     kind: 'calculator',
     inputs: [
-      { id: 'na', label: 'Измеренный Na⁺', type: 'number', unit: 'ммоль/л', min: 100, max: 180, step: 0.1 },
-      { id: 'glu', label: 'Глюкоза', type: 'number', unit: 'ммоль/л', min: 5, max: 60, step: 0.1 },
+      { id: 'na', label: 'Измеренный Na⁺', type: 'number', unit: 'ммоль/л', min: 100, max: 180, step: 0.1, quickValues: [125, 130, 135, 140] },
+      { id: 'glu', label: 'Глюкоза', type: 'number', unit: 'ммоль/л', min: 5, max: 60, step: 0.1, quickValues: [10, 15, 20, 25, 35, 45] },
     ],
     compute: (v) => {
       const glu = Number(v.glu);
@@ -2886,9 +2888,9 @@ Object.assign(TOOL_RUNNERS, {
   friedewald: {
     kind: 'calculator',
     inputs: [
-      { id: 'tc', label: 'Общий холестерин', type: 'number', unit: 'ммоль/л', min: 1, max: 20, step: 0.01 },
-      { id: 'hdl', label: 'ЛПВП (HDL)', type: 'number', unit: 'ммоль/л', min: 0.1, max: 5, step: 0.01 },
-      { id: 'tg', label: 'Триглицериды', type: 'number', unit: 'ммоль/л', min: 0.1, max: 10, step: 0.01 },
+      { id: 'tc', label: 'Общий холестерин', type: 'number', unit: 'ммоль/л', min: 1, max: 20, step: 0.01, quickValues: [4.5, 5.2, 6.0, 7.0, 8.5] },
+      { id: 'hdl', label: 'ЛПВП (HDL)', type: 'number', unit: 'ммоль/л', min: 0.1, max: 5, step: 0.01, quickValues: [0.8, 1.0, 1.2, 1.5, 1.8] },
+      { id: 'tg', label: 'Триглицериды', type: 'number', unit: 'ммоль/л', min: 0.1, max: 10, step: 0.01, quickValues: [1.0, 1.5, 2.0, 3.0, 4.5] },
     ],
     compute: (v) => {
       const tg = Number(v.tg);
@@ -2912,8 +2914,8 @@ Object.assign(TOOL_RUNNERS, {
   'homa-ir': {
     kind: 'calculator',
     inputs: [
-      { id: 'glu', label: 'Глюкоза натощак', type: 'number', unit: 'ммоль/л', min: 2, max: 30, step: 0.1 },
-      { id: 'ins', label: 'Инсулин натощак', type: 'number', unit: 'мкЕд/мл', min: 0, max: 200, step: 0.1 },
+      { id: 'glu', label: 'Глюкоза натощак', type: 'number', unit: 'ммоль/л', min: 2, max: 30, step: 0.1, quickValues: [4.5, 5.5, 6.5, 7.5, 9.0, 12.0] },
+      { id: 'ins', label: 'Инсулин натощак', type: 'number', unit: 'мкЕд/мл', min: 0, max: 200, step: 0.1, quickValues: [5, 10, 15, 25, 40, 60] },
     ],
     compute: (v) => {
       const homa = (Number(v.glu) * Number(v.ins)) / 22.5;
@@ -2930,8 +2932,8 @@ Object.assign(TOOL_RUNNERS, {
   qtc: {
     kind: 'calculator',
     inputs: [
-      { id: 'qt', label: 'QT интервал', type: 'number', unit: 'мс', min: 200, max: 700, step: 1 },
-      { id: 'rr', label: 'RR интервал', type: 'number', unit: 'мс', min: 300, max: 2000, step: 1, hint: 'Или ЧСС ×60000/ЧСС' },
+      { id: 'qt', label: 'QT интервал', type: 'number', unit: 'мс', min: 200, max: 700, step: 1, quickValues: [360, 400, 440, 480, 520] },
+      { id: 'rr', label: 'RR интервал', type: 'number', unit: 'мс', min: 300, max: 2000, step: 1, hint: 'Или ЧСС ×60000/ЧСС', quickValues: [600, 750, 857, 1000, 1200] },
       { id: 'female', label: 'Женский пол', type: 'checkbox' },
     ],
     compute: (v) => {
@@ -2951,10 +2953,10 @@ Object.assign(TOOL_RUNNERS, {
   fena: {
     kind: 'calculator',
     inputs: [
-      { id: 'u_na', label: 'Na⁺ мочи', type: 'number', unit: 'ммоль/л', min: 1, max: 500, step: 0.1 },
-      { id: 'p_cr', label: 'Креатинин плазмы', type: 'number', unit: 'мкмоль/л', min: 10, max: 2000, step: 1 },
-      { id: 'p_na', label: 'Na⁺ плазмы', type: 'number', unit: 'ммоль/л', min: 100, max: 180, step: 0.1 },
-      { id: 'u_cr', label: 'Креатинин мочи', type: 'number', unit: 'мкмоль/л', min: 100, max: 30000, step: 1 },
+      { id: 'u_na', label: 'Na⁺ мочи', type: 'number', unit: 'ммоль/л', min: 1, max: 500, step: 0.1, quickValues: [10, 20, 40, 60, 100] },
+      { id: 'p_cr', label: 'Креатинин плазмы', type: 'number', unit: 'мкмоль/л', min: 10, max: 2000, step: 1, quickValues: [80, 120, 180, 250, 400] },
+      { id: 'p_na', label: 'Na⁺ плазмы', type: 'number', unit: 'ммоль/л', min: 100, max: 180, step: 0.1, quickValues: [135, 138, 140, 142] },
+      { id: 'u_cr', label: 'Креатинин мочи', type: 'number', unit: 'мкмоль/л', min: 100, max: 30000, step: 1, quickValues: [2000, 4000, 7000, 10000, 15000] },
     ],
     compute: (v) => {
       const fena = (Number(v.u_na) * Number(v.p_cr)) / (Number(v.p_na) * Number(v.u_cr)) * 100;
@@ -2971,8 +2973,8 @@ Object.assign(TOOL_RUNNERS, {
   schwartz: {
     kind: 'calculator',
     inputs: [
-      { id: 'height', label: 'Рост ребёнка', type: 'number', unit: 'см', min: 30, max: 200, step: 0.1 },
-      { id: 'creat', label: 'Креатинин', type: 'number', unit: 'мкмоль/л', min: 10, max: 1500, step: 1 },
+      { id: 'height', label: 'Рост ребёнка', type: 'number', unit: 'см', min: 30, max: 200, step: 0.1, quickValues: [60, 80, 100, 120, 140, 160] },
+      { id: 'creat', label: 'Креатинин', type: 'number', unit: 'мкмоль/л', min: 10, max: 1500, step: 1, quickValues: [30, 50, 80, 120, 200] },
     ],
     compute: (v) => {
       const scr_mgdl = Number(v.creat) / 88.4;
@@ -2992,8 +2994,8 @@ Object.assign(TOOL_RUNNERS, {
   'pf-ratio': {
     kind: 'calculator',
     inputs: [
-      { id: 'pao2', label: 'PaO₂', type: 'number', unit: 'мм рт.ст.', min: 20, max: 700, step: 0.1 },
-      { id: 'fio2', label: 'FiO₂', type: 'number', unit: '%', min: 21, max: 100, step: 1 },
+      { id: 'pao2', label: 'PaO₂', type: 'number', unit: 'мм рт.ст.', min: 20, max: 700, step: 0.1, quickValues: [60, 80, 100, 150, 250] },
+      { id: 'fio2', label: 'FiO₂', type: 'number', unit: '%', min: 21, max: 100, step: 1, quickValues: [21, 30, 40, 60, 80, 100] },
     ],
     compute: (v) => {
       const pf = Number(v.pao2) / (Number(v.fio2) / 100);
@@ -3011,8 +3013,8 @@ Object.assign(TOOL_RUNNERS, {
   'shock-index': {
     kind: 'calculator',
     inputs: [
-      { id: 'hr', label: 'ЧСС', type: 'number', unit: 'уд/мин', min: 20, max: 250, step: 1 },
-      { id: 'sbp', label: 'САД', type: 'number', unit: 'мм рт.ст.', min: 30, max: 250, step: 1 },
+      { id: 'hr', label: 'ЧСС', type: 'number', unit: 'уд/мин', min: 20, max: 250, step: 1, quickValues: [60, 80, 100, 120, 140] },
+      { id: 'sbp', label: 'САД', type: 'number', unit: 'мм рт.ст.', min: 30, max: 250, step: 1, quickValues: [70, 90, 110, 130, 160] },
     ],
     compute: (v) => {
       const si = Number(v.hr) / Number(v.sbp);
@@ -3031,7 +3033,7 @@ Object.assign(TOOL_RUNNERS, {
   winter: {
     kind: 'calculator',
     inputs: [
-      { id: 'hco3', label: 'HCO₃⁻ измеренный', type: 'number', unit: 'ммоль/л', min: 1, max: 50, step: 0.1 },
+      { id: 'hco3', label: 'HCO₃⁻ измеренный', type: 'number', unit: 'ммоль/л', min: 1, max: 50, step: 0.1, quickValues: [8, 12, 16, 20, 24, 28] },
     ],
     compute: (v) => {
       const hco3 = Number(v.hco3);
@@ -3946,9 +3948,9 @@ Pre-endoscopy Rockall — оценка риска **смертности и ре
   'maddrey': {
     kind: 'calculator',
     inputs: [
-      { id: 'pt',  label: 'ПВ пациента',     type: 'number', unit: 'сек', hint: 'Протромбиновое время' },
-      { id: 'ptc', label: 'ПВ контроль',     type: 'number', unit: 'сек', hint: 'Контрольное ПВ лаборатории' },
-      { id: 'bil', label: 'Общий билирубин', type: 'number', unit: 'мкмоль/л', hint: 'Будет переведён в мг/дл' },
+      { id: 'pt',  label: 'ПВ пациента',     type: 'number', unit: 'сек', hint: 'Протромбиновое время', quickValues: [14, 18, 22, 26, 30] },
+      { id: 'ptc', label: 'ПВ контроль',     type: 'number', unit: 'сек', hint: 'Контрольное ПВ лаборатории', quickValues: [11, 12, 13, 14] },
+      { id: 'bil', label: 'Общий билирубин', type: 'number', unit: 'мкмоль/л', hint: 'Будет переведён в мг/дл', quickValues: [50, 100, 200, 300, 500] },
     ],
     compute: (v) => {
       const pt = Number(v.pt), ptc = Number(v.ptc);
@@ -3995,7 +3997,7 @@ Pre-endoscopy Rockall — оценка риска **смертности и ре
   'hba1c': {
     kind: 'calculator',
     inputs: [
-      { id: 'hba1c', label: 'HbA1c', type: 'number', unit: '%', min: 4, max: 18, step: 0.1, hint: 'Гликированный гемоглобин' },
+      { id: 'hba1c', label: 'HbA1c', type: 'number', unit: '%', min: 4, max: 18, step: 0.1, hint: 'Гликированный гемоглобин', quickValues: [5.4, 6.2, 7.0, 8.0, 9.5, 11.0] },
     ],
     compute: (v) => {
       const a = Number(v.hba1c);
@@ -4655,10 +4657,10 @@ ACT комплементарен GINA-критериям:
   'das28': {
     kind: 'calculator',
     inputs: [
-      { id: 'tjc', label: 'Болезненные суставы (TJC, 0–28)',  type: 'number', min: 0, max: 28, step: 1 },
-      { id: 'sjc', label: 'Припухшие суставы (SJC, 0–28)',     type: 'number', min: 0, max: 28, step: 1 },
-      { id: 'crp', label: 'СРБ',                                type: 'number', unit: 'мг/л', min: 0, step: 0.1 },
-      { id: 'gh',  label: 'Общая оценка пациента (VAS)',        type: 'number', unit: '0–100 мм', min: 0, max: 100, step: 1 },
+      { id: 'tjc', label: 'Болезненные суставы (TJC, 0–28)',  type: 'number', min: 0, max: 28, step: 1, quickValues: [0, 3, 6, 10, 15, 20] },
+      { id: 'sjc', label: 'Припухшие суставы (SJC, 0–28)',     type: 'number', min: 0, max: 28, step: 1, quickValues: [0, 2, 5, 8, 12, 18] },
+      { id: 'crp', label: 'СРБ',                                type: 'number', unit: 'мг/л', min: 0, step: 0.1, quickValues: [2, 5, 10, 20, 40, 80] },
+      { id: 'gh',  label: 'Общая оценка пациента (VAS)',        type: 'number', unit: '0–100 мм', min: 0, max: 100, step: 1, quickValues: [10, 30, 50, 70, 90] },
     ],
     compute: (v) => {
       const tjc = Number(v.tjc), sjc = Number(v.sjc), crp = Math.max(Number(v.crp), 0.1), gh = Number(v.gh);
@@ -4719,12 +4721,12 @@ Boolean-критерии — все ≤ 1: TJC, SJC, CRP, VAS_pat. Более с
   'basdai': {
     kind: 'calculator',
     inputs: [
-      { id: 'q1', label: '1. Усталость',                    type: 'number', unit: '0–10', min: 0, max: 10, step: 0.1 },
-      { id: 'q2', label: '2. Боль в шее/спине/тазобедрен.', type: 'number', unit: '0–10', min: 0, max: 10, step: 0.1 },
-      { id: 'q3', label: '3. Боль/припухлость суставов',     type: 'number', unit: '0–10', min: 0, max: 10, step: 0.1 },
-      { id: 'q4', label: '4. Дискомфорт при прикосновении',  type: 'number', unit: '0–10', min: 0, max: 10, step: 0.1 },
-      { id: 'q5', label: '5. Утренняя скованность (выраж.)', type: 'number', unit: '0–10', min: 0, max: 10, step: 0.1 },
-      { id: 'q6', label: '6. Утренняя скованность (длит.)',  type: 'number', unit: '0–10', min: 0, max: 10, step: 0.1, hint: '0=нет, 5=1 ч, 10=≥2 ч' },
+      { id: 'q1', label: '1. Усталость',                    type: 'number', unit: '0–10', min: 0, max: 10, step: 0.1, quickValues: [0, 2, 4, 6, 8, 10] },
+      { id: 'q2', label: '2. Боль в шее/спине/тазобедрен.', type: 'number', unit: '0–10', min: 0, max: 10, step: 0.1, quickValues: [0, 2, 4, 6, 8, 10] },
+      { id: 'q3', label: '3. Боль/припухлость суставов',     type: 'number', unit: '0–10', min: 0, max: 10, step: 0.1, quickValues: [0, 2, 4, 6, 8, 10] },
+      { id: 'q4', label: '4. Дискомфорт при прикосновении',  type: 'number', unit: '0–10', min: 0, max: 10, step: 0.1, quickValues: [0, 2, 4, 6, 8, 10] },
+      { id: 'q5', label: '5. Утренняя скованность (выраж.)', type: 'number', unit: '0–10', min: 0, max: 10, step: 0.1, quickValues: [0, 2, 4, 6, 8, 10] },
+      { id: 'q6', label: '6. Утренняя скованность (длит.)',  type: 'number', unit: '0–10', min: 0, max: 10, step: 0.1, hint: '0=нет, 5=1 ч, 10=≥2 ч', quickValues: [0, 2, 4, 6, 8, 10] },
     ],
     compute: (v) => {
       const a = Number(v.q1), b = Number(v.q2), c = Number(v.q3), d = Number(v.q4);
@@ -4788,7 +4790,7 @@ Boolean-критерии — все ≤ 1: TJC, SJC, CRP, VAS_pat. Более с
   'aspects': {
     kind: 'calculator',
     inputs: [
-      { id: 'lost', label: 'Сколько из 10 регионов с ранними ишемическими изменениями?', type: 'number', min: 0, max: 10, step: 1, hint: 'Регионы: M1–M6, C, L, IC, I' },
+      { id: 'lost', label: 'Сколько из 10 регионов с ранними ишемическими изменениями?', type: 'number', min: 0, max: 10, step: 1, hint: 'Регионы: M1–M6, C, L, IC, I', quickValues: [0, 2, 4, 6, 8, 10] },
     ],
     compute: (v) => {
       const lost = Math.min(Math.max(Number(v.lost), 0), 10);
@@ -4854,9 +4856,9 @@ Boolean-критерии — все ≤ 1: TJC, SJC, CRP, VAS_pat. Более с
   'naegele': {
     kind: 'calculator',
     inputs: [
-      { id: 'lmpY', label: 'Год LMP',  type: 'number', min: 2000, max: 2100, step: 1 },
-      { id: 'lmpM', label: 'Месяц LMP', type: 'number', min: 1, max: 12, step: 1 },
-      { id: 'lmpD', label: 'День LMP',  type: 'number', min: 1, max: 31, step: 1 },
+      { id: 'lmpY', label: 'Год LMP',  type: 'number', min: 2000, max: 2100, step: 1, quickValues: [2024, 2025, 2026] },
+      { id: 'lmpM', label: 'Месяц LMP', type: 'number', min: 1, max: 12, step: 1, quickValues: [1, 3, 5, 7, 9, 11] },
+      { id: 'lmpD', label: 'День LMP',  type: 'number', min: 1, max: 31, step: 1, quickValues: [1, 7, 14, 21, 28] },
     ],
     compute: (v) => {
       const y = Number(v.lmpY), m = Number(v.lmpM), d = Number(v.lmpD);
@@ -4909,12 +4911,12 @@ Boolean-критерии — все ≤ 1: TJC, SJC, CRP, VAS_pat. Более с
   'lille': {
     kind: 'calculator',
     inputs: [
-      { id: 'age',  label: 'Возраст',                 type: 'number', unit: 'лет', min: 18, max: 99, step: 1 },
-      { id: 'alb',  label: 'Альбумин (день 0)',       type: 'number', unit: 'г/л', min: 0, step: 0.1 },
-      { id: 'bil0', label: 'Билирубин (день 0)',      type: 'number', unit: 'мкмоль/л', min: 0, step: 0.1 },
-      { id: 'bil7', label: 'Билирубин (день 7)',      type: 'number', unit: 'мкмоль/л', min: 0, step: 0.1 },
-      { id: 'ck',   label: 'Креатинин',               type: 'number', unit: 'мкмоль/л', min: 0, step: 0.1 },
-      { id: 'pt',   label: 'ПВ (с)',                   type: 'number', unit: 'сек', min: 0, step: 0.1 },
+      { id: 'age',  label: 'Возраст',                 type: 'number', unit: 'лет', min: 18, max: 99, step: 1, quickValues: [35, 45, 55, 65] },
+      { id: 'alb',  label: 'Альбумин (день 0)',       type: 'number', unit: 'г/л', min: 0, step: 0.1, quickValues: [20, 25, 30, 35] },
+      { id: 'bil0', label: 'Билирубин (день 0)',      type: 'number', unit: 'мкмоль/л', min: 0, step: 0.1, quickValues: [100, 200, 300, 500] },
+      { id: 'bil7', label: 'Билирубин (день 7)',      type: 'number', unit: 'мкмоль/л', min: 0, step: 0.1, quickValues: [80, 150, 250, 400] },
+      { id: 'ck',   label: 'Креатинин',               type: 'number', unit: 'мкмоль/л', min: 0, step: 0.1, quickValues: [80, 120, 180, 250] },
+      { id: 'pt',   label: 'ПВ (с)',                   type: 'number', unit: 'сек', min: 0, step: 0.1, quickValues: [13, 16, 20, 25] },
     ],
     compute: (v) => {
       const age = Number(v.age);
@@ -5061,8 +5063,8 @@ Boolean-критерии — все ≤ 1: TJC, SJC, CRP, VAS_pat. Более с
   'nt-probnp': {
     kind: 'calculator',
     inputs: [
-      { id: 'age', label: 'Возраст', type: 'number', unit: 'лет', min: 18, max: 110, step: 1 },
-      { id: 'val', label: 'NT-proBNP', type: 'number', unit: 'пг/мл', min: 0, step: 1 },
+      { id: 'age', label: 'Возраст', type: 'number', unit: 'лет', min: 18, max: 110, step: 1, quickValues: [40, 55, 65, 75, 85] },
+      { id: 'val', label: 'NT-proBNP', type: 'number', unit: 'пг/мл', min: 0, step: 1, quickValues: [150, 300, 900, 1800, 5000] },
     ],
     compute: (v) => {
       const age = Number(v.age), x = Number(v.val);
@@ -5138,7 +5140,7 @@ Boolean-критерии — все ≤ 1: TJC, SJC, CRP, VAS_pat. Более с
   'pasi': {
     kind: 'calculator',
     inputs: [
-      { id: 'val', label: 'Значение PASI (рассчитано клиницистом)', type: 'number', min: 0, max: 72, step: 0.1 },
+      { id: 'val', label: 'Значение PASI (рассчитано клиницистом)', type: 'number', min: 0, max: 72, step: 0.1, quickValues: [2, 5, 10, 15, 25, 40] },
     ],
     compute: (v) => {
       const x = Number(v.val);

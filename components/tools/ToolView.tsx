@@ -349,86 +349,16 @@ export default function ToolView({ toolId }: { toolId: string }) {
 
 /* ════════════════ Calculator body ════════════════ */
 
-function CalculatorBody({ inputs, values, setValues, result, presets }: {
+function CalculatorBody({ inputs, values, setValues, result }: {
   inputs: ToolInput[];
   values: Record<string, number | boolean | string>;
   setValues: React.Dispatch<React.SetStateAction<Record<string, number | boolean | string>>>;
   result: { value: string; unit?: string; interpretation: string; color: string } | null;
-  presets?: Preset[];
+  presets?: Preset[]; // kept in signature for back-compat (unused)
 }) {
-  const applyPreset = (preset: Preset) => {
-    setValues((prev) => ({ ...prev, ...preset.values }));
-  };
-  const resetAll = () => {
-    const cleared: Record<string, number | boolean | string> = {};
-    for (const inp of inputs) {
-      if (inp.type === 'checkbox') cleared[inp.id] = false;
-      else if (inp.type === 'select' && inp.options?.[0]) cleared[inp.id] = inp.options[0].value;
-      else if (inp.type === 'number') cleared[inp.id] = '' as unknown as number;
-    }
-    setValues(cleared);
-  };
-
   return (
     <div>
-      {/* Presets row */}
-      {presets && presets.length > 0 && (
-        <div style={{ marginBottom: 18 }}>
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10,
-          }}>
-            <span style={{
-              fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-              color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.08em',
-            }}>
-              Быстрый пример
-            </span>
-            <button
-              onClick={resetAll}
-              style={{
-                marginLeft: 'auto',
-                fontFamily: 'var(--font-body)', fontSize: 11, fontWeight: 500,
-                color: '#9CA3AF', background: 'transparent',
-                border: 'none', cursor: 'pointer', padding: '2px 6px',
-                borderRadius: 6,
-              }}
-              onMouseEnter={(e) => { e.currentTarget.style.color = '#1A1A1A'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.color = '#9CA3AF'; }}
-              title="Очистить все поля"
-            >
-              Очистить
-            </button>
-          </div>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-            {presets.map((preset, i) => (
-              <button
-                key={i}
-                onClick={() => applyPreset(preset)}
-                style={{
-                  padding: '6px 12px',
-                  background: '#F5F6F8',
-                  color: '#1A1A1A',
-                  border: 'none', borderRadius: 999,
-                  cursor: 'pointer',
-                  fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 500,
-                  transition: 'background 150ms',
-                  display: 'inline-flex', alignItems: 'center', gap: 4,
-                }}
-                onMouseEnter={(e) => { e.currentTarget.style.background = '#E8E9ED'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = '#F5F6F8'; }}
-              >
-                <svg width={11} height={11} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="13 17 18 12 13 7"/>
-                  <polyline points="6 17 11 12 6 7"/>
-                </svg>
-                {preset.label}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
         {inputs.map((inp) => (
           <InputField
             key={inp.id}
@@ -898,6 +828,8 @@ function InputField({ input, value, onChange }: {
     );
   }
 
+  // Number input — with quick-value chips below
+  const currentNum = typeof value === 'number' && !isNaN(value) ? value : null;
   return (
     <div>
       <LabelWithHint
@@ -930,6 +862,48 @@ function InputField({ input, value, onChange }: {
         onFocus={(e) => { e.currentTarget.style.background = '#E8E9ED'; }}
         onBlur={(e) => { e.currentTarget.style.background = '#F5F6F8'; }}
       />
+      {input.quickValues && input.quickValues.length > 0 && (
+        <div style={{
+          display: 'flex', flexWrap: 'wrap', gap: 4,
+          marginTop: 6,
+        }}>
+          {input.quickValues.map((qv) => {
+            const isActive = currentNum === qv;
+            return (
+              <button
+                key={qv}
+                type="button"
+                onClick={() => onChange(qv)}
+                style={{
+                  padding: '3px 10px',
+                  background: isActive ? '#1A1A1A' : '#FFFFFF',
+                  color: isActive ? '#FFFFFF' : '#6B7280',
+                  border: `1px solid ${isActive ? '#1A1A1A' : '#E5E7EB'}`,
+                  borderRadius: 999,
+                  cursor: 'pointer',
+                  fontFamily: 'var(--font-mono)', fontSize: 11.5, fontWeight: 600,
+                  transition: 'all 120ms',
+                  lineHeight: 1.4,
+                }}
+                onMouseEnter={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.background = '#F5F6F8';
+                    e.currentTarget.style.borderColor = '#D1D5DB';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.background = '#FFFFFF';
+                    e.currentTarget.style.borderColor = '#E5E7EB';
+                  }
+                }}
+              >
+                {qv}
+              </button>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
