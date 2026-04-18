@@ -477,6 +477,7 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
         ) : active.kind === 'selfcheck' ? (
           <InlineQuiz
             source={active.body}
+            courseId={courseId}
             onNavigateToTab={(shortOrIcon) => {
               const target = tabs.find(
                 (t) => t.short.toLowerCase() === shortOrIcon.toLowerCase() ||

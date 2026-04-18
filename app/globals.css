@@ -687,30 +687,14 @@ main:has(.stats-page) {
 }
 
 /* ── Blockquote = warning callout ── */
-.lesson-content.tool-info blockquote {
-  margin: 14px 0;
-  padding: 14px 18px 14px 42px;
-  background: #FFF7ED;
-  border-left: 3px solid #F59E0B;
-  border-radius: 10px;
-  color: #78350F;
-  font-size: 14px;
-  line-height: 1.6;
-  position: relative;
-}
-.lesson-content.tool-info blockquote::before {
-  content: '⚠';
-  position: absolute;
-  left: 14px;
-  top: 12px;
-  font-size: 18px;
-  color: #F59E0B;
-}
-.lesson-content.tool-info blockquote p {
-  margin: 0;
-  color: #78350F;
-  font-size: 14px;
-}
+/*
+ * The old generic-blockquote callout above was superseded by the proper
+ * .callout-* classes from the course layout. Tool info markdown now goes
+ * through a blockquote React component that assigns .callout-warning /
+ * .callout-info etc., so we no longer need a default ::before emoji on
+ * <blockquote>. Kept intentionally empty here so tool and course callouts
+ * render identically.
+ */
 
 /* ── Divider ── */
 .lesson-content.tool-info hr {

@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, Children, isValidElement, cloneElement, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { CATALOG_TOOLS } from '@/lib/tools-catalog';
-import { getRunner, findBand, type ToolInput, type Preset } from '@/lib/tools-runners';
+import { getRunner, findBand, type ToolInput, type Preset, type CalculatorResult, type ResultScaleSegment } from '@/lib/tools-runners';
 import { useAppStore } from '@/lib/store';
 import { ArrowLeft } from '@/components/icons';
 
@@ -172,7 +172,7 @@ export default function ToolView({ toolId }: { toolId: string }) {
     return values[inp.id] !== undefined;
   });
 
-  let result: { value: string; unit?: string; interpretation: string; color: string } | null = null;
+  let result: CalculatorResult | null = null;
   if (ready) {
     if (runner.kind === 'calculator') {
       try { result = runner.compute(values); } catch { result = null; }
@@ -192,6 +192,22 @@ export default function ToolView({ toolId }: { toolId: string }) {
         unit: `из ${runner.maxScore}`,
         interpretation: `${band.label} · ${band.description}`,
         color: band.color,
+        // Auto-build a visual scale from the bands array
+        scale: {
+          segments: runner.bands.map((b) => ({
+            min: b.min,
+            max: b.max,
+            label: b.label,
+            color: b.color,
+          })),
+          current: total,
+          unit: `из ${runner.maxScore}`,
+        },
+        details: band.details,
+        actions: band.actions,
+        caveats: runner.caveats,
+        related: runner.related,
+        relatedCourses: runner.relatedCourses,
       };
     }
   }
@@ -256,7 +272,7 @@ export default function ToolView({ toolId }: { toolId: string }) {
           {active.kind === 'info' && active.body && (
             <div className="lesson-content tool-info">
               <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
-                {active.body}
+                {preprocessToolContent(active.body)}
               </ReactMarkdown>
             </div>
           )}
@@ -390,9 +406,79 @@ function withSexBadges(children: React.ReactNode): React.ReactNode {
 }
 
 /**
- * ReactMarkdown component overrides. Only post-processing: wrapping ♂/♀ in
- * coloured badges inside paragraphs, lists, cells, strong, em. All visual
- * styling remains in globals.css (.lesson-content.tool-info).
+ * Callout helpers — keep the visual language identical to course pages.
+ * Source paragraphs that begin with ℹ, ⚠, ✓, 💡, 🎯, 📷 are transformed into
+ * blockquotes and then rendered with the same .callout-* classes used in
+ * lesson-content.
+ */
+const CALLOUT_EMOJI_RE = /^(ℹ|⚠️|⚠|📷|✓|✅|🎯|💡)\s*/;
+
+/** Convert paragraphs that start with a callout emoji into blockquotes. */
+function preprocessToolContent(md: string): string {
+  if (!md) return md;
+  const lines = md.split('\n');
+  const out: string[] = [];
+  let i = 0;
+  while (i < lines.length) {
+    const line = lines[i];
+    const m = line.match(/^([ℹ⚠✓✅🎯💡📷]|⚠️)\s*(.*)$/);
+    // Only convert if this paragraph isn't already a blockquote / list / heading
+    if (m && !line.startsWith('>') && !line.startsWith('#') && !line.startsWith('-')) {
+      // Gather the paragraph (consecutive non-empty lines)
+      const paraLines = [m[0]];
+      i++;
+      while (i < lines.length && lines[i].trim() !== '' && !lines[i].startsWith('#')
+             && !lines[i].startsWith('|') && !lines[i].match(/^[ℹ⚠✓✅🎯💡📷]/) ) {
+        paraLines.push(lines[i]);
+        i++;
+      }
+      for (const p of paraLines) out.push('> ' + p);
+      out.push(''); // blank line after blockquote
+      continue;
+    }
+    out.push(line);
+    i++;
+  }
+  return out.join('\n');
+}
+
+/** Strip leading emoji/marker from the first text node of a children tree. */
+function stripLeadingEmoji(children: ReactNode): ReactNode {
+  const arr = Children.toArray(children);
+  for (let idx = 0; idx < arr.length; idx++) {
+    const el = arr[idx];
+    if (typeof el === 'string') {
+      const stripped = el.replace(CALLOUT_EMOJI_RE, '');
+      if (stripped !== el) { arr[idx] = stripped; return arr; }
+      if (el.trim() === '') continue;
+      return arr;
+    }
+    if (isValidElement(el)) {
+      const props = (el as { props: { children: ReactNode } }).props;
+      const newChildren = stripLeadingEmoji(props.children);
+      if (newChildren !== props.children) {
+        arr[idx] = cloneElement(el as React.ReactElement<{ children?: ReactNode }>, {}, newChildren);
+        return arr;
+      }
+      return arr;
+    }
+  }
+  return arr;
+}
+
+function extractTextFromChildren(node: ReactNode): string {
+  if (typeof node === 'string') return node;
+  if (Array.isArray(node)) return node.map(extractTextFromChildren).join('');
+  if (node && typeof node === 'object' && 'props' in node) {
+    return extractTextFromChildren((node as { props: { children: ReactNode } }).props.children);
+  }
+  return '';
+}
+
+/**
+ * ReactMarkdown component overrides. Post-processing: wrap ♂/♀ in coloured
+ * badges; convert emoji-prefixed blockquotes into styled callouts matching
+ * the course layout. All visual styling lives in globals.css (.callout-*).
  */
 const mdComponents = {
   p: ({ children }: { children?: React.ReactNode }) => <p>{withSexBadges(children)}</p>,
@@ -401,6 +487,22 @@ const mdComponents = {
   th: ({ children }: { children?: React.ReactNode }) => <th>{withSexBadges(children)}</th>,
   strong: ({ children }: { children?: React.ReactNode }) => <strong>{withSexBadges(children)}</strong>,
   em: ({ children }: { children?: React.ReactNode }) => <em>{withSexBadges(children)}</em>,
+  blockquote: ({ children }: { children?: React.ReactNode }) => {
+    const text = extractTextFromChildren(children).trim();
+    let className = 'callout';
+    let icon = '', label = '';
+    if (text.startsWith('ℹ')) { className += ' callout-info'; icon = 'ℹ'; label = 'Информация'; }
+    else if (text.startsWith('⚠')) { className += ' callout-warning'; icon = '⚠'; label = 'Важно'; }
+    else if (text.startsWith('✓') || text.startsWith('✅')) { className += ' callout-success'; icon = '✓'; label = 'Главное'; }
+    else if (text.startsWith('🎯')) { className += ' callout-goal'; icon = '🎯'; label = 'Цель'; }
+    else if (text.startsWith('💡')) { className += ' callout-tip'; icon = '💡'; label = 'Совет'; }
+    return (
+      <blockquote className={className}>
+        {icon && (<div className="callout-label"><span>{label}</span></div>)}
+        <div className="callout-body">{stripLeadingEmoji(children)}</div>
+      </blockquote>
+    );
+  },
 };
 
 /* ════════════════ Calculator body ════════════════ */
@@ -409,7 +511,7 @@ function CalculatorBody({ inputs, values, setValues, result }: {
   inputs: ToolInput[];
   values: Record<string, number | boolean | string>;
   setValues: React.Dispatch<React.SetStateAction<Record<string, number | boolean | string>>>;
-  result: { value: string; unit?: string; interpretation: string; color: string } | null;
+  result: CalculatorResult | null;
   presets?: Preset[]; // kept in signature for back-compat (unused)
 }) {
   return (
@@ -425,46 +527,406 @@ function CalculatorBody({ inputs, values, setValues, result }: {
         ))}
       </div>
 
-      {result && (
-        <div style={{
-          marginTop: 24,
-          padding: '20px 24px',
-          borderRadius: 16,
-          background: `${result.color}0F`,
-          borderLeft: `4px solid ${result.color}`,
+      {result && <ResultCard result={result} />}
+    </div>
+  );
+}
+
+/* ════════════════ Rich result card ════════════════ */
+
+function ResultCard({ result }: { result: CalculatorResult }) {
+  const {
+    value, unit, interpretation, color,
+    details, actions, differential, caveats, scale, related, relatedCourses,
+  } = result;
+  const openTool = useAppStore((s) => s.openTool);
+  const openCourse = useAppStore((s) => s.openCourse);
+  const setShowLearning = useAppStore((s) => s.setShowLearning);
+  // Clicking a related course must also leave the tools view, otherwise
+  // the store sets currentCourseId but the page stays on the tool tree
+  // because showTools/activeToolId still take priority.
+  const openRelatedCourse = (id: string) => {
+    setShowLearning(true);
+    openCourse(id);
+  };
+
+  return (
+    <div style={{
+      marginTop: 24,
+      padding: '20px 24px',
+      borderRadius: 16,
+      background: `${color}0F`,
+      borderLeft: `4px solid ${color}`,
+    }}>
+      {/* Headline */}
+      <p style={{
+        fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
+        color, textTransform: 'uppercase', letterSpacing: '0.1em',
+        margin: 0, marginBottom: 10,
+      }}>
+        Результат
+      </p>
+      <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, flexWrap: 'wrap' }}>
+        <span style={{
+          fontFamily: 'var(--font-display)', fontSize: 44, fontWeight: 800,
+          color, letterSpacing: '-0.02em', lineHeight: 1,
         }}>
-          <p style={{
-            fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-            color: result.color, textTransform: 'uppercase', letterSpacing: '0.1em',
-            margin: 0, marginBottom: 10,
+          {value}
+        </span>
+        {unit && (
+          <span style={{
+            fontFamily: 'var(--font-body)', fontSize: 16, color: '#6B7280',
+            fontWeight: 500,
           }}>
-            Результат
-          </p>
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, flexWrap: 'wrap' }}>
-            <span style={{
-              fontFamily: 'var(--font-display)', fontSize: 44, fontWeight: 800,
-              color: result.color, letterSpacing: '-0.02em', lineHeight: 1,
-            }}>
-              {result.value}
-            </span>
-            {result.unit && (
-              <span style={{
-                fontFamily: 'var(--font-body)', fontSize: 16, color: '#6B7280',
-                fontWeight: 500,
-              }}>
-                {result.unit}
-              </span>
-            )}
-          </div>
-          <p style={{
-            marginTop: 14,
-            fontFamily: 'var(--font-body)', fontSize: 14, color: '#1A1A1A',
-            lineHeight: 1.6, fontWeight: 500, margin: 0,
-          }}>
-            {result.interpretation}
-          </p>
+            {unit}
+          </span>
+        )}
+      </div>
+      <p style={{
+        marginTop: 14,
+        fontFamily: 'var(--font-body)', fontSize: 14, color: '#1A1A1A',
+        lineHeight: 1.6, fontWeight: 500, margin: 0,
+      }}>
+        {interpretation}
+      </p>
+
+      {/* Visual band scale */}
+      {scale && scale.segments.length > 0 && (
+        <div style={{ marginTop: 20 }}>
+          <ResultScale segments={scale.segments} current={scale.current} unit={scale.unit ?? unit} />
         </div>
       )}
+
+      {/* Longer clinical narrative */}
+      {details && (
+        <ResultSection title="Клиническая интерпретация" icon="info">
+          <p style={{ margin: 0, color: '#374151', fontSize: 13.5, lineHeight: 1.55 }}>
+            {details}
+          </p>
+        </ResultSection>
+      )}
+
+      {/* Recommended next actions */}
+      {actions && actions.length > 0 && (
+        <ResultSection title="Дальнейшие действия" icon="arrow">
+          <ul style={{ margin: 0, paddingLeft: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 6 }}>
+            {actions.map((a, i) => (
+              <li key={i} style={{
+                display: 'flex', gap: 8, alignItems: 'flex-start',
+                color: '#374151', fontSize: 13.5, lineHeight: 1.5,
+              }}>
+                <span style={{
+                  flexShrink: 0, marginTop: 7,
+                  width: 5, height: 5, borderRadius: '50%',
+                  background: color,
+                }} />
+                <span>{a}</span>
+              </li>
+            ))}
+          </ul>
+        </ResultSection>
+      )}
+
+      {/* Differential / mnemonic breakdown (MUDPILES etc.) */}
+      {differential && differential.length > 0 && (
+        <ResultSection title="Дифференциальный диагноз" icon="list">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+            {differential.map((d, i) => (
+              <div key={i} style={{
+                display: 'grid', gridTemplateColumns: '20px 1fr', gap: 10,
+                padding: '4px 0',
+              }}>
+                <span style={{
+                  fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 700,
+                  color, lineHeight: 1.5,
+                }}>
+                  {d.term}
+                </span>
+                <span style={{ color: '#374151', fontSize: 13.5, lineHeight: 1.5 }}>
+                  {d.desc}
+                </span>
+              </div>
+            ))}
+          </div>
+        </ResultSection>
+      )}
+
+      {/* Caveats / pitfalls */}
+      {caveats && caveats.length > 0 && (
+        <ResultSection title="Важно учесть" icon="warn">
+          <ul style={{ margin: 0, paddingLeft: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 6 }}>
+            {caveats.map((c, i) => (
+              <li key={i} style={{
+                display: 'flex', gap: 8, alignItems: 'flex-start',
+                color: '#374151', fontSize: 13.5, lineHeight: 1.5,
+              }}>
+                <span style={{
+                  flexShrink: 0, marginTop: 5, color: '#F59E0B', fontSize: 12, fontWeight: 700,
+                }}>⚠</span>
+                <span>{c}</span>
+              </li>
+            ))}
+          </ul>
+        </ResultSection>
+      )}
+
+      {/* Related tools */}
+      {related && related.length > 0 && (
+        <ResultSection title="Связанные инструменты" icon="link">
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+            {related.map((r) => (
+              <button
+                key={r.id}
+                onClick={() => openTool(r.id)}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 6,
+                  padding: '5px 12px',
+                  background: '#FFFFFF', color: '#1A1A1A',
+                  border: '1px solid #E5E7EB', borderRadius: 999,
+                  cursor: 'pointer',
+                  fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 500,
+                  transition: 'background 150ms, border-color 150ms',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = '#F5F6F8';
+                  e.currentTarget.style.borderColor = '#D1D5DB';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = '#FFFFFF';
+                  e.currentTarget.style.borderColor = '#E5E7EB';
+                }}
+              >
+                {r.title}
+                <svg width={11} height={11} viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">
+                  <line x1={5} y1={12} x2={19} y2={12} />
+                  <polyline points="12 5 19 12 12 19" />
+                </svg>
+              </button>
+            ))}
+          </div>
+        </ResultSection>
+      )}
+
+      {/* Related courses — only rendered when the tool-runner author
+          explicitly listed course ids. Never auto-generated, so we never
+          send the user to a lesson that doesn't actually cover this tool. */}
+      {relatedCourses && relatedCourses.length > 0 && (
+        <ResultSection title="Связанные курсы" icon="book">
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+            {relatedCourses.slice(0, 3).map((c) => (
+              <button
+                key={c.id}
+                onClick={() => openRelatedCourse(c.id)}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 6,
+                  padding: '5px 12px',
+                  background: '#FFFFFF', color: '#1A1A1A',
+                  border: '1px solid #E5E7EB', borderRadius: 999,
+                  cursor: 'pointer',
+                  fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 500,
+                  transition: 'background 150ms, border-color 150ms',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = '#F5F6F8';
+                  e.currentTarget.style.borderColor = '#D1D5DB';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = '#FFFFFF';
+                  e.currentTarget.style.borderColor = '#E5E7EB';
+                }}
+              >
+                {c.title}
+                <svg width={11} height={11} viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">
+                  <line x1={5} y1={12} x2={19} y2={12} />
+                  <polyline points="12 5 19 12 12 19" />
+                </svg>
+              </button>
+            ))}
+          </div>
+        </ResultSection>
+      )}
+    </div>
+  );
+}
+
+function ResultSection({ title, icon, children }: {
+  title: string;
+  icon: 'info' | 'arrow' | 'list' | 'warn' | 'link' | 'book';
+  children: React.ReactNode;
+}) {
+  const iconEl = {
+    info: <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><circle cx={12} cy={12} r={10} /><line x1={12} y1={16} x2={12} y2={12} /><line x1={12} y1={8} x2={12.01} y2={8} /></svg>,
+    arrow: <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg>,
+    list: <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><line x1={8} y1={6} x2={21} y2={6} /><line x1={8} y1={12} x2={21} y2={12} /><line x1={8} y1={18} x2={21} y2={18} /><line x1={3} y1={6} x2={3.01} y2={6} /><line x1={3} y1={12} x2={3.01} y2={12} /><line x1={3} y1={18} x2={3.01} y2={18} /></svg>,
+    warn: <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" /><line x1={12} y1={9} x2={12} y2={13} /><line x1={12} y1={17} x2={12.01} y2={17} /></svg>,
+    link: <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" /></svg>,
+    book: <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" /></svg>,
+  }[icon];
+
+  return (
+    <div style={{ marginTop: 18, paddingTop: 14, borderTop: '1px solid rgba(0,0,0,0.06)' }}>
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: 7,
+        marginBottom: 10,
+        color: '#6B7280',
+      }}>
+        {iconEl}
+        <span style={{
+          fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
+          textTransform: 'uppercase', letterSpacing: '0.08em',
+        }}>
+          {title}
+        </span>
+      </div>
+      {children}
+    </div>
+  );
+}
+
+/**
+ * Horizontal band scale with a marker for the current value.
+ *
+ * Segments may be continuous (e.g. BMI 18.5–25) or discrete integer bands
+ * (e.g. CHADS-VASc [0,0], [1,1], [2,9]). The algorithm auto-detects by
+ * checking that every finite min/max is an integer. In the discrete case
+ * each integer counts as one "slot" so single-point bands like [0,0] get
+ * visible width and the segments sum to 100 % of the bar — no gaps. For
+ * continuous scales segment width is simply (max − min).
+ */
+function ResultScale({ segments, current, unit }: {
+  segments: ResultScaleSegment[];
+  current: number;
+  unit?: string;
+}) {
+  if (!segments.length) return null;
+
+  /*
+   * Two distinct input conventions come in from runners:
+   *
+   *   (a) Non-overlapping discrete bands, e.g. CHA₂DS₂-VASc
+   *         {0,0}, {1,1}, {2,9}             → each integer inclusive on both ends
+   *
+   *   (b) Touching continuous cutoffs, e.g. MELD or BMI
+   *         {6,10}, {10,20}, {20,30}, …     → max of one == min of next
+   *
+   * Both are valid clinical notations. Internally we normalise to (a)'s
+   * semantics: each segment covers [min, max] inclusive. When consecutive
+   * segments touch at an integer boundary we decrement the earlier max by
+   * 1 so they don't double-count that integer.
+   */
+  const touchesIntegerNeighbour = (i: number) => {
+    if (i + 1 >= segments.length) return false;
+    const cur = segments[i];
+    const nxt = segments[i + 1];
+    if (!Number.isFinite(cur.max)) return false;
+    if (cur.max !== nxt.min) return false;
+    return Number.isInteger(cur.max) && Number.isInteger(nxt.min);
+  };
+  const normalised = segments.map((s, i) => ({
+    ...s,
+    max: touchesIntegerNeighbour(i) ? (s.max as number) - 1 : s.max,
+  }));
+
+  // Is every normalised segment's bound an integer? Governs the +1 rule.
+  const allInt = normalised.every((s) =>
+    Number.isInteger(s.min) && (!Number.isFinite(s.max) || Number.isInteger(s.max))
+  );
+
+  const finiteMax = normalised.reduce((acc, s) => {
+    if (Number.isFinite(s.max)) return Math.max(acc, s.max);
+    return acc;
+  }, -Infinity);
+  const finiteMin = normalised[0].min;
+  const spanMax = Number.isFinite(finiteMax) ? finiteMax : finiteMin + 10;
+
+  // Width helper. Integer bands get (max − min + 1); continuous bands get
+  // (max − min). Open-ended upper bounds clip to the effective max.
+  const segWidth = (s: ResultScaleSegment) => {
+    const hi = Number.isFinite(s.max) ? s.max : spanMax;
+    const raw = Math.max(hi - s.min, 0);
+    return allInt ? raw + 1 : raw;
+  };
+  const total = normalised.reduce((sum, s) => sum + segWidth(s), 0) || 1;
+
+  // Marker: discrete scales centre the mark inside the integer cell.
+  const markerOffset = allInt ? (current - finiteMin + 0.5) : (current - finiteMin);
+  const markerPct = Math.max(0, Math.min(100, (markerOffset / total) * 100));
+
+  // Marker is a clinical value — must align with its band regardless of
+  // marker width; compute using translateX instead of a fixed pixel offset.
+  return (
+    <div>
+      <div style={{
+        position: 'relative', height: 10, borderRadius: 999,
+        overflow: 'hidden', display: 'flex',
+        background: '#EEF0F4',
+      }}>
+        {normalised.map((s, i) => {
+          const w = (segWidth(s) / total) * 100;
+          return (
+            <div key={i} title={`${s.label} (${s.min}${Number.isFinite(s.max) ? (s.min === s.max ? '' : '–' + s.max) : '+'})`}
+              style={{ flex: `0 0 ${w}%`, background: s.color, opacity: 0.65 }} />
+          );
+        })}
+        {/* Marker — 4px wide, centred at markerPct via translateX. */}
+        <div style={{
+          position: 'absolute', top: -3, bottom: -3,
+          left: `${markerPct}%`,
+          width: 4, borderRadius: 2,
+          transform: 'translateX(-50%)',
+          background: '#1A1A1A',
+          boxShadow: '0 0 0 2px #FFFFFF',
+        }} />
+      </div>
+      {/*
+        Label row. The current-value label is absolutely positioned so it
+        sits directly below the marker. Min/max sit at the ends. When the
+        marker is close to an edge (≤ 12 % or ≥ 88 %) we suppress the near
+        edge label so the current-value text doesn't collide with it.
+      */}
+      <div style={{
+        position: 'relative',
+        marginTop: 6,
+        height: 14,
+        fontFamily: 'var(--font-mono)', fontSize: 10.5, color: '#9CA3AF',
+      }}>
+        {markerPct > 12 && (
+          <span style={{ position: 'absolute', left: 0, top: 0 }}>
+            {finiteMin}{unit ? ' ' + unit : ''}
+          </span>
+        )}
+        <span style={{
+          position: 'absolute',
+          left: `${markerPct}%`,
+          top: 0,
+          transform: 'translateX(-50%)',
+          color: '#374151', fontWeight: 700,
+          whiteSpace: 'nowrap',
+        }}>
+          {current}{unit ? ' ' + unit : ''}
+        </span>
+        {markerPct < 88 && (
+          <span style={{ position: 'absolute', right: 0, top: 0 }}>
+            {Number.isFinite(finiteMax) ? finiteMax : `${spanMax}+`}{unit ? ' ' + unit : ''}
+          </span>
+        )}
+      </div>
+      <div style={{
+        display: 'flex', flexWrap: 'wrap', gap: 10,
+        marginTop: 10,
+      }}>
+        {segments.map((s, i) => (
+          <div key={i} style={{
+            display: 'inline-flex', alignItems: 'center', gap: 6,
+            fontSize: 11.5, color: '#6B7280',
+          }}>
+            <span style={{ width: 8, height: 8, borderRadius: 2, background: s.color }} />
+            <span>{s.label}</span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

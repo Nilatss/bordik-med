@@ -1,21 +1,54 @@
 'use client';
 
-import { useMemo, useState, useRef, useEffect } from 'react';
+import React, {
+  useMemo, useState, useRef, useEffect, useCallback,
+  useDeferredValue, useTransition, startTransition,
+} from 'react';
+import { Virtuoso } from 'react-virtuoso';
+import { motion } from 'framer-motion';
 import { ArrowRight } from '@/components/icons';
-import { CATALOG_TOOLS, TOOL_CATEGORIES, groupBySubcategory, type CatalogTool } from '@/lib/tools-catalog';
-import { getRunner } from '@/lib/tools-runners';
+import { CATALOG_TOOLS, TOOL_CATEGORIES, type CatalogTool } from '@/lib/tools-catalog';
+import {
+  TOOL_META,
+  CATEGORY_COUNTS,
+  SUBCATEGORY_COUNTS,
+  COUNTRY_COUNTS,
+} from '@/lib/tool-meta';
 import { useAppStore } from '@/lib/store';
+import EmojiOrFlag from '@/components/ui/EmojiOrFlag';
 
-/* ════════════════ Filter popover ════════════════ */
+/* ════════════════════════════════════════════════════════════════
+   Types
+   ════════════════════════════════════════════════════════════════ */
 
 type FilterKey = 'cat' | 'sub' | 'cou' | null;
 
 interface FilterOption {
   value: string;
   count: number;
+  /** Optional leading glyph (e.g. country flag emoji) rendered before the label. */
+  flag?: string;
 }
 
-function FilterDropdown({
+/** One logical row in the virtualised list. Three kinds:
+ *  - category header  (h2 "Кардиология 42")
+ *  - subcategory header (small uppercase pill "ШКАЛЫ · 8")
+ *  - row of up to 3 cards
+ *
+ *  Rows also carry the enclosing category so we can build unique keys even
+ *  when the same subcategory name ("Депрессия") occurs in multiple categories.
+ */
+type Row =
+  | { kind: 'category'; category: string; count: number }
+  | { kind: 'subcategory'; category: string; subcategory: string; count: number }
+  | { kind: 'cards'; category: string; subcategory: string; tools: CatalogTool[] }
+  | { kind: 'empty' };
+
+/* ════════════════════════════════════════════════════════════════
+   Filter popover — memoised
+   ════════════════════════════════════════════════════════════════ */
+
+const FilterDropdown = React.memo(function FilterDropdown({
   label, icon, options, selected, onChange, open, onOpen, searchable = false,
 }: {
   label: string;
@@ -28,9 +61,9 @@ function FilterDropdown({
   searchable?: boolean;
 }) {
   const [q, setQ] = useState('');
+  const deferredQ = useDeferredValue(q);
   const ref = useRef<HTMLDivElement | null>(null);
 
-  // Close on outside click
   useEffect(() => {
     if (!open) return;
     const handler = (e: MouseEvent) => {
@@ -41,14 +74,16 @@ function FilterDropdown({
   }, [open, onOpen]);
 
   const count = selected.length;
-  const filtered = q.trim()
-    ? options.filter((o) => o.value.toLowerCase().includes(q.trim().toLowerCase()))
-    : options;
+  const filteredOptions = useMemo(() => {
+    if (!deferredQ.trim()) return options;
+    const needle = deferredQ.trim().toLowerCase();
+    return options.filter((o) => o.value.toLowerCase().includes(needle));
+  }, [deferredQ, options]);
 
-  const toggle = (v: string) => {
+  const toggle = useCallback((v: string) => {
     if (selected.includes(v)) onChange(selected.filter((s) => s !== v));
     else onChange([...selected, v]);
-  };
+  }, [selected, onChange]);
 
   return (
     <div ref={ref} style={{ position: 'relative' }}>
@@ -93,7 +128,6 @@ function FilterDropdown({
           display: 'flex', flexDirection: 'column',
           overflow: 'hidden',
         }}>
-          {/* Optional search */}
           {searchable && (
             <div style={{
               padding: '10px 12px',
@@ -117,16 +151,15 @@ function FilterDropdown({
             </div>
           )}
 
-          {/* Options list */}
           <div style={{ flex: 1, overflowY: 'auto', padding: '6px 6px' }}>
-            {filtered.length === 0 ? (
+            {filteredOptions.length === 0 ? (
               <div style={{
                 padding: 20, textAlign: 'center',
                 fontFamily: 'var(--font-body)', fontSize: 12, color: '#9CA3AF',
               }}>
                 Ничего не найдено
               </div>
-            ) : filtered.map((opt) => {
+            ) : filteredOptions.map((opt) => {
               const checked = selected.includes(opt.value);
               return (
                 <button
@@ -159,8 +192,15 @@ function FilterDropdown({
                       </svg>
                     )}
                   </span>
-                  <span style={{ flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    {opt.value}
+                  <span style={{
+                    flex: 1, minWidth: 0,
+                    display: 'inline-flex', alignItems: 'center', gap: 8,
+                    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                  }}>
+                    {opt.flag && <EmojiOrFlag emoji={opt.flag} size={16} />}
+                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {opt.value}
+                    </span>
                   </span>
                   <span style={{
                     fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 600,
@@ -174,7 +214,6 @@ function FilterDropdown({
             })}
           </div>
 
-          {/* Footer */}
           {selected.length > 0 && (
             <div style={{
               padding: '8px 12px',
@@ -203,57 +242,295 @@ function FilterDropdown({
       )}
     </div>
   );
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Memoised ToolCard. Drops onOpen prop — pulls openTool from the
+   store with a shallow selector so parent re-renders don't break memo.
+   ════════════════════════════════════════════════════════════════ */
+
+const ToolCard = React.memo(function ToolCard({ tool }: { tool: CatalogTool }) {
+  const openTool = useAppStore((s) => s.openTool);
+  const meta = TOOL_META[tool.id];
+  const available = tool.available || (meta?.hasRunner ?? false);
+
+  const handleClick = useCallback(() => {
+    if (available) openTool(tool.id);
+  }, [available, openTool, tool.id]);
+
+  // Warm the ToolView chunk on hover so clicking feels instant.
+  const handlePrefetch = useCallback(() => {
+    if (!available) return;
+    import('@/components/tools/ToolView').catch(() => {});
+    // also warm the runners module
+    import('@/lib/tools-runners').catch(() => {});
+  }, [available]);
+
+  return (
+    <motion.button
+      onClick={handleClick}
+      onMouseEnter={(e) => {
+        handlePrefetch();
+        if (available) e.currentTarget.style.background = '#F0F2F5';
+      }}
+      onFocus={handlePrefetch}
+      onMouseLeave={(e) => { e.currentTarget.style.background = '#F5F6F8'; }}
+      disabled={!available}
+      // Fade-in on mount only. No stagger delay because Virtuoso
+      // mounts/unmounts rows during scroll and staggered re-entry
+      // would look janky. Single card-level fade feels tactile.
+      // The final opacity reflects the disabled state — framer-motion's
+      // animate prop wins over CSS opacity, so we must pass it here too.
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: available ? 1 : 0.48, y: 0 }}
+      transition={{ duration: 0.28, ease: [0.05, 0.7, 0.1, 1] }}
+      style={{
+        background: '#F5F6F8',
+        borderRadius: 'var(--md-sys-shape-corner-extra-large)',
+        border: 'none',
+        padding: 'var(--space-5)', textAlign: 'left',
+        cursor: available ? 'pointer' : 'not-allowed',
+        opacity: available ? 1 : 0.48,
+        position: 'relative', overflow: 'hidden', minHeight: 160,
+        display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+        transition: 'background 300ms cubic-bezier(0.22,1,0.36,1)',
+        // Browser skips layout/paint for off-screen cards — zero visual diff.
+        contentVisibility: 'auto',
+        containIntrinsicSize: '160px 220px',
+      } as React.CSSProperties}
+    >
+      {!available && (
+        <div style={{
+          position: 'absolute', top: 12, right: 12, zIndex: 2,
+          display: 'inline-flex', alignItems: 'center', gap: 6,
+          padding: '4px 10px',
+          borderRadius: 999,
+          background: '#1A1A1A',
+          color: '#FFFFFF',
+          fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
+          letterSpacing: '0.06em', textTransform: 'uppercase',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
+        }}>
+          <svg width={10} height={10} viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" />
+            <path d="M7 11V7a5 5 0 0110 0v4" />
+          </svg>
+          Скоро
+        </div>
+      )}
+
+      <div style={{ marginBottom: 'var(--space-3)', position: 'relative', zIndex: 1 }}>
+        <span style={{
+          display: 'inline-flex', alignItems: 'center', gap: 'var(--space-1)',
+          padding: '4px var(--space-2)', borderRadius: 'var(--md-sys-shape-corner-full)',
+          background: '#FFFFFF',
+          boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
+          fontFamily: 'var(--font-mono)',
+          fontSize: '0.625rem', fontWeight: 500,
+          color: 'var(--md-sys-color-on-surface-variant)',
+        }}>
+          {tool.subcategory}
+        </span>
+      </div>
+
+      <div style={{ position: 'relative', zIndex: 1, flex: 1 }}>
+        <h3 style={{
+          fontFamily: 'var(--font-display)', fontSize: 'var(--text-base)', fontWeight: 700,
+          color: 'var(--md-sys-color-on-surface)',
+          marginBottom: 'var(--space-1)', lineHeight: 1.25,
+        }}>
+          {tool.title}
+        </h3>
+        <p style={{
+          fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)',
+          color: 'var(--md-sys-color-on-surface-variant)', lineHeight: 1.4,
+          display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical',
+          overflow: 'hidden',
+        }}>
+          {tool.description}
+        </p>
+      </div>
+
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: 'var(--space-1)',
+        marginTop: 'var(--space-3)', position: 'relative', zIndex: 1,
+      }}>
+        <span style={{
+          fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', fontWeight: 500,
+          color: available ? 'var(--md-sys-color-on-surface)' : '#9CA3AF',
+        }}>
+          {available ? 'Открыть инструмент' : 'В разработке'}
+        </span>
+        {available && <ArrowRight size={14} color="var(--md-sys-color-on-surface)" />}
+      </div>
+    </motion.button>
+  );
+});
+
+/* ════════════════════════════════════════════════════════════════
+   Build a flat row model from the filtered/grouped tools.
+   One row of up to 3 cards → matches the visual 3-col grid.
+   ════════════════════════════════════════════════════════════════ */
+
+const COLS = 3;
+
+function buildRows(
+  byCategory: { category: string; tools: CatalogTool[] }[]
+): Row[] {
+  const rows: Row[] = [];
+  for (const { category, tools } of byCategory) {
+    rows.push({ kind: 'category', category, count: tools.length });
+
+    // Group by subcategory, preserving first-seen order (for stable UI).
+    const order: string[] = [];
+    const groups = new Map<string, CatalogTool[]>();
+    for (const t of tools) {
+      let arr = groups.get(t.subcategory);
+      if (!arr) {
+        arr = [];
+        groups.set(t.subcategory, arr);
+        order.push(t.subcategory);
+      }
+      arr.push(t);
+    }
+
+    for (const sub of order) {
+      const arr = groups.get(sub)!;
+      rows.push({ kind: 'subcategory', category, subcategory: sub, count: arr.length });
+      for (let i = 0; i < arr.length; i += COLS) {
+        rows.push({ kind: 'cards', category, subcategory: sub, tools: arr.slice(i, i + COLS) });
+      }
+    }
+  }
+  return rows;
 }
 
-/* ════════════════ Main page ════════════════ */
+/* ════════════════════════════════════════════════════════════════
+   Row renderer for Virtuoso.
+   ════════════════════════════════════════════════════════════════ */
+
+function RenderedRow({ row }: { row: Row }) {
+  if (row.kind === 'empty') return null;
+
+  if (row.kind === 'category') {
+    return (
+      <div style={{ paddingTop: 14, paddingBottom: 2 }}>
+        <h2 style={{
+          fontFamily: 'var(--font-display)', fontSize: 17, fontWeight: 700,
+          color: '#1A1A1A', marginBottom: 18, letterSpacing: '-0.01em',
+          display: 'flex', alignItems: 'baseline', gap: 8,
+        }}>
+          {row.category}
+          <span style={{
+            fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 600,
+            color: '#9CA3AF',
+          }}>
+            {row.count}
+          </span>
+        </h2>
+      </div>
+    );
+  }
+
+  if (row.kind === 'subcategory') {
+    return (
+      <div style={{ paddingTop: 4 }}>
+        <h3 style={{
+          fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700,
+          color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
+          marginBottom: 12,
+        }}>
+          {row.subcategory}
+          <span style={{ marginLeft: 8, color: '#D1D5DB' }}>· {row.count}</span>
+        </h3>
+      </div>
+    );
+  }
+
+  // Cards row — pad with invisible slots so the grid stays 3 cols.
+  const padded = [...row.tools];
+  while (padded.length < COLS) padded.push(null as unknown as CatalogTool);
+  return (
+    <div style={{
+      display: 'grid',
+      gridTemplateColumns: `repeat(${COLS}, 1fr)`,
+      gap: 'var(--space-3)',
+      marginBottom: 12,
+    }}>
+      {padded.map((tool, idx) =>
+        tool ? <ToolCard key={tool.id} tool={tool} /> : <div key={`ph-${idx}`} />
+      )}
+    </div>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════
+   Main page
+   ════════════════════════════════════════════════════════════════ */
 
 export default function ToolsPage() {
-  const { openTool } = useAppStore();
   const [query, setQuery] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedSubcategories, setSelectedSubcategories] = useState<string[]>([]);
   const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
   const [onlyAvailable, setOnlyAvailable] = useState(false);
   const [openFilter, setOpenFilter] = useState<FilterKey>(null);
+  const [, startFilterTransition] = useTransition();
 
-  const tools = CATALOG_TOOLS;
+  // The page is scrolled by the outer <main> element (see app/page.tsx).
+  // Virtuoso needs to watch that element for scroll events — otherwise it
+  // never knows the user scrolled and stops rendering after the first batch.
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const [scrollParent, setScrollParent] = useState<HTMLElement | null>(null);
+  useEffect(() => {
+    const el = rootRef.current?.closest('main') as HTMLElement | null;
+    if (el) setScrollParent(el);
+  }, []);
 
-  // Unique countries extracted from runner.countries
-  const countryOptions = useMemo<FilterOption[]>(() => {
-    const counts: Record<string, number> = {};
-    for (const t of tools) {
-      const runner = getRunner(t.id);
-      if (!runner?.countries) continue;
-      const list = runner.countries.split(/[·,]/).map((s) => s.trim()).filter(Boolean);
-      for (const c of list) counts[c] = (counts[c] || 0) + 1;
-    }
-    return Object.entries(counts)
-      .map(([value, count]) => ({ value, count }))
-      .sort((a, b) => b.count - a.count);
-  }, [tools]);
+  // Typing stays smooth; downstream filter recomputation uses the deferred value.
+  const deferredQuery = useDeferredValue(query);
 
-  const categoryOptions = useMemo<FilterOption[]>(() => {
-    const counts: Record<string, number> = {};
-    for (const t of tools) counts[t.category] = (counts[t.category] || 0) + 1;
-    return TOOL_CATEGORIES.map((c) => ({ value: c, count: counts[c] || 0 }));
-  }, [tools]);
-
-  const subcategoryOptions = useMemo<FilterOption[]>(() => {
-    const counts: Record<string, number> = {};
-    for (const t of tools) counts[t.subcategory] = (counts[t.subcategory] || 0) + 1;
-    return Object.entries(counts)
-      .map(([value, count]) => ({ value, count }))
-      .sort((a, b) => a.value.localeCompare(b.value));
-  }, [tools]);
+  // Warm the heavy ToolView chunk once the tools page is idle. First click
+  // into a tool will be instant.
+  useEffect(() => {
+    const ric: any = (window as any).requestIdleCallback ?? ((cb: any) => setTimeout(cb, 500));
+    const cic: any = (window as any).cancelIdleCallback ?? clearTimeout;
+    const handle = ric(() => {
+      import('@/components/tools/ToolView').catch(() => {});
+    });
+    return () => { cic(handle); };
+  }, []);
 
   const totalFilters =
     selectedCategories.length + selectedSubcategories.length + selectedCountries.length + (onlyAvailable ? 1 : 0);
 
-  // Apply all filters
+  // Stable setters for FilterDropdown.onOpen.
+  const openCat = useCallback((v: boolean) => setOpenFilter(v ? 'cat' : null), []);
+  const openSub = useCallback((v: boolean) => setOpenFilter(v ? 'sub' : null), []);
+  const openCou = useCallback((v: boolean) => setOpenFilter(v ? 'cou' : null), []);
+
+  // Wrap each filter setter in startTransition so a click doesn't
+  // block the UI while the list recomputes.
+  const setCats = useCallback((v: string[]) => {
+    startFilterTransition(() => setSelectedCategories(v));
+  }, []);
+  const setSubs = useCallback((v: string[]) => {
+    startFilterTransition(() => setSelectedSubcategories(v));
+  }, []);
+  const setCous = useCallback((v: string[]) => {
+    startFilterTransition(() => setSelectedCountries(v));
+  }, []);
+  const setOnly = useCallback((v: boolean) => {
+    startFilterTransition(() => setOnlyAvailable(v));
+  }, []);
+
+  // Apply filters (deferred so typing stays smooth).
   const filtered = useMemo(() => {
-    let result = tools;
-    if (query.trim()) {
-      const q = query.trim().toLowerCase();
+    let result: readonly CatalogTool[] = CATALOG_TOOLS;
+
+    if (deferredQuery.trim()) {
+      const q = deferredQuery.trim().toLowerCase();
       result = result.filter((t) =>
         t.title.toLowerCase().includes(q) ||
         t.description.toLowerCase().includes(q) ||
@@ -261,40 +538,58 @@ export default function ToolsPage() {
         t.category.toLowerCase().includes(q)
       );
     }
-    if (selectedCategories.length) result = result.filter((t) => selectedCategories.includes(t.category));
-    if (selectedSubcategories.length) result = result.filter((t) => selectedSubcategories.includes(t.subcategory));
+    if (selectedCategories.length) {
+      const set = new Set(selectedCategories);
+      result = result.filter((t) => set.has(t.category));
+    }
+    if (selectedSubcategories.length) {
+      const set = new Set(selectedSubcategories);
+      result = result.filter((t) => set.has(t.subcategory));
+    }
     if (selectedCountries.length) {
       result = result.filter((t) => {
-        const runner = getRunner(t.id);
-        if (!runner?.countries) return false;
-        return selectedCountries.some((c) => runner.countries!.includes(c));
+        const c = TOOL_META[t.id]?.countries;
+        if (!c) return false;
+        return selectedCountries.some((sel) => c.includes(sel));
       });
     }
-    if (onlyAvailable) result = result.filter((t) => t.available || getRunner(t.id) !== null);
+    if (onlyAvailable) {
+      result = result.filter((t) => t.available || (TOOL_META[t.id]?.hasRunner ?? false));
+    }
     return result;
-  }, [tools, query, selectedCategories, selectedSubcategories, selectedCountries, onlyAvailable]);
+  }, [deferredQuery, selectedCategories, selectedSubcategories, selectedCountries, onlyAvailable]);
 
-  // Group results by category → subcategory
+  // Group by category preserving TOOL_CATEGORIES order.
   const byCategory = useMemo(() => {
     const map = new Map<string, CatalogTool[]>();
     for (const t of filtered) {
-      if (!map.has(t.category)) map.set(t.category, []);
-      map.get(t.category)!.push(t);
+      const arr = map.get(t.category);
+      if (arr) arr.push(t);
+      else map.set(t.category, [t]);
     }
-    // Keep TOOL_CATEGORIES order
-    return TOOL_CATEGORIES.filter((c) => map.has(c)).map((c) => ({ category: c, tools: map.get(c)! }));
+    const out: { category: string; tools: CatalogTool[] }[] = [];
+    for (const c of TOOL_CATEGORIES) {
+      const arr = map.get(c);
+      if (arr) out.push({ category: c, tools: arr });
+    }
+    return out;
   }, [filtered]);
 
-  const resetAll = () => {
-    setSelectedCategories([]);
-    setSelectedSubcategories([]);
-    setSelectedCountries([]);
-    setOnlyAvailable(false);
-    setQuery('');
-  };
+  // Flatten into virtualised rows.
+  const rows = useMemo(() => buildRows(byCategory), [byCategory]);
+
+  const resetAll = useCallback(() => {
+    startTransition(() => {
+      setSelectedCategories([]);
+      setSelectedSubcategories([]);
+      setSelectedCountries([]);
+      setOnlyAvailable(false);
+      setQuery('');
+    });
+  }, []);
 
   return (
-    <div style={{ width: '100%' }}>
+    <div ref={rootRef} style={{ width: '100%' }}>
       <div style={{ marginBottom: 20 }}>
         <h2 style={{
           fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 700,
@@ -364,37 +659,36 @@ export default function ToolsPage() {
         <FilterDropdown
           label="Разделы"
           icon={<svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>}
-          options={categoryOptions}
+          options={CATEGORY_COUNTS}
           selected={selectedCategories}
-          onChange={setSelectedCategories}
+          onChange={setCats}
           open={openFilter === 'cat'}
-          onOpen={(v) => setOpenFilter(v ? 'cat' : null)}
+          onOpen={openCat}
           searchable
         />
         <FilterDropdown
           label="Специализации"
           icon={<svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M21 8V7a2 2 0 00-2-2h-5l-2-2H5a2 2 0 00-2 2v11a2 2 0 002 2h14a2 2 0 002-2v-4"/><circle cx="17" cy="14" r="3"/></svg>}
-          options={subcategoryOptions}
+          options={SUBCATEGORY_COUNTS}
           selected={selectedSubcategories}
-          onChange={setSelectedSubcategories}
+          onChange={setSubs}
           open={openFilter === 'sub'}
-          onOpen={(v) => setOpenFilter(v ? 'sub' : null)}
+          onOpen={openSub}
           searchable
         />
         <FilterDropdown
           label="Страны"
           icon={<svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><circle cx={12} cy={12} r={10}/><line x1={2} y1={12} x2={22} y2={12}/><path d="M12 2a15 15 0 014 10 15 15 0 01-4 10 15 15 0 01-4-10 15 15 0 014-10z"/></svg>}
-          options={countryOptions}
+          options={COUNTRY_COUNTS}
           selected={selectedCountries}
-          onChange={setSelectedCountries}
+          onChange={setCous}
           open={openFilter === 'cou'}
-          onOpen={(v) => setOpenFilter(v ? 'cou' : null)}
+          onOpen={openCou}
           searchable
         />
 
-        {/* "Только готовые" toggle */}
         <button
-          onClick={() => setOnlyAvailable(!onlyAvailable)}
+          onClick={() => setOnly(!onlyAvailable)}
           style={{
             display: 'inline-flex', alignItems: 'center', gap: 6,
             padding: '7px 12px',
@@ -414,7 +708,6 @@ export default function ToolsPage() {
           Только готовые
         </button>
 
-        {/* Reset all */}
         {totalFilters > 0 && (
           <button
             onClick={resetAll}
@@ -437,7 +730,6 @@ export default function ToolsPage() {
         )}
       </div>
 
-      {/* Selected chips (removable) */}
       {totalFilters > 0 && (
         <div style={{
           display: 'flex', flexWrap: 'wrap', gap: 6,
@@ -446,76 +738,48 @@ export default function ToolsPage() {
           borderBottom: '1px solid #F0F1F5',
         }}>
           {selectedCategories.map((c) => (
-            <FilterChip key={`c-${c}`} label={c} onRemove={() => setSelectedCategories((s) => s.filter((x) => x !== c))} />
+            <FilterChip key={`c-${c}`} label={c}
+              onRemove={() => setCats(selectedCategories.filter((x) => x !== c))} />
           ))}
           {selectedSubcategories.map((c) => (
-            <FilterChip key={`s-${c}`} label={c} onRemove={() => setSelectedSubcategories((s) => s.filter((x) => x !== c))} />
+            <FilterChip key={`s-${c}`} label={c}
+              onRemove={() => setSubs(selectedSubcategories.filter((x) => x !== c))} />
           ))}
           {selectedCountries.map((c) => (
-            <FilterChip key={`co-${c}`} label={c} onRemove={() => setSelectedCountries((s) => s.filter((x) => x !== c))} />
+            <FilterChip key={`co-${c}`} label={c}
+              onRemove={() => setCous(selectedCountries.filter((x) => x !== c))} />
           ))}
           {onlyAvailable && (
-            <FilterChip label="Только готовые" onRemove={() => setOnlyAvailable(false)} />
+            <FilterChip label="Только готовые" onRemove={() => setOnly(false)} />
           )}
         </div>
       )}
 
-      {/* Results — grouped by category, then by subcategory */}
-      {filtered.length === 0 ? (
+      {rows.length === 0 ? (
         <div style={{
-          padding: '60px 20px',
-          textAlign: 'center',
+          padding: '60px 20px', textAlign: 'center',
           fontFamily: 'var(--font-body)', fontSize: 14, color: '#9CA3AF',
         }}>
           Ничего не найдено по заданным фильтрам
         </div>
       ) : (
-        byCategory.map(({ category, tools: catTools }) => {
-          const subGroups = groupBySubcategory(catTools);
-          return (
-            <section key={category} style={{ marginBottom: 32 }}>
-              <h2 style={{
-                fontFamily: 'var(--font-display)', fontSize: 17, fontWeight: 700,
-                color: '#1A1A1A', marginBottom: 18, letterSpacing: '-0.01em',
-                display: 'flex', alignItems: 'baseline', gap: 8,
-              }}>
-                {category}
-                <span style={{
-                  fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 600,
-                  color: '#9CA3AF',
-                }}>
-                  {catTools.length}
-                </span>
-              </h2>
-
-              {Object.entries(subGroups).map(([subcategory, tools]) => (
-                <div key={subcategory} style={{ marginBottom: 24 }}>
-                  <h3 style={{
-                    fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700,
-                    color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
-                    marginBottom: 12,
-                  }}>
-                    {subcategory}
-                    <span style={{ marginLeft: 8, color: '#D1D5DB' }}>· {tools.length}</span>
-                  </h3>
-                  <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(3, 1fr)',
-                    gap: 'var(--space-3)',
-                  }}>
-                    {tools.map((tool) => (
-                      <ToolCard
-                        key={tool.id}
-                        tool={tool}
-                        onOpen={() => openTool(tool.id)}
-                      />
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </section>
-          );
-        })
+        <Virtuoso
+          // The real scroll container is <main> in app/page.tsx. Using
+          // customScrollParent rather than useWindowScroll means Virtuoso
+          // listens to scroll events on the right element and renders more
+          // rows as the user scrolls. Keeps the native outer scroll — no
+          // inner scrollbar is introduced, visuals stay identical.
+          customScrollParent={scrollParent ?? undefined}
+          data={rows}
+          increaseViewportBy={{ top: 800, bottom: 1600 }}
+          computeItemKey={(_, row) => {
+            if (row.kind === 'category') return `c:${row.category}`;
+            if (row.kind === 'subcategory') return `s:${row.category}:${row.subcategory}`;
+            if (row.kind === 'cards') return `r:${row.category}:${row.subcategory}:${row.tools.map((t) => t.id).join('|')}`;
+            return '_';
+          }}
+          itemContent={(_, row) => <RenderedRow row={row} />}
+        />
       )}
     </div>
   );
@@ -551,104 +815,5 @@ function FilterChip({ label, onRemove }: { label: string; onRemove: () => void }
         </svg>
       </button>
     </span>
-  );
-}
-
-function ToolCard({ tool, onOpen }: { tool: CatalogTool; onOpen: () => void }) {
-  // Available if either flagged or has a working runner
-  const hasRunner = getRunner(tool.id) !== null;
-  const available = tool.available || hasRunner;
-  return (
-    <button
-      onClick={available ? onOpen : undefined}
-      disabled={!available}
-      style={{
-        background: '#F5F6F8',
-        borderRadius: 'var(--md-sys-shape-corner-extra-large)',
-        border: 'none',
-        padding: 'var(--space-5)', textAlign: 'left',
-        cursor: available ? 'pointer' : 'not-allowed',
-        opacity: available ? 1 : 0.62,
-        position: 'relative', overflow: 'hidden', minHeight: 160,
-        display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
-        transition: 'background 400ms cubic-bezier(0.22,1,0.36,1), transform 400ms cubic-bezier(0.22,1,0.36,1)',
-      }}
-      onMouseEnter={(e) => {
-        if (available) {
-          e.currentTarget.style.background = '#F0F2F5';
-          e.currentTarget.style.transform = 'translateY(-1px)';
-        }
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.background = '#F5F6F8';
-        e.currentTarget.style.transform = 'translateY(0)';
-      }}
-    >
-      {!available && (
-        <div style={{
-          position: 'absolute', top: 12, right: 12, zIndex: 2,
-          display: 'inline-flex', alignItems: 'center', gap: 6,
-          padding: '4px 10px',
-          borderRadius: 999,
-          background: '#1A1A1A',
-          color: '#FFFFFF',
-          fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-          letterSpacing: '0.06em', textTransform: 'uppercase',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
-        }}>
-          <svg width={10} height={10} viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round">
-            <rect x="3" y="11" width="18" height="11" rx="2" />
-            <path d="M7 11V7a5 5 0 0110 0v4" />
-          </svg>
-          Скоро
-        </div>
-      )}
-
-      <div style={{ marginBottom: 'var(--space-3)', position: 'relative', zIndex: 1 }}>
-        <span style={{
-          display: 'inline-flex', alignItems: 'center', gap: 'var(--space-1)',
-          padding: '4px var(--space-2)', borderRadius: 'var(--md-sys-shape-corner-full)',
-          background: '#FFFFFF',
-          boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-          fontFamily: 'var(--font-mono)',
-          fontSize: '0.625rem', fontWeight: 500,
-          color: 'var(--md-sys-color-on-surface-variant)',
-        }}>
-          {tool.subcategory}
-        </span>
-      </div>
-
-      <div style={{ position: 'relative', zIndex: 1, flex: 1 }}>
-        <h3 style={{
-          fontFamily: 'var(--font-display)', fontSize: 'var(--text-base)', fontWeight: 700,
-          color: 'var(--md-sys-color-on-surface)',
-          marginBottom: 'var(--space-1)', lineHeight: 1.25,
-        }}>
-          {tool.title}
-        </h3>
-        <p style={{
-          fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)',
-          color: 'var(--md-sys-color-on-surface-variant)', lineHeight: 1.4,
-          display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical',
-          overflow: 'hidden',
-        }}>
-          {tool.description}
-        </p>
-      </div>
-
-      <div style={{
-        display: 'flex', alignItems: 'center', gap: 'var(--space-1)',
-        marginTop: 'var(--space-3)', position: 'relative', zIndex: 1,
-      }}>
-        <span style={{
-          fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', fontWeight: 500,
-          color: available ? 'var(--md-sys-color-on-surface)' : '#9CA3AF',
-        }}>
-          {available ? 'Открыть инструмент' : 'В разработке'}
-        </span>
-        {available && <ArrowRight size={14} color="var(--md-sys-color-on-surface)" />}
-      </div>
-    </button>
   );
 }

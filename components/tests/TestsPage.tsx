@@ -1,6 +1,7 @@
 'use client';
 
 import { ArrowRight } from '@/components/icons';
+import { motion } from 'framer-motion';
 
 interface StandaloneTest {
   id: string;
@@ -153,9 +154,12 @@ export default function TestsPage() {
             gridTemplateColumns: 'repeat(3, 1fr)',
             gap: 'var(--space-3)',
           }}>
-            {tests.map((test) => (
-              <button
+            {tests.map((test, i) => (
+              <motion.button
                 key={test.id}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: test.unlocked ? 1 : 0.48, y: 0 }}
+                transition={{ delay: i * 0.03, duration: 0.3, ease: [0.05, 0.7, 0.1, 1] }}
                 disabled={!test.unlocked}
                 style={{
                   background: '#F5F6F8',
@@ -164,7 +168,7 @@ export default function TestsPage() {
                   padding: 'var(--space-5)',
                   textAlign: 'left',
                   cursor: test.unlocked ? 'pointer' : 'not-allowed',
-                  opacity: test.unlocked ? 1 : 0.62,
+                  opacity: test.unlocked ? 1 : 0.48,
                   position: 'relative',
                   overflow: 'hidden',
                   minHeight: 160,
@@ -253,7 +257,7 @@ export default function TestsPage() {
                   </span>
                   {test.unlocked && <ArrowRight size={14} color="var(--md-sys-color-on-surface)" />}
                 </div>
-              </button>
+              </motion.button>
             ))}
           </div>
         </section>

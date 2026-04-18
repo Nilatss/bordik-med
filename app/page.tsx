@@ -4,7 +4,11 @@ import { useAppStore } from '@/lib/store';
 import { sections, getSectionById, getModulesBySection, getModuleById, type SectionId } from '@/lib/curriculum';
 import ProfilePage from '@/components/profile/ProfilePage';
 import ToolsPage from '@/components/tools/ToolsPage';
-import ToolView from '@/components/tools/ToolView';
+import dynamic from 'next/dynamic';
+// Lazy-load ToolView — its transitive import of tools-runners.ts is ~446 KB.
+// Deferring it means the Tools list page opens fast; the heavy bundle is only
+// fetched the first time the user opens a specific tool.
+const ToolView = dynamic(() => import('@/components/tools/ToolView'), { ssr: false });
 import StatisticsPage from '@/components/stats/StatisticsPage';
 import NewsFeed from '@/components/feed/NewsFeed';
 import TestsPage from '@/components/tests/TestsPage';
@@ -14,6 +18,7 @@ import ModuleGrid from '@/components/home/ModuleGrid';
 import CourseGrid from '@/components/home/CourseGrid';
 import CoursePage from '@/components/course/CoursePage';
 import { ArrowLeft, ArrowRight } from '@/components/icons';
+import { motion } from 'framer-motion';
 import { SectionIllustration } from '@/components/illustrations/SectionIllustrations';
 
 const SECTION_BG: Record<SectionId, string> = {
@@ -84,7 +89,7 @@ const SECTION_CATEGORIES: { title: string; ids: SectionId[] }[] = [
 function SectionCards({ onSelect }: { onSelect: (id: SectionId) => void }) {
   const { completedCourses } = useAppStore();
 
-  const renderSection = (secId: SectionId) => {
+  const renderSection = (secId: SectionId, i: number) => {
     const sec = sections.find((s) => s.id === secId);
     if (!sec) return null;
     const mods = getModulesBySection(sec.id);
@@ -94,8 +99,11 @@ function SectionCards({ onSelect }: { onSelect: (id: SectionId) => void }) {
     const isUnlocked = UNLOCKED_SECTIONS.includes(sec.id);
 
     return (
-          <button
+          <motion.button
             key={sec.id}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: isUnlocked ? 1 : 0.48, y: 0 }}
+            transition={{ delay: i * 0.03, duration: 0.3, ease: [0.05, 0.7, 0.1, 1] }}
             onClick={() => { if (isUnlocked) onSelect(sec.id); }}
             disabled={!isUnlocked}
             style={{
@@ -104,7 +112,7 @@ function SectionCards({ onSelect }: { onSelect: (id: SectionId) => void }) {
               border: 'none',
               padding: 'var(--space-5)', textAlign: 'left',
               cursor: isUnlocked ? 'pointer' : 'not-allowed',
-              opacity: isUnlocked ? 1 : 0.62,
+              opacity: isUnlocked ? 1 : 0.48,
               position: 'relative', overflow: 'hidden', minHeight: 160,
               display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
               transition: 'background 400ms cubic-bezier(0.22,1,0.36,1), transform 400ms cubic-bezier(0.22,1,0.36,1)',
@@ -172,7 +180,7 @@ function SectionCards({ onSelect }: { onSelect: (id: SectionId) => void }) {
               </span>
               {isUnlocked && <ArrowRight size={14} color="var(--md-sys-color-on-surface)" />}
             </div>
-          </button>
+          </motion.button>
     );
   };
 
@@ -192,7 +200,7 @@ function SectionCards({ onSelect }: { onSelect: (id: SectionId) => void }) {
             gridTemplateColumns: 'repeat(3, 1fr)',
             gap: 'var(--space-3)',
           }}>
-            {ids.map((id) => renderSection(id))}
+            {ids.map((id, i) => renderSection(id, i))}
           </div>
         </section>
       ))}
@@ -229,8 +237,17 @@ export default function Home() {
             <ProfilePage />
           )}
 
-          {view === 'tools' && (
-            <ToolsPage />
+          {/*
+            ToolsPage stays mounted for both 'tools' and 'tool' views. When a
+            specific tool is open we hide the list via CSS instead of
+            unmounting — this avoids the costly remount (500+ ToolCards,
+            filter memos) every time the user closes a tool. Zero visual
+            change; the hidden subtree is inert and skipped by layout/paint.
+          */}
+          {(view === 'tools' || view === 'tool') && (
+            <div style={{ display: view === 'tool' ? 'none' : 'block' }} aria-hidden={view === 'tool'}>
+              <ToolsPage />
+            </div>
           )}
 
           {view === 'tool' && activeToolId && (
