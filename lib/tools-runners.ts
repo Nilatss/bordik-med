@@ -32,6 +32,13 @@ export interface ScoreBand {
   description: string;
 }
 
+export interface Preset {
+  /** Short label shown on the chip — e.g. "♂ 30 лет, 70 кг" */
+  label: string;
+  /** Values to apply to each input by id */
+  values: Record<string, number | boolean | string>;
+}
+
 export interface ScoreTool {
   kind: 'score';
   inputs: ToolInput[];
@@ -42,6 +49,8 @@ export interface ScoreTool {
   reference: string;
   /** Long-form clinical article in Markdown — rendered under the calculator */
   info?: string;
+  /** Optional quick-fill examples */
+  presets?: Preset[];
 }
 
 export interface CalculatorTool {
@@ -57,6 +66,8 @@ export interface CalculatorTool {
   reference: string;
   /** Long-form clinical article in Markdown — rendered under the calculator */
   info?: string;
+  /** Optional quick-fill examples */
+  presets?: Preset[];
 }
 
 export type ToolRunner = ScoreTool | CalculatorTool;
@@ -123,6 +134,13 @@ export const TOOL_RUNNERS: Record<string, ToolRunner> = {
       return { value: val, unit: 'кг/м²', interpretation, color };
     },
     reference: 'ВОЗ: <18.5 / 18.5–24.9 / 25–29.9 / ≥30. Азия: альтернативные cutoffs 23 и 27.5.',
+    presets: [
+      { label: 'Взрослый ♂ (среднее)', values: { weight: 75, height: 175 } },
+      { label: 'Взрослая ♀ (среднее)', values: { weight: 60, height: 165 } },
+      { label: 'Избыточная масса',     values: { weight: 85, height: 170 } },
+      { label: 'Ожирение I степени',   values: { weight: 95, height: 170 } },
+      { label: 'Недостаточная масса',  values: { weight: 48, height: 165 } },
+    ],
     info: `### Для чего используется
 **Индекс массы тела (Quetelet, 1832 / WHO, 1997)** — простейший скрининг избыточной массы тела и ожирения у взрослых 20–65 лет. Используется в первичной помощи, эпидемиологии, предоперационной оценке, показаниях к бариатрии.
 
@@ -192,6 +210,13 @@ export const TOOL_RUNNERS: Record<string, ToolRunner> = {
       return { value: bsa.toFixed(2), unit: 'м²', interpretation: 'Площадь поверхности тела', color: '#1A1A1A' };
     },
     reference: 'Mosteller, 1987: BSA = √(Вес × Рост / 3600). Стандарт в онкологии (химиотерапия).',
+    presets: [
+      { label: 'Взрослый ♂ 75/175',  values: { weight: 75, height: 175 } },
+      { label: 'Взрослая ♀ 60/165',  values: { weight: 60, height: 165 } },
+      { label: 'Ребёнок 10 лет',     values: { weight: 32, height: 138 } },
+      { label: 'Ребёнок 1 год',      values: { weight: 10, height: 75 } },
+      { label: 'Новорождённый',      values: { weight: 3.5, height: 50 } },
+    ],
     info: `### Для чего используется
 **Площадь поверхности тела (BSA)** — более точный масштабируемый параметр, чем масса. Применяется в разных специальностях:
 
@@ -253,6 +278,11 @@ export const TOOL_RUNNERS: Record<string, ToolRunner> = {
       return { value: bsa.toFixed(2), unit: 'м²', interpretation: 'Площадь поверхности тела', color: '#1A1A1A' };
     },
     reference: 'Du Bois & Du Bois, 1916: BSA = 0.007184 × W^0.425 × H^0.725.',
+    presets: [
+      { label: 'Взрослый ♂ 75/175', values: { weight: 75, height: 175 } },
+      { label: 'Взрослая ♀ 60/165', values: { weight: 60, height: 165 } },
+      { label: 'Средний взрослый',  values: { weight: 70, height: 172 } },
+    ],
     info: `### Для чего используется
 **Формула Du Bois & Du Bois (1916)** — исторически первая и наиболее известная формула для расчёта **площади поверхности тела (BSA)**. Долгое время была "золотым стандартом" в физиологии и номограммах. Применяется для дозирования химиотерапии, индексации ЭхоКГ, расчёта ЖЕЛ должных значений.
 
@@ -329,6 +359,13 @@ export const TOOL_RUNNERS: Record<string, ToolRunner> = {
       return { value: crcl.toFixed(0), unit: 'мл/мин', interpretation, color };
     },
     reference: 'Cockcroft-Gault 1976: CrCl = [(140-age)×W×(0.85 если Ж)] / (72 × SCr mg/dL). Стандарт FDA/EMA для дозирования лекарств.',
+    presets: [
+      { label: 'Здоровый ♂ 30 лет',     values: { age: 30, weight: 75, creatinine: 88, female: false } },
+      { label: 'Здоровая ♀ 30 лет',     values: { age: 30, weight: 60, creatinine: 70, female: true } },
+      { label: 'Пожилой ♂ 75 лет',      values: { age: 75, weight: 72, creatinine: 110, female: false } },
+      { label: 'Умеренная ХБП',          values: { age: 65, weight: 70, creatinine: 160, female: false } },
+      { label: 'Тяжёлая ХБП',            values: { age: 70, weight: 68, creatinine: 280, female: true } },
+    ],
     info: `### Для чего используется
 **Клиренс креатинина по Cockcroft-Gault (1976)** — оценка скорости клубочковой фильтрации по креатинину сыворотки, возрасту, весу и полу.
 
@@ -414,6 +451,13 @@ export const TOOL_RUNNERS: Record<string, ToolRunner> = {
       return { value: egfr.toFixed(0), unit: 'мл/мин/1.73м²', interpretation, color };
     },
     reference: 'CKD-EPI 2021 (race-free). Текущий стандарт KDIGO и NKF-ASN.',
+    presets: [
+      { label: 'Здоровый ♂ 40 лет',   values: { age: 40, creatinine: 88, female: false } },
+      { label: 'Здоровая ♀ 40 лет',   values: { age: 40, creatinine: 70, female: true } },
+      { label: 'G3a — умеренно',       values: { age: 65, creatinine: 140, female: false } },
+      { label: 'G3b — умеренно тяж.',  values: { age: 70, creatinine: 180, female: false } },
+      { label: 'G4 — тяжёлая ХБП',     values: { age: 72, creatinine: 320, female: true } },
+    ],
     info: `### Для чего используется
 **CKD-EPI 2021 (race-free)** — современный стандарт расчёта **скорости клубочковой фильтрации (рСКФ, eGFR)** по креатинину. Используется для:
 
@@ -507,6 +551,12 @@ eGFR = 142 × min(SCr/κ, 1)^α × max(SCr/κ, 1)^(−1,200) × 0,9938^возр�
       return { value: egfr.toFixed(0), unit: 'мл/мин/1.73м²', interpretation, color };
     },
     reference: 'MDRD Study (4-var), 2006. Для эпидемиологических исследований.',
+    presets: [
+      { label: 'Норма ♂',      values: { age: 40, creatinine: 88, female: false } },
+      { label: 'Норма ♀',      values: { age: 40, creatinine: 70, female: true } },
+      { label: 'G3 ХБП',        values: { age: 65, creatinine: 160, female: false } },
+      { label: 'G4 ХБП',        values: { age: 70, creatinine: 280, female: true } },
+    ],
     info: `### Для чего используется
 **MDRD Study Equation (4-variable, 2006)** — историческая формула для оценки СКФ, выведенная из исследования **Modification of Diet in Renal Disease**. Была стандартом в США в 2005–2012 гг.
 
@@ -565,6 +615,12 @@ eGFR = 142 × min(SCr/κ, 1)^α × max(SCr/κ, 1)^(−1,200) × 0,9938^возр�
       return { value: ag.toFixed(1), unit: 'ммоль/л', interpretation, color };
     },
     reference: 'AG = Na − (Cl + HCO₃). Норма 8–12 ммоль/л. MUDPILES при высоком AG.',
+    presets: [
+      { label: 'Норма',             values: { na: 140, cl: 105, hco3: 24 } },
+      { label: 'HAGMA (ДКА)',        values: { na: 138, cl: 100, hco3: 10 } },
+      { label: 'NAGMA (диарея)',     values: { na: 138, cl: 115, hco3: 15 } },
+      { label: 'Лактат-ацидоз',       values: { na: 140, cl: 100, hco3: 12 } },
+    ],
     info: `### Для чего используется
 **Анионный разрыв (AG)** — разница между основными измеряемыми катионами и анионами плазмы. Используется для **дифференциальной диагностики метаболического ацидоза** и выявления неизмеряемых анионов (лактат, кетоны, токсины).
 
@@ -659,6 +715,12 @@ eGFR = 142 × min(SCr/κ, 1)^α × max(SCr/κ, 1)^(−1,200) × 0,9938^возр�
       return { value: corr.toFixed(2), unit: 'ммоль/л', interpretation, color };
     },
     reference: 'Payne: Ca_corr = Ca + 0.02 × (40 − alb г/л). Норма 2.15–2.55 ммоль/л.',
+    presets: [
+      { label: 'Норма',                values: { ca: 2.35, alb: 40 } },
+      { label: 'Гипоальбуминемия',     values: { ca: 2.0, alb: 25 } },
+      { label: 'Гиперкальциемия',       values: { ca: 2.8, alb: 38 } },
+      { label: 'Цирроз (альб ↓)',       values: { ca: 2.1, alb: 22 } },
+    ],
     info: `### Для чего используется
 **Формула Payne (1973)** — коррекция общего кальция сыворотки на уровень альбумина. Применяется при гипоальбуминемии, чтобы не пропустить истинные нарушения кальциевого обмена.
 
@@ -753,6 +815,12 @@ eGFR = 142 × min(SCr/κ, 1)^α × max(SCr/κ, 1)^(−1,200) × 0,9938^возр�
       return { value: String(val), interpretation, color };
     },
     reference: 'MELD = 3.78×ln(билирубин) + 11.2×ln(INR) + 9.57×ln(креатинин) + 6.43. UNOS, OPTN.',
+    presets: [
+      { label: 'Компенсированный цирроз',  values: { bili: 20, inr: 1.1, creat: 80, dialysis: false } },
+      { label: 'Декомпенсированный',        values: { bili: 60, inr: 1.8, creat: 130, dialysis: false } },
+      { label: 'Показание к трансплантации', values: { bili: 120, inr: 2.2, creat: 180, dialysis: false } },
+      { label: 'Тяжёлый алкогольный гепатит', values: { bili: 250, inr: 2.5, creat: 200, dialysis: false } },
+    ],
     info: `### Для чего используется
 **MELD (Model for End-stage Liver Disease)** — прогностическая модель для оценки **3-месячной смертности** у пациентов с заболеваниями печени. С 2002 — основа **распределения трансплантатов печени** в UNOS (США) и большинстве стран.
 
@@ -848,6 +916,12 @@ Na зажат 125–137. Добавление Na улучшает предска
       };
     },
     reference: 'Parkland (Baxter): 4 мл × %TBSA × кг Ringer за 24 ч, половина в первые 8 ч. ATLS, ABA.',
+    presets: [
+      { label: 'Взрослый 70 кг, 20 %',   values: { weight: 70, tbsa: 20 } },
+      { label: 'Взрослый 80 кг, 40 %',   values: { weight: 80, tbsa: 40 } },
+      { label: 'Массивный 70 кг, 60 %',  values: { weight: 70, tbsa: 60 } },
+      { label: 'Ребёнок 20 кг, 15 %',    values: { weight: 20, tbsa: 15 } },
+    ],
     info: `### Для чего используется
 **Формула Паркланда (Baxter, 1968)** — расчёт начальной инфузионной терапии в первые 24 часа у пациентов с **ожогами ≥ 20 % TBSA** (взрослые) или **≥ 10 %** (дети и пожилые).
 
@@ -950,6 +1024,13 @@ Na зажат 125–137. Добавление Na улучшает предска
       };
     },
     reference: 'Holliday & Segar, 1957. Стандарт педиатрии и анестезиологии.',
+    presets: [
+      { label: 'Новорождённый 3 кг',     values: { weight: 3 } },
+      { label: 'Младенец 5 кг',           values: { weight: 5 } },
+      { label: 'Ребёнок 15 кг',           values: { weight: 15 } },
+      { label: 'Подросток 40 кг',         values: { weight: 40 } },
+      { label: 'Взрослый 70 кг',          values: { weight: 70 } },
+    ],
     info: `### Для чего используется
 **Правило 4-2-1 (Holliday & Segar, 1957)** — расчёт поддерживающей инфузии для **детей и взрослых** на основе массы тела. Стандарт педиатрии, анестезиологии, экстренной медицины.
 
@@ -1045,6 +1126,12 @@ Holliday-Segar используется как база, к которой до�
       return { value: gradient.toFixed(1), unit: 'мм рт.ст.', interpretation, color };
     },
     reference: 'A-a = [FiO₂ × (760−47)] − PaCO₂/0.8 − PaO₂. Ожидаемый A-a = (Возраст/4) + 4.',
+    presets: [
+      { label: 'Норма у молодого',       values: { fio2: 21, paco2: 40, pao2: 95, age: 30 } },
+      { label: 'ХОБЛ (V/Q mismatch)',    values: { fio2: 21, paco2: 55, pao2: 55, age: 65 } },
+      { label: 'ТЭЛА',                    values: { fio2: 21, paco2: 32, pao2: 60, age: 55 } },
+      { label: 'Гиповентиляция (норм. A-a)', values: { fio2: 21, paco2: 70, pao2: 60, age: 50 } },
+    ],
     info: `### Для чего используется
 **Альвеоло-артериальный градиент по кислороду (A-a gradient)** — разница между альвеолярным (расчётным) и артериальным (измеренным) парциальным давлением кислорода. Ключевой параметр для **дифференциальной диагностики гипоксемии**.
 
