@@ -198,8 +198,8 @@ export default function ToolView({ toolId }: { toolId: string }) {
   const kindLabel = runner.kind === 'score' ? 'Шкала' : 'Калькулятор';
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column' }}>
-      {/* Top header — back + tags + title + description + InfoPills */}
+    <div>
+      {/* Top header — back + tags + title + description + InfoPills (full width, outside grid) */}
       <BackButton onClick={closeTool} />
       <Header tool={tool} kind={kindLabel} />
       <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 16, marginBottom: 20 }}>
@@ -208,20 +208,19 @@ export default function ToolView({ toolId }: { toolId: string }) {
         <InfoPill icon={<IconBook />} label="Источник" value={shortRef(runner.reference)} />
       </div>
 
-      {/* Main grid: content card (left) + TOC sidebar (right) — match TabbedLessonViewer */}
+      {/* Main grid: content card (left) + TOC sidebar (right) — identical to TabbedLessonViewer */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: '1fr 280px',
         gap: 24,
         alignItems: 'start',
       }}>
-        {/* LEFT: tab content card */}
+        {/* LEFT: tab content card — IDENTICAL to TabbedLessonViewer */}
         <div key={active.id} style={{
           background: '#FFFFFF',
-          borderRadius: 'var(--md-sys-shape-corner-extra-large, 24px)',
+          borderRadius: 'var(--md-sys-shape-corner-extra-large)',
           padding: 'var(--space-6) var(--space-7)',
           minHeight: 300,
-          minWidth: 0,
         }}>
           {/* Tab header — identical structure to TabbedLessonViewer */}
           <div style={{
@@ -288,13 +287,13 @@ export default function ToolView({ toolId }: { toolId: string }) {
           </div>
         </div>
 
-        {/* RIGHT: sidebar — "Содержание" */}
+        {/* RIGHT: sidebar — "Содержание" — IDENTICAL to TabbedLessonViewer aside */}
         <aside style={{
           position: 'sticky', top: 20,
           background: '#F5F6F8',
-          borderRadius: 'var(--md-sys-shape-corner-extra-large, 24px)',
+          borderRadius: 'var(--md-sys-shape-corner-extra-large)',
           padding: 16,
-          display: 'flex', flexDirection: 'column', gap: 2,
+          display: 'flex', flexDirection: 'column', gap: 4,
         }}>
           <p style={{
             fontFamily: 'var(--font-body)', fontSize: 11,
@@ -321,7 +320,6 @@ export default function ToolView({ toolId }: { toolId: string }) {
                   fontFamily: 'var(--font-body)', fontSize: 13,
                   fontWeight: isActive ? 600 : 500,
                   transition: 'all 150ms ease',
-                  width: '100%',
                 }}
                 onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.background = '#E8E9ED'; }}
                 onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.background = 'transparent'; }}
