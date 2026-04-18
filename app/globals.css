@@ -560,12 +560,11 @@ main:has(.stats-page) {
   content: '';
   position: absolute;
   left: 6px;
-  top: 10px;
-  width: 6px;
-  height: 6px;
-  border-radius: 2px;
-  background: #6366F1;
-  transform: rotate(45deg);
+  top: 11px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #9CA3AF;
 }
 .lesson-content.tool-info ol {
   counter-reset: tool-ol;
@@ -588,8 +587,8 @@ main:has(.stats-page) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: #EEF2FF;
-  color: #4338CA;
+  background: #F0F1F5;
+  color: #374151;
   border-radius: 6px;
   font-family: var(--font-mono);
   font-size: 11px;
