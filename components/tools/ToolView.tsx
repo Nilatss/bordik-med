@@ -208,10 +208,10 @@ export default function ToolView({ toolId }: { toolId: string }) {
         <InfoPill icon={<IconBook />} label="Источник" value={shortRef(runner.reference)} />
       </div>
 
-      {/* Main grid: content card (left) + TOC sidebar (right) */}
+      {/* Main grid: content card (left) + TOC sidebar (right) — match TabbedLessonViewer */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'minmax(0, 1fr) 260px',
+        gridTemplateColumns: '1fr 280px',
         gap: 24,
         alignItems: 'start',
       }}>
@@ -219,15 +219,15 @@ export default function ToolView({ toolId }: { toolId: string }) {
         <div key={active.id} style={{
           background: '#FFFFFF',
           borderRadius: 'var(--md-sys-shape-corner-extra-large, 24px)',
-          padding: '28px 32px',
-          minHeight: 360,
-          boxShadow: '0 1px 2px rgba(0,0,0,0.03)',
+          padding: 'var(--space-6) var(--space-7)',
+          minHeight: 300,
+          minWidth: 0,
         }}>
-          {/* Tab header */}
+          {/* Tab header — identical structure to TabbedLessonViewer */}
           <div style={{
             display: 'flex', alignItems: 'center', gap: 12,
-            marginBottom: 20, paddingBottom: 16,
-            borderBottom: '1px solid #F0F1F5',
+            marginBottom: 16, paddingBottom: 16,
+            borderBottom: '1px solid #F0F0F0',
           }}>
             <span style={{ display: 'flex', color: '#1A1A1A' }}>
               <TabIcon name={active.iconKey} size={24} />
@@ -265,7 +265,7 @@ export default function ToolView({ toolId }: { toolId: string }) {
               <p style={{ marginBottom: 12 }}>
                 <strong>Источник и клиническая валидация:</strong>
               </p>
-              <p>{runner.reference}</p>
+              <p>{cleanReference(runner.reference)}</p>
               <p style={{ marginTop: 20, color: '#6B7280', fontSize: 13 }}>
                 Все пороги, формулы и рекомендации приведены в соответствии с актуальными
                 международными гайдлайнами. Инструмент не заменяет клиническое суждение врача.
@@ -273,11 +273,11 @@ export default function ToolView({ toolId }: { toolId: string }) {
             </div>
           )}
 
-          {/* Prev / Next */}
+          {/* Prev / Next — identical to TabbedLessonViewer */}
           <div style={{
             display: 'flex', justifyContent: 'space-between', gap: 12,
             marginTop: 32, paddingTop: 20,
-            borderTop: '1px solid #F0F1F5',
+            borderTop: '1px solid #F0F0F0',
           }}>
             {prevTab ? (
               <NavButton onClick={() => setActiveId(prevTab.id)} label={prevTab.short} dir="prev" />
@@ -493,9 +493,59 @@ function TabIcon({ name, size = 16 }: { name: string; size?: number }) {
 
 /* ════════════════ Header ════════════════ */
 
+/**
+ * Full citation cleanup for the Источник tab body.
+ * Keeps author + journal + year, strips formulas/doses/threshold values.
+ * Year (4-digit) is preserved.
+ */
+function cleanReference(ref: string): string {
+  if (!ref) return '';
+  // Remove obvious formulas like "= ... expr ..." / ": value threshold stuff"
+  // but keep if the segment contains a 4-digit year.
+  const segments = ref.split(/\.\s+/).map((s) => s.trim()).filter(Boolean);
+  const keep: string[] = [];
+  for (const seg of segments) {
+    // Drop segments that are pure thresholds/formulas (no year, contain math/drug dosing)
+    const hasYear = /\b(19|20)\d{2}\b/.test(seg);
+    const isFormulaOrDose = /[×÷∑√=<>≤≥±]|\bмг\b|\bмл\b|\bкг\b|\bч\b|мг\/|мл\/|кг\/|мм рт/.test(seg);
+    if (isFormulaOrDose && !hasYear) continue;
+    // Inside a kept segment, still trim after formula markers
+    let clean = seg.replace(/[:=][^.]*?([×÷=<>≤≥][^.]*)/, '').replace(/\s{2,}/g, ' ').trim();
+    if (clean) keep.push(clean);
+  }
+  return keep.join('. ') + (keep.length ? '.' : '');
+}
+
+/**
+ * Extract just the citation (author + optional year + journal) from the reference string.
+ * Strip formulas, thresholds, drug doses and everything that isn't bibliographic.
+ *
+ * Examples:
+ *  "Antman EM. JAMA 2000. TIMI Risk Score for UA/NSTEMI." → "Antman EM. JAMA 2000"
+ *  "ВОЗ: <18.5 / 18.5–24.9 / 25–29.9 / ≥30. Азия: 23 и 27.5." → "ВОЗ"
+ *  "Parkland (Baxter): 4 мл × %TBSA × кг Ringer за 24 ч..." → "Parkland (Baxter)"
+ */
 function shortRef(ref: string): string {
-  const s = ref.split('.')[0];
-  return s.length > 50 ? s.slice(0, 50) + '…' : s;
+  if (!ref) return '';
+  // Split by sentence; the citation is usually the first sentence.
+  // Keep only first sentence, then strip content after any of: colon, equals, formula chars.
+  let s = ref.split(/\.\s/)[0];
+
+  // Remove anything after formula/value markers
+  s = s.replace(/[:=].*$/, '')           // "ВОЗ: <18.5 / 18.5..." → "ВОЗ"
+       .replace(/\s—\s.*$/, '')          // "Wells 2001 — алгоритм..." → "Wells 2001"
+       .replace(/\s-\s.*$/, '');         // same with hyphen
+
+  // If still contains formula characters, keep only up to first one
+  const formulaMatch = s.match(/^(.+?)[×÷∑√=<>≤≥±][^.]*$/);
+  if (formulaMatch) s = formulaMatch[1].trim();
+
+  // Drop trailing punctuation and collapse whitespace
+  s = s.replace(/[,;:\s]+$/, '').trim();
+
+  // If looks like just a list of abbreviations without author, keep as-is but max 50 chars
+  if (s.length > 50) s = s.slice(0, 50).replace(/[,\s]+$/, '') + '…';
+  return s;
 }
 
 function Header({ tool, kind }: {
