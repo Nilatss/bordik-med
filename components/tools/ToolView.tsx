@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { CATALOG_TOOLS } from '@/lib/tools-catalog';
@@ -413,7 +414,7 @@ function CalculatorBody({ inputs, values, setValues, result }: {
 }) {
   return (
     <div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         {inputs.map((inp) => (
           <InputField
             key={inp.id}
@@ -855,116 +856,135 @@ function SelectField({ input, value, onChange }: {
     setManualExpand(false);
   };
 
-  if (collapsed && selected) {
-    return (
-      <button
-        type="button"
-        onClick={() => setManualExpand(true)}
-        style={{
-          display: 'flex', alignItems: 'center', gap: 12,
-          padding: '12px 14px',
-          background: '#F5F6F8',
-          border: 'none',
-          borderRadius: 12, cursor: 'pointer', textAlign: 'left',
-          fontFamily: 'var(--font-body)', fontSize: 14,
-          color: '#1A1A1A',
-          width: '100%',
-          transition: 'background 150ms',
-        }}
-        onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
-        onMouseLeave={(e) => { e.currentTarget.style.background = '#F5F6F8'; }}
-      >
-        <span style={{
-          width: 18, height: 18, borderRadius: '50%',
-          background: '#1A1A1A',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          flexShrink: 0,
-        }}>
-          <svg width={11} height={11} viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="20,6 9,17 4,12" />
-          </svg>
-        </span>
-        <span style={{
-          flex: 1, minWidth: 0,
-          display: 'flex', flexDirection: 'column', gap: 2,
-        }}>
-          <span style={{
-            fontSize: 12, color: '#6B7280', fontWeight: 500,
-            overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-          }}>
-            {input.label}
-          </span>
-          <span style={{ fontSize: 14, color: '#1A1A1A', fontWeight: 600 }}>
-            {selected.label}
-          </span>
-        </span>
-        {selected.points !== undefined && selected.points !== 0 && (
-          <span style={{
-            fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700,
-            color: '#6B7280', padding: '3px 8px', borderRadius: 6,
-            background: '#FFFFFF',
-          }}>
-            {selected.points > 0 ? '+' : ''}{selected.points}
-          </span>
-        )}
-        <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
-          stroke="#9CA3AF" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
-          style={{ flexShrink: 0 }}>
-          <polyline points="6 9 12 15 18 9"/>
-        </svg>
-      </button>
-    );
-  }
-
   return (
     <div>
-      <LabelWithHint label={input.label} hint={input.hint} />
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-        {options.map((opt) => {
-          const isSel = String(value) === String(opt.value);
-          return (
-            <button
-              key={String(opt.value)}
-              type="button"
-              onClick={() => handlePick(opt.value)}
-              style={{
-                display: 'flex', alignItems: 'center', gap: 12,
-                padding: '12px 14px',
-                background: isSel ? '#E8E9ED' : '#F5F6F8',
-                border: 'none',
-                borderRadius: 12, cursor: 'pointer', textAlign: 'left',
-                fontFamily: 'var(--font-body)', fontSize: 14, color: '#1A1A1A',
-                transition: 'background 150ms',
-              }}
-              onMouseEnter={(e) => { if (!isSel) e.currentTarget.style.background = '#EFF1F4'; }}
-              onMouseLeave={(e) => { if (!isSel) e.currentTarget.style.background = '#F5F6F8'; }}
-            >
+      {/* Collapsed summary row — only rendered when field is in collapsed state */}
+      <AnimatePresence initial={false} mode="wait">
+        {collapsed && selected ? (
+          <motion.button
+            key="collapsed"
+            type="button"
+            onClick={() => setManualExpand(true)}
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            style={{
+              display: 'flex', alignItems: 'center', gap: 12,
+              padding: '10px 14px',
+              background: '#F5F6F8',
+              border: 'none',
+              borderRadius: 12, cursor: 'pointer', textAlign: 'left',
+              fontFamily: 'var(--font-body)', fontSize: 14,
+              color: '#1A1A1A',
+              width: '100%',
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = '#F5F6F8'; }}
+          >
+            <span style={{
+              width: 18, height: 18, borderRadius: '50%',
+              background: '#1A1A1A',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              flexShrink: 0,
+            }}>
+              <svg width={11} height={11} viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="20,6 9,17 4,12" />
+              </svg>
+            </span>
+            <span style={{
+              flex: 1, minWidth: 0,
+              display: 'flex', flexDirection: 'column', gap: 1,
+            }}>
               <span style={{
-                width: 18, height: 18, borderRadius: '50%',
-                background: '#FFFFFF',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                flexShrink: 0,
+                fontSize: 12, color: '#6B7280', fontWeight: 500,
+                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
               }}>
-                {isSel && (
-                  <span style={{
-                    width: 10, height: 10, borderRadius: '50%', background: '#1A1A1A',
-                  }} />
-                )}
+                {input.label}
               </span>
-              <span style={{ flex: 1, fontWeight: 500 }}>{opt.label}</span>
-              {opt.points !== undefined && opt.points !== 0 && (
-                <span style={{
-                  fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700,
-                  color: '#6B7280', padding: '3px 8px', borderRadius: 6,
-                  background: '#FFFFFF',
-                }}>
-                  {opt.points > 0 ? '+' : ''}{opt.points}
-                </span>
-              )}
-            </button>
-          );
-        })}
-      </div>
+              <span style={{ fontSize: 14, color: '#1A1A1A', fontWeight: 600 }}>
+                {selected.label}
+              </span>
+            </span>
+            {selected.points !== undefined && selected.points !== 0 && (
+              <span style={{
+                fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700,
+                color: '#6B7280', padding: '3px 8px', borderRadius: 6,
+                background: '#FFFFFF',
+              }}>
+                {selected.points > 0 ? '+' : ''}{selected.points}
+              </span>
+            )}
+            <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
+              stroke="#9CA3AF" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
+              style={{ flexShrink: 0 }}>
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </motion.button>
+        ) : (
+          <motion.div
+            key="expanded"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{
+              height: { duration: 0.32, ease: [0.22, 1, 0.36, 1] },
+              opacity: { duration: 0.2, ease: [0.22, 1, 0.36, 1] },
+            }}
+            style={{ overflow: 'hidden' }}
+          >
+            <div style={{ paddingBottom: 2 }}>
+              <LabelWithHint label={input.label} hint={input.hint} />
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+                {options.map((opt) => {
+                  const isSel = String(value) === String(opt.value);
+                  return (
+                    <button
+                      key={String(opt.value)}
+                      type="button"
+                      onClick={() => handlePick(opt.value)}
+                      style={{
+                        display: 'flex', alignItems: 'center', gap: 12,
+                        padding: '11px 14px',
+                        background: isSel ? '#E8E9ED' : '#F5F6F8',
+                        border: 'none',
+                        borderRadius: 12, cursor: 'pointer', textAlign: 'left',
+                        fontFamily: 'var(--font-body)', fontSize: 14, color: '#1A1A1A',
+                        transition: 'background 150ms',
+                      }}
+                      onMouseEnter={(e) => { if (!isSel) e.currentTarget.style.background = '#EFF1F4'; }}
+                      onMouseLeave={(e) => { if (!isSel) e.currentTarget.style.background = '#F5F6F8'; }}
+                    >
+                      <span style={{
+                        width: 18, height: 18, borderRadius: '50%',
+                        background: '#FFFFFF',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        flexShrink: 0,
+                      }}>
+                        {isSel && (
+                          <span style={{
+                            width: 10, height: 10, borderRadius: '50%', background: '#1A1A1A',
+                          }} />
+                        )}
+                      </span>
+                      <span style={{ flex: 1, fontWeight: 500 }}>{opt.label}</span>
+                      {opt.points !== undefined && opt.points !== 0 && (
+                        <span style={{
+                          fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700,
+                          color: '#6B7280', padding: '3px 8px', borderRadius: 6,
+                          background: '#FFFFFF',
+                        }}>
+                          {opt.points > 0 ? '+' : ''}{opt.points}
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
