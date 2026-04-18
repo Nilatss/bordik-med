@@ -1,9 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { getCourseById, getModuleForCourse } from '@/lib/curriculum';
-import { useAppStore } from '@/lib/store';
-import { Check } from '@/components/icons';
+import { getCourseById, getModuleForCourse, getSectionById } from '@/lib/curriculum';
 
 const DIFFICULTY_LABELS: Record<string, string> = {
   basic: 'Базовый',
@@ -11,132 +9,192 @@ const DIFFICULTY_LABELS: Record<string, string> = {
   advanced: 'Продвинутый',
 };
 
+const DIFFICULTY_DETAILS: Record<string, string> = {
+  basic: 'Pre-Entry',
+  intermediate: 'Intermediate',
+  advanced: 'Advanced',
+};
+
+/** Guess target audience from section/module context */
+function guessAudience(sectionId: string): string {
+  const map: Record<string, string> = {
+    fundamentals: 'Абитуриенты 10-11 класс',
+    biomedical: 'Студенты 1-2 курса',
+    clinical: 'Студенты 3-6 курса',
+    allied: 'Студенты смежных направлений',
+    skills: 'Студенты и ординаторы',
+    hss: 'Все уровни',
+    threads: 'Все уровни',
+    frontier: 'Продвинутые студенты',
+    business: 'Врачи-управленцы',
+    regulatory: 'Все уровни',
+    career: 'Студенты и выпускники',
+    tech: 'Все уровни',
+  };
+  return map[sectionId] || 'Все уровни';
+}
+
+/** Estimate course volume: 8 topics × 5 hours = ~40h (standard medical course pace) */
+function estimateVolume(course: { difficulty: string }): string {
+  const topics = 8;
+  // Hours per topic by difficulty — typical medical education pace
+  const hoursPerTopic = course.difficulty === 'advanced' ? 6
+    : course.difficulty === 'intermediate' ? 5
+    : 5;
+  const totalHours = topics * hoursPerTopic;
+  return `${topics} тем · ~${totalHours} часов`;
+}
+
 interface CourseHeaderProps {
   courseId: string;
 }
 
-export default function CourseHeader({ courseId }: CourseHeaderProps) {
-  const { completedCourses, markCompleted, unmarkCompleted } = useAppStore();
+/* ═══ Info pill component ═══ */
+function InfoPill({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
+  return (
+    <div style={{
+      flex: 1,
+      background: '#F5F6F8',
+      borderRadius: 12,
+      padding: '12px 16px',
+      display: 'flex', flexDirection: 'column', gap: 4,
+      minWidth: 0,
+    }}>
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: 6,
+        color: '#6B7280',
+      }}>
+        {icon}
+        <span style={{
+          fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
+          color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.06em',
+        }}>
+          {label}
+        </span>
+      </div>
+      <span style={{
+        fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
+        color: '#1A1A1A', lineHeight: 1.35,
+        overflow: 'hidden', textOverflow: 'ellipsis',
+      }}>
+        {value}
+      </span>
+    </div>
+  );
+}
 
+export default function CourseHeader({ courseId }: CourseHeaderProps) {
   const course = getCourseById(courseId);
   const mod = getModuleForCourse(courseId);
   if (!course || !mod) return null;
+  const section = getSectionById(mod.sectionId);
 
-  const isCompleted = completedCourses.includes(courseId);
+  const level = `${DIFFICULTY_LABELS[course.difficulty]}${DIFFICULTY_DETAILS[course.difficulty] ? ` (${DIFFICULTY_DETAILS[course.difficulty]})` : ''}`;
+  const audience = guessAudience(mod.sectionId);
+  const volume = estimateVolume(course);
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, ease: [0.05, 0.7, 0.1, 1] }}
-      style={{ marginBottom: 'var(--space-8)' }}
+      style={{ marginBottom: 20 }}
     >
       {/* Tags */}
       <div style={{
         display: 'flex', flexWrap: 'wrap', alignItems: 'center',
-        gap: 'var(--space-2)', marginBottom: 'var(--space-4)',
+        gap: 6, marginBottom: 12,
       }}>
         <span style={{
-          padding: '3px var(--space-3)',
-          fontSize: '0.6875rem',
+          padding: '3px 10px',
+          fontSize: 11,
           fontFamily: 'var(--font-body)',
           fontWeight: 500,
-          borderRadius: 'var(--md-sys-shape-corner-full)',
-          backgroundColor: 'var(--md-sys-color-surface-container-highest)',
-          color: 'var(--md-sys-color-on-surface-variant)',
+          borderRadius: 999,
+          backgroundColor: '#E2E4EA',
+          color: '#374151',
         }}>
           {DIFFICULTY_LABELS[course.difficulty]}
         </span>
         {course.tags.map((tag) => (
           <span key={tag} style={{
-            padding: '3px var(--space-3)',
-            fontSize: '0.6875rem',
+            padding: '3px 10px',
+            fontSize: 11,
             fontFamily: 'var(--font-body)',
             fontWeight: 400,
-            color: 'var(--md-sys-color-on-surface-variant)',
-            background: 'var(--md-sys-color-surface-container)',
-            borderRadius: 'var(--md-sys-shape-corner-full)',
+            color: '#6B7280',
+            background: '#F0F1F5',
+            borderRadius: 999,
           }}>
             {tag}
           </span>
         ))}
       </div>
 
-      {/* Title — large, bold, same as section cards */}
+      {/* Title */}
       <h1 style={{
         fontFamily: 'var(--font-display)',
         fontSize: 'var(--text-2xl)',
         fontWeight: 700,
         color: 'var(--md-sys-color-on-surface)',
-        marginBottom: 'var(--space-3)',
+        marginBottom: 8,
         letterSpacing: '-0.02em',
         lineHeight: 1.2,
       }}>
         {course.title}
       </h1>
 
-      {/* Description — medium gray, relaxed */}
+      {/* Description */}
       <p style={{
         fontFamily: 'var(--font-body)',
         fontSize: 'var(--text-sm)',
         color: 'var(--md-sys-color-on-surface-variant)',
-        marginBottom: 'var(--space-6)',
         maxWidth: 'var(--content-max)',
-        lineHeight: 1.7,
+        lineHeight: 1.6,
+        marginBottom: 16,
       }}>
         {course.description}
       </p>
 
-      {/* Complete toggle — rounded full pill */}
-      {!isCompleted ? (
-        <button
-          onClick={() => markCompleted(courseId)}
-          style={{
-            display: 'inline-flex', alignItems: 'center', gap: 'var(--space-2)',
-            padding: '0 var(--space-6)', height: 44,
-            borderRadius: 'var(--md-sys-shape-corner-full)',
-            background: 'var(--md-sys-color-primary)',
-            color: 'var(--md-sys-color-on-primary)',
-            border: 'none', cursor: 'pointer',
-            fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', fontWeight: 600,
-            letterSpacing: '0.01em',
-            transition: 'opacity 200ms cubic-bezier(0.2,0,0,1)',
-          }}
-          onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.9'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; }}
-        >
-          <Check size={18} />
-          Отметить пройденным
-        </button>
-      ) : (
-        <button
-          onClick={() => unmarkCompleted(courseId)}
-          style={{
-            display: 'inline-flex', alignItems: 'center', gap: 'var(--space-2)',
-            padding: '0 var(--space-6)', height: 44,
-            borderRadius: 'var(--md-sys-shape-corner-full)',
-            background: 'var(--md-sys-color-surface-container-high)',
-            color: 'var(--md-sys-color-primary)',
-            border: '1px solid var(--md-sys-color-outline-variant)',
-            cursor: 'pointer',
-            fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', fontWeight: 600,
-            transition: 'background 200ms cubic-bezier(0.2,0,0,1)',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = 'var(--md-sys-color-error-container)';
-            e.currentTarget.style.color = 'var(--md-sys-color-error)';
-            e.currentTarget.style.borderColor = 'transparent';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'var(--md-sys-color-surface-container-high)';
-            e.currentTarget.style.color = 'var(--md-sys-color-primary)';
-            e.currentTarget.style.borderColor = 'var(--md-sys-color-outline-variant)';
-          }}
-        >
-          <Check size={18} />
-          Пройден
-        </button>
-      )}
+      {/* Info pills: Уровень · Аудитория · Объём */}
+      <div style={{
+        display: 'flex', gap: 10, flexWrap: 'wrap',
+      }}>
+        <InfoPill
+          icon={
+            <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="22,12 18,12 15,21 9,3 6,12 2,12" />
+            </svg>
+          }
+          label="Уровень"
+          value={level}
+        />
+        <InfoPill
+          icon={
+            <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+              <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 00-3-3.87" />
+              <path d="M16 3.13a4 4 0 010 7.75" />
+            </svg>
+          }
+          label="Аудитория"
+          value={audience}
+        />
+        <InfoPill
+          icon={
+            <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12,6 12,12 16,14" />
+            </svg>
+          }
+          label="Объём"
+          value={volume}
+        />
+      </div>
     </motion.div>
   );
 }

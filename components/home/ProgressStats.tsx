@@ -35,7 +35,7 @@ export default function ProgressStats() {
     }}>
       {stats.map((stat) => (
         <div key={stat.label} style={{
-          background: '#FFFFFF',
+          background: '#F5F6F8',
           borderRadius: 'var(--md-sys-shape-corner-extra-large)',
           border: 'none',
           padding: 'var(--space-5)',

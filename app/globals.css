@@ -72,55 +72,77 @@
   background: var(--md-sys-color-outline);
 }
 
-/* Markdown lesson content */
+/* Markdown lesson content — clear hierarchy, Montserrat/Inter typography */
+.lesson-content {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.65;
+  color: #2B2B2B;
+  max-width: 760px;
+}
+
+/* H1 used for tab title (rendered in component header), but just in case */
 .lesson-content h1 {
   font-family: var(--font-display);
-  font-size: var(--text-xl);
-  font-weight: 600;
-  color: var(--md-sys-color-on-surface);
-  margin-bottom: var(--space-4);
+  font-size: 22px;
+  font-weight: 700;
+  color: #1A1A1A;
+  margin: 28px 0 14px;
   letter-spacing: -0.01em;
+  line-height: 1.25;
 }
+
+/* H2 — major subsection */
 .lesson-content h2 {
   font-family: var(--font-display);
-  font-size: var(--text-lg);
-  font-weight: 600;
-  color: var(--md-sys-color-on-surface);
-  margin-top: var(--space-8);
-  margin-bottom: var(--space-3);
-  padding-bottom: var(--space-2);
-  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  font-size: 18px;
+  font-weight: 700;
+  color: #1A1A1A;
+  margin: 32px 0 12px;
+  letter-spacing: -0.005em;
+  line-height: 1.3;
 }
+
+/* H3 — minor subsection */
 .lesson-content h3 {
   font-family: var(--font-display);
-  font-size: var(--text-base);
+  font-size: 15px;
   font-weight: 600;
-  color: var(--md-sys-color-on-surface);
-  margin-top: var(--space-6);
-  margin-bottom: var(--space-2);
+  color: #1A1A1A;
+  margin: 22px 0 8px;
+  line-height: 1.35;
 }
+
+/* H4 — inline label */
 .lesson-content h4 {
-  font-family: var(--font-display);
-  font-size: var(--text-sm);
+  font-family: var(--font-body);
+  font-size: 13px;
   font-weight: 600;
-  color: var(--md-sys-color-secondary);
-  margin-top: var(--space-4);
-  margin-bottom: var(--space-2);
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 16px 0 6px;
 }
+
+/* Paragraphs */
 .lesson-content p {
-  margin-bottom: var(--space-3);
+  margin: 0 0 12px;
+  font-size: 15px;
   line-height: 1.7;
-  color: var(--md-sys-color-on-surface-variant);
+  color: #3A3A3A;
 }
+
+/* Lists */
 .lesson-content ul,
 .lesson-content ol {
-  margin-bottom: var(--space-3);
-  padding-left: var(--space-6);
+  margin: 0 0 14px;
+  padding-left: 22px;
 }
 .lesson-content li {
-  margin-bottom: var(--space-1);
+  margin-bottom: 4px;
   line-height: 1.6;
-  color: var(--md-sys-color-on-surface-variant);
+  color: #3A3A3A;
+  font-size: 15px;
 }
 .lesson-content ul li {
   list-style-type: disc;
@@ -128,64 +150,354 @@
 .lesson-content ol li {
   list-style-type: decimal;
 }
-.lesson-content blockquote {
-  border-left: 3px solid var(--md-sys-color-primary);
-  background: var(--md-sys-color-surface-container);
-  border-radius: 0 var(--md-sys-shape-corner-small) var(--md-sys-shape-corner-small) 0;
-  padding: var(--space-3) var(--space-4);
-  margin: var(--space-4) 0;
+.lesson-content li::marker {
+  color: #999;
 }
-.lesson-content blockquote p {
-  color: var(--md-sys-color-on-surface);
+
+/* Callout blocks (styled blockquote) */
+.lesson-content .callout {
+  margin: 18px 0;
+  padding: 14px 18px;
+  border-radius: 12px;
+  border-left: 3px solid;
+  background: #F5F6F8;
+  border-color: #CCC;
 }
+.lesson-content .callout-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+  color: #555;
+}
+.lesson-content .callout-icon {
+  font-size: 16px;
+}
+.lesson-content .callout-body p:first-child {
+  /* Remove the emoji+first-line since we show label separately */
+  margin-top: 0;
+}
+.lesson-content .callout-body > *:last-child {
+  margin-bottom: 0;
+}
+.lesson-content .callout-body p,
+.lesson-content .callout-body li {
+  color: #333;
+  font-size: 14px;
+  font-style: normal;
+  line-height: 1.6;
+}
+.lesson-content .callout-body p + p {
+  margin-top: 10px;
+}
+.lesson-content .callout-body strong {
+  color: #1A1A1A;
+  font-weight: 700;
+}
+.lesson-content .callout-body ul {
+  margin: 6px 0;
+  padding-left: 16px;
+  list-style: disc outside;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.lesson-content .callout-body ul li {
+  padding: 0;
+  background: transparent;
+  font-size: 14px;
+  line-height: 1.55;
+}
+.lesson-content .callout-body ul li::marker {
+  color: currentColor;
+  opacity: 0.5;
+}
+
+/* Info — blue tint */
+.lesson-content .callout-info {
+  background: #EEF4FF;
+  border-color: #3B82F6;
+}
+.lesson-content .callout-info .callout-label {
+  color: #1D4ED8;
+}
+
+/* Warning — amber tint */
+.lesson-content .callout-warning {
+  background: #FFF7ED;
+  border-color: #F59E0B;
+}
+.lesson-content .callout-warning .callout-label {
+  color: #B45309;
+}
+
+/* Image — neutral */
+.lesson-content .callout-image {
+  background: #F8F9FA;
+  border-color: #D1D5DB;
+}
+.lesson-content .callout-image .callout-label {
+  color: #6B7280;
+}
+
+/* Success / main idea */
+.lesson-content .callout-success {
+  background: #ECFDF5;
+  border-color: #10B981;
+}
+.lesson-content .callout-success .callout-label {
+  color: #047857;
+}
+
+/* Goal */
+.lesson-content .callout-goal {
+  background: #FFF1F2;
+  border-color: #F43F5E;
+}
+.lesson-content .callout-goal .callout-label {
+  color: #BE123C;
+}
+
+/* Tip */
+.lesson-content .callout-tip {
+  background: #FEFCE8;
+  border-color: #EAB308;
+}
+.lesson-content .callout-tip .callout-label {
+  color: #A16207;
+}
+
+/* Tables - clean card-like */
 .lesson-content table {
   width: 100%;
-  font-size: var(--text-sm);
-  border-collapse: collapse;
-  margin: var(--space-4) 0;
+  font-size: 13px;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 20px 0;
+  background: #FFFFFF;
+  border: 1px solid #EAECEF;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
-.lesson-content th {
-  background: var(--md-sys-color-surface-container-high);
-  padding: var(--space-2) var(--space-3);
+.lesson-content thead th {
+  background: #F0F1F5;
+  padding: 12px 16px;
   text-align: left;
-  font-weight: 500;
-  font-family: var(--font-body);
-  color: var(--md-sys-color-on-surface);
-  border: 1px solid var(--md-sys-color-outline-variant);
+  font-weight: 600;
+  font-family: var(--font-display);
+  color: #4B5563;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid #E5E7EB;
 }
-.lesson-content td {
-  padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--md-sys-color-outline-variant);
-  color: var(--md-sys-color-on-surface-variant);
+.lesson-content tbody td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #F0F1F3;
+  color: #2B2B2B;
+  vertical-align: top;
+  line-height: 1.55;
 }
+.lesson-content tbody tr:nth-child(odd) td {
+  background: #FAFBFC;
+}
+.lesson-content tbody tr:last-child td {
+  border-bottom: none;
+}
+.lesson-content tbody tr:hover td {
+  background: #F0F1F5;
+}
+.lesson-content table br {
+  display: block;
+  content: "";
+  margin-top: 4px;
+}
+/* First cell of each row slightly bolder (often a term/name) */
+.lesson-content tbody td:first-child {
+  font-weight: 600;
+  color: #1A1A1A;
+}
+
+/* Inline code */
 .lesson-content code {
-  background: var(--md-sys-color-surface-container-high);
-  padding: 2px var(--space-2);
-  border-radius: var(--md-sys-shape-corner-extra-small);
-  font-size: 0.85em;
+  background: #F5F6F8;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 0.88em;
   font-family: var(--font-mono);
+  color: #1A1A1A;
 }
 .lesson-content pre {
-  background: var(--md-sys-color-surface-container-low);
-  border: 1px solid var(--md-sys-color-outline-variant);
-  border-radius: var(--md-sys-shape-corner-medium);
-  padding: var(--space-4);
+  background: #FAFBFC;
+  border: 1px solid #EAECEF;
+  border-radius: 8px;
+  padding: 14px 16px;
   overflow-x: auto;
-  margin: var(--space-4) 0;
+  margin: 14px 0;
+  font-size: 13px;
 }
 .lesson-content pre code {
   background: none;
   padding: 0;
 }
+
+/* Emphasis */
 .lesson-content strong {
-  color: var(--md-sys-color-on-surface);
+  color: #1A1A1A;
   font-weight: 600;
 }
 .lesson-content em {
-  color: var(--md-sys-color-on-surface-variant);
+  color: #555;
+  font-style: italic;
 }
+
+/* Divider */
 .lesson-content hr {
   border: none;
-  border-top: 1px solid var(--md-sys-color-outline-variant);
-  margin: var(--space-6) 0;
+  border-top: 1px solid #EAECEF;
+  margin: 24px 0;
+}
+
+/* Links */
+.lesson-content a {
+  color: #1D4ED8;
+  text-decoration: none;
+  border-bottom: 1px dashed #BFD1FF;
+  transition: border-color 150ms;
+}
+.lesson-content a:hover {
+  border-bottom-color: #1D4ED8;
+}
+
+/* First child — remove top margin so it hugs the tab header */
+.lesson-content > *:first-child {
+  margin-top: 0;
+}
+
+/* Dropdown animation */
+@keyframes bordik-dropdown-fadein {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════════════════════════════════════════
+   STABLE SCROLLBAR GUTTER
+   Reserves scrollbar space so content width doesn't shift
+   when scrollbar appears/disappears.
+   ═══════════════════════════════════════════════ */
+html,
+body {
+  scrollbar-gutter: stable;
+}
+
+/* Any scrollable area gets stable gutter to avoid content jumping */
+.scroll-stable,
+main,
+[data-scroll="stable"] {
+  scrollbar-gutter: stable;
+}
+
+/* ═══════════════════════════════════════════════
+   CUSTOM SCROLLBAR STYLING (thin, subtle)
+   ═══════════════════════════════════════════════ */
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #D1D5DB transparent;
+}
+
+/* WebKit */
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: #D1D5DB;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: #9CA3AF;
+  background-clip: padding-box;
+  border: 2px solid transparent;
+}
+*::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Smooth pulsing dot for active timer — slow and gentle like a heartbeat */
+@keyframes bordik-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.25; }
+}
+
+/* Stats page: disable scrollbar gutter on parent main — stats page doesn't need scroll */
+main:has(.stats-page) {
+  scrollbar-gutter: auto;
+  overflow-y: hidden;
+}
+
+/* ───────────── Tool calculator markdown ───────────── */
+.tool-md-ul,
+.tool-md-ol {
+  margin: 6px 0 14px 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.tool-md-ol {
+  counter-reset: tool-md-counter;
+}
+.tool-md-li {
+  position: relative;
+  padding-left: 24px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: #1A1A1A;
+  line-height: 1.6;
+}
+.tool-md-ul > .tool-md-li::before {
+  content: '';
+  position: absolute;
+  left: 8px;
+  top: 10px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #1A1A1A;
+}
+.tool-md-ol > .tool-md-li {
+  counter-increment: tool-md-counter;
+  padding-left: 28px;
+}
+.tool-md-ol > .tool-md-li::before {
+  content: counter(tool-md-counter);
+  position: absolute;
+  left: 0;
+  top: 0;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #1A1A1A;
+  color: #FFFFFF;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
 }

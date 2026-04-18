@@ -146,14 +146,18 @@ export function SubjectsIllustration() {
 import type { SectionId } from '@/lib/curriculum';
 
 const illustrationMap: Record<SectionId, () => React.ReactElement> = {
-  basic: BasicIllustration,
-  advanced: AdvancedIllustration,
-  expert: ExpertIllustration,
-  expansion: ExpansionIllustration,
-  territories: TerritoriesIllustration,
-  frontiers: FrontiersIllustration,
-  calculators: CalculatorsIllustration,
-  subjects: SubjectsIllustration,
+  fundamentals: BasicIllustration,
+  biomedical: AdvancedIllustration,
+  clinical: ExpertIllustration,
+  allied: ExpansionIllustration,
+  skills: TerritoriesIllustration,
+  hss: FrontiersIllustration,
+  threads: CalculatorsIllustration,
+  frontier: SubjectsIllustration,
+  business: BasicIllustration,
+  regulatory: AdvancedIllustration,
+  career: ExpansionIllustration,
+  tech: FrontiersIllustration,
 };
 
 export function SectionIllustration({ sectionId }: { sectionId: SectionId }) {

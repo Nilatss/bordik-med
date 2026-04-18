@@ -3,20 +3,32 @@
 import { useAppStore } from '@/lib/store';
 import { sections, getSectionById, getModulesBySection, getModuleById, type SectionId } from '@/lib/curriculum';
 import ProfilePage from '@/components/profile/ProfilePage';
+import ToolsPage from '@/components/tools/ToolsPage';
+import ToolView from '@/components/tools/ToolView';
+import StatisticsPage from '@/components/stats/StatisticsPage';
+import NewsFeed from '@/components/feed/NewsFeed';
+import TestsPage from '@/components/tests/TestsPage';
 import Sidebar from '@/components/layout/Sidebar';
 import Topbar from '@/components/layout/Topbar';
 import ModuleGrid from '@/components/home/ModuleGrid';
 import CourseGrid from '@/components/home/CourseGrid';
-import ProgressStats from '@/components/home/ProgressStats';
 import CoursePage from '@/components/course/CoursePage';
-import Roadmap from '@/components/home/Roadmap';
 import { ArrowLeft, ArrowRight } from '@/components/icons';
 import { SectionIllustration } from '@/components/illustrations/SectionIllustrations';
 
 const SECTION_BG: Record<SectionId, string> = {
-  basic: '#F7F4F2', advanced: '#F0F3F8', expert: '#F5F1F8',
-  expansion: '#F0F6F2', territories: '#F5F4EF', frontiers: '#EEF3F7',
-  calculators: '#F3F3F3', subjects: '#F2F0F5',
+  fundamentals: '#F5F6F8',
+  biomedical: '#F5F6F8',
+  clinical: '#F5F6F8',
+  allied: '#F5F6F8',
+  skills: '#F5F6F8',
+  hss: '#F5F6F8',
+  threads: '#F5F6F8',
+  frontier: '#F5F6F8',
+  business: '#F5F6F8',
+  regulatory: '#F5F6F8',
+  career: '#F5F6F8',
+  tech: '#F5F6F8',
 };
 
 /* Back button reusable */
@@ -28,12 +40,12 @@ function BackButton({ onClick, label }: { onClick: () => void; label: string }) 
         display: 'inline-flex', alignItems: 'center', gap: 'var(--space-2)',
         fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', fontWeight: 500,
         color: 'var(--md-sys-color-on-surface-variant)', background: 'transparent',
-        border: 'none', cursor: 'pointer', marginBottom: 'var(--space-4)',
+        border: 'none', cursor: 'pointer', marginBottom: 16,
         alignSelf: 'flex-start', padding: 'var(--space-1) var(--space-2)',
         borderRadius: 'var(--md-sys-shape-corner-small)',
         transition: 'background 200ms cubic-bezier(0.2,0,0,1)',
       }}
-      onMouseEnter={(e) => { e.currentTarget.style.background = 'color-mix(in srgb, var(--md-sys-color-on-surface) 8%, transparent)'; }}
+      onMouseEnter={(e) => { e.currentTarget.style.background = '#E8E9ED'; }}
       onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
     >
       <ArrowLeft size={16} />
@@ -43,38 +55,103 @@ function BackButton({ onClick, label }: { onClick: () => void; label: string }) 
 }
 
 /* Section cards */
+const UNLOCKED_SECTIONS: SectionId[] = ['fundamentals'];
+
+/** Grouping of sections into logical categories (order matters) */
+const SECTION_CATEGORIES: { title: string; ids: SectionId[] }[] = [
+  {
+    title: 'Образование и подготовка',
+    ids: ['fundamentals', 'career'],
+  },
+  {
+    title: 'Клиническое ядро',
+    ids: ['biomedical', 'clinical', 'skills'],
+  },
+  {
+    title: 'Смежные направления',
+    ids: ['allied', 'threads'],
+  },
+  {
+    title: 'Здравоохранение как система',
+    ids: ['hss', 'regulatory'],
+  },
+  {
+    title: 'Инновации и бизнес',
+    ids: ['frontier', 'business', 'tech'],
+  },
+];
+
 function SectionCards({ onSelect }: { onSelect: (id: SectionId) => void }) {
   const { completedCourses } = useAppStore();
-  return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--space-3)' }}>
-      {sections.map((sec) => {
-        const mods = getModulesBySection(sec.id);
-        const totalCourses = mods.reduce((s, m) => s + m.courses.length, 0);
-        const completedCount = mods.reduce((s, m) => s + m.courses.filter((c) => completedCourses.includes(c.id)).length, 0);
-        const pct = totalCourses > 0 ? Math.round((completedCount / totalCourses) * 100) : 0;
-        return (
-          <button key={sec.id} onClick={() => onSelect(sec.id)} style={{
-            background: SECTION_BG[sec.id], borderRadius: 'var(--md-sys-shape-corner-extra-large)',
-            border: 'none', padding: 'var(--space-5)', textAlign: 'left', cursor: 'pointer',
-            position: 'relative', overflow: 'hidden', minHeight: 160,
-            display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
-            transition: 'transform 200ms cubic-bezier(0.2,0,0,1)',
-          }}
-            onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; }}
+
+  const renderSection = (secId: SectionId) => {
+    const sec = sections.find((s) => s.id === secId);
+    if (!sec) return null;
+    const mods = getModulesBySection(sec.id);
+    const totalCourses = mods.reduce((s, m) => s + m.courses.length, 0);
+    const completedCount = mods.reduce((s, m) => s + m.courses.filter((c) => completedCourses.includes(c.id)).length, 0);
+    const pct = totalCourses > 0 ? Math.round((completedCount / totalCourses) * 100) : 0;
+    const isUnlocked = UNLOCKED_SECTIONS.includes(sec.id);
+
+    return (
+          <button
+            key={sec.id}
+            onClick={() => { if (isUnlocked) onSelect(sec.id); }}
+            disabled={!isUnlocked}
+            style={{
+              background: SECTION_BG[sec.id],
+              borderRadius: 'var(--md-sys-shape-corner-extra-large)',
+              border: 'none',
+              padding: 'var(--space-5)', textAlign: 'left',
+              cursor: isUnlocked ? 'pointer' : 'not-allowed',
+              opacity: isUnlocked ? 1 : 0.62,
+              position: 'relative', overflow: 'hidden', minHeight: 160,
+              display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+              transition: 'background 400ms cubic-bezier(0.22,1,0.36,1), transform 400ms cubic-bezier(0.22,1,0.36,1)',
+            }}
+            onMouseEnter={(e) => {
+              if (isUnlocked) {
+                e.currentTarget.style.background = '#F0F2F5';
+                e.currentTarget.style.transform = 'translateY(-1px)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = SECTION_BG[sec.id];
+              e.currentTarget.style.transform = 'translateY(0)';
+            }}
           >
-            <div style={{ position: 'absolute', top: -10, right: -10, opacity: 0.7, pointerEvents: 'none' }}>
-              <SectionIllustration sectionId={sec.id} />
-            </div>
+            {/* "Скоро" lock badge */}
+            {!isUnlocked && (
+              <div style={{
+                position: 'absolute', top: 12, right: 12, zIndex: 2,
+                display: 'inline-flex', alignItems: 'center', gap: 6,
+                padding: '4px 10px',
+                borderRadius: 999,
+                background: '#1A1A1A',
+                color: '#FFFFFF',
+                fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
+                letterSpacing: '0.06em', textTransform: 'uppercase',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
+              }}>
+                <svg width={10} height={10} viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" />
+                  <path d="M7 11V7a5 5 0 0110 0v4" />
+                </svg>
+                Скоро
+              </div>
+            )}
+
             <div style={{ marginBottom: 'var(--space-3)', position: 'relative', zIndex: 1 }}>
               <span style={{
                 display: 'inline-flex', alignItems: 'center', gap: 'var(--space-1)',
-                padding: '3px var(--space-2)', borderRadius: 'var(--md-sys-shape-corner-full)',
-                background: 'rgba(255,255,255,0.85)', fontFamily: 'var(--font-mono)',
+                padding: '4px var(--space-2)', borderRadius: 'var(--md-sys-shape-corner-full)',
+                background: '#FFFFFF',
+                boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
+                fontFamily: 'var(--font-mono)',
                 fontSize: '0.625rem', fontWeight: completedCount > 0 ? 600 : 500,
                 color: completedCount > 0 ? 'var(--md-sys-color-primary)' : 'var(--md-sys-color-on-surface-variant)',
               }}>
-                <span style={{ width: 6, height: 6, borderRadius: '50%', background: completedCount > 0 ? 'var(--md-sys-color-primary)' : 'var(--md-sys-color-tertiary)' }} />
                 {completedCount > 0 ? `${pct}% пройдено` : `${mods.length} модулей`}
               </span>
             </div>
@@ -82,44 +159,90 @@ function SectionCards({ onSelect }: { onSelect: (id: SectionId) => void }) {
               <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--text-base)', fontWeight: 700, color: 'var(--md-sys-color-on-surface)', marginBottom: 'var(--space-1)', lineHeight: 1.25 }}>
                 {sec.title}
               </h3>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--md-sys-color-on-surface-variant)', lineHeight: 1.4, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', maxWidth: '75%' }}>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--md-sys-color-on-surface-variant)', lineHeight: 1.4, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                 {sec.description}
               </p>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-1)', marginTop: 'var(--space-3)', position: 'relative', zIndex: 1 }}>
-              <span style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', fontWeight: 500, color: 'var(--md-sys-color-on-surface)' }}>
-                Начать обучение
+              <span style={{
+                fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', fontWeight: 500,
+                color: isUnlocked ? 'var(--md-sys-color-on-surface)' : '#9CA3AF',
+              }}>
+                {isUnlocked ? 'Начать обучение' : 'Раздел в разработке'}
               </span>
-              <ArrowRight size={14} color="var(--md-sys-color-on-surface)" />
+              {isUnlocked && <ArrowRight size={14} color="var(--md-sys-color-on-surface)" />}
             </div>
           </button>
-        );
-      })}
+    );
+  };
+
+  return (
+    <div>
+      {SECTION_CATEGORIES.map(({ title, ids }) => (
+        <section key={title} style={{ marginBottom: 28 }}>
+          <h3 style={{
+            fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700,
+            color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
+            marginBottom: 12,
+          }}>
+            {title}
+          </h3>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: 'var(--space-3)',
+          }}>
+            {ids.map((id) => renderSection(id))}
+          </div>
+        </section>
+      ))}
     </div>
   );
 }
 
 /* ═══ Main ═══ */
 export default function Home() {
-  const { activeSection, activeModuleId, setActiveSection, goHome, closeModule, currentCourseId, closeCourse, showProfile, toggleProfile } = useAppStore();
+  const { activeSection, activeModuleId, setActiveSection, goHome, closeModule, currentCourseId, closeCourse, showProfile, showLearning, showTools, showStats, showTests, setShowLearning, toggleProfile, activeToolId } = useAppStore();
   const section = activeSection ? getSectionById(activeSection) : null;
   const mod = activeModuleId ? getModuleById(activeModuleId) : null;
 
-  // 5 views: profile | home → section (modules) → module (courses) → course
-  const view = showProfile ? 'profile' : currentCourseId ? 'course' : activeModuleId ? 'module' : activeSection ? 'section' : 'home';
+  // views: profile | stats | tests | tool | tools | home | learning (sections) → section (modules) → module (courses) → course
+  const view = showProfile ? 'profile'
+    : showStats ? 'stats'
+    : showTests ? 'tests'
+    : (showTools && activeToolId) ? 'tool'
+    : showTools ? 'tools'
+    : currentCourseId ? 'course'
+    : activeModuleId ? 'module'
+    : activeSection ? 'section'
+    : showLearning ? 'learning'
+    : 'home';
 
   return (
     <div style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
       <Sidebar />
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, height: '100vh' }}>
-        <Topbar />
-        <main style={{ flex: 1, overflowY: 'auto', padding: 'var(--space-6)' }}>
+        <main style={{ flex: 1, overflowY: 'auto', background: '#FFFFFF' }}>
+          <div style={{ padding: '20px 24px', minHeight: 'calc(100% - 48px)' }}>
 
           {view === 'profile' && (
-            <div style={{ maxWidth: 'var(--container-max)', margin: '0 auto' }}>
-              <BackButton onClick={toggleProfile} label="Назад" />
-              <ProfilePage />
-            </div>
+            <ProfilePage />
+          )}
+
+          {view === 'tools' && (
+            <ToolsPage />
+          )}
+
+          {view === 'tool' && activeToolId && (
+            <ToolView toolId={activeToolId} />
+          )}
+
+          {view === 'stats' && (
+            <StatisticsPage />
+          )}
+
+          {view === 'tests' && (
+            <TestsPage />
           )}
 
           {view === 'course' && (
@@ -130,7 +253,7 @@ export default function Home() {
           )}
 
           {view === 'module' && mod && (
-            <div style={{ maxWidth: 'var(--container-max)', margin: '0 auto' }}>
+            <div style={{ margin: '0' }}>
               <BackButton onClick={closeModule} label={section?.title || 'Назад'} />
               <div style={{ marginBottom: 'var(--space-6)' }}>
                 <h2 style={{
@@ -151,8 +274,8 @@ export default function Home() {
           )}
 
           {view === 'section' && section && (
-            <div style={{ maxWidth: 'var(--container-max)', margin: '0 auto' }}>
-              <BackButton onClick={goHome} label="Все разделы" />
+            <div style={{ margin: '0' }}>
+              <BackButton onClick={() => setShowLearning(true)} label="Все разделы" />
               <div style={{ marginBottom: 'var(--space-6)' }}>
                 <h2 style={{
                   fontFamily: 'var(--font-display)', fontSize: 'var(--text-2xl)', fontWeight: 700,
@@ -167,37 +290,49 @@ export default function Home() {
                   {section.description}
                 </p>
               </div>
-              {activeSection === 'subjects' && <Roadmap />}
+              {/* Roadmap removed — old structure. New curriculum has 12 sections. */}
               <ModuleGrid />
             </div>
           )}
 
-          {view === 'home' && (
-            <div style={{ maxWidth: 'var(--container-max)', margin: '0 auto' }}>
-              <ProgressStats />
-              <div style={{
-                background: '#FFFFFF', borderRadius: 'var(--md-sys-shape-corner-extra-large)',
-                padding: 'var(--space-6)',
-              }}>
-                <div style={{ marginBottom: 'var(--space-5)' }}>
-                  <h2 style={{
-                    fontFamily: 'var(--font-display)', fontSize: 'var(--text-xl)', fontWeight: 700,
-                    color: 'var(--md-sys-color-on-surface)', marginBottom: 'var(--space-1)', letterSpacing: '-0.01em',
-                  }}>
-                    Разделы обучения
-                  </h2>
-                  <p style={{
-                    fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)',
-                    color: 'var(--md-sys-color-on-surface-variant)', lineHeight: 1.5,
-                  }}>
-                    Выберите раздел для начала
-                  </p>
-                </div>
-                <SectionCards onSelect={setActiveSection} />
+          {view === 'learning' && (
+            <div style={{ margin: '0' }}>
+              <div style={{ marginBottom: 'var(--space-5)' }}>
+                <h2 style={{
+                  fontFamily: 'var(--font-display)', fontSize: 'var(--text-xl)', fontWeight: 700,
+                  color: 'var(--md-sys-color-on-surface)', marginBottom: 'var(--space-1)', letterSpacing: '-0.01em',
+                }}>
+                  Разделы обучения
+                </h2>
+                <p style={{
+                  fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)',
+                  color: 'var(--md-sys-color-on-surface-variant)', lineHeight: 1.5,
+                }}>
+                  Выберите раздел для начала
+                </p>
               </div>
+              <SectionCards onSelect={setActiveSection} />
             </div>
           )}
 
+          {view === 'home' && (
+            <NewsFeed />
+          )}
+
+          </div>
+          <footer style={{
+            padding: '14px 24px 18px',
+            textAlign: 'center',
+            borderTop: '1px solid #F0F1F5',
+            background: '#FFFFFF',
+          }}>
+            <p style={{
+              fontFamily: 'var(--font-body)', fontSize: 11, color: '#B0B3BA',
+              letterSpacing: '0.02em',
+            }}>
+              Powered by <strong style={{ color: '#6B7280', fontWeight: 600 }}>Bordik</strong>
+            </p>
+          </footer>
         </main>
       </div>
     </div>
