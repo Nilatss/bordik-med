@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { CATALOG_TOOLS } from '@/lib/tools-catalog';
@@ -206,6 +206,7 @@ export default function ToolView({ toolId }: { toolId: string }) {
         <InfoPill icon={<IconBolt />} label="Тип" value={kindLabel} />
         <InfoPill icon={<IconTag />} label="Раздел" value={tool.subcategory} />
         <InfoPill icon={<IconBook />} label="Источник" value={shortRef(runner.reference)} />
+        <InfoPill icon={<IconGlobe />} label="Страны" value={runner.countries ?? 'Международный'} />
       </div>
 
       {/* Main grid: content card (left) + TOC sidebar (right) — identical to TabbedLessonViewer */}
@@ -253,7 +254,7 @@ export default function ToolView({ toolId }: { toolId: string }) {
 
           {active.kind === 'info' && active.body && (
             <div className="lesson-content tool-info">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
                 {active.body}
               </ReactMarkdown>
             </div>
@@ -344,6 +345,62 @@ export default function ToolView({ toolId }: { toolId: string }) {
     </div>
   );
 }
+
+/* ════════════════ Markdown helpers: ♂/♀ badges + formula cards ════════════════ */
+
+/**
+ * Walk React children recursively. When a string contains ♂/♀, split and wrap
+ * those symbols in coloured badge spans.
+ */
+function withSexBadges(children: React.ReactNode): React.ReactNode {
+  if (children == null) return children;
+  if (typeof children === 'string') {
+    if (!/[♂♀]/.test(children)) return children;
+    const parts: React.ReactNode[] = [];
+    let buffer = '';
+    let keyCounter = 0;
+    for (const ch of children) {
+      if (ch === '♂' || ch === '♀') {
+        if (buffer) { parts.push(buffer); buffer = ''; }
+        parts.push(
+          <span
+            key={`sx-${keyCounter++}`}
+            className={ch === '♂' ? 'sex-badge sex-m' : 'sex-badge sex-f'}
+            aria-label={ch === '♂' ? 'мужчины' : 'женщины'}
+          >{ch}</span>
+        );
+      } else {
+        buffer += ch;
+      }
+    }
+    if (buffer) parts.push(buffer);
+    return parts.length === 1 ? parts[0] : <>{parts}</>;
+  }
+  if (Array.isArray(children)) {
+    return children.map((c, i) => {
+      const wrapped = withSexBadges(c);
+      if (wrapped == null || typeof wrapped === 'string' || typeof wrapped === 'number') {
+        return <React.Fragment key={i}>{wrapped}</React.Fragment>;
+      }
+      return <React.Fragment key={i}>{wrapped}</React.Fragment>;
+    });
+  }
+  return children;
+}
+
+/**
+ * ReactMarkdown component overrides. Only post-processing: wrapping ♂/♀ in
+ * coloured badges inside paragraphs, lists, cells, strong, em. All visual
+ * styling remains in globals.css (.lesson-content.tool-info).
+ */
+const mdComponents = {
+  p: ({ children }: { children?: React.ReactNode }) => <p>{withSexBadges(children)}</p>,
+  li: ({ children }: { children?: React.ReactNode }) => <li>{withSexBadges(children)}</li>,
+  td: ({ children }: { children?: React.ReactNode }) => <td>{withSexBadges(children)}</td>,
+  th: ({ children }: { children?: React.ReactNode }) => <th>{withSexBadges(children)}</th>,
+  strong: ({ children }: { children?: React.ReactNode }) => <strong>{withSexBadges(children)}</strong>,
+  em: ({ children }: { children?: React.ReactNode }) => <em>{withSexBadges(children)}</em>,
+};
 
 /* ════════════════ Calculator body ════════════════ */
 
@@ -636,6 +693,9 @@ function IconTag() {
 }
 function IconBook() {
   return <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>;
+}
+function IconGlobe() {
+  return <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><circle cx={12} cy={12} r={10}/><line x1={2} y1={12} x2={22} y2={12}/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>;
 }
 
 const backBtnStyle: React.CSSProperties = {

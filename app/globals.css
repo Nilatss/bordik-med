@@ -490,7 +490,7 @@ main:has(.stats-page) {
   margin-bottom: 12px;
 }
 
-/* ── Inline code (used for short labels like `DF = ...`) ── */
+/* ── Inline code (labels like `5 × кг`) — small pill style ── */
 .lesson-content.tool-info code {
   background: #F1F5F9;
   color: #0F172A;
@@ -502,38 +502,85 @@ main:has(.stats-page) {
   font-family: var(--font-mono);
 }
 
-/* ── Formula card (fenced code block) ── */
+/* ── Formula card: when a <p> has ONLY a <code> child (line-formula), render as clean info card ── */
+.lesson-content.tool-info p:has(> code:only-child) {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-left: 3px solid #6B7280;
+  border-radius: 12px;
+  padding: 16px 20px 16px 18px;
+  margin: 16px 0;
+  position: relative;
+  overflow-x: auto;
+}
+.lesson-content.tool-info p:has(> code:only-child)::before {
+  content: 'ФОРМУЛА';
+  position: absolute;
+  top: 8px;
+  left: 18px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  color: #9CA3AF;
+  letter-spacing: 0.12em;
+}
+.lesson-content.tool-info p:has(> code:only-child) code {
+  display: block;
+  background: transparent;
+  padding: 14px 0 0 0;
+  color: #111827;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  font-family: var(--font-mono);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ── Fenced code block (triple-backtick) — rarely used, same formula style ── */
 .lesson-content.tool-info pre {
-  background: #FFFFFF;
-  border: 1px solid #E5E7EB;
-  color: #1F2937;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-left: 3px solid #6B7280;
+  color: #111827;
   padding: 18px 22px;
   font-size: 15px;
   font-weight: 500;
   letter-spacing: -0.005em;
   border-radius: 12px;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
-  margin: 14px 0 18px;
-  position: relative;
-}
-.lesson-content.tool-info pre::before {
-  content: 'ƒ';
-  position: absolute;
-  top: 10px;
-  right: 14px;
-  font-family: var(--font-display);
-  font-size: 15px;
-  font-weight: 700;
-  color: #C7D2FE;
-  font-style: italic;
+  margin: 16px 0;
 }
 .lesson-content.tool-info pre code {
   background: transparent;
   border: none;
-  color: #1F2937;
+  color: #111827;
   font-weight: 500;
   padding: 0;
   font-size: 15px;
+}
+
+/* ── Sex badges: ♂ (blue) and ♀ (pink) — small coloured rounded chips ── */
+.sex-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  vertical-align: -0.15em;
+  margin: 0 1px;
+  font-family: 'Segoe UI Symbol', 'Apple Symbols', system-ui, sans-serif;
+}
+.sex-badge.sex-m {
+  background: #DBEAFE;
+  color: #1D4ED8;
+}
+.sex-badge.sex-f {
+  background: #FCE7F3;
+  color: #BE185D;
 }
 
 /* ── Lists: more breathing room, softer markers ── */

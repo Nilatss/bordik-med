@@ -53,6 +53,8 @@ export interface ScoreTool {
   info?: string;
   /** Optional quick-fill examples */
   presets?: Preset[];
+  /** Countries / regions where the tool is commonly used. Pre-formatted string, e.g. "Международный" or "США · ЕС · РФ" */
+  countries?: string;
 }
 
 export interface CalculatorTool {
@@ -70,6 +72,8 @@ export interface CalculatorTool {
   info?: string;
   /** Optional quick-fill examples */
   presets?: Preset[];
+  /** Countries / regions where the tool is commonly used */
+  countries?: string;
 }
 
 export type ToolRunner = ScoreTool | CalculatorTool;
@@ -136,6 +140,7 @@ export const TOOL_RUNNERS: Record<string, ToolRunner> = {
       return { value: val, unit: 'кг/м²', interpretation, color };
     },
     reference: 'ВОЗ: <18.5 / 18.5–24.9 / 25–29.9 / ≥30. Азия: альтернативные cutoffs 23 и 27.5.',
+    countries: 'Международный (ВОЗ)',
     presets: [
       { label: 'Взрослый ♂ (среднее)', values: { weight: 75, height: 175 } },
       { label: 'Взрослая ♀ (среднее)', values: { weight: 60, height: 165 } },
@@ -212,6 +217,7 @@ export const TOOL_RUNNERS: Record<string, ToolRunner> = {
       return { value: bsa.toFixed(2), unit: 'м²', interpretation: 'Площадь поверхности тела', color: '#1A1A1A' };
     },
     reference: 'Mosteller, 1987: BSA = √(Вес × Рост / 3600). Стандарт в онкологии (химиотерапия).',
+    countries: 'США · Международный',
     presets: [
       { label: 'Взрослый ♂ 75/175',  values: { weight: 75, height: 175 } },
       { label: 'Взрослая ♀ 60/165',  values: { weight: 60, height: 165 } },
@@ -280,6 +286,7 @@ export const TOOL_RUNNERS: Record<string, ToolRunner> = {
       return { value: bsa.toFixed(2), unit: 'м²', interpretation: 'Площадь поверхности тела', color: '#1A1A1A' };
     },
     reference: 'Du Bois & Du Bois, 1916: BSA = 0.007184 × W^0.425 × H^0.725.',
+    countries: 'Международный',
     presets: [
       { label: 'Взрослый ♂ 75/175', values: { weight: 75, height: 175 } },
       { label: 'Взрослая ♀ 60/165', values: { weight: 60, height: 165 } },
@@ -361,6 +368,7 @@ export const TOOL_RUNNERS: Record<string, ToolRunner> = {
       return { value: crcl.toFixed(0), unit: 'мл/мин', interpretation, color };
     },
     reference: 'Cockcroft-Gault 1976: CrCl = [(140-age)×W×(0.85 если Ж)] / (72 × SCr mg/dL). Стандарт FDA/EMA для дозирования лекарств.',
+    countries: 'США (FDA) · ЕС (EMA) · Международный',
     presets: [
       { label: 'Здоровый ♂ 30 лет',     values: { age: 30, weight: 75, creatinine: 88, female: false } },
       { label: 'Здоровая ♀ 30 лет',     values: { age: 30, weight: 60, creatinine: 70, female: true } },
@@ -453,6 +461,7 @@ export const TOOL_RUNNERS: Record<string, ToolRunner> = {
       return { value: egfr.toFixed(0), unit: 'мл/мин/1.73м²', interpretation, color };
     },
     reference: 'CKD-EPI 2021 (race-free). Текущий стандарт KDIGO и NKF-ASN.',
+    countries: 'Международный (KDIGO)',
     presets: [
       { label: 'Здоровый ♂ 40 лет',   values: { age: 40, creatinine: 88, female: false } },
       { label: 'Здоровая ♀ 40 лет',   values: { age: 40, creatinine: 70, female: true } },
@@ -817,6 +826,7 @@ eGFR = 142 × min(SCr/κ, 1)^α × max(SCr/κ, 1)^(−1,200) × 0,9938^возр�
       return { value: String(val), interpretation, color };
     },
     reference: 'MELD = 3.78×ln(билирубин) + 11.2×ln(INR) + 9.57×ln(креатинин) + 6.43. UNOS, OPTN.',
+    countries: 'США (UNOS) · Международный',
     presets: [
       { label: 'Компенсированный цирроз',  values: { bili: 20, inr: 1.1, creat: 80, dialysis: false } },
       { label: 'Декомпенсированный',        values: { bili: 60, inr: 1.8, creat: 130, dialysis: false } },
@@ -918,6 +928,7 @@ Na зажат 125–137. Добавление Na улучшает предска
       };
     },
     reference: 'Parkland (Baxter): 4 мл × %TBSA × кг Ringer за 24 ч, половина в первые 8 ч. ATLS, ABA.',
+    countries: 'Международный (ATLS, ABA)',
     presets: [
       { label: 'Взрослый 70 кг, 20 %',   values: { weight: 70, tbsa: 20 } },
       { label: 'Взрослый 80 кг, 40 %',   values: { weight: 80, tbsa: 40 } },
@@ -1225,6 +1236,7 @@ Holliday-Segar используется как база, к которой до�
       { min: 2, max: 9, label: '≥2 баллов', color: '#EF4444', description: 'Высокий риск. ≥2.2% в год. Антикоагуляция показана (DOAC предпочтительно).' },
     ],
     reference: 'ESC/AHA: ≥2 М или ≥3 Ж — показание к антикоагуляции. Не учитывает Ж без других факторов.',
+    countries: 'Международный (ESC, AHA, РКО)',
     info: `### Для чего используется
 **CHA₂DS₂-VASc** — оценка годового риска **тромбоэмболического инсульта** при неклапанной **фибрилляции предсердий (ФП)**. Используется для принятия решения об антикоагулянтной терапии.
 
@@ -1818,6 +1830,7 @@ HEART + hs-Tn 0/1 — наиболее современный подход к т
       { min: 2, max: 3, label: '≥2 балла', color: '#EF4444', description: 'Высокий риск. Продолжить оценку (лактат, SOFA). Возможен сепсис.' },
     ],
     reference: 'Sepsis-3 (2016): ≥2 вне ICU — подозрение на сепсис. Быстрый прикроватный скрининг.',
+    countries: 'Международный (SSC, Sepsis-3)',
     info: `### Для чего используется
 **qSOFA (quick SOFA)** — прикроватный скрининг **риска плохого исхода при подозрении на сепсис** вне ICU. Определён в **Sepsis-3 consensus (2016)**.
 
@@ -2034,6 +2047,7 @@ qSOFA ≥ 2 ассоциирован со **смертностью ~ 10 %** у �
       { min: 7, max: 20, label: '≥7',   color: '#EF4444', description: 'Высокий. Экстренная оценка, возможен перевод в ICU.' },
     ],
     reference: 'RCP 2017, NHS стандарт. Единичный критерий =3 балла → уровень "средний".',
+    countries: 'Великобритания (NHS, RCP) · EU',
     info: `### Для чего используется
 **NEWS2 (National Early Warning Score 2, RCP 2017)** — стандарт **раннего распознавания клинического ухудшения** у взрослых стационарных пациентов. Обязателен во всех NHS-больницах UK с 2017, широко принят в EU и части РФ.
 
@@ -2144,6 +2158,7 @@ C/V/P/U = **3 балла**. Alert = 0.
       { min: 13, max: 15, label: '13–15 (лёгкая)',  color: '#22C55E', description: 'Лёгкое нарушение / норма.' },
     ],
     reference: 'Teasdale & Jennett 1974. Стандарт оценки ЧМТ.',
+    countries: 'Международный',
     info: `### Для чего используется
 **Шкала комы Глазго (GCS, Teasdale & Jennett 1974)** — стандартизированная оценка уровня сознания у пациентов с **ЧМТ, инсультом, коматозных**. Используется во всём мире в травматологии, реанимации, неврологии.
 
@@ -2265,6 +2280,7 @@ C/V/P/U = **3 балла**. Alert = 0.
       { min: 7, max: 10, label: '7–10 (удовлетв.)',    color: '#22C55E', description: 'Удовлетворительное состояние новорождённого.' },
     ],
     reference: 'Virginia Apgar 1952. Оценка на 1-й и 5-й минуте после рождения.',
+    countries: 'Международный',
     info: `### Для чего используется
 **Шкала Апгар (Virginia Apgar, 1952)** — оценка состояния **новорождённого** на **1-й и 5-й минуте** после рождения. Используется для:
 
@@ -4828,6 +4844,7 @@ NYHA и ACC/AHA — комплементарны: ACC/AHA статичны (пр
       { min: 7, max: 10, label: '7–10 (тяжёлый)',    color: '#EF4444', description: 'Тяжёлый РДС. Требуется поддержка дыхания.' },
     ],
     reference: 'Silverman-Anderson 1956. Оценка РДС новорождённого (популярно в РФ, СНГ, ЛатАм).',
+    countries: 'РФ · СНГ · Латинская Америка',
     info: `### Для чего используется
 **Silverman-Anderson score (1956)** — клиническая оценка тяжести **респираторного дистресс-синдрома (РДС) у новорождённого**. Широко используется в РФ, СНГ, Латинской Америке. Оценивается каждые 30 мин в первые часы жизни.
 
@@ -4977,6 +4994,7 @@ NYHA и ACC/AHA — комплементарны: ACC/AHA статичны (пр
       { min: 1, max: 7, label: '≥1 критерий',       color: '#EF4444', description: 'Показана КТ головы.' },
     ],
     reference: 'Stiell 2001. Для пациентов 16+ лет с ЧМТ и GCS 13–15.',
+    countries: 'Канада · Международный',
     info: `### Для чего используется
 **Canadian CT Head Rule (Stiell 2001)** — клинические критерии для решения о **необходимости КТ головы** у взрослых (≥ 16 лет) с лёгкой ЧМТ и GCS 13–15. Валидизирована на > 4000 пациентов.
 
@@ -5432,6 +5450,7 @@ NYHA и ACC/AHA — комплементарны: ACC/AHA статичны (пр
       { min: 4, max: 5, label: '4–5',  color: '#EF4444', description: '62–65%. Эмпирические АБ.' },
     ],
     reference: 'Little 2013 (UK). Альтернатива Centor в NICE CG69.',
+    countries: 'Великобритания (NICE)',
     info: `### Для чего используется
 **FeverPAIN score (Little 2013)** — британская альтернатива Centor для оценки **вероятности бактериального (стрептококкового) фарингита** и решения о назначении антибиотиков. Рекомендована **NICE CG69**.
 
