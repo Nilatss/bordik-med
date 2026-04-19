@@ -401,6 +401,19 @@ export const RUNNER_LOADERS: Record<string, RunnerLoader> = {
   "cmqcc": () => import('./cmqcc'),
   "4t-pph": () => import('./4t-pph'),
   "figo-staging": () => import('./figo-staging'),
+  "stan": () => import('./stan'),
+  "iota": () => import('./iota'),
+  "bethesda-cyto": () => import('./bethesda-cyto'),
+  "asccp": () => import('./asccp'),
+  "palm-coein": () => import('./palm-coein'),
+  "rotterdam": () => import('./rotterdam'),
+  "afs-enzian": () => import('./afs-enzian'),
+  "popq": () => import('./popq'),
+  "who-mec": () => import('./who-mec'),
+  "greene": () => import('./greene'),
+  "straw10": () => import('./straw10'),
+  "frax-men": () => import('./frax-men'),
+  "rcog-37a": () => import('./rcog-37a'),
 };
 
 const runnerCache = new Map<string, ToolRunner>();
