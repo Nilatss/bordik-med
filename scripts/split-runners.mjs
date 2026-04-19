@@ -19,9 +19,49 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, unlinkSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { execSync } from 'node:child_process';
 import ts from 'typescript';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
+
+// ─── DEPRECATED — DO NOT RUN ───────────────────────────────────────────────
+// This script was a one-shot migration tool: it parsed the old monolithic
+// lib/tools-runners.ts (3.7 MB, 446 runners) and split it into per-runner
+// files. That migration is DONE. lib/tools-runners.ts is now a 184-line
+// stub — re-running this script parses 0 runners and WIPES lib/runners/.
+//
+// All runners are now hand-maintained per-file under lib/runners/<id>.ts
+// and registered in lib/runners/index.ts directly.
+//
+// To bypass this guard for recovery or archaeology:
+//   FORCE=1 node scripts/split-runners.mjs
+// but you almost certainly do not want to.
+if (!process.env.FORCE) {
+  console.error('\n✗ split-runners is DEPRECATED and has been disabled.');
+  console.error('  The one-shot migration from the monolithic tools-runners.ts is complete.');
+  console.error('  Runners are now maintained per-file under lib/runners/<id>.ts.');
+  console.error('  Running this script would WIPE all 428+ runner files.\n');
+  console.error('  If you genuinely need to run it: FORCE=1 npm run split:runners\n');
+  process.exit(1);
+}
+
+// Secondary guard: even with FORCE, refuse on dirty tree.
+try {
+  const status = execSync('git status --porcelain lib/runners lib/tools-runners.ts', {
+    cwd: ROOT,
+    encoding: 'utf8',
+  }).trim();
+  if (status) {
+    console.error('✗ split-runners: dirty tree detected — commit or stash first.');
+    console.error(status);
+    process.exit(1);
+  }
+} catch {
+  console.error('✗ split-runners: git check failed — aborting.');
+  process.exit(1);
+}
+// ───────────────────────────────────────────────────────────────────────────
+
 const SRC = join(ROOT, 'lib', 'tools-runners.ts');
 const OUT_DIR = join(ROOT, 'lib', 'runners');
 const INDEX_OUT = join(OUT_DIR, 'index.ts');
