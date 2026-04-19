@@ -338,6 +338,16 @@ export const RUNNER_LOADERS: Record<string, RunnerLoader> = {
   "svv": () => import('./svv'),
   "ohca": () => import('./ohca'),
   "bis": () => import('./bis'),
+  "start-civ": () => import('./start-civ'),
+  "sieve-sort": () => import('./sieve-sort'),
+  "mchs-russia": () => import('./mchs-russia'),
+  "stanag": () => import('./stanag'),
+  "iss": () => import('./iss'),
+  "niss": () => import('./niss'),
+  "triss": () => import('./triss'),
+  "rts": () => import('./rts'),
+  "kts": () => import('./kts'),
+  "can-cspine": () => import('./can-cspine'),
 };
 
 const runnerCache = new Map<string, ToolRunner>();
