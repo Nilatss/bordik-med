@@ -358,6 +358,16 @@ export const RUNNER_LOADERS: Record<string, RunnerLoader> = {
   "schatzker": () => import('./schatzker'),
   "neer": () => import('./neer'),
   "rockwood": () => import('./rockwood'),
+  "pipkin": () => import('./pipkin'),
+  "mason-mayo": () => import('./mason-mayo'),
+  "frykman": () => import('./frykman'),
+  "sanders": () => import('./sanders'),
+  "russe": () => import('./russe'),
+  "hawkins": () => import('./hawkins'),
+  "denis": () => import('./denis'),
+  "young-burgess": () => import('./young-burgess'),
+  "outerbridge": () => import('./outerbridge'),
+  "kellgren": () => import('./kellgren'),
 };
 
 const runnerCache = new Map<string, ToolRunner>();
