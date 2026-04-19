@@ -378,6 +378,19 @@ export const RUNNER_LOADERS: Record<string, RunnerLoader> = {
   "big": () => import('./big'),
   "tokyo": () => import('./tokyo'),
   "ranson": () => import('./ranson'),
+  "atlanta": () => import('./atlanta'),
+  "boey": () => import('./boey'),
+  "mpi": () => import('./mpi'),
+  "mayo-uc": () => import('./mayo-uc'),
+  "cdai": () => import('./cdai'),
+  "fib4": () => import('./fib4'),
+  "tccc": () => import('./tccc'),
+  "march-paws": () => import('./march-paws'),
+  "tecc": () => import('./tecc'),
+  "phtls": () => import('./phtls'),
+  "9-line": () => import('./9-line'),
+  "red-blood": () => import('./red-blood'),
+  "ru-military": () => import('./ru-military'),
 };
 
 const runnerCache = new Map<string, ToolRunner>();
