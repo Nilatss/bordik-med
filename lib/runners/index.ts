@@ -414,6 +414,16 @@ export const RUNNER_LOADERS: Record<string, RunnerLoader> = {
   "straw10": () => import('./straw10'),
   "frax-men": () => import('./frax-men'),
   "rcog-37a": () => import('./rcog-37a'),
+  "bls-acls": () => import('./bls-acls'),
+  "erc": () => import('./erc'),
+  "ilcor": () => import('./ilcor'),
+  "anzcor": () => import('./anzcor'),
+  "nrp": () => import('./nrp'),
+  "epals": () => import('./epals'),
+  "hbb": () => import('./hbb'),
+  "eceb": () => import('./eceb'),
+  "far-ru": () => import('./far-ru'),
+  "pears": () => import('./pears'),
 };
 
 const runnerCache = new Map<string, ToolRunner>();
