@@ -391,6 +391,16 @@ export const RUNNER_LOADERS: Record<string, RunnerLoader> = {
   "9-line": () => import('./9-line'),
   "red-blood": () => import('./red-blood'),
   "ru-military": () => import('./ru-military'),
+  "us-dates": () => import('./us-dates'),
+  "ctg": () => import('./ctg'),
+  "acog-preeclampsia": () => import('./acog-preeclampsia'),
+  "hellp": () => import('./hellp'),
+  "pierce": () => import('./pierce'),
+  "sflt": () => import('./sflt'),
+  "iadpsg": () => import('./iadpsg'),
+  "cmqcc": () => import('./cmqcc'),
+  "4t-pph": () => import('./4t-pph'),
+  "figo-staging": () => import('./figo-staging'),
 };
 
 const runnerCache = new Map<string, ToolRunner>();
