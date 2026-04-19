@@ -328,6 +328,16 @@ export const RUNNER_LOADERS: Record<string, RunnerLoader> = {
   "rule-9": () => import('./rule-9'),
   "parkland-brooke": () => import('./parkland-brooke'),
   "absi": () => import('./absi'),
+  "trali": () => import('./trali'),
+  "mtp": () => import('./mtp'),
+  "abc-tash": () => import('./abc-tash'),
+  "cpp": () => import('./cpp'),
+  "rap-prx": () => import('./rap-prx'),
+  "lund-rosner": () => import('./lund-rosner'),
+  "plr": () => import('./plr'),
+  "svv": () => import('./svv'),
+  "ohca": () => import('./ohca'),
+  "bis": () => import('./bis'),
 };
 
 const runnerCache = new Map<string, ToolRunner>();
