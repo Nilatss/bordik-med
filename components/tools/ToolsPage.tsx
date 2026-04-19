@@ -600,7 +600,7 @@ export default function ToolsPage() {
         <p style={{
           fontFamily: 'var(--font-body)', fontSize: 14, color: '#6B7280', lineHeight: 1.5,
         }}>
-          Полный каталог клинических калькуляторов, шкал, классификаторов и протоколов — {CATALOG_TOOLS.length}+ инструментов по {TOOL_CATEGORIES.length} разделам.
+          Полный каталог клинических калькуляторов, шкал, классификаторов и протоколов — {CATALOG_TOOLS.filter((t) => t.available || (TOOL_META[t.id]?.hasRunner ?? false)).length} готовых из {CATALOG_TOOLS.length} по {TOOL_CATEGORIES.length} разделам.
         </p>
       </div>
 

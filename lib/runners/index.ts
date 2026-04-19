@@ -298,6 +298,16 @@ export const RUNNER_LOADERS: Record<string, RunnerLoader> = {
   "uk-green": () => import('./uk-green'),
   "ru-vaccine": () => import('./ru-vaccine'),
   "epi-who": () => import('./epi-who'),
+  "asa-e": () => import('./asa-e'),
+  "apfel": () => import('./apfel'),
+  "mallampati": () => import('./mallampati'),
+  "wilson-arne": () => import('./wilson-arne'),
+  "bromage": () => import('./bromage'),
+  "aldrete": () => import('./aldrete'),
+  "apache": () => import('./apache'),
+  "saps": () => import('./saps'),
+  "mpm": () => import('./mpm'),
+  "mods-lods": () => import('./mods-lods'),
 };
 
 const runnerCache = new Map<string, ToolRunner>();
