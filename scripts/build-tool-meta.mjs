@@ -1,63 +1,49 @@
 #!/usr/bin/env node
 /**
- * Regenerate lib/tool-meta-data.ts from lib/tools-runners.ts.
+ * Regenerate lib/tool-meta-data.ts from the per-runner files in
+ * lib/runners/<id>.ts.
  *
- * Extracts just the top-level runner ids and their `countries` strings so
- * the Tools list page can render without importing the ~446 KB runners file.
+ * The metadata is just the list of implemented runner ids plus their
+ * `countries` strings — the Tools list page needs this without paying
+ * the cost of importing every runner module. Each <id>.ts file declares
+ * `const runner: <Type> = { ... }` so we can recover the runner id from
+ * the filename and the optional countries string from a top-level
+ * `countries: '...'` line inside the literal.
  *
  * Usage:  node scripts/build-tool-meta.mjs
  */
 
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const SRC = join(ROOT, 'lib', 'tools-runners.ts');
+const RUNNERS_DIR = join(ROOT, 'lib', 'runners');
 const OUT = join(ROOT, 'lib', 'tool-meta-data.ts');
 
-const lines = readFileSync(SRC, 'utf8').split(/\r?\n/);
+const files = readdirSync(RUNNERS_DIR)
+  .filter((f) => f.endsWith('.ts') && f !== 'index.ts')
+  .sort();
 
-// Phase 1: locate each runner. A runner is an object whose `kind:` field sits
-// at 4-space indent (inside TOOL_RUNNERS). Walk backwards from each `kind:`
-// line to the key that introduced the runner.
-const runners = [];
-for (let i = 0; i < lines.length; i++) {
-  if (/^    kind:\s*'(score|calculator)'/.test(lines[i])) {
-    for (let j = i - 1; j >= 0; j--) {
-      const m = lines[j].match(/^  ([a-zA-Z0-9_-]+|'[^']+'|"[^"]+"):\s*\{?\s*$/);
-      if (m) {
-        let k = m[1];
-        if (k.startsWith("'") || k.startsWith('"')) k = k.slice(1, -1);
-        runners.push({ id: k, keyLine: j });
-        break;
-      }
-    }
-  }
-}
-
-// Phase 2: for each runner, scan its own region for a `countries:` line.
+const ids = [];
 const countries = {};
-for (let r = 0; r < runners.length; r++) {
-  const start = runners[r].keyLine;
-  const end = r + 1 < runners.length ? runners[r + 1].keyLine : lines.length;
-  for (let i = start; i < end; i++) {
-    const cm = lines[i].match(/^\s{4}countries:\s*['"]([^'"]+)['"]/);
-    if (cm) {
-      countries[runners[r].id] = cm[1];
-      break;
-    }
-  }
-}
 
-const ids = runners.map((r) => r.id);
+for (const f of files) {
+  const id = f.replace(/\.ts$/, '');
+  ids.push(id);
+  const src = readFileSync(join(RUNNERS_DIR, f), 'utf8');
+  // Top-level countries field — accept any indentation since formatting
+  // varies between hand-written and auto-recovered runners.
+  const m = src.match(/^\s+countries:\s*['"]([^'"]+)['"]/m);
+  if (m) countries[id] = m[1];
+}
 
 let out = '/**\n';
-out += ' * AUTO-GENERATED from tools-runners.ts by scripts/build-tool-meta.mjs.\n';
-out += ' * Do not edit by hand — rerun the script instead.\n';
+out += ' * AUTO-GENERATED from lib/runners/*.ts by scripts/build-tool-meta.mjs.\n';
+out += ' * Do not edit by hand — rerun via `npm run build:tool-meta`.\n';
 out += ' *\n';
 out += ' * Exists so tool-meta.ts (and therefore ToolsPage) does not need to\n';
-out += ' * import the massive runners file just to know which tools are\n';
+out += ' * import every runner module just to know which tools are\n';
 out += ' * implemented and which countries they apply to.\n';
 out += ' */\n\n';
 out += 'export const RUNNER_IDS: readonly string[] = [\n';
