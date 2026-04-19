@@ -127,6 +127,99 @@ ottawa-ankle, bisap, wfns, aims65, act, lille
 
 **Оценка времени:** 1-1.5 часа вместе с модалкой подтверждения выхода.
 
+### 🟠 8. Test Guard: предупреждение ДО начала + grace-period 10 сек + 48ч блокировка
+
+**Файл:** `components/course/TestGuard.tsx` (+ новый `TestStartConsent.tsx` + `TestActiveView.tsx`)
+
+**Что не так сейчас:**
+- Модалка «Нарушение зафиксировано» появляется **после** первого свёртывания вкладки — пользователь не знает правил заранее.
+- Нет grace-period: моргнул alt-tab'ом случайно → сразу нарушение.
+- После трёх нарушений тест просто завершается, но можно тут же пересдать — санкций нет.
+
+**Что нужно добавить:**
+
+#### 8.1. Consent-экран ПЕРЕД стартом теста
+Перед кнопкой «Начать тест» — модалка с правилами:
+```
+┌────────────────────────────────────────────┐
+│  ⚠  Правила прохождения теста               │
+├────────────────────────────────────────────┤
+│ Во время теста ЗАПРЕЩЕНО:                  │
+│  • Переключаться на другие вкладки/окна     │
+│  • Сворачивать браузер                      │
+│  • Открывать режим разработчика (F12)       │
+│  • Копировать вопросы                       │
+│                                             │
+│ При нарушении:                              │
+│  • 1-е — предупреждение, 10 сек на возврат  │
+│  • 2-е — предупреждение, 10 сек на возврат  │
+│  • 3-е — тест завершается, попытка          │
+│    не засчитывается                         │
+│  • Повторная попытка — через 48 часов       │
+│                                             │
+│ Время на тест: 60 минут                     │
+│                                             │
+│  [ ] Я прочитал и согласен с правилами      │
+│                                             │
+│           [Отмена]    [Начать тест]         │
+└────────────────────────────────────────────┘
+```
+Кнопка «Начать тест» активна только после чекбокса.
+
+#### 8.2. Grace-period 10 сек при нарушении
+Сейчас логика в `TestGuard.tsx:37` — мгновенный counter++. Надо:
+1. При `visibilitychange` (hidden) → запустить 10-сек таймер.
+2. Если вернулся до истечения → **не считать нарушением**, показать короткое уведомление «Вернитесь в окно, осталось 7 сек» (обратный отсчёт).
+3. Если 10 сек истекли вне вкладки → тогда `violationCount++`, показать модалку.
+4. При `violationCount >= 3` → завершить тест + пометить как `failed_with_violation`.
+
+**Алгоритм в коде:**
+```ts
+const GRACE_MS = 10_000;
+const [awayTimer, setAwayTimer] = useState<number | null>(null);
+const [awaySecondsLeft, setAwaySecondsLeft] = useState(10);
+
+useEffect(() => {
+  const onVis = () => {
+    if (document.hidden) {
+      // запустили grace-период
+      const startedAt = Date.now();
+      const tick = setInterval(() => {
+        const elapsed = Date.now() - startedAt;
+        setAwaySecondsLeft(Math.max(0, Math.ceil((GRACE_MS - elapsed) / 1000)));
+        if (elapsed >= GRACE_MS) {
+          clearInterval(tick);
+          registerViolation(); // только здесь
+        }
+      }, 200);
+      setAwayTimer(tick as any);
+    } else {
+      // вернулся — отменить grace
+      if (awayTimer) { clearInterval(awayTimer); setAwayTimer(null); }
+      setAwaySecondsLeft(10);
+    }
+  };
+  document.addEventListener('visibilitychange', onVis);
+  return () => document.removeEventListener('visibilitychange', onVis);
+}, [awayTimer]);
+```
+UI: если `awayTimer !== null` и `!document.hidden` (только что вернулся, grace ещё не засчиталось) — показать toast «⚠ Вы отсутствовали — больше так не делайте».
+
+#### 8.3. 48-часовой lockout
+1. В localStorage: при `failed_with_violation` писать `test_lockout_<testId> = Date.now() + 48*60*60*1000`.
+2. В TabbedLessonViewer (где запускается тест) — проверять ключ перед запуском:
+   ```ts
+   const lockout = Number(localStorage.getItem(`test_lockout_${testId}`) || 0);
+   if (lockout > Date.now()) {
+     const hoursLeft = Math.ceil((lockout - Date.now()) / 3_600_000);
+     return <LockoutNotice hoursLeft={hoursLeft} />;
+   }
+   ```
+3. Компонент `LockoutNotice`: «Тест временно недоступен. Повторная попытка будет доступна через ~X часов (DD.MM.YYYY в HH:MM)».
+4. **Важно:** localStorage можно обойти через DevTools. Для реальной блокировки нужно хранить на backend — отметить в TODO отдельным пунктом когда появится backend для tests.
+
+**Оценка времени:** 2 часа (consent + grace logic + lockout + тестирование всех trigger'ов).
+
 ---
 
 ## Порядок работ завтра
@@ -136,8 +229,9 @@ ottawa-ankle, bisap, wfns, aims65, act, lille
 3. **(30 мин)** Разобрать 12 orphan-runners: по каждому решить add/rename/delete. Отдельным коммитом.
 4. **(1 ч)** Написать `scripts/smoke-runners.mjs`. Прогнать. Починить упавшие.
 5. **(1-1.5 ч)** Test UX: «Назад» вместо «Отменить» + ✕ выход в шапке + таймер 1 ч с автозавершением. Файл `components/course/TestActiveView.tsx`. См. п.7.
-6. **(по решению)** Либо (A) вкрутить PWA с нуля, либо (B) удалить next-pwa окончательно и забыть. Вариант (A) — 2-3 часа с тестом offline.
-7. Продолжить по плану: Re-add Cat 9 Психиатрия (18 шт.), потом Cat 10-22 (~273 шт.).
+6. **(2 ч)** Test Guard: consent-экран правил + grace 10 сек + 48ч lockout. Файлы `components/course/TestGuard.tsx` + новый `TestStartConsent.tsx`. См. п.8.
+7. **(по решению)** Либо (A) вкрутить PWA с нуля, либо (B) удалить next-pwa окончательно и забыть. Вариант (A) — 2-3 часа с тестом offline.
+8. Продолжить по плану: Re-add Cat 9 Психиатрия (18 шт.), потом Cat 10-22 (~273 шт.).
 
 ---
 
