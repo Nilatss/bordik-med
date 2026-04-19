@@ -299,23 +299,43 @@ grep -rn "—" lib/runners/ lib/tools-catalog.ts components/ 2>/dev/null | wc -l
 # ожидаемо тысячи — em-dash везде в русском тексте
 ```
 
-**Вопрос к уточнению:** что именно понимается под «короткое тире»?
-- **en-dash (`–`, U+2013)** — полутире, чуть короче em-dash
-- **hyphen (`-`, U+002D)** — совсем короткий дефис-минус
-
-В русской типографике em-dash (—) правильный вариант для тире в предложении. Если пользователь хочет сплошь дефис-минус (`-`) — это нестандартно, но технически это его выбор. Если en-dash (`–`) — тоже нестандарт для русского.
+**Решение пользователя (уточнено):** заменить все em-dash `—` (U+2014) на hyphen-minus `-` (U+002D).
+Также проверить en-dash `–` (U+2013) — его тоже заменить на `-`.
 
 **Что делать:**
-1. **Уточнить у пользователя** — заменить `—` на `-` или на `–`? Или он имеет в виду только двойные `――` → одиночные `—`?
-2. После уточнения — один sed-прогон:
-   ```bash
-   # вариант dash → hyphen
-   find lib/runners lib/tools-catalog.ts -name "*.ts" -exec sed -i 's/—/-/g' {} \;
-   # или em → en
-   find lib/runners lib/tools-catalog.ts -name "*.ts" -exec sed -i 's/—/–/g' {} \;
-   ```
+```bash
+# Один проход по всей кодовой базе (исключая node_modules, .next, .git)
+find lib app components -type f \( -name "*.ts" -o -name "*.tsx" -o -name "*.md" \) \
+  -exec sed -i 's/—/-/g; s/–/-/g' {} \;
 
-**Оценка:** 15 мин после уточнения.
+# Проверка что нигде не осталось
+grep -rnE "[—–]" lib app components --include="*.ts" --include="*.tsx" --include="*.md"
+```
+
+**⚠️ Осторожно:**
+- НЕ трогать `node_modules/`, `.next/`, `.git/`
+- Проверить что в `.claude/` тоже не затерлось что-то важное
+- После замены прогнать `npx tsc --noEmit` и `next build` — возможны регрессии если где-то `—` был частью специфичного regex или test fixture
+- Для unicode-safe работы с sed на Windows — использовать `gsed` из git-bash или запустить через node-скрипт (иначе sed может сломать кодировку)
+
+**Альтернатива sed — node-скрипт** (кроссплатформенно, безопасно):
+```js
+// scripts/normalize-dashes.mjs
+import { readFileSync, writeFileSync } from 'node:fs';
+import fg from 'fast-glob';
+const files = await fg(['lib/**/*.ts', 'components/**/*.{ts,tsx}', 'app/**/*.{ts,tsx}', '**/*.md'], {
+  ignore: ['node_modules', '.next', '.git']
+});
+let total = 0;
+for (const f of files) {
+  const src = readFileSync(f, 'utf8');
+  const out = src.replace(/[—–]/g, '-');
+  if (out !== src) { writeFileSync(f, out); total++; console.log('✓', f); }
+}
+console.log('Modified:', total, 'files');
+```
+
+**Оценка:** 15 мин (скрипт + прогон + typecheck + визуальный контроль ~10 инструментов).
 
 ---
 
@@ -375,7 +395,7 @@ grep -rnE "Powered by|powered by" components/ app/ 2>/dev/null
 7. **(5 мин)** Дубликат «Источник» в TOC — фильтр в `buildInfoTabs`. См. п.9.
 8. **(30 мин)** Убрать «Powered by Bordik» из live-рендера. См. п.13.
 9. **(1 ч)** Убрать `**...**` из `interpretation`/`details`/`actions`/`caveats`. См. п.11.
-10. **(15 мин)** Тире — после уточнения (em→hyphen или em→en). См. п.12.
+10. **(15 мин)** Тире: `—` и `–` → `-` (дефис-минус). Node-скрипт в п.12.
 11. **(3-4 ч)** Формулы: единый паттерн, обновить ~50-80 runners. См. п.10.
 12. **(2-3 ч)** Баги шкалы: валидация сегментов, clamp current, пройти все runners со scale. См. п.14.
 13. **(по решению)** Либо (A) вкрутить PWA с нуля, либо (B) удалить next-pwa окончательно и забыть. Вариант (A) — 2-3 часа с тестом offline.
