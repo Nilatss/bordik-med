@@ -424,6 +424,15 @@ export const RUNNER_LOADERS: Record<string, RunnerLoader> = {
   "eceb": () => import('./eceb'),
   "far-ru": () => import('./far-ru'),
   "pears": () => import('./pears'),
+  "atls": () => import('./atls'),
+  "etc": () => import('./etc'),
+  "phtls-nm": () => import('./phtls-nm'),
+  "tccc-17": () => import('./tccc-17'),
+  "tecc-17": () => import('./tecc-17'),
+  "ems-assess": () => import('./ems-assess'),
+  "ahs-ecc": () => import('./ahs-ecc'),
+  "ru-skoraya": () => import('./ru-skoraya'),
+  "anaphylaxis": () => import('./anaphylaxis'),
 };
 
 const runnerCache = new Map<string, ToolRunner>();
