@@ -318,6 +318,16 @@ export const RUNNER_LOADERS: Record<string, RunnerLoader> = {
   "rox": () => import('./rox'),
   "hacor": () => import('./hacor'),
   "rsbi": () => import('./rsbi'),
+  "kigali": () => import('./kigali'),
+  "rifle": () => import('./rifle'),
+  "mehta": () => import('./mehta'),
+  "fst": () => import('./fst'),
+  "resp": () => import('./resp'),
+  "preserve": () => import('./preserve'),
+  "murray-ecmo": () => import('./murray-ecmo'),
+  "rule-9": () => import('./rule-9'),
+  "parkland-brooke": () => import('./parkland-brooke'),
+  "absi": () => import('./absi'),
 };
 
 const runnerCache = new Map<string, ToolRunner>();
