@@ -308,6 +308,16 @@ export const RUNNER_LOADERS: Record<string, RunnerLoader> = {
   "saps": () => import('./saps'),
   "mpm": () => import('./mpm'),
   "mods-lods": () => import('./mods-lods'),
+  "rass": () => import('./rass'),
+  "cam-icu": () => import('./cam-icu'),
+  "bps-icu": () => import('./bps-icu'),
+  "sepsis3": () => import('./sepsis3'),
+  "sirs": () => import('./sirs'),
+  "berlin-ards": () => import('./berlin-ards'),
+  "murray": () => import('./murray'),
+  "rox": () => import('./rox'),
+  "hacor": () => import('./hacor'),
+  "rsbi": () => import('./rsbi'),
 };
 
 const runnerCache = new Map<string, ToolRunner>();
