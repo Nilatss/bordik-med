@@ -1,0 +1,150 @@
+// @ts-nocheck
+/**
+ * Runner: vanderbilt
+ * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
+ * Do not edit by hand — regenerate via `npm run split:runners`.
+ *
+ * Loaded lazily via dynamic import from lib/runners/index.ts so the
+ * encyclopaedia of clinical content stays out of the main app bundle.
+ */
+
+import type {
+  ScoreTool,
+  ToolInput,
+  ScoreBand,
+  Preset,
+  CalculatorResult,
+  ResultExtras,
+  ResultScaleSegment,
+} from '../tools-runners';
+
+const runner: ScoreTool = {
+    kind: "score",
+    maxScore: 18,
+    inputs: [
+      {
+        id: "inattention",
+        label: "Кол-во симптомов невнимательности (из 9) с оценкой 2–3 (\"часто\"/\"очень часто\")",
+        type: "number",
+        unit: "из 9",
+        min: 0,
+        max: 9,
+        step: 1,
+        quickValues: [
+          0,
+          3,
+          6,
+          9
+        ]
+      },
+      {
+        id: "hyperactivity",
+        label: "Кол-во симптомов гиперактивности/импульсивности (из 9) с оценкой 2–3",
+        type: "number",
+        unit: "из 9",
+        min: 0,
+        max: 9,
+        step: 1,
+        quickValues: [
+          0,
+          3,
+          6,
+          9
+        ]
+      },
+      {
+        id: "performance",
+        label: "Функциональные нарушения (школа/семья)",
+        type: "select",
+        options: [
+          {
+            value: "0",
+            label: "Нет",
+            points: 0
+          },
+          {
+            value: "1",
+            label: "В одной сфере",
+            points: 1
+          },
+          {
+            value: "2",
+            label: "В ≥ 2 сферах",
+            points: 2
+          }
+        ]
+      }
+    ],
+    bands: [
+      {
+        min: 0,
+        max: 5,
+        label: "Критерии не выполнены",
+        color: "#22C55E",
+        description: "СДВГ по Vanderbilt маловероятен.",
+        details: "Количество симптомов и/или функциональных нарушений недостаточно для диагноза СДВГ по DSM-5.",
+        actions: [
+          "Плановое наблюдение",
+          "Повтор через 3–6 мес при сохраняющихся опасениях"
+        ]
+      },
+      {
+        min: 6,
+        max: 11,
+        label: "Возможный СДВГ",
+        color: "#F59E0B",
+        description: "Критерии частично выполнены — требуется углублённая оценка.",
+        details: "Часть критериев DSM выполнена. Необходим клинический осмотр, беседа с ребёнком, второй информатор (учитель/родитель).",
+        actions: [
+          "Учительская версия Vanderbilt",
+          "Клиническое интервью DSM-5",
+          "Исключить: тревогу, депрессию, РАС, нарушения слуха, сна, щитовидку"
+        ]
+      },
+      {
+        min: 12,
+        max: 18,
+        label: "Вероятный СДВГ",
+        color: "#EF4444",
+        description: "Критерии DSM-5 вероятно выполнены.",
+        details: "Высокая вероятность СДВГ. ≥ 6 симптомов в ≥ 1 домене + функциональные нарушения в ≥ 2 сферах.",
+        actions: [
+          "Подтверждающее клиническое интервью по DSM-5",
+          "Исключить коморбидности (тревога, депрессия, дислексия, РАС)",
+          "Мультимодальное лечение: поведенческая терапия + при показаниях метилфенидат/атомоксетин (по возрасту)",
+          "Работа со школой (IEP/504 plan)"
+        ]
+      }
+    ],
+    caveats: [
+      "Требует заполнения двух версий — родителем и учителем (конкордантность подтверждает диагноз)",
+      "Симптомы должны быть в ≥ 2 обстановках (дома И в школе)",
+      "Продолжительность симптомов ≥ 6 мес с начала до 12 лет (DSM-5)",
+      "Исключить: тревога, депрессия, РАС, дислексия, расстройства сна, эндокринные (гипертиреоз), слух/зрение"
+    ],
+    relatedCourses: [
+      {
+        id: "302.2",
+        title: "Педиатрия 0-2"
+      }
+    ],
+    related: [
+      {
+        id: "denver",
+        title: "Denver II"
+      },
+      {
+        id: "mchat",
+        title: "M-CHAT-R"
+      },
+      {
+        id: "phq9",
+        title: "PHQ-9 (депрессия)"
+      }
+    ],
+    reference: "Wolraich ML et al. NICHQ Vanderbilt Assessment Scales. J Pediatr Psychol 2003;28:559–567.",
+    countries: "США · международный",
+    info: "### Для чего используется\n**NICHQ Vanderbilt Assessment Scale (Wolraich 2003)** — скрининг СДВГ (ADHD) у детей **6–12 лет** по критериям DSM-IV/5. Состоит из:\n\n- **Родительская форма** (55 пунктов): 18 ADHD + 8 ODD + 12 CD + 7 anxiety/depression + 8 performance\n- **Учительская форма** (43 пункта): 18 ADHD + 8 ODD/CD + 7 anxiety/depression + 8 performance\n\n### Шкала ответов\n0 — никогда | 1 — иногда | 2 — часто | 3 — очень часто\nСимптом «положительный», если оценка 2 или 3.\n\n### Диагностические критерии (DSM-5)\n**Инаттентивный тип:** ≥ 6 симптомов невнимательности (из 9)\n**Гиперактивно-импульсивный тип:** ≥ 6 симптомов гиперактивности (из 9)\n**Комбинированный тип:** оба\n\n**Плюс:**\n- Появление до 12 лет\n- Симптомы в ≥ 2 обстановках (дом + школа)\n- Продолжительность ≥ 6 мес\n- Функциональное нарушение\n\n### Альтернативы\n| Шкала | Особенность |\n|---|---|\n| **Conners-3** | Платный, но широкополосный |\n| **SNAP-IV** | Бесплатный, короче Vanderbilt |\n| **SDQ** | Скрининг психических проблем в целом |\n| **Brown ADD Scales** | Акцент на исполнительные функции |\n\n### Лечение (AAP 2019, NICE 2018)\n| Возраст | Первая линия |\n|---|---|\n| 4–5 лет | Поведенческая терапия, тренинг родителей |\n| ≥ 6 лет | Поведенческая + стимуляторы (метилфенидат, амфетамины) или атомоксетин |\n\n### Ограничения\n- Родительский/учительский bias\n- Перекрёстные диагнозы: тревога, депрессия, РАС, травма — могут имитировать СДВГ\n- Не использовать у < 4 лет (DSM-5 допускает с 4, но Vanderbilt оптимален с 6)\n\n### Источник\nWolraich ML, Lambert W, Doffing MA et al. Psychometric properties of the Vanderbilt ADHD Diagnostic Parent Rating Scale. *J Pediatr Psychol* 2003;28:559–567.\nWolraich ML et al. AAP Clinical Practice Guideline for ADHD. *Pediatrics* 2019;144:e20192528."
+  };
+
+export default runner;

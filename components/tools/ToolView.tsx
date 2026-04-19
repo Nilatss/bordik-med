@@ -5,7 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { CATALOG_TOOLS } from '@/lib/tools-catalog';
-import { getRunner, findBand, type ToolInput, type Preset, type CalculatorResult, type ResultScaleSegment } from '@/lib/tools-runners';
+import { findBand, type ToolInput, type Preset, type CalculatorResult, type ResultScaleSegment, type ToolRunner } from '@/lib/tools-runners';
+import { loadRunner } from '@/lib/runners';
 import { useAppStore } from '@/lib/store';
 import { ArrowLeft } from '@/components/icons';
 
@@ -90,7 +91,20 @@ function iconKeyForTitle(t: string): string {
 export default function ToolView({ toolId }: { toolId: string }) {
   const { closeTool } = useAppStore();
   const tool = useMemo(() => CATALOG_TOOLS.find((t) => t.id === toolId), [toolId]);
-  const runner = useMemo(() => getRunner(toolId), [toolId]);
+
+  // Load the runner lazily — this triggers a per-runner dynamic import so the
+  // 3+ MB encyclopaedia of clinical content stays out of the main bundle.
+  const [runner, setRunner] = useState<ToolRunner | null>(null);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    setRunner(null);
+    loadRunner(toolId)
+      .then((r) => { if (!cancelled) { setRunner(r); setLoading(false); } })
+      .catch(() => { if (!cancelled) { setRunner(null); setLoading(false); } });
+    return () => { cancelled = true; };
+  }, [toolId]);
 
   const tabs: Tab[] = useMemo(() => {
     if (!runner) return [];
@@ -143,6 +157,7 @@ export default function ToolView({ toolId }: { toolId: string }) {
   }
 
   if (!runner) {
+    // Either still fetching the per-runner chunk or the id has no runner yet.
     return (
       <div style={{ display: 'flex', flexDirection: 'column', maxWidth: 760 }}>
         <BackButton onClick={closeTool} />
@@ -152,7 +167,7 @@ export default function ToolView({ toolId }: { toolId: string }) {
           background: '#F5F6F8', borderRadius: 20, textAlign: 'center',
         }}>
           <p style={{ fontFamily: 'var(--font-body)', fontSize: 14, color: '#6B7280' }}>
-            Инструмент в разработке. Скоро будет доступен.
+            {loading ? 'Загрузка…' : 'Инструмент в разработке. Скоро будет доступен.'}
           </p>
         </div>
       </div>
