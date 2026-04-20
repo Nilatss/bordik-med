@@ -185,6 +185,30 @@ export const COUNTRY_COUNTS: { value: string; count: number; flag: string }[] = 
 })();
 
 /**
+ * Extracts the primary canonical countries referenced by a tool's raw
+ * `countries:` string. Returns them in the order they appear in the raw
+ * string (deduplicated), each paired with its flag emoji for the UI.
+ *
+ * Used by ToolCard to render small country tags next to the subcategory,
+ * so the user can see at a glance which region a tool comes from.
+ */
+export function primaryCountriesFor(raw: string | undefined): { name: string; flag: string }[] {
+  if (!raw) return [];
+  const seen = new Set<string>();
+  const out: { name: string; flag: string }[] = [];
+  for (const part of raw.split('·')) {
+    const trimmed = part.trim();
+    if (!trimmed) continue;
+    const g = matchCountry(trimmed);
+    if (!g) continue;
+    if (seen.has(g.name)) continue;
+    seen.add(g.name);
+    out.push({ name: g.name, flag: g.flag });
+  }
+  return out;
+}
+
+/**
  * Returns true when a tool's raw `countries` string maps to the given
  * canonical country name from COUNTRY_COUNTS. Uses the same alias-based
  * match as the filter index, so selecting «Великобритания» matches

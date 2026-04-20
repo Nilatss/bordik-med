@@ -7,8 +7,10 @@ import remarkGfm from 'remark-gfm';
 import { CATALOG_TOOLS } from '@/lib/tools-catalog';
 import { findBand, type ToolInput, type Preset, type CalculatorResult, type ResultScaleSegment, type ToolRunner } from '@/lib/tools-runners';
 import { loadRunner } from '@/lib/runners';
+import { TOOL_META, primaryCountriesFor } from '@/lib/tool-meta';
 import { useAppStore } from '@/lib/store';
 import { ArrowLeft } from '@/components/icons';
+import EmojiOrFlag from '@/components/ui/EmojiOrFlag';
 
 /** Slugify heading text for tab id */
 function slugify(s: string): string {
@@ -1131,6 +1133,7 @@ function Header({ tool, kind }: {
 }) {
   const isFavourite = useAppStore((s) => s.toolsFavourites.includes(tool.id));
   const toggleFav = useAppStore((s) => s.toggleFavouriteTool);
+  const toolCountries = primaryCountriesFor(TOOL_META[tool.id]?.countries);
 
   return (
     <div>
@@ -1154,6 +1157,28 @@ function Header({ tool, kind }: {
         }}>
           {tool.subcategory}
         </span>
+        {/* Country tags — shown as sibling pills so the user sees at a
+            glance where the tool is used. Same pill style as subcategory. */}
+        {toolCountries.slice(0, 3).map((c) => (
+          <span key={c.name} title={c.name} style={{
+            display: 'inline-flex', alignItems: 'center', gap: 5,
+            padding: '3px 10px', fontSize: 11,
+            fontFamily: 'var(--font-body)', fontWeight: 400,
+            color: '#6B7280', background: '#F0F1F5', borderRadius: 999,
+          }}>
+            <EmojiOrFlag emoji={c.flag} size={12} />
+            {c.name}
+          </span>
+        ))}
+        {toolCountries.length > 3 && (
+          <span style={{
+            padding: '3px 8px', fontSize: 11,
+            fontFamily: 'var(--font-mono)', fontWeight: 600,
+            color: '#6B7280', background: '#F0F1F5', borderRadius: 999,
+          }}>
+            +{toolCountries.length - 3}
+          </span>
+        )}
         {/* Favourite toggle — inline with the tag row so it sits on the
             same visual line, matching the card behaviour. */}
         <button

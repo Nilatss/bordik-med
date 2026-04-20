@@ -14,6 +14,7 @@ import {
   SUBCATEGORY_COUNTS,
   COUNTRY_COUNTS,
   countryMatches,
+  primaryCountriesFor,
 } from '@/lib/tool-meta';
 import { useAppStore } from '@/lib/store';
 import EmojiOrFlag from '@/components/ui/EmojiOrFlag';
@@ -333,17 +334,68 @@ const ToolCard = React.memo(function ToolCard({ tool }: { tool: CatalogTool }) {
         marginBottom: 'var(--space-3)', position: 'relative', zIndex: 1,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8,
       }}>
-        <span style={{
-          display: 'inline-flex', alignItems: 'center', gap: 'var(--space-1)',
-          padding: '4px var(--space-2)', borderRadius: 'var(--md-sys-shape-corner-full)',
-          background: '#FFFFFF',
-          boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-          fontFamily: 'var(--font-mono)',
-          fontSize: '0.625rem', fontWeight: 500,
-          color: 'var(--md-sys-color-on-surface-variant)',
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: 4, flex: 1, minWidth: 0,
+          flexWrap: 'wrap',
         }}>
-          {tool.subcategory}
-        </span>
+          <span style={{
+            display: 'inline-flex', alignItems: 'center', gap: 'var(--space-1)',
+            padding: '4px var(--space-2)', borderRadius: 'var(--md-sys-shape-corner-full)',
+            background: '#FFFFFF',
+            boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
+            fontFamily: 'var(--font-mono)',
+            fontSize: '0.625rem', fontWeight: 500,
+            color: 'var(--md-sys-color-on-surface-variant)',
+          }}>
+            {tool.subcategory}
+          </span>
+          {/* Country tags — same pill style as subcategory, each shows the
+              flag emoji + canonical country name (e.g. «🇺🇸 США»). Helps the
+              user see at a glance where the tool is used. We cap at 2 to
+              keep the card tidy; extra regions show as a «+N» pill. */}
+          {(() => {
+            const countries = meta?.countries ? primaryCountriesFor(meta.countries) : [];
+            if (countries.length === 0) return null;
+            const visible = countries.slice(0, 2);
+            const extra = countries.length - visible.length;
+            return (
+              <>
+                {visible.map((c) => (
+                  <span
+                    key={c.name}
+                    title={c.name}
+                    style={{
+                      display: 'inline-flex', alignItems: 'center', gap: 4,
+                      padding: '4px var(--space-2)', borderRadius: 'var(--md-sys-shape-corner-full)',
+                      background: '#FFFFFF',
+                      boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: '0.625rem', fontWeight: 500,
+                      color: 'var(--md-sys-color-on-surface-variant)',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    <EmojiOrFlag emoji={c.flag} size={12} />
+                    {c.name}
+                  </span>
+                ))}
+                {extra > 0 && (
+                  <span style={{
+                    display: 'inline-flex', alignItems: 'center',
+                    padding: '4px 8px', borderRadius: 999,
+                    background: '#FFFFFF',
+                    boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '0.625rem', fontWeight: 600,
+                    color: '#6B7280',
+                  }}>
+                    +{extra}
+                  </span>
+                )}
+              </>
+            );
+          })()}
+        </div>
         {/* Favourite star — sits on the same row as the subcategory tag so
             it reads as a sibling UI element, not a floating overlay.
             Hidden on unavailable tools so it doesn't collide with the
