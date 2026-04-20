@@ -440,6 +440,16 @@ export const RUNNER_LOADERS: Record<string, RunnerLoader> = {
   "poisindex": () => import('./poisindex'),
   "antidote": () => import('./antidote'),
   "hics": () => import('./hics'),
+  "bdi": () => import('./bdi'),
+  "ham-d": () => import('./ham-d'),
+  "gds": () => import('./gds'),
+  "ham-a": () => import('./ham-a'),
+  "spin": () => import('./spin'),
+  "ymrs": () => import('./ymrs'),
+  "panss": () => import('./panss'),
+  "c-ssrs": () => import('./c-ssrs'),
+  "beck-ssi": () => import('./beck-ssi'),
+  "cage-audit": () => import('./cage-audit'),
 };
 
 const runnerCache = new Map<string, ToolRunner>();
