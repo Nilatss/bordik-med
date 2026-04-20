@@ -209,7 +209,7 @@ const runner: CalculatorTool = {
                         {
                             min: -5,
                             max: -2,
-                            label: '<−2 SD (микроцеф.)',
+                            label: '<−2 SD микроц.',
                             color: '#EF4444'
                         },
                         {
@@ -221,7 +221,7 @@ const runner: CalculatorTool = {
                         {
                             min: 2,
                             max: 5,
-                            label: '>+2 SD (макроцеф.)',
+                            label: '>+2 SD макроц.',
                             color: '#F59E0B'
                         }
                     ],

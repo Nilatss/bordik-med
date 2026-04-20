@@ -103,10 +103,10 @@ const runner: CalculatorTool = {
       ],
       scale: {
         segments: [
-          { label: 'I', min: 1, max: 1.99, color: '#22C55E', description: 'Кожа/слизистые' },
-          { label: 'II', min: 2, max: 2.99, color: '#F59E0B', description: 'Мультисистемная' },
-          { label: 'III', min: 3, max: 3.99, color: '#EF4444', description: 'Выраженная (shock/bronchospasm)' },
-          { label: 'IV', min: 4, max: 4.99, color: '#7C2D12', description: 'Остановка кровообращения' },
+          { label: 'I', min: 1, max: 1, color: '#22C55E', description: 'Кожа/слизистые' },
+          { label: 'II', min: 2, max: 2, color: '#F59E0B', description: 'Мультисистемная' },
+          { label: 'III', min: 3, max: 3, color: '#EF4444', description: 'Выраженная (shock/bronchospasm)' },
+          { label: 'IV', min: 4, max: 4, color: '#7C2D12', description: 'Остановка кровообращения' },
         ],
         current: grade,
         unit: 'степень',

@@ -160,7 +160,7 @@ const runner: CalculatorTool = {
                         {
                             min: 33,
                             max: 59,
-                            label: 'Умер. (III 33-58)',
+                            label: 'Умер. 33-58',
                             color: '#F59E0B'
                         },
                         {

@@ -181,7 +181,7 @@ const runner: CalculatorTool = {
                         {
                             min: 0,
                             max: 4,
-                            label: '0-3.5 амбулаторен',
+                            label: '0-3.5 амбул.',
                             color: '#22C55E'
                         },
                         {
