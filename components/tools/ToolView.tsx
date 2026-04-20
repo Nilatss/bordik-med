@@ -557,23 +557,13 @@ function CalculatorBody({ inputs, values, setValues, result }: {
 
   return (
     <div>
+      {/* Single consistent 8px gap for every input, including the
+          number→checkbox transition. The visual separation comes from the
+          checkbox's own background (#F5F6F8 plate) — no extra dividers or
+          paddings needed, keeps spacing uniform across all calculators. */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         {nonCheckboxes.map(renderInput)}
-        {checkboxes.length > 0 && nonCheckboxes.length > 0 && (
-          <div style={{
-            // Subtle separator so the checkbox group reads as its own section
-            marginTop: 6,
-            paddingTop: 10,
-            borderTop: '1px dashed #E2E4EA',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 8,
-          }}>
-            {checkboxes.map(renderInput)}
-          </div>
-        )}
-        {/* Edge case: only checkboxes — no separator needed */}
-        {checkboxes.length > 0 && nonCheckboxes.length === 0 && checkboxes.map(renderInput)}
+        {checkboxes.map(renderInput)}
       </div>
 
       {result && <ResultCard result={result} />}
@@ -1116,9 +1106,12 @@ function shortRef(ref: string): string {
 }
 
 function Header({ tool, kind }: {
-  tool: { title: string; subcategory: string; category: string; description?: string };
+  tool: { id: string; title: string; subcategory: string; category: string; description?: string };
   kind?: string;
 }) {
+  const isFavourite = useAppStore((s) => s.toolsFavourites.includes(tool.id));
+  const toggleFav = useAppStore((s) => s.toggleFavouriteTool);
+
   return (
     <div>
       <div style={{
@@ -1141,6 +1134,33 @@ function Header({ tool, kind }: {
         }}>
           {tool.subcategory}
         </span>
+        {/* Favourite toggle — inline with the tag row so it sits on the
+            same visual line, matching the card behaviour. */}
+        <button
+          type="button"
+          onClick={() => toggleFav(tool.id)}
+          aria-label={isFavourite ? 'Убрать из избранного' : 'Добавить в избранное'}
+          style={{
+            marginLeft: 'auto',
+            display: 'inline-flex', alignItems: 'center', gap: 6,
+            padding: '5px 10px 5px 8px', borderRadius: 999,
+            background: isFavourite ? '#1A1A1A' : '#F0F1F5',
+            color: isFavourite ? '#FFFFFF' : '#6B7280',
+            border: 'none', cursor: 'pointer',
+            fontFamily: 'var(--font-body)', fontSize: 11, fontWeight: 600,
+            transition: 'background 160ms, color 160ms',
+          }}
+          onMouseEnter={(e) => { if (!isFavourite) e.currentTarget.style.background = '#E2E4EA'; }}
+          onMouseLeave={(e) => { if (!isFavourite) e.currentTarget.style.background = '#F0F1F5'; }}
+        >
+          <svg width={11} height={11} viewBox="0 0 24 24"
+            fill={isFavourite ? 'currentColor' : 'none'}
+            stroke="currentColor" strokeWidth={isFavourite ? 0 : 2}
+            strokeLinecap="round" strokeLinejoin="round">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+          </svg>
+          {isFavourite ? 'В избранном' : 'В избранное'}
+        </button>
       </div>
       <h1 style={{
         fontFamily: 'var(--font-display)',

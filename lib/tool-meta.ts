@@ -56,29 +56,75 @@ export function toolCountries(toolId: string): string | undefined {
  * ranked purely by count. The user asked for "США и всё дальше по США,
  * потом EU и так далее" - i.e. group then sort-within-group.
  */
-const COUNTRY_GROUPS: { prefix: string; flag: string; order: number }[] = [
-  { prefix: 'Международный', flag: '🌍', order: 1 },
-  { prefix: 'США',           flag: '🇺🇸', order: 2 },
-  { prefix: 'ЕС',            flag: '🇪🇺', order: 3 },
-  { prefix: 'EU',            flag: '🇪🇺', order: 3 },
-  { prefix: 'Великобритания',flag: '🇬🇧', order: 4 },
-  { prefix: 'Канада',        flag: '🇨🇦', order: 5 },
-  { prefix: 'Австралия',     flag: '🇦🇺', order: 6 },
-  { prefix: 'Япония',        flag: '🇯🇵', order: 7 },
-  { prefix: 'Китай',         flag: '🇨🇳', order: 8 },
-  { prefix: 'Индия',         flag: '🇮🇳', order: 9 },
-  { prefix: 'Германия',      flag: '🇩🇪', order: 10 },
-  { prefix: 'Франция',       flag: '🇫🇷', order: 11 },
-  { prefix: 'Корея',         flag: '🇰🇷', order: 12 },
-  { prefix: 'Латинская',     flag: '🌎', order: 20 },
-  { prefix: 'РФ',            flag: '🇷🇺', order: 21 },
-  { prefix: 'СНГ',           flag: '🌐', order: 22 },
+/**
+ * A recognised country / region prefix that appears on actual runner
+ * `countries:` strings. Order controls filter sort; flag is the emoji
+ * rendered next to the label.
+ *
+ * Aliases allow ONE canonical country to match multiple raw phrases in the
+ * runner data (e.g. «UK», «NICE», «NHS England» — all map to
+ * «Великобритания»). The canonical name is what the filter pill shows.
+ */
+interface CountryGroup {
+  /** Display name in the filter (canonical country). */
+  name: string;
+  flag: string;
+  order: number;
+  /** Raw prefixes / fragments that belong to this country (case-insensitive). */
+  aliases: string[];
+}
+
+const COUNTRY_GROUPS: CountryGroup[] = [
+  { name: 'Международный', flag: '🌍', order: 1, aliases: ['международн', 'who', 'wfns', 'ilcor', 'ifcn', 'eortc', 'icd', 'iasp', 'iaea', 'ihi', 'wao', 'eaaci', 'niaid', 'fao', 'fip', 'irccm', 'pensa', 'aiim'] },
+  { name: 'США', flag: '🇺🇸', order: 2, aliases: ['сша', 'us ', 'usa', 'aha', 'acc', 'asa', 'aafp', 'nccn', 'uspstf', 'fda', 'cdc', 'nih', 'nhlbi', 'ama', 'ads', 'asco', 'sts', 'svs', 'us dod', 'nata', 'aaem', 'acep', 'pts', 'rsna', 'napna'] },
+  { name: 'ЕС', flag: '🇪🇺', order: 3, aliases: ['ес ', 'ес·', 'eu ', 'европ', 'esc', 'ers', 'ersa', 'esmo', 'eular', 'ebmt', 'ema', 'erc', 'esgo', 'esr'] },
+  { name: 'Великобритания', flag: '🇬🇧', order: 4, aliases: ['великобритан', 'uk ', 'uk (', 'nice', 'nhs', 'bnf', 'bts', 'bsgr', 'bhs', 'bhivma', 'rcog'] },
+  { name: 'Канада', flag: '🇨🇦', order: 5, aliases: ['канад', 'ccs', 'catch'] },
+  { name: 'Австралия', flag: '🇦🇺', order: 6, aliases: ['австрал'] },
+  { name: 'Новая Зеландия', flag: '🇳🇿', order: 7, aliases: ['новая зеланд'] },
+  { name: 'Япония', flag: '🇯🇵', order: 8, aliases: ['япон', 'jcs'] },
+  { name: 'Китай', flag: '🇨🇳', order: 9, aliases: ['кит'] },
+  { name: 'Корея', flag: '🇰🇷', order: 10, aliases: ['корея', 'ktas'] },
+  { name: 'Индия', flag: '🇮🇳', order: 11, aliases: ['инд', 'iap'] },
+  { name: 'Германия', flag: '🇩🇪', order: 12, aliases: ['герман', 'awmf'] },
+  { name: 'Франция', flag: '🇫🇷', order: 13, aliases: ['франц', 'has-'] },
+  { name: 'Бразилия', flag: '🇧🇷', order: 14, aliases: ['бразил', 'pcdt'] },
+  { name: 'Мексика', flag: '🇲🇽', order: 15, aliases: ['мексик', 'imss'] },
+  { name: 'Испания', flag: '🇪🇸', order: 16, aliases: ['испан'] },
+  { name: 'Италия', flag: '🇮🇹', order: 17, aliases: ['итал'] },
+  { name: 'Швейцария', flag: '🇨🇭', order: 18, aliases: ['швейцар', 'smb'] },
+  { name: 'Австрия', flag: '🇦🇹', order: 19, aliases: ['австр'] },
+  { name: 'Нидерланды', flag: '🇳🇱', order: 20, aliases: ['нидер', 'nhg'] },
+  { name: 'Скандинавия', flag: '🇳🇴', order: 21, aliases: ['скандинав', 'nordic'] },
+  { name: 'Латинская Америка', flag: '🌎', order: 22, aliases: ['латинск', 'paho'] },
+  { name: 'Саудовская Аравия', flag: '🇸🇦', order: 23, aliases: ['саудовск'] },
+  { name: 'ASEAN', flag: '🌏', order: 24, aliases: ['asean', 'азия'] },
+  { name: 'РФ', flag: '🇷🇺', order: 30, aliases: ['рф', 'россия', 'ru ', 'ru·', 'мз рф', 'мкб-10', 'ру-', 'фгос'] },
+  { name: 'Казахстан', flag: '🇰🇿', order: 31, aliases: ['казахстан', 'мз рк'] },
+  { name: 'СНГ / ЕАЭС', flag: '🌐', order: 32, aliases: ['снг', 'еаэс', 'cis'] },
 ];
 
-function countryMeta(label: string): { group: number; flag: string } {
+/**
+ * Returns the canonical country group a raw `countries:` phrase belongs to,
+ * or `null` if none match. Using `null` (rather than a fallback bucket) is
+ * intentional — it lets the filter exclude society/guideline-only phrases
+ * like «NHS England», «USPSTF», «SVS», «WHO». They get rolled into the
+ * country group that issued them (UK, US, International), not shown as
+ * independent options.
+ */
+function matchCountry(label: string): CountryGroup | null {
+  const lower = label.toLowerCase().trim();
   for (const g of COUNTRY_GROUPS) {
-    if (label.startsWith(g.prefix)) return { group: g.order, flag: g.flag };
+    for (const alias of g.aliases) {
+      if (lower.includes(alias)) return g;
+    }
   }
+  return null;
+}
+
+function countryMeta(label: string): { group: number; flag: string } {
+  const g = matchCountry(label);
+  if (g) return { group: g.order, flag: g.flag };
   return { group: 999, flag: '🏳️' };
 }
 
@@ -103,9 +149,12 @@ export function countryFlag(label: string): string {
  * Sorted by group order.
  */
 export const COUNTRY_COUNTS: { value: string; count: number; flag: string }[] = (() => {
-  // Per-tool set of primary country keys (so we never double-count one
-  // tool if its `countries` string has multiple phrases in the same group).
+  // Per-tool set of canonical country names (so we never double-count one
+  // tool if its `countries` string has multiple phrases mapping to the
+  // same country, e.g. «США · AHA · ACC» → 1× США).
   const counts: Record<string, number> = Object.create(null);
+  const flags: Record<string, string> = Object.create(null);
+  const orders: Record<string, number> = Object.create(null);
 
   for (const t of CATALOG_TOOLS) {
     const c = TOOL_META[t.id]?.countries;
@@ -114,24 +163,21 @@ export const COUNTRY_COUNTS: { value: string; count: number; flag: string }[] = 
     for (const raw of c.split('·')) {
       const trimmed = raw.trim();
       if (!trimmed) continue;
-      // Match against known prefixes; fall back to the full label.
-      const match = COUNTRY_GROUPS.find((g) =>
-        trimmed.toLowerCase().startsWith(g.prefix.toLowerCase())
-      );
-      groups.add(match ? match.prefix : trimmed);
+      const g = matchCountry(trimmed);
+      if (!g) continue; // drop unknown organisation names — they pollute the filter
+      groups.add(g.name);
+      flags[g.name] = g.flag;
+      orders[g.name] = g.order;
     }
-    for (const g of groups) {
-      counts[g] = (counts[g] || 0) + 1;
+    for (const name of groups) {
+      counts[name] = (counts[name] || 0) + 1;
     }
   }
 
   return Object.entries(counts)
-    .map(([value, count]) => {
-      const meta = countryMeta(value);
-      return { value, count, flag: meta.flag, _group: meta.group };
-    })
+    .map(([value, count]) => ({ value, count, flag: flags[value], _order: orders[value] ?? 999 }))
     .sort((a, b) => {
-      if (a._group !== b._group) return a._group - b._group;
+      if (a._order !== b._order) return a._order - b._order;
       if (b.count !== a.count) return b.count - a.count;
       return a.value.localeCompare(b.value);
     })
@@ -139,15 +185,18 @@ export const COUNTRY_COUNTS: { value: string; count: number; flag: string }[] = 
 })();
 
 /**
- * Returns true when a tool's raw `countries` string matches the given
- * primary-country key from COUNTRY_COUNTS. Accepts both the group prefix
- * (e.g. «Канада») and any full raw label that starts with it.
+ * Returns true when a tool's raw `countries` string maps to the given
+ * canonical country name from COUNTRY_COUNTS. Uses the same alias-based
+ * match as the filter index, so selecting «Великобритания» matches
+ * «UK (RCOG)», «NHS England», «NICE» etc.
  */
-export function countryMatches(raw: string | undefined, primary: string): boolean {
+export function countryMatches(raw: string | undefined, canonicalName: string): boolean {
   if (!raw) return false;
-  const target = primary.toLowerCase();
   for (const part of raw.split('·')) {
-    if (part.trim().toLowerCase().startsWith(target)) return true;
+    const trimmed = part.trim();
+    if (!trimmed) continue;
+    const g = matchCountry(trimmed);
+    if (g && g.name === canonicalName) return true;
   }
   return false;
 }

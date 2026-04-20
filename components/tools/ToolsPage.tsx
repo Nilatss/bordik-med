@@ -308,37 +308,6 @@ const ToolCard = React.memo(function ToolCard({ tool }: { tool: CatalogTool }) {
         containIntrinsicSize: '160px 220px',
       } as React.CSSProperties}
     >
-      {/* Favourite star — bottom-right so it never overlaps the 'Скоро' badge.
-          Clickable without triggering the outer card click. */}
-      <div
-        role="button"
-        tabIndex={0}
-        onClick={handleFavClick}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleFavClick(e as unknown as React.MouseEvent); }
-        }}
-        aria-label={isFavourite ? 'Убрать из избранного' : 'Добавить в избранное'}
-        style={{
-          position: 'absolute', bottom: 12, right: 12, zIndex: 3,
-          width: 30, height: 30, borderRadius: 999,
-          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-          background: isFavourite ? '#FEF3C7' : '#FFFFFF',
-          color: isFavourite ? '#D97706' : '#9CA3AF',
-          cursor: 'pointer',
-          boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-          transition: 'background 160ms, color 160ms, transform 160ms',
-        }}
-        onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.08)'; }}
-        onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; }}
-      >
-        <svg width={16} height={16} viewBox="0 0 24 24"
-          fill={isFavourite ? 'currentColor' : 'none'}
-          stroke="currentColor" strokeWidth={isFavourite ? 0 : 2}
-          strokeLinecap="round" strokeLinejoin="round">
-          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-        </svg>
-      </div>
-
       {!available && (
         <div style={{
           position: 'absolute', top: 12, right: 12, zIndex: 2,
@@ -360,7 +329,10 @@ const ToolCard = React.memo(function ToolCard({ tool }: { tool: CatalogTool }) {
         </div>
       )}
 
-      <div style={{ marginBottom: 'var(--space-3)', position: 'relative', zIndex: 1 }}>
+      <div style={{
+        marginBottom: 'var(--space-3)', position: 'relative', zIndex: 1,
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8,
+      }}>
         <span style={{
           display: 'inline-flex', alignItems: 'center', gap: 'var(--space-1)',
           padding: '4px var(--space-2)', borderRadius: 'var(--md-sys-shape-corner-full)',
@@ -372,6 +344,47 @@ const ToolCard = React.memo(function ToolCard({ tool }: { tool: CatalogTool }) {
         }}>
           {tool.subcategory}
         </span>
+        {/* Favourite star — sits on the same row as the subcategory tag so
+            it reads as a sibling UI element, not a floating overlay.
+            Hidden on unavailable tools so it doesn't collide with the
+            absolutely-positioned «Скоро» badge. */}
+        {available && (
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={handleFavClick}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleFavClick(e as unknown as React.MouseEvent); }
+          }}
+          aria-label={isFavourite ? 'Убрать из избранного' : 'Добавить в избранное'}
+          style={{
+            width: 26, height: 26, borderRadius: 8,
+            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+            background: isFavourite ? '#1A1A1A' : '#FFFFFF',
+            color: isFavourite ? '#FFFFFF' : '#9CA3AF',
+            cursor: 'pointer', flexShrink: 0,
+            boxShadow: isFavourite
+              ? '0 2px 6px rgba(0,0,0,0.14)'
+              : '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
+            transition: 'background 160ms, color 160ms, box-shadow 160ms, transform 160ms',
+          }}
+          onMouseEnter={(e) => {
+            if (!isFavourite) e.currentTarget.style.background = '#F5F6F8';
+            e.currentTarget.style.transform = 'scale(1.08)';
+          }}
+          onMouseLeave={(e) => {
+            if (!isFavourite) e.currentTarget.style.background = '#FFFFFF';
+            e.currentTarget.style.transform = 'scale(1)';
+          }}
+        >
+          <svg width={13} height={13} viewBox="0 0 24 24"
+            fill={isFavourite ? 'currentColor' : 'none'}
+            stroke="currentColor" strokeWidth={isFavourite ? 0 : 1.9}
+            strokeLinecap="round" strokeLinejoin="round">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+          </svg>
+        </div>
+        )}
       </div>
 
       <div style={{ position: 'relative', zIndex: 1, flex: 1 }}>
@@ -538,6 +551,14 @@ export default function ToolsPage() {
   const favourites = useAppStore((s) => s.toolsFavourites);
   const favouriteSet = useMemo(() => new Set(favourites), [favourites]);
   const [onlyFavourites, setOnlyFavourites] = useState(false);
+
+  // Auto-disable the «Избранные» filter when the last favourite is removed.
+  // Otherwise the list stays empty with no obvious way out — the toggle looks
+  // active but the user already can't un-favourite it (there's nothing left
+  // to un-favourite). Resetting here keeps the UI self-consistent.
+  useEffect(() => {
+    if (onlyFavourites && favouriteSet.size === 0) setOnlyFavourites(false);
+  }, [onlyFavourites, favouriteSet.size]);
 
   // The page is scrolled by the outer <main> element (see app/page.tsx).
   // Virtuoso needs to watch that element for scroll events - otherwise it
@@ -782,7 +803,7 @@ export default function ToolsPage() {
           style={{
             display: 'inline-flex', alignItems: 'center', gap: 6,
             padding: '7px 12px',
-            background: onlyFavourites ? '#D97706' : '#F5F6F8',
+            background: onlyFavourites ? '#1A1A1A' : '#F5F6F8',
             color: onlyFavourites ? '#FFFFFF' : favouriteSet.size === 0 ? '#B0B3BA' : '#374151',
             border: 'none', borderRadius: 999,
             cursor: favouriteSet.size === 0 ? 'not-allowed' : 'pointer',
