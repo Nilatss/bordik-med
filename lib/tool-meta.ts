@@ -88,22 +88,43 @@ export function countryFlag(label: string): string {
 }
 
 /**
- * Precomputed aggregate country counts (for the Страны filter).
- * Sorted: (1) by group order (International, US, EU, UK …),
- *         (2) within a group by count desc,
- *         (3) tiebreak by label ascending.
+ * Precomputed aggregate country counts for the Страны filter.
+ *
+ * Strategy: the raw `countries` field on runners can contain many variants
+ * of the same country («Канада», «Канада (CATCH)», «Канада / Международный
+ * (QxMD…)»). We collapse all of them into a single PRIMARY country bucket
+ * using the COUNTRY_GROUPS prefixes above. A tool may belong to more than
+ * one bucket (e.g. «США · Международный» counts in both США and Международный).
+ *
+ * The value we store is the group's primary key (e.g. `"Канада"`), not the
+ * raw label. The ToolsPage filter matches against this group key via
+ * {@link countryMatches}.
+ *
+ * Sorted by group order.
  */
 export const COUNTRY_COUNTS: { value: string; count: number; flag: string }[] = (() => {
+  // Per-tool set of primary country keys (so we never double-count one
+  // tool if its `countries` string has multiple phrases in the same group).
   const counts: Record<string, number> = Object.create(null);
+
   for (const t of CATALOG_TOOLS) {
     const c = TOOL_META[t.id]?.countries;
     if (!c) continue;
+    const groups = new Set<string>();
     for (const raw of c.split('·')) {
       const trimmed = raw.trim();
       if (!trimmed) continue;
-      counts[trimmed] = (counts[trimmed] || 0) + 1;
+      // Match against known prefixes; fall back to the full label.
+      const match = COUNTRY_GROUPS.find((g) =>
+        trimmed.toLowerCase().startsWith(g.prefix.toLowerCase())
+      );
+      groups.add(match ? match.prefix : trimmed);
+    }
+    for (const g of groups) {
+      counts[g] = (counts[g] || 0) + 1;
     }
   }
+
   return Object.entries(counts)
     .map(([value, count]) => {
       const meta = countryMeta(value);
@@ -116,6 +137,20 @@ export const COUNTRY_COUNTS: { value: string; count: number; flag: string }[] = 
     })
     .map(({ value, count, flag }) => ({ value, count, flag }));
 })();
+
+/**
+ * Returns true when a tool's raw `countries` string matches the given
+ * primary-country key from COUNTRY_COUNTS. Accepts both the group prefix
+ * (e.g. «Канада») and any full raw label that starts with it.
+ */
+export function countryMatches(raw: string | undefined, primary: string): boolean {
+  if (!raw) return false;
+  const target = primary.toLowerCase();
+  for (const part of raw.split('·')) {
+    if (part.trim().toLowerCase().startsWith(target)) return true;
+  }
+  return false;
+}
 
 /** Precomputed subcategory counts. */
 export const SUBCATEGORY_COUNTS: { value: string; count: number }[] = (() => {

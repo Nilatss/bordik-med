@@ -13,6 +13,7 @@ import {
   CATEGORY_COUNTS,
   SUBCATEGORY_COUNTS,
   COUNTRY_COUNTS,
+  countryMatches,
 } from '@/lib/tool-meta';
 import { useAppStore } from '@/lib/store';
 import EmojiOrFlag from '@/components/ui/EmojiOrFlag';
@@ -547,10 +548,13 @@ export default function ToolsPage() {
       result = result.filter((t) => set.has(t.subcategory));
     }
     if (selectedCountries.length) {
+      // `selectedCountries` now contains PRIMARY country keys (e.g. "Канада"),
+      // not raw labels. Match each tool's full country string against every
+      // selected primary key via the prefix-aware helper.
       result = result.filter((t) => {
         const c = TOOL_META[t.id]?.countries;
         if (!c) return false;
-        return selectedCountries.some((sel) => c.includes(sel));
+        return selectedCountries.some((sel) => countryMatches(c, sel));
       });
     }
     if (onlyAvailable) {

@@ -532,17 +532,48 @@ function CalculatorBody({ inputs, values, setValues, result }: {
   result: CalculatorResult | null;
   presets?: Preset[]; // kept in signature for back-compat (unused)
 }) {
+  // Group checkboxes visually at the bottom — otherwise a single checkbox
+  // sandwiched between number/select inputs blends in and is easy to miss.
+  // Stable: we DO NOT reshuffle when all inputs are checkboxes or when
+  // there are none (leave as-is).
+  const { nonCheckboxes, checkboxes } = useMemo(() => {
+    const nc: ToolInput[] = [];
+    const cb: ToolInput[] = [];
+    for (const inp of inputs) {
+      if (inp.type === 'checkbox') cb.push(inp);
+      else nc.push(inp);
+    }
+    return { nonCheckboxes: nc, checkboxes: cb };
+  }, [inputs]);
+
+  const renderInput = (inp: ToolInput) => (
+    <InputField
+      key={inp.id}
+      input={inp}
+      value={values[inp.id]}
+      onChange={(v) => setValues((prev) => ({ ...prev, [inp.id]: v }))}
+    />
+  );
+
   return (
     <div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-        {inputs.map((inp) => (
-          <InputField
-            key={inp.id}
-            input={inp}
-            value={values[inp.id]}
-            onChange={(v) => setValues((prev) => ({ ...prev, [inp.id]: v }))}
-          />
-        ))}
+        {nonCheckboxes.map(renderInput)}
+        {checkboxes.length > 0 && nonCheckboxes.length > 0 && (
+          <div style={{
+            // Subtle separator so the checkbox group reads as its own section
+            marginTop: 6,
+            paddingTop: 10,
+            borderTop: '1px dashed #E2E4EA',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 8,
+          }}>
+            {checkboxes.map(renderInput)}
+          </div>
+        )}
+        {/* Edge case: only checkboxes — no separator needed */}
+        {checkboxes.length > 0 && nonCheckboxes.length === 0 && checkboxes.map(renderInput)}
       </div>
 
       {result && <ResultCard result={result} />}
