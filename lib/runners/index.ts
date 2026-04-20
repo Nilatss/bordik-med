@@ -476,6 +476,16 @@ export const RUNNER_LOADERS: Record<string, RunnerLoader> = {
   "cheson": () => import('./cheson'),
   "percist": () => import('./percist'),
   "ctcae": () => import('./ctcae'),
+  "rtog-eortc": () => import('./rtog-eortc'),
+  "gleason": () => import('./gleason'),
+  "d-amico": () => import('./d-amico'),
+  "nottingham": () => import('./nottingham'),
+  "oncotype": () => import('./oncotype'),
+  "npi-breast": () => import('./npi-breast'),
+  "birads": () => import('./birads'),
+  "tirads": () => import('./tirads'),
+  "lirads": () => import('./lirads'),
+  "pirads": () => import('./pirads'),
 };
 
 const runnerCache = new Map<string, ToolRunner>();
