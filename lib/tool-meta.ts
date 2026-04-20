@@ -158,16 +158,24 @@ export const COUNTRY_COUNTS: { value: string; count: number; flag: string }[] = 
 
   for (const t of CATALOG_TOOLS) {
     const c = TOOL_META[t.id]?.countries;
-    if (!c) continue;
     const groups = new Set<string>();
-    for (const raw of c.split('·')) {
-      const trimmed = raw.trim();
-      if (!trimmed) continue;
-      const g = matchCountry(trimmed);
-      if (!g) continue; // drop unknown organisation names — they pollute the filter
-      groups.add(g.name);
-      flags[g.name] = g.flag;
-      orders[g.name] = g.order;
+    if (c) {
+      for (const raw of c.split('·')) {
+        const trimmed = raw.trim();
+        if (!trimmed) continue;
+        const g = matchCountry(trimmed);
+        if (!g) continue; // drop unknown org names — they pollute the filter
+        groups.add(g.name);
+        flags[g.name] = g.flag;
+        orders[g.name] = g.order;
+      }
+    }
+    // Fallback — tools without a recognisable country still count toward
+    // «Международный» so the card's tag and the filter count match.
+    if (groups.size === 0 && TOOL_META[t.id]?.hasRunner) {
+      groups.add('Международный');
+      flags['Международный'] = '🌍';
+      orders['Международный'] = 1;
     }
     for (const name of groups) {
       counts[name] = (counts[name] || 0) + 1;
@@ -193,17 +201,26 @@ export const COUNTRY_COUNTS: { value: string; count: number; flag: string }[] = 
  * so the user can see at a glance which region a tool comes from.
  */
 export function primaryCountriesFor(raw: string | undefined): { name: string; flag: string }[] {
-  if (!raw) return [];
   const seen = new Set<string>();
   const out: { name: string; flag: string }[] = [];
-  for (const part of raw.split('·')) {
-    const trimmed = part.trim();
-    if (!trimmed) continue;
-    const g = matchCountry(trimmed);
-    if (!g) continue;
-    if (seen.has(g.name)) continue;
-    seen.add(g.name);
-    out.push({ name: g.name, flag: g.flag });
+  if (raw) {
+    for (const part of raw.split('·')) {
+      const trimmed = part.trim();
+      if (!trimmed) continue;
+      const g = matchCountry(trimmed);
+      if (!g) continue;
+      if (seen.has(g.name)) continue;
+      seen.add(g.name);
+      out.push({ name: g.name, flag: g.flag });
+    }
+  }
+  // Fallback — if the runner has no recognised country (missing `countries`
+  // field, or a free-form label like «Низкоресурсные страны…» that doesn't
+  // match any alias), mark it as international so every card shows at
+  // least one country tag. The filter still matches the same set of tools
+  // when the user picks «Международный».
+  if (out.length === 0) {
+    out.push({ name: 'Международный', flag: '🌍' });
   }
   return out;
 }
@@ -215,13 +232,21 @@ export function primaryCountriesFor(raw: string | undefined): { name: string; fl
  * «UK (RCOG)», «NHS England», «NICE» etc.
  */
 export function countryMatches(raw: string | undefined, canonicalName: string): boolean {
-  if (!raw) return false;
+  // Mirrors primaryCountriesFor fallback: an empty / unrecognised countries
+  // string is treated as «Международный» so filter results match tag UI.
+  if (!raw) return canonicalName === 'Международный';
+  let matched = false;
   for (const part of raw.split('·')) {
     const trimmed = part.trim();
     if (!trimmed) continue;
     const g = matchCountry(trimmed);
-    if (g && g.name === canonicalName) return true;
+    if (g) {
+      matched = true;
+      if (g.name === canonicalName) return true;
+    }
   }
+  // If NONE of the parts matched any known country, fall back to international.
+  if (!matched && canonicalName === 'Международный') return true;
   return false;
 }
 
