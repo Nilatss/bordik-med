@@ -486,6 +486,16 @@ export const RUNNER_LOADERS: Record<string, RunnerLoader> = {
   "tirads": () => import('./tirads'),
   "lirads": () => import('./lirads'),
   "pirads": () => import('./pirads'),
+  "orads": () => import('./orads'),
+  "lungrads": () => import('./lungrads'),
+  "gail": () => import('./gail'),
+  "brca-models": () => import('./brca-models'),
+  "mascc": () => import('./mascc'),
+  "khorana-onco": () => import('./khorana-onco'),
+  "febrile-neutro": () => import('./febrile-neutro'),
+  "pps": () => import('./pps'),
+  "who-ladder": () => import('./who-ladder'),
+  "aor-ru": () => import('./aor-ru'),
 };
 
 const runnerCache = new Map<string, ToolRunner>();
