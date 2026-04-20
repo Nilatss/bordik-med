@@ -546,6 +546,16 @@ export const RUNNER_LOADERS: Record<string, RunnerLoader> = {
   "pllr": () => import('./pllr'),
   "harriet-lane": () => import('./harriet-lane'),
   "who-eml": () => import('./who-eml'),
+  "clsi": () => import('./clsi'),
+  "mayo-arup": () => import('./mayo-arup'),
+  "ru-lab": () => import('./ru-lab'),
+  "maddrey-lab": () => import('./maddrey-lab'),
+  "fib4-lab": () => import('./fib4-lab'),
+  "nafld-fs": () => import('./nafld-fs'),
+  "fibrotest": () => import('./fibrotest'),
+  "wintrobe": () => import('./wintrobe'),
+  "rpi": () => import('./rpi'),
+  "tibc": () => import('./tibc'),
 };
 
 const runnerCache = new Map<string, ToolRunner>();
