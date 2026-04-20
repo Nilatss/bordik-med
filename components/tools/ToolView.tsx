@@ -560,12 +560,18 @@ function CalculatorBody({ inputs, values, setValues, result }: {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         {nonCheckboxes.map(renderInput)}
         {checkboxes.length > 0 && nonCheckboxes.length > 0 && (
-          // Dashed divider between numeric/select inputs and the checkbox
-          // group. Both the gap ABOVE the line and the gap BELOW are the
-          // same 8 px (matches the inter-input rhythm). The line sits in
-          // its own 0-height slot inside the flex column so `gap: 8` from
-          // the outer container applies equally on top and bottom.
-          <div style={{ borderTop: '1px dashed #E2E4EA' }} />
+          // Dashed divider with explicit, equal 8 px margins on TOP and
+          // BOTTOM, on top of the 8 px flex gap applied to every sibling.
+          // That gives 16 px of visible breathing room on each side of the
+          // line — consistent regardless of whether the preceding input is
+          // a number with quick-value chips (tight) or a plain number
+          // (medium), and regardless of whether the following checkbox
+          // has 13 px internal padding.
+          <div style={{
+            borderTop: '1px dashed #E2E4EA',
+            marginTop: 8,
+            marginBottom: 8,
+          }} />
         )}
         {checkboxes.map(renderInput)}
       </div>
