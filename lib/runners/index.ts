@@ -696,6 +696,18 @@ export const RUNNER_LOADERS: Record<string, RunnerLoader> = {
   "seidel": () => import('./seidel'),
   "etdrs-dr": () => import('./etdrs-dr'),
   "areds": () => import('./areds'),
+  "rop": () => import('./rop'),
+  "ots": () => import('./ots'),
+  "sun": () => import('./sun'),
+  "fitzpatrick": () => import('./fitzpatrick'),
+  "scorad": () => import('./scorad'),
+  "hurley": () => import('./hurley'),
+  "salt": () => import('./salt'),
+  "uas7": () => import('./uas7'),
+  "masi": () => import('./masi'),
+  "abcde": () => import('./abcde'),
+  "breslow": () => import('./breslow'),
+  "posas": () => import('./posas'),
 };
 
 const runnerCache = new Map<string, ToolRunner>();
