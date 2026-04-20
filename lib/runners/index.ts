@@ -511,6 +511,18 @@ export const RUNNER_LOADERS: Record<string, RunnerLoader> = {
   "bristol": () => import('./bristol'),
   "mccabe": () => import('./mccabe'),
   "senic": () => import('./senic'),
+  "kdigo": () => import('./kdigo'),
+  "kdigo-ckd": () => import('./kdigo-ckd'),
+  "kfre": () => import('./kfre'),
+  "ktv": () => import('./ktv'),
+  "renal": () => import('./renal'),
+  "iief": () => import('./iief'),
+  "iciq": () => import('./iciq'),
+  "capra": () => import('./capra'),
+  "psa": () => import('./psa'),
+  "nmibc": () => import('./nmibc'),
+  "stone": () => import('./stone'),
+  "pvr": () => import('./pvr'),
 };
 
 const runnerCache = new Map<string, ToolRunner>();
