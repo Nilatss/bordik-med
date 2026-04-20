@@ -233,14 +233,30 @@ export const SUBCATEGORY_COUNTS: { value: string; count: number }[] = (() => {
   }
   return Object.entries(counts)
     .map(([value, count]) => ({ value, count }))
-    .sort((a, b) => a.value.localeCompare(b.value));
+    // 'ru' locale keeps Cyrillic characters in the right order
+    // (Ё between Е and Ж etc.) and matches OS-native sorting.
+    .sort((a, b) => a.value.localeCompare(b.value, 'ru'));
 })();
 
-/** Precomputed category counts (preserve TOOL_CATEGORIES order). */
+/**
+ * Precomputed category counts, sorted alphabetically by the text part
+ * (after the «N. » numeric prefix). Numeric-prefix sort gave «1, 10, 11,
+ * 2, ...» and wasn't scannable for users who don't memorise the
+ * numbering. Stripping the prefix before `localeCompare` gives
+ * Акушерство → Анестезиология → Диагностические → … which is easier to
+ * find by eye.
+ */
+function categorySortKey(label: string): string {
+  // "1. Клинические калькуляторы" → "Клинические калькуляторы"
+  return label.replace(/^\d+\.\s*/, '').toLowerCase();
+}
+
 export const CATEGORY_COUNTS: { value: string; count: number }[] = (() => {
   const counts: Record<string, number> = Object.create(null);
   for (const t of CATALOG_TOOLS) {
     counts[t.category] = (counts[t.category] || 0) + 1;
   }
-  return TOOL_CATEGORIES.map((c) => ({ value: c, count: counts[c] || 0 }));
+  return TOOL_CATEGORIES
+    .map((c) => ({ value: c, count: counts[c] || 0 }))
+    .sort((a, b) => categorySortKey(a.value).localeCompare(categorySortKey(b.value), 'ru'));
 })();

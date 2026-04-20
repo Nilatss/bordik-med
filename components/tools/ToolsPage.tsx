@@ -699,7 +699,10 @@ export default function ToolsPage() {
     return result;
   }, [deferredQuery, selectedCategories, selectedSubcategories, selectedCountries, onlyAvailable, onlyFavourites, favouriteSet]);
 
-  // Group by category preserving TOOL_CATEGORIES order.
+  // Group by category. Categories are sorted alphabetically (ignoring the
+  // leading "N. " numeric prefix so «Акушерство» sits before «Диагностика»
+  // regardless of which numbered slot it's in the catalog). Subcategories
+  // inside each group also sort alphabetically.
   const byCategory = useMemo(() => {
     const map = new Map<string, CatalogTool[]>();
     for (const t of filtered) {
@@ -707,10 +710,22 @@ export default function ToolsPage() {
       if (arr) arr.push(t);
       else map.set(t.category, [t]);
     }
+    const stripNumPrefix = (s: string) => s.replace(/^\d+\.\s*/, '').toLowerCase();
+    const cats = [...map.keys()].sort((a, b) =>
+      stripNumPrefix(a).localeCompare(stripNumPrefix(b), 'ru')
+    );
     const out: { category: string; tools: CatalogTool[] }[] = [];
-    for (const c of TOOL_CATEGORIES) {
+    for (const c of cats) {
       const arr = map.get(c);
-      if (arr) out.push({ category: c, tools: arr });
+      if (arr) {
+        // Sort tools within each category by subcategory then title so the
+        // grouped list reads top-to-bottom alphabetically.
+        const sorted = [...arr].sort((x, y) => {
+          const sub = x.subcategory.localeCompare(y.subcategory, 'ru');
+          return sub !== 0 ? sub : x.title.localeCompare(y.title, 'ru');
+        });
+        out.push({ category: c, tools: sorted });
+      }
     }
     return out;
   }, [filtered]);
