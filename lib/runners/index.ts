@@ -523,6 +523,13 @@ export const RUNNER_LOADERS: Record<string, RunnerLoader> = {
   "nmibc": () => import('./nmibc'),
   "stone": () => import('./stone'),
   "pvr": () => import('./pvr'),
+  "gli": () => import('./gli'),
+  "gina": () => import('./gina'),
+  "faced": () => import('./faced'),
+  "gap-ild": () => import('./gap-ild'),
+  "reveal": () => import('./reveal'),
+  "ralph": () => import('./ralph'),
+  "ahi": () => import('./ahi'),
 };
 
 const runnerCache = new Map<string, ToolRunner>();
