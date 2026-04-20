@@ -164,7 +164,12 @@ export default function ToolView({ toolId }: { toolId: string }) {
   if (!runner) {
     // Either still fetching the per-runner chunk or the id has no runner yet.
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', maxWidth: 760 }}>
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, ease: [0.05, 0.7, 0.1, 1] }}
+        style={{ display: 'flex', flexDirection: 'column', maxWidth: 760 }}
+      >
         <BackButton onClick={closeTool} />
         <Header tool={tool} />
         <div style={{
@@ -175,7 +180,7 @@ export default function ToolView({ toolId }: { toolId: string }) {
             {loading ? 'Загрузка…' : 'Инструмент в разработке. Скоро будет доступен.'}
           </p>
         </div>
-      </div>
+      </motion.div>
     );
   }
 
@@ -240,7 +245,14 @@ export default function ToolView({ toolId }: { toolId: string }) {
   const kindLabel = runner.kind === 'score' ? 'Шкала' : 'Калькулятор';
 
   return (
-    <div>
+    // Page-enter transition cloned from CourseHeader — opacity+translateY fade
+    // with the same easing curve, so a tool opening feels identical to a course
+    // opening. Only the outer wrapper animates; inner sections stay static.
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, ease: [0.05, 0.7, 0.1, 1] }}
+    >
       {/* Top header - back + tags + title + description + InfoPills (full width, outside grid) */}
       <BackButton onClick={closeTool} />
       <Header tool={tool} kind={kindLabel} />
@@ -384,7 +396,7 @@ export default function ToolView({ toolId }: { toolId: string }) {
           })}
         </aside>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
