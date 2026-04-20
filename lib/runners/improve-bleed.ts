@@ -110,7 +110,7 @@ const runner: ScoreTool = {
     bands: [
       {
         min: 0,
-        max: 6.5,
+        max: 6,
         label: "< 7 - низкий риск кровотечения",
         color: "#22C55E",
         description: "Фармакопрофилактика безопасна при высоком Padua.",

@@ -49,38 +49,59 @@ for (const file of files) {
     const mod = await import(pathToFileURL(join(DIR, file)).href);
     runner = mod.default;
   } catch { continue; }
-  if (!runner || runner.kind !== 'calculator' || typeof runner.compute !== 'function') continue;
+  if (!runner) continue;
 
-  const values = {};
-  for (const inp of runner.inputs) values[inp.id] = pickDefault(inp);
+  // Figure out the scale segments:
+  //  - CalculatorTool: returned from compute(default values).result.scale.segments
+  //  - ScoreTool:       synthesised from runner.bands (see ToolView.tsx)
+  let segments = null;
+  let current = null;
 
-  let result;
-  try { result = runner.compute(values); } catch { continue; }
-  if (!result || !result.scale) continue;
+  if (runner.kind === 'calculator' && typeof runner.compute === 'function') {
+    const values = {};
+    for (const inp of runner.inputs) values[inp.id] = pickDefault(inp);
+    let result;
+    try { result = runner.compute(values); } catch { continue; }
+    if (!result?.scale) continue;
+    segments = result.scale.segments;
+    current = result.scale.current;
+  } else if (runner.kind === 'score' && Array.isArray(runner.bands)) {
+    segments = runner.bands.map((b) => ({ min: b.min, max: b.max, label: b.label, color: b.color }));
+    current = 0; // sum of 0 selections is our default
+  }
 
-  const { segments, current, unit } = result.scale;
   if (!Array.isArray(segments) || segments.length === 0) continue;
 
-  // Sort check
-  const sorted = [...segments].sort((a, b) => a.min - b.min);
-  const inOrder = segments.every((s, i) => s.min === sorted[i].min);
-  if (!inOrder) issues.push({ id, kind: 'unsorted', msg: 'segments not sorted by min' });
+  // We now sort at runtime (see ToolView.tsx) before handing segments to
+  // the scale renderer, so an unsorted runner is NOT a visual bug. Report
+  // it as a style warning (low priority) and evaluate gaps / range on the
+  // sorted copy instead.
+  const sortedSegs = [...segments].sort((a, b) => a.min - b.min);
+  const inOrder = segments.every((s, i) => s.min === sortedSegs[i].min);
+  if (!inOrder && runner.kind !== 'score') {
+    // For calculator tools we prefer to keep the source ordered already.
+    issues.push({ id, kind: 'unsorted', msg: 'segments not sorted by min (author preference)' });
+  }
 
-  // Gaps check
-  for (let i = 0; i < segments.length - 1; i++) {
-    const a = segments[i], b = segments[i + 1];
+  // Gaps — evaluated on sorted copy
+  for (let i = 0; i < sortedSegs.length - 1; i++) {
+    const a = sortedSegs[i], b = sortedSegs[i + 1];
     const touches = a.max === b.min || a.max + 1 === b.min;
     if (!touches) {
-      issues.push({ id, kind: 'gap', msg: `gap between seg ${i} [${a.min}-${a.max}] and seg ${i+1} [${b.min}-${b.max}]` });
+      issues.push({ id, kind: 'gap', msg: `gap between [${a.min}-${a.max}] and [${b.min}-${b.max}]` });
     }
   }
 
-  // Current in range
-  const lo = segments[0].min;
-  const hi = segments[segments.length - 1].max;
-  if (typeof current === 'number') {
-    if (current < lo || current > hi) {
-      issues.push({ id, kind: 'out-of-range', msg: `current=${current} outside [${lo}, ${hi}]` });
+  // Current in range — only flag for CALCULATOR tools. For score tools we
+  // seed current=0 in the validator, which often falls outside the band
+  // range (e.g. GCS 3-15 doesn't cover 0 until the user actually selects).
+  if (runner.kind !== 'score') {
+    const lo = sortedSegs[0].min;
+    const hi = sortedSegs[sortedSegs.length - 1].max;
+    if (typeof current === 'number') {
+      if (current < lo || current > hi) {
+        issues.push({ id, kind: 'out-of-range', msg: `current=${current} outside [${lo}, ${hi}]` });
+      }
     }
   }
 

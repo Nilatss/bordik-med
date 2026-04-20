@@ -205,14 +205,19 @@ export default function ToolView({ toolId }: { toolId: string }) {
         }
       }
       const band = findBand(runner.bands, total);
+      // Some runners define bands in descending order of min (e.g. AVPU:
+      // 4 → 3 → 2 → 1). The renderer assumes ascending min, which would
+      // otherwise draw the scale left-to-right as 4→1 and misplace labels
+      // and the marker. Sort a copy before handing it to the scale.
+      const sortedBands = [...runner.bands].sort((a, b) => a.min - b.min);
       result = {
         value: String(total),
         unit: `из ${runner.maxScore}`,
         interpretation: `${band.label} · ${band.description}`,
         color: band.color,
-        // Auto-build a visual scale from the bands array
+        // Auto-build a visual scale from the sorted bands array
         scale: {
-          segments: runner.bands.map((b) => ({
+          segments: sortedBands.map((b) => ({
             min: b.min,
             max: b.max,
             label: b.label,

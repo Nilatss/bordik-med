@@ -90,14 +90,14 @@ const runner: ScoreTool = {
     bands: [
       {
         min: 0,
-        max: 1.5,
+        max: 1.9,
         label: "Низкая (<2)",
         color: "#22C55E",
         description: "~3% - D-димер (возможно PERC)."
       },
       {
         min: 2,
-        max: 6,
+        max: 6.4,
         label: "Умеренная (2-6)",
         color: "#F59E0B",
         description: "~21% - D-димер, КТ-ангиография при +."
