@@ -1606,7 +1606,14 @@ function InputField({ input, value, onChange }: {
           onChange(n as number);
         }}
         min={input.min} max={input.max} step={input.step ?? 'any'}
-        placeholder={input.hint || ''}
+        // Short placeholder only — the full clinical hint lives in the ℹ
+        // tooltip next to the label. If the input has a min/max range we
+        // show it ("0-100"); otherwise we fall back to the unit, or empty.
+        placeholder={
+          typeof input.min === 'number' && typeof input.max === 'number'
+            ? `${input.min} – ${input.max}${input.unit ? ' ' + input.unit : ''}`
+            : input.unit || ''
+        }
         style={{
           width: '100%', padding: '13px 16px',
           background: '#F5F6F8', border: 'none',
