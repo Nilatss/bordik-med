@@ -450,6 +450,16 @@ export const RUNNER_LOADERS: Record<string, RunnerLoader> = {
   "c-ssrs": () => import('./c-ssrs'),
   "beck-ssi": () => import('./beck-ssi'),
   "cage-audit": () => import('./cage-audit'),
+  "ciwa": () => import('./ciwa'),
+  "dast": () => import('./dast'),
+  "cows": () => import('./cows'),
+  "crafft": () => import('./crafft'),
+  "pcl5": () => import('./pcl5'),
+  "asrs": () => import('./asrs'),
+  "conners": () => import('./conners'),
+  "eat26": () => import('./eat26'),
+  "mchat-autism": () => import('./mchat-autism'),
+  "mmpi": () => import('./mmpi'),
 };
 
 const runnerCache = new Map<string, ToolRunner>();
