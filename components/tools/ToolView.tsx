@@ -557,16 +557,13 @@ function CalculatorBody({ inputs, values, setValues, result }: {
 
   return (
     <div>
+      {/* Single uniform 8 px gap for every input type. We deliberately drop
+          the dashed number→checkbox separator: a 1 px line carries visual
+          weight that makes its 8 px flex-gap margin read bigger than the
+          plain 8 px gap between two checkbox plates. Removing it keeps
+          number→checkbox and checkbox→checkbox distances identical. */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         {nonCheckboxes.map(renderInput)}
-        {checkboxes.length > 0 && nonCheckboxes.length > 0 && (
-          // Dashed divider between number/select inputs and checkboxes.
-          // Sits in the same 8 px flex-gap rhythm as every other sibling
-          // — no extra margins. All internal input offsets are normalised
-          // to 8 px (label→input 8, input→chips 8, input→input 8) so the
-          // separator inherits the same cadence.
-          <div style={{ borderTop: '1px dashed #E2E4EA' }} />
-        )}
         {checkboxes.map(renderInput)}
       </div>
 
