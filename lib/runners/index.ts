@@ -686,6 +686,16 @@ export const RUNNER_LOADERS: Record<string, RunnerLoader> = {
   "dix-hallpike": () => import('./dix-hallpike'),
   "rsi-rfs": () => import('./rsi-rfs'),
   "vhi": () => import('./vhi'),
+  "bipss": () => import('./bipss'),
+  "snellen": () => import('./snellen'),
+  "amsler": () => import('./amsler'),
+  "iop": () => import('./iop'),
+  "hodapp": () => import('./hodapp'),
+  "oct-normative": () => import('./oct-normative'),
+  "schirmer": () => import('./schirmer'),
+  "seidel": () => import('./seidel'),
+  "etdrs-dr": () => import('./etdrs-dr'),
+  "areds": () => import('./areds'),
 };
 
 const runnerCache = new Map<string, ToolRunner>();
