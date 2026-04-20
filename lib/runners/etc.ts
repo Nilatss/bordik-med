@@ -1,5 +1,5 @@
 // @ts-nocheck
-/** Runner: etc — European Trauma Course (ERC) */
+/** Runner: etc - European Trauma Course (ERC) */
 import type { CalculatorTool } from '../tools-runners';
 
 const runner: CalculatorTool = {
@@ -24,13 +24,13 @@ const runner: CalculatorTool = {
       horizontal: {
         title: 'Horizontal approach',
         c: '#4B8DF5',
-        details: 'ETC подчёркивает параллельный (не последовательный) подход: команда из 4–6 специалистов работает одновременно, лидер координирует.',
+        details: 'ETC подчёркивает параллельный (не последовательный) подход: команда из 4-6 специалистов работает одновременно, лидер координирует.',
         actions: [
-          'Team leader — hands-off, видит всю картину, принимает решения',
-          'Airway doctor — дыхательные пути + c-spine',
-          'Procedure doctor — доступы, chest drain, FAST',
-          'Scribe — фиксирует события, таймер',
-          'Nurse leader — лекарства, катетеры',
+          'Team leader - hands-off, видит всю картину, принимает решения',
+          'Airway doctor - дыхательные пути + c-spine',
+          'Procedure doctor - доступы, chest drain, FAST',
+          'Scribe - фиксирует события, таймер',
+          'Nurse leader - лекарства, катетеры',
           'Параллельные задачи в первые 5 мин: ABCDE оценка + доступы + монитор + labs + imaging',
         ],
       },
@@ -42,7 +42,7 @@ const runner: CalculatorTool = {
           'Closed-loop communication: "dai 1 г TXA" → "даю 1 г TXA" → "дано"',
           'Briefing до прибытия пациента (role assignment, план)',
           'Speak-up culture: любой член команды может озвучить проблему',
-          'Regular reassessment каждые 5–10 мин',
+          'Regular reassessment каждые 5-10 мин',
           'Debriefing после случая (hot / cold)',
         ],
       },
@@ -51,22 +51,22 @@ const runner: CalculatorTool = {
         c: '#EF4444',
         details: 'ETC использует модифицированный ABCDE с акцентом на catastrophic haemorrhage (cABCDE) и параллельную работу.',
         actions: [
-          'c — catastrophic external haemorrhage (tourniquet, pressure)',
-          'A — Airway + c-spine (MILS, jaw thrust, airway adjuncts)',
-          'B — Breathing (SpO₂, CO₂, симметрия, chest drain при необходимости)',
-          'C — Circulation (2 доступа, blood products, TXA, pelvic binder)',
-          'D — Disability (GCS, pupils, glucose, limb function)',
-          'E — Exposure (undress, log-roll, prevent hypothermia)',
+          'c - catastrophic external haemorrhage (tourniquet, pressure)',
+          'A - Airway + c-spine (MILS, jaw thrust, airway adjuncts)',
+          'B - Breathing (SpO₂, CO₂, симметрия, chest drain при необходимости)',
+          'C - Circulation (2 доступа, blood products, TXA, pelvic binder)',
+          'D - Disability (GCS, pupils, glucose, limb function)',
+          'E - Exposure (undress, log-roll, prevent hypothermia)',
         ],
       },
       haemorrhage: {
         title: 'Haemorrhage control / DCR',
         c: '#991B1B',
-        details: 'Damage Control Resuscitation — ERC/ETC подход к массивному кровотечению: permissive hypotension + balanced ratio + hemostatic adjuncts + rapid surgical control.',
+        details: 'Damage Control Resuscitation - ERC/ETC подход к массивному кровотечению: permissive hypotension + balanced ratio + hemostatic adjuncts + rapid surgical control.',
         actions: [
           'Tourniquet / direct pressure / haemostatic dressing (Combat Gauze)',
           'Pelvic binder на ВЕРТЕЛЫ (не crista iliaca) при pelvic ring injury',
-          'Permissive hypotension SBP 80–90 (не при ЧМТ)',
+          'Permissive hypotension SBP 80-90 (не при ЧМТ)',
           'Balanced transfusion 1:1:1 или whole blood',
           'TXA 1 г IV < 3 ч → 1 г × 8 ч',
           'Damage control surgery / REBOA при non-compressible torso haemorrhage',
@@ -74,18 +74,18 @@ const runner: CalculatorTool = {
         ],
       },
       handover: {
-        title: 'Handover — ATMIST / IMIST-AMBO',
+        title: 'Handover - ATMIST / IMIST-AMBO',
         c: '#F59E0B',
         details: 'Стандартизированная структура передачи пациента от догоспитального этапа бригаде стационара.',
         actions: [
-          'A — Age + sex',
-          'T — Time of incident',
-          'M — Mechanism of injury',
-          'I — Injuries found / suspected',
-          'S — Signs (vitals, GCS)',
-          'T — Treatments given (TXA, fluids, airway, splints)',
+          'A - Age + sex',
+          'T - Time of incident',
+          'M - Mechanism of injury',
+          'I - Injuries found / suspected',
+          'S - Signs (vitals, GCS)',
+          'T - Treatments given (TXA, fluids, airway, splints)',
           'AMBO (расширенный IMIST): Allergies · Medications · Background · Other (беременность, инфекции)',
-          'Длительность ≤ 30 с, без перебивания; вопросы — после',
+          'Длительность ≤ 30 с, без перебивания; вопросы - после',
         ],
       },
     };
@@ -98,9 +98,9 @@ const runner: CalculatorTool = {
       details: r.details,
       actions: r.actions,
       caveats: [
-        'ETC — курс-первоисточник horizontal team approach, в отличие от вертикального ATLS',
+        'ETC - курс-первоисточник horizontal team approach, в отличие от вертикального ATLS',
         'CRM-принципы важнее технических навыков в экстренной медицине (данные NHS/ACS audits)',
-        'Pelvic binder на ВЕРТЕЛЫ — на crista iliaca не работает',
+        'Pelvic binder на ВЕРТЕЛЫ - на crista iliaca не работает',
         'Не задерживать перевод в OR для дополнительной визуализации при явном внутреннем кровотечении',
       ],
       related: [
@@ -126,12 +126,12 @@ const runner: CalculatorTool = {
     { label: 'ATMIST handover', values: { module: 'handover' } },
   ],
   info: `### Для чего используется
-**European Trauma Course (ETC)** — курс ERC + ESTES для междисциплинарного ведения тяжёлой травмы в первые часы. Отличается от ATLS горизонтальным (team-based) подходом.
+**European Trauma Course (ETC)** - курс ERC + ESTES для междисциплинарного ведения тяжёлой травмы в первые часы. Отличается от ATLS горизонтальным (team-based) подходом.
 
 ### Ключевые отличия ETC vs ATLS
 - **Horizontal** (параллельно, команда) vs **vertical** (одно лицо, последовательно)
 - Акцент на CRM (crew resource management)
-- cABCDE — catastrophic external haemorrhage первым
+- cABCDE - catastrophic external haemorrhage первым
 - Интеграция догоспитального этапа (ATMIST / IMIST-AMBO)
 
 ### CRM (нетехнические навыки)
@@ -145,7 +145,7 @@ const runner: CalculatorTool = {
 **A**ge · **T**ime · **M**echanism · **I**njuries · **S**igns · **T**reatment
 
 ### Damage Control Resuscitation
-- Permissive hypotension (SBP 80–90)
+- Permissive hypotension (SBP 80-90)
 - Balanced transfusion 1:1:1
 - TXA < 3 ч
 - Hemostatic adjuncts + rapid surgical control

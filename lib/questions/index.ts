@@ -1,5 +1,5 @@
 /**
- * Question Bank — lookup functions for test questions.
+ * Question Bank - lookup functions for test questions.
  *
  * Currently returns placeholder questions. Replace with real questions by:
  * 1. Creating module-specific files (e.g., module-0.ts, module-1.ts)

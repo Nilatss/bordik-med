@@ -1,6 +1,6 @@
 // @ts-nocheck
 /**
- * Runner: preserve — PRESERVE Score (Schmidt 2013) для post-ICU инвалидности после VV-ECMO
+ * Runner: preserve - PRESERVE Score (Schmidt 2013) для post-ICU инвалидности после VV-ECMO
  */
 import type { ScoreTool } from '../tools-runners';
 
@@ -12,7 +12,7 @@ const runner: ScoreTool = {
       id: 'age', label: 'Возраст', type: 'select',
       options: [
         { value: '0', label: '< 45 лет', points: 0 },
-        { value: '2', label: '45–55 лет', points: 2 },
+        { value: '2', label: '45-55 лет', points: 2 },
         { value: '3', label: '> 55 лет', points: 3 },
       ],
     },
@@ -54,10 +54,10 @@ const runner: ScoreTool = {
     },
   ],
   bands: [
-    { min: 0, max: 2, label: '0–2', color: '#22C55E', description: '6-мес выживаемость ~ 97%.' },
-    { min: 3, max: 4, label: '3–4', color: '#84CC16', description: '~ 79%.' },
-    { min: 5, max: 6, label: '5–6', color: '#F59E0B', description: '~ 54%.' },
-    { min: 7, max: 8, label: '7–8', color: '#EF4444', description: '~ 34%.' },
+    { min: 0, max: 2, label: '0-2', color: '#22C55E', description: '6-мес выживаемость ~ 97%.' },
+    { min: 3, max: 4, label: '3-4', color: '#84CC16', description: '~ 79%.' },
+    { min: 5, max: 6, label: '5-6', color: '#F59E0B', description: '~ 54%.' },
+    { min: 7, max: 8, label: '7-8', color: '#EF4444', description: '~ 34%.' },
     {
       min: 9, max: 14, label: '≥ 9', color: '#991B1B',
       description: '~ 16% и ниже. Высокий риск стойкой функциональной инвалидности.',
@@ -86,14 +86,14 @@ const runner: ScoreTool = {
     { id: 'murray-ecmo', title: 'Murray LIS (ECMO)' },
     { id: 'sofa', title: 'SOFA' },
   ],
-  reference: 'Schmidt M, Zogheib E, Rozé H, et al. The PRESERVE mortality risk score and analysis of long-term outcomes after extracorporeal membrane oxygenation for severe acute respiratory distress syndrome. Intensive Care Med 2013;39:1704–1713.',
+  reference: 'Schmidt M, Zogheib E, Rozé H, et al. The PRESERVE mortality risk score and analysis of long-term outcomes after extracorporeal membrane oxygenation for severe acute respiratory distress syndrome. Intensive Care Med 2013;39:1704-1713.',
   info: `### Для чего используется
-**PRESERVE Score (Schmidt 2013)** — прогноз 6-месячной смертности и функциональной инвалидности после VV-ECMO у пациентов с тяжёлым ARDS.
+**PRESERVE Score (Schmidt 2013)** - прогноз 6-месячной смертности и функциональной инвалидности после VV-ECMO у пациентов с тяжёлым ARDS.
 
-### 8 предикторов (сумма 0–14)
+### 8 предикторов (сумма 0-14)
 | Параметр | Баллы |
 |---|---|
-| Возраст 45–55 / > 55 | 2 / 3 |
+| Возраст 45-55 / > 55 | 2 / 3 |
 | Иммунокомпрометация | 2 |
 | SOFA > 12 | 1 |
 | ИВЛ ≥ 6 сут до ECMO | 1 |
@@ -104,18 +104,18 @@ const runner: ScoreTool = {
 ### 6-мес выживаемость
 | Баллы | Выживаемость |
 |---|---|
-| 0–2 | 97% |
-| 3–4 | 79% |
-| 5–6 | 54% |
-| 7–8 | 34% |
+| 0-2 | 97% |
+| 3-4 | 79% |
+| 5-6 | 54% |
+| 7-8 | 34% |
 | ≥ 9 | ≤ 16% |
 
 ### Связанные шкалы
-- **ECMOnet** — когортная выживаемость
-- **ENCOURAGE** — для VA-ECMO после ИМ
+- **ECMOnet** - когортная выживаемость
+- **ENCOURAGE** - для VA-ECMO после ИМ
 
 ### Источник
-Schmidt M et al. Intensive Care Med 2013;39:1704–13.`,
+Schmidt M et al. Intensive Care Med 2013;39:1704-13.`,
 };
 
 export default runner;

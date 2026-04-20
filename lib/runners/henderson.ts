@@ -2,7 +2,7 @@
 /**
  * Runner: henderson
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
- * Do not edit by hand — regenerate via `npm run split:runners`.
+ * Do not edit by hand - regenerate via `npm run split:runners`.
  *
  * Loaded lazily via dynamic import from lib/runners/index.ts so the
  * encyclopaedia of clinical content stays out of the main app bundle.
@@ -161,24 +161,24 @@ const runner: CalculatorTool = {
             let deltaInterp = '';
             if (highAG) {
                 if (deltaRatio < 0.4) deltaInterp = 'Δ/Δ < 0,4: HAGMA + NAGMA (смешанный)';
-                else if (deltaRatio < 1) deltaInterp = 'Δ/Δ 0,4–1: HAGMA + NAGMA';
-                else if (deltaRatio <= 2) deltaInterp = 'Δ/Δ 1–2: чистый HAGMA';
+                else if (deltaRatio < 1) deltaInterp = 'Δ/Δ 0,4-1: HAGMA + NAGMA';
+                else if (deltaRatio <= 2) deltaInterp = 'Δ/Δ 1-2: чистый HAGMA';
                 else deltaInterp = 'Δ/Δ > 2: HAGMA + метаболический алкалоз (или хроническая респираторная компенсация)';
             }
             const details = `**pH ${ph}, PaCO₂ ${pco2}, HCO₃⁻ ${hco3}.**
 
 **Первичное расстройство: ${primary}.**
 
-AG = ${ag.toFixed(1)}, AG_corr (альб ${alb}) = **${agCorrected.toFixed(1)}** (норма 8–12).
-${isMetAcid ? `Winter: ожидаемый PaCO₂ = 1,5 × ${hco3} + 8 = **${winter.toFixed(1)} ± 2** (${winterLow.toFixed(1)}–${winterHigh.toFixed(1)}). Фактический ${pco2} → ${compensationOK ? 'компенсация адекватна' : mixed}.\n\n` : ''}${highAG ? `Δ/Δ = (AG − 12) / (24 − HCO₃) = ${deltaAG.toFixed(1)} / ${deltaHCO3.toFixed(1)} = **${deltaRatio.toFixed(2)}** → ${deltaInterp}.` : ''}`;
+AG = ${ag.toFixed(1)}, AG_corr (альб ${alb}) = **${agCorrected.toFixed(1)}** (норма 8-12).
+${isMetAcid ? `Winter: ожидаемый PaCO₂ = 1,5 × ${hco3} + 8 = **${winter.toFixed(1)} ± 2** (${winterLow.toFixed(1)}-${winterHigh.toFixed(1)}). Фактический ${pco2} → ${compensationOK ? 'компенсация адекватна' : mixed}.\n\n` : ''}${highAG ? `Δ/Δ = (AG − 12) / (24 − HCO₃) = ${deltaAG.toFixed(1)} / ${deltaHCO3.toFixed(1)} = **${deltaRatio.toFixed(2)}** → ${deltaInterp}.` : ''}`;
             const actions = [
                 isMetAcid ? 'Дифф. при ↑AG: MUDPILES (метанол, уремия, ДКА, лактат, этиленгликоль, салицилаты)' : '',
                 isMetAcid && !highAG ? 'Дифф. при нормальном AG: HARDUPS (диарея, RTA, ИКА, парентеральное питание)' : '',
                 primary === 'Респираторный ацидоз' ? 'Оценка ХОБЛ, опиоидной депрессии дыхания, нервно-мышечных болезней; NIV/IV при pH < 7,25' : '',
                 primary === 'Метаболический алкалоз' ? 'Cl-чувствительный (рвота, диуретики) vs резистентный (гиперальдостеронизм, Барттер)' : '',
                 primary === 'Респираторный алкалоз' ? 'Гипервентиляция: тревога, ТЭЛА, сепсис, салицилаты, беременность, печёночная недостаточность' : '',
-                'Повторить газы через 30–60 мин после коррекции',
-                'При любом тяжёлом расстройстве (pH < 7,2 или > 7,6) — консультация реаниматолога'
+                'Повторить газы через 30-60 мин после коррекции',
+                'При любом тяжёлом расстройстве (pH < 7,2 или > 7,6) - консультация реаниматолога'
             ].filter(Boolean);
             return {
                 value: primary,
@@ -188,11 +188,11 @@ ${isMetAcid ? `Winter: ожидаемый PaCO₂ = 1,5 × ${hco3} + 8 = **${win
                 details,
                 actions,
                 caveats: [
-                    'Анализ Henderson-Hasselbalch — стандарт; Stewart/SID-подход даёт дополнительную информацию при тяжёлых нарушениях',
+                    'Анализ Henderson-Hasselbalch - стандарт; Stewart/SID-подход даёт дополнительную информацию при тяжёлых нарушениях',
                     'Winter применим только к метаболическому ацидозу; для алкалоза PaCO₂ = 0,7 × HCO₃ + 20 ± 5',
-                    'Для хронического респираторного ацидоза HCO₃ ↑ на 3,5 за каждый ↑ PaCO₂ на 10; острого — на 1',
+                    'Для хронического респираторного ацидоза HCO₃ ↑ на 3,5 за каждый ↑ PaCO₂ на 10; острого - на 1',
                     'AG-коррекция критична при гипоальбуминемии (-2,5 ммоль/л на каждые -10 г/л альбумина)',
-                    'Δ/Δ < 1 требует двух дисбалансов — не забывать искать NAGMA даже при высоком AG'
+                    'Δ/Δ < 1 требует двух дисбалансов - не забывать искать NAGMA даже при высоком AG'
                 ],
                 relatedCourses: [
                     {
@@ -272,7 +272,7 @@ ${isMetAcid ? `Winter: ожидаемый PaCO₂ = 1,5 × ${hco3} + 8 = **${win
         }
       }
     ],
-    info: "### Для чего используется\n**Пошаговый анализ кислотно-щелочного состояния** (Henderson-Hasselbalch). Позволяет идентифицировать первичное расстройство, оценить адекватность компенсации и обнаружить скрытые смешанные нарушения.\n\n### Алгоритм (6 шагов)\n1. **pH** — acidemia (< 7,35) или alkalemia (> 7,45)?\n2. **HCO₃ / PaCO₂** — метаболическое или респираторное?\n3. **Компенсация** — Winter (мет. ацидоз), Bicarb rule (респ.)\n4. **AG (корр. по альбумину)** — высокий vs нормальный\n5. **Δ/Δ** — искать смешанные расстройства\n6. **Клинический контекст** — мнемоники MUDPILES / HARDUPS\n\n### Формулы компенсации\n| Расстройство | Ожидание |\n|---|---|\n| Мет. ацидоз (Winter) | PaCO₂ = 1,5 × HCO₃ + 8 ± 2 |\n| Мет. алкалоз | PaCO₂ = 0,7 × HCO₃ + 20 ± 5 |\n| Острый респ. ацидоз | ΔHCO₃ = 0,1 × ΔPaCO₂ |\n| Хрон. респ. ацидоз | ΔHCO₃ = 0,35 × ΔPaCO₂ |\n| Острый респ. алкалоз | ΔHCO₃ = −0,2 × ΔPaCO₂ |\n| Хрон. респ. алкалоз | ΔHCO₃ = −0,5 × ΔPaCO₂ |\n\n### Δ/Δ\n`Δ/Δ = (AG − 12) / (24 − HCO₃)`\n\n| Δ/Δ | Интерпретация |\n|---|---|\n| < 0,4 | HAGMA + NAGMA |\n| 1–2 | Чистый HAGMA |\n| > 2 | HAGMA + мет. алкалоз |\n\n### Источник\nBerend K, de Vries AP, Gans RO. *N Engl J Med* 2014;371:1434.\nKraut JA, Madias NE. *CJASN* 2007;2:162.\n"
+    info: "### Для чего используется\n**Пошаговый анализ кислотно-щелочного состояния** (Henderson-Hasselbalch). Позволяет идентифицировать первичное расстройство, оценить адекватность компенсации и обнаружить скрытые смешанные нарушения.\n\n### Алгоритм (6 шагов)\n1. **pH** - acidemia (< 7,35) или alkalemia (> 7,45)?\n2. **HCO₃ / PaCO₂** - метаболическое или респираторное?\n3. **Компенсация** - Winter (мет. ацидоз), Bicarb rule (респ.)\n4. **AG (корр. по альбумину)** - высокий vs нормальный\n5. **Δ/Δ** - искать смешанные расстройства\n6. **Клинический контекст** - мнемоники MUDPILES / HARDUPS\n\n### Формулы компенсации\n| Расстройство | Ожидание |\n|---|---|\n| Мет. ацидоз (Winter) | PaCO₂ = 1,5 × HCO₃ + 8 ± 2 |\n| Мет. алкалоз | PaCO₂ = 0,7 × HCO₃ + 20 ± 5 |\n| Острый респ. ацидоз | ΔHCO₃ = 0,1 × ΔPaCO₂ |\n| Хрон. респ. ацидоз | ΔHCO₃ = 0,35 × ΔPaCO₂ |\n| Острый респ. алкалоз | ΔHCO₃ = −0,2 × ΔPaCO₂ |\n| Хрон. респ. алкалоз | ΔHCO₃ = −0,5 × ΔPaCO₂ |\n\n### Δ/Δ\n`Δ/Δ = (AG − 12) / (24 − HCO₃)`\n\n| Δ/Δ | Интерпретация |\n|---|---|\n| < 0,4 | HAGMA + NAGMA |\n| 1-2 | Чистый HAGMA |\n| > 2 | HAGMA + мет. алкалоз |\n\n### Источник\nBerend K, de Vries AP, Gans RO. *N Engl J Med* 2014;371:1434.\nKraut JA, Madias NE. *CJASN* 2007;2:162.\n"
   };
 
 export default runner;

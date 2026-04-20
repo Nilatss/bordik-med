@@ -1,6 +1,6 @@
 // @ts-nocheck
 /**
- * Runner: rsbi — Rapid Shallow Breathing Index (Yang-Tobin 1991)
+ * Runner: rsbi - Rapid Shallow Breathing Index (Yang-Tobin 1991)
  */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -19,17 +19,17 @@ const runner: CalculatorTool = {
     if (rsbi < 65) {
       interpretation = 'Высокая вероятность успешного отлучения';
       color = '#22C55E';
-      details = 'RSBI < 65 — очень высокая вероятность успеха SBT (ЧДД низкая, Vt большой — эффективная спонтанная вентиляция).';
-      actions = ['Продолжить SBT 30–120 мин', 'Экстубация при стабильных параметрах', 'Чек-лист: защитные рефлексы, секреция, сознание'];
+      details = 'RSBI < 65 - очень высокая вероятность успеха SBT (ЧДД низкая, Vt большой - эффективная спонтанная вентиляция).';
+      actions = ['Продолжить SBT 30-120 мин', 'Экстубация при стабильных параметрах', 'Чек-лист: защитные рефлексы, секреция, сознание'];
     } else if (rsbi < 105) {
       interpretation = 'Вероятно успешное отлучение';
       color = '#84CC16';
-      details = 'RSBI 65–104 — приемлемый диапазон, большинство пациентов успешно экстубируются. Yang-Tobin: порог < 105 имеет PPV ~ 80 %.';
-      actions = ['Завершить SBT 30–120 мин', 'Оценить кашель, секрецию, сознание', 'Экстубация при стабильном RSBI'];
+      details = 'RSBI 65-104 - приемлемый диапазон, большинство пациентов успешно экстубируются. Yang-Tobin: порог < 105 имеет PPV ~ 80 %.';
+      actions = ['Завершить SBT 30-120 мин', 'Оценить кашель, секрецию, сознание', 'Экстубация при стабильном RSBI'];
     } else {
       interpretation = 'Высокий риск неудачи экстубации';
       color = '#EF4444';
-      details = 'RSBI ≥ 105 — быстрое поверхностное дыхание, признак высокой вентиляционной нагрузки или слабости дыхательных мышц. Высокий риск реинтубации.';
+      details = 'RSBI ≥ 105 - быстрое поверхностное дыхание, признак высокой вентиляционной нагрузки или слабости дыхательных мышц. Высокий риск реинтубации.';
       actions = ['Продолжить ИВЛ', 'Оптимизировать седацию, баланс жидкости, нутрицию', 'Искать причину: усталость мышц, кардиальная причина, секреция, метаболические', 'Повторить SBT через 24 часа'];
     }
     return {
@@ -42,7 +42,7 @@ const runner: CalculatorTool = {
       caveats: [
         'Формула: RSBI = ЧДД / Vt(л); измеряется во время SBT (T-piece или PS 0 / PEEP 0)',
         'PPV для успешной экстубации при < 105 ≈ 80 %; NPV при ≥ 105 ≈ 95 %',
-        'Не использовать при CPAP/PS — искусственно снижает RSBI',
+        'Не использовать при CPAP/PS - искусственно снижает RSBI',
         'Оценивать на 1-й минуте SBT (Yang-Tobin); меньше валидирован в конце SBT',
       ],
       related: [
@@ -65,7 +65,7 @@ const runner: CalculatorTool = {
       },
     };
   },
-  reference: 'Yang KL, Tobin MJ. N Engl J Med 1991;324:1445–1450.',
+  reference: 'Yang KL, Tobin MJ. N Engl J Med 1991;324:1445-1450.',
   countries: 'Международный',
   presets: [
     { label: 'Готов к экстубации', values: { rr: 18, vt: 500 } },
@@ -74,20 +74,20 @@ const runner: CalculatorTool = {
   ],
   caveats: [
     'RSBI = ЧДД / Vt (в литрах)',
-    'Измеряется в первые 1–3 мин SBT',
-    'Порог < 105 — классический Yang-Tobin',
+    'Измеряется в первые 1-3 мин SBT',
+    'Порог < 105 - классический Yang-Tobin',
   ],
   info: `### Для чего используется
-**Rapid Shallow Breathing Index (Yang-Tobin 1991)** — простейший и самый валидированный предиктор успеха отлучения от ИВЛ. Измеряется на T-piece или минимальной поддержке.
+**Rapid Shallow Breathing Index (Yang-Tobin 1991)** - простейший и самый валидированный предиктор успеха отлучения от ИВЛ. Измеряется на T-piece или минимальной поддержке.
 
 ### Формула
-**RSBI = ЧДД / Vt(л)** — единицы /мин/л
+**RSBI = ЧДД / Vt(л)** - единицы /мин/л
 
 ### Пороги
 | RSBI | Интерпретация |
 |---|---|
 | < 65 | Очень высокая вероятность успеха |
-| 65–104 | Успех вероятен (PPV ~ 80 %) |
+| 65-104 | Успех вероятен (PPV ~ 80 %) |
 | ≥ 105 | Высокий риск неудачи (NPV ~ 95 %) |
 
 ### Как мерить
@@ -96,7 +96,7 @@ const runner: CalculatorTool = {
 3. Рассчитать RSBI
 
 ### Источник
-Yang KL, Tobin MJ. A prospective study of indexes predicting the outcome of trials of weaning from mechanical ventilation. N Engl J Med 1991;324:1445–50.`,
+Yang KL, Tobin MJ. A prospective study of indexes predicting the outcome of trials of weaning from mechanical ventilation. N Engl J Med 1991;324:1445-50.`,
 };
 
 export default runner;

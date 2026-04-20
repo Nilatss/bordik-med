@@ -1,7 +1,7 @@
 // @ts-nocheck
 /**
  * Runner: apache
- * APACHE II — Acute Physiology And Chronic Health Evaluation (Knaus 1985).
+ * APACHE II - Acute Physiology And Chronic Health Evaluation (Knaus 1985).
  */
 
 import type {
@@ -19,14 +19,14 @@ const runner: CalculatorTool = {
   inputs: [
     {
       id: 'aps',
-      label: 'APS — Acute Physiology Score (12 переменных)',
+      label: 'APS - Acute Physiology Score (12 переменных)',
       type: 'number',
       unit: 'баллов',
       min: 0,
       max: 60,
       step: 1,
       quickValues: [0, 5, 10, 15, 20, 25, 30],
-      hint: 'Сумма 12 физиологических параметров (Tº, MAP, HR, RR, A-a, pH, Na, K, Cr, Hct, WBC, GCS — через 15 − GCS)',
+      hint: 'Сумма 12 физиологических параметров (Tº, MAP, HR, RR, A-a, pH, Na, K, Cr, Hct, WBC, GCS - через 15 − GCS)',
     },
     {
       id: 'age',
@@ -66,7 +66,7 @@ const runner: CalculatorTool = {
     } else if (total <= 9) {
       mortality = '≈ 8%';
       color = '#84CC16';
-      details = 'Низкая–умеренная смертность. Активная поддержка органных систем, мониторинг.';
+      details = 'Низкая-умеренная смертность. Активная поддержка органных систем, мониторинг.';
       actions = ['Агрессивная оптимизация гемодинамики', 'Контроль глюкозы, нутриция'];
     } else if (total <= 14) {
       mortality = '≈ 15%';
@@ -100,7 +100,7 @@ const runner: CalculatorTool = {
     } else {
       mortality = '> 85%';
       color = '#7F1D1D';
-      details = 'Крайне высокая смертность. Большинство случаев — конец жизни.';
+      details = 'Крайне высокая смертность. Большинство случаев - конец жизни.';
       actions = ['Comfort-focused care обычно', 'End-of-life discussions'];
     }
 
@@ -112,7 +112,7 @@ const runner: CalculatorTool = {
       details,
       actions,
       caveats: [
-        'APACHE II рассчитывается в первые 24 ч поступления в ICU — не для динамики',
+        'APACHE II рассчитывается в первые 24 ч поступления в ICU - не для динамики',
         'Не валидизирован для ожоговых, кардиохирургических и пациентов после АКШ',
         'Переоценивает смертность у септических пациентов в современной эре (lead-time bias)',
         'Для динамического мониторинга использовать SOFA',
@@ -120,13 +120,13 @@ const runner: CalculatorTool = {
       ],
       scale: {
         segments: [
-          { min: 0, max: 5, label: '0–4', color: '#22C55E' },
-          { min: 5, max: 10, label: '5–9', color: '#84CC16' },
-          { min: 10, max: 15, label: '10–14', color: '#F59E0B' },
-          { min: 15, max: 20, label: '15–19', color: '#F97316' },
-          { min: 20, max: 25, label: '20–24', color: '#EF4444' },
-          { min: 25, max: 30, label: '25–29', color: '#DC2626' },
-          { min: 30, max: 35, label: '30–34', color: '#991B1B' },
+          { min: 0, max: 5, label: '0-4', color: '#22C55E' },
+          { min: 5, max: 10, label: '5-9', color: '#84CC16' },
+          { min: 10, max: 15, label: '10-14', color: '#F59E0B' },
+          { min: 15, max: 20, label: '15-19', color: '#F97316' },
+          { min: 20, max: 25, label: '20-24', color: '#EF4444' },
+          { min: 25, max: 30, label: '25-29', color: '#DC2626' },
+          { min: 30, max: 35, label: '30-34', color: '#991B1B' },
           { min: 35, max: 71, label: '≥ 35', color: '#7F1D1D' },
         ],
         current: total,
@@ -144,7 +144,7 @@ const runner: CalculatorTool = {
       ],
     };
   },
-  reference: 'Knaus WA et al. APACHE II: a severity of disease classification system. Crit Care Med 1985;13:818–29.',
+  reference: 'Knaus WA et al. APACHE II: a severity of disease classification system. Crit Care Med 1985;13:818-29.',
   countries: 'Международный (оригинал США)',
   presets: [
     { label: 'Молодой стабильный', values: { aps: 4, age: 35, chronic: '0' } },
@@ -152,16 +152,16 @@ const runner: CalculatorTool = {
     { label: 'Критический', values: { aps: 35, age: 80, chronic: '5' } },
   ],
   info: `### Для чего используется
-**APACHE II (Knaus 1985)** — прогностическая шкала **госпитальной смертности пациентов ICU**, рассчитываемая по данным первых 24 часов.
+**APACHE II (Knaus 1985)** - прогностическая шкала **госпитальной смертности пациентов ICU**, рассчитываемая по данным первых 24 часов.
 
-### Компоненты (итого 0–71)
+### Компоненты (итого 0-71)
 | Компонент | Диапазон |
 |---|---|
-| **APS** (Acute Physiology Score) — 12 переменных | 0–60 |
-| **Возраст** | 0–6 |
+| **APS** (Acute Physiology Score) - 12 переменных | 0-60 |
+| **Возраст** | 0-6 |
 | **Хронические заболевания** | 0 / 2 / 5 |
 
-### APS — 12 физиологических параметров
+### APS - 12 физиологических параметров
 1. Температура (ректально)
 2. Среднее АД
 3. ЧСС
@@ -175,18 +175,18 @@ const runner: CalculatorTool = {
 11. WBC
 12. GCS (15 − GCS)
 
-Каждый параметр даёт 0–4 балла по отклонению от нормы.
+Каждый параметр даёт 0-4 балла по отклонению от нормы.
 
 ### Прогноз смертности
 | Баллы | Смертность |
 |---|---|
-| 0–4 | ≈ 4% |
-| 5–9 | ≈ 8% |
-| 10–14 | ≈ 15% |
-| 15–19 | ≈ 25% |
-| 20–24 | ≈ 40% |
-| 25–29 | ≈ 55% |
-| 30–34 | ≈ 73% |
+| 0-4 | ≈ 4% |
+| 5-9 | ≈ 8% |
+| 10-14 | ≈ 15% |
+| 15-19 | ≈ 25% |
+| 20-24 | ≈ 40% |
+| 25-29 | ≈ 55% |
+| 30-34 | ≈ 73% |
 | ≥ 35 | > 85% |
 
 ### Применение

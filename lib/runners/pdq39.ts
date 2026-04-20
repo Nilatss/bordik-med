@@ -2,7 +2,7 @@
 /**
  * Runner: pdq39
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
- * Do not edit by hand — regenerate via `npm run split:runners`.
+ * Do not edit by hand - regenerate via `npm run split:runners`.
  *
  * Loaded lazily via dynamic import from lib/runners/index.ts so the
  * encyclopaedia of clinical content stays out of the main app bundle.
@@ -23,7 +23,7 @@ const runner: CalculatorTool = {
     inputs: [
       {
         id: "mobility",
-        label: "Мобильность (10 пунктов × 0–4, итого 0–40)",
+        label: "Мобильность (10 пунктов × 0-4, итого 0-40)",
         type: "number",
         min: 0,
         max: 40,
@@ -38,7 +38,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "adl",
-        label: "ADL (6 × 0–4, 0–24)",
+        label: "ADL (6 × 0-4, 0-24)",
         type: "number",
         min: 0,
         max: 24,
@@ -53,7 +53,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "emotional",
-        label: "Эмоции (6 × 0–4, 0–24)",
+        label: "Эмоции (6 × 0-4, 0-24)",
         type: "number",
         min: 0,
         max: 24,
@@ -68,7 +68,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "stigma",
-        label: "Стигма (4 × 0–4, 0–16)",
+        label: "Стигма (4 × 0-4, 0-16)",
         type: "number",
         min: 0,
         max: 16,
@@ -83,7 +83,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "social",
-        label: "Социальная поддержка (3 × 0–4, 0–12)",
+        label: "Социальная поддержка (3 × 0-4, 0-12)",
         type: "number",
         min: 0,
         max: 12,
@@ -98,7 +98,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "cognition",
-        label: "Когниции (4 × 0–4, 0–16)",
+        label: "Когниции (4 × 0-4, 0-16)",
         type: "number",
         min: 0,
         max: 16,
@@ -113,7 +113,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "communication",
-        label: "Коммуникация (3 × 0–4, 0–12)",
+        label: "Коммуникация (3 × 0-4, 0-12)",
         type: "number",
         min: 0,
         max: 12,
@@ -128,7 +128,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "bodily",
-        label: "Телесный дискомфорт (3 × 0–4, 0–12)",
+        label: "Телесный дискомфорт (3 × 0-4, 0-12)",
         type: "number",
         min: 0,
         max: 12,
@@ -163,7 +163,7 @@ const runner: CalculatorTool = {
                 communication: 12,
                 bodily: 12
             };
-            // Transform each subscale to 0–100
+            // Transform each subscale to 0-100
             const scaled = {};
             for (const k of Object.keys(raw)){
                 scaled[k] = raw[k] / maxes[k] * 100;
@@ -201,7 +201,7 @@ const runner: CalculatorTool = {
             }
             return {
                 value: si.toFixed(1),
-                unit: 'PDQ-39 SI (0–100)',
+                unit: 'PDQ-39 SI (0-100)',
                 interpretation,
                 color,
                 details,
@@ -211,9 +211,9 @@ const runner: CalculatorTool = {
                         desc: `${scaled[k].toFixed(0)}/100 (сырой ${raw[k]}/${maxes[k]})`
                     })),
                 caveats: [
-                    'Higher = worse: PDQ-39 SI 0 — идеально, 100 — худшее состояние',
-                    'Каждый домен трансформируется в 0–100 перед усреднением',
-                    'PDQ-8 — короткая версия (по 1 пункту от каждого домена)',
+                    'Higher = worse: PDQ-39 SI 0 - идеально, 100 - худшее состояние',
+                    'Каждый домен трансформируется в 0-100 перед усреднением',
+                    'PDQ-8 - короткая версия (по 1 пункту от каждого домена)',
                     'Заполняется пациентом (последние 4 недели)'
                 ],
                 scale: {
@@ -262,8 +262,8 @@ const runner: CalculatorTool = {
                 ]
             };
         },
-    reference: "Peto V, Jenkinson C, Fitzpatrick R, Greenhall R. The development and validation of a short measure of functioning and well being for individuals with Parkinson’s disease. Qual Life Res 1995;4:241–248.",
-    info: "### Для чего используется\n**PDQ-39 (Parkinson's Disease Questionnaire, Peto 1995)** — **оценка качества жизни** при PD по 39 пунктам / 8 доменам. Заполняется пациентом.\n\n### Домены (8) и максимальные сырые баллы\n| Домен | Пункты | Макс |\n|---|---|---|\n| Мобильность | 10 | 40 |\n| ADL | 6 | 24 |\n| Эмоции | 6 | 24 |\n| Стигма | 4 | 16 |\n| Социальная поддержка | 3 | 12 |\n| Когниции | 4 | 16 |\n| Коммуникация | 3 | 12 |\n| Телесный дискомфорт | 3 | 12 |\n\n### Формула\nКаждый домен: (сырой / макс) × 100 → 0–100.\n**PDQ-39 SI = среднее 8 субшкал**.\nHigher = worse QoL.\n\n### Интерпретация (ориентировочно)\n| SI | Значение |\n|---|---|\n| < 20 | Хорошее КЖ |\n| 20–40 | Умеренное снижение |\n| > 40 | Выраженное снижение |\n\n### Применение\n- Оценка эффекта терапии (DBS, помпы, леводопа)\n- Клинические исследования\n- Пациент-ориентированный исход\n\n### Версии\n- **PDQ-39** — оригинал, 39 пунктов\n- **PDQ-8** — короткая версия, 8 пунктов (по 1 от домена)\n\n### Ограничения\n- Self-report — зависит от когнитивной сохранности\n- Период оценки — последние 4 недели\n- Не отражает флуктуации\n\n### Тактика\n- < 20: поддержка\n- 20–40: таргетные вмешательства по худшим доменам\n- > 40: мультидисциплинарный подход\n\n### Источник\nPeto V et al. **PDQ-39: short measure of functioning and well being for individuals with PD.** *Qual Life Res* 1995;4:241–248."
+    reference: "Peto V, Jenkinson C, Fitzpatrick R, Greenhall R. The development and validation of a short measure of functioning and well being for individuals with Parkinson’s disease. Qual Life Res 1995;4:241-248.",
+    info: "### Для чего используется\n**PDQ-39 (Parkinson's Disease Questionnaire, Peto 1995)** - **оценка качества жизни** при PD по 39 пунктам / 8 доменам. Заполняется пациентом.\n\n### Домены (8) и максимальные сырые баллы\n| Домен | Пункты | Макс |\n|---|---|---|\n| Мобильность | 10 | 40 |\n| ADL | 6 | 24 |\n| Эмоции | 6 | 24 |\n| Стигма | 4 | 16 |\n| Социальная поддержка | 3 | 12 |\n| Когниции | 4 | 16 |\n| Коммуникация | 3 | 12 |\n| Телесный дискомфорт | 3 | 12 |\n\n### Формула\nКаждый домен: (сырой / макс) × 100 → 0-100.\n**PDQ-39 SI = среднее 8 субшкал**.\nHigher = worse QoL.\n\n### Интерпретация (ориентировочно)\n| SI | Значение |\n|---|---|\n| < 20 | Хорошее КЖ |\n| 20-40 | Умеренное снижение |\n| > 40 | Выраженное снижение |\n\n### Применение\n- Оценка эффекта терапии (DBS, помпы, леводопа)\n- Клинические исследования\n- Пациент-ориентированный исход\n\n### Версии\n- **PDQ-39** - оригинал, 39 пунктов\n- **PDQ-8** - короткая версия, 8 пунктов (по 1 от домена)\n\n### Ограничения\n- Self-report - зависит от когнитивной сохранности\n- Период оценки - последние 4 недели\n- Не отражает флуктуации\n\n### Тактика\n- < 20: поддержка\n- 20-40: таргетные вмешательства по худшим доменам\n- > 40: мультидисциплинарный подход\n\n### Источник\nPeto V et al. **PDQ-39: short measure of functioning and well being for individuals with PD.** *Qual Life Res* 1995;4:241-248."
   };
 
 export default runner;

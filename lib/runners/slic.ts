@@ -2,7 +2,7 @@
 /**
  * Runner: slic
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
- * Do not edit by hand — regenerate via `npm run split:runners`.
+ * Do not edit by hand - regenerate via `npm run split:runners`.
  *
  * Loaded lazily via dynamic import from lib/runners/index.ts so the
  * encyclopaedia of clinical content stays out of the main app bundle.
@@ -119,8 +119,8 @@ const runner: ScoreTool = {
         description: "Неоперативное лечение",
         details: "Консервативное лечение: жёсткий воротник, наблюдение.",
         actions: [
-          "Жёсткий воротник (Philadelphia, Miami-J) 6–12 нед",
-          "Контрольные снимки в динамике (flexion-extension через 4–6 нед)",
+          "Жёсткий воротник (Philadelphia, Miami-J) 6-12 нед",
+          "Контрольные снимки в динамике (flexion-extension через 4-6 нед)",
           "Реабилитация"
         ]
       },
@@ -130,11 +130,11 @@ const runner: ScoreTool = {
         label: "4 неопределённо",
         color: "#F59E0B",
         description: "Равнозначный выбор (хирургия vs консерватив.)",
-        details: "Хирургическое или консервативное — решение индивидуально с учётом механизма, возраста, коморбидности.",
+        details: "Хирургическое или консервативное - решение индивидуально с учётом механизма, возраста, коморбидности.",
         actions: [
           "Мультидисциплинарный консилиум",
           "МРТ для оценки DLC",
-          "При подвывихах / нестабильности — операция"
+          "При подвывихах / нестабильности - операция"
         ]
       },
       {
@@ -143,7 +143,7 @@ const runner: ScoreTool = {
         label: "≥ 5 операция",
         color: "#EF4444",
         description: "Хирургическое лечение",
-        details: "Показание к операции — декомпрессия и стабилизация.",
+        details: "Показание к операции - декомпрессия и стабилизация.",
         actions: [
           "Срочная декомпрессия + стабилизация < 24 ч при неврологическом дефиците",
           "Передний (ACDF/ACCF) vs задний (lateral mass screws) подход по паттерну",
@@ -152,12 +152,12 @@ const runner: ScoreTool = {
         ]
       }
     ],
-    reference: "Vaccaro AR, Hulbert RJ, Patel AA et al. The Subaxial Cervical Spine Injury Classification System. Spine 2007;32:2365–2374.",
+    reference: "Vaccaro AR, Hulbert RJ, Patel AA et al. The Subaxial Cervical Spine Injury Classification System. Spine 2007;32:2365-2374.",
     countries: "Международный (Spine Trauma Study Group)",
     caveats: [
-      "SLIC применим к **субаксиальному** (C3–C7) отделу",
-      "TLICS — аналог для грудопоясничного (Vaccaro 2005)",
-      "AOSpine Cervical Classification — современная альтернатива (A/B/C + N modifier)",
+      "SLIC применим к субаксиальному (C3-C7) отделу",
+      "TLICS - аналог для грудопоясничного (Vaccaro 2005)",
+      "AOSpine Cervical Classification - современная альтернатива (A/B/C + N modifier)",
       "DLC оценивается по МРТ T2 FS / STIR (сигнал в связках / диске)",
       "+1 балл за сохраняющуюся компрессию возможен только при неврологическом дефиците"
     ],
@@ -181,7 +181,7 @@ const runner: ScoreTool = {
         title: "Неотложная помощь"
       }
     ],
-    info: "### Для чего используется\n**SLIC (Subaxial Cervical Spine Injury Classification, Vaccaro 2007)** — балльная система для решения **об оперативном лечении травм C3–C7**.\n\n### Три домена\n| Домен | Критерий | Баллы |\n|---|---|---|\n| **Морфология** | Нет | 0 |\n|  | Компрессия | 1 |\n|  | Взрывной (burst) | 2 |\n|  | Дистракция (facet perch, hyperextension) | 3 |\n|  | Ротация/трансляция | 4 |\n| **DLC** | Интактен | 0 |\n|  | Неопределённо | 1 |\n|  | Разрушен | 2 |\n| **Неврология** | Интактен | 0 |\n|  | Корешковая | 1 |\n|  | Полное SCI | 2 |\n|  | Неполное SCI | 3 |\n|  | + продолжающаяся компрессия при дефиците | +1 |\n\n### Интерпретация\n| Сумма | Тактика |\n|---|---|\n| ≤ 3 | Неоперативное (воротник, наблюдение) |\n| 4 | Равнозначно (решение индивидуальное) |\n| ≥ 5 | Оперативное |\n\n### Морфологические паттерны\n- **Компрессия**: < 25 % уменьшение высоты тела, без заднего вовлечения\n- **Взрывной (burst)**: ретропульсия тела, вовлечение задней стенки\n- **Дистракция**: facet perch, hyperextension (флексионный/экстензионный)\n- **Ротация/трансляция**: faset dislocation (unilateral / bilateral), floating lateral mass\n\n### DLC (Disco-Ligamentous Complex) на МРТ\n- Интактен: нормальный T2 сигнал в диске, ALL, PLL, interspinous\n- Неопределённо: изолированный отёк в interspinous без дисрупции\n- Разрушен: widening of interspinous, facet dislocation, avulsion, увеличение диска\n\n### Альтернативы\n- **TLICS (Thoracolumbar Injury Classification and Severity Score, Vaccaro 2005)** — для T-L; те же 3 домена\n- **AOSpine Cervical Classification (Vaccaro 2016)** — A (compression) / B (tension band) / C (translation) + N modifier; считается современной\n- **Allen-Ferguson (1982)** — историческая, по механизму\n\n### Хирургические подходы\n| Паттерн | Подход |\n|---|---|\n| Компрессия / burst — декомпрессия спереди | **ACDF** (1 уровень) / **ACCF** (corpectomy) |\n| Задний тензионный bandensis / facet dislocation | **Posterior lateral mass screws** |\n| Тяжёлая нестабильность / комбинированные | **Циркулярный** (передне-задний) |\n\n### Ограничения SLIC\n- Субъективность оценки DLC (inter-rater κ ≈ 0.5)\n- Не применим к окципитоцервикальным или атлантоаксиальным (C0–C2)\n- Не учитывает возраст, ОА, anterior longitudinal ligament injury изолированно\n\n### Тактика при ≥ 5\n- **Срочная декомпрессия < 24 ч** при неврологическом дефиците (STASCIS)\n- **MAP ≥ 85–90** мм рт.ст. 5–7 дней\n- Профилактика ТГВ, пролежней\n- Ранняя реабилитация\n\n### Источник\nVaccaro AR et al. **The Subaxial Cervical Spine Injury Classification System.** *Spine* 2007;32:2365–2374.\nVaccaro AR et al. **A new classification of thoracolumbar injuries (TLICS).** *Spine* 2005;30:2325–2333."
+    info: "### Для чего используется\n**SLIC (Subaxial Cervical Spine Injury Classification, Vaccaro 2007)** - балльная система для решения **об оперативном лечении травм C3-C7**.\n\n### Три домена\n| Домен | Критерий | Баллы |\n|---|---|---|\n| **Морфология** | Нет | 0 |\n|  | Компрессия | 1 |\n|  | Взрывной (burst) | 2 |\n|  | Дистракция (facet perch, hyperextension) | 3 |\n|  | Ротация/трансляция | 4 |\n| **DLC** | Интактен | 0 |\n|  | Неопределённо | 1 |\n|  | Разрушен | 2 |\n| **Неврология** | Интактен | 0 |\n|  | Корешковая | 1 |\n|  | Полное SCI | 2 |\n|  | Неполное SCI | 3 |\n|  | + продолжающаяся компрессия при дефиците | +1 |\n\n### Интерпретация\n| Сумма | Тактика |\n|---|---|\n| ≤ 3 | Неоперативное (воротник, наблюдение) |\n| 4 | Равнозначно (решение индивидуальное) |\n| ≥ 5 | Оперативное |\n\n### Морфологические паттерны\n- **Компрессия**: < 25 % уменьшение высоты тела, без заднего вовлечения\n- **Взрывной (burst)**: ретропульсия тела, вовлечение задней стенки\n- **Дистракция**: facet perch, hyperextension (флексионный/экстензионный)\n- **Ротация/трансляция**: faset dislocation (unilateral / bilateral), floating lateral mass\n\n### DLC (Disco-Ligamentous Complex) на МРТ\n- Интактен: нормальный T2 сигнал в диске, ALL, PLL, interspinous\n- Неопределённо: изолированный отёк в interspinous без дисрупции\n- Разрушен: widening of interspinous, facet dislocation, avulsion, увеличение диска\n\n### Альтернативы\n- **TLICS (Thoracolumbar Injury Classification and Severity Score, Vaccaro 2005)** - для T-L; те же 3 домена\n- **AOSpine Cervical Classification (Vaccaro 2016)** - A (compression) / B (tension band) / C (translation) + N modifier; считается современной\n- **Allen-Ferguson (1982)** - историческая, по механизму\n\n### Хирургические подходы\n| Паттерн | Подход |\n|---|---|\n| Компрессия / burst - декомпрессия спереди | **ACDF** (1 уровень) / **ACCF** (corpectomy) |\n| Задний тензионный bandensis / facet dislocation | **Posterior lateral mass screws** |\n| Тяжёлая нестабильность / комбинированные | **Циркулярный** (передне-задний) |\n\n### Ограничения SLIC\n- Субъективность оценки DLC (inter-rater κ ≈ 0.5)\n- Не применим к окципитоцервикальным или атлантоаксиальным (C0-C2)\n- Не учитывает возраст, ОА, anterior longitudinal ligament injury изолированно\n\n### Тактика при ≥ 5\n- **Срочная декомпрессия < 24 ч** при неврологическом дефиците (STASCIS)\n- **MAP ≥ 85-90** мм рт.ст. 5-7 дней\n- Профилактика ТГВ, пролежней\n- Ранняя реабилитация\n\n### Источник\nVaccaro AR et al. **The Subaxial Cervical Spine Injury Classification System.** *Spine* 2007;32:2365-2374.\nVaccaro AR et al. **A new classification of thoracolumbar injuries (TLICS).** *Spine* 2005;30:2325-2333."
   };
 
 export default runner;

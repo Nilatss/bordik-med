@@ -1,6 +1,6 @@
 // @ts-nocheck
 /**
- * Runner: sirs — Systemic Inflammatory Response Syndrome (Bone 1992)
+ * Runner: sirs - Systemic Inflammatory Response Syndrome (Bone 1992)
  */
 import type { ScoreTool } from '../tools-runners';
 
@@ -14,15 +14,15 @@ const runner: ScoreTool = {
     { id: 'wbc', label: 'Лейкоциты > 12 × 10⁹/л, < 4 × 10⁹/л или > 10 % палочкоядерных', type: 'checkbox', points: 1 },
   ],
   bands: [
-    { min: 0, max: 1, label: '0–1', color: '#22C55E', description: 'SIRS не выявлен.' },
-    { min: 2, max: 2, label: '2', color: '#F59E0B', description: 'SIRS присутствует — искать причину (инфекция, травма, панкреатит, ожог, ишемия).' },
-    { min: 3, max: 4, label: '3–4', color: '#EF4444', description: 'Выраженный SIRS — высокий риск ухудшения, рассмотреть сепсис (Sepsis-3) и/или шок.' },
+    { min: 0, max: 1, label: '0-1', color: '#22C55E', description: 'SIRS не выявлен.' },
+    { min: 2, max: 2, label: '2', color: '#F59E0B', description: 'SIRS присутствует - искать причину (инфекция, травма, панкреатит, ожог, ишемия).' },
+    { min: 3, max: 4, label: '3-4', color: '#EF4444', description: 'Выраженный SIRS - высокий риск ухудшения, рассмотреть сепсис (Sepsis-3) и/или шок.' },
   ],
   caveats: [
-    'SIRS ≥ 2 — исторический критерий сепсиса (до 2016), сейчас заменён на ΔSOFA по Sepsis-3',
+    'SIRS ≥ 2 - исторический критерий сепсиса (до 2016), сейчас заменён на ΔSOFA по Sepsis-3',
     'Низкая специфичность: положителен у многих не-инфекционных состояний (травма, панкреатит, ожог)',
     'Остаётся полезным скрининговым инструментом в приёмном отделении',
-    'Не оценивает органную дисфункцию — поэтому уступил место SOFA/qSOFA',
+    'Не оценивает органную дисфункцию - поэтому уступил место SOFA/qSOFA',
   ],
   relatedCourses: [
     { id: '301.9', title: 'Инфекционные болезни' },
@@ -34,10 +34,10 @@ const runner: ScoreTool = {
     { id: 'qsofa', title: 'qSOFA' },
     { id: 'news2', title: 'NEWS2' },
   ],
-  reference: 'Bone RC et al. Chest 1992;101:1644–1655. ACCP/SCCM Consensus Conference.',
+  reference: 'Bone RC et al. Chest 1992;101:1644-1655. ACCP/SCCM Consensus Conference.',
   countries: 'Международный (исторический)',
   info: `### Для чего используется
-**SIRS (Systemic Inflammatory Response Syndrome, Bone 1992)** — синдромное определение системной воспалительной реакции. До Sepsis-3 (2016) был основным критерием сепсиса; сейчас — общий скрининговый инструмент при инфекции, травме, панкреатите, ожоге.
+**SIRS (Systemic Inflammatory Response Syndrome, Bone 1992)** - синдромное определение системной воспалительной реакции. До Sepsis-3 (2016) был основным критерием сепсиса; сейчас - общий скрининговый инструмент при инфекции, травме, панкреатите, ожоге.
 
 ### Критерии (≥ 2 из 4)
 | Критерий | Пороги |
@@ -55,7 +55,7 @@ const runner: ScoreTool = {
 | Sepsis-3 | 2016 | **ΔSOFA ≥ 2** + подозрение на инфекцию (SIRS отвергнут) |
 
 ### Источник
-Bone RC, Balk RA, Cerra FB, et al. Definitions for sepsis and organ failure and guidelines for the use of innovative therapies in sepsis. Chest 1992;101:1644–55.`,
+Bone RC, Balk RA, Cerra FB, et al. Definitions for sepsis and organ failure and guidelines for the use of innovative therapies in sepsis. Chest 1992;101:1644-55.`,
 };
 
 export default runner;

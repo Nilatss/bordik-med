@@ -1,6 +1,6 @@
 // @ts-nocheck
 /**
- * Runner: rifle — RIFLE / AKIN / KDIGO 2012 для острого повреждения почек (AKI)
+ * Runner: rifle - RIFLE / AKIN / KDIGO 2012 для острого повреждения почек (AKI)
  */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -13,7 +13,7 @@ const runner: CalculatorTool = {
       id: 'uo', label: 'Диурез (лучший из критериев)', type: 'select',
       options: [
         { value: 'normal', label: '≥ 0,5 мл/кг/ч > 12 ч (норма)' },
-        { value: 's1', label: '< 0,5 мл/кг/ч 6–12 ч' },
+        { value: 's1', label: '< 0,5 мл/кг/ч 6-12 ч' },
         { value: 's2', label: '< 0,5 мл/кг/ч ≥ 12 ч' },
         { value: 's3', label: '< 0,3 мл/кг/ч ≥ 24 ч или анурия ≥ 12 ч' },
       ],
@@ -66,7 +66,7 @@ const runner: CalculatorTool = {
       caveats: [
         'KDIGO 2012 объединил RIFLE и AKIN; порог стадии 1 = ↑Cr ≥ 26,5 мкмоль/л за 48 ч ИЛИ ×1,5 за 7 сут',
         'Диурез оценивается за скользящее окно; требует точного учёта',
-        'Базовый Cr: лучший из последних 3 мес; при отсутствии — MDRD назад с eGFR 75',
+        'Базовый Cr: лучший из последних 3 мес; при отсутствии - MDRD назад с eGFR 75',
         'RIFLE исходно включал категории Loss (> 4 нед) и ESRD (> 3 мес)',
       ],
       related: [
@@ -81,7 +81,7 @@ const runner: CalculatorTool = {
       ],
     };
   },
-  reference: 'KDIGO Clinical Practice Guideline for Acute Kidney Injury. Kidney Int Suppl 2012;2:1–138. Bellomo R et al. (ADQI) Crit Care 2004 (RIFLE). Mehta R et al. (AKIN) Crit Care 2007.',
+  reference: 'KDIGO Clinical Practice Guideline for Acute Kidney Injury. Kidney Int Suppl 2012;2:1-138. Bellomo R et al. (ADQI) Crit Care 2004 (RIFLE). Mehta R et al. (AKIN) Crit Care 2007.',
   countries: 'Международный (KDIGO)',
   presets: [
     { label: 'Нет AKI', values: { baseCr: 80, curCr: 90, uo: 'normal' } },
@@ -90,12 +90,12 @@ const runner: CalculatorTool = {
     { label: 'KDIGO 3 (Failure)', values: { baseCr: 80, curCr: 360, uo: 's3' } },
   ],
   caveats: [
-    'Стадия — максимум из Cr-критерия и диуреза',
+    'Стадия - максимум из Cr-критерия и диуреза',
     'ЗПТ автоматически = стадия 3',
     'Не применимо при стабильной ХПН без острого ухудшения',
   ],
   info: `### Для чего используется
-**KDIGO 2012 AKI Definition** — унифицированные критерии острого повреждения почек, объединяющие RIFLE (2004) и AKIN (2007).
+**KDIGO 2012 AKI Definition** - унифицированные критерии острого повреждения почек, объединяющие RIFLE (2004) и AKIN (2007).
 
 ### Критерии AKI (любой из)
 - ↑ Cr ≥ 26,5 мкмоль/л (0,3 мг/дл) за 48 ч
@@ -105,8 +105,8 @@ const runner: CalculatorTool = {
 ### Стадии KDIGO / эквивалент RIFLE
 | Стадия | Креатинин | Диурез | RIFLE |
 |---|---|---|---|
-| 1 | ×1,5–1,9 или +≥ 26,5 мкмоль/л | < 0,5 мл/кг/ч 6–12 ч | **R**isk |
-| 2 | ×2,0–2,9 | < 0,5 мл/кг/ч ≥ 12 ч | **I**njury |
+| 1 | ×1,5-1,9 или +≥ 26,5 мкмоль/л | < 0,5 мл/кг/ч 6-12 ч | **R**isk |
+| 2 | ×2,0-2,9 | < 0,5 мл/кг/ч ≥ 12 ч | **I**njury |
 | 3 | ×3,0 или Cr ≥ 354 мкмоль/л или ЗПТ | < 0,3 мл/кг/ч ≥ 24 ч или анурия ≥ 12 ч | **F**ailure |
 
 RIFLE также выделяет **L**oss (> 4 нед) и **E**SRD (> 3 мес).

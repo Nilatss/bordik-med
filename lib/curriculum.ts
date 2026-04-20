@@ -97,12 +97,12 @@ const fundamentalsModules: Module[] = [
     id: 101, sectionId: 'fundamentals', title: 'Подготовка к вступительным экзаменам', color: '#8B5CF6',
     description: 'Международные и региональные экзамены для поступления в медицинские вузы',
     courses: [
-      c('101.1', 101, 'США/Канада — MCAT, PCAT, DAT, VCAT, OAT, GRE', 'Американские и канадские медицинские вступительные экзамены.', ['MCAT', 'США'], 'intermediate'),
-      c('101.2', 101, 'Европа — TMS, IMAT', 'TMS (Германия), IMAT (Италия), национальные экзамены.', ['TMS', 'IMAT', 'Европа'], 'intermediate'),
-      c('101.3', 101, 'Великобритания — UCAT, BMAT, GAMSAT', 'Британские медицинские вступительные тесты.', ['UCAT', 'GAMSAT'], 'intermediate'),
-      c('101.4', 101, 'Австралия/Новая Зеландия — UCAT, GAMSAT, AMC', 'Экзамены для поступления в медвузы Австралии и Новой Зеландии.', ['UCAT', 'AMC'], 'intermediate'),
-      c('101.5', 101, 'Индия — NEET-UG, AIIMS, JIPMER', 'Индийские медицинские вступительные экзамены.', ['NEET', 'AIIMS'], 'intermediate'),
-      c('101.6', 101, 'Постсоветские страны — ЕНТ, ОРТ', 'Централизованные экзамены для поступления в СНГ.', ['ЕНТ', 'ОРТ'], 'intermediate'),
+      c('101.1', 101, 'США/Канада - MCAT, PCAT, DAT, VCAT, OAT, GRE', 'Американские и канадские медицинские вступительные экзамены.', ['MCAT', 'США'], 'intermediate'),
+      c('101.2', 101, 'Европа - TMS, IMAT', 'TMS (Германия), IMAT (Италия), национальные экзамены.', ['TMS', 'IMAT', 'Европа'], 'intermediate'),
+      c('101.3', 101, 'Великобритания - UCAT, BMAT, GAMSAT', 'Британские медицинские вступительные тесты.', ['UCAT', 'GAMSAT'], 'intermediate'),
+      c('101.4', 101, 'Австралия/Новая Зеландия - UCAT, GAMSAT, AMC', 'Экзамены для поступления в медвузы Австралии и Новой Зеландии.', ['UCAT', 'AMC'], 'intermediate'),
+      c('101.5', 101, 'Индия - NEET-UG, AIIMS, JIPMER', 'Индийские медицинские вступительные экзамены.', ['NEET', 'AIIMS'], 'intermediate'),
+      c('101.6', 101, 'Постсоветские страны - ЕНТ, ОРТ', 'Централизованные экзамены для поступления в СНГ.', ['ЕНТ', 'ОРТ'], 'intermediate'),
     ],
   },
   {
@@ -2475,7 +2475,7 @@ export function getCourseSearchIndex(): SearchableCourse[] {
   return idx;
 }
 
-/** Simple relevance search — returns up to `limit` best-matching courses */
+/** Simple relevance search - returns up to `limit` best-matching courses */
 export function searchCourses(query: string, limit = 20): SearchableCourse[] {
   const q = query.trim().toLowerCase();
   if (!q) return [];

@@ -1,5 +1,5 @@
 // @ts-nocheck
-/** Runner: schatzker — Schatzker classification of tibial plateau fractures (1979) */
+/** Runner: schatzker - Schatzker classification of tibial plateau fractures (1979) */
 import type { ScoreTool } from '../tools-runners';
 
 const runner: ScoreTool = {
@@ -11,12 +11,12 @@ const runner: ScoreTool = {
       label: 'Тип Schatzker',
       type: 'select',
       options: [
-        { value: '1', label: 'I — латеральный раскол (split) без депрессии', points: 1 },
-        { value: '2', label: 'II — латеральный раскол + депрессия', points: 2 },
-        { value: '3', label: 'III — латеральная центральная депрессия без раскола', points: 3 },
-        { value: '4', label: 'IV — медиальный мыщелок (раскол ± депрессия)', points: 4 },
-        { value: '5', label: 'V — бикондилярный (оба мыщелка)', points: 5 },
-        { value: '6', label: 'VI — метафизарно-диафизарная диссоциация', points: 6 },
+        { value: '1', label: 'I - латеральный раскол (split) без депрессии', points: 1 },
+        { value: '2', label: 'II - латеральный раскол + депрессия', points: 2 },
+        { value: '3', label: 'III - латеральная центральная депрессия без раскола', points: 3 },
+        { value: '4', label: 'IV - медиальный мыщелок (раскол ± депрессия)', points: 4 },
+        { value: '5', label: 'V - бикондилярный (оба мыщелка)', points: 5 },
+        { value: '6', label: 'VI - метафизарно-диафизарная диссоциация', points: 6 },
       ],
     },
   ],
@@ -25,8 +25,8 @@ const runner: ScoreTool = {
       min: 1, max: 2, label: 'Schatzker I', color: '#22C55E',
       description: 'Раскол латерального плато без депрессии. Молодые пациенты (крепкая субхондральная кость).',
       actions: [
-        'Если смещение < 4 мм — консервативно (гипс, non-weight-bearing 6 нед)',
-        'При смещении — lag screws через мыщелок',
+        'Если смещение < 4 мм - консервативно (гипс, non-weight-bearing 6 нед)',
+        'При смещении - lag screws через мыщелок',
       ],
     },
     {
@@ -75,10 +75,10 @@ const runner: ScoreTool = {
     },
   ],
   caveats: [
-    'КТ обязательна для всех типов II–VI для оценки депрессии, фрагментации, заднемедиального компонента',
-    'Тип IV — всегда проверить сосуды (подколенная артерия) и малоберцовый нерв',
+    'КТ обязательна для всех типов II-VI для оценки депрессии, фрагментации, заднемедиального компонента',
+    'Тип IV - всегда проверить сосуды (подколенная артерия) и малоберцовый нерв',
     'Типы V и VI часто требуют staged treatment (ext-fix → ORIF) из-за мягких тканей',
-    'Depression > 2–5 мм или gap > 5 мм — показание к ORIF',
+    'Depression > 2-5 мм или gap > 5 мм - показание к ORIF',
     'Классификация Luo 3-column (2010) добавляет задний столб и оценку посредством CT',
   ],
   related: [
@@ -90,15 +90,15 @@ const runner: ScoreTool = {
     { id: '302.2', title: 'Травматология' },
     { id: '300.4', title: 'Неотложная помощь' },
   ],
-  reference: 'Schatzker J, McBroom R, Bruce D. The tibial plateau fracture: the Toronto experience 1968–1975. Clin Orthop Relat Res 1979;138:94–104.',
+  reference: 'Schatzker J, McBroom R, Bruce D. The tibial plateau fracture: the Toronto experience 1968-1975. Clin Orthop Relat Res 1979;138:94-104.',
   countries: 'Международный',
   presets: [
-    { label: 'Schatzker II — split + depression', values: { type: '2' } },
-    { label: 'Schatzker IV — медиальный, high-energy', values: { type: '4' } },
-    { label: 'Schatzker VI — метадиафизарный', values: { type: '6' } },
+    { label: 'Schatzker II - split + depression', values: { type: '2' } },
+    { label: 'Schatzker IV - медиальный, high-energy', values: { type: '4' } },
+    { label: 'Schatzker VI - метадиафизарный', values: { type: '6' } },
   ],
   info: `### Для чего используется
-**Schatzker (1979)** — классификация переломов **плато большеберцовой кости** по рентгенограмме и КТ. Определяет энергию травмы, тактику и прогноз.
+**Schatzker (1979)** - классификация переломов **плато большеберцовой кости** по рентгенограмме и КТ. Определяет энергию травмы, тактику и прогноз.
 
 ### Типы
 | Тип | Описание | Энергия | Механизм |
@@ -118,8 +118,8 @@ const runner: ScoreTool = {
 
 ### Имиджинг
 - Рентген AP + lateral + oblique
-- **КТ обязательна** для II–VI — планирование доступа и фиксации
-- МРТ — оценка связок/менисков
+- **КТ обязательна** для II-VI - планирование доступа и фиксации
+- МРТ - оценка связок/менисков
 - CT-angio при Schatzker IV или клиническом подозрении
 
 ### Критерии операции
@@ -135,13 +135,13 @@ const runner: ScoreTool = {
 |---|---|
 | I смещённый | Lag screws |
 | II | Пластина + элевация + графт |
-| III | Элевация через окно, +/– screws |
+| III | Элевация через окно, +/- screws |
 | IV | Медиальная опорная пластина, осмотр сосудов |
 | V | Dual plate через два доступа |
 | VI | Staged ext-fix → dual plate / LISS |
 
 ### 3-Column Concept (Luo 2010)
-Передний, задний латеральный, задний медиальный столбы — КТ-based. Дополняет Schatzker при планировании posteromedial approach.
+Передний, задний латеральный, задний медиальный столбы - КТ-based. Дополняет Schatzker при планировании posteromedial approach.
 
 ### Источник
 Schatzker J et al. *Clin Orthop Relat Res* 1979;138:94.

@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Bordik — Платформа медицинского обучения',
+  title: 'Bordik - Платформа медицинского обучения',
   description:
     'Полный академический курс медицины. Обучение, тестирование, сертификация.',
   manifest: '/manifest.json',

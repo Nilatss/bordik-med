@@ -2,7 +2,7 @@
 /**
  * Runner: psqi
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
- * Do not edit by hand — regenerate via `npm run split:runners`.
+ * Do not edit by hand - regenerate via `npm run split:runners`.
  *
  * Loaded lazily via dynamic import from lib/runners/index.ts so the
  * encyclopaedia of clinical content stays out of the main app bundle.
@@ -28,19 +28,19 @@ const runner: CalculatorTool = {
         options: [
           {
             value: 0,
-            label: "0 — очень хорошее"
+            label: "0 - очень хорошее"
           },
           {
             value: 1,
-            label: "1 — довольно хорошее"
+            label: "1 - довольно хорошее"
           },
           {
             value: 2,
-            label: "2 — довольно плохое"
+            label: "2 - довольно плохое"
           },
           {
             value: 3,
-            label: "3 — очень плохое"
+            label: "3 - очень плохое"
           }
         ]
       },
@@ -51,19 +51,19 @@ const runner: CalculatorTool = {
         options: [
           {
             value: 0,
-            label: "0 — < 15 мин"
+            label: "0 - < 15 мин"
           },
           {
             value: 1,
-            label: "1 — 16–30 мин"
+            label: "1 - 16-30 мин"
           },
           {
             value: 2,
-            label: "2 — 31–60 мин"
+            label: "2 - 31-60 мин"
           },
           {
             value: 3,
-            label: "3 — > 60 мин"
+            label: "3 - > 60 мин"
           }
         ]
       },
@@ -74,19 +74,19 @@ const runner: CalculatorTool = {
         options: [
           {
             value: 0,
-            label: "0 — > 7 ч"
+            label: "0 - > 7 ч"
           },
           {
             value: 1,
-            label: "1 — 6–7 ч"
+            label: "1 - 6-7 ч"
           },
           {
             value: 2,
-            label: "2 — 5–6 ч"
+            label: "2 - 5-6 ч"
           },
           {
             value: 3,
-            label: "3 — < 5 ч"
+            label: "3 - < 5 ч"
           }
         ]
       },
@@ -97,19 +97,19 @@ const runner: CalculatorTool = {
         options: [
           {
             value: 0,
-            label: "0 — > 85 %"
+            label: "0 - > 85 %"
           },
           {
             value: 1,
-            label: "1 — 75–84 %"
+            label: "1 - 75-84 %"
           },
           {
             value: 2,
-            label: "2 — 65–74 %"
+            label: "2 - 65-74 %"
           },
           {
             value: 3,
-            label: "3 — < 65 %"
+            label: "3 - < 65 %"
           }
         ]
       },
@@ -120,19 +120,19 @@ const runner: CalculatorTool = {
         options: [
           {
             value: 0,
-            label: "0 — нет"
+            label: "0 - нет"
           },
           {
             value: 1,
-            label: "1 — реже 1/нед"
+            label: "1 - реже 1/нед"
           },
           {
             value: 2,
-            label: "2 — 1–2/нед"
+            label: "2 - 1-2/нед"
           },
           {
             value: 3,
-            label: "3 — ≥ 3/нед"
+            label: "3 - ≥ 3/нед"
           }
         ]
       },
@@ -143,19 +143,19 @@ const runner: CalculatorTool = {
         options: [
           {
             value: 0,
-            label: "0 — не применял"
+            label: "0 - не применял"
           },
           {
             value: 1,
-            label: "1 — < 1/нед"
+            label: "1 - < 1/нед"
           },
           {
             value: 2,
-            label: "2 — 1–2/нед"
+            label: "2 - 1-2/нед"
           },
           {
             value: 3,
-            label: "3 — ≥ 3/нед"
+            label: "3 - ≥ 3/нед"
           }
         ]
       },
@@ -166,19 +166,19 @@ const runner: CalculatorTool = {
         options: [
           {
             value: 0,
-            label: "0 — нет"
+            label: "0 - нет"
           },
           {
             value: 1,
-            label: "1 — лёгкая"
+            label: "1 - лёгкая"
           },
           {
             value: 2,
-            label: "2 — умеренная"
+            label: "2 - умеренная"
           },
           {
             value: 3,
-            label: "3 — значительная"
+            label: "3 - значительная"
           }
         ]
       }
@@ -198,15 +198,15 @@ const runner: CalculatorTool = {
             if (sum <= 5) {
                 interpretation = 'Хороший сон';
                 color = '#22C55E';
-                details = 'Global PSQI ≤ 5 — хорошее качество сна. Оригинальная валидизация Buysse 1989 показала чувствительность 89,6 % и специфичность 86,5 % при пороге > 5.';
+                details = 'Global PSQI ≤ 5 - хорошее качество сна. Оригинальная валидизация Buysse 1989 показала чувствительность 89,6 % и специфичность 86,5 % при пороге > 5.';
                 actions = [
                     'Поддержание гигиены сна',
-                    'При наличии симптомов днём — оценить ESS'
+                    'При наличии симптомов днём - оценить ESS'
                 ];
             } else if (sum <= 10) {
                 interpretation = 'Нарушение сна (лёгкое-умеренное)';
                 color = '#F59E0B';
-                details = 'PSQI > 5 — плохое качество сна. Лёгкая-умеренная степень. Оценить поведенческие и медицинские причины: гигиена, кофеин, тревога, депрессия, OSA.';
+                details = 'PSQI > 5 - плохое качество сна. Лёгкая-умеренная степень. Оценить поведенческие и медицинские причины: гигиена, кофеин, тревога, депрессия, OSA.';
                 actions = [
                     'Гигиена сна: режим, экран, кофеин, алкоголь, температура спальни',
                     'Скрининг: PHQ-9, GAD-7, STOP-BANG (OSA), ESS',
@@ -215,7 +215,7 @@ const runner: CalculatorTool = {
             } else {
                 interpretation = 'Выраженные нарушения сна';
                 color = '#EF4444';
-                details = 'Global PSQI > 10 — выраженные нарушения качества сна. Высокая вероятность клинически значимого расстройства (инсомния, OSA, депрессия, SDB).';
+                details = 'Global PSQI > 10 - выраженные нарушения качества сна. Высокая вероятность клинически значимого расстройства (инсомния, OSA, депрессия, SDB).';
                 actions = [
                     'Полная оценка: дневник сна, PSG при подозрении на OSA',
                     'КПТ-И (первая линия при хронической инсомнии, AASM 2021)',
@@ -278,7 +278,7 @@ const runner: CalculatorTool = {
                 ]
             };
         },
-    reference: "Buysse DJ et al. The Pittsburgh Sleep Quality Index. Psychiatry Res 1989;28:193–213.",
+    reference: "Buysse DJ et al. The Pittsburgh Sleep Quality Index. Psychiatry Res 1989;28:193-213.",
     countries: "Международный",
     presets: [
       {
@@ -318,7 +318,7 @@ const runner: CalculatorTool = {
         }
       }
     ],
-    info: "### Для чего используется\n**Pittsburgh Sleep Quality Index (PSQI, Buysse 1989)** — самозаполняемый опросник для оценки **качества и структуры сна за последний месяц**. Стандарт в сомнологии и клинических исследованиях.\n\n### Структура\n19 пунктов → 7 компонентов × 0–3:\n1. Субъективное качество сна\n2. Латентность засыпания\n3. Продолжительность сна\n4. Эффективность сна\n5. Нарушения сна\n6. Использование снотворных\n7. Дневная дисфункция\n\n**Global PSQI = сумма 7 компонентов (0–21)**\n\n### Интерпретация\n| Global PSQI | Значение |\n|---|---|\n| ≤ 5 | Хороший сон |\n| > 5 | Плохой сон (чувствительность 89,6 %, специфичность 86,5 %) |\n\n### Ограничения\n- За месяц, не острое состояние\n- Не различает причины (OSA vs инсомния vs депрессия)\n- Порог > 5 валидирован для общей популяции; в клинических группах ценен кросс-сравнением\n\n### Альтернативы\n- **ISI (Insomnia Severity Index)** — 7 пунктов, 0–28, порог ≥ 15 для клинической инсомнии\n- **SATED** — 5 коротких пунктов (Satisfaction, Alertness, Timing, Efficiency, Duration)\n- **ESS (Epworth)** — дневная сонливость\n- **STOP-BANG** — скрининг OSA\n\n### Тактика\n- **≤ 5:** гигиена сна\n- **6–10:** коррекция поведения + КПТ-И\n- **> 10:** направление к сомнологу, PSG, КПТ-И, лечение коморбидностей\n\n### Источник\nBuysse DJ, Reynolds CF, Monk TH, Berman SR, Kupfer DJ. *Psychiatry Res* 1989;28:193–213.\nMorin CM et al. Insomnia Severity Index. *Sleep* 2011;34:601–608."
+    info: "### Для чего используется\n**Pittsburgh Sleep Quality Index (PSQI, Buysse 1989)** - самозаполняемый опросник для оценки **качества и структуры сна за последний месяц**. Стандарт в сомнологии и клинических исследованиях.\n\n### Структура\n19 пунктов → 7 компонентов × 0-3:\n1. Субъективное качество сна\n2. Латентность засыпания\n3. Продолжительность сна\n4. Эффективность сна\n5. Нарушения сна\n6. Использование снотворных\n7. Дневная дисфункция\n\n**Global PSQI = сумма 7 компонентов (0-21)**\n\n### Интерпретация\n| Global PSQI | Значение |\n|---|---|\n| ≤ 5 | Хороший сон |\n| > 5 | Плохой сон (чувствительность 89,6 %, специфичность 86,5 %) |\n\n### Ограничения\n- За месяц, не острое состояние\n- Не различает причины (OSA vs инсомния vs депрессия)\n- Порог > 5 валидирован для общей популяции; в клинических группах ценен кросс-сравнением\n\n### Альтернативы\n- **ISI (Insomnia Severity Index)** - 7 пунктов, 0-28, порог ≥ 15 для клинической инсомнии\n- **SATED** - 5 коротких пунктов (Satisfaction, Alertness, Timing, Efficiency, Duration)\n- **ESS (Epworth)** - дневная сонливость\n- **STOP-BANG** - скрининг OSA\n\n### Тактика\n- **≤ 5:** гигиена сна\n- **6-10:** коррекция поведения + КПТ-И\n- **> 10:** направление к сомнологу, PSG, КПТ-И, лечение коморбидностей\n\n### Источник\nBuysse DJ, Reynolds CF, Monk TH, Berman SR, Kupfer DJ. *Psychiatry Res* 1989;28:193-213.\nMorin CM et al. Insomnia Severity Index. *Sleep* 2011;34:601-608."
   };
 
 export default runner;

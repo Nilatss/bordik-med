@@ -1,5 +1,5 @@
 // @ts-nocheck
-/** Runner: anzcor — Australian and New Zealand Committee on Resuscitation */
+/** Runner: anzcor - Australian and New Zealand Committee on Resuscitation */
 import type { CalculatorTool } from '../tools-runners';
 
 const runner: CalculatorTool = {
@@ -10,7 +10,7 @@ const runner: CalculatorTool = {
       label: 'Раздел ANZCOR',
       type: 'select',
       options: [
-        { value: 'drsabcd', label: 'DRSABCD — Adult BLS' },
+        { value: 'drsabcd', label: 'DRSABCD - Adult BLS' },
         { value: 'als', label: 'Adult ALS' },
         { value: 'peds', label: 'Paediatric Life Support' },
         { value: 'env', label: 'Environmental (snake PIT, jellyfish)' },
@@ -23,24 +23,24 @@ const runner: CalculatorTool = {
       drsabcd: {
         title: 'DRSABCD (ANZCOR BLS)',
         c: '#EF4444',
-        details: 'Австралийский/новозеландский мнемоник BLS: Danger – Response – Send – Airway – Breathing – CPR – Defibrillation.',
+        details: 'Австралийский/новозеландский мнемоник BLS: Danger - Response - Send - Airway - Breathing - CPR - Defibrillation.',
         actions: [
-          'D — Danger: безопасность для всех',
-          'R — Response: "hello, can you hear me?"; сжать плечи',
-          'S — Send for help (000 в Австралии, 111 в НЗ)',
-          'A — Airway: открыть, удалить инородные тела',
-          'B — Breathing: look, listen, feel ≤10 с',
-          'C — CPR 30:2, 100–120/мин, 1/3 AP глубины',
-          'D — Defibrillation: AED как только доступен',
+          'D - Danger: безопасность для всех',
+          'R - Response: "hello, can you hear me?"; сжать плечи',
+          'S - Send for help (000 в Австралии, 111 в НЗ)',
+          'A - Airway: открыть, удалить инородные тела',
+          'B - Breathing: look, listen, feel ≤10 с',
+          'C - CPR 30:2, 100-120/мин, 1/3 AP глубины',
+          'D - Defibrillation: AED как только доступен',
         ],
       },
       als: {
         title: 'ANZCOR Adult ALS',
         c: '#991B1B',
-        details: 'Расширенная жизнеподдержка ANZCOR — гармонизирована с ILCOR/ERC/AHA. Универсальный алгоритм: шокабельный vs нешокабельный.',
+        details: 'Расширенная жизнеподдержка ANZCOR - гармонизирована с ILCOR/ERC/AHA. Универсальный алгоритм: шокабельный vs нешокабельный.',
         actions: [
-          'Шокабельные: 150–200 Дж бифазный, 360 Дж монофазный',
-          'Эпинефрин 1 мг IV/IO каждые 3–5 мин',
+          'Шокабельные: 150-200 Дж бифазный, 360 Дж монофазный',
+          'Эпинефрин 1 мг IV/IO каждые 3-5 мин',
           'Амиодарон 300 мг после 3-го разряда → 150 мг',
           'Лидокаин 1 мг/кг как альтернатива',
           'Искать 4H/4T',
@@ -64,7 +64,7 @@ const runner: CalculatorTool = {
         c: '#F59E0B',
         details: 'Региональная специфика Австралии/НЗ: укусы змей, укусы медуз (коробочная, ируканджи), утопление.',
         actions: [
-          'Snake bite: Pressure Immobilisation Technique (PIT) — давящая эластичная повязка от укуса проксимально, шина, иммобилизация конечности',
+          'Snake bite: Pressure Immobilisation Technique (PIT) - давящая эластичная повязка от укуса проксимально, шина, иммобилизация конечности',
           'Box jellyfish (Chironex): заливать укус уксусом 30 с, НЕ пресной водой, антидот-антитоксин',
           'Irukandji syndrome: уксус + магний IV + анальгезия',
           'Drowning: 5 начальных вдохов → СЛР, ожидать гипоксическую остановку',
@@ -81,8 +81,8 @@ const runner: CalculatorTool = {
       details: r.details,
       actions: r.actions,
       caveats: [
-        'ANZCOR — член ILCOR; гармонизирован с ERC/AHA',
-        'Региональные дополнения (snake PIT, jellyfish) — локальная специфика',
+        'ANZCOR - член ILCOR; гармонизирован с ERC/AHA',
+        'Региональные дополнения (snake PIT, jellyfish) - локальная специфика',
       ],
       related: [
         { id: 'bls-acls', title: 'AHA BLS/ACLS' },
@@ -97,7 +97,7 @@ const runner: CalculatorTool = {
       ],
     };
   },
-  reference: 'Australian and New Zealand Committee on Resuscitation (ANZCOR). Guidelines 1–14 (Basic, Advanced, Paediatric, Neonatal, First Aid). https://www.anzcor.org/. ILCOR 2020 CoSTR.',
+  reference: 'Australian and New Zealand Committee on Resuscitation (ANZCOR). Guidelines 1-14 (Basic, Advanced, Paediatric, Neonatal, First Aid). https://www.anzcor.org/. ILCOR 2020 CoSTR.',
   countries: 'Австралия, Новая Зеландия',
   presets: [
     { label: 'DRSABCD (BLS)', values: { sect: 'drsabcd' } },
@@ -106,9 +106,9 @@ const runner: CalculatorTool = {
     { label: 'Environmental', values: { sect: 'env' } },
   ],
   info: `### Для чего используется
-**ANZCOR (Australian and New Zealand Committee on Resuscitation)** — региональный член ILCOR, публикует протоколы для Австралии/Новой Зеландии. Эквивалент AHA/ERC с региональной спецификой.
+**ANZCOR (Australian and New Zealand Committee on Resuscitation)** - региональный член ILCOR, публикует протоколы для Австралии/Новой Зеландии. Эквивалент AHA/ERC с региональной спецификой.
 
-### DRSABCD — фирменный BLS мнемоник
+### DRSABCD - фирменный BLS мнемоник
 - **D** Danger
 - **R** Response
 - **S** Send for help
@@ -118,13 +118,13 @@ const runner: CalculatorTool = {
 - **D** Defibrillation
 
 ### Региональная специфика
-- **Snake bite PIT** (Pressure Immobilisation Technique) — stretchy crepe bandage от укуса проксимально + шина
-- **Box jellyfish** (Chironex fleckeri) — уксус 30 с на щупальца
-- **Irukandji syndrome** — магний IV + анальгезия
-- **Funnel-web spider** — PIT + antivenom
+- **Snake bite PIT** (Pressure Immobilisation Technique) - stretchy crepe bandage от укуса проксимально + шина
+- **Box jellyfish** (Chironex fleckeri) - уксус 30 с на щупальца
+- **Irukandji syndrome** - магний IV + анальгезия
+- **Funnel-web spider** - PIT + antivenom
 
 ### Структура
-Guidelines 1–14:
+Guidelines 1-14:
 1. Basics of resuscitation
 2. Priorities in first aid
 3. Recognising cardiac arrest

@@ -4,7 +4,7 @@ export interface Option {
   value: string;
   label: string;
   emoji?: string;
-  /** Optional group label — renders a divider header in the dropdown when group changes */
+  /** Optional group label - renders a divider header in the dropdown when group changes */
   group?: string;
 }
 
@@ -40,8 +40,8 @@ export const countries: Option[] = [
 
 export const statuses: Option[] = [
   // ═══ Школа ═══
-  { value: 'school-junior',  label: 'Школьник (5–8 класс)',          emoji: '🎒', group: 'Школа' },
-  { value: 'school',         label: 'Школьник (9–11 класс)',         emoji: '📘', group: 'Школа' },
+  { value: 'school-junior',  label: 'Школьник (5-8 класс)',          emoji: '🎒', group: 'Школа' },
+  { value: 'school',         label: 'Школьник (9-11 класс)',         emoji: '📘', group: 'Школа' },
   { value: 'school-graduate',label: 'Выпускник школы / Абитуриент',  emoji: '🎓', group: 'Школа' },
   { value: 'college',        label: 'Студент колледжа / Медучилища', emoji: '🏫', group: 'Школа' },
 
@@ -235,7 +235,7 @@ export const specialties: Option[] = [
 ];
 
 export const goals: Option[] = [
-  // International medical licensing exams — shown first
+  // International medical licensing exams - shown first
   { value: 'usmle',   label: 'USMLE (США)',                emoji: '🇺🇸', group: 'Международные экзамены' },
   { value: 'plab',    label: 'PLAB (Великобритания)',       emoji: '🇬🇧', group: 'Международные экзамены' },
   { value: 'mrcp',    label: 'MRCP (Великобритания)',       emoji: '🇬🇧', group: 'Международные экзамены' },

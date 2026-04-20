@@ -180,7 +180,7 @@ const Icon = {
 };
 
 /* ═══════════════════════════════════════════
-   Study session timer — Start / Pause / Resume / Stop
+   Study session timer - Start / Pause / Resume / Stop
    Saves finished sessions into a "_session" entry of studyTime
    ═══════════════════════════════════════════ */
 type TimerStatus = 'idle' | 'running' | 'paused' | 'done';
@@ -223,7 +223,7 @@ function formatTimer(sec: number): { h: string; m: string; s: string } {
 }
 
 /* ═══════════════════════════════════════════
-   1. Training Analysis — bar chart of courses per period
+   1. Training Analysis - bar chart of courses per period
    ═══════════════════════════════════════════ */
 function TrainingAnalysisCard({ totalCompleted, thisQuarter, weeklyAttempts, sectionIds }: {
   totalCompleted: number;
@@ -255,7 +255,7 @@ function TrainingAnalysisCard({ totalCompleted, thisQuarter, weeklyAttempts, sec
           }}>
             Завершено в этом квартале
           </p>
-          {/* Active sections — minimalist icons, stacked circles with count */}
+          {/* Active sections - minimalist icons, stacked circles with count */}
           {sectionIds.length > 0 ? (
             <div style={{
               marginTop: 16,
@@ -308,7 +308,7 @@ function TrainingAnalysisCard({ totalCompleted, thisQuarter, weeklyAttempts, sec
               fontFamily: 'var(--font-body)', fontSize: 12, color: '#9CA3AF',
               fontStyle: 'italic',
             }}>
-              Пока нет активности — пройдите первый тест
+              Пока нет активности - пройдите первый тест
             </p>
           )}
         </div>
@@ -337,7 +337,7 @@ function TrainingAnalysisCard({ totalCompleted, thisQuarter, weeklyAttempts, sec
 }
 
 /* ═══════════════════════════════════════════
-   2. Daily Work Hours — stacked bar
+   2. Daily Work Hours - stacked bar
    ═══════════════════════════════════════════ */
 function DailyHoursCard({ totalSeconds, studySec, testSec, reviewSec }: {
   totalSeconds: number;
@@ -402,7 +402,7 @@ function LegendDot({ color, label }: { color: string; label: string }) {
 }
 
 /* ═══════════════════════════════════════════
-   3. Work Hour Analysis — line chart with period pills
+   3. Work Hour Analysis - line chart with period pills
    ═══════════════════════════════════════════ */
 type Period = '5D' | '2W' | '1M' | '6M' | '1Y';
 const PERIOD_POINTS: Record<Period, number> = {
@@ -441,7 +441,7 @@ function formatBucketLabel(period: Period, idx: number, total: number): string {
     d.setDate(d.getDate() - daysAgo);
     return `${d.getDate()} ${MONTHS[d.getMonth()].toLowerCase()}`;
   }
-  // 1Y — monthly buckets
+  // 1Y - monthly buckets
   const monthsAgo = total - 1 - idx;
   const d = new Date(now);
   d.setMonth(d.getMonth() - monthsAgo);
@@ -638,7 +638,7 @@ function WorkHourAnalysisCard({ data }: {
 }
 
 /* ═══════════════════════════════════════════
-   4. Time Tracker — current session + previous tasks
+   4. Time Tracker - current session + previous tasks
    ═══════════════════════════════════════════ */
 function TimeTrackerCard({ recentCourses, onSessionEnd }: {
   recentCourses: { id: string; title: string; section: string; time: string }[];
@@ -905,7 +905,7 @@ function TimeTrackerCard({ recentCourses, onSessionEnd }: {
 }
 
 /* ═══════════════════════════════════════════
-   5. Daily Feedback — mood + comment
+   5. Daily Feedback - mood + comment
    ═══════════════════════════════════════════ */
 function FeedbackCard() {
   const [mood, setMood] = useState<number | null>(null);
@@ -955,7 +955,7 @@ function FeedbackCard() {
         fontFamily: 'var(--font-body)', fontSize: 13, color: '#6B7280', fontWeight: 500,
         marginBottom: 14,
       }}>
-        Поделитесь настроением — это поможет нам понять
+        Поделитесь настроением - это поможет нам понять
       </p>
       {/* Mood faces */}
       <div style={{
@@ -1035,7 +1035,7 @@ export default function StatisticsPage() {
   const totalSec = getTotalStudyTime(studyTime);
   const allScores = Object.values(testAttempts).flat();
 
-  // ═══ Training analysis — weekly attempts for last 8 weeks ═══
+  // ═══ Training analysis - weekly attempts for last 8 weeks ═══
   const weeklyAttempts = useMemo(() => {
     const now = Date.now();
     const weekMs = 7 * 24 * 60 * 60 * 1000;
@@ -1052,7 +1052,7 @@ export default function StatisticsPage() {
   // testSec  = number of test attempts × average duration (~4 minutes per attempt is typical)
   // reviewSec = time spent on courses where user has already passed max level (re-attempts)
   // studySec = remaining studyTime
-  const AVG_TEST_SECONDS = 240; // 4 minutes — realistic average for a 20-question test
+  const AVG_TEST_SECONDS = 240; // 4 minutes - realistic average for a 20-question test
   const testAttemptsCount = allScores.length;
   const testSec = Math.min(totalSec, testAttemptsCount * AVG_TEST_SECONDS);
 
@@ -1070,7 +1070,7 @@ export default function StatisticsPage() {
 
   const studySec = Math.max(0, totalSec - testSec - reviewSec);
 
-  // ═══ Line chart — real daily activity (tests + study sessions) ═══
+  // ═══ Line chart - real daily activity (tests + study sessions) ═══
   const lineData = useMemo<Record<Period, number[]>>(() => {
     const now = new Date();
     // Helper: bin timestamps into N-day-wide buckets covering the last `days` days
@@ -1117,7 +1117,7 @@ export default function StatisticsPage() {
     };
   }, [studyTime, allScores]);
 
-  // ═══ Recent courses — real titles, sorted by most recent activity ═══
+  // ═══ Recent courses - real titles, sorted by most recent activity ═══
   const recentCourses = useMemo(() => {
     // Build map: courseId → lastActivity timestamp (max of test attempts OR "had studyTime")
     const lastActivity: Record<string, number> = {};
@@ -1144,7 +1144,7 @@ export default function StatisticsPage() {
       });
   }, [studyTime, allScores]);
 
-  // ═══ Active section IDs — sections where user has ANY activity ═══
+  // ═══ Active section IDs - sections where user has ANY activity ═══
   const activeSectionIds = useMemo(() => {
     const ids = new Set<string>();
     const addCourse = (cid: string) => {
@@ -1157,7 +1157,7 @@ export default function StatisticsPage() {
     return Array.from(ids);
   }, [completedCourses, studyTime, allScores]);
 
-  // ═══ "This quarter" — courses completed in last 3 months ═══
+  // ═══ "This quarter" - courses completed in last 3 months ═══
   const thisQuarterCompleted = useMemo(() => {
     // We don't track completion timestamps explicitly, so approximate:
     // a course is "completed this quarter" if user has a passing level-5 attempt in the last 90 days

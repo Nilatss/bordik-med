@@ -1,5 +1,5 @@
 // @ts-nocheck
-/** Runner: svv — SVV / PPV / IVC for fluid responsiveness (Marik 2009) */
+/** Runner: svv - SVV / PPV / IVC for fluid responsiveness (Marik 2009) */
 import type { CalculatorTool } from '../tools-runners';
 
 const runner: CalculatorTool = {
@@ -38,12 +38,12 @@ const runner: CalculatorTool = {
     const actions: string[] = [];
 
     if (responder) {
-      interpretation = `${labels[method]} ≥${threshold}% — fluid responder`;
+      interpretation = `${labels[method]} ≥${threshold}% - fluid responder`;
       color = '#22C55E';
-      details = `Значение ≥${threshold}% указывает на положительный ответ на объёмную нагрузку. Ожидаемый прирост СВ ≥10–15% после болюса 250–500 мл.`;
-      actions.push('Кристаллоиды 250–500 мл за 15 мин', 'Клинические цели: лактат, диурез, капиллярное наполнение', 'Повторить тест после болюса');
+      details = `Значение ≥${threshold}% указывает на положительный ответ на объёмную нагрузку. Ожидаемый прирост СВ ≥10-15% после болюса 250-500 мл.`;
+      actions.push('Кристаллоиды 250-500 мл за 15 мин', 'Клинические цели: лактат, диурез, капиллярное наполнение', 'Повторить тест после болюса');
     } else {
-      interpretation = `${labels[method]} <${threshold}% — non-responder`;
+      interpretation = `${labels[method]} <${threshold}% - non-responder`;
       color = '#F59E0B';
       details = `Объёмная нагрузка маловероятно улучшит СВ. Избегать волемической перегрузки (риск ARDS, пролонгированной ИВЛ).`;
       actions.push('Норэпинефрин как препарат выбора', 'Оценить сократимость (эхо-КГ, добутамин)', 'Рассмотреть PLR/EEOT для подтверждения');
@@ -51,10 +51,10 @@ const runner: CalculatorTool = {
 
     const caveats = [
       'SVV/PPV ≥13% валидны только при: контролируемой ИВЛ Vt ≥8 мл/кг, синусовый ритм, закрытая грудь, без ↑давл.абдомин.',
-      'Marik 2009 метаанализ: PPV AUC 0.94; Michard 2000 — первый описал PPV',
-      'IVC collapsibility у спонтанно дышащего >50% — responder; у ИВЛ — distensibility >18%',
-      'Mini-fluid 100 мл за 1 мин: ΔVTI ≥10% — самый универсальный',
-      'Аритмии (ФП) — SVV/PPV недостоверны',
+      'Marik 2009 метаанализ: PPV AUC 0.94; Michard 2000 - первый описал PPV',
+      'IVC collapsibility у спонтанно дышащего >50% - responder; у ИВЛ - distensibility >18%',
+      'Mini-fluid 100 мл за 1 мин: ΔVTI ≥10% - самый универсальный',
+      'Аритмии (ФП) - SVV/PPV недостоверны',
     ];
 
     return {
@@ -93,11 +93,11 @@ const runner: CalculatorTool = {
     { label: 'IVC dist. 10% MV', values: { method: 'ivcDist', value: 10 } },
   ],
   caveats: [
-    'ARDSnet Vt 6 мл/кг делает SVV/PPV ненадёжным — увеличить tidal-challenge test',
-    'Открытая грудь / торакотомия — SVV/PPV недействительны',
+    'ARDSnet Vt 6 мл/кг делает SVV/PPV ненадёжным - увеличить tidal-challenge test',
+    'Открытая грудь / торакотомия - SVV/PPV недействительны',
   ],
   info: `### Для чего используется
-Статические и динамические показатели оценки **fluid responsiveness** — ключевого вопроса ICU: "будет ли пациент отвечать на объём".
+Статические и динамические показатели оценки **fluid responsiveness** - ключевого вопроса ICU: "будет ли пациент отвечать на объём".
 
 ### Пороги (порог ≥ = responder)
 | Метод | Порог | Условия |
@@ -111,19 +111,19 @@ const runner: CalculatorTool = {
 | **EEOT** (end-exp occlusion 15 с) | ΔCO ≥5% | MV, кооперация |
 
 ### Ограничения SVV/PPV (gray zone Cannesson 2011)
-- Vt <8 мл/кг — ложно-отрицательный
-- Аритмии — недостоверно
-- Спонтанное дыхание, TRIGGER moduls — недостоверно
-- Открытая грудь, ↑IAP (ВБГ), торакотомия — недостоверно
-- Низкий комплаенс лёгких — уменьшает SVV
+- Vt <8 мл/кг - ложно-отрицательный
+- Аритмии - недостоверно
+- Спонтанное дыхание, TRIGGER moduls - недостоверно
+- Открытая грудь, ↑IAP (ВБГ), торакотомия - недостоверно
+- Низкий комплаенс лёгких - уменьшает SVV
 
 ### Tidal volume challenge test
 При Vt 6 мл/кг: кратковременно увеличить до 8 мл/кг на 1 мин. ΔPPV ≥3.5% = responder (Myatra 2017).
 
 ### Практика
-1. Если пациент удовлетворяет условиям SVV/PPV — использовать, порог 13%
-2. Иначе — PLR или mini-fluid challenge
-3. IVC USG — прикроватная альтернатива
+1. Если пациент удовлетворяет условиям SVV/PPV - использовать, порог 13%
+2. Иначе - PLR или mini-fluid challenge
+3. IVC USG - прикроватная альтернатива
 4. Клинические цели (лактат, диурез, ScvO₂) > любого одного теста`,
 };
 

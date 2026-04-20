@@ -2,7 +2,7 @@
 /**
  * Runner: msfc
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
- * Do not edit by hand — regenerate via `npm run split:runners`.
+ * Do not edit by hand - regenerate via `npm run split:runners`.
  *
  * Loaded lazily via dynamic import from lib/runners/index.ts so the
  * encyclopaedia of clinical content stays out of the main app bundle.
@@ -55,7 +55,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "pasat",
-        label: "PASAT-3 (правильные ответы, 0–60)",
+        label: "PASAT-3 (правильные ответы, 0-60)",
         type: "number",
         unit: "отв.",
         min: 0,
@@ -75,7 +75,7 @@ const runner: CalculatorTool = {
             const hpt = Number(v.hpt);
             const pasat = Number(v.pasat);
             // Reference population (Fischer 1999 task force) means / SDs
-            const T25_REF_MEAN = 9.5238; // sec (reciprocal-based in original — упрощённая форма)
+            const T25_REF_MEAN = 9.5238; // sec (reciprocal-based in original - упрощённая форма)
             const T25_REF_SD = 11.4308;
             const HPT_REF_MEAN = 0.0439; // 1/HPT seconds
             const HPT_REF_SD = 0.0101;
@@ -94,7 +94,7 @@ const runner: CalculatorTool = {
                 details = 'Функция соответствует или превосходит референсную популяцию РС.';
                 actions = [
                     'Продолжить ПИТРС',
-                    'Повторная оценка через 6–12 мес',
+                    'Повторная оценка через 6-12 мес',
                     'Мониторинг МРТ и EDSS'
                 ];
             } else if (msfc >= -0.5) {
@@ -102,7 +102,7 @@ const runner: CalculatorTool = {
                 color = '#F59E0B';
                 details = 'Умеренное отклонение от референса. Проверить прогрессирование по отдельным доменам.';
                 actions = [
-                    'Сравнить с предыдущими измерениями (Δ ≥ 20 % в домене — клинически значимо)',
+                    'Сравнить с предыдущими измерениями (Δ ≥ 20 % в домене - клинически значимо)',
                     'Оптимизация ПИТРС',
                     'Нейрореабилитация'
                 ];
@@ -125,9 +125,9 @@ const runner: CalculatorTool = {
                 details,
                 actions,
                 caveats: [
-                    'MSFC основан на Task Force NMSS 1999 (Fischer) — референсная популяция из clinical trials',
+                    'MSFC основан на Task Force NMSS 1999 (Fischer) - референсная популяция из clinical trials',
                     '9HPT: использовать обратную величину (1/сек) для z-преобразования',
-                    'PASAT имеет выраженный learning effect — нужны ≥2 ознакомительные попытки',
+                    'PASAT имеет выраженный learning effect - нужны ≥2 ознакомительные попытки',
                     'PASAT не применим у пациентов с тяжёлой дислексией, глухотой; использовать SDMT как замену',
                     'Клинически значимая прогрессия: Δ MSFC ≥ 20 % или EDSS ≥ 1.0 (0.5 если EDSS ≥ 6)'
                 ],
@@ -177,9 +177,9 @@ const runner: CalculatorTool = {
                 ]
             };
         },
-    reference: "Fischer JS, Rudick RA, Cutter GR, Reingold SC. The Multiple Sclerosis Functional Composite Measure (MSFC): an integrated approach to MS clinical outcome assessment. Mult Scler 1999;5:244–250.",
+    reference: "Fischer JS, Rudick RA, Cutter GR, Reingold SC. The Multiple Sclerosis Functional Composite Measure (MSFC): an integrated approach to MS clinical outcome assessment. Mult Scler 1999;5:244-250.",
     countries: "Международный",
-    info: "### Для чего используется\n**MSFC (Multiple Sclerosis Functional Composite, Fischer 1999)** — количественная композитная мера функции при рассеянном склерозе для клинических исследований. Состоит из 3 доменов, каждый z-преобразуется к референсной популяции NMSS Task Force и усредняется.\n\n### Формула\n`MSFC = (z_T25FW + z_9HPT + z_PASAT) / 3`\n\nгде:\n- `z_T25FW = −(T25FW − 9.5238) / 11.4308` (инверсия — больше секунд = хуже)\n- `z_9HPT = (1/9HPT − 0.0439) / 0.0101` (обратная величина)\n- `z_PASAT = (PASAT − 45.0435) / 12.2744`\n\n### Компоненты\n| Домен | Тест | Измерение |\n|---|---|---|\n| Нижние конечности | T25FW | Время на 25 футов (7.62 м), ×2 |\n| Верхние конечности | 9HPT | 9 отверстий-колышек, правая+левая, ×2 |\n| Когниции | PASAT-3 | Сложение последовательных цифр (60 стимулов, интервал 3 с) |\n\n### Интерпретация\nMSFC — z-score относительно референсной популяции РС.\n- **0** = средняя реконструкция референсной когорты\n- **−1.0** = 1 SD хуже\n- **+1.0** = 1 SD лучше\n- Клинически значимое изменение: **Δ 20 %** в любом компоненте или **Δ MSFC ≥ 0.5**\n\n### Альтернативы / расширения\n- **MSSS (Multiple Sclerosis Severity Score)** — EDSS, поправленный на длительность болезни (Roxburgh 2005)\n- **ARMSS (Age-Related MSSS)** — нормализация на возраст (Manouchehrinia 2017); не требует длительности\n- **MSFC-4** — MSFC + SDMT или LCVA\n- **SDMT (Symbol Digit Modalities Test)** — замена PASAT, лучше переносится\n\n### Ограничения\n- PASAT вызывает сильный стресс → SDMT предпочтительнее в клинике\n- Learning effect: первые 1–2 измерения малонадёжны\n- Нет оценки зрительной функции (Sloan LCVA добавляет её)\n- Z-score сложен для пациента; конвертация в клинические термины нужна\n\n### Тактика\n- MSFC падает ≥ 20 % в любом домене — рассмотреть эскалацию ПИТРС\n- Оценивать каждые 6–12 мес в клинических исследованиях\n- Использовать совместно с EDSS + MRI (NEDA-3/4)\n\n### Источник\nFischer JS et al. **The MSFC: an integrated approach to MS clinical outcome assessment.** *Mult Scler* 1999;5:244–250.\nПолезные расширения: Roxburgh 2005 (MSSS), Manouchehrinia 2017 (ARMSS)."
+    info: "### Для чего используется\n**MSFC (Multiple Sclerosis Functional Composite, Fischer 1999)** - количественная композитная мера функции при рассеянном склерозе для клинических исследований. Состоит из 3 доменов, каждый z-преобразуется к референсной популяции NMSS Task Force и усредняется.\n\n### Формула\n`MSFC = (z_T25FW + z_9HPT + z_PASAT) / 3`\n\nгде:\n- `z_T25FW = −(T25FW − 9.5238) / 11.4308` (инверсия - больше секунд = хуже)\n- `z_9HPT = (1/9HPT − 0.0439) / 0.0101` (обратная величина)\n- `z_PASAT = (PASAT − 45.0435) / 12.2744`\n\n### Компоненты\n| Домен | Тест | Измерение |\n|---|---|---|\n| Нижние конечности | T25FW | Время на 25 футов (7.62 м), ×2 |\n| Верхние конечности | 9HPT | 9 отверстий-колышек, правая+левая, ×2 |\n| Когниции | PASAT-3 | Сложение последовательных цифр (60 стимулов, интервал 3 с) |\n\n### Интерпретация\nMSFC - z-score относительно референсной популяции РС.\n- **0** = средняя реконструкция референсной когорты\n- **−1.0** = 1 SD хуже\n- **+1.0** = 1 SD лучше\n- Клинически значимое изменение: **Δ 20 %** в любом компоненте или **Δ MSFC ≥ 0.5**\n\n### Альтернативы / расширения\n- **MSSS (Multiple Sclerosis Severity Score)** - EDSS, поправленный на длительность болезни (Roxburgh 2005)\n- **ARMSS (Age-Related MSSS)** - нормализация на возраст (Manouchehrinia 2017); не требует длительности\n- **MSFC-4** - MSFC + SDMT или LCVA\n- **SDMT (Symbol Digit Modalities Test)** - замена PASAT, лучше переносится\n\n### Ограничения\n- PASAT вызывает сильный стресс → SDMT предпочтительнее в клинике\n- Learning effect: первые 1-2 измерения малонадёжны\n- Нет оценки зрительной функции (Sloan LCVA добавляет её)\n- Z-score сложен для пациента; конвертация в клинические термины нужна\n\n### Тактика\n- MSFC падает ≥ 20 % в любом домене - рассмотреть эскалацию ПИТРС\n- Оценивать каждые 6-12 мес в клинических исследованиях\n- Использовать совместно с EDSS + MRI (NEDA-3/4)\n\n### Источник\nFischer JS et al. **The MSFC: an integrated approach to MS clinical outcome assessment.** *Mult Scler* 1999;5:244-250.\nПолезные расширения: Roxburgh 2005 (MSSS), Manouchehrinia 2017 (ARMSS)."
   };
 
 export default runner;

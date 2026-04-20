@@ -2,7 +2,7 @@
 /**
  * Runner: meows
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
- * Do not edit by hand — regenerate via `npm run split:runners`.
+ * Do not edit by hand - regenerate via `npm run split:runners`.
  *
  * Loaded lazily via dynamic import from lib/runners/index.ts so the
  * encyclopaedia of clinical content stays out of the main app bundle.
@@ -29,17 +29,17 @@ const runner: ScoreTool = {
         options: [
           {
             value: "1",
-            label: "<10 или >30 — red",
+            label: "<10 или >30 - red",
             points: 2
           },
           {
             value: "2",
-            label: "21–30 — yellow",
+            label: "21-30 - yellow",
             points: 1
           },
           {
             value: "3",
-            label: "10–20 — норма",
+            label: "10-20 - норма",
             points: 0
           }
         ]
@@ -51,12 +51,12 @@ const runner: ScoreTool = {
         options: [
           {
             value: "1",
-            label: "<95% — red",
+            label: "<95% - red",
             points: 2
           },
           {
             value: "2",
-            label: "≥95% — норма",
+            label: "≥95% - норма",
             points: 0
           }
         ]
@@ -68,17 +68,17 @@ const runner: ScoreTool = {
         options: [
           {
             value: "1",
-            label: "<35 или >38 — red",
+            label: "<35 или >38 - red",
             points: 2
           },
           {
             value: "2",
-            label: "35–36 — yellow",
+            label: "35-36 - yellow",
             points: 1
           },
           {
             value: "3",
-            label: "36.1–37.9 — норма",
+            label: "36.1-37.9 - норма",
             points: 0
           }
         ]
@@ -90,17 +90,17 @@ const runner: ScoreTool = {
         options: [
           {
             value: "1",
-            label: "<90 или >160 — red",
+            label: "<90 или >160 - red",
             points: 2
           },
           {
             value: "2",
-            label: "150–159 — yellow",
+            label: "150-159 - yellow",
             points: 1
           },
           {
             value: "3",
-            label: "90–149 — норма",
+            label: "90-149 - норма",
             points: 0
           }
         ]
@@ -112,17 +112,17 @@ const runner: ScoreTool = {
         options: [
           {
             value: "1",
-            label: ">100 — red",
+            label: ">100 - red",
             points: 2
           },
           {
             value: "2",
-            label: "90–100 — yellow",
+            label: "90-100 - yellow",
             points: 1
           },
           {
             value: "3",
-            label: "≤89 — норма",
+            label: "≤89 - норма",
             points: 0
           }
         ]
@@ -134,17 +134,17 @@ const runner: ScoreTool = {
         options: [
           {
             value: "1",
-            label: "<40 или >120 — red",
+            label: "<40 или >120 - red",
             points: 2
           },
           {
             value: "2",
-            label: "100–120 или 40–50 — yellow",
+            label: "100-120 или 40-50 - yellow",
             points: 1
           },
           {
             value: "3",
-            label: "51–99 — норма",
+            label: "51-99 - норма",
             points: 0
           }
         ]
@@ -176,7 +176,7 @@ const runner: ScoreTool = {
       {
         min: 0,
         max: 0,
-        label: "0 — норма",
+        label: "0 - норма",
         color: "#22C55E",
         description: "Обычный антенатальный мониторинг."
       },
@@ -192,7 +192,7 @@ const runner: ScoreTool = {
         max: 3,
         label: "2 yellow или 1 red",
         color: "#F59E0B",
-        description: "Trigger — срочный осмотр врача акушера.",
+        description: "Trigger - срочный осмотр врача акушера.",
         actions: [
           "Осмотр акушера в течение 30 мин",
           "Повторные витальные каждые 15 мин",
@@ -204,8 +204,8 @@ const runner: ScoreTool = {
         max: 14,
         label: "≥2 red или сумма ≥4",
         color: "#EF4444",
-        description: "Критический trigger — срочный консультативный осмотр, рассмотреть перевод в HDU/ICU.",
-        details: "Материнский ранний критический порог. Акушерские причины: преэклампсия/HELLP, кровотечение, амниотическая эмболия, сепсис. MBRRACE-UK: позднее распознавание ухудшения — основная причина материнских смертей.",
+        description: "Критический trigger - срочный консультативный осмотр, рассмотреть перевод в HDU/ICU.",
+        details: "Материнский ранний критический порог. Акушерские причины: преэклампсия/HELLP, кровотечение, амниотическая эмболия, сепсис. MBRRACE-UK: позднее распознавание ухудшения - основная причина материнских смертей.",
         actions: [
           "Немедленная команда (акушер, анестезиолог, реаниматолог)",
           "ABCDE, левый боковой поворот (после 20 нед)",
@@ -218,8 +218,8 @@ const runner: ScoreTool = {
     caveats: [
       "Физиология беременности сдвигает «норму»: ЧСС ↑, ЧДД ↑, САД ↓ к II триместру",
       "В UK CNST/MBRRACE рекомендует: 1 red ИЛИ 2 yellow = эскалация",
-      "Версии MEOWS различаются по порогам (RCOG, local trusts) — используйте локальный протокол",
-      "Не применять в раннем послеродовом (<24 ч) без коррекции — нормальные осцилляции"
+      "Версии MEOWS различаются по порогам (RCOG, local trusts) - используйте локальный протокол",
+      "Не применять в раннем послеродовом (<24 ч) без коррекции - нормальные осцилляции"
     ],
     related: [
       {
@@ -241,7 +241,7 @@ const runner: ScoreTool = {
         title: "Неотложная помощь"
       }
     ],
-    reference: "Singh S, McGlennan A, England A, Simons R. A validation study of the CEMACH recommended modified early obstetric warning system (MEOWS). Anaesthesia 2012;67:12–18.",
+    reference: "Singh S, McGlennan A, England A, Simons R. A validation study of the CEMACH recommended modified early obstetric warning system (MEOWS). Anaesthesia 2012;67:12-18.",
     countries: "Великобритания/Европа",
     presets: [
       {
@@ -281,7 +281,7 @@ const runner: ScoreTool = {
         }
       }
     ],
-    info: "### Для чего используется\n**MEOWS (Modified Early Obstetric Warning Score)** — акушерская адаптация шкал раннего предупреждения, созданная после рекомендаций CEMACH (2007) и внедрённая в NHS после MBRRACE-UK отчётов о материнской смертности.\n\n### Критерии (yellow / red trigger)\n| Параметр | Yellow | Red |\n|---|---|---|\n| ЧДД | 21–30 | <10 или >30 |\n| SpO₂ | — | <95% |\n| Температура | 35–36 | <35 или >38 |\n| САД | 150–159 | <90 или >160 |\n| ДАД | 90–100 | >100 |\n| ЧСС | 100–120 или 40–50 | <40 или >120 |\n| Сознание (AVPU) | V (voice) | P / U |\n\n### Интерпретация (trigger система)\n| Триггер | Действие |\n|---|---|\n| 1 yellow | Повторить витальные через 30 мин |\n| 2 yellow ИЛИ 1 red | Срочный осмотр акушера |\n| ≥ 2 red | Немедленная команда, HDU/ICU consult |\n\n### Основные акушерские катастрофы\n| Состояние | Ключевые триггеры |\n|---|---|\n| Преэклампсия / эклампсия | Высокое САД/ДАД, головная боль, гиперрефлексия |\n| HELLP | АД, тромбоциты < 100, ЛДГ, АЛТ |\n| Пуэрперальный сепсис | Лихорадка, тахикардия, гипотензия, лактат |\n| Массивное акушерское кровотечение | Тахикардия, гипотензия, ↓ сознания |\n| Амниотическая эмболия | Внезапная гипотензия, гипоксия, ДВС |\n| Кардиомиопатия беременных | Одышка, отёки, тахикардия |\n\n### Ограничения\n- Физиологические сдвиги беременности требуют учёта (HR +10–20, RR +2–4)\n- Нет единой версии — каждый NHS trust модифицирует\n- Не заменяет специфические акушерские критерии (например, критерии Sepsis-6 для пуэрперального сепсиса)\n\n### Тактика\n- **Yellow × 1**: наблюдение\n- **Yellow × 2 или Red × 1**: эскалация к акушеру + анестезиологу\n- **Red × ≥ 2**: HDU/ICU, материнская реанимация по ALSO/MOET\n\n### Источник\nCEMACH (2007); Singh S et al. *Anaesthesia* 2012; 67:12–18. MBRRACE-UK *Saving Lives, Improving Mothers' Care* annual reports."
+    info: "### Для чего используется\n**MEOWS (Modified Early Obstetric Warning Score)** - акушерская адаптация шкал раннего предупреждения, созданная после рекомендаций CEMACH (2007) и внедрённая в NHS после MBRRACE-UK отчётов о материнской смертности.\n\n### Критерии (yellow / red trigger)\n| Параметр | Yellow | Red |\n|---|---|---|\n| ЧДД | 21-30 | <10 или >30 |\n| SpO₂ | - | <95% |\n| Температура | 35-36 | <35 или >38 |\n| САД | 150-159 | <90 или >160 |\n| ДАД | 90-100 | >100 |\n| ЧСС | 100-120 или 40-50 | <40 или >120 |\n| Сознание (AVPU) | V (voice) | P / U |\n\n### Интерпретация (trigger система)\n| Триггер | Действие |\n|---|---|\n| 1 yellow | Повторить витальные через 30 мин |\n| 2 yellow ИЛИ 1 red | Срочный осмотр акушера |\n| ≥ 2 red | Немедленная команда, HDU/ICU consult |\n\n### Основные акушерские катастрофы\n| Состояние | Ключевые триггеры |\n|---|---|\n| Преэклампсия / эклампсия | Высокое САД/ДАД, головная боль, гиперрефлексия |\n| HELLP | АД, тромбоциты < 100, ЛДГ, АЛТ |\n| Пуэрперальный сепсис | Лихорадка, тахикардия, гипотензия, лактат |\n| Массивное акушерское кровотечение | Тахикардия, гипотензия, ↓ сознания |\n| Амниотическая эмболия | Внезапная гипотензия, гипоксия, ДВС |\n| Кардиомиопатия беременных | Одышка, отёки, тахикардия |\n\n### Ограничения\n- Физиологические сдвиги беременности требуют учёта (HR +10-20, RR +2-4)\n- Нет единой версии - каждый NHS trust модифицирует\n- Не заменяет специфические акушерские критерии (например, критерии Sepsis-6 для пуэрперального сепсиса)\n\n### Тактика\n- **Yellow × 1**: наблюдение\n- **Yellow × 2 или Red × 1**: эскалация к акушеру + анестезиологу\n- **Red × ≥ 2**: HDU/ICU, материнская реанимация по ALSO/MOET\n\n### Источник\nCEMACH (2007); Singh S et al. *Anaesthesia* 2012; 67:12-18. MBRRACE-UK *Saving Lives, Improving Mothers' Care* annual reports."
   };
 
 export default runner;

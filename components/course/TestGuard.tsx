@@ -118,7 +118,7 @@ export default function TestGuard({ active, onViolation, onForceSubmit, violatio
               Вернитесь в окно и продолжите прохождение.
             </p>
 
-            {/* Violations counter — dots */}
+            {/* Violations counter - dots */}
             <div style={{
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               gap: 10, marginBottom: 24,

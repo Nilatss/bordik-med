@@ -1,5 +1,5 @@
 // @ts-nocheck
-/** Runner: start-civ — START / JumpSTART / SALT civilian MCI triage */
+/** Runner: start-civ - START / JumpSTART / SALT civilian MCI triage */
 import type {
   CalculatorTool,
   ToolInput,
@@ -20,7 +20,7 @@ const runner: CalculatorTool = {
       options: [
         { value: 'start', label: 'START (взрослые)' },
         { value: 'jump', label: 'JumpSTART (дети < 8 лет)' },
-        { value: 'salt', label: 'SALT (Sort–Assess–LSI)' },
+        { value: 'salt', label: 'SALT (Sort-Assess-LSI)' },
       ],
     },
     { id: 'walks', label: 'Может идти самостоятельно', type: 'checkbox' },
@@ -35,31 +35,31 @@ const runner: CalculatorTool = {
     const radial = v.radial === true;
     const obeys = v.obeys === true;
     let cat = 'GREEN';
-    let label = 'Зелёный — Minor (walking wounded)';
+    let label = 'Зелёный - Minor (walking wounded)';
     let color = '#22C55E';
     if (algo === 'jump') {
-      if (walks) { cat = 'GREEN'; label = 'Зелёный — Minor'; color = '#22C55E'; }
-      else if (rr === 0) { cat = 'BLACK'; label = 'Чёрный — Deceased/Expectant (после 5 спасательных вдохов)'; color = '#000000'; }
-      else if (rr < 15 || rr > 45) { cat = 'RED'; label = 'Красный — Immediate'; color = '#DC2626'; }
-      else if (!radial) { cat = 'RED'; label = 'Красный — Immediate (нет пульса)'; color = '#DC2626'; }
-      else if (!obeys) { cat = 'RED'; label = 'Красный — Immediate (AVPU P/U)'; color = '#DC2626'; }
-      else { cat = 'YELLOW'; label = 'Жёлтый — Delayed'; color = '#FACC15'; }
+      if (walks) { cat = 'GREEN'; label = 'Зелёный - Minor'; color = '#22C55E'; }
+      else if (rr === 0) { cat = 'BLACK'; label = 'Чёрный - Deceased/Expectant (после 5 спасательных вдохов)'; color = '#000000'; }
+      else if (rr < 15 || rr > 45) { cat = 'RED'; label = 'Красный - Immediate'; color = '#DC2626'; }
+      else if (!radial) { cat = 'RED'; label = 'Красный - Immediate (нет пульса)'; color = '#DC2626'; }
+      else if (!obeys) { cat = 'RED'; label = 'Красный - Immediate (AVPU P/U)'; color = '#DC2626'; }
+      else { cat = 'YELLOW'; label = 'Жёлтый - Delayed'; color = '#FACC15'; }
     } else if (algo === 'salt') {
-      if (walks) { cat = 'GREEN'; label = 'Зелёный — Minor (SALT sort)'; color = '#22C55E'; }
-      else if (rr === 0 && !radial) { cat = 'BLACK'; label = 'Чёрный — Dead (нет дыхания после LSI)'; color = '#000000'; }
-      else if (!obeys || !radial || rr > 30 || rr < 10) { cat = 'RED'; label = 'Красный — Immediate (SALT)'; color = '#DC2626'; }
-      else { cat = 'YELLOW'; label = 'Жёлтый — Delayed'; color = '#FACC15'; }
+      if (walks) { cat = 'GREEN'; label = 'Зелёный - Minor (SALT sort)'; color = '#22C55E'; }
+      else if (rr === 0 && !radial) { cat = 'BLACK'; label = 'Чёрный - Dead (нет дыхания после LSI)'; color = '#000000'; }
+      else if (!obeys || !radial || rr > 30 || rr < 10) { cat = 'RED'; label = 'Красный - Immediate (SALT)'; color = '#DC2626'; }
+      else { cat = 'YELLOW'; label = 'Жёлтый - Delayed'; color = '#FACC15'; }
     } else {
-      if (walks) { cat = 'GREEN'; label = 'Зелёный — Minor (walking wounded)'; color = '#22C55E'; }
-      else if (rr === 0) { cat = 'BLACK'; label = 'Чёрный — Expectant (апноэ после открытия ДП)'; color = '#000000'; }
-      else if (rr > 30 || rr < 10) { cat = 'RED'; label = 'Красный — Immediate (ЧДД)'; color = '#DC2626'; }
-      else if (!radial) { cat = 'RED'; label = 'Красный — Immediate (нет радиального пульса)'; color = '#DC2626'; }
-      else if (!obeys) { cat = 'RED'; label = 'Красный — Immediate (не выполняет команды)'; color = '#DC2626'; }
-      else { cat = 'YELLOW'; label = 'Жёлтый — Delayed'; color = '#FACC15'; }
+      if (walks) { cat = 'GREEN'; label = 'Зелёный - Minor (walking wounded)'; color = '#22C55E'; }
+      else if (rr === 0) { cat = 'BLACK'; label = 'Чёрный - Expectant (апноэ после открытия ДП)'; color = '#000000'; }
+      else if (rr > 30 || rr < 10) { cat = 'RED'; label = 'Красный - Immediate (ЧДД)'; color = '#DC2626'; }
+      else if (!radial) { cat = 'RED'; label = 'Красный - Immediate (нет радиального пульса)'; color = '#DC2626'; }
+      else if (!obeys) { cat = 'RED'; label = 'Красный - Immediate (не выполняет команды)'; color = '#DC2626'; }
+      else { cat = 'YELLOW'; label = 'Жёлтый - Delayed'; color = '#FACC15'; }
     }
     const actions: Record<string, string[]> = {
       RED: ['Жизнеспасающие манипуляции: жгут, открыть ДП, декомпрессия', 'Первая волна эвакуации', 'Повторная оценка'],
-      YELLOW: ['Стабилен, но требует лечения', 'Вторая волна эвакуации', 'Мониторинг каждые 10–15 мин'],
+      YELLOW: ['Стабилен, но требует лечения', 'Вторая волна эвакуации', 'Мониторинг каждые 10-15 мин'],
       GREEN: ['Самостоятельно в сборный пункт', 'Периодическая переоценка', 'Лечение после Immediate/Delayed'],
       BLACK: ['В условиях MCI ресурсы не расходуются', 'Документация времени', 'Переоценка при изменении ресурсов'],
     };
@@ -86,7 +86,7 @@ const runner: CalculatorTool = {
       ],
     };
   },
-  reference: 'Super G et al. START: Simple Triage and Rapid Treatment. Hoag/Newport Beach, 1983. Romig LE. JumpSTART pediatric MCI triage. J Emerg Nurs 2002. Lerner EB et al. SALT Triage. Disaster Med Public Health Prep 2011;5:129–137.',
+  reference: 'Super G et al. START: Simple Triage and Rapid Treatment. Hoag/Newport Beach, 1983. Romig LE. JumpSTART pediatric MCI triage. J Emerg Nurs 2002. Lerner EB et al. SALT Triage. Disaster Med Public Health Prep 2011;5:129-137.',
   countries: 'США · Международный',
   presets: [
     { label: 'Walking wounded', values: { algo: 'start', walks: true, rr: 16, radial: true, obeys: true } },
@@ -100,9 +100,9 @@ const runner: CalculatorTool = {
     'SALT включает LSI до присвоения категории',
   ],
   info: `### Для чего используется
-**START / JumpSTART / SALT** — три основных алгоритма первичной сортировки в условиях массового поражения (MCI, civilian).
+**START / JumpSTART / SALT** - три основных алгоритма первичной сортировки в условиях массового поражения (MCI, civilian).
 
-### START (Super, 1983) — взрослые
+### START (Super, 1983) - взрослые
 Мнемоника **RPM 30-2-CanDo**: Respirations / Perfusion / Mental status.
 1. Идёт? → **Зелёный** (Minor)
 2. ЧДД > 30 или < 10 → **Красный**; апноэ после ДП → **Чёрный**
@@ -110,13 +110,13 @@ const runner: CalculatorTool = {
 4. Не выполняет команды → **Красный**
 5. Иначе → **Жёлтый**
 
-### JumpSTART (Romig, 2002) — дети < 8 лет
+### JumpSTART (Romig, 2002) - дети < 8 лет
 - Апноэ → 5 спасательных вдохов; появилось дыхание → **Красный**, нет → **Чёрный**
 - ЧДД < 15 или > 45 → **Красный**
 - Перфузия по пульсу
 - AVPU: P (неадекватно на боль) или U → **Красный**
 
-### SALT (Lerner, 2011) — NDLS США
+### SALT (Lerner, 2011) - NDLS США
 1. **Sort** глобально: идёт / машет / не двигается
 2. **Assess** индивидуально
 3. **Lifesaving interventions**: жгут, открыть ДП, декомпрессия, автоинжектор

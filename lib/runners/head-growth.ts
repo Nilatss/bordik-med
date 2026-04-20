@@ -2,7 +2,7 @@
 /**
  * Runner: head-growth
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
- * Do not edit by hand — regenerate via `npm run split:runners`.
+ * Do not edit by hand - regenerate via `npm run split:runners`.
  *
  * Loaded lazily via dynamic import from lib/runners/index.ts so the
  * encyclopaedia of clinical content stays out of the main app bundle.
@@ -172,7 +172,7 @@ const runner: CalculatorTool = {
                     'УЗИ через большой родничок (если открыт) или МРТ',
                     'Измерить окружность головы родителей (семейная макроцефалия)',
                     'Осмотр глазного дна (ВЧД)',
-                    'При быстром приросте (>2 см/нед) — срочная нейровизуализация'
+                    'При быстром приросте (>2 см/нед) - срочная нейровизуализация'
                 ];
             } else {
                 interpretation = 'Окружность головы в пределах нормы';
@@ -186,9 +186,9 @@ const runner: CalculatorTool = {
             // MUAC интерпретация (WHO для 6-59 мес)
             let muacNote = '';
             if (!isNaN(muac) && muac > 0) {
-                if (muac < 11.5) muacNote = `MUAC ${muac.toFixed(1)} см — тяжёлая острая недостаточность питания (SAM).`;
-                else if (muac < 12.5) muacNote = `MUAC ${muac.toFixed(1)} см — умеренная острая недостаточность питания (MAM).`;
-                else muacNote = `MUAC ${muac.toFixed(1)} см — норма (≥12,5 см для 6–59 мес).`;
+                if (muac < 11.5) muacNote = `MUAC ${muac.toFixed(1)} см - тяжёлая острая недостаточность питания (SAM).`;
+                else if (muac < 12.5) muacNote = `MUAC ${muac.toFixed(1)} см - умеренная острая недостаточность питания (MAM).`;
+                else muacNote = `MUAC ${muac.toFixed(1)} см - норма (≥12,5 см для 6-59 мес).`;
             }
             if (muacNote) details += '\n\n' + muacNote;
             return {
@@ -199,10 +199,10 @@ const runner: CalculatorTool = {
                 details,
                 actions,
                 caveats: [
-                    'WHO-референс 2006 (0–60 мес); после 5 лет — CDC/UK-WHO',
+                    'WHO-референс 2006 (0-60 мес); после 5 лет - CDC/UK-WHO',
                     'Для недоношенных корректируйте возраст до 24 мес скорр.',
-                    'MUAC применим 6–59 мес (WHO); <6 мес — использовать вес/длину',
-                    'Референсные значения упрощены — для точной оценки используйте WHO Anthro'
+                    'MUAC применим 6-59 мес (WHO); <6 мес - использовать вес/длину',
+                    'Референсные значения упрощены - для точной оценки используйте WHO Anthro'
                 ],
                 scale: {
                     segments: [
@@ -250,7 +250,7 @@ const runner: CalculatorTool = {
                 ]
             };
         },
-    reference: "WHO Child Growth Standards 2006. Head circumference-for-age. MUAC: WHO 2009 (SAM <11,5 см, MAM 11,5–12,4 см у 6–59 мес).",
+    reference: "WHO Child Growth Standards 2006. Head circumference-for-age. MUAC: WHO 2009 (SAM <11,5 см, MAM 11,5-12,4 см у 6-59 мес).",
     countries: "Международный (ВОЗ)",
     presets: [
       {
@@ -281,7 +281,7 @@ const runner: CalculatorTool = {
         }
       }
     ],
-    info: "### Для чего используется\n**Head circumference-for-age + MUAC + BMI-for-age Z-score** — интегральная антропометрическая оценка:\n- **Окружность головы** — отражает рост мозга; ключевой параметр до 3 лет.\n- **MUAC (mid-upper arm circumference)** — маркер острой недостаточности питания у детей 6–59 мес.\n- **Z-score** — стандартизированное отклонение от медианы референсной популяции (WHO 2006).\n\n### Формула\n`Z = (измеренное значение − медиана) / SD`\n\n### Интерпретация HC Z-score\n| Z-score | Статус |\n|---|---|\n| < −3 | Выраженная микроцефалия |\n| < −2 | Микроцефалия |\n| −2 … +2 | Норма |\n| > +2 | Макроцефалия |\n| > +3 | Выраженная макроцефалия |\n\n### Интерпретация MUAC (WHO, 6–59 мес)\n| MUAC | Статус |\n|---|---|\n| ≥ 12,5 см | Норма |\n| 11,5–12,4 см | Умеренная острая недостаточность (MAM) |\n| < 11,5 см | Тяжёлая острая недостаточность (SAM) |\n\n### Ограничения\n- Для недоношенных корректируйте возраст до 24 мес скорр.\n- WHO-референс используется до 5 лет; после — CDC или UK-WHO\n- MUAC у младенцев <6 мес не валидирован\n- Семейная макроцефалия возможна при нормальном развитии\n\n### Тактика\n- **Микроцефалия**: МРТ, TORCH, генетик, Denver II\n- **Макроцефалия**: нейровизуализация, исключить гидроцефалию, измерить ОГ родителей\n- **SAM (MUAC <11,5)**: госпитализация, RUTF, F-75/F-100 по WHO протоколу\n- **MAM**: амбулаторное питание, контроль каждые 2 нед\n\n### Источник\nWHO Multicentre Growth Reference Study Group. *WHO Child Growth Standards* 2006. WHO 2009 Guidelines for Management of SAM."
+    info: "### Для чего используется\n**Head circumference-for-age + MUAC + BMI-for-age Z-score** - интегральная антропометрическая оценка:\n- **Окружность головы** - отражает рост мозга; ключевой параметр до 3 лет.\n- **MUAC (mid-upper arm circumference)** - маркер острой недостаточности питания у детей 6-59 мес.\n- **Z-score** - стандартизированное отклонение от медианы референсной популяции (WHO 2006).\n\n### Формула\n`Z = (измеренное значение − медиана) / SD`\n\n### Интерпретация HC Z-score\n| Z-score | Статус |\n|---|---|\n| < −3 | Выраженная микроцефалия |\n| < −2 | Микроцефалия |\n| −2 … +2 | Норма |\n| > +2 | Макроцефалия |\n| > +3 | Выраженная макроцефалия |\n\n### Интерпретация MUAC (WHO, 6-59 мес)\n| MUAC | Статус |\n|---|---|\n| ≥ 12,5 см | Норма |\n| 11,5-12,4 см | Умеренная острая недостаточность (MAM) |\n| < 11,5 см | Тяжёлая острая недостаточность (SAM) |\n\n### Ограничения\n- Для недоношенных корректируйте возраст до 24 мес скорр.\n- WHO-референс используется до 5 лет; после - CDC или UK-WHO\n- MUAC у младенцев <6 мес не валидирован\n- Семейная макроцефалия возможна при нормальном развитии\n\n### Тактика\n- **Микроцефалия**: МРТ, TORCH, генетик, Denver II\n- **Макроцефалия**: нейровизуализация, исключить гидроцефалию, измерить ОГ родителей\n- **SAM (MUAC <11,5)**: госпитализация, RUTF, F-75/F-100 по WHO протоколу\n- **MAM**: амбулаторное питание, контроль каждые 2 нед\n\n### Источник\nWHO Multicentre Growth Reference Study Group. *WHO Child Growth Standards* 2006. WHO 2009 Guidelines for Management of SAM."
   };
 
 export default runner;

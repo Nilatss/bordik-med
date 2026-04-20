@@ -1,5 +1,5 @@
 // @ts-nocheck
-/** Runner: ahls — Advanced Hazmat Life Support (AACT) */
+/** Runner: ahls - Advanced Hazmat Life Support (AACT) */
 import type { CalculatorTool } from '../tools-runners';
 
 const runner: CalculatorTool = {
@@ -52,12 +52,12 @@ const runner: CalculatorTool = {
 
     if (cont === 'high' || sub === 'organophos' || sub === 'cyanide') { ppe = 'A'; decon = 'Полный wet decon + hot-warm-cold zones'; }
     else if (cont === 'moderate' || sub === 'opioid' || sub === 'radiation') { ppe = 'B'; decon = 'Wet decon + дозиметрия при радиации'; }
-    else if (sub === 'irritant' || sub === 'corrosive') { ppe = 'B'; decon = 'Немедленный wet decon 15–20 мин воды'; }
+    else if (sub === 'irritant' || sub === 'corrosive') { ppe = 'B'; decon = 'Немедленный wet decon 15-20 мин воды'; }
 
     const antidotes: Record<string, string> = {
-      organophos: 'Атропин 2–6 мг в/в каждые 5 мин до высыхания секретов; пралидоксим 1–2 г в/в за 30 мин',
+      organophos: 'Атропин 2-6 мг в/в каждые 5 мин до высыхания секретов; пралидоксим 1-2 г в/в за 30 мин',
       cyanide: 'Hydroxocobalamin 5 г в/в за 15 мин (Cyanokit) ± тиосульфат натрия 12.5 г в/в',
-      opioid: 'Налоксон 0.04–2 мг в/в/в/м титровать; инфузия 2/3 от восстанавливающей дозы × ч',
+      opioid: 'Налоксон 0.04-2 мг в/в/в/м титровать; инфузия 2/3 от восстанавливающей дозы × ч',
       irritant: 'Симптоматически: небулайзер сальбутамол, ингаляционный NaHCO₃ при хлоре (спорно)',
       corrosive: 'НЕ нейтрализовать! 15 мин воды; кислота → молоко/вода внутрь; щёлочь → НЕ рвота',
       radiation: 'Калия йодид 130 мг (радиойод); Prussian blue (цезий); Ca-DTPA (плутоний)',
@@ -73,13 +73,13 @@ const runner: CalculatorTool = {
       unit: '',
       interpretation: `AHLS: путь ${route}, вещество ${sub}. Требуется PPE ${ppe}, ${decon}.`,
       color,
-      details: `PPE по OSHA/EPA:\n• A — полная инкапсуляция + SCBA (наивысшая защита кожи + дыхания)\n• B — SCBA + химзащитный костюм (дыхание макс, кожа спрей)\n• C — APR/PAPR + защитный костюм (известная концентрация, OK для лёгкого риска)\n• D — рабочая униформа (только стандартные меры)\n\nЗоны деконтаминации:\n• Hot — контаминированная\n• Warm — decon corridor\n• Cold — чистая`,
+      details: `PPE по OSHA/EPA:\n• A - полная инкапсуляция + SCBA (наивысшая защита кожи + дыхания)\n• B - SCBA + химзащитный костюм (дыхание макс, кожа спрей)\n• C - APR/PAPR + защитный костюм (известная концентрация, OK для лёгкого риска)\n• D - рабочая униформа (только стандартные меры)\n\nЗоны деконтаминации:\n• Hot - контаминированная\n• Warm - decon corridor\n• Cold - чистая`,
       actions: [
         `PPE: уровень ${ppe}`,
         `Decon: ${decon}`,
         `Антидот/терапия: ${antidotes[sub]}`,
         'Снять всю одежду (удаляет до 80% контаминанта)',
-        'Промыть глаза / кожу 15–20 мин тёплой водой низким давлением',
+        'Промыть глаза / кожу 15-20 мин тёплой водой низким давлением',
         'Не переносить пациента в чистую зону до decon (cross-contamination)',
         'ABC + O₂ high-flow, в/в доступ',
         'Контакт: POISINDEX / CHEMTREC 1-800-424-9300 / региональный токсцентр',
@@ -87,9 +87,9 @@ const runner: CalculatorTool = {
         'Документация: вещество, доза, концентрация, экспозиция по времени',
       ],
       caveats: [
-        'НЕ заходить в hot zone без надлежащего PPE — безопасность спасателя приоритет',
+        'НЕ заходить в hot zone без надлежащего PPE - безопасность спасателя приоритет',
         'Фентанил-аэрозоль: налоксон работает; PPE уровня C обычно достаточно для ответа (CDC 2017)',
-        'Radiation + trauma — trauma приоритет, decon параллельно',
+        'Radiation + trauma - trauma приоритет, decon параллельно',
         'Cyanide + smoke (пожар): эмпирически hydroxocobalamin если soot в носоглотке + гипотензия / лактат > 8',
         'НЕ использовать нейтрализаторы при щёлочно-кислотных экспозициях (экзотермическая реакция)',
       ],
@@ -126,7 +126,7 @@ const runner: CalculatorTool = {
     { label: 'Кислота кожа', values: { route: 'dermal', substance: 'corrosive', contamination: 'moderate' } },
   ],
   info: `### Для чего используется
-**AHLS (Advanced Hazmat Life Support)** — международная программа AACT (American Academy of Clinical Toxicology) по ведению пациентов с химическим, радиационным и биологическим поражением.
+**AHLS (Advanced Hazmat Life Support)** - международная программа AACT (American Academy of Clinical Toxicology) по ведению пациентов с химическим, радиационным и биологическим поражением.
 
 ### PPE уровни (OSHA)
 | Уровень | Защита |
@@ -140,7 +140,7 @@ const runner: CalculatorTool = {
 Hot (контаминированная) → Warm (decon corridor) → Cold (чистая).
 
 ### Decon
-Снятие одежды удаляет до **80%** контаминанта. Wet decon: вода + мягкое мыло, 15–20 мин.
+Снятие одежды удаляет до **80%** контаминанта. Wet decon: вода + мягкое мыло, 15-20 мин.
 
 ### Ключевые антидоты
 - ФОС: атропин + пралидоксим

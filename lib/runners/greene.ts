@@ -1,5 +1,5 @@
 // @ts-nocheck
-/** Runner: greene — шкалы климактерия (Greene / Kupperman / MRS) */
+/** Runner: greene - шкалы климактерия (Greene / Kupperman / MRS) */
 import type {
   CalculatorTool,
   ToolInput,
@@ -18,15 +18,15 @@ const runner: CalculatorTool = {
       label: 'Шкала',
       type: 'select',
       options: [
-        { value: 'greene', label: 'Greene Climacteric (21 пункт × 0–3)' },
+        { value: 'greene', label: 'Greene Climacteric (21 пункт × 0-3)' },
         { value: 'kupperman', label: 'Kupperman Menopause Index (11, взвешенно)' },
-        { value: 'mrs', label: 'Menopause Rating Scale (11 × 0–4)' },
+        { value: 'mrs', label: 'Menopause Rating Scale (11 × 0-4)' },
       ],
     },
-    { id: 'psych', label: 'Психологические симптомы (ср. балл 0–3 для Greene; вклад в Kupperman/MRS)', type: 'number', min: 0, max: 4, step: 0.5 },
-    { id: 'somatic', label: 'Соматические симптомы (0–3 Greene)', type: 'number', min: 0, max: 4, step: 0.5 },
-    { id: 'vasomotor', label: 'Вазомоторные (приливы) 0–3', type: 'number', min: 0, max: 4, step: 0.5 },
-    { id: 'sexual', label: 'Сексуальные 0–3', type: 'number', min: 0, max: 4, step: 0.5 },
+    { id: 'psych', label: 'Психологические симптомы (ср. балл 0-3 для Greene; вклад в Kupperman/MRS)', type: 'number', min: 0, max: 4, step: 0.5 },
+    { id: 'somatic', label: 'Соматические симптомы (0-3 Greene)', type: 'number', min: 0, max: 4, step: 0.5 },
+    { id: 'vasomotor', label: 'Вазомоторные (приливы) 0-3', type: 'number', min: 0, max: 4, step: 0.5 },
+    { id: 'sexual', label: 'Сексуальные 0-3', type: 'number', min: 0, max: 4, step: 0.5 },
     { id: 'items', label: 'Число пунктов с жалобами (для Kupperman/MRS)', type: 'number', min: 0, max: 21, step: 1 },
   ],
   compute: (v) => {
@@ -62,17 +62,17 @@ const runner: CalculatorTool = {
     return {
       value: String(total),
       unit: 'балл',
-      interpretation: `${name}: ${total}/${max} — ${sev}`,
+      interpretation: `${name}: ${total}/${max} - ${sev}`,
       color,
       details:
-        'Greene: пороги условны (< 15 лёгкая, 15–30 средняя, > 30 тяжёлая). Kupperman: < 15 лёгкая, 15–35 средняя, > 35 тяжёлая. MRS: 0–4 без жалоб, 5–8 лёгкая, 9–15 умеренная, ≥ 16 тяжёлая.',
+        'Greene: пороги условны (< 15 лёгкая, 15-30 средняя, > 30 тяжёлая). Kupperman: < 15 лёгкая, 15-35 средняя, > 35 тяжёлая. MRS: 0-4 без жалоб, 5-8 лёгкая, 9-15 умеренная, ≥ 16 тяжёлая.',
       actions: [
         'При умеренных/тяжёлых симптомах обсудить МГТ с учётом риска ВТЭ/онко',
-        'При противопоказаниях к МГТ — СИОЗС (пароксетин), габапентин, клонидин',
-        'Оценить вагинальную атрофию — локальные эстрогены',
+        'При противопоказаниях к МГТ - СИОЗС (пароксетин), габапентин, клонидин',
+        'Оценить вагинальную атрофию - локальные эстрогены',
       ],
       caveats: [
-        'Шкалы не диагностируют менопаузу — оценивают тяжесть симптомов',
+        'Шкалы не диагностируют менопаузу - оценивают тяжесть симптомов',
         'Kupperman устаревшая, не включает сексуальные/психосоциальные аспекты',
         'MRS валидирована международно (Heinemann 2004)',
       ],
@@ -107,13 +107,13 @@ const runner: CalculatorTool = {
 Оценивают выраженность симптомов менопаузы.
 
 ### Greene Climacteric Scale (1998)
-21 пункт × 0–3 (всего 0–63). 4 домена: психологические, соматические, вазомоторные, сексуальные.
+21 пункт × 0-3 (всего 0-63). 4 домена: психологические, соматические, вазомоторные, сексуальные.
 
 ### Kupperman Menopause Index (1953)
-11 симптомов с весовыми коэффициентами (приливы ×4, парестезии ×2 и т. д.). Сумма 0–51.
+11 симптомов с весовыми коэффициентами (приливы ×4, парестезии ×2 и т. д.). Сумма 0-51.
 
 ### Menopause Rating Scale (Heinemann 2004)
-11 пунктов × 0–4. Пороги: лёгкая < 9, умеренная 9–15, тяжёлая ≥ 16.
+11 пунктов × 0-4. Пороги: лёгкая < 9, умеренная 9-15, тяжёлая ≥ 16.
 
 ### Источники
 Greene Maturitas 1998. Kupperman JAMA 1953. Heinemann Health Qual Life Outcomes 2004.`,

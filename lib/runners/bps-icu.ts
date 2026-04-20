@@ -1,6 +1,6 @@
 // @ts-nocheck
 /**
- * Runner: bps-icu — Behavioral Pain Scale (Payen 2001)
+ * Runner: bps-icu - Behavioral Pain Scale (Payen 2001)
  */
 import type { ScoreTool, ScoreBand } from '../tools-runners';
 
@@ -44,14 +44,14 @@ const runner: ScoreTool = {
   ],
   bands: [
     { min: 3, max: 3, label: '3', color: '#22C55E', description: 'Нет боли.' },
-    { min: 4, max: 5, label: '4–5', color: '#84CC16', description: 'Приемлемая анальгезия.' },
-    { min: 6, max: 7, label: '6–7', color: '#F59E0B', description: 'Умеренная боль — требуется коррекция анальгезии.' },
-    { min: 8, max: 12, label: '8–12', color: '#EF4444', description: 'Выраженная боль — немедленная эскалация анальгезии.' },
+    { min: 4, max: 5, label: '4-5', color: '#84CC16', description: 'Приемлемая анальгезия.' },
+    { min: 6, max: 7, label: '6-7', color: '#F59E0B', description: 'Умеренная боль - требуется коррекция анальгезии.' },
+    { min: 8, max: 12, label: '8-12', color: '#EF4444', description: 'Выраженная боль - немедленная эскалация анальгезии.' },
   ],
   caveats: [
     'BPS валидирован для седатированных, интубированных ICU-пациентов',
-    'Для не интубированных — BPS-NI (адаптация: вокализация вместо ИВЛ)',
-    'Оценка каждые 2–4 часа и до/после процедур',
+    'Для не интубированных - BPS-NI (адаптация: вокализация вместо ИВЛ)',
+    'Оценка каждые 2-4 часа и до/после процедур',
     'Порог > 5 = значимая боль, требует вмешательства',
   ],
   relatedCourses: [
@@ -64,12 +64,12 @@ const runner: ScoreTool = {
     { id: 'cam-icu', title: 'CAM-ICU' },
     { id: 'flacc', title: 'FLACC (дети)' },
   ],
-  reference: 'Payen JF et al. Crit Care Med 2001;29:2258–2263.',
+  reference: 'Payen JF et al. Crit Care Med 2001;29:2258-2263.',
   countries: 'Международный (SCCM PADIS 2018)',
   info: `### Для чего используется
-**Behavioral Pain Scale (BPS, Payen 2001)** — оценка боли у седатированных, интубированных ICU-пациентов, которые не могут сообщить о боли самостоятельно. Рекомендована SCCM PADIS 2018 наряду с CPOT.
+**Behavioral Pain Scale (BPS, Payen 2001)** - оценка боли у седатированных, интубированных ICU-пациентов, которые не могут сообщить о боли самостоятельно. Рекомендована SCCM PADIS 2018 наряду с CPOT.
 
-### 3 домена × 1–4 балла = 3–12
+### 3 домена × 1-4 балла = 3-12
 | Домен | 1 | 2 | 3 | 4 |
 |---|---|---|---|---|
 | Лицо | Расслаблено | Напряжено частично | Напряжено полностью | Гримаса |
@@ -77,19 +77,19 @@ const runner: ScoreTool = {
 | ИВЛ | Переносит | Кашель | Борется | Невозможно |
 
 ### Интерпретация
-- **≤ 5** — адекватная анальгезия
-- **> 5** — значимая боль → эскалация (опиоиды, регионарная анестезия, NSAID)
+- **≤ 5** - адекватная анальгезия
+- **> 5** - значимая боль → эскалация (опиоиды, регионарная анестезия, NSAID)
 
 ### Альтернативы
 | Шкала | Особенность |
 |---|---|
-| **CPOT** | 0–8, валидирована на кардиохирургии |
+| **CPOT** | 0-8, валидирована на кардиохирургии |
 | **NVPS** | Non-Verbal Pain Scale |
 | **ESCID** | Escala de conductas indicadoras de dolor |
 | **BPS-NI** | для не интубированных |
 
 ### Источник
-Payen JF, Bru O, Bosson JL, et al. Assessing pain in critically ill sedated patients by using a behavioral pain scale. Crit Care Med 2001;29:2258–63.`,
+Payen JF, Bru O, Bosson JL, et al. Assessing pain in critically ill sedated patients by using a behavioral pain scale. Crit Care Med 2001;29:2258-63.`,
 };
 
 export default runner;

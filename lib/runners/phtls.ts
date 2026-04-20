@@ -1,5 +1,5 @@
 // @ts-nocheck
-/** Runner: phtls — PHTLS / ITLS Prehospital Trauma Life Support */
+/** Runner: phtls - PHTLS / ITLS Prehospital Trauma Life Support */
 import type { CalculatorTool } from '../tools-runners';
 
 const runner: CalculatorTool = {
@@ -10,12 +10,12 @@ const runner: CalculatorTool = {
       label: 'Шаг primary survey',
       type: 'select',
       options: [
-        { value: 'x', label: 'X — Exsanguinating hemorrhage (критическое кровотечение)' },
-        { value: 'a', label: 'A — Airway + C-spine protection' },
-        { value: 'b', label: 'B — Breathing (дыхание)' },
-        { value: 'c', label: 'C — Circulation' },
-        { value: 'd', label: 'D — Disability (неврология)' },
-        { value: 'e', label: 'E — Exposure / Environment' },
+        { value: 'x', label: 'X - Exsanguinating hemorrhage (критическое кровотечение)' },
+        { value: 'a', label: 'A - Airway + C-spine protection' },
+        { value: 'b', label: 'B - Breathing (дыхание)' },
+        { value: 'c', label: 'C - Circulation' },
+        { value: 'd', label: 'D - Disability (неврология)' },
+        { value: 'e', label: 'E - Exposure / Environment' },
       ],
     },
   ],
@@ -23,7 +23,7 @@ const runner: CalculatorTool = {
     const step = String(v.step);
     const map: Record<string, { title: string; c: string; actions: string[]; details: string }> = {
       x: {
-        title: 'X — Exsanguinating hemorrhage',
+        title: 'X - Exsanguinating hemorrhage',
         c: '#991B1B',
         actions: [
           'Найти и остановить массивное наружное кровотечение ДО оценки airway',
@@ -32,10 +32,10 @@ const runner: CalculatorTool = {
           'Junctional tourniquet при паховых/подмышечных ранениях',
           'Pelvic binder при подозрении на перелом таза',
         ],
-        details: 'X добавлен в PHTLS-9 (2020) перед A — война научила, что exsanguinating bleed убивает быстрее, чем airway. Приоритет массивного кровотечения.',
+        details: 'X добавлен в PHTLS-9 (2020) перед A - война научила, что exsanguinating bleed убивает быстрее, чем airway. Приоритет массивного кровотечения.',
       },
       a: {
-        title: 'A — Airway + C-spine',
+        title: 'A - Airway + C-spine',
         c: '#F59E0B',
         actions: [
           'Manual in-line stabilization (MILS) при подозрении на травму шеи',
@@ -50,7 +50,7 @@ const runner: CalculatorTool = {
         details: 'Приоритет проходимости дыхательных путей при защите шейного отдела. ITLS/PHTLS 9th ed (2020): selective spinal immobilization (не рутинно).',
       },
       b: {
-        title: 'B — Breathing',
+        title: 'B - Breathing',
         c: '#F59E0B',
         actions: [
           'Осмотр: частота, глубина, симметрия, деформация грудной клетки',
@@ -58,42 +58,42 @@ const runner: CalculatorTool = {
           'Аускультация: двухстороннее дыхание',
           'Игольная декомпрессия 14G × 8 см при напряжённом пневмотораксе',
           'Chest seal (vented) при открытой ране груди',
-          'Finger thoracostomy / chest tube — advanced providers',
+          'Finger thoracostomy / chest tube - advanced providers',
           'Supplemental O₂ 15 L/min NRB',
         ],
         details: '6 смертельных состояний груди (ATOM-FC): Airway obstruction, Tension pneumothorax, Open pneumothorax, Massive hemothorax, Flail chest, Cardiac tamponade.',
       },
       c: {
-        title: 'C — Circulation',
+        title: 'C - Circulation',
         c: '#EF4444',
         actions: [
           'Контроль наружного кровотечения (повтор X)',
           '2 × 18G IV / IO (при невозможности IV)',
           'TXA 1 г IV за 10 мин (в первые 3 ч от травмы)',
-          'Permissive hypotension: SBP 80–90 мм рт.ст. (при черепно-мозговой ≥ 110)',
+          'Permissive hypotension: SBP 80-90 мм рт.ст. (при черепно-мозговой ≥ 110)',
           'Кристаллоиды 500 мл болюс, затем кровь по возможности',
           'Whole blood / RBC + FFP 1:1 в Role 2/3',
           'Кальция глюконат 1 г после первой единицы крови',
-          'Оценка шока: класс I–IV (ATLS)',
+          'Оценка шока: класс I-IV (ATLS)',
           'FAST US в Role 2',
         ],
-        details: 'Shock Index (HR/SBP) > 1 — предиктор massive transfusion. ABC-TASH score для MT активации.',
+        details: 'Shock Index (HR/SBP) > 1 - предиктор massive transfusion. ABC-TASH score для MT активации.',
       },
       d: {
-        title: 'D — Disability',
+        title: 'D - Disability',
         c: '#4B8DF5',
         actions: [
           'GCS (Glasgow Coma Scale) или AVPU',
-          'Зрачки — размер, симметрия, реакция на свет',
+          'Зрачки - размер, симметрия, реакция на свет',
           'Двигательная активность в 4 конечностях',
           'Проверка глюкозы (исключить гипогликемию)',
           'TBI bundle: SBP ≥ 110, SpO₂ ≥ 90, нормокапния, elevate head 30°',
-          'GCS ≤ 8 — интубация с RSI',
+          'GCS ≤ 8 - интубация с RSI',
         ],
-        details: 'Гипогликемия имитирует TBI — всегда проверить глюкозу. TBI: избегать "трёх Н" — hypoxia, hypotension, hypercapnia.',
+        details: 'Гипогликемия имитирует TBI - всегда проверить глюкозу. TBI: избегать "трёх Н" - hypoxia, hypotension, hypercapnia.',
       },
       e: {
-        title: 'E — Exposure / Environment',
+        title: 'E - Exposure / Environment',
         c: '#9CA3AF',
         actions: [
           'Полное раздевание для осмотра (front и back)',
@@ -101,9 +101,9 @@ const runner: CalculatorTool = {
           'Предотвращение гипотермии: одеяла, тёплые растворы',
           'Осмотр подмышек, промежности, спины, скальпа',
           'HPMK / space blanket',
-          'Остановить время на сцене — 10 min Platinum / Golden Hour',
+          'Остановить время на сцене - 10 min Platinum / Golden Hour',
         ],
-        details: 'Гипотермия + ацидоз + коагулопатия — "lethal triad" травмы. < 35 °C удваивает mortality.',
+        details: 'Гипотермия + ацидоз + коагулопатия - "lethal triad" травмы. < 35 °C удваивает mortality.',
       },
     };
     const r = map[step] || map.x;
@@ -115,10 +115,10 @@ const runner: CalculatorTool = {
       details: r.details,
       actions: r.actions,
       caveats: [
-        'PHTLS (NAEMT, 1983) и ITLS (ITLS International, 1985) — два американских стандарта',
+        'PHTLS (NAEMT, 1983) и ITLS (ITLS International, 1985) - два американских стандарта',
         'PHTLS-9 (2020) ввёл X-ABCDE (eXsanguinating) перед A',
-        'Platinum 10 min — время на сцене, Golden Hour — до definitive care',
-        'Selective spinal immobilization — не рутинно (NEXUS, Canadian C-Spine)',
+        'Platinum 10 min - время на сцене, Golden Hour - до definitive care',
+        'Selective spinal immobilization - не рутинно (NEXUS, Canadian C-Spine)',
       ],
       related: [
         { id: 'tccc', title: 'TCCC' },
@@ -139,15 +139,15 @@ const runner: CalculatorTool = {
   reference: 'PHTLS: Prehospital Trauma Life Support. 9th ed. NAEMT/Jones & Bartlett 2020. ITLS: International Trauma Life Support for Emergency Care Providers. 9th ed. Pearson 2020. Campbell JE, Alson RL (eds).',
   countries: 'США, международный (NAEMT, ITLS International)',
   presets: [
-    { label: 'X — Exsanguinating', values: { step: 'x' } },
-    { label: 'A — Airway + C-spine', values: { step: 'a' } },
-    { label: 'B — Breathing', values: { step: 'b' } },
-    { label: 'C — Circulation', values: { step: 'c' } },
-    { label: 'D — Disability', values: { step: 'd' } },
-    { label: 'E — Exposure', values: { step: 'e' } },
+    { label: 'X - Exsanguinating', values: { step: 'x' } },
+    { label: 'A - Airway + C-spine', values: { step: 'a' } },
+    { label: 'B - Breathing', values: { step: 'b' } },
+    { label: 'C - Circulation', values: { step: 'c' } },
+    { label: 'D - Disability', values: { step: 'd' } },
+    { label: 'E - Exposure', values: { step: 'e' } },
   ],
   info: `### Для чего используется
-**PHTLS** (Prehospital Trauma Life Support, NAEMT) и **ITLS** (International Trauma Life Support) — международные стандарты догоспитальной помощи при травме. Гражданский эквивалент ATLS на догоспитальном этапе.
+**PHTLS** (Prehospital Trauma Life Support, NAEMT) и **ITLS** (International Trauma Life Support) - международные стандарты догоспитальной помощи при травме. Гражданский эквивалент ATLS на догоспитальном этапе.
 
 ### X-ABCDE (PHTLS-9 2020)
 | Шаг | Значение | Основное |
@@ -160,8 +160,8 @@ const runner: CalculatorTool = {
 | **E** | Exposure | Раздеть, предотвратить гипотермию |
 
 ### Golden Hour / Platinum 10
-- **Platinum 10 min** — время на сцене (scene time)
-- **Golden Hour** — от травмы до definitive care (часто хирургия)
+- **Platinum 10 min** - время на сцене (scene time)
+- **Golden Hour** - от травмы до definitive care (часто хирургия)
 
 ### Spine immobilization (selective)
 **NEXUS low-risk**:
@@ -171,7 +171,7 @@ const runner: CalculatorTool = {
 4. No focal neuro deficit
 5. No painful distracting injury
 
-**Canadian C-Spine Rule** — более чувствительный.
+**Canadian C-Spine Rule** - более чувствительный.
 
 ### Показания к RSI в поле
 - GCS ≤ 8

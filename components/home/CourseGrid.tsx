@@ -53,7 +53,7 @@ export default function CourseGrid({ moduleId }: { moduleId: number }) {
               fontFamily: 'var(--font-body)', fontSize: 13, color: '#6B7280',
               lineHeight: 1.5,
             }}>
-              Попробуйте выбрать другой уровень сложности — возможно, на этом уровне материалы ещё готовятся.
+              Попробуйте выбрать другой уровень сложности - возможно, на этом уровне материалы ещё готовятся.
             </p>
           </div>
           <button
@@ -109,7 +109,7 @@ export default function CourseGrid({ moduleId }: { moduleId: number }) {
               e.currentTarget.style.transform = 'translateY(0)';
             }}
           >
-            {/* Badge — difficulty */}
+            {/* Badge - difficulty */}
             <span style={{
               display: 'inline-flex', alignSelf: 'flex-start',
               fontFamily: 'var(--font-mono)', fontSize: '0.6875rem', fontWeight: 500,

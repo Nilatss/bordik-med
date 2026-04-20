@@ -2,7 +2,7 @@
 /**
  * Runner: grace
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
- * Do not edit by hand — regenerate via `npm run split:runners`.
+ * Do not edit by hand - regenerate via `npm run split:runners`.
  *
  * Loaded lazily via dynamic import from lib/runners/index.ts so the
  * encyclopaedia of clinical content stays out of the main app bundle.
@@ -91,22 +91,22 @@ const runner: CalculatorTool = {
         options: [
           {
             value: 1,
-            label: "I — нет СН",
+            label: "I - нет СН",
             points: 0
           },
           {
             value: 2,
-            label: "II — хрипы / S3",
+            label: "II - хрипы / S3",
             points: 20
           },
           {
             value: 3,
-            label: "III — отёк лёгких",
+            label: "III - отёк лёгких",
             points: 39
           },
           {
             value: 4,
-            label: "IV — кардиогенный шок",
+            label: "IV - кардиогенный шок",
             points: 59
           }
         ]
@@ -136,7 +136,7 @@ const runner: CalculatorTool = {
             const arrest = v.arrest === true;
             const stdev = v.stdev === true;
             const markers = v.markers === true;
-            // Granger CB et al. Arch Intern Med 2003;163:2345 — GRACE 1.0 point table
+            // Granger CB et al. Arch Intern Med 2003;163:2345 - GRACE 1.0 point table
             let pts = 0;
             // Age
             if (age < 30) pts += 0;
@@ -247,17 +247,17 @@ const runner: CalculatorTool = {
             if (pts < 109) {
                 interpretation = 'Низкий риск';
                 color = '#22C55E';
-                details = `GRACE ${pts} баллов — госпитальная смертность < 1 %, 6-месячная ≤ 3 %. Инвазивная стратегия может быть отсрочена (> 72 ч) или консервативная при отсутствии других показаний.`;
+                details = `GRACE ${pts} баллов - госпитальная смертность < 1 %, 6-месячная ≤ 3 %. Инвазивная стратегия может быть отсрочена (> 72 ч) или консервативная при отсутствии других показаний.`;
                 actions = [
                     'ДАТТ (АСК + тикагрелор/клопидогрел)',
                     'Антикоагуляция (фондапаринукс 2,5 мг п/к или эноксапарин)',
                     'β-блокатор, статин, иАПФ',
-                    'Селективная инвазивная стратегия — КАГ при признаках ишемии'
+                    'Селективная инвазивная стратегия - КАГ при признаках ишемии'
                 ];
             } else if (pts <= 140) {
                 interpretation = 'Промежуточный риск';
                 color = '#F59E0B';
-                details = `GRACE ${pts} баллов — госпитальная смертность 1–3 %, 6-месячная 3–8 %. Показана ранняя инвазивная стратегия (КАГ в течение 72 ч) — ESC NSTE-ACS 2020 IIa.`;
+                details = `GRACE ${pts} баллов - госпитальная смертность 1-3 %, 6-месячная 3-8 %. Показана ранняя инвазивная стратегия (КАГ в течение 72 ч) - ESC NSTE-ACS 2020 IIa.`;
                 actions = [
                     'ДАТТ + антикоагулянт',
                     'Ранняя КАГ ≤ 72 ч',
@@ -267,9 +267,9 @@ const runner: CalculatorTool = {
             } else {
                 interpretation = 'Высокий риск';
                 color = '#EF4444';
-                details = `GRACE ${pts} баллов — госпитальная смертность > 3 %, 6-месячная > 8 %. Показана ранняя инвазивная стратегия ≤ 24 ч (ESC 2020 IA).`;
+                details = `GRACE ${pts} баллов - госпитальная смертность > 3 %, 6-месячная > 8 %. Показана ранняя инвазивная стратегия ≤ 24 ч (ESC 2020 IA).`;
                 actions = [
-                    'Срочная КАГ ≤ 24 ч (при STEMI — первичная PCI ≤ 90–120 мин)',
+                    'Срочная КАГ ≤ 24 ч (при STEMI - первичная PCI ≤ 90-120 мин)',
                     'ДАТТ + антикоагулянт (эноксапарин / бивалирудин)',
                     'ОРИТ-мониторинг',
                     'Статин высокой интенсивности, β-блокатор, иАПФ, антагонист альдостерона при ФВ ≤ 40 %'
@@ -285,8 +285,8 @@ const runner: CalculatorTool = {
                 caveats: [
                     'Валидирован для ОКС (STEMI + NSTE-ACS + нестабильная стенокардия)',
                     'Более точен, чем TIMI, по госпитальной и 6-мес смертности',
-                    'GRACE 2.0 (Fox 2014) использует непрерывные переменные и даёт 1–3-летний прогноз',
-                    'Не учитывает ФВ ЛЖ, результаты КАГ, диабет отдельно — это дополнительные факторы'
+                    'GRACE 2.0 (Fox 2014) использует непрерывные переменные и даёт 1-3-летний прогноз',
+                    'Не учитывает ФВ ЛЖ, результаты КАГ, диабет отдельно - это дополнительные факторы'
                 ],
                 scale: {
                     segments: [
@@ -391,7 +391,7 @@ const runner: CalculatorTool = {
         }
       }
     ],
-    info: "### Для чего используется\n**GRACE (Global Registry of Acute Coronary Events)** — валидированная шкала оценки **госпитальной** и **6-месячной смертности** у пациентов с ОКС (STEMI, NSTEMI, нестабильная стенокардия). Основа решений о сроках инвазивной стратегии в ESC NSTE-ACS 2020.\n\n### Переменные (8 предикторов)\n1. Возраст\n2. ЧСС\n3. САД\n4. Креатинин\n5. Класс Killip (I–IV)\n6. Остановка кровообращения при поступлении\n7. Отклонение сегмента ST\n8. Повышенные кардиомаркеры (тропонин)\n\n### Интерпретация (госпитальная смертность)\n| GRACE | Смертность в стационаре | Категория |\n|---|---|---|\n| ≤ 108 | < 1 % | Низкий |\n| 109–140 | 1–3 % | Промежуточный |\n| > 140 | > 3 % | Высокий |\n\n### 6-месячная смертность (Fox 2006)\n| GRACE | 6-мес |\n|---|---|\n| ≤ 88 | < 3 % |\n| 89–118 | 3–8 % |\n| > 118 | > 8 % |\n\n### Выбор сроков КАГ (ESC NSTE-ACS 2020)\n| Критерий | Срок КАГ |\n|---|---|\n| Очень высокий риск (нестабильность, рецидив боли, ЖТ/ФЖ, механические осложнения) | **Немедленно** (< 2 ч) |\n| Высокий риск (GRACE > 140, динамика ST/T, тропонин динамика) | **Ранняя** (< 24 ч) |\n| Промежуточный (GRACE 109–140, СД, ХБП, ФВ < 40 %) | **< 72 ч** |\n| Низкий риск (без вышеперечисленного) | Селективная (ишемия-управляемая) |\n\n### GRACE 2.0 (Fox 2014)\nУлучшенная модель — использует **непрерывные** переменные (вместо категорий) и даёт оценку смертности на **1 год и 3 года**. Онлайн: gracescore.org.\n\n### Сравнение с TIMI и HEART\n| Шкала | Популяция | Конечная точка |\n|---|---|---|\n| **GRACE** | Весь спектр ОКС | Смертность стац. + 6 мес + 1–3 года |\n| **TIMI** | UA/NSTEMI | Composite 14-дн (смерть/ИМ/ишемия) |\n| **HEART** | Боль в груди в ER, недиф. | 6-нед MACE |\n\n### Ограничения\n- Не учитывает ФВ ЛЖ (сильный независимый предиктор)\n- Не различает ПСТ vs НПСТ детализированно\n- Для выбора ДАТТ не применяется (см. PRECISE-DAPT, PARIS)\n\n### Тактика\n- **GRACE > 140** — ранняя КАГ ≤ 24 ч (ESC I A)\n- **GRACE 109–140** — КАГ ≤ 72 ч\n- **GRACE ≤ 108** — ишемия-управляемая стратегия\n\n### Источник\nGranger CB, Goldberg RJ, Dabbous O et al. Predictors of hospital mortality in the Global Registry of Acute Coronary Events. *Arch Intern Med* 2003;163(19):2345–2353.\nFox KAA, Dabbous OH, Goldberg RJ et al. Prediction of risk of death and myocardial infarction in the six months after presentation with acute coronary syndrome: prospective multinational observational study (GRACE). *BMJ* 2006;333:1091.\nFox KAA et al. Should patients with acute coronary disease be stratified for management according to their risk? Derivation, external validation and outcomes using the updated GRACE risk score. *BMJ Open* 2014;4:e004425.\nCollet JP et al. 2020 ESC Guidelines for the management of acute coronary syndromes in patients presenting without persistent ST-segment elevation. *Eur Heart J* 2021;42:1289–1367."
+    info: "### Для чего используется\n**GRACE (Global Registry of Acute Coronary Events)** - валидированная шкала оценки **госпитальной** и **6-месячной смертности** у пациентов с ОКС (STEMI, NSTEMI, нестабильная стенокардия). Основа решений о сроках инвазивной стратегии в ESC NSTE-ACS 2020.\n\n### Переменные (8 предикторов)\n1. Возраст\n2. ЧСС\n3. САД\n4. Креатинин\n5. Класс Killip (I-IV)\n6. Остановка кровообращения при поступлении\n7. Отклонение сегмента ST\n8. Повышенные кардиомаркеры (тропонин)\n\n### Интерпретация (госпитальная смертность)\n| GRACE | Смертность в стационаре | Категория |\n|---|---|---|\n| ≤ 108 | < 1 % | Низкий |\n| 109-140 | 1-3 % | Промежуточный |\n| > 140 | > 3 % | Высокий |\n\n### 6-месячная смертность (Fox 2006)\n| GRACE | 6-мес |\n|---|---|\n| ≤ 88 | < 3 % |\n| 89-118 | 3-8 % |\n| > 118 | > 8 % |\n\n### Выбор сроков КАГ (ESC NSTE-ACS 2020)\n| Критерий | Срок КАГ |\n|---|---|\n| Очень высокий риск (нестабильность, рецидив боли, ЖТ/ФЖ, механические осложнения) | **Немедленно** (< 2 ч) |\n| Высокий риск (GRACE > 140, динамика ST/T, тропонин динамика) | **Ранняя** (< 24 ч) |\n| Промежуточный (GRACE 109-140, СД, ХБП, ФВ < 40 %) | **< 72 ч** |\n| Низкий риск (без вышеперечисленного) | Селективная (ишемия-управляемая) |\n\n### GRACE 2.0 (Fox 2014)\nУлучшенная модель - использует **непрерывные** переменные (вместо категорий) и даёт оценку смертности на **1 год и 3 года**. Онлайн: gracescore.org.\n\n### Сравнение с TIMI и HEART\n| Шкала | Популяция | Конечная точка |\n|---|---|---|\n| **GRACE** | Весь спектр ОКС | Смертность стац. + 6 мес + 1-3 года |\n| **TIMI** | UA/NSTEMI | Composite 14-дн (смерть/ИМ/ишемия) |\n| **HEART** | Боль в груди в ER, недиф. | 6-нед MACE |\n\n### Ограничения\n- Не учитывает ФВ ЛЖ (сильный независимый предиктор)\n- Не различает ПСТ vs НПСТ детализированно\n- Для выбора ДАТТ не применяется (см. PRECISE-DAPT, PARIS)\n\n### Тактика\n- **GRACE > 140** - ранняя КАГ ≤ 24 ч (ESC I A)\n- **GRACE 109-140** - КАГ ≤ 72 ч\n- **GRACE ≤ 108** - ишемия-управляемая стратегия\n\n### Источник\nGranger CB, Goldberg RJ, Dabbous O et al. Predictors of hospital mortality in the Global Registry of Acute Coronary Events. *Arch Intern Med* 2003;163(19):2345-2353.\nFox KAA, Dabbous OH, Goldberg RJ et al. Prediction of risk of death and myocardial infarction in the six months after presentation with acute coronary syndrome: prospective multinational observational study (GRACE). *BMJ* 2006;333:1091.\nFox KAA et al. Should patients with acute coronary disease be stratified for management according to their risk? Derivation, external validation and outcomes using the updated GRACE risk score. *BMJ Open* 2014;4:e004425.\nCollet JP et al. 2020 ESC Guidelines for the management of acute coronary syndromes in patients presenting without persistent ST-segment elevation. *Eur Heart J* 2021;42:1289-1367."
   };
 
 export default runner;

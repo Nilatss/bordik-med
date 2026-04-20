@@ -2,7 +2,7 @@
 /**
  * Runner: impact
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
- * Do not edit by hand — regenerate via `npm run split:runners`.
+ * Do not edit by hand - regenerate via `npm run split:runners`.
  *
  * Loaded lazily via dynamic import from lib/runners/index.ts so the
  * encyclopaedia of clinical content stays out of the main app bundle.
@@ -44,27 +44,27 @@ const runner: CalculatorTool = {
         options: [
           {
             value: "1",
-            label: "M1 — нет ответа"
+            label: "M1 - нет ответа"
           },
           {
             value: "2",
-            label: "M2 — разгибание"
+            label: "M2 - разгибание"
           },
           {
             value: "3",
-            label: "M3 — патологическое сгибание"
+            label: "M3 - патологическое сгибание"
           },
           {
             value: "4",
-            label: "M4 — отдёргивание"
+            label: "M4 - отдёргивание"
           },
           {
             value: "5",
-            label: "M5 — локализует боль"
+            label: "M5 - локализует боль"
           },
           {
             value: "6",
-            label: "M6 — выполняет команды"
+            label: "M6 - выполняет команды"
           }
         ]
       },
@@ -217,7 +217,7 @@ const runner: CalculatorTool = {
             const logit = risk - 2.0; // baseline offset
             const mortality = 1 / (1 + Math.exp(-logit));
             const mortalityPct = Math.round(Math.max(0, Math.min(99, mortality * 100)));
-            // Unfavourable (mRS 4–6 ≈ GOSE 1–4) typically ~ 1.5–2× mortality, capped
+            // Unfavourable (mRS 4-6 ≈ GOSE 1-4) typically ~ 1.5-2× mortality, capped
             const unfavPct = Math.min(99, Math.round(mortalityPct * 1.7));
             let interpretation = '', color = '', details = '';
             let actions = [];
@@ -228,7 +228,7 @@ const runner: CalculatorTool = {
                 actions = [
                     'Стандартная интенсивная терапия',
                     'Ранняя реабилитация',
-                    'Повторная КТ через 6–24 ч'
+                    'Повторная КТ через 6-24 ч'
                 ];
             } else if (mortalityPct < 30) {
                 interpretation = 'Умеренный риск';
@@ -236,7 +236,7 @@ const runner: CalculatorTool = {
                 details = `6-мес. смертность ~ ${mortalityPct} %, unfavourable ~ ${unfavPct} %. Активная ICU-терапия, мониторинг ВЧД.`;
                 actions = [
                     'ICU, мониторинг ВЧД (при GCS ≤ 8 + патологическая КТ)',
-                    'CPP 60–70, ВЧД < 22',
+                    'CPP 60-70, ВЧД < 22',
                     'Гиперосмолярная при необходимости',
                     'Ранняя трахеостомия при пролонгированной ИВЛ'
                 ];
@@ -257,7 +257,7 @@ const runner: CalculatorTool = {
                 actions = [
                     'Мультидисциплинарный консилиум',
                     'Обсудить с семьёй цели терапии',
-                    'При решении продолжать — полная эскалация',
+                    'При решении продолжать - полная эскалация',
                     'Избегать ранних прогностических суждений в первые 72 ч'
                 ];
             }
@@ -299,9 +299,9 @@ const runner: CalculatorTool = {
                     unit: '%'
                 },
                 caveats: [
-                    'IMPACT — прогностическая модель (умеренно-тяжёлая ЧМТ, GCS ≤ 12); не использовать для принятия ранних решений об отказе от терапии',
-                    'Реализация в приложении — упрощённая аппроксимация; точный расчёт — calculator на crash2.lshtm.ac.uk или www.tbi-impact.org',
-                    'Альтернатива — CRASH модель (10 008 пациентов, простые переменные, валидизирована в LMIC)',
+                    'IMPACT - прогностическая модель (умеренно-тяжёлая ЧМТ, GCS ≤ 12); не использовать для принятия ранних решений об отказе от терапии',
+                    'Реализация в приложении - упрощённая аппроксимация; точный расчёт - calculator на crash2.lshtm.ac.uk или www.tbi-impact.org',
+                    'Альтернатива - CRASH модель (10 008 пациентов, простые переменные, валидизирована в LMIC)',
                     'Не применимо к лёгкой ЧМТ и в первые часы после травмы (нестабильный GCS)'
                 ],
                 related: [
@@ -379,7 +379,7 @@ const runner: CalculatorTool = {
         }
       }
     ],
-    info: "### Для чего используется\n**IMPACT (International Mission for Prognosis and Analysis of Clinical Trials in TBI, Steyerberg 2008)** — прогностическая модель для **6-месячной смертности и неблагоприятного исхода (GOSE 1–4, mRS 4–6)** у пациентов с **умеренной и тяжёлой ЧМТ** (GCS ≤ 12). Разработана на > 8500 пациентов из 11 РКИ.\n\n### Три модели\n| Модель | Переменные |\n|---|---|\n| **Core** | Возраст, GCS motor, зрачки |\n| **Extended (Core +)** | + гипоксия, гипотензия, Marshall CT, tSAH, EDH |\n| **Lab (Extended +)** | + глюкоза, гемоглобин |\n\n### Ключевые предикторы\n| Фактор | Направление |\n|---|---|\n| Возраст ↑ | ↑ смертность (после 40) |\n| GCS motor ↓ | ↑ смертность |\n| Обе зрачка фиксированы | ↑↑ смертность |\n| Гипоксия (SpO₂ < 90) | ↑ смертность |\n| Гипотензия (САД < 90) | ↑↑ смертность |\n| Marshall III–IV | ↑ смертность |\n| tSAH | ↑ смертность |\n| EDH | ↓ смертность (лучше изолированный) |\n| Гипергликемия | ↑ смертность |\n| Анемия | ↑ смертность |\n\n### Применение\n- Стратификация в клинических исследованиях\n- Консультирование семьи о прогнозе (после стабилизации)\n- **НЕ** использовать для решения об отказе от терапии в первые 72 ч\n- Сравнение performance центра (casemix adjustment)\n\n### Альтернативы\n| Модель | Особенности |\n|---|---|\n| **IMPACT** | 8509 пациентов, 3 уровня (core / ext / lab) |\n| **CRASH** (MRC CRASH trial 2008) | 10 008 пациентов, простые переменные, LMIC |\n| **IMPACT-TBI Lab** | + глюкоза + Hb |\n| **NeuroImage / Helsinki** | Добавляют volumetric CT |\n| **Rotterdam CT + IMPACT** | Комбинация |\n\n### CRASH модель (10 008 пациентов)\nПеременные: возраст, GCS, зрачки, большая экстра-краниальная травма, страна (HIC/LMIC), + КТ (petechial haem, obliteration 3rd ventricle/cisterns, SAH, midline shift, non-evacuated haematoma).\n\n### Цели терапии тяжёлой ЧМТ (BTF 2017)\n| Параметр | Цель |\n|---|---|\n| ВЧД | < 22 мм рт.ст. |\n| CPP | 60–70 мм рт.ст. |\n| SpO₂ | ≥ 94 % |\n| САД | > 90 (возраст > 50 — > 100) |\n| PaCO₂ | 35–40 |\n| Na | 135–145 (или > 150 при гипертонической терапии) |\n| Гликемия | 6–10 ммоль/л |\n| Температура | 36–37 °C |\n| Hb | ≥ 70 (переливание при < 70) |\n\n### Ограничения\n- Разработан для взрослых (14+)\n- Не применим к лёгкой ЧМТ\n- Данные из РКИ — highly selected, может недооценивать смертность в \"real world\"\n- Прогноз имеет неопределённость ± 15–20 %\n- Не учитывает проникающую травму\n\n### Тактика\n- **< 10 %** — стандартная ICU, реабилитация\n- **10–30 %** — активная ICU, мониторинг ВЧД\n- **30–60 %** — эскалация (декомпрессия), обсуждение с семьёй\n- **> 60 %** — мультидисциплинарный консилиум; не принимать решения в первые 72 ч\n\n### Источник\nSteyerberg EW, Mushkudiani N, Perel P et al. **Predicting outcome after traumatic brain injury: development and international validation of prognostic scores based on admission characteristics.** *PLoS Med* 2008;5:e165. MRC CRASH Trial Collaborators. **Predicting outcome after traumatic brain injury: practical prognostic models based on large cohort of international patients.** *BMJ* 2008;336:425–429. Carney N et al. **Guidelines for the Management of Severe Traumatic Brain Injury, 4th Edition.** *Neurosurgery* 2017;80:6–15.\n\nОнлайн-калькулятор: **www.tbi-impact.org** · **crash2.lshtm.ac.uk**"
+    info: "### Для чего используется\n**IMPACT (International Mission for Prognosis and Analysis of Clinical Trials in TBI, Steyerberg 2008)** - прогностическая модель для **6-месячной смертности и неблагоприятного исхода (GOSE 1-4, mRS 4-6)** у пациентов с **умеренной и тяжёлой ЧМТ** (GCS ≤ 12). Разработана на > 8500 пациентов из 11 РКИ.\n\n### Три модели\n| Модель | Переменные |\n|---|---|\n| **Core** | Возраст, GCS motor, зрачки |\n| **Extended (Core +)** | + гипоксия, гипотензия, Marshall CT, tSAH, EDH |\n| **Lab (Extended +)** | + глюкоза, гемоглобин |\n\n### Ключевые предикторы\n| Фактор | Направление |\n|---|---|\n| Возраст ↑ | ↑ смертность (после 40) |\n| GCS motor ↓ | ↑ смертность |\n| Обе зрачка фиксированы | ↑↑ смертность |\n| Гипоксия (SpO₂ < 90) | ↑ смертность |\n| Гипотензия (САД < 90) | ↑↑ смертность |\n| Marshall III-IV | ↑ смертность |\n| tSAH | ↑ смертность |\n| EDH | ↓ смертность (лучше изолированный) |\n| Гипергликемия | ↑ смертность |\n| Анемия | ↑ смертность |\n\n### Применение\n- Стратификация в клинических исследованиях\n- Консультирование семьи о прогнозе (после стабилизации)\n- **НЕ** использовать для решения об отказе от терапии в первые 72 ч\n- Сравнение performance центра (casemix adjustment)\n\n### Альтернативы\n| Модель | Особенности |\n|---|---|\n| **IMPACT** | 8509 пациентов, 3 уровня (core / ext / lab) |\n| **CRASH** (MRC CRASH trial 2008) | 10 008 пациентов, простые переменные, LMIC |\n| **IMPACT-TBI Lab** | + глюкоза + Hb |\n| **NeuroImage / Helsinki** | Добавляют volumetric CT |\n| **Rotterdam CT + IMPACT** | Комбинация |\n\n### CRASH модель (10 008 пациентов)\nПеременные: возраст, GCS, зрачки, большая экстра-краниальная травма, страна (HIC/LMIC), + КТ (petechial haem, obliteration 3rd ventricle/cisterns, SAH, midline shift, non-evacuated haematoma).\n\n### Цели терапии тяжёлой ЧМТ (BTF 2017)\n| Параметр | Цель |\n|---|---|\n| ВЧД | < 22 мм рт.ст. |\n| CPP | 60-70 мм рт.ст. |\n| SpO₂ | ≥ 94 % |\n| САД | > 90 (возраст > 50 - > 100) |\n| PaCO₂ | 35-40 |\n| Na | 135-145 (или > 150 при гипертонической терапии) |\n| Гликемия | 6-10 ммоль/л |\n| Температура | 36-37 °C |\n| Hb | ≥ 70 (переливание при < 70) |\n\n### Ограничения\n- Разработан для взрослых (14+)\n- Не применим к лёгкой ЧМТ\n- Данные из РКИ - highly selected, может недооценивать смертность в \"real world\"\n- Прогноз имеет неопределённость ± 15-20 %\n- Не учитывает проникающую травму\n\n### Тактика\n- **< 10 %** - стандартная ICU, реабилитация\n- **10-30 %** - активная ICU, мониторинг ВЧД\n- **30-60 %** - эскалация (декомпрессия), обсуждение с семьёй\n- **> 60 %** - мультидисциплинарный консилиум; не принимать решения в первые 72 ч\n\n### Источник\nSteyerberg EW, Mushkudiani N, Perel P et al. **Predicting outcome after traumatic brain injury: development and international validation of prognostic scores based on admission characteristics.** *PLoS Med* 2008;5:e165. MRC CRASH Trial Collaborators. **Predicting outcome after traumatic brain injury: practical prognostic models based on large cohort of international patients.** *BMJ* 2008;336:425-429. Carney N et al. **Guidelines for the Management of Severe Traumatic Brain Injury, 4th Edition.** *Neurosurgery* 2017;80:6-15.\n\nОнлайн-калькулятор: **www.tbi-impact.org** · **crash2.lshtm.ac.uk**"
   };
 
 export default runner;

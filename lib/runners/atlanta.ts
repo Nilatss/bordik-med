@@ -1,5 +1,5 @@
 // @ts-nocheck
-/** Runner: atlanta — Revised Atlanta 2012 + Balthazar CTSI для острого панкреатита */
+/** Runner: atlanta - Revised Atlanta 2012 + Balthazar CTSI для острого панкреатита */
 import type { CalculatorTool } from '../tools-runners';
 
 const runner: CalculatorTool = {
@@ -10,13 +10,13 @@ const runner: CalculatorTool = {
       label: 'Шкала',
       type: 'select',
       options: [
-        { value: 'atlanta', label: 'Revised Atlanta 2012 — клиническая классификация тяжести' },
-        { value: 'ctsi', label: 'Balthazar CTSI — радиологическая оценка (0–10)' },
+        { value: 'atlanta', label: 'Revised Atlanta 2012 - клиническая классификация тяжести' },
+        { value: 'ctsi', label: 'Balthazar CTSI - радиологическая оценка (0-10)' },
       ],
     },
     {
       id: 'atlantaClass',
-      label: 'Atlanta — органная недостаточность и осложнения',
+      label: 'Atlanta - органная недостаточность и осложнения',
       type: 'select',
       options: [
         { value: 'mild', label: 'Mild: нет OF и локальных осложнений' },
@@ -26,14 +26,14 @@ const runner: CalculatorTool = {
     },
     {
       id: 'balthazar',
-      label: 'Balthazar (КТ без контраста) A–E',
+      label: 'Balthazar (КТ без контраста) A-E',
       type: 'select',
       options: [
-        { value: '0', label: 'A — норма (0)' },
-        { value: '1', label: 'B — отёк поджелудочной (1)' },
-        { value: '2', label: 'C — перипанкреатическое воспаление (2)' },
-        { value: '3', label: 'D — единичное скопление жидкости (3)' },
-        { value: '4', label: 'E — ≥2 скоплений или газ (4)' },
+        { value: '0', label: 'A - норма (0)' },
+        { value: '1', label: 'B - отёк поджелудочной (1)' },
+        { value: '2', label: 'C - перипанкреатическое воспаление (2)' },
+        { value: '3', label: 'D - единичное скопление жидкости (3)' },
+        { value: '4', label: 'E - ≥2 скоплений или газ (4)' },
       ],
     },
     {
@@ -43,7 +43,7 @@ const runner: CalculatorTool = {
       options: [
         { value: '0', label: 'Нет некроза (0)' },
         { value: '2', label: '< 30% (2)' },
-        { value: '4', label: '30–50% (4)' },
+        { value: '4', label: '30-50% (4)' },
         { value: '6', label: '> 50% (6)' },
       ],
     },
@@ -55,7 +55,7 @@ const runner: CalculatorTool = {
       const map: Record<string, { txt: string; color: string; mort: string }> = {
         mild: { txt: 'Mild acute pancreatitis', color: '#22C55E', mort: 'Смертность < 1%, ранняя выписка возможна' },
         moderate: { txt: 'Moderately severe acute pancreatitis', color: '#F59E0B', mort: 'Смертность ~ 8%, госпитализация, возможен ICU' },
-        severe: { txt: 'Severe acute pancreatitis', color: '#991B1B', mort: 'Смертность 20–50%, ICU, MOF' },
+        severe: { txt: 'Severe acute pancreatitis', color: '#991B1B', mort: 'Смертность 20-50%, ICU, MOF' },
       };
       const r = map[cl] || map.mild;
       return {
@@ -63,9 +63,9 @@ const runner: CalculatorTool = {
         unit: '',
         interpretation: r.mort,
         color: r.color,
-        details: 'Revised Atlanta 2012 (Banks PA, Bollen TL, Freeman ML et al). OF оценивается по модифицированной шкале Marshall (resp, CV, renal). Transient OF — обратимая < 48 ч, persistent OF — сохраняется > 48 ч.',
+        details: 'Revised Atlanta 2012 (Banks PA, Bollen TL, Freeman ML et al). OF оценивается по модифицированной шкале Marshall (resp, CV, renal). Transient OF - обратимая < 48 ч, persistent OF - сохраняется > 48 ч.',
         actions: [
-          'Ringer lactate 5–10 мл/кг/ч первые 24 ч',
+          'Ringer lactate 5-10 мл/кг/ч первые 24 ч',
           'Раннее энтеральное питание (< 72 ч)',
           'Антибиотики только при доказанном инфицированном некрозе',
           'ERCP срочный только при холангите/обструкции',
@@ -74,7 +74,7 @@ const runner: CalculatorTool = {
         caveats: [
           'Локальные осложнения: APFC, pseudocyst, ANC, WON (классификация по Atlanta 2012)',
           'Определение moderately severe: transient OF ИЛИ локальные осложнения без persistent OF',
-          'Modified Marshall score — для оценки OF (respiratory, cardiovascular, renal)',
+          'Modified Marshall score - для оценки OF (respiratory, cardiovascular, renal)',
         ],
         related: [
           { id: 'ranson', title: 'Ranson criteria' },
@@ -98,15 +98,15 @@ const runner: CalculatorTool = {
       unit: 'CTSI',
       interpretation: interp,
       color,
-      details: 'Balthazar CTSI (1990, Mortele modified 2004): Balthazar grade A–E (0–4) + % некроза (0–6) = 0–10. > 6 — тяжёлый панкреатит с высокой летальностью.',
+      details: 'Balthazar CTSI (1990, Mortele modified 2004): Balthazar grade A-E (0-4) + % некроза (0-6) = 0-10. > 6 - тяжёлый панкреатит с высокой летальностью.',
       actions: [
-        'CTSI > 6 — ICU, мониторинг OF',
-        'Контрольная КТ через 7–10 сут при клиническом ухудшении',
+        'CTSI > 6 - ICU, мониторинг OF',
+        'Контрольная КТ через 7-10 сут при клиническом ухудшении',
         'Дренирование/некрэктомия только при инфицированном некрозе (step-up approach)',
       ],
       caveats: [
-        'КТ с контрастом оптимально через 72–96 ч (раньше — недооценка некроза)',
-        'Альтернатива: mCTSI (Mortele 2004) — 0–10 с учётом экстрапанкреатических осложнений',
+        'КТ с контрастом оптимально через 72-96 ч (раньше - недооценка некроза)',
+        'Альтернатива: mCTSI (Mortele 2004) - 0-10 с учётом экстрапанкреатических осложнений',
       ],
       related: [
         { id: 'ranson', title: 'Ranson criteria' },
@@ -119,7 +119,7 @@ const runner: CalculatorTool = {
       ],
     };
   },
-  reference: 'Banks PA, Bollen TL, Freeman ML et al. Classification of acute pancreatitis—2012: revision of the Atlanta classification. Gut 2013;62:102–11. Balthazar EJ, Robinson DL, Megibow AJ, Ranson JH. Acute pancreatitis: value of CT in establishing prognosis. Radiology 1990;174:331–6. Mortele KJ et al. A modified CT severity index. AJR 2004;183:1261.',
+  reference: 'Banks PA, Bollen TL, Freeman ML et al. Classification of acute pancreatitis-2012: revision of the Atlanta classification. Gut 2013;62:102-11. Balthazar EJ, Robinson DL, Megibow AJ, Ranson JH. Acute pancreatitis: value of CT in establishing prognosis. Radiology 1990;174:331-6. Mortele KJ et al. A modified CT severity index. AJR 2004;183:1261.',
   countries: 'Международный (IAP/APA, ACG guidelines)',
   presets: [
     { label: 'Mild Atlanta', values: { tool: 'atlanta', atlantaClass: 'mild', balthazar: '1', necrosis: '0' } },
@@ -128,14 +128,14 @@ const runner: CalculatorTool = {
     { label: 'CTSI 8 (тяжёлый)', values: { tool: 'ctsi', atlantaClass: 'mild', balthazar: '4', necrosis: '4' } },
   ],
   info: `### Для чего используется
-**Revised Atlanta 2012** — международная классификация тяжести острого панкреатита (Banks et al, Gut 2013). Заменила оригинальную Atlanta 1992.
+**Revised Atlanta 2012** - международная классификация тяжести острого панкреатита (Banks et al, Gut 2013). Заменила оригинальную Atlanta 1992.
 
 ### Три степени тяжести (Atlanta 2012)
 | Степень | Критерий |
 |---|---|
 | **Mild** | Нет OF, нет локальных осложнений |
 | **Moderately severe** | Transient OF (< 48 ч) ИЛИ локальные осложнения / обострение сопутствующей патологии |
-| **Severe** | Persistent OF (≥ 48 ч) — один или несколько органов |
+| **Severe** | Persistent OF (≥ 48 ч) - один или несколько органов |
 
 ### Органная недостаточность (Modified Marshall)
 | Система | Порог |
@@ -145,10 +145,10 @@ const runner: CalculatorTool = {
 | Renal | Креатинин ≥ 170 мкмоль/л |
 
 ### Локальные осложнения
-- **APFC** — acute peripancreatic fluid collection (< 4 нед, без некроза)
-- **Pseudocyst** — зрелая псевдокиста (> 4 нед, стенка)
-- **ANC** — acute necrotic collection (< 4 нед, с некрозом)
-- **WON** — walled-off necrosis (> 4 нед, зрелая стенка)
+- **APFC** - acute peripancreatic fluid collection (< 4 нед, без некроза)
+- **Pseudocyst** - зрелая псевдокиста (> 4 нед, стенка)
+- **ANC** - acute necrotic collection (< 4 нед, с некрозом)
+- **WON** - walled-off necrosis (> 4 нед, зрелая стенка)
 
 ### Balthazar CTSI (1990)
 | Grade | Описание | Points |
@@ -159,15 +159,15 @@ const runner: CalculatorTool = {
 | D | Единичное скопление | 3 |
 | E | ≥ 2 скоплений или газ | 4 |
 
-**+ Некроз** (контраст КТ): 0 / < 30% (2) / 30–50% (4) / > 50% (6).
+**+ Некроз** (контраст КТ): 0 / < 30% (2) / 30-50% (4) / > 50% (6).
 
-**CTSI = Balthazar + necrosis** (0–10).
+**CTSI = Balthazar + necrosis** (0-10).
 
 | CTSI | Mortality | Morbidity |
 |---|---|---|
-| 0–3 | 3% | 8% |
-| 4–6 | 6% | 35% |
-| 7–10 | 17% | 92% |
+| 0-3 | 3% | 8% |
+| 4-6 | 6% | 35% |
+| 7-10 | 17% | 92% |
 
 ### Источники
 Banks PA et al. *Gut* 2013;62:102. Balthazar EJ et al. *Radiology* 1990;174:331. Mortele KJ et al. *AJR* 2004;183:1261.

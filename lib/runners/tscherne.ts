@@ -1,5 +1,5 @@
 // @ts-nocheck
-/** Runner: tscherne — Tscherne-Oestern classification of soft tissue injury (1982) */
+/** Runner: tscherne - Tscherne-Oestern classification of soft tissue injury (1982) */
 import type { ScoreTool } from '../tools-runners';
 
 const runner: ScoreTool = {
@@ -11,14 +11,14 @@ const runner: ScoreTool = {
       label: 'Степень повреждения мягких тканей',
       type: 'select',
       options: [
-        { value: '0', label: 'C0 — закрытый, минимальные повреждения мягких тканей', points: 0 },
-        { value: '1', label: 'C1 — закрытый, поверхностная ссадина/ушиб от отломка', points: 1 },
-        { value: '2', label: 'C2 — закрытый, глубокий ушиб кожи/мышцы, угроза компартмент-синдрома', points: 2 },
-        { value: '3', label: 'C3 — закрытый, обширное размозжение, decollement, manifest compartment syndrome / сосудистое повреждение', points: 3 },
-        { value: '4', label: 'O1 — открытый, прокол изнутри, минимальная контаминация', points: 4 },
-        { value: '5', label: 'O2 — открытый, рана >1 снаружи, умеренная контузия мягких тканей', points: 5 },
-        { value: '6', label: 'O3 — открытый, тяжёлое повреждение мягких тканей + сосудов/нервов', points: 6 },
-        { value: '7', label: 'O4 — открытый, субтотальная/тотальная ампутация', points: 7 },
+        { value: '0', label: 'C0 - закрытый, минимальные повреждения мягких тканей', points: 0 },
+        { value: '1', label: 'C1 - закрытый, поверхностная ссадина/ушиб от отломка', points: 1 },
+        { value: '2', label: 'C2 - закрытый, глубокий ушиб кожи/мышцы, угроза компартмент-синдрома', points: 2 },
+        { value: '3', label: 'C3 - закрытый, обширное размозжение, decollement, manifest compartment syndrome / сосудистое повреждение', points: 3 },
+        { value: '4', label: 'O1 - открытый, прокол изнутри, минимальная контаминация', points: 4 },
+        { value: '5', label: 'O2 - открытый, рана >1 снаружи, умеренная контузия мягких тканей', points: 5 },
+        { value: '6', label: 'O3 - открытый, тяжёлое повреждение мягких тканей + сосудов/нервов', points: 6 },
+        { value: '7', label: 'O4 - открытый, субтотальная/тотальная ампутация', points: 7 },
       ],
     },
   ],
@@ -38,7 +38,7 @@ const runner: ScoreTool = {
       description: 'Глубокий, загрязнённый ушиб кожи или мышц от прямой травмы. Риск компартмент-синдрома.',
       actions: [
         'Мониторинг компартмент-давлений',
-        'Отсрочка внутренней фиксации до спадения отёка (чаще ≥ 7–10 дней)',
+        'Отсрочка внутренней фиксации до спадения отёка (чаще ≥ 7-10 дней)',
         'Рассмотреть временный external fixation',
       ],
     },
@@ -74,10 +74,10 @@ const runner: ScoreTool = {
     },
   ],
   caveats: [
-    'Оценка ретроспективная после полного осмотра (часто окончательно — в операционной)',
-    'Для открытых переломов чаще используется Gustilo-Anderson; Tscherne — единственная валидная для ЗАКРЫТЫХ',
-    'C3 — показание к damage control: external fix → delayed ORIF',
-    'Комбинация с AO/OTA — Tscherne описывает мягкие ткани, AO — кость',
+    'Оценка ретроспективная после полного осмотра (часто окончательно - в операционной)',
+    'Для открытых переломов чаще используется Gustilo-Anderson; Tscherne - единственная валидная для ЗАКРЫТЫХ',
+    'C3 - показание к damage control: external fix → delayed ORIF',
+    'Комбинация с AO/OTA - Tscherne описывает мягкие ткани, AO - кость',
   ],
   related: [
     { id: 'gustilo', title: 'Gustilo-Anderson (открытые)' },
@@ -88,15 +88,15 @@ const runner: ScoreTool = {
     { id: '302.2', title: 'Травматология' },
     { id: '300.4', title: 'Неотложная помощь' },
   ],
-  reference: 'Tscherne H, Oestern HJ. A new classification of soft tissue damage in open and closed fractures. Unfallheilkunde 1982;85:111–5. Oestern HJ, Tscherne H. Pathophysiology and classification of soft tissue injuries associated with fractures. In: Fractures with Soft Tissue Injuries. Springer, 1984.',
-  countries: 'Европа (Германия, Австрия, Швейцария — стандарт)',
+  reference: 'Tscherne H, Oestern HJ. A new classification of soft tissue damage in open and closed fractures. Unfallheilkunde 1982;85:111-5. Oestern HJ, Tscherne H. Pathophysiology and classification of soft tissue injuries associated with fractures. In: Fractures with Soft Tissue Injuries. Springer, 1984.',
+  countries: 'Европа (Германия, Австрия, Швейцария - стандарт)',
   presets: [
     { label: 'Простой закрытый перелом лодыжки', values: { grade: '0' } },
     { label: 'Закрытый перелом б/б с риском компартмента', values: { grade: '2' } },
     { label: 'Открытый перелом с сосудистым повреждением', values: { grade: '6' } },
   ],
   info: `### Для чего используется
-**Tscherne-Oestern (1982)** — классификация **повреждения мягких тканей** при переломах. В отличие от Gustilo (только открытые), охватывает КАК закрытые, ТАК и открытые травмы. Используется для выбора тактики (ранняя внутренняя vs staged external fixation → ORIF).
+**Tscherne-Oestern (1982)** - классификация **повреждения мягких тканей** при переломах. В отличие от Gustilo (только открытые), охватывает КАК закрытые, ТАК и открытые травмы. Используется для выбора тактики (ранняя внутренняя vs staged external fixation → ORIF).
 
 ### Закрытые переломы (Geschlossene Fraktur)
 | Степень | Описание |
@@ -115,15 +115,15 @@ const runner: ScoreTool = {
 | **O4** | IIIC + | Субтотальная/тотальная ампутация |
 
 ### Клинические подсказки
-- **Симптом морщин (wrinkle sign)** — возврат морщин кожи → отёк спал → можно оперировать (обычно 7–10 дней для C2)
-- **Fracture blisters** (filled vs haemorrhagic) — противопоказание к разрезу через этот участок
+- **Симптом морщин (wrinkle sign)** - возврат морщин кожи → отёк спал → можно оперировать (обычно 7-10 дней для C2)
+- **Fracture blisters** (filled vs haemorrhagic) - противопоказание к разрезу через этот участок
 - **Компартмент-давление ΔP < 30 мм рт. ст. от ДАД** → фасциотомия
 
 ### Стратегия
 | Tscherne | Тактика |
 |---|---|
-| C0–C1 | Раннее окончательное ORIF |
-| C2 | External fix → отсрочка 7–14 дней → ORIF |
+| C0-C1 | Раннее окончательное ORIF |
+| C2 | External fix → отсрочка 7-14 дней → ORIF |
 | C3, O3, O4 | Damage control: external fix + soft tissue management → ORIF/flap |
 
 ### Источник

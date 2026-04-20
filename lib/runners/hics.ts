@@ -1,5 +1,5 @@
 // @ts-nocheck
-/** Runner: hics — Hospital Incident Command System */
+/** Runner: hics - Hospital Incident Command System */
 import type { CalculatorTool } from '../tools-runners';
 
 const runner: CalculatorTool = {
@@ -43,7 +43,7 @@ const runner: CalculatorTool = {
       label: 'Уровень активации',
       type: 'select',
       options: [
-        { value: 'partial', label: 'Частичная (IC + 1–2 секции)' },
+        { value: 'partial', label: 'Частичная (IC + 1-2 секции)' },
         { value: 'moderate', label: 'Умеренная (IC + все 4 секции)' },
         { value: 'full', label: 'Полная (все секции + unit leaders)' },
       ],
@@ -68,7 +68,7 @@ const runner: CalculatorTool = {
       evacuation: ['Evacuate horizontally first (same floor), then vertically', 'Triage tags: green walk, yellow assist, red stretcher', 'Muster points + accountability'],
       surge: ['Expand ICU / conventional → contingency → crisis standards of care', 'PPE supply chain + N95 reuse protocol', 'Activate MOU sister hospitals'],
       it: ['Downtime procedures: paper charting, manual MAR', 'Disconnect network; contact CISO + FBI at ≥ crit data', 'Activate IT unit + PIO communication'],
-      utility: ['Emergency generator test; priority circuits', 'Ventilator manual bagging pool', 'Evacuate if prolonged > 4–6 ч'],
+      utility: ['Emergency generator test; priority circuits', 'Ventilator manual bagging pool', 'Evacuate if prolonged > 4-6 ч'],
     };
 
     return {
@@ -76,7 +76,15 @@ const runner: CalculatorTool = {
       unit: '',
       interpretation: `HICS активирован (${lvl}). Инцидент: ${inc}. Пациентов: ${n}, длительность: ${d} ч.`,
       color,
-      details: `**Incident Commander (IC)** — общая ответственность. Command Staff: **Public Information Officer (PIO)**, **Safety Officer**, **Liaison Officer**, **Medical-Technical Specialist**.\n\n**4 секции** (General Staff):\n• **Operations** — непосредственные действия (treatment, triage, patient tracking, hazmat)\n• **Planning** — сбор данных, IAP, ресурсы, demobilization\n• **Logistics** — материалы, питание, коммуникации, ИТ, персонал\n• **Finance / Administration** — стоимость, время, compensation, claims\n\n**IAP (Incident Action Plan)** — цикл обычно 12 ч (operational period). На каждый цикл: objectives, strategy, tactics, resources, safety, comms plan.`,
+      details: `Incident Commander (IC) - общая ответственность. Command Staff: Public Information Officer (PIO), Safety Officer, Liaison Officer, Medical-Technical Specialist.
+
+4 секции (General Staff):
+• Operations - непосредственные действия (treatment, triage, patient tracking, hazmat)
+• Planning - сбор данных, IAP, ресурсы, demobilization
+• Logistics - материалы, питание, коммуникации, ИТ, персонал
+• Finance / Administration - стоимость, время, compensation, claims
+
+IAP (Incident Action Plan) - цикл обычно 12 ч (operational period). На каждый цикл: objectives, strategy, tactics, resources, safety, comms plan.`,
       actions: [
         `Активировать HICS level: ${lvl}`,
         'Открыть HCC (Hospital Command Center) + раздать JAS (Job Action Sheets)',
@@ -88,16 +96,16 @@ const runner: CalculatorTool = {
         'Debrief: hot wash сразу, formal AAR (after-action review) ≤ 2 нед',
       ],
       caveats: [
-        'HICS — адаптация FEMA ICS (NIMS) для госпиталей',
-        'JAS = Job Action Sheet — чеклист для каждой позиции (start of shift, ongoing, end)',
-        'Span of control: 3–7 прямых подчинённых на одного leader (оптимально 5)',
-        'Demobilization — формальное сворачивание, не "все свободны"',
+        'HICS - адаптация FEMA ICS (NIMS) для госпиталей',
+        'JAS = Job Action Sheet - чеклист для каждой позиции (start of shift, ongoing, end)',
+        'Span of control: 3-7 прямых подчинённых на одного leader (оптимально 5)',
+        'Demobilization - формальное сворачивание, не "все свободны"',
         'Требования Joint Commission (EM.02.02.07): HICS ежегодное обучение + drill × 2/год',
-        'Crisis standards of care — только при утверждении регион. HHS / органа здравоохранения',
+        'Crisis standards of care - только при утверждении регион. HHS / органа здравоохранения',
       ],
       scale: {
         segments: [
-          { label: 'Partial', min: 1, max: 1, color: '#22C55E', description: 'IC + 1–2 секций' },
+          { label: 'Partial', min: 1, max: 1, color: '#22C55E', description: 'IC + 1-2 секций' },
           { label: 'Moderate', min: 2, max: 2, color: '#F59E0B', description: 'Все 4 секции' },
           { label: 'Full', min: 3, max: 3, color: '#EF4444', description: 'Все unit leaders' },
         ],
@@ -127,10 +135,10 @@ const runner: CalculatorTool = {
     { label: 'IT 48 ч', values: { incidentType: 'it', casualties: 0, duration: 48, level: 'moderate' } },
   ],
   info: `### Для чего используется
-**HICS (Hospital Incident Command System)** — стандартизованная структура управления инцидентами в госпитале, адаптация FEMA ICS (NIMS).
+**HICS (Hospital Incident Command System)** - стандартизованная структура управления инцидентами в госпитале, адаптация FEMA ICS (NIMS).
 
 ### Структура
-**Incident Commander (IC)** — топ.
+**Incident Commander (IC)** - топ.
 **Command Staff:**
 - Public Information Officer (PIO)
 - Safety Officer
@@ -152,7 +160,7 @@ const runner: CalculatorTool = {
 - 201 briefing, 202 objectives, 203 org chart, 204 assignments, 205 comms, 206 medical plan, 214 activity log.
 
 ### Span of control
-3–7 подчинённых на leader (optimal 5).
+3-7 подчинённых на leader (optimal 5).
 
 ### Требования
 Joint Commission EM.02.02.07: HICS training + drill ×2/год.

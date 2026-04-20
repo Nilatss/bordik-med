@@ -1,5 +1,5 @@
 // @ts-nocheck
-/** Runner: big — BIG score (Borgman 2011) pediatric trauma mortality */
+/** Runner: big - BIG score (Borgman 2011) pediatric trauma mortality */
 import type { CalculatorTool } from '../tools-runners';
 
 const runner: CalculatorTool = {
@@ -49,8 +49,8 @@ const runner: CalculatorTool = {
     if (big < 10) {
       interpretation = 'Низкий риск смертности';
       color = '#22C55E';
-      mortality = '~ 0–5%';
-      details = 'BIG < 10 — низкий риск смертности (~ 0–5%). Продолжить стандартное травма-ведение, наблюдение в соответствующем уровне реанимации.';
+      mortality = '~ 0-5%';
+      details = 'BIG < 10 - низкий риск смертности (~ 0-5%). Продолжить стандартное травма-ведение, наблюдение в соответствующем уровне реанимации.';
       actions = [
         'Стандартный ATLS-подход, вторичный осмотр',
         'ICU при политравме (ISS ≥ 16)',
@@ -59,11 +59,11 @@ const runner: CalculatorTool = {
     } else if (big <= 15) {
       interpretation = 'Промежуточный риск смертности';
       color = '#F59E0B';
-      mortality = '~ 5–25%';
-      details = 'BIG 10–15 — промежуточный риск (~ 5–25%). Требует активной ресусцитации, педиатрического травма-центра, ICU.';
+      mortality = '~ 5-25%';
+      details = 'BIG 10-15 - промежуточный риск (~ 5-25%). Требует активной ресусцитации, педиатрического травма-центра, ICU.';
       actions = [
         'Перевод в специализированный педиатрический травма-центр',
-        'Damage control resuscitation: 10–20 мл/кг PRBC, 1:1:1 (RBC:FFP:PLT)',
+        'Damage control resuscitation: 10-20 мл/кг PRBC, 1:1:1 (RBC:FFP:PLT)',
         'Tranexamic acid 15 мг/кг (max 1 г) в течение 3 ч (CRASH-3 экстраполяция)',
         'Серийный BD/лактат, коррекция коагулопатии (FFP, cryo)',
       ];
@@ -71,7 +71,7 @@ const runner: CalculatorTool = {
       interpretation = 'Высокий риск смертности';
       color = '#EF4444';
       mortality = '> 25%';
-      details = 'BIG > 15 — высокий риск смертности (> 25%). Требует агрессивной ресусцитации, активации MTP, немедленного хирургического вмешательства при показаниях.';
+      details = 'BIG > 15 - высокий риск смертности (> 25%). Требует агрессивной ресусцитации, активации MTP, немедленного хирургического вмешательства при показаниях.';
       actions = [
         'MTP активирован, 1:1:1 balanced resuscitation',
         'TXA 15 мг/кг в первые 3 часа',
@@ -93,7 +93,7 @@ const runner: CalculatorTool = {
         'Требует данных при поступлении: BD (ABG), INR, GCS',
         'Не учитывает возраст, тип травмы (тупая/проникающая), механизм',
         'Внешняя валидация подтверждает дискриминацию (AUC ≈ 0,90) в разных когортах',
-        'Как и любой score — не замена клиническому суждению; использовать совместно с PTS, RTS',
+        'Как и любой score - не замена клиническому суждению; использовать совместно с PTS, RTS',
       ],
       scale: {
         segments: [
@@ -117,7 +117,7 @@ const runner: CalculatorTool = {
       ],
     };
   },
-  reference: 'Borgman MA, Maegele M, Wade CE, Blackbourne LH, Spinella PC. Pediatric trauma BIG score: predicting mortality in children after military and civilian trauma. Pediatrics 2011;127:e892–7.',
+  reference: 'Borgman MA, Maegele M, Wade CE, Blackbourne LH, Spinella PC. Pediatric trauma BIG score: predicting mortality in children after military and civilian trauma. Pediatrics 2011;127:e892-7.',
   countries: 'Международный (derived US military + civilian)',
   presets: [
     { label: 'Лёгкая травма (BD 2, INR 1,0, GCS 15)', values: { bd: 2, inr: 1.0, gcs: 15 } },
@@ -126,25 +126,25 @@ const runner: CalculatorTool = {
     { label: 'Критический (массивная кровопотеря)', values: { bd: 15, inr: 2.5, gcs: 5 } },
   ],
   info: `### Для чего используется
-**BIG score (Borgman 2011)** — педиатрическая шкала прогноза **смертности при травме** на основе 3 переменных при поступлении. Простая, валидированная, применима у детей < 18 лет.
+**BIG score (Borgman 2011)** - педиатрическая шкала прогноза **смертности при травме** на основе 3 переменных при поступлении. Простая, валидированная, применима у детей < 18 лет.
 
 ### Формула
 \`BIG = BD + (2,5 × INR) + (15, если GCS ≤ 7)\`
 
-- **BD** — base deficit (ммоль/л, из артериальной газометрии)
-- **INR** — международное нормализованное отношение
-- **GCS** — Glasgow Coma Scale; если ≤ 7, добавляется 15 баллов
+- **BD** - base deficit (ммоль/л, из артериальной газометрии)
+- **INR** - международное нормализованное отношение
+- **GCS** - Glasgow Coma Scale; если ≤ 7, добавляется 15 баллов
 
 ### Интерпретация
 | BIG | Риск смертности |
 |---|---|
-| < 10 | Низкий (~ 0–5%) |
-| 10–15 | Промежуточный (~ 5–25%) |
+| < 10 | Низкий (~ 0-5%) |
+| 10-15 | Промежуточный (~ 5-25%) |
 | > 15 | Высокий (> 25%) |
 
 ### Валидация
-- **Derivation (Borgman 2011)**: 723 педиатрических пациента (US military + civilian), AUC **0,89–0,91**
-- **External validation**: Davis et al. 2015 (n=1722), Borgman 2013 (Europe) — AUC ≈ 0,88–0,92
+- **Derivation (Borgman 2011)**: 723 педиатрических пациента (US military + civilian), AUC **0,89-0,91**
+- **External validation**: Davis et al. 2015 (n=1722), Borgman 2013 (Europe) - AUC ≈ 0,88-0,92
 - Превосходит или эквивалентен **PTS (Pediatric Trauma Score)** и **RTS**
 
 ### Применение
@@ -154,7 +154,7 @@ const runner: CalculatorTool = {
 
 ### Преимущества
 - Только 3 переменные
-- Все доступны в первые 5–10 мин (GCS при осмотре, INR/BD в первой лабораторной панели)
+- Все доступны в первые 5-10 мин (GCS при осмотре, INR/BD в первой лабораторной панели)
 - Работает при военной и гражданской травме
 - Не требует механизма или анатомической детализации
 
@@ -167,7 +167,7 @@ const runner: CalculatorTool = {
 | BIG | Действия |
 |---|---|
 | < 10 | Стандартное ведение, наблюдение |
-| 10–15 | Интенсивная ресусцитация, ICU, рассмотреть MTP |
+| 10-15 | Интенсивная ресусцитация, ICU, рассмотреть MTP |
 | > 15 | Активировать MTP, damage control, рассмотреть ограничения |
 
 ### Источник

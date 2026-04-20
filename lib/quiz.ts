@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════
-   IronMed Academy — Test System Types & Logic
+   IronMed Academy - Test System Types & Logic
    ═══════════════════════════════════════════ */
 
 export type TestLevel = 1 | 2 | 3 | 4 | 5;
@@ -45,11 +45,11 @@ export const MAX_TEST_LEVELS = 5;
 export const MAX_VIOLATIONS = 3;
 
 export const TEST_LEVEL_NAMES: Record<TestLevel, string> = {
-  1: 'Тест 1 — Основы',
-  2: 'Тест 2 — Углублённый',
-  3: 'Тест 3 — Применение',
-  4: 'Тест 4 — Анализ',
-  5: 'Тест 5 — Экспертный',
+  1: 'Тест 1 - Основы',
+  2: 'Тест 2 - Углублённый',
+  3: 'Тест 3 - Применение',
+  4: 'Тест 4 - Анализ',
+  5: 'Тест 5 - Экспертный',
 };
 
 /* ═══ Grading ═══ */

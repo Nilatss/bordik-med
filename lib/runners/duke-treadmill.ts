@@ -2,7 +2,7 @@
 /**
  * Runner: duke-treadmill
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
- * Do not edit by hand — regenerate via `npm run split:runners`.
+ * Do not edit by hand - regenerate via `npm run split:runners`.
  *
  * Loaded lazily via dynamic import from lib/runners/index.ts so the
  * encyclopaedia of clinical content stays out of the main app bundle.
@@ -60,15 +60,15 @@ const runner: CalculatorTool = {
         options: [
           {
             value: 0,
-            label: "0 — нет стенокардии"
+            label: "0 - нет стенокардии"
           },
           {
             value: 1,
-            label: "1 — стенокардия, не лимитирующая"
+            label: "1 - стенокардия, не лимитирующая"
           },
           {
             value: 2,
-            label: "2 — стенокардия, лимитирующая тест"
+            label: "2 - стенокардия, лимитирующая тест"
           }
         ]
       }
@@ -91,10 +91,10 @@ const runner: CalculatorTool = {
             } else if (dts >= -10) {
                 interpretation = 'Промежуточный риск';
                 color = '#F59E0B';
-                details = 'Ежегодная смертность 1–3 %. 5-летняя выживаемость 90 %. Показано дополнительное неинвазивное тестирование (стресс-визуализация) или коронарная КТ-ангиография.';
+                details = 'Ежегодная смертность 1-3 %. 5-летняя выживаемость 90 %. Показано дополнительное неинвазивное тестирование (стресс-визуализация) или коронарная КТ-ангиография.';
                 actions = [
                     'Стресс-ЭхоКГ / ОФЭКТ / МРТ перфузии',
-                    'Альтернатива — CCTA',
+                    'Альтернатива - CCTA',
                     'ОМТ, оптимизация ФР'
                 ];
             } else {
@@ -139,9 +139,9 @@ const runner: CalculatorTool = {
                     unit: 'баллов'
                 },
                 caveats: [
-                    'Валидация — Bruce protocol; для других протоколов требуется перевод в Bruce-эквивалент.',
-                    'Не применим при блокаде ЛНПГ, WPW, ритме с желудочковой стимуляцией — ST-анализ невозможен.',
-                    'У женщин и пожилых диагностическая точность ниже — предпочтительна стресс-визуализация.',
+                    'Валидация - Bruce protocol; для других протоколов требуется перевод в Bruce-эквивалент.',
+                    'Не применим при блокаде ЛНПГ, WPW, ритме с желудочковой стимуляцией - ST-анализ невозможен.',
+                    'У женщин и пожилых диагностическая точность ниже - предпочтительна стресс-визуализация.',
                     'Не заменяет клинической оценки (CCS, сопутствующие заболевания).'
                 ],
                 related: [
@@ -166,7 +166,7 @@ const runner: CalculatorTool = {
                 ]
             };
         },
-    reference: "Mark DB, Hlatky MA, Harrell FE Jr, Lee KL, Califf RM, Pryor DB. Exercise treadmill score for predicting prognosis in coronary artery disease. Ann Intern Med 1987;106:793–800. Mark DB et al. Prognostic value of a treadmill exercise score in outpatients with suspected coronary artery disease. N Engl J Med 1991;325:849–853.",
+    reference: "Mark DB, Hlatky MA, Harrell FE Jr, Lee KL, Califf RM, Pryor DB. Exercise treadmill score for predicting prognosis in coronary artery disease. Ann Intern Med 1987;106:793-800. Mark DB et al. Prognostic value of a treadmill exercise score in outpatients with suspected coronary artery disease. N Engl J Med 1991;325:849-853.",
     countries: "США · международный",
     presets: [
       {
@@ -194,7 +194,7 @@ const runner: CalculatorTool = {
         }
       }
     ],
-    info: "### Для чего используется\n**Duke Treadmill Score (DTS)** — прогностическая шкала по результатам **нагрузочной ЭКГ-пробы (Bruce protocol)**. Разработана Mark et al. в Duke University.\n\n### Формула\n`DTS = время (мин) − (5 × ST-депрессия мм) − (4 × индекс стенокардии)`\n\n**Индекс стенокардии:**\n- 0 — нет стенокардии\n- 1 — стенокардия без прекращения теста\n- 2 — стенокардия, вынудившая прекратить тест\n\n**Диапазон:** от −25 до +15.\n\n### Интерпретация\n| DTS | Риск | Ежегодная смертность | 5-летняя выживаемость |\n|---|---|---|---|\n| ≥ +5 | Низкий | < 1 % | 97 % |\n| −10 … +4 | Промежуточный | 1–3 % | 90 % |\n| ≤ −11 | Высокий | ≥ 5 % | 65 % |\n\n### Тактика\n| Риск | Действия |\n|---|---|\n| Низкий | ОМТ, контроль ФР, повторная оценка при изменении симптомов |\n| Промежуточный | Стресс-визуализация / CCTA |\n| Высокий | **Коронарография, реваскуляризация** |\n\n### Ограничения\n- Только Bruce protocol (или эквивалент).\n- Не применим при БЛНПГ, WPW, ритме ЭКС.\n- У женщин чувствительность ST-анализа ниже.\n- Не учитывает ФВ ЛЖ — при сниженной ФВ лучше использовать стресс-визуализацию.\n\n### Альтернативы\n- **Стресс-ЭхоКГ / ОФЭКТ / МРТ перфузии** — при невозможности интерпретации ЭКГ.\n- **CCTA** — при низкой–промежуточной PTP (ESC 2019).\n\n### Источник\nMark DB et al. **Prognostic value of a treadmill exercise score in outpatients with suspected coronary artery disease.** *N Engl J Med* 1991;325:849–853. ACC/AHA 2002 Exercise Testing Guidelines."
+    info: "### Для чего используется\n**Duke Treadmill Score (DTS)** - прогностическая шкала по результатам **нагрузочной ЭКГ-пробы (Bruce protocol)**. Разработана Mark et al. в Duke University.\n\n### Формула\n`DTS = время (мин) − (5 × ST-депрессия мм) − (4 × индекс стенокардии)`\n\n**Индекс стенокардии:**\n- 0 - нет стенокардии\n- 1 - стенокардия без прекращения теста\n- 2 - стенокардия, вынудившая прекратить тест\n\n**Диапазон:** от −25 до +15.\n\n### Интерпретация\n| DTS | Риск | Ежегодная смертность | 5-летняя выживаемость |\n|---|---|---|---|\n| ≥ +5 | Низкий | < 1 % | 97 % |\n| −10 … +4 | Промежуточный | 1-3 % | 90 % |\n| ≤ −11 | Высокий | ≥ 5 % | 65 % |\n\n### Тактика\n| Риск | Действия |\n|---|---|\n| Низкий | ОМТ, контроль ФР, повторная оценка при изменении симптомов |\n| Промежуточный | Стресс-визуализация / CCTA |\n| Высокий | **Коронарография, реваскуляризация** |\n\n### Ограничения\n- Только Bruce protocol (или эквивалент).\n- Не применим при БЛНПГ, WPW, ритме ЭКС.\n- У женщин чувствительность ST-анализа ниже.\n- Не учитывает ФВ ЛЖ - при сниженной ФВ лучше использовать стресс-визуализацию.\n\n### Альтернативы\n- **Стресс-ЭхоКГ / ОФЭКТ / МРТ перфузии** - при невозможности интерпретации ЭКГ.\n- **CCTA** - при низкой-промежуточной PTP (ESC 2019).\n\n### Источник\nMark DB et al. **Prognostic value of a treadmill exercise score in outpatients with suspected coronary artery disease.** *N Engl J Med* 1991;325:849-853. ACC/AHA 2002 Exercise Testing Guidelines."
   };
 
 export default runner;

@@ -2,7 +2,7 @@
 /**
  * Runner: reynolds
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
- * Do not edit by hand — regenerate via `npm run split:runners`.
+ * Do not edit by hand - regenerate via `npm run split:runners`.
  *
  * Loaded lazily via dynamic import from lib/runners/index.ts so the
  * encyclopaedia of clinical content stays out of the main app bundle.
@@ -173,15 +173,15 @@ const runner: CalculatorTool = {
             } else if (r < 10) {
                 interpretation = 'Нижне-промежуточный риск';
                 color = '#FBBF24';
-                details = 'Риск 5–10 %. При повышенном hs-CRP — рассмотреть JUPITER-подобную стратегию (розувастатин).';
+                details = 'Риск 5-10 %. При повышенном hs-CRP - рассмотреть JUPITER-подобную стратегию (розувастатин).';
                 actions = [
-                    'Оценить hs-CRP в динамике (повтор через 2–4 нед)',
+                    'Оценить hs-CRP в динамике (повтор через 2-4 нед)',
                     'Модификация ФР, обсудить статин'
                 ];
             } else if (r < 20) {
                 interpretation = 'Промежуточный риск';
                 color = '#F59E0B';
-                details = 'Риск 10–20 %. Статин + модификация ФР.';
+                details = 'Риск 10-20 %. Статин + модификация ФР.';
                 actions = [
                     'Статин умеренной интенсивности',
                     'Контроль АД < 130/80',
@@ -205,8 +205,8 @@ const runner: CalculatorTool = {
                 details,
                 actions,
                 caveats: [
-                    'Включает hs-CRP — не выполнять при острой инфекции / аутоиммунном обострении (hs-CRP ≥ 10 → исключить)',
-                    'Reynolds ♀ валидирован на Women\'s Health Study (n ≈ 24 558); ♂ — на Physicians\' Health Study II',
+                    'Включает hs-CRP - не выполнять при острой инфекции / аутоиммунном обострении (hs-CRP ≥ 10 → исключить)',
+                    'Reynolds ♀ валидирован на Women\'s Health Study (n ≈ 24 558); ♂ - на Physicians\' Health Study II',
                     'Возраст 45+; не для пациентов с уже диагностированной ASCVD или СД с ПОМ',
                     'Reynolds проигрывает PCE по общему AUC, но добавляет ценности у женщин с повышенным hs-CRP'
                 ],
@@ -308,7 +308,7 @@ const runner: CalculatorTool = {
         }
       }
     ],
-    info: "### Для чего используется\n**Reynolds Risk Score** — 10-летний риск CVD (ИМ, инсульт, коронарная реваскуляризация, CVD-смерть), добавляющий к классическим ФР **hs-CRP** и **семейный анамнез преждевременной ИБС**.\n\nПервоначально разработан для женщин (Ridker 2007, JAMA), затем адаптирован для мужчин (2008, Circulation).\n\n### Формула\nCox-регрессия:\n- Женщины (без СД): 7 переменных — возраст, SBP, hs-CRP, TC, HDL, курение, семейный анамнез\n- Женщины (СД): + HbA1c\n- Мужчины: возраст (log), SBP, TC, HDL, hs-CRP, курение, семейный анамнез\n\n### Интерпретация (общая)\n| Риск | Категория |\n|---|---|\n| < 5 % | Низкий |\n| 5–< 10 % | Нижне-промежуточный |\n| 10–< 20 % | Промежуточный |\n| ≥ 20 % | Высокий |\n\n### Ценность hs-CRP\n- У женщин с промежуточным Framingham-риском добавление hs-CRP реклассифицирует до 40–50 % случаев\n- При hs-CRP < 1 мг/л — низкий воспалительный риск\n- 1–3 мг/л — промежуточный\n- > 3 мг/л — высокий\n- > 10 мг/л — не использовать (острое воспаление)\n\n### JUPITER trial\nRidker 2008 (NEJM) показал — при LDL < 3,4 и hs-CRP ≥ 2 мг/л розувастатин 20 мг снижал CVD-события на 44 %. Это обосновало включение hs-CRP в стратификацию.\n\n### Ограничения\n- Требует hs-CRP (недоступен в ряде лабораторий)\n- Валидация на когорте медработников США (WHS, PHS II)\n- Не показал превосходства над PCE по C-statistic в общих валидациях\n- Не использовать при остром воспалении / инфекции\n\n### Тактика\nТе же принципы, что и для ASCVD: ≥ 7,5–10 % — обсудить статин, ≥ 20 % — статин высокой интенсивности.\n\n### Источник\nRidker PM, Buring JE, Rifai N, Cook NR. Development and validation of improved algorithms for the assessment of global cardiovascular risk in women: the Reynolds Risk Score. *JAMA* 2007;297(6):611–619.\nRidker PM, Paynter NP, Rifai N, Gaziano JM, Cook NR. C-reactive protein and parental history improve global cardiovascular risk prediction: the Reynolds Risk Score for men. *Circulation* 2008;118(22):2243–2251."
+    info: "### Для чего используется\n**Reynolds Risk Score** - 10-летний риск CVD (ИМ, инсульт, коронарная реваскуляризация, CVD-смерть), добавляющий к классическим ФР **hs-CRP** и **семейный анамнез преждевременной ИБС**.\n\nПервоначально разработан для женщин (Ridker 2007, JAMA), затем адаптирован для мужчин (2008, Circulation).\n\n### Формула\nCox-регрессия:\n- Женщины (без СД): 7 переменных - возраст, SBP, hs-CRP, TC, HDL, курение, семейный анамнез\n- Женщины (СД): + HbA1c\n- Мужчины: возраст (log), SBP, TC, HDL, hs-CRP, курение, семейный анамнез\n\n### Интерпретация (общая)\n| Риск | Категория |\n|---|---|\n| < 5 % | Низкий |\n| 5-< 10 % | Нижне-промежуточный |\n| 10-< 20 % | Промежуточный |\n| ≥ 20 % | Высокий |\n\n### Ценность hs-CRP\n- У женщин с промежуточным Framingham-риском добавление hs-CRP реклассифицирует до 40-50 % случаев\n- При hs-CRP < 1 мг/л - низкий воспалительный риск\n- 1-3 мг/л - промежуточный\n- > 3 мг/л - высокий\n- > 10 мг/л - не использовать (острое воспаление)\n\n### JUPITER trial\nRidker 2008 (NEJM) показал - при LDL < 3,4 и hs-CRP ≥ 2 мг/л розувастатин 20 мг снижал CVD-события на 44 %. Это обосновало включение hs-CRP в стратификацию.\n\n### Ограничения\n- Требует hs-CRP (недоступен в ряде лабораторий)\n- Валидация на когорте медработников США (WHS, PHS II)\n- Не показал превосходства над PCE по C-statistic в общих валидациях\n- Не использовать при остром воспалении / инфекции\n\n### Тактика\nТе же принципы, что и для ASCVD: ≥ 7,5-10 % - обсудить статин, ≥ 20 % - статин высокой интенсивности.\n\n### Источник\nRidker PM, Buring JE, Rifai N, Cook NR. Development and validation of improved algorithms for the assessment of global cardiovascular risk in women: the Reynolds Risk Score. *JAMA* 2007;297(6):611-619.\nRidker PM, Paynter NP, Rifai N, Gaziano JM, Cook NR. C-reactive protein and parental history improve global cardiovascular risk prediction: the Reynolds Risk Score for men. *Circulation* 2008;118(22):2243-2251."
   };
 
 export default runner;

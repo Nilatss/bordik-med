@@ -1,5 +1,5 @@
 // @ts-nocheck
-/** Runner: mtp — Massive Transfusion Protocol 1:1:1 (PROPPR 2015) */
+/** Runner: mtp - Massive Transfusion Protocol 1:1:1 (PROPPR 2015) */
 import type { CalculatorTool } from '../tools-runners';
 
 const runner: CalculatorTool = {
@@ -36,8 +36,8 @@ const runner: CalculatorTool = {
           'Кальций: 1 г CaCl₂ на каждые 4 дозы цитратной крови, цель iCa ≥1.1 ммоль/л',
           'Температура ≥35 °C (активное согревание)',
           'pH >7.2, лактат ↓, MAP ≥65',
-          'Контроль: TEG/ROTEM, фибриноген, лактат, газы каждые 30–60 мин',
-          'Хирургический/эндоваскулярный гемостаз — приоритет',
+          'Контроль: TEG/ROTEM, фибриноген, лактат, газы каждые 30-60 мин',
+          'Хирургический/эндоваскулярный гемостаз - приоритет',
         ]
       : ['Переоценка Hb/лактат/коагулограммы', 'Индивидуальные пороги трансфузии'];
 
@@ -71,14 +71,14 @@ const runner: CalculatorTool = {
   presets: [
     { label: 'Политравма с шоком', values: { weight: 80, ongoing: true, hgb: 60, coag: true } },
     { label: 'ЖКК с Hb 65', values: { weight: 70, ongoing: true, hgb: 65, coag: false } },
-    { label: 'Стабильный — не MTP', values: { weight: 70, ongoing: false, hgb: 95, coag: false } },
+    { label: 'Стабильный - не MTP', values: { weight: 70, ongoing: false, hgb: 95, coag: false } },
   ],
   caveats: [
-    'Активируется в 2 минуты — не ждать лаб.результатов',
+    'Активируется в 2 минуты - не ждать лаб.результатов',
     'Деактивировать при контроле кровотечения',
   ],
   info: `### Для чего используется
-**Massive Transfusion Protocol (MTP)** — стандартизированный пакет компонентов крови при массивном кровотечении. Основан на RCT **PROPPR (Holcomb 2015, JAMA)**, показавшем преимущество соотношения **1:1:1 vs 1:1:2** по смертности от кровотечения за 24 ч.
+**Massive Transfusion Protocol (MTP)** - стандартизированный пакет компонентов крови при массивном кровотечении. Основан на RCT **PROPPR (Holcomb 2015, JAMA)**, показавшем преимущество соотношения **1:1:1 vs 1:1:2** по смертности от кровотечения за 24 ч.
 
 ### Триггеры активации
 - Продолжающееся массивное кровотечение (>150 мл/мин или ожидаемая потеря >1500 мл)
@@ -107,9 +107,9 @@ const runner: CalculatorTool = {
 | INR | <1.5 |
 
 ### Ключевые элементы
-1. **Damage control resuscitation** — малые объёмы кристаллоидов, раннее применение компонентов
-2. **Permissive hypotension** — не применимо при ЧМТ
-3. **TEG/ROTEM-ориентированная коррекция** — если доступно`,
+1. **Damage control resuscitation** - малые объёмы кристаллоидов, раннее применение компонентов
+2. **Permissive hypotension** - не применимо при ЧМТ
+3. **TEG/ROTEM-ориентированная коррекция** - если доступно`,
 };
 
 export default runner;

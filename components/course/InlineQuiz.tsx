@@ -147,7 +147,7 @@ function QuestionCard({
       padding: '14px 18px',
       marginBottom: 6,
     }}>
-      {/* Header row — clickable if revealed */}
+      {/* Header row - clickable if revealed */}
       <div
         onClick={revealed ? onToggle : undefined}
         style={{
@@ -202,7 +202,7 @@ function QuestionCard({
         )}
       </div>
 
-      {/* Body — conditionally rendered. Unanswered = always visible. Answered = only when expanded. */}
+      {/* Body - conditionally rendered. Unanswered = always visible. Answered = only when expanded. */}
       <AnimatePresence initial={false}>
         {!collapsed && (
           <motion.div
@@ -378,7 +378,7 @@ export default function InlineQuiz({
     return out.join(' ');
   }, [source]);
 
-  // Mount timestamp — re-shuffle on mount (new session)
+  // Mount timestamp - re-shuffle on mount (new session)
   // Shuffled options stable per mount
   const [shuffledPerQuestion] = useState<Record<number, Option[]>>(() => {
     const map: Record<number, Option[]> = {};
@@ -455,7 +455,7 @@ export default function InlineQuiz({
         </p>
       )}
 
-      {/* Progress / cooldown bar — matches question card size */}
+      {/* Progress / cooldown bar - matches question card size */}
       <motion.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}

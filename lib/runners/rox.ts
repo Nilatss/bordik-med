@@ -1,6 +1,6 @@
 // @ts-nocheck
 /**
- * Runner: rox — ROX Index (Roca 2019) for HFNC failure prediction
+ * Runner: rox - ROX Index (Roca 2019) for HFNC failure prediction
  */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -8,7 +8,7 @@ const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
     { id: 'spo2', label: 'SpO₂', type: 'number', unit: '%', min: 50, max: 100, step: 1, quickValues: [85, 90, 92, 95, 97] },
-    { id: 'fio2', label: 'FiO₂', type: 'number', unit: 'доля (0.21–1.0)', min: 0.21, max: 1.0, step: 0.01, quickValues: [0.3, 0.4, 0.5, 0.6, 0.8, 1.0] },
+    { id: 'fio2', label: 'FiO₂', type: 'number', unit: 'доля (0.21-1.0)', min: 0.21, max: 1.0, step: 0.01, quickValues: [0.3, 0.4, 0.5, 0.6, 0.8, 1.0] },
     { id: 'rr', label: 'ЧДД', type: 'number', unit: '/мин', min: 5, max: 60, step: 1, quickValues: [20, 25, 30, 35, 40] },
   ],
   compute: (v) => {
@@ -27,12 +27,12 @@ const runner: CalculatorTool = {
     } else if (rox >= 3.85) {
       interpretation = 'Неопределённая зона';
       color = '#F59E0B';
-      details = 'ROX 3.85–4.87: неопределённая зона — повторить через 1–2 часа. Тщательное наблюдение.';
-      actions = ['Частая переоценка (каждые 30–60 мин)', 'Готовность к интубации', 'Оптимизировать FiO₂/flow на HFNC'];
+      details = 'ROX 3.85-4.87: неопределённая зона - повторить через 1-2 часа. Тщательное наблюдение.';
+      actions = ['Частая переоценка (каждые 30-60 мин)', 'Готовность к интубации', 'Оптимизировать FiO₂/flow на HFNC'];
     } else {
       interpretation = 'Высокий риск неудачи HFNC';
       color = '#EF4444';
-      details = 'ROX < 3.85 в любой момент — высокий риск неудачи HFNC. Рассмотреть раннюю интубацию (задержка ассоциирована с ростом летальности).';
+      details = 'ROX < 3.85 в любой момент - высокий риск неудачи HFNC. Рассмотреть раннюю интубацию (задержка ассоциирована с ростом летальности).';
       actions = ['Рассмотреть интубацию немедленно', 'Готовить индукцию и RSI', 'Оценить причину ухудшения (пневмония, ARDS, отёк)'];
     }
     return {
@@ -68,7 +68,7 @@ const runner: CalculatorTool = {
       },
     };
   },
-  reference: 'Roca O, Caralt B, Messika J, et al. Am J Respir Crit Care Med 2019;199:1368–1376.',
+  reference: 'Roca O, Caralt B, Messika J, et al. Am J Respir Crit Care Med 2019;199:1368-1376.',
   countries: 'Международный',
   presets: [
     { label: 'Успех HFNC', values: { spo2: 96, fio2: 0.4, rr: 22 } },
@@ -81,7 +81,7 @@ const runner: CalculatorTool = {
     'Задержка интубации при ROX < 3.85 → рост смертности',
   ],
   info: `### Для чего используется
-**ROX Index (Roca 2019)** — прогноз неудачи терапии HFNC (high-flow nasal cannula). Помогает вовремя перейти к интубации без риска переоценки неинвазивной поддержки.
+**ROX Index (Roca 2019)** - прогноз неудачи терапии HFNC (high-flow nasal cannula). Помогает вовремя перейти к интубации без риска переоценки неинвазивной поддержки.
 
 ### Формула
 **ROX = (SpO₂ / FiO₂) / ЧДД**
@@ -89,12 +89,12 @@ const runner: CalculatorTool = {
 ### Пороги
 | Время | ROX | Интерпретация |
 |---|---|---|
-| 2 / 6 / 12 ч | ≥ 4.88 | Низкий риск — продолжать HFNC |
-| Любой | 3.85–4.87 | Зона неопределённости |
-| Любой | < 3.85 | Высокий риск — рассмотреть интубацию |
+| 2 / 6 / 12 ч | ≥ 4.88 | Низкий риск - продолжать HFNC |
+| Любой | 3.85-4.87 | Зона неопределённости |
+| Любой | < 3.85 | Высокий риск - рассмотреть интубацию |
 
 ### Источник
-Roca O et al. An index combining respiratory rate and oxygenation to predict outcome of nasal high-flow therapy. Am J Respir Crit Care Med 2019;199:1368–76.`,
+Roca O et al. An index combining respiratory rate and oxygenation to predict outcome of nasal high-flow therapy. Am J Respir Crit Care Med 2019;199:1368-76.`,
 };
 
 export default runner;

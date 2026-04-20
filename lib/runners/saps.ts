@@ -1,7 +1,7 @@
 // @ts-nocheck
 /**
  * Runner: saps
- * SAPS II — Simplified Acute Physiology Score (Le Gall 1993).
+ * SAPS II - Simplified Acute Physiology Score (Le Gall 1993).
  */
 
 import type {
@@ -80,13 +80,13 @@ const runner: CalculatorTool = {
         'SAPS II рассчитывается по данным первых 24 ч поступления в ICU',
         'Переоценивает смертность в современной эре (lead-time bias, улучшение протоколов)',
         'Не для ожогов, кардиохирургии, АКШ, пациентов < 18 лет',
-        'Для динамики использовать SOFA, для уточнённого прогноза — SAPS 3 (Moreno 2005)',
+        'Для динамики использовать SOFA, для уточнённого прогноза - SAPS 3 (Moreno 2005)',
       ],
       scale: {
         segments: [
           { min: 0, max: 29, label: '< 30%', color: '#22C55E' },
-          { min: 30, max: 49, label: '30–50', color: '#F59E0B' },
-          { min: 50, max: 79, label: '50–80', color: '#EF4444' },
+          { min: 30, max: 49, label: '30-50', color: '#F59E0B' },
+          { min: 50, max: 79, label: '50-80', color: '#EF4444' },
           { min: 80, max: 163, label: '> 80', color: '#991B1B' },
         ],
         current: score,
@@ -104,7 +104,7 @@ const runner: CalculatorTool = {
       ],
     };
   },
-  reference: 'Le Gall JR, Lemeshow S, Saulnier F. A new Simplified Acute Physiology Score (SAPS II). JAMA 1993;270:2957–63.',
+  reference: 'Le Gall JR, Lemeshow S, Saulnier F. A new Simplified Acute Physiology Score (SAPS II). JAMA 1993;270:2957-63.',
   countries: 'Международный (European standard)',
   presets: [
     { label: 'Молодой стабильный', values: { score: 15 } },
@@ -112,7 +112,7 @@ const runner: CalculatorTool = {
     { label: 'Критический', values: { score: 80 } },
   ],
   info: `### Для чего используется
-**SAPS II (Le Gall 1993)** — европейский стандарт прогностической оценки **госпитальной смертности пациентов ICU** по данным первых 24 часов. Упрощённая альтернатива APACHE II/III.
+**SAPS II (Le Gall 1993)** - европейский стандарт прогностической оценки **госпитальной смертности пациентов ICU** по данным первых 24 часов. Упрощённая альтернатива APACHE II/III.
 
 ### Формула логистической регрессии
 \`\`\`
@@ -120,7 +120,7 @@ logit = −7,7631 + 0,0737 × SAPS + 0,9971 × ln(SAPS + 1)
 P(смерть) = e^logit / (1 + e^logit)
 \`\`\`
 
-### 17 переменных (сумма 0–163)
+### 17 переменных (сумма 0-163)
 **Физиология (12):**
 - Возраст
 - ЧСС

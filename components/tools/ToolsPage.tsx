@@ -45,7 +45,7 @@ type Row =
   | { kind: 'empty' };
 
 /* ════════════════════════════════════════════════════════════════
-   Filter popover — memoised
+   Filter popover - memoised
    ════════════════════════════════════════════════════════════════ */
 
 const FilterDropdown = React.memo(function FilterDropdown({
@@ -245,7 +245,7 @@ const FilterDropdown = React.memo(function FilterDropdown({
 });
 
 /* ════════════════════════════════════════════════════════════════
-   Memoised ToolCard. Drops onOpen prop — pulls openTool from the
+   Memoised ToolCard. Drops onOpen prop - pulls openTool from the
    store with a shallow selector so parent re-renders don't break memo.
    ════════════════════════════════════════════════════════════════ */
 
@@ -279,7 +279,7 @@ const ToolCard = React.memo(function ToolCard({ tool }: { tool: CatalogTool }) {
       // Fade-in on mount only. No stagger delay because Virtuoso
       // mounts/unmounts rows during scroll and staggered re-entry
       // would look janky. Single card-level fade feels tactile.
-      // The final opacity reflects the disabled state — framer-motion's
+      // The final opacity reflects the disabled state - framer-motion's
       // animate prop wins over CSS opacity, so we must pass it here too.
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: available ? 1 : 0.48, y: 0 }}
@@ -294,7 +294,7 @@ const ToolCard = React.memo(function ToolCard({ tool }: { tool: CatalogTool }) {
         position: 'relative', overflow: 'hidden', minHeight: 160,
         display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
         transition: 'background 300ms cubic-bezier(0.22,1,0.36,1)',
-        // Browser skips layout/paint for off-screen cards — zero visual diff.
+        // Browser skips layout/paint for off-screen cards - zero visual diff.
         contentVisibility: 'auto',
         containIntrinsicSize: '160px 220px',
       } as React.CSSProperties}
@@ -448,7 +448,7 @@ function RenderedRow({ row }: { row: Row }) {
     );
   }
 
-  // Cards row — pad with invisible slots so the grid stays 3 cols.
+  // Cards row - pad with invisible slots so the grid stays 3 cols.
   const padded = [...row.tools];
   while (padded.length < COLS) padded.push(null as unknown as CatalogTool);
   return (
@@ -479,7 +479,7 @@ export default function ToolsPage() {
   const [, startFilterTransition] = useTransition();
 
   // The page is scrolled by the outer <main> element (see app/page.tsx).
-  // Virtuoso needs to watch that element for scroll events — otherwise it
+  // Virtuoso needs to watch that element for scroll events - otherwise it
   // never knows the user scrolled and stops rendering after the first batch.
   const rootRef = useRef<HTMLDivElement | null>(null);
   const [scrollParent, setScrollParent] = useState<HTMLElement | null>(null);
@@ -600,7 +600,7 @@ export default function ToolsPage() {
         <p style={{
           fontFamily: 'var(--font-body)', fontSize: 14, color: '#6B7280', lineHeight: 1.5,
         }}>
-          Полный каталог клинических калькуляторов, шкал, классификаторов и протоколов — {CATALOG_TOOLS.filter((t) => t.available || (TOOL_META[t.id]?.hasRunner ?? false)).length} готовых из {CATALOG_TOOLS.length} по {TOOL_CATEGORIES.length} разделам.
+          Полный каталог клинических калькуляторов, шкал, классификаторов и протоколов - {CATALOG_TOOLS.filter((t) => t.available || (TOOL_META[t.id]?.hasRunner ?? false)).length} готовых из {CATALOG_TOOLS.length} по {TOOL_CATEGORIES.length} разделам.
         </p>
       </div>
 
@@ -767,7 +767,7 @@ export default function ToolsPage() {
           // The real scroll container is <main> in app/page.tsx. Using
           // customScrollParent rather than useWindowScroll means Virtuoso
           // listens to scroll events on the right element and renders more
-          // rows as the user scrolls. Keeps the native outer scroll — no
+          // rows as the user scrolls. Keeps the native outer scroll - no
           // inner scrollbar is introduced, visuals stay identical.
           customScrollParent={scrollParent ?? undefined}
           data={rows}

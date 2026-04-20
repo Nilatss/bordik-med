@@ -2,7 +2,7 @@
 /**
  * Runner: updrs
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
- * Do not edit by hand — regenerate via `npm run split:runners`.
+ * Do not edit by hand - regenerate via `npm run split:runners`.
  *
  * Loaded lazily via dynamic import from lib/runners/index.ts so the
  * encyclopaedia of clinical content stays out of the main app bundle.
@@ -23,7 +23,7 @@ const runner: CalculatorTool = {
     inputs: [
       {
         id: "part1",
-        label: "Часть I — немоторные аспекты (0–52)",
+        label: "Часть I - немоторные аспекты (0-52)",
         type: "number",
         min: 0,
         max: 52,
@@ -38,7 +38,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "part2",
-        label: "Часть II — моторные ADL (0–52)",
+        label: "Часть II - моторные ADL (0-52)",
         type: "number",
         min: 0,
         max: 52,
@@ -53,7 +53,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "part3",
-        label: "Часть III — моторный осмотр (0–132)",
+        label: "Часть III - моторный осмотр (0-132)",
         type: "number",
         min: 0,
         max: 132,
@@ -68,7 +68,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "part4",
-        label: "Часть IV — моторные осложнения (0–24)",
+        label: "Часть IV - моторные осложнения (0-24)",
         type: "number",
         min: 0,
         max: 24,
@@ -100,7 +100,7 @@ const runner: CalculatorTool = {
                     'Скрининг немоторных: REM-sleep, депрессия, ортостаз'
                 ];
             } else if (p3 <= 58) {
-                interpretation = 'Умеренная моторная симптоматика (Часть III 33–58)';
+                interpretation = 'Умеренная моторная симптоматика (Часть III 33-58)';
                 color = '#F59E0B';
                 details = 'Умеренные нарушения. Часто требуется комбинация.';
                 actions = [
@@ -128,24 +128,24 @@ const runner: CalculatorTool = {
                 differential: [
                     {
                         term: 'Часть I',
-                        desc: `${p1}/52 — немоторные (когниция, настроение, сон, боль, вегетативные)`
+                        desc: `${p1}/52 - немоторные (когниция, настроение, сон, боль, вегетативные)`
                     },
                     {
                         term: 'Часть II',
-                        desc: `${p2}/52 — моторные ADL (речь, слюна, еда, одевание)`
+                        desc: `${p2}/52 - моторные ADL (речь, слюна, еда, одевание)`
                     },
                     {
                         term: 'Часть III',
-                        desc: `${p3}/132 — моторный осмотр (ригидность, тремор, брадикинезия, постура)`
+                        desc: `${p3}/132 - моторный осмотр (ригидность, тремор, брадикинезия, постура)`
                     },
                     {
                         term: 'Часть IV',
-                        desc: `${p4}/24 — моторные осложнения (дискинезии, off-время)`
+                        desc: `${p4}/24 - моторные осложнения (дискинезии, off-время)`
                     }
                 ],
                 caveats: [
-                    'MDS-UPDRS (Goetz 2008) — пересмотр классического UPDRS (Fahn 1987)',
-                    'Полная оценка требует обучения; для научных работ — сертифицированный оценщик',
+                    'MDS-UPDRS (Goetz 2008) - пересмотр классического UPDRS (Fahn 1987)',
+                    'Полная оценка требует обучения; для научных работ - сертифицированный оценщик',
                     'Часть III оценивается в определённом медикаментозном состоянии (on/off)',
                     'Не заменяет Hoehn-Yahr для стадирования'
                 ],
@@ -160,7 +160,7 @@ const runner: CalculatorTool = {
                         {
                             min: 33,
                             max: 59,
-                            label: 'Умер. (III 33–58)',
+                            label: 'Умер. (III 33-58)',
                             color: '#F59E0B'
                         },
                         {
@@ -195,8 +195,8 @@ const runner: CalculatorTool = {
                 ]
             };
         },
-    reference: "Goetz CG, Tilley BC, Shaftman SR et al. Movement Disorder Society-sponsored revision of the Unified Parkinson Disease Rating Scale (MDS-UPDRS): scale presentation and clinimetric testing results. Mov Disord 2008;23:2129–2170.",
-    info: "### Для чего используется\n**MDS-UPDRS (Goetz 2008)** — эталонная шкала оценки **болезни Паркинсона**. 4 части, суммарно 260 баллов.\n\n### Части\n| Часть | Содержание | Пункты × Макс | Макс |\n|---|---|---|---|\n| I | Немоторные аспекты повседневной жизни | 13 × 4 | 52 |\n| II | Моторные аспекты повседневной жизни | 13 × 4 | 52 |\n| III | Моторный осмотр | 33 × 4 | 132 |\n| IV | Моторные осложнения | 6 × 4 | 24 |\n| **Итого** | | | **260** |\n\n### Бэнды тяжести по Части III (Martinez-Martin 2015)\n| Часть III | Тяжесть |\n|---|---|\n| ≤ 32 | Лёгкая |\n| 33–58 | Умеренная |\n| ≥ 59 | Тяжёлая |\n\n### Применение\n- Диагностическая оценка и мониторинг PD\n- Оценка эффекта леводопы (on/off)\n- Клинические исследования — золотой стандарт\n- Предоперационная оценка DBS\n\n### Ограничения\n- Требует обучения; для клинических исследований — сертификации MDS\n- Длительность полной оценки ~30–45 мин\n- Часть III зависит от медикаментозного состояния (off/on утром или после дозы)\n- Не учитывает индивидуальную значимость симптомов (использовать PDQ-39)\n\n### Связанные\n- **Hoehn-Yahr** — быстрое стадирование (1–5)\n- **Schwab-England ADL** — повседневная активность (0–100 %)\n- **PDQ-39** — качество жизни\n\n### Тактика\nОпределяется сочетанием частей и стадии H-Y: см. тактику в отдельных разделах.\n\n### Источник\nGoetz CG et al. **MDS-UPDRS: scale presentation and clinimetric testing results.** *Mov Disord* 2008;23:2129–2170."
+    reference: "Goetz CG, Tilley BC, Shaftman SR et al. Movement Disorder Society-sponsored revision of the Unified Parkinson Disease Rating Scale (MDS-UPDRS): scale presentation and clinimetric testing results. Mov Disord 2008;23:2129-2170.",
+    info: "### Для чего используется\n**MDS-UPDRS (Goetz 2008)** - эталонная шкала оценки **болезни Паркинсона**. 4 части, суммарно 260 баллов.\n\n### Части\n| Часть | Содержание | Пункты × Макс | Макс |\n|---|---|---|---|\n| I | Немоторные аспекты повседневной жизни | 13 × 4 | 52 |\n| II | Моторные аспекты повседневной жизни | 13 × 4 | 52 |\n| III | Моторный осмотр | 33 × 4 | 132 |\n| IV | Моторные осложнения | 6 × 4 | 24 |\n| **Итого** | | | **260** |\n\n### Бэнды тяжести по Части III (Martinez-Martin 2015)\n| Часть III | Тяжесть |\n|---|---|\n| ≤ 32 | Лёгкая |\n| 33-58 | Умеренная |\n| ≥ 59 | Тяжёлая |\n\n### Применение\n- Диагностическая оценка и мониторинг PD\n- Оценка эффекта леводопы (on/off)\n- Клинические исследования - золотой стандарт\n- Предоперационная оценка DBS\n\n### Ограничения\n- Требует обучения; для клинических исследований - сертификации MDS\n- Длительность полной оценки ~30-45 мин\n- Часть III зависит от медикаментозного состояния (off/on утром или после дозы)\n- Не учитывает индивидуальную значимость симптомов (использовать PDQ-39)\n\n### Связанные\n- **Hoehn-Yahr** - быстрое стадирование (1-5)\n- **Schwab-England ADL** - повседневная активность (0-100 %)\n- **PDQ-39** - качество жизни\n\n### Тактика\nОпределяется сочетанием частей и стадии H-Y: см. тактику в отдельных разделах.\n\n### Источник\nGoetz CG et al. **MDS-UPDRS: scale presentation and clinimetric testing results.** *Mov Disord* 2008;23:2129-2170."
   };
 
 export default runner;

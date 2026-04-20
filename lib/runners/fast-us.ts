@@ -1,16 +1,16 @@
 // @ts-nocheck
-/** Runner: fast-us — FAST / eFAST ultrasound for trauma */
+/** Runner: fast-us - FAST / eFAST ultrasound for trauma */
 import type { CalculatorTool } from '../tools-runners';
 
 const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
-    { id: 'ruq', label: 'RUQ (Morison\'s pouch — hepatorenal) — свободная жидкость', type: 'checkbox' },
-    { id: 'luq', label: 'LUQ (spleno-renal / перисплен.) — свободная жидкость', type: 'checkbox' },
-    { id: 'pelvis', label: 'Suprapubic (pouch of Douglas / retrovesical) — жидкость', type: 'checkbox' },
-    { id: 'pericard', label: 'Subxiphoid (pericardial) — выпот в перикарде', type: 'checkbox' },
-    { id: 'thoraxL', label: 'eFAST: левый гемиторакс — жидкость/отсутствие lung sliding', type: 'checkbox' },
-    { id: 'thoraxR', label: 'eFAST: правый гемиторакс — жидкость/отсутствие lung sliding', type: 'checkbox' },
+    { id: 'ruq', label: 'RUQ (Morison\'s pouch - hepatorenal) - свободная жидкость', type: 'checkbox' },
+    { id: 'luq', label: 'LUQ (spleno-renal / перисплен.) - свободная жидкость', type: 'checkbox' },
+    { id: 'pelvis', label: 'Suprapubic (pouch of Douglas / retrovesical) - жидкость', type: 'checkbox' },
+    { id: 'pericard', label: 'Subxiphoid (pericardial) - выпот в перикарде', type: 'checkbox' },
+    { id: 'thoraxL', label: 'eFAST: левый гемиторакс - жидкость/отсутствие lung sliding', type: 'checkbox' },
+    { id: 'thoraxR', label: 'eFAST: правый гемиторакс - жидкость/отсутствие lung sliding', type: 'checkbox' },
   ],
   compute: (v) => {
     const positives: string[] = [];
@@ -26,17 +26,17 @@ const runner: CalculatorTool = {
     if (count === 0) {
       interpretation = 'FAST отрицательный';
       color = '#22C55E';
-      details = 'Нет свободной жидкости в 4 стандартных FAST-окнах и отсутствуют признаки пневмо-/гемоторакса. FAST чувствителен ~60–80%, специфичность > 95%. Отрицательный FAST НЕ исключает травму — особенно забрюшинные, диафрагмальные, полые органы.';
+      details = 'Нет свободной жидкости в 4 стандартных FAST-окнах и отсутствуют признаки пневмо-/гемоторакса. FAST чувствителен ~60-80%, специфичность > 95%. Отрицательный FAST НЕ исключает травму - особенно забрюшинные, диафрагмальные, полые органы.';
       actions = [
-        'Повторный FAST через 15–30 мин при изменении гемодинамики',
-        'При гемодинамической нестабильности и высокой подозрительности — лапаротомия/torako- или КТ по ATLS',
-        'У стабильных — КТ whole-body (pan-scan) при blunt polytrauma',
+        'Повторный FAST через 15-30 мин при изменении гемодинамики',
+        'При гемодинамической нестабильности и высокой подозрительности - лапаротомия/torako- или КТ по ATLS',
+        'У стабильных - КТ whole-body (pan-scan) при blunt polytrauma',
       ];
     } else {
       if (v.pericard) {
-        interpretation = 'Положительный FAST: выпот в перикарде — подозрение на тампонаду';
+        interpretation = 'Положительный FAST: выпот в перикарде - подозрение на тампонаду';
         color = '#991B1B';
-        details = 'Свободная жидкость в перикарде при травме = гемоперикард. При гипотонии/Beck triad — тампонада. Показана экстренная pericardiocentesis или субксифоидальное окно / thoracotomy.';
+        details = 'Свободная жидкость в перикарде при травме = гемоперикард. При гипотонии/Beck triad - тампонада. Показана экстренная pericardiocentesis или субксифоидальное окно / thoracotomy.';
         actions = [
           'ABC + крупнокалиберный доступ + MTP',
           'Экстренная хирургия: ED thoracotomy при аресте / pericardiocentesis как мост',
@@ -47,14 +47,14 @@ const runner: CalculatorTool = {
         color = '#EF4444';
         details = 'Жидкость в плевральной полости или отсутствие lung sliding (pneumothorax sensitivity УЗИ > CXR). Требует дренирования при клинических проявлениях.';
         actions = [
-          'Крупный плевральный дренаж 28–32F при гемотораксе',
+          'Крупный плевральный дренаж 28-32F при гемотораксе',
           'Finger/needle decompression при tension pneumothorax',
           'CXR/КТ подтверждение после стабилизации',
         ];
       } else {
         interpretation = `Положительный FAST: ${count} окно(-а) с свободной жидкостью`;
         color = '#EF4444';
-        details = 'При тупой травме — свободная жидкость = гемоперитонеум до доказательства обратного. У нестабильного пациента — экстренная лапаротомия; у стабильного — КТ для локализации/grading.';
+        details = 'При тупой травме - свободная жидкость = гемоперитонеум до доказательства обратного. У нестабильного пациента - экстренная лапаротомия; у стабильного - КТ для локализации/grading.';
         actions = [
           'Нестабильный (SBP < 90, BD > 5, лактат > 4, FAST+) → операционная, не КТ',
           'Стабильный → КТ brom-to-pelvis с контрастом',
@@ -74,13 +74,13 @@ const runner: CalculatorTool = {
       details: details + (positives.length ? `\n\nПоложительные окна: ${positives.join(', ')}.` : ''),
       actions,
       caveats: [
-        'FAST чувствительность 60–80%, специфичность > 95% для свободной жидкости',
+        'FAST чувствительность 60-80%, специфичность > 95% для свободной жидкости',
         'НЕ исключает: забрюшинную травму, повреждение полого органа, диафрагмы',
-        'Чувствительность растёт с объёмом жидкости: ≥ 200 мл — обнаруживаются надёжно, < 100 мл — пропускаются',
-        'У беременных и при асците — ложноположительные',
-        'У нестабильного пациента с FAST+ — прямая лапаротомия, НЕ КТ (ATLS)',
-        'eFAST для pneumothorax превосходит supine CXR (sens 90–95% vs 50%)',
-        'Повторный FAST через 15–30 мин повышает чувствительность',
+        'Чувствительность растёт с объёмом жидкости: ≥ 200 мл - обнаруживаются надёжно, < 100 мл - пропускаются',
+        'У беременных и при асците - ложноположительные',
+        'У нестабильного пациента с FAST+ - прямая лапаротомия, НЕ КТ (ATLS)',
+        'eFAST для pneumothorax превосходит supine CXR (sens 90-95% vs 50%)',
+        'Повторный FAST через 15-30 мин повышает чувствительность',
       ],
       related: [
         { id: 'aast', title: 'AAST Organ Injury Scale' },
@@ -95,37 +95,37 @@ const runner: CalculatorTool = {
       ],
     };
   },
-  reference: 'Rozycki GS et al. Surgeon-performed ultrasound for the assessment of truncal injuries: lessons learned from 1540 patients. Ann Surg 1998;228:557–67. Kirkpatrick AW et al. Hand-held thoracic sonography for detecting post-traumatic pneumothoraces: the Extended Focused Assessment with Sonography for Trauma (EFAST). J Trauma 2004;57:288–95. ATLS 10th ed. American College of Surgeons.',
+  reference: 'Rozycki GS et al. Surgeon-performed ultrasound for the assessment of truncal injuries: lessons learned from 1540 patients. Ann Surg 1998;228:557-67. Kirkpatrick AW et al. Hand-held thoracic sonography for detecting post-traumatic pneumothoraces: the Extended Focused Assessment with Sonography for Trauma (EFAST). J Trauma 2004;57:288-95. ATLS 10th ed. American College of Surgeons.',
   countries: 'Международный (ATLS)',
   presets: [
     { label: 'Все окна отрицательные', values: { ruq: false, luq: false, pelvis: false, pericard: false, thoraxL: false, thoraxR: false } },
-    { label: 'RUQ + таз — гемоперитонеум', values: { ruq: true, luq: false, pelvis: true, pericard: false, thoraxL: false, thoraxR: false } },
+    { label: 'RUQ + таз - гемоперитонеум', values: { ruq: true, luq: false, pelvis: true, pericard: false, thoraxL: false, thoraxR: false } },
     { label: 'Тампонада перикарда', values: { ruq: false, luq: false, pelvis: false, pericard: true, thoraxL: false, thoraxR: false } },
     { label: 'eFAST: левый гемоторакс + RUQ', values: { ruq: true, luq: false, pelvis: false, pericard: false, thoraxL: true, thoraxR: false } },
   ],
   info: `### Для чего используется
-**FAST** (Focused Assessment with Sonography for Trauma, Rozycki 1993) — point-of-care УЗИ при травме для быстрого обнаружения **гемоперитонеума** и **гемоперикарда**. **eFAST** (Kirkpatrick 2004) добавляет оценку плевральных полостей (**гемо-/пневмоторакс**).
+**FAST** (Focused Assessment with Sonography for Trauma, Rozycki 1993) - point-of-care УЗИ при травме для быстрого обнаружения **гемоперитонеума** и **гемоперикарда**. **eFAST** (Kirkpatrick 2004) добавляет оценку плевральных полостей (**гемо-/пневмоторакс**).
 
 ### 4 окна FAST
-1. **RUQ (Morison's pouch)** — гепаторенальный карман — самое чувствительное окно для гемоперитонеума (≥ 250 мл)
-2. **LUQ** — периспленический и субдиафрагмальный (жидкость собирается здесь при спленической травме)
-3. **Suprapubic** — ретровезикальный / pouch of Douglas
-4. **Subxiphoid** — перикард (гемоперикард, выпот)
+1. **RUQ (Morison's pouch)** - гепаторенальный карман - самое чувствительное окно для гемоперитонеума (≥ 250 мл)
+2. **LUQ** - периспленический и субдиафрагмальный (жидкость собирается здесь при спленической травме)
+3. **Suprapubic** - ретровезикальный / pouch of Douglas
+4. **Subxiphoid** - перикард (гемоперикард, выпот)
 
 ### +2 окна eFAST
-5. **Левый гемиторакс** — жидкость над диафрагмой + lung sliding
-6. **Правый гемиторакс** — то же
+5. **Левый гемиторакс** - жидкость над диафрагмой + lung sliding
+6. **Правый гемиторакс** - то же
 
 ### Зонд
-- Curvilinear 3,5–5 МГц (брюшная полость) или phased array (torакальные/субкостальные окна)
-- Linear 7–10 МГц для pneumothorax (lung sliding, A/B lines, M-mode «seashore» vs «barcode»)
+- Curvilinear 3,5-5 МГц (брюшная полость) или phased array (torакальные/субкостальные окна)
+- Linear 7-10 МГц для pneumothorax (lung sliding, A/B lines, M-mode «seashore» vs «barcode»)
 
 ### Диагностические характеристики
 | Параметр | Значение |
 |---|---|
-| Sensitivity (hemoperitoneum) | 60–80% (объём-зависимо) |
+| Sensitivity (hemoperitoneum) | 60-80% (объём-зависимо) |
 | Specificity | > 95% |
-| eFAST для pneumothorax | Sens 90–95%, Spec 98% |
+| eFAST для pneumothorax | Sens 90-95%, Spec 98% |
 | Пороговый объём | ~200 мл для надёжного обнаружения |
 
 ### Алгоритм ATLS
@@ -137,10 +137,10 @@ const runner: CalculatorTool = {
 ### Ограничения
 - **Пропускает**: забрюшинную травму (поджелудочная, почки, duodenum), повреждение полых органов, диафрагмальные разрывы
 - **Ложноположительные**: асцит, овариальная киста, беременность, перитонеальный диализ
-- **Оператор-зависимо** (кривая обучения ~25–50 исследований)
+- **Оператор-зависимо** (кривая обучения ~25-50 исследований)
 
 ### DPL (diagnostic peritoneal lavage)
-Исторически — «стандарт» до FAST. Sens 95%, но инвазивно. Сейчас — только в редких случаях, когда FAST/КТ недоступны.
+Исторически - «стандарт» до FAST. Sens 95%, но инвазивно. Сейчас - только в редких случаях, когда FAST/КТ недоступны.
 
 ### Источники
 Rozycki GS et al. *Ann Surg* 1998;228:557. Kirkpatrick AW et al. *J Trauma* 2004;57:288. ATLS 10th ed. (ACS 2018).

@@ -1,5 +1,5 @@
 // @ts-nocheck
-/** Runner: pierce — fullPIERS / miniPIERS (Payne 2011/2014) */
+/** Runner: pierce - fullPIERS / miniPIERS (Payne 2011/2014) */
 import type {
   CalculatorTool,
   ToolInput,
@@ -53,10 +53,10 @@ const runner: CalculatorTool = {
       risk = 'Высокий (≥ 30%)';
       color = '#DC2626';
     } else if (p >= 0.1) {
-      risk = 'Умеренный (10–30%)';
+      risk = 'Умеренный (10-30%)';
       color = '#F59E0B';
     } else if (p >= 0.025) {
-      risk = 'Низкий (2.5–10%)';
+      risk = 'Низкий (2.5-10%)';
       color = '#FDE047';
     } else {
       risk = 'Очень низкий (< 2.5%)';
@@ -76,8 +76,8 @@ const runner: CalculatorTool = {
       ],
       caveats: [
         'Калькулятор не заменяет клиническую оценку',
-        'miniPIERS (Payne 2014) — для низкоресурсных условий (без лаборатории): АД, ГВ, головная боль/визуальные симптомы, эпигастральная боль, тошнота/рвота, протеинурия',
-        'Валидирован в >2000 пациенток; эффективен при ГВ 20–40 нед',
+        'miniPIERS (Payne 2014) - для низкоресурсных условий (без лаборатории): АД, ГВ, головная боль/визуальные симптомы, эпигастральная боль, тошнота/рвота, протеинурия',
+        'Валидирован в >2000 пациенток; эффективен при ГВ 20-40 нед',
       ],
       related: [
         { id: 'acog-preeclampsia', title: 'Преэклампсия' },
@@ -91,7 +91,7 @@ const runner: CalculatorTool = {
     };
   },
   reference:
-    'Payne BA et al., fullPIERS — PLoS Med 2011;8:e1001013. miniPIERS — PLoS Med 2014;11:e1001589.',
+    'Payne BA et al., fullPIERS - PLoS Med 2011;8:e1001013. miniPIERS - PLoS Med 2014;11:e1001589.',
   countries: 'Международный',
   presets: [
     { label: 'Высокий риск', values: { ga: 30, chest: 'yes', spo2: 92, plt: 60, cr: 130, ast: 200 } },
@@ -100,7 +100,7 @@ const runner: CalculatorTool = {
   ],
   caveats: [
     'Только для подтверждённой преэклампсии',
-    'Горизонт прогноза — 48 ч',
+    'Горизонт прогноза - 48 ч',
   ],
   related: [
     { id: 'acog-preeclampsia', title: 'Преэклампсия' },
@@ -112,7 +112,7 @@ const runner: CalculatorTool = {
     { id: '300.4', title: 'Интенсивная терапия' },
   ],
   info: `### fullPIERS
-**fullPIERS (Pre-eclampsia Integrated Estimate of RiSk)** — валидированная логистическая модель для прогноза тяжёлых материнских исходов в 48 ч после госпитализации с преэклампсией.
+**fullPIERS (Pre-eclampsia Integrated Estimate of RiSk)** - валидированная логистическая модель для прогноза тяжёлых материнских исходов в 48 ч после госпитализации с преэклампсией.
 
 ### Переменные
 - ГВ при поступлении
@@ -123,7 +123,7 @@ const runner: CalculatorTool = {
 - АСТ
 
 ### miniPIERS (2014)
-Для условий без лаборатории — 6 клинических переменных.
+Для условий без лаборатории - 6 клинических переменных.
 
 ### Источники
 Payne BA et al. PLoS Med 2011;8:e1001013; 2014;11:e1001589.`,

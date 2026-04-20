@@ -2,7 +2,7 @@
 /**
  * Runner: lbw
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
- * Do not edit by hand — regenerate via `npm run split:runners`.
+ * Do not edit by hand - regenerate via `npm run split:runners`.
  *
  * Loaded lazily via dynamic import from lib/runners/index.ts so the
  * encyclopaedia of clinical content stays out of the main app bundle.
@@ -76,13 +76,13 @@ const runner: CalculatorTool = {
                 color = '#22C55E';
                 details = `LBW составляет ${pctLbw.toFixed(0)}% от TBW. При нормальном BMI разница между LBW и IBW невелика; дозирование по IBW или TBW обычно допустимо.`;
             } else if (bmi < 35) {
-                interpretation = 'Ожирение — LBW применима';
+                interpretation = 'Ожирение - LBW применима';
                 color = '#F59E0B';
-                details = `LBW ${lbw.toFixed(1)} кг (${pctLbw.toFixed(0)}% TBW). Janmahasatian 2005 — современный стандарт для анестетиков (пропофол индукция, рокуроний), опиоидов (ремифентанил, фентанил).`;
+                details = `LBW ${lbw.toFixed(1)} кг (${pctLbw.toFixed(0)}% TBW). Janmahasatian 2005 - современный стандарт для анестетиков (пропофол индукция, рокуроний), опиоидов (ремифентанил, фентанил).`;
             } else {
                 interpretation = 'Выраженное ожирение';
                 color = '#EF4444';
-                details = `LBW ${lbw.toFixed(1)} кг. При BMI ≥ 35 LBW критически важна — дозирование пропофола по TBW может привести к передозировке и гемодинамическим осложнениям.`;
+                details = `LBW ${lbw.toFixed(1)} кг. При BMI ≥ 35 LBW критически важна - дозирование пропофола по TBW может привести к передозировке и гемодинамическим осложнениям.`;
             }
             return {
                 value: lbw.toFixed(1),
@@ -92,9 +92,9 @@ const runner: CalculatorTool = {
                 details,
                 caveats: [
                     `BMI пациента: ${bmi.toFixed(1)} кг/м²`,
-                    'LBW ≠ IBW: LBW зависит от фактической массы, IBW — только от роста',
-                    'Формула Janmahasatian валидизирована на широком диапазоне BMI (17–70)',
-                    'Старые формулы (James 1976, Hume 1966) завышают LBW при ожирении — не использовать'
+                    'LBW ≠ IBW: LBW зависит от фактической массы, IBW - только от роста',
+                    'Формула Janmahasatian валидизирована на широком диапазоне BMI (17-70)',
+                    'Старые формулы (James 1976, Hume 1966) завышают LBW при ожирении - не использовать'
                 ],
                 related: [
                     {
@@ -118,7 +118,7 @@ const runner: CalculatorTool = {
                 ]
             };
         },
-    reference: "Janmahasatian S et al. Clin Pharmacokinet 2005;44:1051–1065. Современный стандарт LBW.",
+    reference: "Janmahasatian S et al. Clin Pharmacokinet 2005;44:1051-1065. Современный стандарт LBW.",
     countries: "Международный",
     presets: [
       {
@@ -154,7 +154,7 @@ const runner: CalculatorTool = {
         }
       }
     ],
-    info: "### Для чего используется\n**Lean Body Weight (LBW)** по Janmahasatian (2005) — тощая масса тела, современный стандарт для дозирования **анестетиков и опиоидов** у пациентов с ожирением. Превосходит IBW и ABW по фармакокинетической точности.\n\n### Формула\n**Мужчины:** `LBW = 9270 × TBW / (6680 + 216 × BMI)`\n\n**Женщины:** `LBW = 9270 × TBW / (8780 + 244 × BMI)`\n\n### Применение (по BJA 2010, Ingrande-Lemmens)\n| Препарат | Доза по |\n|---|---|\n| Пропофол — индукция | LBW |\n| Пропофол — поддержание | TBW |\n| Рокуроний, векуроний | IBW или LBW |\n| Сукцинилхолин | TBW |\n| Ремифентанил, фентанил | LBW |\n| Суфентанил | TBW |\n| Парацетамол | IBW (макс 4 г/сут) |\n| Мидазолам | TBW (нагрузка), IBW (поддерж.) |\n\n### Сравнение с IBW/ABW\n| Масса | Зависит от | Основное применение |\n|---|---|---|\n| **IBW** (Devine) | Только рост + пол | Аминогликозиды (FDA), ИВЛ |\n| **ABW** | IBW + 40% избытка | Аминогликозиды при ожирении |\n| **LBW** (Janmahasatian) | TBW + BMI + пол | Анестетики, опиоиды |\n| **TBW** | Фактическая | Сукцинилхолин, НМГ лечение |\n\n### Преимущества Janmahasatian\n- Валидизирована на BMI 17–70 (включая морбидное ожирение)\n- Учитывает нелинейное изменение % жира с ростом BMI\n- Современный стандарт в анестезиологии\n\n### Ограничения\n- Не валидизирована у детей < 14 лет\n- Исходные данные — преимущественно европеоиды\n- Не учитывает крайние случаи (бодибилдеры с BMI > 30 и низким % жира)\n\n### Тактика\n- Пропофол индукция: 2 мг/кг × LBW (а не TBW — иначе гипотензия, апноэ)\n- Рокуроний: 0,6 мг/кг × IBW (или LBW)\n- Антибиотики периоперационные: цефазолин 2 г / 3 г при ≥ 120 кг\n\n### Источник\nJanmahasatian S, Duffull SB, Ash S, Ward LC, Byrne NM, Green B. Quantification of lean bodyweight. *Clin Pharmacokinet* 2005;44(10):1051–1065.\n\nIngrande J, Lemmens HJM. Dose adjustment of anaesthetics in the morbidly obese. *Br J Anaesth* 2010;105(Suppl 1):i16–23."
+    info: "### Для чего используется\n**Lean Body Weight (LBW)** по Janmahasatian (2005) - тощая масса тела, современный стандарт для дозирования **анестетиков и опиоидов** у пациентов с ожирением. Превосходит IBW и ABW по фармакокинетической точности.\n\n### Формула\n**Мужчины:** `LBW = 9270 × TBW / (6680 + 216 × BMI)`\n\n**Женщины:** `LBW = 9270 × TBW / (8780 + 244 × BMI)`\n\n### Применение (по BJA 2010, Ingrande-Lemmens)\n| Препарат | Доза по |\n|---|---|\n| Пропофол - индукция | LBW |\n| Пропофол - поддержание | TBW |\n| Рокуроний, векуроний | IBW или LBW |\n| Сукцинилхолин | TBW |\n| Ремифентанил, фентанил | LBW |\n| Суфентанил | TBW |\n| Парацетамол | IBW (макс 4 г/сут) |\n| Мидазолам | TBW (нагрузка), IBW (поддерж.) |\n\n### Сравнение с IBW/ABW\n| Масса | Зависит от | Основное применение |\n|---|---|---|\n| **IBW** (Devine) | Только рост + пол | Аминогликозиды (FDA), ИВЛ |\n| **ABW** | IBW + 40% избытка | Аминогликозиды при ожирении |\n| **LBW** (Janmahasatian) | TBW + BMI + пол | Анестетики, опиоиды |\n| **TBW** | Фактическая | Сукцинилхолин, НМГ лечение |\n\n### Преимущества Janmahasatian\n- Валидизирована на BMI 17-70 (включая морбидное ожирение)\n- Учитывает нелинейное изменение % жира с ростом BMI\n- Современный стандарт в анестезиологии\n\n### Ограничения\n- Не валидизирована у детей < 14 лет\n- Исходные данные - преимущественно европеоиды\n- Не учитывает крайние случаи (бодибилдеры с BMI > 30 и низким % жира)\n\n### Тактика\n- Пропофол индукция: 2 мг/кг × LBW (а не TBW - иначе гипотензия, апноэ)\n- Рокуроний: 0,6 мг/кг × IBW (или LBW)\n- Антибиотики периоперационные: цефазолин 2 г / 3 г при ≥ 120 кг\n\n### Источник\nJanmahasatian S, Duffull SB, Ash S, Ward LC, Byrne NM, Green B. Quantification of lean bodyweight. *Clin Pharmacokinet* 2005;44(10):1051-1065.\n\nIngrande J, Lemmens HJM. Dose adjustment of anaesthetics in the morbidly obese. *Br J Anaesth* 2010;105(Suppl 1):i16-23."
   };
 
 export default runner;

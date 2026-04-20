@@ -1,5 +1,5 @@
 // @ts-nocheck
-/** Runner: eceb — Essential Care for Every Baby + ECSB (small babies) */
+/** Runner: eceb - Essential Care for Every Baby + ECSB (small babies) */
 import type { CalculatorTool } from '../tools-runners';
 
 const runner: CalculatorTool = {
@@ -16,7 +16,7 @@ const runner: CalculatorTool = {
         { value: 'feed', label: 'Early breastfeeding' },
         { value: 'thermo', label: 'Thermoregulation (KMC)' },
         { value: 'prev', label: 'Vitamin K + eye prophylaxis + screening' },
-        { value: 'ecsb', label: 'ECSB — для недоношенных/SGA' },
+        { value: 'ecsb', label: 'ECSB - для недоношенных/SGA' },
       ],
     },
   ],
@@ -38,7 +38,7 @@ const runner: CalculatorTool = {
       skin: {
         title: 'Skin-to-skin + cord clamping',
         c: '#F59E0B',
-        details: 'Немедленный skin-to-skin контакт — тепло, bonding, раннее грудное вскармливание. Отложенное пережатие пуповины улучшает запасы железа.',
+        details: 'Немедленный skin-to-skin контакт - тепло, bonding, раннее грудное вскармливание. Отложенное пережатие пуповины улучшает запасы железа.',
         actions: [
           'Skin-to-skin с матерью ≥60 мин после рождения',
           'Отложенное пережатие пуповины ≥1 мин (до прекращения пульсации) при стабильности',
@@ -49,31 +49,31 @@ const runner: CalculatorTool = {
       apgar: {
         title: 'Apgar 1 и 5 мин',
         c: '#4B8DF5',
-        details: 'Apgar оценивает состояние новорождённого на 1-й и 5-й мин (при низком — 10-й, 15-й). 5 компонентов × 0–2 = макс 10.',
+        details: 'Apgar оценивает состояние новорождённого на 1-й и 5-й мин (при низком - 10-й, 15-й). 5 компонентов × 0-2 = макс 10.',
         actions: [
-          'A — Appearance (цвет): 0 bleu/pale · 1 acrocyanosis · 2 pink',
-          'P — Pulse: 0 none · 1 <100 · 2 ≥100',
-          'G — Grimace (рефлекс): 0 none · 1 grimace · 2 cry/cough',
-          'A — Activity (тонус): 0 flaccid · 1 some flexion · 2 active',
-          'R — Respiration: 0 none · 1 irregular/слабый плач · 2 strong cry',
-          '0–3 severe, 4–6 moderate, 7–10 reassuring',
+          'A - Appearance (цвет): 0 bleu/pale · 1 acrocyanosis · 2 pink',
+          'P - Pulse: 0 none · 1 <100 · 2 ≥100',
+          'G - Grimace (рефлекс): 0 none · 1 grimace · 2 cry/cough',
+          'A - Activity (тонус): 0 flaccid · 1 some flexion · 2 active',
+          'R - Respiration: 0 none · 1 irregular/слабый плач · 2 strong cry',
+          '0-3 severe, 4-6 moderate, 7-10 reassuring',
         ],
       },
       feed: {
         title: 'Early breastfeeding',
         c: '#84CC16',
-        details: 'Первое прикладывание в 1-й час жизни — улучшает выживаемость, колонизацию микробиомом, bonding.',
+        details: 'Первое прикладывание в 1-й час жизни - улучшает выживаемость, колонизацию микробиомом, bonding.',
         actions: [
           'Initiate breastfeeding в первые 60 мин',
           'Exclusive breastfeeding 6 мес (ВОЗ)',
           'Оценить прилаживание (latch) и позицию',
-          'Не давать prelacteal feeds (вода, гл. раствор) — WHO против',
+          'Не давать prelacteal feeds (вода, гл. раствор) - WHO против',
         ],
       },
       thermo: {
         title: 'Thermoregulation / KMC',
         c: '#FB923C',
-        details: 'Гипотермия = причина смерти и осложнений. Цель: подмышечная t 36.5–37.5 °C. Kangaroo Mother Care — для стабильных недоношенных/LBW.',
+        details: 'Гипотермия = причина смерти и осложнений. Цель: подмышечная t 36.5-37.5 °C. Kangaroo Mother Care - для стабильных недоношенных/LBW.',
         actions: [
           'Измерить t каждые 30 мин первый час, затем 1 × 6 ч',
           'Warm chain: тёплая родзала (≥25°), тёплая реанимация, одеяло, шапка, ЗЗД',
@@ -87,7 +87,7 @@ const runner: CalculatorTool = {
         c: '#3B82F6',
         details: 'Стандартная профилактика: витамин K, глазные капли, скрининги.',
         actions: [
-          'Витамин K 1 мг IM (термин) / 0.5 мг (<1 кг) — профилактика HDN',
+          'Витамин K 1 мг IM (термин) / 0.5 мг (<1 кг) - профилактика HDN',
           'Эритромицин 0.5% или повидон-йод глаз (профилактика гонорейной офтальмии)',
           'BCG + HepB в первые 24 ч (где показано)',
           'Newborn screening: СГС, гипотиреоз, фенилкетонурия, кислотно-щелочной, слух',
@@ -95,13 +95,13 @@ const runner: CalculatorTool = {
         ],
       },
       ecsb: {
-        title: 'ECSB — small babies',
+        title: 'ECSB - small babies',
         c: '#7C2D12',
-        details: 'Essential Care for Small Babies — для недоношенных <37 нед и/или <2500 г. KMC — основа.',
+        details: 'Essential Care for Small Babies - для недоношенных <37 нед и/или <2500 г. KMC - основа.',
         actions: [
           'Kangaroo Mother Care (KMC) непрерывно, ≥18 ч/сут',
           'Exclusive breastfeeding (или сцеженное молоко по чашечке/ложке при трудностях)',
-          'Частые кормления каждые 2–3 ч (меньше объём)',
+          'Частые кормления каждые 2-3 ч (меньше объём)',
           'Мониторинг: вес ежедневно, t, дыхание',
           'Prevention infection: чистые руки, чистый пуповинный остаток (хлоргексидин 4%)',
           'Follow-up через 1 нед, 1 мес, 2 мес и т.д.',
@@ -117,8 +117,8 @@ const runner: CalculatorTool = {
       details: r.details,
       actions: r.actions,
       caveats: [
-        'ECEB/ECSB — часть HBS Suite (AAP-WHO-USAID)',
-        'Для low-resource settings — нацелено на снижение неонатальной смертности',
+        'ECEB/ECSB - часть HBS Suite (AAP-WHO-USAID)',
+        'Для low-resource settings - нацелено на снижение неонатальной смертности',
         'KMC снижает смертность у LBW на ~40% (Cochrane review)',
       ],
       related: [
@@ -135,7 +135,7 @@ const runner: CalculatorTool = {
     };
   },
   reference: 'American Academy of Pediatrics / WHO / USAID. Essential Care for Every Baby (ECEB) 2014; Essential Care for Small Babies (ECSB) 2015. https://www.aap.org/helpingbabiessurvive',
-  countries: 'AAP / ВОЗ / USAID — global low-resource settings',
+  countries: 'AAP / ВОЗ / USAID - global low-resource settings',
   presets: [
     { label: 'Delivery room', values: { step: 'delivery' } },
     { label: 'Skin-to-skin', values: { step: 'skin' } },
@@ -145,7 +145,7 @@ const runner: CalculatorTool = {
     { label: 'ECSB', values: { step: 'ecsb' } },
   ],
   info: `### Для чего используется
-**ECEB (Essential Care for Every Baby)** + **ECSB (Essential Care for Small Babies)** — AAP-WHO-USAID программы ежедневной помощи новорождённым в low-resource settings. Следующий шаг после HBB.
+**ECEB (Essential Care for Every Baby)** + **ECSB (Essential Care for Small Babies)** - AAP-WHO-USAID программы ежедневной помощи новорождённым в low-resource settings. Следующий шаг после HBB.
 
 ### ECEB (термин / здоровый)
 1. Delivery room care
@@ -157,7 +157,7 @@ const runner: CalculatorTool = {
 7. Newborn screening
 
 ### ECSB (преждевременные / SGA)
-- **KMC** (Kangaroo Mother Care) — непрерывный skin-to-skin ≥18 ч/сут
+- **KMC** (Kangaroo Mother Care) - непрерывный skin-to-skin ≥18 ч/сут
 - Частые малообъёмные кормления
 - Профилактика инфекции (хлоргексидин 4% на пуповину)
 - Follow-up плана

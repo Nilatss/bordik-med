@@ -1,6 +1,6 @@
 // @ts-nocheck
 /**
- * Runner: berlin-ards — Berlin Definition of ARDS (Ranieri 2012) + Global 2023
+ * Runner: berlin-ards - Berlin Definition of ARDS (Ranieri 2012) + Global 2023
  */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -37,7 +37,7 @@ const runner: CalculatorTool = {
         interpretation: 'Требуется PEEP ≥ 5 см H₂O',
         color: '#F59E0B',
         details: 'Berlin 2012 требует PEEP или CPAP ≥ 5 см H₂O для оценки P/F. Global 2023 допускает HFNC ≥ 30 л/мин.',
-        actions: ['Установить PEEP ≥ 5 и пересчитать P/F', 'При НИВЛ — CPAP ≥ 5'],
+        actions: ['Установить PEEP ≥ 5 и пересчитать P/F', 'При НИВЛ - CPAP ≥ 5'],
         related: [{ id: 'pf-ratio', title: 'P/F ratio' }, { id: 'murray', title: 'Murray LIS' }],
         relatedCourses: [{ id: '300.4', title: 'Интенсивная терапия' }],
       };
@@ -56,16 +56,16 @@ const runner: CalculatorTool = {
     }
     if (pf > 200) {
       severity = 'Лёгкий ARDS'; color = '#F59E0B';
-      details = 'Лёгкий ARDS (P/F 201–300). Госпитальная летальность ~ 27%.';
+      details = 'Лёгкий ARDS (P/F 201-300). Госпитальная летальность ~ 27%.';
       actions = ['Низкообъёмная ИВЛ Vt 6 мл/кг IBW', 'Plateau ≤ 30 см H₂O', 'PEEP-таблица ARDSnet', 'Консервативная жидкостная стратегия'];
     } else if (pf > 100) {
       severity = 'Умеренный ARDS'; color = '#EF4444';
-      details = 'Умеренный ARDS (P/F 101–200). Госпитальная летальность ~ 32%.';
+      details = 'Умеренный ARDS (P/F 101-200). Госпитальная летальность ~ 32%.';
       actions = ['Vt 6 мл/кг, Plateau ≤ 30', 'Высокий PEEP (PEEP-таблица ARDSnet high-PEEP)', 'Прон-позиция ≥ 16 ч/сут при P/F < 150', 'Рассмотреть нейромышечную блокаду ≤ 48 ч'];
     } else {
       severity = 'Тяжёлый ARDS'; color = '#991B1B';
       details = 'Тяжёлый ARDS (P/F ≤ 100). Госпитальная летальность ~ 45%.';
-      actions = ['Прон-позиция 16+ ч/сут (PROSEVA)', 'Рассмотреть VV-ECMO (EOLIA, критерии Berlin)', 'Нейромышечная блокада', 'Ингаляционный NO/эпопростенол — rescue'];
+      actions = ['Прон-позиция 16+ ч/сут (PROSEVA)', 'Рассмотреть VV-ECMO (EOLIA, критерии Berlin)', 'Нейромышечная блокада', 'Ингаляционный NO/эпопростенол - rescue'];
     }
     return {
       value: `${severity} · P/F ${pf}`,
@@ -88,7 +88,7 @@ const runner: CalculatorTool = {
       ],
     };
   },
-  reference: 'ARDS Definition Task Force (Ranieri VM). JAMA 2012;307:2526–2533. Global Definition: Matthay MA et al. Am J Respir Crit Care Med 2024;209:37–47.',
+  reference: 'ARDS Definition Task Force (Ranieri VM). JAMA 2012;307:2526-2533. Global Definition: Matthay MA et al. Am J Respir Crit Care Med 2024;209:37-47.',
   countries: 'Международный (ESICM/ATS/SCCM)',
   presets: [
     { label: 'Лёгкий ARDS', values: { timing: true, bilateral: true, noncardiac: true, pf: 250, peep: 5 } },
@@ -97,11 +97,11 @@ const runner: CalculatorTool = {
   ],
   caveats: [
     'Все 3 предпосылки обязательны: timing, bilateral infiltrates, non-cardiac origin',
-    'PEEP/CPAP ≥ 5 см H₂O — обязательное условие для оценки P/F',
+    'PEEP/CPAP ≥ 5 см H₂O - обязательное условие для оценки P/F',
     'Global Definition 2023 расширяет на HFNC и SpO₂/FiO₂',
   ],
   info: `### Для чего используется
-**Берлинское определение ARDS (2012)** + **Глобальное определение (2023)** — диагностика и стратификация ОРДС по тяжести.
+**Берлинское определение ARDS (2012)** + **Глобальное определение (2023)** - диагностика и стратификация ОРДС по тяжести.
 
 ### Предпосылки (все 3)
 1. Начало < 1 недели
@@ -111,8 +111,8 @@ const runner: CalculatorTool = {
 ### Классификация по P/F при PEEP/CPAP ≥ 5
 | Степень | P/F | Летальность |
 |---|---|---|
-| Лёгкий | 201–300 | ~ 27 % |
-| Умеренный | 101–200 | ~ 32 % |
+| Лёгкий | 201-300 | ~ 27 % |
+| Умеренный | 101-200 | ~ 32 % |
 | Тяжёлый | ≤ 100 | ~ 45 % |
 
 ### Global Definition 2023
@@ -120,8 +120,8 @@ const runner: CalculatorTool = {
 - Нет требования ИВЛ для диагноза при наличии HFNC
 
 ### Источники
-- Ranieri VM et al. Acute respiratory distress syndrome: the Berlin Definition. JAMA 2012;307:2526–33.
-- Matthay MA et al. A New Global Definition of ARDS. Am J Respir Crit Care Med 2024;209:37–47.`,
+- Ranieri VM et al. Acute respiratory distress syndrome: the Berlin Definition. JAMA 2012;307:2526-33.
+- Matthay MA et al. A New Global Definition of ARDS. Am J Respir Crit Care Med 2024;209:37-47.`,
 };
 
 export default runner;

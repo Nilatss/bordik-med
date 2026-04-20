@@ -554,7 +554,7 @@ export default function ProfilePage() {
             </div>
             <div style={{ flex: 1, textAlign: 'center' }}>
               <p style={{ fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 700, color: '#1A1A1A' }}>
-                {avgScore > 0 ? `${avgScore}%` : '—'}
+                {avgScore > 0 ? `${avgScore}%` : '-'}
               </p>
               <p style={{ fontFamily: 'var(--font-body)', fontSize: 10, color: '#999', marginTop: 2 }}>
                 {t('profile.avgScore')}

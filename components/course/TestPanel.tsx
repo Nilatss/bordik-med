@@ -451,7 +451,7 @@ export default function TestPanel({ courseId }: TestPanelProps) {
             marginTop: 4,
           }}
         >
-          {/* Icon badge — matches other test cards */}
+          {/* Icon badge - matches other test cards */}
           <div style={{
             width: 44, height: 44, borderRadius: 12, flexShrink: 0,
             background: modulePassed ? '#22C55E' : '#FFFFFF',

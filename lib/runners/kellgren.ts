@@ -1,5 +1,5 @@
 // @ts-nocheck
-/** Runner: kellgren — Kellgren-Lawrence radiographic classification of osteoarthritis (1957) */
+/** Runner: kellgren - Kellgren-Lawrence radiographic classification of osteoarthritis (1957) */
 import type { ScoreTool } from '../tools-runners';
 
 const runner: ScoreTool = {
@@ -11,11 +11,11 @@ const runner: ScoreTool = {
       label: 'Степень по Kellgren-Lawrence (стоящий рентген)',
       type: 'select',
       options: [
-        { value: '0', label: '0 — нет OA', points: 0 },
-        { value: '1', label: '1 — сомнительное сужение суставной щели, возможные остеофиты', points: 1 },
-        { value: '2', label: '2 — определённые остеофиты, возможное сужение', points: 2 },
-        { value: '3', label: '3 — умеренные остеофиты + сужение + склероз + возможная деформация', points: 3 },
-        { value: '4', label: '4 — крупные остеофиты + выраженное сужение + тяжёлый склероз + деформация', points: 4 },
+        { value: '0', label: '0 - нет OA', points: 0 },
+        { value: '1', label: '1 - сомнительное сужение суставной щели, возможные остеофиты', points: 1 },
+        { value: '2', label: '2 - определённые остеофиты, возможное сужение', points: 2 },
+        { value: '3', label: '3 - умеренные остеофиты + сужение + склероз + возможная деформация', points: 3 },
+        { value: '4', label: '4 - крупные остеофиты + выраженное сужение + тяжёлый склероз + деформация', points: 4 },
       ],
     },
   ],
@@ -44,8 +44,8 @@ const runner: ScoreTool = {
         'Физиотерапия структурированная (quadriceps, core)',
         'Oral NSAIDs (с учётом GI/CV/renal риска)',
         'Duloxetine при хронической боли',
-        'Intraarticular corticosteroids при flares (короткий эффект 4–12 нед)',
-        'HA injections (viscosupplementation) — варьирующие данные, рассмотреть у молодых',
+        'Intraarticular corticosteroids при flares (короткий эффект 4-12 нед)',
+        'HA injections (viscosupplementation) - варьирующие данные, рассмотреть у молодых',
       ],
     },
     {
@@ -62,20 +62,20 @@ const runner: ScoreTool = {
       min: 4, max: 4, label: 'Grade 4 (тяжёлая OA)', color: '#EF4444',
       description: 'Bone-on-bone, большие остеофиты, деформация. Severe OA.',
       actions: [
-        'Total joint arthroplasty (TKA / THA) — gold standard у подходящих пациентов',
-        'Unicompartmental — только при unicompartmental OA с сохранёнными compartments',
+        'Total joint arthroplasty (TKA / THA) - gold standard у подходящих пациентов',
+        'Unicompartmental - только при unicompartmental OA с сохранёнными compartments',
         'У неоперабельных: optimize pain (duloxetine, tramadol ограниченно), mobility aids',
         'Pre-op: optimization (HbA1c < 7, BMI идеально < 40, smoking cessation, dental clearance)',
       ],
     },
   ],
   caveats: [
-    'K-L основан на СТОЯЩЕМ AP рентгене (weight-bearing) — non-WB снимки недооценивают сужение',
+    'K-L основан на СТОЯЩЕМ AP рентгене (weight-bearing) - non-WB снимки недооценивают сужение',
     'KOOS / HOOS для knee/hip дополнительно оценивают симптомы (рентген ↔ боль слабо коррелируют)',
-    'МРТ-классификации (WORMS, BLOKS, MOAKS) — исследования, не рутинно',
+    'МРТ-классификации (WORMS, BLOKS, MOAKS) - исследования, не рутинно',
     'Joint space narrowing < 2 мм = «definite narrowing» (медиальный knee)',
-    'Rosenberg view (45° flexion PA) — более чувствительный для раннего medial joint narrowing',
-    'Grade не всегда коррелирует с болью: до 30% пациентов с K-L 3–4 имеют минимальные симптомы, и наоборот',
+    'Rosenberg view (45° flexion PA) - более чувствительный для раннего medial joint narrowing',
+    'Grade не всегда коррелирует с болью: до 30% пациентов с K-L 3-4 имеют минимальные симптомы, и наоборот',
   ],
   related: [
     { id: 'outerbridge', title: 'Outerbridge / ICRS' },
@@ -86,7 +86,7 @@ const runner: ScoreTool = {
     { id: '302.2', title: 'Травматология' },
     { id: '201.3', title: 'Ревматология' },
   ],
-  reference: 'Kellgren JH, Lawrence JS. Radiological assessment of osteo-arthrosis. Ann Rheum Dis 1957;16:494–502. Altman R et al. OARSI atlas of individual radiographic features in OA. Osteoarthritis Cartilage 2007;15(Suppl A):A1.',
+  reference: 'Kellgren JH, Lawrence JS. Radiological assessment of osteo-arthrosis. Ann Rheum Dis 1957;16:494-502. Altman R et al. OARSI atlas of individual radiographic features in OA. Osteoarthritis Cartilage 2007;15(Suppl A):A1.',
   countries: 'Международный',
   presets: [
     { label: 'Здоровое колено 40 лет', values: { grade: '0' } },
@@ -94,7 +94,7 @@ const runner: ScoreTool = {
     { label: 'Мужчина 65 лет, bone-on-bone медиально', values: { grade: '4' } },
   ],
   info: `### Для чего используется
-**Kellgren-Lawrence (1957)** — наиболее используемая **рентгенологическая классификация остеоартрита** (OA). Применима к коленному, тазобедренному, плечевому, кисти, позвоночнику.
+**Kellgren-Lawrence (1957)** - наиболее используемая **рентгенологическая классификация остеоартрита** (OA). Применима к коленному, тазобедренному, плечевому, кисти, позвоночнику.
 
 ### Критерии (5 степеней)
 | Grade | Признаки |
@@ -112,10 +112,10 @@ const runner: ScoreTool = {
 4. **Субхондральные кисты**
 
 ### Альтернативы
-- **OARSI atlas** (2007) — отдельные шкалы для joint space narrowing и остеофитов
-- **Ahlbäck** (knee, 1968) — больше внимания сужению
-- **Tönnis** (hip, 1976) — аналог для тазобедренного
-- **Croft** (hip) — используется в эпидемиологии
+- **OARSI atlas** (2007) - отдельные шкалы для joint space narrowing и остеофитов
+- **Ahlbäck** (knee, 1968) - больше внимания сужению
+- **Tönnis** (hip, 1976) - аналог для тазобедренного
+- **Croft** (hip) - используется в эпидемиологии
 
 ### Оптимальные проекции
 | Сустав | Проекция |
@@ -126,7 +126,7 @@ const runner: ScoreTool = {
 | **Hand** | PA оба запястья |
 
 ### Клиническая шкала OA (дополнить)
-- **WOMAC**, **KOOS**, **HOOS** — pain, stiffness, function
+- **WOMAC**, **KOOS**, **HOOS** - pain, stiffness, function
 - **VAS pain score**
 - **Range of motion**
 - **Deformity** (varus/valgus)

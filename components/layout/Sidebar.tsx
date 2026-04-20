@@ -161,7 +161,7 @@ export default function Sidebar() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [q, lang]);
 
-  // Course search results — all, grouped by availability
+  // Course search results - all, grouped by availability
   const UNLOCKED_SECTIONS = ['fundamentals'];
   const courseResults = useMemo(() => {
     if (!q || q.length < 2) return { available: [], locked: [] };
@@ -247,7 +247,7 @@ export default function Sidebar() {
           </p>
         </div>
 
-        {/* Search — matches nav item size */}
+        {/* Search - matches nav item size */}
         <div style={{ padding: '0 12px 12px' }}>
           <div
             style={{
@@ -299,7 +299,7 @@ export default function Sidebar() {
           </div>
         </div>
 
-        {/* Navigation — grouped + course search results */}
+        {/* Navigation - grouped + course search results */}
         <nav style={{
           padding: '0 12px',
           flex: 1,
@@ -365,7 +365,7 @@ export default function Sidebar() {
                 </div>
               ))}
 
-              {/* Course results — available */}
+              {/* Course results - available */}
               {isSearching && courseResults.available.length > 0 && (
                 <div style={{ marginTop: 4 }}>
                   <p style={{
@@ -438,7 +438,7 @@ export default function Sidebar() {
                 </div>
               )}
 
-              {/* Course results — coming soon (locked) */}
+              {/* Course results - coming soon (locked) */}
               {isSearching && courseResults.locked.length > 0 && (
                 <div style={{ marginTop: 4 }}>
                   <p style={{

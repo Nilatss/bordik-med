@@ -1,7 +1,7 @@
 // @ts-nocheck
 /**
  * Runner: mpm
- * MPM II — Mortality Probability Model (Lemeshow 1993).
+ * MPM II - Mortality Probability Model (Lemeshow 1993).
  */
 
 import type {
@@ -22,8 +22,8 @@ const runner: CalculatorTool = {
       label: 'Временная точка',
       type: 'select',
       options: [
-        { value: '0', label: 'MPM₀ — при поступлении в ICU', points: 0 },
-        { value: '24', label: 'MPM₂₄ — через 24 часа', points: 0 },
+        { value: '0', label: 'MPM₀ - при поступлении в ICU', points: 0 },
+        { value: '24', label: 'MPM₂₄ - через 24 часа', points: 0 },
       ],
     },
     {
@@ -68,7 +68,7 @@ const runner: CalculatorTool = {
     } else {
       interpretation = 'Критическая смертность';
       color = '#991B1B';
-      details = 'Критически высокий риск — большинство пациентов не выживут. Обсуждение ограничения терапии.';
+      details = 'Критически высокий риск - большинство пациентов не выживут. Обсуждение ограничения терапии.';
       actions = [
         'Daily family meetings',
         'Advance directives',
@@ -87,15 +87,15 @@ const runner: CalculatorTool = {
       actions,
       caveats: [
         'MPM требует правильного расчёта логита по 15 (MPM₀) или 14 (MPM₂₄) переменным',
-        'Модель 1993 года — переоценивает смертность в современной эре (MPM III Higgins 2007 более актуален)',
+        'Модель 1993 года - переоценивает смертность в современной эре (MPM III Higgins 2007 более актуален)',
         'Не валидизирован у ожоговых, кардиохирургических, < 18 лет',
         'MPM₂₄ требует данных на 24 ч (не только при поступлении)',
       ],
       scale: {
         segments: [
           { min: 0, max: 10, label: '< 10%', color: '#22C55E' },
-          { min: 10, max: 30, label: '10–30', color: '#F59E0B' },
-          { min: 30, max: 60, label: '30–60', color: '#EF4444' },
+          { min: 10, max: 30, label: '10-30', color: '#F59E0B' },
+          { min: 30, max: 60, label: '30-60', color: '#EF4444' },
           { min: 60, max: 100, label: '> 60', color: '#991B1B' },
         ],
         current: pct,
@@ -113,7 +113,7 @@ const runner: CalculatorTool = {
       ],
     };
   },
-  reference: 'Lemeshow S et al. Mortality Probability Models (MPM II) based on an international cohort. JAMA 1993;270:2478–86.',
+  reference: 'Lemeshow S et al. Mortality Probability Models (MPM II) based on an international cohort. JAMA 1993;270:2478-86.',
   countries: 'Международный',
   presets: [
     { label: 'Низкий риск', values: { variant: '0', logit: -3 } },
@@ -121,7 +121,7 @@ const runner: CalculatorTool = {
     { label: 'Высокий', values: { variant: '24', logit: 0.5 } },
   ],
   info: `### Для чего используется
-**MPM II (Mortality Probability Model, Lemeshow 1993)** — логистическая модель прогноза **госпитальной смертности пациентов ICU** с использованием легко доступных переменных.
+**MPM II (Mortality Probability Model, Lemeshow 1993)** - логистическая модель прогноза **госпитальной смертности пациентов ICU** с использованием легко доступных переменных.
 
 ### Два варианта
 | Модель | Момент расчёта | Переменных |
@@ -164,7 +164,7 @@ P(смерть) = 1 / (1 + e^−logit)
 | **MPM₀ II** | Поступление | 15 |
 | **MPM₂₄ II** | 24 ч | 14 |
 
-MPM удобен тем, что переменные **бинарные** (yes/no) для большинства — проще собирать.
+MPM удобен тем, что переменные **бинарные** (yes/no) для большинства - проще собирать.
 
 ### MPM III (Higgins 2007)
 Обновлённая калибровка на современной когорте ICU США. Включает:
@@ -173,7 +173,7 @@ MPM удобен тем, что переменные **бинарные** (yes/n
 
 ### Ограничения
 - Модели 1993 года устарели для современных результатов sepsis bundles
-- Переменные бинарны — теряется градация тяжести
+- Переменные бинарны - теряется градация тяжести
 - Не заменяет клиническое суждение и динамический мониторинг (SOFA)`,
 };
 

@@ -1,5 +1,5 @@
 // @ts-nocheck
-/** Runner: ucla-shoulder — UCLA / ASES / Constant-Murley / DASH / QuickDASH */
+/** Runner: ucla-shoulder - UCLA / ASES / Constant-Murley / DASH / QuickDASH */
 import type { CalculatorTool } from '../tools-runners';
 
 const runner: CalculatorTool = {
@@ -10,11 +10,11 @@ const runner: CalculatorTool = {
       label: 'Шкала',
       type: 'select',
       options: [
-        { value: 'ucla', label: 'UCLA Shoulder Score (0–35, выше = лучше)' },
-        { value: 'ases', label: 'ASES (0–100, выше = лучше)' },
-        { value: 'constant', label: 'Constant-Murley (0–100, выше = лучше)' },
-        { value: 'dash', label: 'DASH (0–100, НИЖЕ = лучше)' },
-        { value: 'quickdash', label: 'QuickDASH (0–100, НИЖЕ = лучше)' },
+        { value: 'ucla', label: 'UCLA Shoulder Score (0-35, выше = лучше)' },
+        { value: 'ases', label: 'ASES (0-100, выше = лучше)' },
+        { value: 'constant', label: 'Constant-Murley (0-100, выше = лучше)' },
+        { value: 'dash', label: 'DASH (0-100, НИЖЕ = лучше)' },
+        { value: 'quickdash', label: 'QuickDASH (0-100, НИЖЕ = лучше)' },
       ],
     },
     {
@@ -38,7 +38,7 @@ const runner: CalculatorTool = {
       else if (score >= 29) { interpretation = 'Хороший'; color = '#84CC16'; }
       else if (score >= 21) { interpretation = 'Удовлетворительный'; color = '#F59E0B'; }
       else { interpretation = 'Плохой'; color = '#EF4444'; }
-      details = 'UCLA Shoulder Score (Amstutz et al., 1981) — 5 доменов: pain (10), function (10), active forward flexion (5), strength flexion (5), satisfaction (5). Всего 0–35. Широко используется для оценки RTC repair и TSA.';
+      details = 'UCLA Shoulder Score (Amstutz et al., 1981) - 5 доменов: pain (10), function (10), active forward flexion (5), strength flexion (5), satisfaction (5). Всего 0-35. Широко используется для оценки RTC repair и TSA.';
       actions = [
         'UCLA прост, но не валидирован так строго как ASES',
         'Подходит для исследований replacement arthroplasty',
@@ -48,19 +48,19 @@ const runner: CalculatorTool = {
       else if (score >= 60) { interpretation = 'Умеренный'; color = '#84CC16'; }
       else if (score >= 40) { interpretation = 'Плохой'; color = '#F59E0B'; }
       else { interpretation = 'Очень плохой'; color = '#EF4444'; }
-      details = 'ASES (Richards et al., 1994) — Pain (VAS 0–10 × 5 = 50) + Function (10 ADL × 0–3 × 5/3 = 50). Сумма 0–100. MCID ≈ 13,6; PASS ≈ 67 (RTC repair).';
+      details = 'ASES (Richards et al., 1994) - Pain (VAS 0-10 × 5 = 50) + Function (10 ADL × 0-3 × 5/3 = 50). Сумма 0-100. MCID ≈ 13,6; PASS ≈ 67 (RTC repair).';
       actions = [
         'Наиболее валидирован для шечных заболеваний (RTC, TSA, instability)',
-        'Самозаполняемая форма — удобна для dashboards',
+        'Самозаполняемая форма - удобна для dashboards',
       ];
     } else if (scale === 'constant') {
       if (score >= 85) { interpretation = 'Отличный (Constant ≥ 85)'; color = '#22C55E'; }
       else if (score >= 70) { interpretation = 'Хороший'; color = '#84CC16'; }
       else if (score >= 55) { interpretation = 'Удовлетворительный'; color = '#F59E0B'; }
       else { interpretation = 'Плохой'; color = '#EF4444'; }
-      details = 'Constant-Murley (1987) — Subjective 35 (pain 15 + ADL 20) + Objective 65 (ROM 40 + strength 25). Сумма 0–100. Нормализация по возрасту/полу рекомендована. MCID ≈ 10,4.';
+      details = 'Constant-Murley (1987) - Subjective 35 (pain 15 + ADL 20) + Objective 65 (ROM 40 + strength 25). Сумма 0-100. Нормализация по возрасту/полу рекомендована. MCID ≈ 10,4.';
       actions = [
-        'Включает объективную оценку силы — требует динамометра (isobex)',
+        'Включает объективную оценку силы - требует динамометра (isobex)',
         'Рекомендован EFORT/SECEC как стандарт для европейских исследований',
       ];
     } else if (scale === 'dash') {
@@ -68,17 +68,17 @@ const runner: CalculatorTool = {
       else if (score <= 30) { interpretation = 'Лёгкая'; color = '#84CC16'; }
       else if (score <= 50) { interpretation = 'Умеренная'; color = '#F59E0B'; }
       else { interpretation = 'Тяжёлая'; color = '#EF4444'; }
-      details = 'DASH (Hudak et al., 1996) — 30 пунктов + optional Work/Sports модули. 0–100, НИЖЕ = лучше. Универсален для всей верхней конечности. MCID ≈ 10,2; PASS ≈ 32.';
+      details = 'DASH (Hudak et al., 1996) - 30 пунктов + optional Work/Sports модули. 0-100, НИЖЕ = лучше. Универсален для всей верхней конечности. MCID ≈ 10,2; PASS ≈ 32.';
       actions = [
         'Подходит, если патология охватывает и плечо, и локоть/кисть',
-        'Для быстрой оценки — QuickDASH (11 items)',
+        'Для быстрой оценки - QuickDASH (11 items)',
       ];
     } else if (scale === 'quickdash') {
       if (score <= 15) { interpretation = 'Минимальная (QuickDASH)'; color = '#22C55E'; }
       else if (score <= 30) { interpretation = 'Лёгкая'; color = '#84CC16'; }
       else if (score <= 50) { interpretation = 'Умеренная'; color = '#F59E0B'; }
       else { interpretation = 'Тяжёлая'; color = '#EF4444'; }
-      details = 'QuickDASH (2005) — 11 пунктов из DASH. 0–100, НИЖЕ = лучше. Валидирован как эквивалент полного DASH. MCID ≈ 8; PASS ≈ 25.';
+      details = 'QuickDASH (2005) - 11 пунктов из DASH. 0-100, НИЖЕ = лучше. Валидирован как эквивалент полного DASH. MCID ≈ 8; PASS ≈ 25.';
       actions = [
         'Оптимален для регистров и рутинной оценки',
         'При сомнениях переходить на полный DASH',
@@ -93,9 +93,9 @@ const runner: CalculatorTool = {
       details,
       actions,
       caveats: [
-        'ASES и Constant — наиболее используемые в исследовательской литературе для плеча',
-        'UCLA — историческая шкала, чаще для TSA',
-        'DASH / QuickDASH — универсальны, охватывают всю верхнюю конечность',
+        'ASES и Constant - наиболее используемые в исследовательской литературе для плеча',
+        'UCLA - историческая шкала, чаще для TSA',
+        'DASH / QuickDASH - универсальны, охватывают всю верхнюю конечность',
         'Constant зависит от силы → в острых состояниях (боль, слабость) необъективен',
         'Все PROMs субъективны; дополнить объективными: ROM (AFE, ER, IR), lift-off test, belly-press, Hawkins, Neer, Speed',
       ],
@@ -110,7 +110,7 @@ const runner: CalculatorTool = {
       ],
     };
   },
-  reference: 'Amstutz HC et al. UCLA anatomic total shoulder arthroplasty. Clin Orthop 1981;155:7–20. Richards RR et al. A standardized method for the assessment of shoulder function (ASES). J Shoulder Elbow Surg 1994;3:347–52. Constant CR, Murley AH. A clinical method of functional assessment of the shoulder. Clin Orthop 1987;214:160–4. Hudak PL et al. DASH. Am J Ind Med 1996;29:602–8. Beaton DE et al. QuickDASH. J Bone Joint Surg Am 2005;87:1038–46.',
+  reference: 'Amstutz HC et al. UCLA anatomic total shoulder arthroplasty. Clin Orthop 1981;155:7-20. Richards RR et al. A standardized method for the assessment of shoulder function (ASES). J Shoulder Elbow Surg 1994;3:347-52. Constant CR, Murley AH. A clinical method of functional assessment of the shoulder. Clin Orthop 1987;214:160-4. Hudak PL et al. DASH. Am J Ind Med 1996;29:602-8. Beaton DE et al. QuickDASH. J Bone Joint Surg Am 2005;87:1038-46.',
   countries: 'Международный',
   presets: [
     { label: 'UCLA post-RTC отличный', values: { scale: 'ucla', score: 33 } },
@@ -124,23 +124,23 @@ PROMs для **плечевого сустава и верхней конечн�
 
 ### UCLA Shoulder Score (1981)
 - **5 доменов**: pain (10), function (10), AFE (5), strength flexion (5), satisfaction (5)
-- 0–35, ≥34 отлично, 29–33 хорошо, 21–28 удовл., <21 плохо
+- 0-35, ≥34 отлично, 29-33 хорошо, 21-28 удовл., <21 плохо
 - Historically для TSA (Amstutz)
 
 ### ASES (1994)
-- **Pain VAS × 5 = 50 + Function 10 ADL × 0–3 × 5/3 = 50**
-- 0–100, выше = лучше
+- **Pain VAS × 5 = 50 + Function 10 ADL × 0-3 × 5/3 = 50**
+- 0-100, выше = лучше
 - MCID ≈ 13,6; PASS ≈ 67 (RTC repair)
 - Наиболее широко используемый в RCT
 
 ### Constant-Murley (1987)
 - **Subjective 35** (pain 15 + ADL 20) + **Objective 65** (ROM 40 + strength 25)
-- 0–100, выше = лучше
+- 0-100, выше = лучше
 - Требует объективного тестирования силы
-- **Возраст/пол-скорректированный** вариант — для сравнений
+- **Возраст/пол-скорректированный** вариант - для сравнений
 
 ### DASH (1996) / QuickDASH (2005)
-- **DASH**: 30 пунктов + Work/Sports модули; 0–100, **НИЖЕ = лучше**
+- **DASH**: 30 пунктов + Work/Sports модули; 0-100, **НИЖЕ = лучше**
 - **QuickDASH**: 11 пунктов; эквивалент полного DASH
 - Универсальные для всей верхней конечности (плечо + локоть + кисть)
 - MCID DASH ≈ 10,2; QuickDASH ≈ 8

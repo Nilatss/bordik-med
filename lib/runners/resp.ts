@@ -1,6 +1,6 @@
 // @ts-nocheck
 /**
- * Runner: resp — RESP Score (Schmidt 2014) для VV-ECMO при тяжёлом ARDS
+ * Runner: resp - RESP Score (Schmidt 2014) для VV-ECMO при тяжёлом ARDS
  */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -10,8 +10,8 @@ const runner: CalculatorTool = {
     {
       id: 'age', label: 'Возраст', type: 'select',
       options: [
-        { value: '0', label: '18–49 лет (0)' },
-        { value: '-2', label: '50–59 лет (−2)' },
+        { value: '0', label: '18-49 лет (0)' },
+        { value: '-2', label: '50-59 лет (−2)' },
         { value: '-3', label: '≥ 60 лет (−3)' },
       ],
     },
@@ -20,7 +20,7 @@ const runner: CalculatorTool = {
       id: 'vent', label: 'Длительность ИВЛ до ECMO', type: 'select',
       options: [
         { value: '3', label: '< 48 ч (+3)' },
-        { value: '1', label: '48 ч – 7 сут (+1)' },
+        { value: '1', label: '48 ч - 7 сут (+1)' },
         { value: '0', label: '> 7 сут (0)' },
       ],
     },
@@ -61,11 +61,11 @@ const runner: CalculatorTool = {
     const dxPts = dxMap[String(v.dx || 'n0')] ?? 0;
     const total = sum + dxPts;
     let cls = 'V', color = '#991B1B', surv = '18%', details = '';
-    if (total >= 6) { cls = 'I'; color = '#22C55E'; surv = '92%'; details = 'Класс I — очень высокая выживаемость после VV-ECMO.'; }
-    else if (total >= 3) { cls = 'II'; color = '#84CC16'; surv = '76%'; details = 'Класс II — высокая выживаемость.'; }
-    else if (total >= -1) { cls = 'III'; color = '#F59E0B'; surv = '57%'; details = 'Класс III — промежуточная выживаемость.'; }
-    else if (total >= -5) { cls = 'IV'; color = '#EF4444'; surv = '33%'; details = 'Класс IV — низкая выживаемость.'; }
-    else { cls = 'V'; color = '#991B1B'; surv = '18%'; details = 'Класс V — очень низкая выживаемость; тщательно взвесить показания.'; }
+    if (total >= 6) { cls = 'I'; color = '#22C55E'; surv = '92%'; details = 'Класс I - очень высокая выживаемость после VV-ECMO.'; }
+    else if (total >= 3) { cls = 'II'; color = '#84CC16'; surv = '76%'; details = 'Класс II - высокая выживаемость.'; }
+    else if (total >= -1) { cls = 'III'; color = '#F59E0B'; surv = '57%'; details = 'Класс III - промежуточная выживаемость.'; }
+    else if (total >= -5) { cls = 'IV'; color = '#EF4444'; surv = '33%'; details = 'Класс IV - низкая выживаемость.'; }
+    else { cls = 'V'; color = '#991B1B'; surv = '18%'; details = 'Класс V - очень низкая выживаемость; тщательно взвесить показания.'; }
     return {
       value: `RESP ${total} · Class ${cls}`,
       interpretation: `Class ${cls} · выживаемость ${surv}`,
@@ -73,14 +73,14 @@ const runner: CalculatorTool = {
       details,
       actions: [
         'Применять EOLIA / Berlin критерии для отбора на VV-ECMO',
-        'Для VA-ECMO (кардиогенный шок) — использовать SAVE score',
+        'Для VA-ECMO (кардиогенный шок) - использовать SAVE score',
         'Оптимизировать ИВЛ и прон до ECMO; исключить обратимые причины',
         'Центр ECMO, MDT обсуждение',
       ],
       caveats: [
         'Валидирован для VV-ECMO при тяжёлом ARDS (Schmidt 2014, n=2355)',
         'Диапазон от −22 до +15 баллов',
-        'Для VA-ECMO — см. SAVE score',
+        'Для VA-ECMO - см. SAVE score',
         'Не замена клинической оценке; учитывать коморбидность',
       ],
       related: [
@@ -94,7 +94,7 @@ const runner: CalculatorTool = {
       ],
     };
   },
-  reference: 'Schmidt M, Bailey M, Sheldrake J, et al. Predicting survival after extracorporeal membrane oxygenation for severe acute respiratory failure. The RESP Score. Am J Respir Crit Care Med 2014;189:1374–1382.',
+  reference: 'Schmidt M, Bailey M, Sheldrake J, et al. Predicting survival after extracorporeal membrane oxygenation for severe acute respiratory failure. The RESP Score. Am J Respir Crit Care Med 2014;189:1374-1382.',
   countries: 'Международный (ELSO)',
   presets: [
     { label: 'Class I (высокая выживаемость)', values: { age: '0', vent: '3', dx: '3', pip: '0' } },
@@ -103,11 +103,11 @@ const runner: CalculatorTool = {
   ],
   caveats: [
     'Только VV-ECMO при ARDS',
-    'Для кардиогенного шока — SAVE',
+    'Для кардиогенного шока - SAVE',
     'Диапазон −22…+15',
   ],
   info: `### Для чего используется
-**RESP Score (Respiratory ECMO Survival Prediction, Schmidt 2014)** — прогноз госпитальной выживаемости перед VV-ECMO у пациентов с тяжёлым ARDS.
+**RESP Score (Respiratory ECMO Survival Prediction, Schmidt 2014)** - прогноз госпитальной выживаемости перед VV-ECMO у пациентов с тяжёлым ARDS.
 
 ### 12 предикторов (диапазон −22 … +15)
 Возраст, иммунокомпрометация, длительность ИВЛ, диагноз, ЦНС-дисфункция, внелёгочная инфекция, NMB, iNO, HCO₃⁻, PIP и др.
@@ -121,11 +121,11 @@ const runner: CalculatorTool = {
 | IV | −5…−2 | 33% |
 | V | ≤ −6 | 18% |
 
-### Для VA-ECMO — SAVE Score
+### Для VA-ECMO - SAVE Score
 Отдельная шкала для кардиогенного шока.
 
 ### Источник
-Schmidt M et al. Am J Respir Crit Care Med 2014;189:1374–82.`,
+Schmidt M et al. Am J Respir Crit Care Med 2014;189:1374-82.`,
 };
 
 export default runner;

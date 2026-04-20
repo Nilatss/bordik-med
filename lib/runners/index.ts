@@ -1,5 +1,5 @@
 /**
- * AUTO-GENERATED runner registry — do not edit by hand.
+ * AUTO-GENERATED runner registry - do not edit by hand.
  * Regenerate via `npm run split:runners`.
  *
  * Each entry maps a tool id to a dynamic import. Webpack/Turbopack will

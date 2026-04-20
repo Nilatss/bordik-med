@@ -1,5 +1,5 @@
 // @ts-nocheck
-/** Runner: atls — ATLS 10th ed (ACS-COT 2018) */
+/** Runner: atls - ATLS 10th ed (ACS-COT 2018) */
 import type { CalculatorTool } from '../tools-runners';
 
 const runner: CalculatorTool = {
@@ -52,14 +52,14 @@ const runner: CalculatorTool = {
 
     const phaseMap: Record<string, { title: string; details: string; actions: string[] }> = {
       primary: {
-        title: 'Primary Survey — ABCDE',
+        title: 'Primary Survey - ABCDE',
         details: 'Первичный осмотр ATLS: выявление и лечение жизнеугрожающих состояний в порядке приоритета A → B → C → D → E.',
         actions: [
-          'A — Airway + c-spine protection: голос, обструкция, definitive airway если GCS ≤ 8',
-          'B — Breathing: SpO₂, ЧДД, аускультация, исключить tension PTX / open PTX / massive HTX / flail chest',
-          'C — Circulation: 2 крупных в/в доступа (14–16G), контроль кровотечения, permissive hypotension SBP 80–90 до остановки кровотечения',
-          'D — Disability: GCS, зрачки, латерализация, глюкоза',
-          'E — Exposure / environment: полный осмотр, предотвращение гипотермии (warmer, blankets, тёплые растворы)',
+          'A - Airway + c-spine protection: голос, обструкция, definitive airway если GCS ≤ 8',
+          'B - Breathing: SpO₂, ЧДД, аускультация, исключить tension PTX / open PTX / massive HTX / flail chest',
+          'C - Circulation: 2 крупных в/в доступа (14-16G), контроль кровотечения, permissive hypotension SBP 80-90 до остановки кровотечения',
+          'D - Disability: GCS, зрачки, латерализация, глюкоза',
+          'E - Exposure / environment: полный осмотр, предотвращение гипотермии (warmer, blankets, тёплые растворы)',
         ],
       },
       adjuncts: {
@@ -68,19 +68,19 @@ const runner: CalculatorTool = {
         actions: [
           'Мониторинг: ЭКГ, SpO₂, EtCO₂, АД, температура, диурез',
           'Катетер мочевого пузыря (если нет травмы уретры), назогастральный зонд (если нет травмы base of skull)',
-          'Рентген: грудная клетка AP, таз AP (по показаниям — c-spine)',
+          'Рентген: грудная клетка AP, таз AP (по показаниям - c-spine)',
           'eFAST: абдоминальные квадранты + перикард + плевральные окна (PTX)',
           'Лабораторно: газы артериальные, лактат, base deficit, группа + Rh + перекрёстная совместимость, β-hCG у женщин',
           'Tranexamic acid 1 г IV < 3 ч от травмы (CRASH-2), затем 1 г × 8 ч',
         ],
       },
       resuscitation: {
-        title: 'Hemorrhagic shock — Class ' + hClass,
-        details: `Класс геморрагического шока ${hClass} (ATLS 10th ed). SBP ${sbp}, HR ${hr}. Massive transfusion protocol (MTP) 1:1:1 — плазма:тромбоциты:эритроциты.`,
+        title: 'Hemorrhagic shock - Class ' + hClass,
+        details: `Класс геморрагического шока ${hClass} (ATLS 10th ed). SBP ${sbp}, HR ${hr}. Massive transfusion protocol (MTP) 1:1:1 - плазма:тромбоциты:эритроциты.`,
         actions: [
           'Контроль источника: давящая повязка, турникет на конечность, taz-binder при pelvic fracture, REBOA / OR при торсо-геморрагии',
-          'Permissive hypotension до остановки кровотечения: SBP 80–90 (не применять при ЧМТ!)',
-          'Не давать > 1 л кристаллоидов перед кровью — переходить на MTP',
+          'Permissive hypotension до остановки кровотечения: SBP 80-90 (не применять при ЧМТ!)',
+          'Не давать > 1 л кристаллоидов перед кровью - переходить на MTP',
           'MTP 1:1:1: pRBC : FFP : platelets (или цельная кровь low-titer O)',
           'TXA 1 г IV bolus < 3 ч от травмы, затем 1 г × 8 ч',
           'Ca²⁺ 1 г глюконата после каждых 4 ЕД pRBC (ионизированный Ca > 1.0)',
@@ -104,7 +104,7 @@ const runner: CalculatorTool = {
         details: 'Принятие решения о лечении и/или транспортировке в центр более высокого уровня.',
         actions: [
           'Критерии перевода: полиорганная травма, ожоги > 20% или лицо/кисти/промежность, ЧМТ, spinal injury, pelvic ring, проникающая травма торсо',
-          'Transfer без задержки — "treat what you can, transfer what you can\'t"',
+          'Transfer без задержки - "treat what you can, transfer what you can\'t"',
           'Полная документация, copy labs/imaging, стабилизация airway перед транспортировкой',
           'Связь MD-to-MD до отправки',
           'Мониторинг во время транспорта, ABCDE reassess при прибытии',
@@ -121,16 +121,16 @@ const runner: CalculatorTool = {
       actions: r.actions,
       caveats: [
         'ATLS 10th ed: permissive hypotension противопоказана при сопутствующей ЧМТ (цель SBP ≥ 110, MAP ≥ 80)',
-        'TXA эффективен только если введён < 3 ч от травмы; после 3 ч — вред',
-        'Пересмотр ABCDE при любом ухудшении — вернуться к A',
+        'TXA эффективен только если введён < 3 ч от травмы; после 3 ч - вред',
+        'Пересмотр ABCDE при любом ухудшении - вернуться к A',
         'Не полагаться только на SBP: base deficit, лактат, SI более ранние маркеры шока',
       ],
       scale: {
         segments: [
           { label: 'I', min: 0, max: 14, color: '#22C55E', description: '< 15% кровопотери' },
-          { label: 'II', min: 15, max: 29, color: '#F59E0B', description: '15–30% — tachycardia' },
-          { label: 'III', min: 30, max: 39, color: '#EF4444', description: '30–40% — hypotension' },
-          { label: 'IV', min: 40, max: 100, color: '#7C2D12', description: '> 40% — life-threatening' },
+          { label: 'II', min: 15, max: 29, color: '#F59E0B', description: '15-30% - tachycardia' },
+          { label: 'III', min: 30, max: 39, color: '#EF4444', description: '30-40% - hypotension' },
+          { label: 'IV', min: 40, max: 100, color: '#7C2D12', description: '> 40% - life-threatening' },
         ],
         current: hClass === 'I' ? 10 : hClass === 'II' ? 22 : hClass === 'III' ? 35 : 50,
         unit: '% кровопотери',
@@ -159,9 +159,9 @@ const runner: CalculatorTool = {
     { label: 'Secondary Survey', values: { phase: 'secondary', sbp: 115, hr: 95 } },
   ],
   info: `### Для чего используется
-**ATLS 10th edition (2018)** — Advanced Trauma Life Support, стандарт ACS-COT для начальной оценки и ведения пациента с травмой в первые минуты и часы.
+**ATLS 10th edition (2018)** - Advanced Trauma Life Support, стандарт ACS-COT для начальной оценки и ведения пациента с травмой в первые минуты и часы.
 
-### ABCDE — Primary Survey
+### ABCDE - Primary Survey
 - **A** Airway + c-spine
 - **B** Breathing + ventilation
 - **C** Circulation + haemorrhage control
@@ -172,12 +172,12 @@ const runner: CalculatorTool = {
 | Класс | Кровопотеря | HR | SBP | Pulse pressure |
 |---|---|---|---|---|
 | I | < 15% | < 100 | норма | норма |
-| II | 15–30% | 100–120 | норма | ↓ |
-| III | 30–40% | 120–140 | ↓ | ↓ |
+| II | 15-30% | 100-120 | норма | ↓ |
+| III | 30-40% | 120-140 | ↓ | ↓ |
 | IV | > 40% | > 140 | ↓↓ | ↓↓ |
 
 ### Permissive hypotension
-SBP 80–90 мм рт.ст. до остановки кровотечения (кроме ЧМТ — SBP ≥ 110).
+SBP 80-90 мм рт.ст. до остановки кровотечения (кроме ЧМТ - SBP ≥ 110).
 
 ### MTP 1:1:1
 pRBC : FFP : platelets (PROPPR trial 2015). Добавить TXA 1 г < 3 ч от травмы.

@@ -18,7 +18,7 @@ import DownloadableTable from './DownloadableTable';
  */
 function preprocessContent(md: string): string {
   // Replace em-dash / en-dash with hyphen
-  let result = md.replace(/—/g, '-').replace(/–/g, '-');
+  let result = md.replace(/-/g, '-').replace(/-/g, '-');
 
   const lines = result.split('\n');
   const out: string[] = [];
@@ -56,7 +56,7 @@ function preprocessContent(md: string): string {
       // Unescape \| (used in source to protect pipes inside table cells) → |
       const unescape = (s: string) => s.replace(/\\\|/g, '|');
       const body = parts.slice(1).map(unescape).map((p) => {
-        // If a line has ` | ` separators, it's a definition list — render as bullet list
+        // If a line has ` | ` separators, it's a definition list - render as bullet list
         if (/ \| /.test(p) && !/^(Пример|Важно|Значит|Итог|Запомни)[:：]/i.test(p)) {
           const items = p.split(/ \| /).map((s) => s.trim()).filter(Boolean);
           if (items.length >= 2) {
@@ -367,9 +367,9 @@ function splitIntoTabs(md: string): Tab[] {
         iconKey = 'learning';
         short = 'Как учиться';
       } else {
-        // Fallback: take text after "Тема N. " and before " — "
+        // Fallback: take text after "Тема N. " and before " - "
         const m = title.match(/^Тема\s+\d+\.?\s*(.+)$/i);
-        const rest = (m ? m[1] : title).split(/[-—:]/)[0].trim();
+        const rest = (m ? m[1] : title).split(/[--:]/)[0].trim();
         short = rest.length > 22 ? rest.slice(0, 20) + '…' : rest;
       }
 
@@ -377,7 +377,7 @@ function splitIntoTabs(md: string): Tab[] {
       buffer = [];
     } else {
       if (!current) {
-        // Content before first h1 — skip or collect as intro
+        // Content before first h1 - skip or collect as intro
         continue;
       }
       buffer.push(line);
@@ -504,9 +504,9 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
                   const rowCount = tbodyNode?.children?.filter?.((c: any) => c.tagName === 'tr').length || 0;
                   const colCount = headers.length;
 
-                  // Useful table criteria — show PDF button if ANY of:
+                  // Useful table criteria - show PDF button if ANY of:
                   // 1) Header contains reference/science keywords
-                  // 2) Table is large (3+ cols AND 4+ rows) — likely reference data
+                  // 2) Table is large (3+ cols AND 4+ rows) - likely reference data
                   const USEFUL_KEYWORDS = [
                     // словари / термины
                     'корень', 'префикс', 'суффикс', 'термин', 'аббревиат', 'обозначени',
@@ -545,7 +545,7 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
                     : '';
                   const contextTitle = active?.short && active.short !== 'Введение'
                     ? active.short
-                    : (active?.title || '').replace(/^Тема\s+\d+\.?\s*/, '').split(/[-—]/)[0].trim();
+                    : (active?.title || '').replace(/^Тема\s+\d+\.?\s*/, '').split(/[--]/)[0].trim();
                   const title = [contextTitle, headerLabel].filter(Boolean).join(' - ')
                     || headerLabel
                     || 'Справочная таблица';

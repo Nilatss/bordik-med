@@ -1,5 +1,5 @@
 // @ts-nocheck
-/** Runner: ems-assess — Prehospital assessment mnemonics */
+/** Runner: ems-assess - Prehospital assessment mnemonics */
 import type { CalculatorTool } from '../tools-runners';
 
 const runner: CalculatorTool = {
@@ -10,11 +10,11 @@ const runner: CalculatorTool = {
       label: 'Мнемоника',
       type: 'select',
       options: [
-        { value: 'opqrst', label: 'OPQRST — оценка боли' },
-        { value: 'sample', label: 'SAMPLE — анамнез' },
-        { value: 'dcapbtls', label: 'DCAP-BTLS — head-to-toe' },
-        { value: 'avpu', label: 'AVPU — уровень сознания' },
-        { value: 'chart', label: 'CHART — документация' },
+        { value: 'opqrst', label: 'OPQRST - оценка боли' },
+        { value: 'sample', label: 'SAMPLE - анамнез' },
+        { value: 'dcapbtls', label: 'DCAP-BTLS - head-to-toe' },
+        { value: 'avpu', label: 'AVPU - уровень сознания' },
+        { value: 'chart', label: 'CHART - документация' },
       ],
     },
   ],
@@ -22,72 +22,72 @@ const runner: CalculatorTool = {
     const m = String(v.mnemonic);
     const map: Record<string, { title: string; c: string; details: string; actions: string[] }> = {
       opqrst: {
-        title: 'OPQRST — pain assessment',
+        title: 'OPQRST - pain assessment',
         c: '#F59E0B',
         details: 'Структурированная оценка боли у догоспитального пациента. Используется в EMS всего мира.',
         actions: [
-          'O — Onset: когда началось? что делали? внезапно / постепенно?',
-          'P — Provocation / Palliation: что усиливает? что облегчает? движение / покой / еда / нитроспрей?',
-          'Q — Quality: характер? давящая / жгучая / колющая / тупая / спазматическая?',
-          'R — Radiation / Region: локализация? куда иррадиирует (челюсть, плечо, спина)?',
-          'S — Severity: интенсивность 0–10? хуже ли, чем обычно?',
-          'T — Time / Timing: длительность? перемежающаяся / постоянная?',
+          'O - Onset: когда началось? что делали? внезапно / постепенно?',
+          'P - Provocation / Palliation: что усиливает? что облегчает? движение / покой / еда / нитроспрей?',
+          'Q - Quality: характер? давящая / жгучая / колющая / тупая / спазматическая?',
+          'R - Radiation / Region: локализация? куда иррадиирует (челюсть, плечо, спина)?',
+          'S - Severity: интенсивность 0-10? хуже ли, чем обычно?',
+          'T - Time / Timing: длительность? перемежающаяся / постоянная?',
         ],
       },
       sample: {
-        title: 'SAMPLE — history',
+        title: 'SAMPLE - history',
         c: '#4B8DF5',
         details: 'Мнемоника для сбора медицинского анамнеза в экстренной ситуации. Дополняется OPQRST для пациентов с болью.',
         actions: [
-          'S — Signs & Symptoms: что сейчас ощущает?',
-          'A — Allergies: лекарства, пища, латекс',
-          'M — Medications: рецептурные, OTC, БАДы, травы, наркотики; compliance',
-          'P — Past medical history / Pregnancy: ИБС, СД, ХОБЛ, CVA, операции, беременность',
-          'L — Last oral intake: еда, питьё, время (важно для анестезии)',
-          'E — Events leading up: что случилось перед эпизодом?',
+          'S - Signs & Symptoms: что сейчас ощущает?',
+          'A - Allergies: лекарства, пища, латекс',
+          'M - Medications: рецептурные, OTC, БАДы, травы, наркотики; compliance',
+          'P - Past medical history / Pregnancy: ИБС, СД, ХОБЛ, CVA, операции, беременность',
+          'L - Last oral intake: еда, питьё, время (важно для анестезии)',
+          'E - Events leading up: что случилось перед эпизодом?',
         ],
       },
       dcapbtls: {
-        title: 'DCAP-BTLS — head-to-toe',
+        title: 'DCAP-BTLS - head-to-toe',
         c: '#EF4444',
         details: 'Систематический осмотр травмы по областям тела. Используется во вторичном осмотре после ABCDE/XABCDE.',
         actions: [
-          'D — Deformities (деформации)',
-          'C — Contusions (контузии, гематомы)',
-          'A — Abrasions (ссадины)',
-          'P — Punctures / Penetrations (проколы, проникающие)',
-          'B — Burns (ожоги)',
-          'T — Tenderness (болезненность при пальпации)',
-          'L — Lacerations (рваные раны)',
-          'S — Swelling (отёк)',
+          'D - Deformities (деформации)',
+          'C - Contusions (контузии, гематомы)',
+          'A - Abrasions (ссадины)',
+          'P - Punctures / Penetrations (проколы, проникающие)',
+          'B - Burns (ожоги)',
+          'T - Tenderness (болезненность при пальпации)',
+          'L - Lacerations (рваные раны)',
+          'S - Swelling (отёк)',
           'Осмотр по областям: голова → шея → грудь → живот → таз → спина (log-roll) → конечности',
         ],
       },
       avpu: {
-        title: 'AVPU — level of consciousness',
+        title: 'AVPU - level of consciousness',
         c: '#22C55E',
         details: 'Быстрая оценка уровня сознания. Проще GCS, подходит для primary survey.',
         actions: [
-          'A — Alert (бодрствует, ориентирован) — оцените A&O×4: person, place, time, event',
-          'V — Verbal (отвечает на голос, может быть спутан)',
-          'P — Painful (отвечает только на болевой стимул — trapezius pinch / supraorbital pressure)',
-          'U — Unresponsive (нет реакции)',
-          'Любое <A — приоритет airway + vitals + SpO₂ + глюкоза',
+          'A - Alert (бодрствует, ориентирован) - оцените A&O×4: person, place, time, event',
+          'V - Verbal (отвечает на голос, может быть спутан)',
+          'P - Painful (отвечает только на болевой стимул - trapezius pinch / supraorbital pressure)',
+          'U - Unresponsive (нет реакции)',
+          'Любое <A - приоритет airway + vitals + SpO₂ + глюкоза',
           'P или U → возможная необходимость advanced airway (GCS ~8 эквивалент)',
         ],
       },
       chart: {
-        title: 'CHART — documentation',
+        title: 'CHART - documentation',
         c: '#17E56C',
         details: 'Структура рапорта / карты вызова EMS. Альтернативы: SOAP (для стационара), DCHART.',
         actions: [
-          'C — Chief complaint (основная жалоба)',
-          'H — History (анамнез по SAMPLE + OPQRST)',
-          'A — Assessment (объективный осмотр, vitals, первичный/вторичный)',
-          'R — Rx / Treatment (выполненные вмешательства, реакция)',
-          'T — Transport (куда, способ, vitals при передаче)',
+          'C - Chief complaint (основная жалоба)',
+          'H - History (анамнез по SAMPLE + OPQRST)',
+          'A - Assessment (объективный осмотр, vitals, первичный/вторичный)',
+          'R - Rx / Treatment (выполненные вмешательства, реакция)',
+          'T - Transport (куда, способ, vitals при передаче)',
           'Документировать в хронологическом порядке + метки времени',
-          'Не документировать то, что не делал; не стирать ошибки — перечеркнуть одной линией + инициалы',
+          'Не документировать то, что не делал; не стирать ошибки - перечеркнуть одной линией + инициалы',
         ],
       },
     };
@@ -100,9 +100,9 @@ const runner: CalculatorTool = {
       details: r.details,
       actions: r.actions,
       caveats: [
-        'Мнемоники — инструменты, не заменяют клиническое мышление',
+        'Мнемоники - инструменты, не заменяют клиническое мышление',
         'OPQRST подходит для не-травматической боли; для травмы используйте DCAP-BTLS',
-        'AVPU "P" примерно соответствует GCS 8 — точка принятия решения о definitive airway',
+        'AVPU "P" примерно соответствует GCS 8 - точка принятия решения о definitive airway',
         'SAMPLE должен быть получен и от пациента, и от близких/свидетелей при altered mental status',
       ],
       related: [
@@ -128,7 +128,7 @@ const runner: CalculatorTool = {
     { label: 'CHART (documentation)', values: { mnemonic: 'chart' } },
   ],
   info: `### Для чего используется
-Базовые мнемоники EMS / догоспитальной помощи — каркас для структурированной оценки, анамнеза и документации.
+Базовые мнемоники EMS / догоспитальной помощи - каркас для структурированной оценки, анамнеза и документации.
 
 ### OPQRST
 Оценка боли: **O**nset · **P**rovocation · **Q**uality · **R**adiation · **S**everity · **T**ime.

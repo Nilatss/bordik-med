@@ -1,26 +1,26 @@
 // @ts-nocheck
-/** Runner: iss — Injury Severity Score (Baker 1974) */
+/** Runner: iss - Injury Severity Score (Baker 1974) */
 import type { CalculatorTool } from '../tools-runners';
 
 const AIS_OPTIONS = [
-  { value: '0', label: '0 — нет повреждения' },
-  { value: '1', label: '1 — минорное' },
-  { value: '2', label: '2 — умеренное' },
-  { value: '3', label: '3 — серьёзное, неугрожающее' },
-  { value: '4', label: '4 — тяжёлое, угрожающее жизни' },
-  { value: '5', label: '5 — критическое, выживание сомнительно' },
-  { value: '6', label: '6 — максимальное (unsurvivable)' },
+  { value: '0', label: '0 - нет повреждения' },
+  { value: '1', label: '1 - минорное' },
+  { value: '2', label: '2 - умеренное' },
+  { value: '3', label: '3 - серьёзное, неугрожающее' },
+  { value: '4', label: '4 - тяжёлое, угрожающее жизни' },
+  { value: '5', label: '5 - критическое, выживание сомнительно' },
+  { value: '6', label: '6 - максимальное (unsurvivable)' },
 ];
 
 const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
-    { id: 'head', label: 'Голова / шея — AIS', type: 'select', options: AIS_OPTIONS },
-    { id: 'face', label: 'Лицо — AIS', type: 'select', options: AIS_OPTIONS },
-    { id: 'chest', label: 'Грудь — AIS', type: 'select', options: AIS_OPTIONS },
-    { id: 'abd', label: 'Живот / таз — AIS', type: 'select', options: AIS_OPTIONS },
-    { id: 'ext', label: 'Конечности / таз (костн.) — AIS', type: 'select', options: AIS_OPTIONS },
-    { id: 'ext2', label: 'Внешнее (кожа, ожоги) — AIS', type: 'select', options: AIS_OPTIONS },
+    { id: 'head', label: 'Голова / шея - AIS', type: 'select', options: AIS_OPTIONS },
+    { id: 'face', label: 'Лицо - AIS', type: 'select', options: AIS_OPTIONS },
+    { id: 'chest', label: 'Грудь - AIS', type: 'select', options: AIS_OPTIONS },
+    { id: 'abd', label: 'Живот / таз - AIS', type: 'select', options: AIS_OPTIONS },
+    { id: 'ext', label: 'Конечности / таз (костн.) - AIS', type: 'select', options: AIS_OPTIONS },
+    { id: 'ext2', label: 'Внешнее (кожа, ожоги) - AIS', type: 'select', options: AIS_OPTIONS },
   ],
   compute: (v) => {
     const vals = [v.head, v.face, v.chest, v.abd, v.ext, v.ext2].map((x) => Number(x) || 0);
@@ -32,10 +32,10 @@ const runner: CalculatorTool = {
       iss = top3.reduce((s, x) => s + x * x, 0);
     }
     let interpretation = ''; let color = '#22C55E'; let details = '';
-    if (iss < 9) { interpretation = 'Лёгкая травма (Minor)'; color = '#22C55E'; details = 'ISS < 9 — летальность < 1%, обычно не требует уровня trauma center.'; }
-    else if (iss < 15) { interpretation = 'Умеренная травма (Moderate)'; color = '#FACC15'; details = 'ISS 9–14 — госпитализация, мониторинг, летальность 1–5%.'; }
-    else if (iss < 25) { interpretation = 'Тяжёлая травма (Severe)'; color = '#EF4444'; details = 'ISS 15–24 — «major trauma» по европейскому определению (порог ≥ 16). Trauma team activation, ОРИТ.'; }
-    else { interpretation = 'Критическая травма (Profound)'; color = '#991B1B'; details = 'ISS ≥ 25 — летальность 25–75% в зависимости от возраста и физиологии. Максимум ISS 75 (любой AIS 6 или три AIS 5).'; }
+    if (iss < 9) { interpretation = 'Лёгкая травма (Minor)'; color = '#22C55E'; details = 'ISS < 9 - летальность < 1%, обычно не требует уровня trauma center.'; }
+    else if (iss < 15) { interpretation = 'Умеренная травма (Moderate)'; color = '#FACC15'; details = 'ISS 9-14 - госпитализация, мониторинг, летальность 1-5%.'; }
+    else if (iss < 25) { interpretation = 'Тяжёлая травма (Severe)'; color = '#EF4444'; details = 'ISS 15-24 - «major trauma» по европейскому определению (порог ≥ 16). Trauma team activation, ОРИТ.'; }
+    else { interpretation = 'Критическая травма (Profound)'; color = '#991B1B'; details = 'ISS ≥ 25 - летальность 25-75% в зависимости от возраста и физиологии. Максимум ISS 75 (любой AIS 6 или три AIS 5).'; }
     return {
       value: String(iss),
       unit: 'баллов',
@@ -48,8 +48,8 @@ const runner: CalculatorTool = {
         : ['Амбулаторное наблюдение / короткая госпитализация'],
       caveats: [
         'Любой AIS 6 автоматически даёт ISS 75',
-        'ISS учитывает ТОЛЬКО по одной (худшей) травме в каждой области — недооценивает множественные травмы одного региона',
-        'Для этой проблемы — см. NISS (Osler 1997)',
+        'ISS учитывает ТОЛЬКО по одной (худшей) травме в каждой области - недооценивает множественные травмы одного региона',
+        'Для этой проблемы - см. NISS (Osler 1997)',
         'Major trauma threshold: ISS ≥ 16 (European Trauma Course)',
       ],
       scale: {
@@ -74,7 +74,7 @@ const runner: CalculatorTool = {
       ],
     };
   },
-  reference: 'Baker SP, O’Neill B, Haddon W, Long WB. The Injury Severity Score: a method for describing patients with multiple injuries and evaluating emergency care. J Trauma 1974;14:187–196.',
+  reference: 'Baker SP, O’Neill B, Haddon W, Long WB. The Injury Severity Score: a method for describing patients with multiple injuries and evaluating emergency care. J Trauma 1974;14:187-196.',
   countries: 'Международный',
   presets: [
     { label: 'Лёгкая ЧМТ', values: { head: '2', face: '1', chest: '0', abd: '0', ext: '1', ext2: '0' } },
@@ -83,12 +83,12 @@ const runner: CalculatorTool = {
     { label: 'Unsurvivable (AIS 6)', values: { head: '6', face: '0', chest: '0', abd: '0', ext: '0', ext2: '0' } },
   ],
   info: `### Для чего используется
-**Injury Severity Score (Baker, 1974)** — анатомический индекс тяжести политравмы. Основа trauma registry (TRISS, NTDB, TARN, MTCR).
+**Injury Severity Score (Baker, 1974)** - анатомический индекс тяжести политравмы. Основа trauma registry (TRISS, NTDB, TARN, MTCR).
 
 ### Формула
 \`ISS = A² + B² + C²\`
 
-где A, B, C — три наихудших AIS из 6 областей тела:
+где A, B, C - три наихудших AIS из 6 областей тела:
 1. **Голова/шея**
 2. **Лицо**
 3. **Грудь**
@@ -109,10 +109,10 @@ const runner: CalculatorTool = {
 | 6 | максимум | декапитация |
 
 ### Пороговые значения
-- ISS < 9 — minor (летальность < 1%)
-- 9–14 — moderate
-- **15–24 — severe** (major trauma порог ≥ 16)
-- ≥ 25 — profound (летальность 25–75%)
+- ISS < 9 - minor (летальность < 1%)
+- 9-14 - moderate
+- **15-24 - severe** (major trauma порог ≥ 16)
+- ≥ 25 - profound (летальность 25-75%)
 
 ### Ограничения
 - Не учитывает возраст, физиологию, механизм
@@ -121,10 +121,10 @@ const runner: CalculatorTool = {
 - Не-линейная шкала (16 vs 17 ≠ 24 vs 25)
 
 ### Связанные шкалы
-- **NISS** (Osler 1997) — 3 наихудших независимо от региона
-- **TRISS** (Boyd 1987) — ISS + RTS + возраст + механизм → Ps
-- **ICISS** — на основе ICD-9
-- **TMPM** — trauma mortality prediction model (многоф. регрессия)
+- **NISS** (Osler 1997) - 3 наихудших независимо от региона
+- **TRISS** (Boyd 1987) - ISS + RTS + возраст + механизм → Ps
+- **ICISS** - на основе ICD-9
+- **TMPM** - trauma mortality prediction model (многоф. регрессия)
 
 ### Источник
 Baker SP et al. *The Injury Severity Score.* J Trauma 1974;14:187

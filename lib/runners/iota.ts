@@ -1,5 +1,5 @@
 // @ts-nocheck
-/** Runner: iota — оценка придаточных образований (IOTA Simple Rules, ADNEX, RMI, ROMA) */
+/** Runner: iota - оценка придаточных образований (IOTA Simple Rules, ADNEX, RMI, ROMA) */
 import type {
   CalculatorTool,
   ToolInput,
@@ -24,8 +24,8 @@ const runner: CalculatorTool = {
         { value: 'roma', label: 'ROMA (Moore 2009)' },
       ],
     },
-    { id: 'bFeatures', label: 'Число B-признаков (доброкачественных, 0–5)', type: 'number', min: 0, max: 5, step: 1 },
-    { id: 'mFeatures', label: 'Число M-признаков (злокачественных, 0–5)', type: 'number', min: 0, max: 5, step: 1 },
+    { id: 'bFeatures', label: 'Число B-признаков (доброкачественных, 0-5)', type: 'number', min: 0, max: 5, step: 1 },
+    { id: 'mFeatures', label: 'Число M-признаков (злокачественных, 0-5)', type: 'number', min: 0, max: 5, step: 1 },
     { id: 'ca125', label: 'CA-125, Ед/мл', type: 'number', min: 0, max: 10000, step: 1 },
     { id: 'he4', label: 'HE4, пмоль/л', type: 'number', min: 0, max: 5000, step: 1 },
     {
@@ -73,14 +73,14 @@ const runner: CalculatorTool = {
       }
       details =
         'B-признаки: унилокулярная киста; солидные < 7 мм; акустическая тень; гладкая многокамерная < 10 см; нет цветового потока. M-признаки: нерегулярная солидная опухоль; асцит; ≥ 4 папиллярных структур; мультилокулярно-солидная ≥ 10 см; выраженный кровоток.';
-      actions.push('При злокачественных или неопределённых — направление к гинекологу-онкологу');
+      actions.push('При злокачественных или неопределённых - направление к гинекологу-онкологу');
     } else if (tool === 'adnex') {
       value = 'Расчёт ADNEX';
       color = '#F59E0B';
-      interpretation = 'ADNEX оценивает вероятность доброкачественное / borderline / I / II–IV / метастаз';
+      interpretation = 'ADNEX оценивает вероятность доброкачественное / borderline / I / II-IV / метастаз';
       details = 'ADNEX использует 9 переменных (возраст, CA-125, центр, 7 УЗ-параметров). Порог 10 % часто выбирают как клинически значимый.';
       actions.push('Использовать онлайн-калькулятор IOTA для точного расчёта');
-      actions.push('Риск злокачественности > 10 % — направление в специализированный центр');
+      actions.push('Риск злокачественности > 10 % - направление в специализированный центр');
     } else if (tool === 'rmi') {
       const ca = Number(v.ca125) || 0;
       const u = Number(v.usScore) || 0;
@@ -89,12 +89,12 @@ const runner: CalculatorTool = {
       value = String(rmi);
       if (rmi > 200) {
         color = '#DC2626';
-        interpretation = `RMI = ${rmi} — высокий риск`;
-        details = 'RMI > 200 — направление в центр гинекологической онкологии (чувствительность ~ 85 %, специфичность ~ 97 %).';
+        interpretation = `RMI = ${rmi} - высокий риск`;
+        details = 'RMI > 200 - направление в центр гинекологической онкологии (чувствительность ~ 85 %, специфичность ~ 97 %).';
         actions.push('Консультация онкогинеколога, МРТ / КТ по показаниям');
       } else {
         color = '#22C55E';
-        interpretation = `RMI = ${rmi} — низкий риск`;
+        interpretation = `RMI = ${rmi} - низкий риск`;
         details = 'Продолжить наблюдение; возможно плановое оперативное лечение в общей гинекологии.';
       }
     } else if (tool === 'roma') {
@@ -109,11 +109,11 @@ const runner: CalculatorTool = {
       const highCut = pre ? 11.4 : 29.9;
       if (roma >= highCut) {
         color = '#DC2626';
-        interpretation = `ROMA ${value} — высокий риск эпителиального рака яичников`;
+        interpretation = `ROMA ${value} - высокий риск эпителиального рака яичников`;
         actions.push('Направление к онкогинекологу');
       } else {
         color = '#22C55E';
-        interpretation = `ROMA ${value} — низкий риск`;
+        interpretation = `ROMA ${value} - низкий риск`;
       }
       details = `Порог: пременопауза ≥ 11.4 %, постменопауза ≥ 29.9 %.`;
     }
@@ -169,7 +169,7 @@ IOTA-группа (International Ovarian Tumor Analysis) разработала 
 Учитывает 9 переменных, даёт вероятности 4 подтипов злокачественности.
 
 ### RMI (Jacobs 1990)
-RMI = U × M × CA-125. >200 — высокий риск.
+RMI = U × M × CA-125. >200 - высокий риск.
 
 ### ROMA (Moore 2009)
 Комбинирует HE4 и CA-125. Пороги: ≥ 11.4 % (пре), ≥ 29.9 % (пост).`,

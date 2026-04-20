@@ -1,6 +1,6 @@
 /**
  * Abstract gradient illustrations for section cards.
- * Style: soft geometric shapes with gradients — Teamway-inspired.
+ * Style: soft geometric shapes with gradients - Teamway-inspired.
  * Each illustration is unique but visually consistent.
  */
 

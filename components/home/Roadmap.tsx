@@ -56,7 +56,7 @@ const CHART_H = H - PAD_T - PAD_B;
 const scaleX = (val: number) => PAD_L + (val / 8) * CHART_W;
 const scaleY = (val: number) => PAD_T + CHART_H - ((val - 50) / 160) * CHART_H;
 
-/* Simple collision resolver — nudge overlapping pills apart */
+/* Simple collision resolver - nudge overlapping pills apart */
 function resolveCollisions(items: { cx: number; cy: number; w: number }[]) {
   for (let pass = 0; pass < 8; pass++) {
     for (let i = 0; i < items.length; i++) {
@@ -138,7 +138,7 @@ export default function Roadmap() {
         </div>
       </div>
 
-      {/* Chart — fixed Y axis + scrollable content */}
+      {/* Chart - fixed Y axis + scrollable content */}
       <div style={{ display: 'flex', position: 'relative' }}>
         {/* Fixed Y axis */}
         <div style={{ flexShrink: 0, width: Y_AXIS_W }}>

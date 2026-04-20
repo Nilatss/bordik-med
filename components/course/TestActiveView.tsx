@@ -8,7 +8,7 @@ import TestGuard from './TestGuard';
 
 interface TestActiveViewProps {
   questions: TestQuestion[];
-  timeLimit?: number;  // ms — undefined for course tests, 3h for module test
+  timeLimit?: number;  // ms - undefined for course tests, 3h for module test
   onComplete: (answers: number[], violations: number) => void;
   onCancel: () => void;
   testLabel: string;   // e.g. "Тест 2" or "Финальный тест модуля"
@@ -90,7 +90,7 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
       violationCount={violations}
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-        {/* Header panel — matches TestPanel "Прогресс обучения" */}
+        {/* Header panel - matches TestPanel "Прогресс обучения" */}
         <div style={{
           padding: '20px 24px',
           background: '#F5F6F8',

@@ -92,7 +92,7 @@ export default function ToolView({ toolId }: { toolId: string }) {
   const { closeTool } = useAppStore();
   const tool = useMemo(() => CATALOG_TOOLS.find((t) => t.id === toolId), [toolId]);
 
-  // Load the runner lazily — this triggers a per-runner dynamic import so the
+  // Load the runner lazily - this triggers a per-runner dynamic import so the
   // 3+ MB encyclopaedia of clinical content stays out of the main bundle.
   const [runner, setRunner] = useState<ToolRunner | null>(null);
   const [loading, setLoading] = useState(true);
@@ -115,7 +115,10 @@ export default function ToolView({ toolId }: { toolId: string }) {
       iconKey: 'calc',
       kind: 'calculator',
     };
-    const infoTabs: Tab[] = runner.info ? buildInfoTabs(runner.info) : [];
+    // Filter out "Источник" heading from info tabs - we already have a dedicated referenceTab.
+    // Runner authors tend to add `### Источник` at the end of info markdown, which would duplicate the tab.
+    const infoTabs: Tab[] = (runner.info ? buildInfoTabs(runner.info) : [])
+      .filter(t => t.title.trim().toLowerCase() !== 'источник');
     const referenceTab: Tab = {
       id: 'reference',
       title: 'Источник',
@@ -231,7 +234,7 @@ export default function ToolView({ toolId }: { toolId: string }) {
 
   return (
     <div>
-      {/* Top header — back + tags + title + description + InfoPills (full width, outside grid) */}
+      {/* Top header - back + tags + title + description + InfoPills (full width, outside grid) */}
       <BackButton onClick={closeTool} />
       <Header tool={tool} kind={kindLabel} />
       <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 16, marginBottom: 20 }}>
@@ -241,21 +244,21 @@ export default function ToolView({ toolId }: { toolId: string }) {
         <InfoPill icon={<IconGlobe />} label="Страны" value={runner.countries ?? 'Международный'} />
       </div>
 
-      {/* Main grid: content card (left) + TOC sidebar (right) — identical to TabbedLessonViewer */}
+      {/* Main grid: content card (left) + TOC sidebar (right) - identical to TabbedLessonViewer */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: '1fr 280px',
         gap: 24,
         alignItems: 'start',
       }}>
-        {/* LEFT: tab content card — IDENTICAL to TabbedLessonViewer */}
+        {/* LEFT: tab content card - IDENTICAL to TabbedLessonViewer */}
         <div key={active.id} style={{
           background: '#FFFFFF',
           borderRadius: 'var(--md-sys-shape-corner-extra-large)',
           padding: 'var(--space-6)',
           minHeight: 300,
         }}>
-          {/* Tab header — identical structure to TabbedLessonViewer */}
+          {/* Tab header - identical structure to TabbedLessonViewer */}
           <div style={{
             display: 'flex', alignItems: 'center', gap: 12,
             marginBottom: 16, paddingBottom: 16,
@@ -305,7 +308,7 @@ export default function ToolView({ toolId }: { toolId: string }) {
             </div>
           )}
 
-          {/* Prev / Next — identical to TabbedLessonViewer */}
+          {/* Prev / Next - identical to TabbedLessonViewer */}
           <div style={{
             display: 'flex', justifyContent: 'space-between', gap: 12,
             marginTop: 32, paddingTop: 20,
@@ -320,7 +323,7 @@ export default function ToolView({ toolId }: { toolId: string }) {
           </div>
         </div>
 
-        {/* RIGHT: sidebar — "Содержание" — IDENTICAL to TabbedLessonViewer aside */}
+        {/* RIGHT: sidebar - "Содержание" - IDENTICAL to TabbedLessonViewer aside */}
         <aside style={{
           position: 'sticky', top: 20,
           background: '#F5F6F8',
@@ -421,7 +424,7 @@ function withSexBadges(children: React.ReactNode): React.ReactNode {
 }
 
 /**
- * Callout helpers — keep the visual language identical to course pages.
+ * Callout helpers - keep the visual language identical to course pages.
  * Source paragraphs that begin with ℹ, ⚠, ✓, 💡, 🎯, 📷 are transformed into
  * blockquotes and then rendered with the same .callout-* classes used in
  * lesson-content.
@@ -723,7 +726,7 @@ function ResultCard({ result }: { result: CalculatorResult }) {
         </ResultSection>
       )}
 
-      {/* Related courses — only rendered when the tool-runner author
+      {/* Related courses - only rendered when the tool-runner author
           explicitly listed course ids. Never auto-generated, so we never
           send the user to a lesson that doesn't actually cover this tool. */}
       {relatedCourses && relatedCourses.length > 0 && (
@@ -803,11 +806,11 @@ function ResultSection({ title, icon, children }: {
 /**
  * Horizontal band scale with a marker for the current value.
  *
- * Segments may be continuous (e.g. BMI 18.5–25) or discrete integer bands
+ * Segments may be continuous (e.g. BMI 18.5-25) or discrete integer bands
  * (e.g. CHADS-VASc [0,0], [1,1], [2,9]). The algorithm auto-detects by
  * checking that every finite min/max is an integer. In the discrete case
  * each integer counts as one "slot" so single-point bands like [0,0] get
- * visible width and the segments sum to 100 % of the bar — no gaps. For
+ * visible width and the segments sum to 100 % of the bar - no gaps. For
  * continuous scales segment width is simply (max − min).
  */
 function ResultScale({ segments, current, unit }: {
@@ -869,7 +872,7 @@ function ResultScale({ segments, current, unit }: {
   const markerOffset = allInt ? (current - finiteMin + 0.5) : (current - finiteMin);
   const markerPct = Math.max(0, Math.min(100, (markerOffset / total) * 100));
 
-  // Marker is a clinical value — must align with its band regardless of
+  // Marker is a clinical value - must align with its band regardless of
   // marker width; compute using translateX instead of a fixed pixel offset.
   return (
     <div>
@@ -881,11 +884,11 @@ function ResultScale({ segments, current, unit }: {
         {normalised.map((s, i) => {
           const w = (segWidth(s) / total) * 100;
           return (
-            <div key={i} title={`${s.label} (${s.min}${Number.isFinite(s.max) ? (s.min === s.max ? '' : '–' + s.max) : '+'})`}
+            <div key={i} title={`${s.label} (${s.min}${Number.isFinite(s.max) ? (s.min === s.max ? '' : '-' + s.max) : '+'})`}
               style={{ flex: `0 0 ${w}%`, background: s.color, opacity: 0.65 }} />
           );
         })}
-        {/* Marker — 4px wide, centred at markerPct via translateX. */}
+        {/* Marker - 4px wide, centred at markerPct via translateX. */}
         <div style={{
           position: 'absolute', top: -3, bottom: -3,
           left: `${markerPct}%`,
@@ -1055,7 +1058,7 @@ function cleanReference(ref: string): string {
  *
  * Examples:
  *  "Antman EM. JAMA 2000. TIMI Risk Score for UA/NSTEMI." → "Antman EM. JAMA 2000"
- *  "ВОЗ: <18.5 / 18.5–24.9 / 25–29.9 / ≥30. Азия: 23 и 27.5." → "ВОЗ"
+ *  "ВОЗ: <18.5 / 18.5-24.9 / 25-29.9 / ≥30. Азия: 23 и 27.5." → "ВОЗ"
  *  "Parkland (Baxter): 4 мл × %TBSA × кг Ringer за 24 ч..." → "Parkland (Baxter)"
  */
 function shortRef(ref: string): string {
@@ -1066,7 +1069,7 @@ function shortRef(ref: string): string {
 
   // Remove anything after formula/value markers
   s = s.replace(/[:=].*$/, '')           // "ВОЗ: <18.5 / 18.5..." → "ВОЗ"
-       .replace(/\s—\s.*$/, '')          // "Wells 2001 — алгоритм..." → "Wells 2001"
+       .replace(/\s-\s.*$/, '')          // "Wells 2001 - алгоритм..." → "Wells 2001"
        .replace(/\s-\s.*$/, '');         // same with hyphen
 
   // If still contains formula characters, keep only up to first one
@@ -1308,7 +1311,7 @@ function LabelWithHint({ label, hint }: { label: React.ReactNode; hint?: string 
 }
 
 /**
- * SelectField — collapsible radio-group for multi-option questions (e.g. PHQ-9, GAD-7).
+ * SelectField - collapsible radio-group for multi-option questions (e.g. PHQ-9, GAD-7).
  * After the user picks an option, the field collapses to a compact row showing
  * question + chosen answer. Click the row to re-expand and change the answer.
  */
@@ -1335,7 +1338,7 @@ function SelectField({ input, value, onChange }: {
 
   return (
     <div>
-      {/* Collapsed summary row — only rendered when field is in collapsed state */}
+      {/* Collapsed summary row - only rendered when field is in collapsed state */}
       <AnimatePresence initial={false} mode="wait">
         {collapsed && selected ? (
           <motion.button
@@ -1525,7 +1528,7 @@ function InputField({ input, value, onChange }: {
     return <SelectField input={input} value={value} onChange={onChange} />;
   }
 
-  // Number input — with quick-value chips below
+  // Number input - with quick-value chips below
   const currentNum = typeof value === 'number' && !isNaN(value) ? value : null;
   return (
     <div>

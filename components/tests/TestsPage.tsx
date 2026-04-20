@@ -37,7 +37,7 @@ const TESTS: StandaloneTest[] = [
   // ═══ Международные экзамены ═══
   {
     id: 'usmle-step1',
-    title: 'USMLE Step 1 — пробный',
+    title: 'USMLE Step 1 - пробный',
     description: 'Пробный тест в формате USMLE Step 1: базовые науки, патология, фармакология',
     category: 'Международные экзамены',
     questions: 100,
@@ -46,7 +46,7 @@ const TESTS: StandaloneTest[] = [
   },
   {
     id: 'plab',
-    title: 'PLAB Part 1 — пробный',
+    title: 'PLAB Part 1 - пробный',
     description: 'Британский медицинский экзамен PLAB в формате Best of Five',
     category: 'Международные экзамены',
     questions: 180,
@@ -55,7 +55,7 @@ const TESTS: StandaloneTest[] = [
   },
   {
     id: 'mcat',
-    title: 'MCAT — пробный тест',
+    title: 'MCAT - пробный тест',
     description: 'Medical College Admission Test: биология, химия, физика, критическое мышление',
     category: 'Международные экзамены',
     questions: 230,
@@ -67,7 +67,7 @@ const TESTS: StandaloneTest[] = [
   {
     id: 'anatomy',
     title: 'Анатомия человека',
-    description: 'Комплексный тест по анатомии всех систем организма — от остео до нервной системы',
+    description: 'Комплексный тест по анатомии всех систем организма - от остео до нервной системы',
     category: 'Тематические',
     questions: 60,
     duration: '75 мин',
@@ -105,7 +105,7 @@ const TESTS: StandaloneTest[] = [
   {
     id: 'emergency',
     title: 'Неотложные состояния',
-    description: 'Острый коронарный синдром, инсульт, анафилаксия, шок — алгоритмы первой помощи',
+    description: 'Острый коронарный синдром, инсульт, анафилаксия, шок - алгоритмы первой помощи',
     category: 'Клинические случаи',
     questions: 50,
     duration: '70 мин',
@@ -188,7 +188,7 @@ export default function TestsPage() {
                   e.currentTarget.style.transform = 'translateY(0)';
                 }}
               >
-                {/* "Скоро" lock badge — top-right */}
+                {/* "Скоро" lock badge - top-right */}
                 {!test.unlocked && (
                   <div style={{
                     position: 'absolute', top: 12, right: 12, zIndex: 2,
@@ -210,7 +210,7 @@ export default function TestsPage() {
                   </div>
                 )}
 
-                {/* Top pill — questions + duration */}
+                {/* Top pill - questions + duration */}
                 <div style={{ marginBottom: 'var(--space-3)', position: 'relative', zIndex: 1 }}>
                   <span style={{
                     display: 'inline-flex', alignItems: 'center', gap: 'var(--space-1)',

@@ -2,7 +2,7 @@
 /**
  * Runner: edacs
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
- * Do not edit by hand — regenerate via `npm run split:runners`.
+ * Do not edit by hand - regenerate via `npm run split:runners`.
  *
  * Loaded lazily via dynamic import from lib/runners/index.ts so the
  * encyclopaedia of clinical content stays out of the main app bundle.
@@ -29,37 +29,37 @@ const runner: ScoreTool = {
         options: [
           {
             value: "18",
-            label: "18–45",
+            label: "18-45",
             points: 2
           },
           {
             value: "46",
-            label: "46–50",
+            label: "46-50",
             points: 4
           },
           {
             value: "51",
-            label: "51–55",
+            label: "51-55",
             points: 6
           },
           {
             value: "56",
-            label: "56–60",
+            label: "56-60",
             points: 8
           },
           {
             value: "61",
-            label: "61–65",
+            label: "61-65",
             points: 10
           },
           {
             value: "66",
-            label: "66–70",
+            label: "66-70",
             points: 12
           },
           {
             value: "71",
-            label: "71–75",
+            label: "71-75",
             points: 14
           },
           {
@@ -77,7 +77,7 @@ const runner: ScoreTool = {
       },
       {
         id: "rf",
-        label: "ИБС в анамнезе или ≥ 3 ФР (только возраст 18–50)",
+        label: "ИБС в анамнезе или ≥ 3 ФР (только возраст 18-50)",
         type: "checkbox",
         points: 4
       },
@@ -113,7 +113,7 @@ const runner: ScoreTool = {
         label: "< 16 (низкий)",
         color: "#22C55E",
         description: "30-дн. MACE < 1 % при норме ЭКГ и тропонина 0/2 ч.",
-        details: "EDACS-ADP: при EDACS < 16 + негативный hs-cTn на 0 и 2 часа + отсутствие ишемических изменений на ЭКГ — возможна выписка из ED с амбулаторным обследованием.",
+        details: "EDACS-ADP: при EDACS < 16 + негативный hs-cTn на 0 и 2 часа + отсутствие ишемических изменений на ЭКГ - возможна выписка из ED с амбулаторным обследованием.",
         actions: [
           "Повтор hs-cTn через 2 ч",
           "ЭКГ при появлении боли",
@@ -138,8 +138,8 @@ const runner: ScoreTool = {
     reference: "Than M et al. Emerg Med Australas 2014;26:34. Flaws D. EDACS-ADP валидация 2015.",
     countries: "Австралия · Н.Зеландия · международная",
     caveats: [
-      "Не использовать при явном STEMI на ЭКГ — сразу реперфузия",
-      "ФР (+4) засчитываются только при возрасте 18–50 лет",
+      "Не использовать при явном STEMI на ЭКГ - сразу реперфузия",
+      "ФР (+4) засчитываются только при возрасте 18-50 лет",
       "Требует hs-cTn на 0 и 2 ч для EDACS-ADP алгоритма",
       "Валидирован в ED; амбулаторная применимость ограничена"
     ],
@@ -167,7 +167,7 @@ const runner: ScoreTool = {
         title: "Неотложная помощь"
       }
     ],
-    info: "### Для чего используется\n**EDACS (Emergency Department Assessment of Chest pain Score)** — оценка 30-дневного риска MACE у пациентов с болью в грудной клетке в ED с целью **ранней безопасной выписки**.\n\n### Критерии\nСумма баллов по возрасту (2–16) + пол + клинические модификаторы + — палпаторная воспроизводимость и усиление на вдохе снижают счёт.\n\n### EDACS-ADP алгоритм (accelerated diagnostic protocol)\nНизкий риск, допускающий выписку:\n- EDACS < 16 **И**\n- ЭКГ без ишемических изменений **И**\n- hs-cTn негативный на 0 и 2 часа\n\n### Интерпретация\n| Баллы | Риск 30-дн. MACE | Тактика |\n|---|---|---|\n| < 16 + критерии | < 1 % | Выписка + амбулаторное обследование |\n| ≥ 16 или +тропонин / ЭКГ | > 1 % | Госпитализация, серийные тропонины |\n\n### Ограничения\n- Не заменяет клиническое мышление при атипичной презентации\n- Нельзя применять при STEMI, нестабильной гемодинамике, аритмии\n- Валидация преимущественно в странах Asia-Pacific\n\n### Тактика\n- **Низкий риск** — выписка, повтор через 72 ч в амбулаторных условиях\n- **Не низкий** — наблюдение, стресс-тест / КТА / КАГ по показаниям\n\n### Источник\nThan M, Flaws D, Sanders S, et al. Development and validation of the Emergency Department Assessment of Chest pain Score. *Emerg Med Australas* 2014;26:34–44."
+    info: "### Для чего используется\n**EDACS (Emergency Department Assessment of Chest pain Score)** - оценка 30-дневного риска MACE у пациентов с болью в грудной клетке в ED с целью **ранней безопасной выписки**.\n\n### Критерии\nСумма баллов по возрасту (2-16) + пол + клинические модификаторы + - палпаторная воспроизводимость и усиление на вдохе снижают счёт.\n\n### EDACS-ADP алгоритм (accelerated diagnostic protocol)\nНизкий риск, допускающий выписку:\n- EDACS < 16 **И**\n- ЭКГ без ишемических изменений **И**\n- hs-cTn негативный на 0 и 2 часа\n\n### Интерпретация\n| Баллы | Риск 30-дн. MACE | Тактика |\n|---|---|---|\n| < 16 + критерии | < 1 % | Выписка + амбулаторное обследование |\n| ≥ 16 или +тропонин / ЭКГ | > 1 % | Госпитализация, серийные тропонины |\n\n### Ограничения\n- Не заменяет клиническое мышление при атипичной презентации\n- Нельзя применять при STEMI, нестабильной гемодинамике, аритмии\n- Валидация преимущественно в странах Asia-Pacific\n\n### Тактика\n- **Низкий риск** - выписка, повтор через 72 ч в амбулаторных условиях\n- **Не низкий** - наблюдение, стресс-тест / КТА / КАГ по показаниям\n\n### Источник\nThan M, Flaws D, Sanders S, et al. Development and validation of the Emergency Department Assessment of Chest pain Score. *Emerg Med Australas* 2014;26:34-44."
   };
 
 export default runner;

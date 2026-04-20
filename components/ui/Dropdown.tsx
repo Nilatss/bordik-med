@@ -17,7 +17,7 @@ interface DropdownProps {
 }
 
 export default function Dropdown({
-  value, options, placeholder = '— выбрать —',
+  value, options, placeholder = '- выбрать -',
   searchable = false, searchPlaceholder = 'Поиск...',
   emptyLabel = 'Ничего не найдено',
   onChange, align = 'right', width,
@@ -46,7 +46,7 @@ export default function Dropdown({
   }, [options]);
 
   // Initialize collapsed state when opening: all collapsed except group of selected value.
-  // If nothing selected — expand first group only (to give user an idea).
+  // If nothing selected - expand first group only (to give user an idea).
   useEffect(() => {
     if (!open || !hasGroups) return;
     setCollapsed((prev) => {

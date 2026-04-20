@@ -2,7 +2,7 @@
 /**
  * Runner: modified-brooke
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
- * Do not edit by hand — regenerate via `npm run split:runners`.
+ * Do not edit by hand - regenerate via `npm run split:runners`.
  *
  * Loaded lazily via dynamic import from lib/runners/index.ts so the
  * encyclopaedia of clinical content stays out of the main app bundle.
@@ -65,21 +65,21 @@ const runner: CalculatorTool = {
             return {
                 value: `${Math.round(brooke)} мл / 24 ч`,
                 unit: `(½ за первые 8 ч = ${Math.round(first8h)} мл)`,
-                interpretation: 'Модифицированный Брук — менее агрессивный вариант, US military / ABLS.',
+                interpretation: 'Модифицированный Брук - менее агрессивный вариант, US military / ABLS.',
                 color: '#F59E0B',
-                details: `Расчёт: 2 мл × ${w} кг × ${tbsa} % TBSA = **${Math.round(brooke)} мл** раствора Рингера лактат за 24 ч. Половина (${Math.round(first8h)} мл) — в первые 8 ч от МОМЕНТА ожога, темп ≈ **${Math.round(rate8)} мл/ч**. Для сравнения, Parkland (4 мл/кг/%TBSA) даст ${Math.round(parkland)} мл — вдвое больше. Modified Brooke выбран ABLS (American Burn Life Support) и US military из-за меньшего риска «fluid creep».`,
+                details: `Расчёт: 2 мл × ${w} кг × ${tbsa} % TBSA = ${Math.round(brooke)} мл раствора Рингера лактат за 24 ч. Половина (${Math.round(first8h)} мл) - в первые 8 ч от МОМЕНТА ожога, темп ≈ ${Math.round(rate8)} мл/ч. Для сравнения, Parkland (4 мл/кг/%TBSA) даст ${Math.round(parkland)} мл - вдвое больше. Modified Brooke выбран ABLS (American Burn Life Support) и US military из-за меньшего риска «fluid creep».`,
                 actions: [
                     `Рингер лактат, стартовый темп ≈ ${Math.round(rate8)} мл/ч в первые 8 ч`,
-                    'Титровать по диурезу: взрослые 0,5 мл/кг/ч, дети < 30 кг — 1 мл/кг/ч',
+                    'Титровать по диурезу: взрослые 0,5 мл/кг/ч, дети < 30 кг - 1 мл/кг/ч',
                     'Почасовой мониторинг: диурез, АД, лактат, Ht, сознание',
                     'Перевод в ожоговый центр при TBSA ≥ 10 % (ABA critera)',
-                    'У детей < 30 кг — добавить поддерживающую инфузию по Holliday-Segar',
+                    'У детей < 30 кг - добавить поддерживающую инфузию по Holliday-Segar',
                     'При электро- и ингаляционных ожогах потребности выше расчётных'
                 ],
                 caveats: [
-                    'Учитываются только ожоги II–III степени; эритема (I ст.) не входит',
-                    'У ожирения обе формулы завышают — рассмотреть IBW или Galveston (дети)',
-                    'Расчёт — только стартовая оценка; реальный темп подбирают по диурезу',
+                    'Учитываются только ожоги II-III степени; эритема (I ст.) не входит',
+                    'У ожирения обе формулы завышают - рассмотреть IBW или Galveston (дети)',
+                    'Расчёт - только стартовая оценка; реальный темп подбирают по диурезу',
                     'Половина объёма считается от МОМЕНТА ожога, а не от поступления'
                 ],
                 relatedCourses: [
@@ -108,7 +108,7 @@ const runner: CalculatorTool = {
                 ]
             };
         },
-    reference: "Modified Brooke (Pruitt, 1979). ABLS / ATLS — 2 мл × кг × %TBSA Рингер за 24 ч, ½ в первые 8 ч.",
+    reference: "Modified Brooke (Pruitt, 1979). ABLS / ATLS - 2 мл × кг × %TBSA Рингер за 24 ч, ½ в первые 8 ч.",
     countries: "США (ABA / ABLS) · Международный",
     presets: [
       {
@@ -133,7 +133,7 @@ const runner: CalculatorTool = {
         }
       }
     ],
-    info: "### Для чего используется\n**Модифицированная формула Брука (Pruitt, 1979)** — расчёт стартовой инфузионной терапии при ожогах. Менее агрессивная, чем Parkland, — основана на опыте US Army Institute of Surgical Research. Рекомендуется ABA (American Burn Association) и ABLS как альтернатива Паркланду.\n\n### Формула\n`Объём (мл за 24 ч) = 2 × масса (кг) × % TBSA`\nПоловина — в первые 8 ч, половина — в следующие 16 ч.\nРаствор: **Рингер лактат**.\n\n### Сравнение с другими формулами\n| Формула | Коэффициент | Для кого |\n|---|---|---|\n| Parkland (Baxter) | **4** × кг × %TBSA | ATLS стандарт |\n| Modified Brooke | **2** × кг × %TBSA | ABLS, US military |\n| Consensus (ABA) | 2–4 × кг × %TBSA | Рабочий диапазон |\n| Galveston (дети) | 5000 × м²×TBSA + 2000 × м² maintenance | Педиатрия |\n\n### Почему снижен коэффициент\nМноголетний опыт показал, что Паркланд часто приводит к избыточной инфузии (\"fluid creep\") → компартмент-синдромы (брюшной полости, конечностей, орбитальный), ARDS, полиорганная недостаточность. Modified Brooke даёт меньший стартовый объём при сравнимых клинических исходах при условии титрования по диурезу.\n\n### Цели ресусцитации\n| Параметр | Цель |\n|---|---|\n| Диурез (взрослые) | 0,5 мл/кг/ч |\n| Диурез (дети < 30 кг) | 1 мл/кг/ч |\n| САД | ≥ 60 мм рт.ст. |\n| Лактат | Динамика снижения |\n\n### Ограничения\n- Как и Parkland — только ожоги II–III степени\n- У детей требуется maintenance сверх расчётного\n- Электроожоги / ингаляционные — объём часто больше\n\n### Источник\nPruitt BA Jr. Protection from excessive resuscitation: \"pushing the pendulum back\". *J Trauma* 2000;49(3):567–568.\nAmerican Burn Life Support (ABLS) Provider Manual, ABA 2018."
+    info: "### Для чего используется\n**Модифицированная формула Брука (Pruitt, 1979)** - расчёт стартовой инфузионной терапии при ожогах. Менее агрессивная, чем Parkland, - основана на опыте US Army Institute of Surgical Research. Рекомендуется ABA (American Burn Association) и ABLS как альтернатива Паркланду.\n\n### Формула\n`Объём (мл за 24 ч) = 2 × масса (кг) × % TBSA`\nПоловина - в первые 8 ч, половина - в следующие 16 ч.\nРаствор: **Рингер лактат**.\n\n### Сравнение с другими формулами\n| Формула | Коэффициент | Для кого |\n|---|---|---|\n| Parkland (Baxter) | **4** × кг × %TBSA | ATLS стандарт |\n| Modified Brooke | **2** × кг × %TBSA | ABLS, US military |\n| Consensus (ABA) | 2-4 × кг × %TBSA | Рабочий диапазон |\n| Galveston (дети) | 5000 × м²×TBSA + 2000 × м² maintenance | Педиатрия |\n\n### Почему снижен коэффициент\nМноголетний опыт показал, что Паркланд часто приводит к избыточной инфузии (\"fluid creep\") → компартмент-синдромы (брюшной полости, конечностей, орбитальный), ARDS, полиорганная недостаточность. Modified Brooke даёт меньший стартовый объём при сравнимых клинических исходах при условии титрования по диурезу.\n\n### Цели ресусцитации\n| Параметр | Цель |\n|---|---|\n| Диурез (взрослые) | 0,5 мл/кг/ч |\n| Диурез (дети < 30 кг) | 1 мл/кг/ч |\n| САД | ≥ 60 мм рт.ст. |\n| Лактат | Динамика снижения |\n\n### Ограничения\n- Как и Parkland - только ожоги II-III степени\n- У детей требуется maintenance сверх расчётного\n- Электроожоги / ингаляционные - объём часто больше\n\n### Источник\nPruitt BA Jr. Protection from excessive resuscitation: \"pushing the pendulum back\". *J Trauma* 2000;49(3):567-568.\nAmerican Burn Life Support (ABLS) Provider Manual, ABA 2018."
   };
 
 export default runner;

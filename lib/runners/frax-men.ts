@@ -1,5 +1,5 @@
 // @ts-nocheck
-/** Runner: frax-men — 10-летний риск остеопоротического перелома (FRAX, Kanis 2008) */
+/** Runner: frax-men - 10-летний риск остеопоротического перелома (FRAX, Kanis 2008) */
 import type {
   CalculatorTool,
   ToolInput,
@@ -41,7 +41,7 @@ const runner: CalculatorTool = {
     const h = (Number(v.height) || 165) / 100;
     const bmi = w / (h * h);
     const ts = v.tscore === '' || v.tscore === undefined ? null : Number(v.tscore);
-    // Simplified approximation of FRAX — educational
+    // Simplified approximation of FRAX - educational
     let major = sex === 'f' ? 3 : 2;
     major += Math.max(0, (age - 50) * 0.35);
     if (bmi < 20) major += 2;
@@ -66,7 +66,7 @@ const runner: CalculatorTool = {
       action = 'Рассмотреть терапию с учётом T-score и факторов риска';
       color = '#F59E0B';
     } else {
-      action = 'Низкий риск — модификация образа жизни, Ca/D3';
+      action = 'Низкий риск - модификация образа жизни, Ca/D3';
       color = '#22C55E';
     }
     return {
@@ -75,17 +75,17 @@ const runner: CalculatorTool = {
       interpretation: `10-летний риск: основной остеопоротический ${major.toFixed(1)} %, бедро ${hip.toFixed(1)} %. ${action}`,
       color,
       details:
-        'Порог NOF/AACE: бедро ≥ 3 % ИЛИ major ≥ 20 % — показана фармакотерапия. Российские рекомендации используют FRAX-таблицы с адаптированным порогом по возрасту.',
+        'Порог NOF/AACE: бедро ≥ 3 % ИЛИ major ≥ 20 % - показана фармакотерапия. Российские рекомендации используют FRAX-таблицы с адаптированным порогом по возрасту.',
       actions: [
-        'DXA (шейка бедра, L1–L4) при T ≤ −2.5 — остеопороз',
+        'DXA (шейка бедра, L1-L4) при T ≤ −2.5 - остеопороз',
         '1-я линия: алендронат / ризедронат / золедронат; деносумаб; ромосозумаб при тяжёлом остеопорозе',
-        'Са 1000–1200 мг/сут, витамин D3 800–2000 МЕ/сут',
+        'Са 1000-1200 мг/сут, витамин D3 800-2000 МЕ/сут',
         'Профилактика падений, силовые упражнения',
       ],
       caveats: [
-        'Это упрощённая аппроксимация — для клиники использовать официальный FRAX-калькулятор',
+        'Это упрощённая аппроксимация - для клиники использовать официальный FRAX-калькулятор',
         'T-score вводится только по шейке бедра (DXA)',
-        'FRAX валиден у лиц 40–90 лет, не получавших лечение',
+        'FRAX валиден у лиц 40-90 лет, не получавших лечение',
         'При нескольких переломах реальный риск выше расчётного',
       ],
       related: [
@@ -106,7 +106,7 @@ const runner: CalculatorTool = {
     { label: 'Женщина 70 + перелом + ГК', values: { age: 70, sex: 'f', weight: 58, height: 160, priorFx: true, parentHip: false, smoker: false, gluco: true, ra: false, secondary: false, alcohol: false } },
     { label: 'Высокий риск + T −3', values: { age: 75, sex: 'f', weight: 55, height: 160, priorFx: true, parentHip: true, smoker: true, gluco: false, ra: false, secondary: false, alcohol: false, tscore: -3 } },
   ],
-  caveats: ['Только официальный FRAX валиден клинически — этот калькулятор образовательный'],
+  caveats: ['Только официальный FRAX валиден клинически - этот калькулятор образовательный'],
   related: [
     { id: 'greene', title: 'Greene / MRS' },
     { id: 'straw10', title: 'STRAW+10' },
@@ -117,15 +117,15 @@ const runner: CalculatorTool = {
   ],
   info: `### FRAX (Kanis 2008)
 Оценка 10-летней вероятности:
-- **MOF** — основной остеопоротический перелом (позвоночник, предплечье, плечо, бедро)
-- **Hip** — перелом бедра
+- **MOF** - основной остеопоротический перелом (позвоночник, предплечье, плечо, бедро)
+- **Hip** - перелом бедра
 
 ### Факторы
 Возраст, пол, BMI, предыдущий перелом, перелом бедра у родителей, курение, глюкокортикоиды ≥ 5 мг/сут ≥ 3 мес, РА, вторичный остеопороз, алкоголь ≥ 3 ед/сут, T-score шейки бедра.
 
 ### Пороги лечения (NOF/AACE)
-- **Hip ≥ 3 %** или **MOF ≥ 20 %** — фармакотерапия
-- T-score ≤ −2.5 на любом участке — остеопороз по DXA
+- **Hip ≥ 3 %** или **MOF ≥ 20 %** - фармакотерапия
+- T-score ≤ −2.5 на любом участке - остеопороз по DXA
 
 ### Источники
 Kanis Osteoporos Int 2008. NOF 2022. AACE/ACE 2020.`,

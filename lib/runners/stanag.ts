@@ -1,5 +1,5 @@
 // @ts-nocheck
-/** Runner: stanag — NATO STANAG 2879 military triage */
+/** Runner: stanag - NATO STANAG 2879 military triage */
 import type {
   ScoreTool,
   ToolInput,
@@ -16,10 +16,10 @@ const runner: ScoreTool = {
       label: 'Категория STANAG 2879',
       type: 'select',
       options: [
-        { value: '1', label: 'T1 Immediate (красный) — жизнеспасающая помощь немедленно', points: 1 },
-        { value: '2', label: 'T2 Delayed (жёлтый) — помощь в пределах часов', points: 2 },
-        { value: '3', label: 'T3 Minimal (зелёный) — лёгкие, ходячие', points: 3 },
-        { value: '4', label: 'T4 Expectant (синий/чёрный) — нежизнеспособные при дефиците ресурсов', points: 4 },
+        { value: '1', label: 'T1 Immediate (красный) - жизнеспасающая помощь немедленно', points: 1 },
+        { value: '2', label: 'T2 Delayed (жёлтый) - помощь в пределах часов', points: 2 },
+        { value: '3', label: 'T3 Minimal (зелёный) - лёгкие, ходячие', points: 3 },
+        { value: '4', label: 'T4 Expectant (синий/чёрный) - нежизнеспособные при дефиците ресурсов', points: 4 },
       ],
     },
   ],
@@ -33,7 +33,7 @@ const runner: ScoreTool = {
       actions: [
         'MARCH: Massive hemorrhage → Airway → Respiration → Circulation → Hypothermia',
         'Жгут CAT, тампонада, NPA/крико, декомпрессия, TXA 1 г',
-        'Приоритет CASEVAC — «urgent» (<1 ч) / «urgent surgical» (<2 ч)',
+        'Приоритет CASEVAC - «urgent» (<1 ч) / «urgent surgical» (<2 ч)',
       ],
     },
     {
@@ -41,18 +41,18 @@ const runner: ScoreTool = {
       label: 'T2 Delayed (жёлтый)',
       color: '#FACC15',
       description: 'Серьёзные повреждения без угрозы жизни в ближайшие часы, вмешательство можно отложить до 6 ч.',
-      details: 'Закрытые переломы крупных костей, стабильные ранения брюшной полости, ожоги 15–40%, стабильная ЧМТ средней тяжести.',
+      details: 'Закрытые переломы крупных костей, стабильные ранения брюшной полости, ожоги 15-40%, стабильная ЧМТ средней тяжести.',
       actions: [
         'Обезболивание (кетамин, морфин, OTFC), иммобилизация',
-        'Переоценка каждые 30 мин — может перейти в T1',
-        'CASEVAC priority / routine, 2–6 ч',
+        'Переоценка каждые 30 мин - может перейти в T1',
+        'CASEVAC priority / routine, 2-6 ч',
       ],
     },
     {
       min: 3, max: 3,
       label: 'T3 Minimal (зелёный)',
       color: '#22C55E',
-      description: 'Лёгкие ранения — «walking wounded», возвращаются в строй после минимального лечения.',
+      description: 'Лёгкие ранения - «walking wounded», возвращаются в строй после минимального лечения.',
       actions: [
         'Перевязка, обезболивание OTFC',
         'Самостоятельная эвакуация / попутный транспорт',
@@ -73,7 +73,7 @@ const runner: ScoreTool = {
     },
   ],
   caveats: [
-    'STANAG 2879 — NATO Allied Medical Publication AMedP-1.10',
+    'STANAG 2879 - NATO Allied Medical Publication AMedP-1.10',
     'T4 Expectant присваивается ТОЛЬКО при непоколебимом дефиците ресурсов; в мирной клинике не применяется',
     'В военной медицине порядок эвакуации синхронизируется с 9-Line MEDEVAC',
     'Tactical Combat Casualty Care (TCCC) использует те же 4 категории с MARCH-PAWS',
@@ -87,7 +87,7 @@ const runner: ScoreTool = {
   relatedCourses: [
     { id: '300.4', title: 'Неотложная помощь' },
   ],
-  reference: 'NATO STANAG 2879 / AMedP-1.10 — Allied Medical Publication on the Use of Triage in NATO Medical Support Operations. NATO Standardization Office, 2019.',
+  reference: 'NATO STANAG 2879 / AMedP-1.10 - Allied Medical Publication on the Use of Triage in NATO Medical Support Operations. NATO Standardization Office, 2019.',
   countries: 'NATO (альянс)',
   presets: [
     { label: 'T1 Immediate', values: { cat: '1' } },
@@ -96,7 +96,7 @@ const runner: ScoreTool = {
     { label: 'T4 Expectant', values: { cat: '4' } },
   ],
   info: `### Для чего используется
-**NATO STANAG 2879 (AMedP-1.10)** — стандарт альянса по военной медицинской сортировке. Унифицирован для всех стран NATO и используется при совместных операциях.
+**NATO STANAG 2879 (AMedP-1.10)** - стандарт альянса по военной медицинской сортировке. Унифицирован для всех стран NATO и используется при совместных операциях.
 
 ### Четыре категории
 | Код | Название | Цвет | Приоритет |
@@ -124,7 +124,7 @@ Tactical Combat Casualty Care использует те же категории.
 | Convenience | по возможности | T3 (walking) |
 
 ### Отличия T4 Expectant
-Присваивается только при **mass casualty** с непоколебимым дефицитом ресурсов. При появлении подкреплений — возврат в T1.
+Присваивается только при **mass casualty** с непоколебимым дефицитом ресурсов. При появлении подкреплений - возврат в T1.
 
 ### Источники
 - STANAG 2879 / AMedP-1.10, NATO STO 2019

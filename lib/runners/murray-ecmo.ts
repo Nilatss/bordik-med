@@ -1,8 +1,8 @@
 // @ts-nocheck
 /**
- * Runner: murray-ecmo — Murray LIS в контексте показаний к VV-ECMO (CESAR / EOLIA)
- * Базовая шкала повторяет Murray 1988; здесь — интерпретация отбора на ECMO.
- * Для «чистой» шкалы Murray — см. отдельный runner `murray`.
+ * Runner: murray-ecmo - Murray LIS в контексте показаний к VV-ECMO (CESAR / EOLIA)
+ * Базовая шкала повторяет Murray 1988; здесь - интерпретация отбора на ECMO.
+ * Для «чистой» шкалы Murray - см. отдельный runner `murray`.
  */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -23,9 +23,9 @@ const runner: CalculatorTool = {
       id: 'pf', label: 'Гипоксемия (PaO₂/FiO₂)', type: 'select',
       options: [
         { value: '0', label: '≥ 300' },
-        { value: '1', label: '225–299' },
-        { value: '2', label: '175–224' },
-        { value: '3', label: '100–174' },
+        { value: '1', label: '225-299' },
+        { value: '2', label: '175-224' },
+        { value: '3', label: '100-174' },
         { value: '4', label: '< 100' },
       ],
     },
@@ -33,9 +33,9 @@ const runner: CalculatorTool = {
       id: 'peep', label: 'PEEP (см H₂O)', type: 'select',
       options: [
         { value: '0', label: '≤ 5' },
-        { value: '1', label: '6–8' },
-        { value: '2', label: '9–11' },
-        { value: '3', label: '12–14' },
+        { value: '1', label: '6-8' },
+        { value: '2', label: '9-11' },
+        { value: '3', label: '12-14' },
         { value: '4', label: '≥ 15' },
       ],
     },
@@ -43,9 +43,9 @@ const runner: CalculatorTool = {
       id: 'compl', label: 'Комплаенс (мл/см H₂O)', type: 'select',
       options: [
         { value: '0', label: '≥ 80' },
-        { value: '1', label: '60–79' },
-        { value: '2', label: '40–59' },
-        { value: '3', label: '20–39' },
+        { value: '1', label: '60-79' },
+        { value: '2', label: '40-59' },
+        { value: '3', label: '20-39' },
         { value: '4', label: '≤ 19' },
       ],
     },
@@ -55,9 +55,9 @@ const runner: CalculatorTool = {
     const mean = (a + b + c + d) / 4;
     let interp = '', color = '', details = '', actions: string[] = [];
     if (mean >= 3) {
-      interp = 'Критерии CESAR/EOLIA выполнены — обсудить VV-ECMO';
+      interp = 'Критерии CESAR/EOLIA выполнены - обсудить VV-ECMO';
       color = '#991B1B';
-      details = 'LIS ≥ 3 — исторический порог CESAR (UK 2009). В EOLIA (NEJM 2018) ECMO рассматривается при P/F < 50 (3 ч) или < 80 (6 ч) либо pH < 7,25 + PaCO₂ ≥ 60 (6 ч) несмотря на оптимальную ИВЛ и прон.';
+      details = 'LIS ≥ 3 - исторический порог CESAR (UK 2009). В EOLIA (NEJM 2018) ECMO рассматривается при P/F < 50 (3 ч) или < 80 (6 ч) либо pH < 7,25 + PaCO₂ ≥ 60 (6 ч) несмотря на оптимальную ИВЛ и прон.';
       actions = [
         'Связаться с центром ECMO, MDT',
         'Прон-позиция ≥ 16 ч, NMB ≤ 48 ч',
@@ -67,12 +67,12 @@ const runner: CalculatorTool = {
     } else if (mean >= 2.5) {
       interp = 'Тяжёлое повреждение лёгких (порог ECMO близок)';
       color = '#EF4444';
-      details = 'LIS 2,5–2,9 — тяжёлый ARDS, готовность к эскалации.';
+      details = 'LIS 2,5-2,9 - тяжёлый ARDS, готовность к эскалации.';
       actions = ['Прон-позиция', 'Оценка EOLIA-критериев', 'Связь с ECMO-центром'];
     } else {
       interp = 'Не показан ECMO по LIS';
       color = '#22C55E';
-      details = 'LIS < 2,5 — ECMO не показан. Оптимизация ИВЛ и лечение причины.';
+      details = 'LIS < 2,5 - ECMO не показан. Оптимизация ИВЛ и лечение причины.';
       actions = ['Vt 6 мл/кг IBW', 'PEEP-таблица ARDSnet', 'Консервативная инфузия'];
     }
     return {
@@ -83,10 +83,10 @@ const runner: CalculatorTool = {
       details,
       actions,
       caveats: [
-        'CESAR: LIS > 3 — порог для перевода в ECMO-центр',
+        'CESAR: LIS > 3 - порог для перевода в ECMO-центр',
         'EOLIA: современные критерии включают P/F, pH, PaCO₂ при оптимальной ИВЛ',
         'LIS требует ИВЛ (PEEP, комплаенс)',
-        'Для полного описания шкалы — см. runner `murray`',
+        'Для полного описания шкалы - см. runner `murray`',
       ],
       related: [
         { id: 'murray', title: 'Murray LIS (базовая)' },
@@ -109,7 +109,7 @@ const runner: CalculatorTool = {
       },
     };
   },
-  reference: 'Murray JF et al. Am Rev Respir Dis 1988;138:720–3. Peek GJ et al. (CESAR) Lancet 2009;374:1351–63. Combes A et al. (EOLIA) N Engl J Med 2018;378:1965–75.',
+  reference: 'Murray JF et al. Am Rev Respir Dis 1988;138:720-3. Peek GJ et al. (CESAR) Lancet 2009;374:1351-63. Combes A et al. (EOLIA) N Engl J Med 2018;378:1965-75.',
   countries: 'Международный (ELSO)',
   presets: [
     { label: 'ECMO-кандидат (LIS 4)', values: { cxr: '4', pf: '4', peep: '4', compl: '4' } },
@@ -134,17 +134,17 @@ const runner: CalculatorTool = {
 | Балл | Интерпретация |
 |---|---|
 | 0 | Нет повреждения |
-| 0,1–2,5 | Лёгкий/умеренный |
+| 0,1-2,5 | Лёгкий/умеренный |
 | > 2,5 | Тяжёлый |
 | ≥ 3 | ECMO-кандидат (CESAR) |
 
 ### См. также
-Полное описание компонентов и расчёт — в runner **murray**.
+Полное описание компонентов и расчёт - в runner **murray**.
 
 ### Источники
-- Murray JF et al. Am Rev Respir Dis 1988;138:720–3.
-- Peek GJ et al. Lancet 2009;374:1351–63 (CESAR).
-- Combes A et al. NEJM 2018;378:1965–75 (EOLIA).`,
+- Murray JF et al. Am Rev Respir Dis 1988;138:720-3.
+- Peek GJ et al. Lancet 2009;374:1351-63 (CESAR).
+- Combes A et al. NEJM 2018;378:1965-75 (EOLIA).`,
 };
 
 export default runner;

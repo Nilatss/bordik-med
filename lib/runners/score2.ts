@@ -2,7 +2,7 @@
 /**
  * Runner: score2
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
- * Do not edit by hand — regenerate via `npm run split:runners`.
+ * Do not edit by hand - regenerate via `npm run split:runners`.
  *
  * Loaded lazily via dynamic import from lib/runners/index.ts so the
  * encyclopaedia of clinical content stays out of the main app bundle.
@@ -132,7 +132,7 @@ const runner: CalculatorTool = {
                     s0 = 0.9605;
                 }
             } else {
-                // SCORE2-OP (age 70–89)
+                // SCORE2-OP (age 70-89)
                 if (female) {
                     xb = 0.1176 * (age - 73) + 0.3580 * cSmoker + 0.1608 * cSBP + 0.1010 * cNonHDL - 0.0126 * (age - 73) * cSmoker - 0.0109 * (age - 73) * cSBP;
                     s0 = 0.6630;
@@ -175,7 +175,7 @@ const runner: CalculatorTool = {
             const lcl = Math.log(-Math.log(1 - risk));
             risk = 1 - Math.exp(-Math.exp(m + s * lcl));
             const r = Math.max(0, Math.min(99, risk * 100));
-            // Age-adjusted thresholds (ESC 2021): < 50y low <2.5, high ≥7.5; 50–69 low <5, high ≥10; ≥70 low <7.5, high ≥15.
+            // Age-adjusted thresholds (ESC 2021): < 50y low <2.5, high ≥7.5; 50-69 low <5, high ≥10; ≥70 low <7.5, high ≥15.
             let lowT = 0, highT = 0;
             if (age < 50) {
                 lowT = 2.5;
@@ -200,16 +200,16 @@ const runner: CalculatorTool = {
             } else if (r < highT) {
                 interpretation = 'Высокий риск';
                 color = '#F59E0B';
-                details = `Риск ${lowT}–${highT} % — высокая категория. Показана активная модификация ФР.`;
+                details = `Риск ${lowT}-${highT} % - высокая категория. Показана активная модификация ФР.`;
                 actions = [
                     'Цель LDL-C < 1,8 ммоль/л (снижение ≥ 50 %)',
                     'АД < 130/80 (если переносимо)',
-                    'Статин умеренной–высокой интенсивности'
+                    'Статин умеренной-высокой интенсивности'
                 ];
             } else {
                 interpretation = 'Очень высокий риск';
                 color = '#EF4444';
-                details = `Риск ≥ ${highT} % — очень высокий. Агрессивная превентивная терапия.`;
+                details = `Риск ≥ ${highT} % - очень высокий. Агрессивная превентивная терапия.`;
                 actions = [
                     'Цель LDL-C < 1,4 ммоль/л (ESC 2021 Dyslipidaemia)',
                     'АД < 130/80',
@@ -225,9 +225,9 @@ const runner: CalculatorTool = {
                 details,
                 actions,
                 caveats: [
-                    'SCORE2 — для возраста 40–69, SCORE2-OP — для 70–89',
+                    'SCORE2 - для возраста 40-69, SCORE2-OP - для 70-89',
                     'Регион риска выбирайте по стране пациента (ESC 2021 стратификация)',
-                    'Не применять при известной ASCVD, семейной гиперхолестеринемии, СД с ПОМ, ХБП G4–G5 — риск автоматически высокий / очень высокий',
+                    'Не применять при известной ASCVD, семейной гиперхолестеринемии, СД с ПОМ, ХБП G4-G5 - риск автоматически высокий / очень высокий',
                     'Non-HDL = ТC − HDL; более точен, чем LDL, при гипертриглицеридемии'
                 ],
                 scale: {
@@ -276,7 +276,7 @@ const runner: CalculatorTool = {
                 ]
             };
         },
-    reference: "SCORE2 working group & ESC CVD Risk Collaboration. SCORE2 risk prediction algorithms. Eur Heart J 2021;42:2439–54.",
+    reference: "SCORE2 working group & ESC CVD Risk Collaboration. SCORE2 risk prediction algorithms. Eur Heart J 2021;42:2439-54.",
     countries: "Европа (ESC)",
     presets: [
       {
@@ -313,7 +313,7 @@ const runner: CalculatorTool = {
         }
       }
     ],
-    info: "### Для чего используется\n**SCORE2** (для 40–69 лет) и **SCORE2-OP** (Older Persons, 70–89) — ESC-алгоритм расчёта 10-летнего риска **фатального + нефатального** CVD-события (ИМ, инсульт) на основе европейских когорт с калибровкой на 4 региона риска.\n\n### Формула\nМодель Fine-Gray с центрированными предикторами:\n- age − 60\n- SBP − 120\n- non-HDL − 6\n- курение (0/1)\n- взаимодействия age × (курение, SBP, non-HDL)\n\nФинальная рекалибровка log-log-преобразованием по региональным коэффициентам (low / moderate / high / very-high risk).\n\n### Регионы риска (ESC 2021)\n| Регион | Страны |\n|---|---|\n| Низкий | BE, DK, FR, IL, LU, ES, CH, NL |\n| Умеренный | AT, CY, FI, DE, GR, IS, IE, IT, MT, NO, PT, SM, SI, SE, UK |\n| Высокий | BA, HR, CZ, EE, HU, PL, SK, TR |\n| Очень высокий | AL, AM, AZ, BY, BG, GE, KZ, KG, LV, LT, MK, MD, ME, **RO, RU**, RS, TJ, TM, **UA, UZ**, DZ, EG, LY, MA, SY, TN |\n\n### Возраст-адаптированные пороги (ESC 2021)\n| Возраст | Низкий-умеренный | Высокий | Очень высокий |\n|---|---|---|---|\n| < 50 | < 2,5 % | 2,5–< 7,5 % | ≥ 7,5 % |\n| 50–69 | < 5 % | 5–< 10 % | ≥ 10 % |\n| ≥ 70 | < 7,5 % | 7,5–< 15 % | ≥ 15 % |\n\n### Цели при высоком/очень высоком риске (ESC 2021 Dyslipidaemia)\n| Категория | LDL-C | АД |\n|---|---|---|\n| Высокий | < 1,8 и ↓ ≥ 50 % | < 130/80 |\n| Очень высокий | < 1,4 и ↓ ≥ 50 % | < 130/80 |\n| Экстремальный (повторное событие < 2 лет) | < 1,0 | < 130/80 |\n\n### Ограничения\n- Не применять при уже диагностированной ASCVD, СД с ПОМ, ХБП G4+, семейной гиперхолестеринемии\n- Требует non-HDL-C (не LDL)\n- Калибровка 4 регионов — приблизительная; оффициальный SCORE2 включает страновые коэффициенты\n\n### Источник\nSCORE2 working group & ESC Cardiovascular Risk Collaboration. SCORE2 risk prediction algorithms: new models to estimate 10-year risk of cardiovascular disease in Europe. *Eur Heart J* 2021;42(25):2439–2454.\nSCORE2-OP working group. SCORE2-OP risk prediction algorithms. *Eur Heart J* 2021;42(25):2455–2467.\nVisseren FLJ et al. 2021 ESC Guidelines on CVD prevention. *Eur Heart J* 2021;42:3227–3337."
+    info: "### Для чего используется\n**SCORE2** (для 40-69 лет) и **SCORE2-OP** (Older Persons, 70-89) - ESC-алгоритм расчёта 10-летнего риска **фатального + нефатального** CVD-события (ИМ, инсульт) на основе европейских когорт с калибровкой на 4 региона риска.\n\n### Формула\nМодель Fine-Gray с центрированными предикторами:\n- age − 60\n- SBP − 120\n- non-HDL − 6\n- курение (0/1)\n- взаимодействия age × (курение, SBP, non-HDL)\n\nФинальная рекалибровка log-log-преобразованием по региональным коэффициентам (low / moderate / high / very-high risk).\n\n### Регионы риска (ESC 2021)\n| Регион | Страны |\n|---|---|\n| Низкий | BE, DK, FR, IL, LU, ES, CH, NL |\n| Умеренный | AT, CY, FI, DE, GR, IS, IE, IT, MT, NO, PT, SM, SI, SE, UK |\n| Высокий | BA, HR, CZ, EE, HU, PL, SK, TR |\n| Очень высокий | AL, AM, AZ, BY, BG, GE, KZ, KG, LV, LT, MK, MD, ME, **RO, RU**, RS, TJ, TM, **UA, UZ**, DZ, EG, LY, MA, SY, TN |\n\n### Возраст-адаптированные пороги (ESC 2021)\n| Возраст | Низкий-умеренный | Высокий | Очень высокий |\n|---|---|---|---|\n| < 50 | < 2,5 % | 2,5-< 7,5 % | ≥ 7,5 % |\n| 50-69 | < 5 % | 5-< 10 % | ≥ 10 % |\n| ≥ 70 | < 7,5 % | 7,5-< 15 % | ≥ 15 % |\n\n### Цели при высоком/очень высоком риске (ESC 2021 Dyslipidaemia)\n| Категория | LDL-C | АД |\n|---|---|---|\n| Высокий | < 1,8 и ↓ ≥ 50 % | < 130/80 |\n| Очень высокий | < 1,4 и ↓ ≥ 50 % | < 130/80 |\n| Экстремальный (повторное событие < 2 лет) | < 1,0 | < 130/80 |\n\n### Ограничения\n- Не применять при уже диагностированной ASCVD, СД с ПОМ, ХБП G4+, семейной гиперхолестеринемии\n- Требует non-HDL-C (не LDL)\n- Калибровка 4 регионов - приблизительная; оффициальный SCORE2 включает страновые коэффициенты\n\n### Источник\nSCORE2 working group & ESC Cardiovascular Risk Collaboration. SCORE2 risk prediction algorithms: new models to estimate 10-year risk of cardiovascular disease in Europe. *Eur Heart J* 2021;42(25):2439-2454.\nSCORE2-OP working group. SCORE2-OP risk prediction algorithms. *Eur Heart J* 2021;42(25):2455-2467.\nVisseren FLJ et al. 2021 ESC Guidelines on CVD prevention. *Eur Heart J* 2021;42:3227-3337."
   };
 
 export default runner;

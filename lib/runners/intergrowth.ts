@@ -2,7 +2,7 @@
 /**
  * Runner: intergrowth
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
- * Do not edit by hand — regenerate via `npm run split:runners`.
+ * Do not edit by hand - regenerate via `npm run split:runners`.
  *
  * Loaded lazily via dynamic import from lib/runners/index.ts so the
  * encyclopaedia of clinical content stays out of the main app bundle.
@@ -108,7 +108,7 @@ const runner: CalculatorTool = {
             const w = Number(v.weight);
             const l = Number(v.length);
             const hc = Number(v.hc);
-            // Fenton 2013 median weight (grams) by GA — simplified interpolation
+            // Fenton 2013 median weight (grams) by GA - simplified interpolation
             const fentonWeight = {
                 m: [
                     {
@@ -239,16 +239,16 @@ const runner: CalculatorTool = {
             if (pct < 3) {
                 interpretation = 'SGA (< 3-й перц.)';
                 color = '#EF4444';
-                details = 'Small for gestational age — масса ниже 3-го перцентиля для данного ГВ. Риск гипогликемии, гипотермии, полицитемии, гипокальциемии.';
+                details = 'Small for gestational age - масса ниже 3-го перцентиля для данного ГВ. Риск гипогликемии, гипотермии, полицитемии, гипокальциемии.';
                 actions = [
                     'Ранний контроль глюкозы (каждые 3 ч × 24 ч)',
                     'Тёплая цепь, ранее вскармливание',
                     'Исключить TORCH-инфекции, хромосомные аномалии'
                 ];
             } else if (pct < 10) {
-                interpretation = '3–10-й перцентиль';
+                interpretation = '3-10-й перцентиль';
                 color = '#F59E0B';
-                details = 'Пограничная зона — возможен конституциональный вариант или лёгкая задержка внутриутробного развития.';
+                details = 'Пограничная зона - возможен конституциональный вариант или лёгкая задержка внутриутробного развития.';
                 actions = [
                     'Ранний контроль глюкозы',
                     'Оценка плаценты, материнских факторов'
@@ -263,7 +263,7 @@ const runner: CalculatorTool = {
                     'Скрининг диабета у матери (если не был)'
                 ];
             } else {
-                interpretation = 'AGA (10–97-й)';
+                interpretation = 'AGA (10-97-й)';
                 color = '#22C55E';
                 details = 'Appropriate for gestational age. Масса соответствует сроку гестации.';
                 actions = [
@@ -279,10 +279,10 @@ const runner: CalculatorTool = {
                 details,
                 actions,
                 caveats: [
-                    'Упрощённая аппроксимация по Fenton 2013 — для точных значений используйте INTERGROWTH-21st / Fenton калькуляторы или PediTools',
+                    'Упрощённая аппроксимация по Fenton 2013 - для точных значений используйте INTERGROWTH-21st / Fenton калькуляторы или PediTools',
                     'После 50 нед PMA переходить на WHO Growth Standards',
                     'INTERGROWTH-21st основан на 59 337 беременностях в 8 странах (стандарт, не референс)',
-                    'Fenton 2013 — меta-анализ 4 больших когорт (референс)'
+                    'Fenton 2013 - меta-анализ 4 больших когорт (референс)'
                 ],
                 scale: {
                     segments: [
@@ -295,7 +295,7 @@ const runner: CalculatorTool = {
                         {
                             min: 3,
                             max: 10,
-                            label: '3–10',
+                            label: '3-10',
                             color: '#F59E0B'
                         },
                         {
@@ -317,7 +317,7 @@ const runner: CalculatorTool = {
                 related: [
                     {
                         id: 'who-growth',
-                        title: 'WHO 0–5 (после 50 нед PMA)'
+                        title: 'WHO 0-5 (после 50 нед PMA)'
                     },
                     {
                         id: 'crib',
@@ -370,7 +370,7 @@ const runner: CalculatorTool = {
         }
       }
     ],
-    info: "### Для чего используется\n**INTERGROWTH-21st (Villar 2014)** — международный стандарт внутриутробного и ранного постнатального роста для сроков **24–42 нед**. Построен как \"стандарт\" (т.е. оптимальный рост), а не референс.\n\n**Fenton 2013** — обновлённый preterm growth chart, meta-анализ 4 когорт (> 34 000 младенцев, 22–50 нед PMA). Классический инструмент в ОРИТН.\n\n### Классификация по перцентилю\n| Перцентиль | Термин | Комментарий |\n|---|---|---|\n| < 3 | SGA (тяжёлая) | Риск гипогликемии, гипотермии, полицитемии |\n| 3–10 | SGA (лёгкая) / низкая граница | Требует наблюдения |\n| 10–90 | AGA | Соответствует сроку |\n| 90–97 | Высокая граница | Рассмотреть материнский диабет |\n| > 97 | LGA | Риск родовых травм, гипогликемии |\n\n### Используемые параметры\n- Масса при рождении\n- Длина тела\n- Окружность головы\n\n### Когда какой chart\n| Срок | Рекомендация |\n|---|---|\n| Внутриутробно / при рождении | INTERGROWTH-21st |\n| Постнатально 22–50 нед PMA | Fenton 2013 |\n| ≥ 50 нед PMA | WHO 0–5 |\n\n### Ограничения\n- Не применять после 50 нед постменструального возраста (PMA)\n- Точные значения — только через PediTools / официальные калькуляторы\n- Учитывайте этничность и наследственный рост — INTERGROWTH-21st разработан как универсальный, но популяционные различия существуют\n\n### Источник\nVillar J et al. INTERGROWTH-21st. *Lancet* 2014;384:857–68.\nFenton TR, Kim JH. A systematic review and meta-analysis to revise the Fenton growth chart for preterm infants. *BMC Pediatr* 2013;13:59."
+    info: "### Для чего используется\n**INTERGROWTH-21st (Villar 2014)** - международный стандарт внутриутробного и ранного постнатального роста для сроков **24-42 нед**. Построен как \"стандарт\" (т.е. оптимальный рост), а не референс.\n\n**Fenton 2013** - обновлённый preterm growth chart, meta-анализ 4 когорт (> 34 000 младенцев, 22-50 нед PMA). Классический инструмент в ОРИТН.\n\n### Классификация по перцентилю\n| Перцентиль | Термин | Комментарий |\n|---|---|---|\n| < 3 | SGA (тяжёлая) | Риск гипогликемии, гипотермии, полицитемии |\n| 3-10 | SGA (лёгкая) / низкая граница | Требует наблюдения |\n| 10-90 | AGA | Соответствует сроку |\n| 90-97 | Высокая граница | Рассмотреть материнский диабет |\n| > 97 | LGA | Риск родовых травм, гипогликемии |\n\n### Используемые параметры\n- Масса при рождении\n- Длина тела\n- Окружность головы\n\n### Когда какой chart\n| Срок | Рекомендация |\n|---|---|\n| Внутриутробно / при рождении | INTERGROWTH-21st |\n| Постнатально 22-50 нед PMA | Fenton 2013 |\n| ≥ 50 нед PMA | WHO 0-5 |\n\n### Ограничения\n- Не применять после 50 нед постменструального возраста (PMA)\n- Точные значения - только через PediTools / официальные калькуляторы\n- Учитывайте этничность и наследственный рост - INTERGROWTH-21st разработан как универсальный, но популяционные различия существуют\n\n### Источник\nVillar J et al. INTERGROWTH-21st. *Lancet* 2014;384:857-68.\nFenton TR, Kim JH. A systematic review and meta-analysis to revise the Fenton growth chart for preterm infants. *BMC Pediatr* 2013;13:59."
   };
 
 export default runner;

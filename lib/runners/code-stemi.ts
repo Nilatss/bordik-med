@@ -1,5 +1,5 @@
 // @ts-nocheck
-/** Runner: code-stemi — STEMI Alert Protocol */
+/** Runner: code-stemi - STEMI Alert Protocol */
 import type { CalculatorTool } from '../tools-runners';
 
 const runner: CalculatorTool = {
@@ -68,9 +68,9 @@ const runner: CalculatorTool = {
     const dtbOk = dtb > 0 && dtb <= target;
 
     const checks = [
-      ecgOk ? `ЭКГ за ${ecg} мин ≤ 10 — OK` : `ЭКГ за ${ecg} мин > 10 — МИСС (target ≤ 10 мин)`,
+      ecgOk ? `ЭКГ за ${ecg} мин ≤ 10 - OK` : `ЭКГ за ${ecg} мин > 10 - МИСС (target ≤ 10 мин)`,
       cath > 0 ? `Cath активация за ${cath} мин от ЭКГ` : 'Cath активация не задана',
-      dtbOk ? `${route === 'direct' ? 'FMC2B' : 'D2B'} ${dtb} мин ≤ ${target} — OK` : `${route === 'direct' ? 'FMC2B' : 'D2B'} ${dtb} мин > ${target} — МИСС`,
+      dtbOk ? `${route === 'direct' ? 'FMC2B' : 'D2B'} ${dtb} мин ≤ ${target} - OK` : `${route === 'direct' ? 'FMC2B' : 'D2B'} ${dtb} мин > ${target} - МИСС`,
     ];
 
     let color = '#22C55E';
@@ -85,31 +85,31 @@ const runner: CalculatorTool = {
       unit: '',
       interpretation: `Code STEMI: ЭКГ ${ecg} мин (target ≤ 10), ${route === 'direct' ? 'FMC2B' : 'D2B'} ${dtb} мин (target ≤ ${target}). Общее время ишемии: ${totalIschemia} мин.`,
       color,
-      details: `Протокол Code STEMI (AHA/ACC 2021 + ESC 2023):\n• FMC ECG ≤ 10 мин\n• Prehospital ECG + активация cath lab напрямую из СМП\n• Single-call activation (bypass ED при прямой доставке)\n• D2B ≤ 90 мин (primary PCI)\n• FMC2B ≤ 120 мин (transfer)\n• Если PCI невозможен за 120 мин — фибринолиз ≤ 30 мин от FMC\n• Total ischemic time — ключевой предиктор смертности`,
+      details: `Протокол Code STEMI (AHA/ACC 2021 + ESC 2023):\n• FMC ECG ≤ 10 мин\n• Prehospital ECG + активация cath lab напрямую из СМП\n• Single-call activation (bypass ED при прямой доставке)\n• D2B ≤ 90 мин (primary PCI)\n• FMC2B ≤ 120 мин (transfer)\n• Если PCI невозможен за 120 мин - фибринолиз ≤ 30 мин от FMC\n• Total ischemic time - ключевой предиктор смертности`,
       actions: [
         ...checks,
         'Активировать cath lab ПО ТЕЛЕФОНУ с данными ЭКГ (пре-госпитальная ЭКГ → смс/факс)',
-        'ASA 162–325 мг разжевать + P2Y12 (tikagrelor 180 / prasugrel 60 / clopidogrel 600)',
-        'Антикоагуляция: гепарин 70–100 Ед/кг болюс или bivalirudin',
+        'ASA 162-325 мг разжевать + P2Y12 (tikagrelor 180 / prasugrel 60 / clopidogrel 600)',
+        'Антикоагуляция: гепарин 70-100 Ед/кг болюс или bivalirudin',
         'O₂ только при SpO₂ < 90%',
         'Нитроглицерин 0.4 мг SL × 3 (если САД > 90, нет ИМ правого)',
-        'Морфин 2–4 мг в/в при сохраняющейся боли (осторожно — задерживает P2Y12)',
+        'Морфин 2-4 мг в/в при сохраняющейся боли (осторожно - задерживает P2Y12)',
         'β-блокатор в первые 24 ч (если нет шока/острой СН)',
         'Transfer план Б: если FMC2B > 120 мин → fibrinolysis ≤ 30 мин от FMC',
         'Post-PCI: DAPT 12 мес, statin high-intensity, β-блокатор, ACEi, MRA при EF < 40%',
       ],
       caveats: [
         'Морфин задерживает всасывание P2Y12 ингибиторов (CIRCUS, IMPRESSION)',
-        'Нитраты противопоказаны при ИМ правого желудочка, САД < 90, использование ФДЭ-5 < 24–48 ч',
+        'Нитраты противопоказаны при ИМ правого желудочка, САД < 90, использование ФДЭ-5 < 24-48 ч',
         'Prasugrel противопоказан при ТИА/инсульте, возрасте ≥ 75, массе < 60 кг',
         'Fibrinolysis противопоказан при активном кровотечении, ГИ инсульте в анамнезе, ЧМТ < 3 мес',
-        'Cardiogenic shock (SCAI C–E) → primary PCI независимо от времени',
+        'Cardiogenic shock (SCAI C-E) → primary PCI независимо от времени',
       ],
       scale: {
         segments: [
           { label: '≤ 60 мин', min: 0, max: 60, color: '#22C55E', description: 'Отлично' },
-          { label: '61–90', min: 61, max: 90, color: '#10B981', description: 'Target достигнут' },
-          { label: '91–120', min: 91, max: 120, color: '#F59E0B', description: 'FMC2B граница' },
+          { label: '61-90', min: 61, max: 90, color: '#10B981', description: 'Target достигнут' },
+          { label: '91-120', min: 91, max: 120, color: '#F59E0B', description: 'FMC2B граница' },
           { label: '> 120', min: 121, max: 300, color: '#EF4444', description: 'Провал D2B' },
         ],
         current: dtb,
@@ -136,7 +136,7 @@ const runner: CalculatorTool = {
     { label: 'Transfer провал 150', values: { fmcTime: 90, ecgTime: 10, cathActivation: 15, dtb: 150, transport: 'transfer' } },
   ],
   info: `### Для чего используется
-**Code STEMI** — больничный / региональный протокол быстрой реперфузии при STEMI с ключевыми временными метриками.
+**Code STEMI** - больничный / региональный протокол быстрой реперфузии при STEMI с ключевыми временными метриками.
 
 ### Целевые метрики
 | Метрика | Target |
@@ -150,7 +150,7 @@ const runner: CalculatorTool = {
 Пре-госпитальная ЭКГ → звонок диспетчера → активация cath lab напрямую (bypass ED).
 
 ### Total ischemic time
-FMC + D2B — ключевой предиктор 1-год смертности. Каждые 30 мин задержки = +7.5% смертности.
+FMC + D2B - ключевой предиктор 1-год смертности. Каждые 30 мин задержки = +7.5% смертности.
 
 ### Источники
 ACC/AHA/SCAI 2021. *Circulation* 2022;145:e18.

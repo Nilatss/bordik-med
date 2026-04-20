@@ -1,5 +1,5 @@
 // @ts-nocheck
-/** Runner: who-mec — критерии приемлемости контрацепции (WHO MEC 5e 2015 / CDC US MEC 2024) */
+/** Runner: who-mec - критерии приемлемости контрацепции (WHO MEC 5e 2015 / CDC US MEC 2024) */
 import type {
   CalculatorTool,
   ToolInput,
@@ -34,7 +34,7 @@ const runner: CalculatorTool = {
       options: [
         { value: 'healthy', label: 'Здоровая, нерожавшая' },
         { value: 'smoke35', label: 'Курение ≥ 15 сигарет и возраст ≥ 35' },
-        { value: 'htnCtrl', label: 'АГ контролируемая (140–159/90–99)' },
+        { value: 'htnCtrl', label: 'АГ контролируемая (140-159/90-99)' },
         { value: 'htnSevere', label: 'АГ ≥ 160/100' },
         { value: 'vteHx', label: 'ВТЭ в анамнезе' },
         { value: 'migraineAura', label: 'Мигрень с аурой' },
@@ -67,10 +67,10 @@ const runner: CalculatorTool = {
     else if (c === 'lupus') cat = combined ? 4 : 3;
     const colors: Record<number, string> = { 1: '#22C55E', 2: '#86EFAC', 3: '#F59E0B', 4: '#DC2626' };
     const titles: Record<number, string> = {
-      1: 'Категория 1 — без ограничений',
-      2: 'Категория 2 — польза > риски (применять)',
-      3: 'Категория 3 — риски обычно > польза (не рекомендовать, если нет альтернатив)',
-      4: 'Категория 4 — недопустимый риск',
+      1: 'Категория 1 - без ограничений',
+      2: 'Категория 2 - польза > риски (применять)',
+      3: 'Категория 3 - риски обычно > польза (не рекомендовать, если нет альтернатив)',
+      4: 'Категория 4 - недопустимый риск',
     };
     return {
       value: `Категория ${cat}`,
@@ -87,11 +87,11 @@ const runner: CalculatorTool = {
               : 'Нет ограничений для использования.',
       actions: [
         'Использовать полный WHO MEC или CDC US MEC для точной классификации',
-        'При категориях 3/4 — выбор LARC (ЛНГ-ВМС, имплант) обычно предпочтителен',
+        'При категориях 3/4 - выбор LARC (ЛНГ-ВМС, имплант) обычно предпочтителен',
       ],
       caveats: [
         'WHO MEC 5th edition 2015 (обновление) / US MEC 2024',
-        'Категории оцениваются индивидуально — суммарный эффект нескольких состояний',
+        'Категории оцениваются индивидуально - суммарный эффект нескольких состояний',
         'Экстренная контрацепция (UPA, LNG) имеет отдельные категории',
         'Послеродовый период и грудное вскармливание меняют категории',
       ],
@@ -114,7 +114,7 @@ const runner: CalculatorTool = {
     { label: 'Мигрень с аурой + КОК', values: { method: 'coc', condition: 'migraineAura' } },
     { label: 'ВТЭ + ЛНГ-ВМС', values: { method: 'lngIud', condition: 'vteHx' } },
   ],
-  caveats: ['Пример расчёта; полный справочник — WHO MEC App / US MEC'],
+  caveats: ['Пример расчёта; полный справочник - WHO MEC App / US MEC'],
   related: [
     { id: 'chads-vasc', title: 'CHA₂DS₂-VASc' },
     { id: 'wells-pe', title: 'Wells PE' },

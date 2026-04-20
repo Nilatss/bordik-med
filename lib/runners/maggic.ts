@@ -2,7 +2,7 @@
 /**
  * Runner: maggic
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
- * Do not edit by hand — regenerate via `npm run split:runners`.
+ * Do not edit by hand - regenerate via `npm run split:runners`.
  *
  * Loaded lazily via dynamic import from lib/runners/index.ts so the
  * encyclopaedia of clinical content stays out of the main app bundle.
@@ -178,7 +178,7 @@ const runner: CalculatorTool = {
             const recent = v.recent === true;
             const bb = v.bb === true;
             const acei = v.acei === true;
-            // MAGGIC (Pocock 2013, Eur Heart J 2013;34:1404) — simplified integer points table
+            // MAGGIC (Pocock 2013, Eur Heart J 2013;34:1404) - simplified integer points table
             let p = 0;
             // EF
             if (ef < 20) p += 7;
@@ -241,11 +241,11 @@ const runner: CalculatorTool = {
             } else if (score < 30) {
                 interpretation = 'Высокий риск';
                 color = '#F59E0B';
-                details = '3-летняя смертность 30–60 %. Пересмотреть терапию, рассмотреть ИКД/СРТ при показаниях.';
+                details = '3-летняя смертность 30-60 %. Пересмотреть терапию, рассмотреть ИКД/СРТ при показаниях.';
                 actions = [
                     'ARNI вместо иАПФ',
                     'SGLT2i обязательно',
-                    'ИКД при EF ≤ 35 % + NYHA II–III',
+                    'ИКД при EF ≤ 35 % + NYHA II-III',
                     'CRT при QRS > 130 мс + LBBB'
                 ];
             } else {
@@ -268,9 +268,9 @@ const runner: CalculatorTool = {
                 actions,
                 caveats: [
                     'Разработан в когорте HFrEF и HFpEF (n ≈ 39 000); меньше данных для NYHA IV',
-                    'Упрощённая integer-таблица — возможна небольшая недооценка/переоценка vs оригинальная модель',
-                    'Не учитывает NT-proBNP, железодефицит, ФП — рассмотреть как дополнение',
-                    'На фоне ARNI/SGLT2i реальная смертность ниже табличной (эпоха разработки — до ARNI)'
+                    'Упрощённая integer-таблица - возможна небольшая недооценка/переоценка vs оригинальная модель',
+                    'Не учитывает NT-proBNP, железодефицит, ФП - рассмотреть как дополнение',
+                    'На фоне ARNI/SGLT2i реальная смертность ниже табличной (эпоха разработки - до ARNI)'
                 ],
                 scale: {
                     segments: [
@@ -318,7 +318,7 @@ const runner: CalculatorTool = {
                 ]
             };
         },
-    reference: "Pocock SJ et al. Predicting survival in heart failure: the MAGGIC risk score. Eur Heart J 2013;34:1404–1413.",
+    reference: "Pocock SJ et al. Predicting survival in heart failure: the MAGGIC risk score. Eur Heart J 2013;34:1404-1413.",
     countries: "Международный",
     presets: [
       {
@@ -358,7 +358,7 @@ const runner: CalculatorTool = {
         }
       }
     ],
-    info: "### Для чего используется\n**MAGGIC (Meta-Analysis Global Group in Chronic Heart Failure)** — риск-шкала прогнозирования **1- и 3-летней смертности** у пациентов с ХСН. Разработана на мета-анализе > 39 000 пациентов, применима как при HFrEF, так и HFpEF.\n\n### Предикторы (13 переменных → сумма 0–52)\n- Возраст, пол, ИМТ, САД, креатинин\n- ФВ ЛЖ, NYHA класс\n- Курение, сахарный диабет, ХОБЛ\n- ХСН впервые < 18 мес\n- Приём β-блокатора / иАПФ или АРА\n\n### Интерпретация\n| Баллы | 3-летняя смертность |\n|---|---|\n| 0–5 | 10–15 % |\n| 10 | ~ 20 % |\n| 20 | ~ 40 % |\n| 30 | ~ 65 % |\n| ≥ 40 | ≥ 85 % |\n\n### Ограничения\n- Разработана до эры ARNI и SGLT2i — реальная смертность на современной терапии ниже\n- Не учитывает NT-proBNP, ФП, железодефицит\n- Требует актуальной ФВ ЛЖ (ЭхоКГ)\n\n### Тактика\n- **Низкий** — оптимизация GDMT, ежегодный контроль\n- **Высокий** — ARNI + SGLT2i, обсудить ИКД/СРТ\n- **Очень высокий** — направление в advanced HF / трансплантационный центр\n\n### Источник\nPocock SJ, Ariti CA, McMurray JJV et al. Predicting survival in heart failure: a risk score based on 39 372 patients from 30 studies. *Eur Heart J* 2013;34:1404–1413."
+    info: "### Для чего используется\n**MAGGIC (Meta-Analysis Global Group in Chronic Heart Failure)** - риск-шкала прогнозирования **1- и 3-летней смертности** у пациентов с ХСН. Разработана на мета-анализе > 39 000 пациентов, применима как при HFrEF, так и HFpEF.\n\n### Предикторы (13 переменных → сумма 0-52)\n- Возраст, пол, ИМТ, САД, креатинин\n- ФВ ЛЖ, NYHA класс\n- Курение, сахарный диабет, ХОБЛ\n- ХСН впервые < 18 мес\n- Приём β-блокатора / иАПФ или АРА\n\n### Интерпретация\n| Баллы | 3-летняя смертность |\n|---|---|\n| 0-5 | 10-15 % |\n| 10 | ~ 20 % |\n| 20 | ~ 40 % |\n| 30 | ~ 65 % |\n| ≥ 40 | ≥ 85 % |\n\n### Ограничения\n- Разработана до эры ARNI и SGLT2i - реальная смертность на современной терапии ниже\n- Не учитывает NT-proBNP, ФП, железодефицит\n- Требует актуальной ФВ ЛЖ (ЭхоКГ)\n\n### Тактика\n- **Низкий** - оптимизация GDMT, ежегодный контроль\n- **Высокий** - ARNI + SGLT2i, обсудить ИКД/СРТ\n- **Очень высокий** - направление в advanced HF / трансплантационный центр\n\n### Источник\nPocock SJ, Ariti CA, McMurray JJV et al. Predicting survival in heart failure: a risk score based on 39 372 patients from 30 studies. *Eur Heart J* 2013;34:1404-1413."
   };
 
 export default runner;

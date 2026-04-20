@@ -1,5 +1,5 @@
 // @ts-nocheck
-/** Runner: can-cspine — Canadian C-Spine Rule (Stiell 2001) + NEXUS (Hoffman 2000) */
+/** Runner: can-cspine - Canadian C-Spine Rule (Stiell 2001) + NEXUS (Hoffman 2000) */
 import type { CalculatorTool } from '../tools-runners';
 
 const runner: CalculatorTool = {
@@ -39,8 +39,8 @@ const runner: CalculatorTool = {
           interpretation: 'Визуализация не требуется (NEXUS criteria все отсутствуют)',
           color: '#22C55E',
           details: 'Все 5 NEXUS low-risk критериев отсутствуют → клинически c-spine очищен без рентгена/CT. NPV ≈ 99.8%.',
-          actions: ['Снять иммобилизацию', 'Клиническое наблюдение', 'При появлении симптомов — повторная оценка'],
-          caveats: ['Sensitivity ~99%, но ниже, чем у CCR (100% в валидации)', 'NEXUS менее специфичен — больше ложно-положительных'],
+          actions: ['Снять иммобилизацию', 'Клиническое наблюдение', 'При появлении симптомов - повторная оценка'],
+          caveats: ['Sensitivity ~99%, но ниже, чем у CCR (100% в валидации)', 'NEXUS менее специфичен - больше ложно-положительных'],
           related: [ { id: 'pecarn-cspine', title: 'PECARN C-Spine (дети)' }, { id: 'can-ct-head', title: 'Canadian CT Head' }, { id: 'nihss', title: 'NIHSS' } ],
           relatedCourses: [ { id: '300.4', title: 'Неотложная помощь' } ],
         };
@@ -51,7 +51,7 @@ const runner: CalculatorTool = {
         color: '#DC2626',
         details: 'Хотя бы один из 5 NEXUS критериев присутствует → показана CT шейного отдела.',
         actions: ['CT c-spine (по умолчанию) или рентген в 3 проекциях', 'Сохранить иммобилизацию', 'Консультация нейрохирурга при нестабильности'],
-        caveats: ['Распивочная и пожилые — ложно-положительные', 'Distracting injury — субъективно'],
+        caveats: ['Распивочная и пожилые - ложно-положительные', 'Distracting injury - субъективно'],
         related: [ { id: 'pecarn-cspine', title: 'PECARN C-Spine' }, { id: 'can-ct-head', title: 'Canadian CT Head' } ],
         relatedCourses: [ { id: '300.4', title: 'Неотложная помощь' } ],
       };
@@ -63,7 +63,7 @@ const runner: CalculatorTool = {
         value: 'Да',
         interpretation: 'Показана визуализация (CCR: есть high-risk фактор)',
         color: '#DC2626',
-        details: 'Возраст ≥ 65, опасный механизм или парестезии — абсолютное показание к CT c-spine.',
+        details: 'Возраст ≥ 65, опасный механизм или парестезии - абсолютное показание к CT c-spine.',
         actions: ['CT c-spine (золотой стандарт при политравме)', 'Сохранить жёсткий воротник', 'Консультация нейрохирурга при выявлении повреждения'],
         caveats: ['CCR не валидирован для < 16 лет, беременных, известной патологии позвоночника, ранее обращавшихся'],
         related: [ { id: 'pecarn-cspine', title: 'PECARN C-Spine (дети)' }, { id: 'can-ct-head', title: 'Canadian CT Head' }, { id: 'nihss', title: 'NIHSS' } ],
@@ -89,7 +89,7 @@ const runner: CalculatorTool = {
         interpretation: 'Визуализация не требуется (CCR: low-risk + ротация 45° сохранена)',
         color: '#22C55E',
         details: 'Нет high-risk, есть low-risk фактор + активная ротация 45° в обе стороны → c-spine клинически очищен. Sensitivity CCR = 100%, specificity ~42%.',
-        actions: ['Снять воротник', 'Документация осмотра', 'При появлении боли/симптомов — переоценка'],
+        actions: ['Снять воротник', 'Документация осмотра', 'При появлении боли/симптомов - переоценка'],
         caveats: ['CCR не валидирован для детей < 16 лет, беременных, ранее обращавшихся'],
         related: [ { id: 'pecarn-cspine', title: 'PECARN C-Spine' }, { id: 'nihss', title: 'NIHSS' } ],
         relatedCourses: [ { id: '300.4', title: 'Неотложная помощь' } ],
@@ -106,7 +106,7 @@ const runner: CalculatorTool = {
       relatedCourses: [ { id: '300.4', title: 'Неотложная помощь' } ],
     };
   },
-  reference: 'Stiell IG et al. The Canadian C-Spine Rule for radiography in alert and stable trauma patients. JAMA 2001;286:1841–1848. Hoffman JR et al. Validity of a set of clinical criteria to rule out injury to the cervical spine (NEXUS). N Engl J Med 2000;343:94–99.',
+  reference: 'Stiell IG et al. The Canadian C-Spine Rule for radiography in alert and stable trauma patients. JAMA 2001;286:1841-1848. Hoffman JR et al. Validity of a set of clinical criteria to rule out injury to the cervical spine (NEXUS). N Engl J Med 2000;343:94-99.',
   countries: 'Международный',
   presets: [
     { label: 'CCR: молодой, ДТП сзади, ротирует', values: { rule: 'ccr', highRisk_age65: false, highRisk_mech: false, highRisk_paraest: false, lowRisk_mva: true, lowRisk_sitting: true, lowRisk_ambul: true, lowRisk_delayed: false, lowRisk_nomidline: true, rotate: true, nexus_midline: false, nexus_focal: false, nexus_ams: false, nexus_intox: false, nexus_distract: false } },
@@ -115,25 +115,25 @@ const runner: CalculatorTool = {
   ],
   caveats: [
     'CCR: sensitivity 100%, NEXUS 99% (прямое сравнение Stiell 2003)',
-    'Не применять к детям < 16 лет — см. PECARN C-Spine',
+    'Не применять к детям < 16 лет - см. PECARN C-Spine',
   ],
   info: `### Для чего используется
-**Canadian C-Spine Rule (Stiell, 2001)** и **NEXUS (Hoffman, 2000)** — правила для исключения перелома шейного отдела у пациентов с тупой травмой без визуализации.
+**Canadian C-Spine Rule (Stiell, 2001)** и **NEXUS (Hoffman, 2000)** - правила для исключения перелома шейного отдела у пациентов с тупой травмой без визуализации.
 
 ### Canadian C-Spine Rule (CCR)
-**Шаг 1 — High-risk factor** (любой → визуализация):
+**Шаг 1 - High-risk factor** (любой → визуализация):
 - Возраст ≥ 65
 - Опасный механизм (падение > 1 м, аксиальная нагрузка > 3 м, ДТП > 100 км/ч или с выбросом/переворотом, мотоцикл, велосипед)
 - Парестезии в конечностях
 
-**Шаг 2 — Low-risk factor** (любой → можно безопасно оценить ротацию):
+**Шаг 2 - Low-risk factor** (любой → можно безопасно оценить ротацию):
 - Простое ДТП «в зад»
 - Сидит в ED
 - Ходил самостоятельно в любое время
 - Отсроченная боль в шее
 - Нет болезненности по средней линии
 
-**Шаг 3 — Ротация 45°** в обе стороны:
+**Шаг 3 - Ротация 45°** в обе стороны:
 - Может → **нет визуализации**
 - Не может → **визуализация**
 
@@ -153,7 +153,7 @@ const runner: CalculatorTool = {
 
 ### Ограничения
 - Оба не применимы к < 16 лет (→ PECARN C-Spine)
-- NEXUS — "distracting injury" субъективен
+- NEXUS - "distracting injury" субъективен
 - CCR не валидирован при беременности, известной патологии позвоночника
 
 ### Источники

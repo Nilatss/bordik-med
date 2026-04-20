@@ -1,5 +1,5 @@
 // @ts-nocheck
-/** Runner: boey — Boey score при перфоративной язве (1982) */
+/** Runner: boey - Boey score при перфоративной язве (1982) */
 import type { ScoreTool } from '../tools-runners';
 
 const runner: ScoreTool = {
@@ -8,7 +8,7 @@ const runner: ScoreTool = {
   inputs: [
     {
       id: 'comorbid',
-      label: 'Тяжёлое сопутствующее заболевание (ASA III–V)',
+      label: 'Тяжёлое сопутствующее заболевание (ASA III-V)',
       type: 'select',
       options: [
         { value: '0', label: 'Нет', points: 0 },
@@ -42,9 +42,9 @@ const runner: ScoreTool = {
   ],
   caveats: [
     'Boey валидирован на 259 пациентах (Boey J, Choi SK, Poon A, Alagaratnam TT. Ann Surg 1987;205:22)',
-    'ASA-PS ≥ III + Boey ≥ 2 — крайне высокий риск',
+    'ASA-PS ≥ III + Boey ≥ 2 - крайне высокий риск',
     'Альтернативы: PULP score (2012, > 7 параметров), Hacettepe score, Jabalpur score',
-    'При Boey 3 предпочтительна открытая операция + лаваж; laparoscopic repair — при Boey 0–1',
+    'При Boey 3 предпочтительна открытая операция + лаваж; laparoscopic repair - при Boey 0-1',
     'TXA не показан (инфекция, не кровотечение)',
   ],
   relatedCourses: [
@@ -58,15 +58,15 @@ const runner: ScoreTool = {
     { id: 'sofa', title: 'SOFA' },
     { id: 'forrest', title: 'Forrest (ЖКК)' },
   ],
-  reference: 'Boey J, Choi SK, Poon A, Alagaratnam TT. Risk stratification in perforated duodenal ulcers. A prospective validation of predictive factors. Ann Surg 1987;205(1):22–6. Первоначальная работа: Boey J, Wong J, Ong GB. A prospective study of operative risk factors in perforated duodenal ulcers. Ann Surg 1982;195:265.',
+  reference: 'Boey J, Choi SK, Poon A, Alagaratnam TT. Risk stratification in perforated duodenal ulcers. A prospective validation of predictive factors. Ann Surg 1987;205(1):22-6. Первоначальная работа: Boey J, Wong J, Ong GB. A prospective study of operative risk factors in perforated duodenal ulcers. Ann Surg 1982;195:265.',
   countries: 'Международный (WSES guidelines 2020)',
   info: `### Для чего используется
-**Boey score (1982/1987)** — прогноз смертности при **перфоративной пептической язве** по 3 прикроватным параметрам.
+**Boey score (1982/1987)** - прогноз смертности при **перфоративной пептической язве** по 3 прикроватным параметрам.
 
 ### Параметры (1 балл каждый)
-1. **Major medical illness** — тяжёлое сопутствующее заболевание (ASA III–V)
-2. **Preoperative shock** — SBP < 100 мм рт.ст.
-3. **Duration > 24 h** — задержка хирургии > 24 ч от начала перфорации
+1. **Major medical illness** - тяжёлое сопутствующее заболевание (ASA III-V)
+2. **Preoperative shock** - SBP < 100 мм рт.ст.
+3. **Duration > 24 h** - задержка хирургии > 24 ч от начала перфорации
 
 ### Интерпретация
 | Boey | Mortality | Morbidity |
@@ -77,12 +77,12 @@ const runner: ScoreTool = {
 | 3 | 77% | > 75% |
 
 ### Тактика
-- **Boey 0–1** — лапароскопическое ушивание с omental patch (Graham), орошение
-- **Boey 2** — открытая или конверсия, расширенный лаваж, ICU наблюдение
-- **Boey 3** — damage control: быстрое ушивание, широкий дренаж, ICU, отложенная реконструкция
+- **Boey 0-1** - лапароскопическое ушивание с omental patch (Graham), орошение
+- **Boey 2** - открытая или конверсия, расширенный лаваж, ICU наблюдение
+- **Boey 3** - damage control: быстрое ушивание, широкий дренаж, ICU, отложенная реконструкция
 
 ### WSES 2020 рекомендации
-- Все пациенты с перфорацией — хирургия в течение < 24 ч
+- Все пациенты с перфорацией - хирургия в течение < 24 ч
 - H. pylori eradication послеоперационно при положительном тесте
 - Ингибиторы протонной помпы внутривенно
 - Эмпирическая антибиотикотерапия (анаэробы + грам-отрицательные)

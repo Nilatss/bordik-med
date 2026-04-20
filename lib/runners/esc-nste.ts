@@ -2,7 +2,7 @@
 /**
  * Runner: esc-nste
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
- * Do not edit by hand — regenerate via `npm run split:runners`.
+ * Do not edit by hand - regenerate via `npm run split:runners`.
  *
  * Loaded lazily via dynamic import from lib/runners/index.ts so the
  * encyclopaedia of clinical content stays out of the main app bundle.
@@ -174,9 +174,9 @@ const runner: CalculatorTool = {
                 zone = 'rule-out';
                 interpretation = 'Rule-out: ОИМ исключён';
                 color = '#22C55E';
-                details = 'При отсутствии ишемии на ЭКГ и низком клиническом подозрении (GRACE/HEART низкий) — возможна ранняя выписка с амбулаторным обследованием. Помнить о "too early" — симптомы < 3 ч у ~ 10 % пациентов требуют повтора на 3 ч.';
+                details = 'При отсутствии ишемии на ЭКГ и низком клиническом подозрении (GRACE/HEART низкий) - возможна ранняя выписка с амбулаторным обследованием. Помнить о "too early" - симптомы < 3 ч у ~ 10 % пациентов требуют повтора на 3 ч.';
                 actions = [
-                    'При симптомах < 3 ч — дополнительный тропонин на 3 ч',
+                    'При симптомах < 3 ч - дополнительный тропонин на 3 ч',
                     'ЭКГ-мониторинг до выписки',
                     'Амбулаторный стресс-тест / КТА в течение 72 ч',
                     'Коррекция факторов риска ИБС'
@@ -188,7 +188,7 @@ const runner: CalculatorTool = {
                 details = 'Высокая вероятность NSTEMI (позитивная прогностическая ценность ≥ 75 %). Нужна немедленная антитромботическая терапия и определение сроков КАГ по ESC risk-stratification.';
                 actions = [
                     'Госпитализация в кардиологию/ICU',
-                    'ASA 150–300 мг + ингибитор P2Y12 (тикагрелор 180 мг)',
+                    'ASA 150-300 мг + ингибитор P2Y12 (тикагрелор 180 мг)',
                     'Антикоагулянт (фондапаринукс 2,5 мг п/к или эноксапарин)',
                     'КАГ: очень высокий риск < 2 ч, высокий риск < 24 ч, умеренный < 72 ч',
                     'Поиск альтернативных причин повышения (миокардит, ТЭЛА, сепсис)'
@@ -197,7 +197,7 @@ const runner: CalculatorTool = {
                 zone = 'observe';
                 interpretation = 'Observe: серая зона';
                 color = '#F59E0B';
-                details = 'Диагноз неоднозначен — 15–25 % пациентов этой группы имеют ОИМ. Требуется повтор hs-cTn на 3 ч и дополнительное обследование (ЭхоКГ, КТА).';
+                details = 'Диагноз неоднозначен - 15-25 % пациентов этой группы имеют ОИМ. Требуется повтор hs-cTn на 3 ч и дополнительное обследование (ЭхоКГ, КТА).';
                 actions = [
                     'Повтор hs-cTn через 3 ч',
                     'ЭхоКГ прикроватно (нарушения локальной сократимости)',
@@ -212,7 +212,7 @@ const runner: CalculatorTool = {
                 details,
                 actions,
                 caveats: [
-                    'Алгоритм валидирован только для указанных hs-cTn assays — универсальных cut-off нет',
+                    'Алгоритм валидирован только для указанных hs-cTn assays - универсальных cut-off нет',
                     'Не применять в первые 3 ч от начала симптомов без повторного теста',
                     'Повышение тропонина возможно при: миокардите, ТЭЛА, сепсисе, ХПН, расслоении аорты',
                     'ЭКГ-мониторинг обязателен независимо от зоны'
@@ -243,7 +243,7 @@ const runner: CalculatorTool = {
                 ]
             };
         },
-    reference: "Collet JP et al. 2020 ESC Guidelines NSTE-ACS. Eur Heart J 2021;42:1289–1367.",
+    reference: "Collet JP et al. 2020 ESC Guidelines NSTE-ACS. Eur Heart J 2021;42:1289-1367.",
     countries: "ЕС · международный",
     presets: [
       {
@@ -274,7 +274,7 @@ const runner: CalculatorTool = {
         }
       }
     ],
-    info: "### Для чего используется\n**ESC 0/1-h и 0/2-h алгоритм hs-cTn** — быстрое rule-out/rule-in ОИМ без подъёма ST у пациентов с болью в грудной клетке, поступивших в отделение неотложной помощи.\n\n### Формула (по assay, нг/л)\n| Assay | Алго | Rule-out | Δ rule-out | Rule-in | Δ rule-in |\n|---|---|---|---|---|---|\n| **Elecsys (hs-cTnT)** | 0/1h | < 5 или < 12+Δ<3 | | ≥ 52 | ≥ 5 |\n| Elecsys | 0/2h | < 5 или < 14 | Δ<3 | ≥ 52 | ≥ 10 |\n| **Architect (hs-cTnI)** | 0/1h | < 4 или < 5+Δ<2 | | ≥ 64 | ≥ 6 |\n| Architect | 0/2h | < 5 | Δ<2 | ≥ 64 | ≥ 15 |\n| **Access (hs-cTnI)** | 0/1h | < 4 или < 5+Δ<4 | | ≥ 50 | ≥ 15 |\n| Access | 0/2h | < 5 | Δ<5 | ≥ 50 | ≥ 20 |\n| **Dimension** | 0/1h | < 6 или < 8+Δ<3 | | ≥ 120 | ≥ 7 |\n\n### Интерпретация\n- **Rule-out** (NPV ≥ 99 %) — выписка возможна\n- **Rule-in** (PPV ≥ 75 %) — ОИМ, инвазивная стратегия\n- **Observe** — 15–25 % имеют ОИМ, повтор тропонина на 3 ч + ЭхоКГ/КТА\n\n### Ограничения\n- \"Too early\" presenters (< 3 ч от начала) — ≈ 10 % требуют 3-часового повтора\n- При ХБП, ТЭЛА, миокардите — тропонин хронически повышен, Δ важнее абсолютного значения\n- Cut-off не взаимозаменяемы между assays\n\n### Тактика\n- Rule-out + ЭКГ − + GRACE/HEART low → выписка\n- Observe → 3 ч hs-cTn + ЭхоКГ / КТА\n- Rule-in → кардиология, ASA + P2Y12, КАГ по риску\n\n### Источник\nCollet JP, Thiele H, Barbato E et al. 2020 ESC Guidelines for the management of acute coronary syndromes in patients presenting without persistent ST-segment elevation. *Eur Heart J* 2021;42:1289–1367."
+    info: "### Для чего используется\n**ESC 0/1-h и 0/2-h алгоритм hs-cTn** - быстрое rule-out/rule-in ОИМ без подъёма ST у пациентов с болью в грудной клетке, поступивших в отделение неотложной помощи.\n\n### Формула (по assay, нг/л)\n| Assay | Алго | Rule-out | Δ rule-out | Rule-in | Δ rule-in |\n|---|---|---|---|---|---|\n| **Elecsys (hs-cTnT)** | 0/1h | < 5 или < 12+Δ<3 | | ≥ 52 | ≥ 5 |\n| Elecsys | 0/2h | < 5 или < 14 | Δ<3 | ≥ 52 | ≥ 10 |\n| **Architect (hs-cTnI)** | 0/1h | < 4 или < 5+Δ<2 | | ≥ 64 | ≥ 6 |\n| Architect | 0/2h | < 5 | Δ<2 | ≥ 64 | ≥ 15 |\n| **Access (hs-cTnI)** | 0/1h | < 4 или < 5+Δ<4 | | ≥ 50 | ≥ 15 |\n| Access | 0/2h | < 5 | Δ<5 | ≥ 50 | ≥ 20 |\n| **Dimension** | 0/1h | < 6 или < 8+Δ<3 | | ≥ 120 | ≥ 7 |\n\n### Интерпретация\n- **Rule-out** (NPV ≥ 99 %) - выписка возможна\n- **Rule-in** (PPV ≥ 75 %) - ОИМ, инвазивная стратегия\n- **Observe** - 15-25 % имеют ОИМ, повтор тропонина на 3 ч + ЭхоКГ/КТА\n\n### Ограничения\n- \"Too early\" presenters (< 3 ч от начала) - ≈ 10 % требуют 3-часового повтора\n- При ХБП, ТЭЛА, миокардите - тропонин хронически повышен, Δ важнее абсолютного значения\n- Cut-off не взаимозаменяемы между assays\n\n### Тактика\n- Rule-out + ЭКГ − + GRACE/HEART low → выписка\n- Observe → 3 ч hs-cTn + ЭхоКГ / КТА\n- Rule-in → кардиология, ASA + P2Y12, КАГ по риску\n\n### Источник\nCollet JP, Thiele H, Barbato E et al. 2020 ESC Guidelines for the management of acute coronary syndromes in patients presenting without persistent ST-segment elevation. *Eur Heart J* 2021;42:1289-1367."
   };
 
 export default runner;

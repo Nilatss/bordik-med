@@ -1,6 +1,6 @@
 // @ts-nocheck
 /**
- * Runner: sepsis3 — Sepsis-3 Definition (Singer 2016)
+ * Runner: sepsis3 - Sepsis-3 Definition (Singer 2016)
  */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -48,9 +48,9 @@ const runner: CalculatorTool = {
         details: 'Септический шок = сепсис + вазопрессоры для MAP ≥ 65 + лактат > 2 ммоль/л. Госпитальная летальность ~ 40%.',
         actions: [
           'Hour-1 Bundle (SSC): лактат, культуры, антибиотик широкого спектра, 30 мл/кг кристаллоида, вазопрессор',
-          'Норэпинефрин — первая линия, цель MAP ≥ 65',
-          'Повтор лактата через 2–4 ч',
-          'Поиск и контроль источника инфекции (< 6–12 ч)',
+          'Норэпинефрин - первая линия, цель MAP ≥ 65',
+          'Повтор лактата через 2-4 ч',
+          'Поиск и контроль источника инфекции (< 6-12 ч)',
           'Рассмотреть гидрокортизон 200 мг/сут при рефрактерном шоке',
         ],
         caveats: ['Вазопрессоры только после адекватной инфузии', 'Лактат может быть повышен при дисфункции печени'],
@@ -84,14 +84,14 @@ const runner: CalculatorTool = {
       interpretation: 'Инфекция без органной дисфункции',
       color: '#F59E0B',
       details: 'Есть подозрение на инфекцию, но критерии сепсиса (ΔSOFA ≥ 2) не выполнены. Продолжать наблюдение и регулярно переоценивать SOFA.',
-      actions: ['Антибактериальная терапия согласно источнику', 'Повтор SOFA каждые 6–12 ч', 'qSOFA при уходе из ICU'],
+      actions: ['Антибактериальная терапия согласно источнику', 'Повтор SOFA каждые 6-12 ч', 'qSOFA при уходе из ICU'],
       related: [
         { id: 'sofa', title: 'SOFA' }, { id: 'qsofa', title: 'qSOFA' },
       ],
       relatedCourses: [{ id: '301.9', title: 'Инфекционные болезни' }],
     };
   },
-  reference: 'Singer M et al. JAMA 2016;315:801–810.',
+  reference: 'Singer M et al. JAMA 2016;315:801-810.',
   countries: 'Международный (SCCM/ESICM Task Force 2016, SSC 2021)',
   presets: [
     { label: 'Септический шок', values: { infection: 'yes', deltaSofa: true, vaso: true, lactate: true } },
@@ -99,12 +99,12 @@ const runner: CalculatorTool = {
     { label: 'Инфекция без сепсиса', values: { infection: 'yes', deltaSofa: false, vaso: false, lactate: false } },
   ],
   caveats: [
-    'qSOFA — для быстрого скрининга вне ICU, не заменяет SOFA',
+    'qSOFA - для быстрого скрининга вне ICU, не заменяет SOFA',
     'Базовый SOFA принимается за 0, если нет данных о предсуществующей дисфункции',
     'Лактат может ложно повышаться при печёночной недостаточности, тиамин-дефиците',
   ],
   info: `### Для чего используется
-**Sepsis-3 (Singer 2016)** — определение сепсиса и септического шока через органную дисфункцию (ΔSOFA) вместо SIRS.
+**Sepsis-3 (Singer 2016)** - определение сепсиса и септического шока через органную дисфункцию (ΔSOFA) вместо SIRS.
 
 ### Определения
 - **Сепсис** = подозрение на инфекцию + **ΔSOFA ≥ 2**
@@ -114,7 +114,7 @@ const runner: CalculatorTool = {
 - ЧДД ≥ 22, САД ≤ 100, GCS < 15 → ≥ 2 = высокий риск
 
 ### Источник
-Singer M, Deutschman CS, Seymour CW, et al. The Third International Consensus Definitions for Sepsis and Septic Shock (Sepsis-3). JAMA 2016;315:801–10.`,
+Singer M, Deutschman CS, Seymour CW, et al. The Third International Consensus Definitions for Sepsis and Septic Shock (Sepsis-3). JAMA 2016;315:801-10.`,
 };
 
 export default runner;

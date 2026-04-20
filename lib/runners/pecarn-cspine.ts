@@ -2,7 +2,7 @@
 /**
  * Runner: pecarn-cspine
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
- * Do not edit by hand — regenerate via `npm run split:runners`.
+ * Do not edit by hand - regenerate via `npm run split:runners`.
  *
  * Loaded lazily via dynamic import from lib/runners/index.ts so the
  * encyclopaedia of clinical content stays out of the main app bundle.
@@ -88,10 +88,10 @@ const runner: ScoreTool = {
         max: 1,
         label: "1 фактор (низкий-промежуточный риск)",
         color: "#F59E0B",
-        description: "Риск CSI ~1–2%. Рентген C-spine (AP, лат., odontoid), решение индивидуально.",
+        description: "Риск CSI ~1-2%. Рентген C-spine (AP, лат., odontoid), решение индивидуально.",
         actions: [
           "Рентген шейного отдела в 3 проекциях",
-          "При сомнении — КТ"
+          "При сомнении - КТ"
         ]
       },
       {
@@ -112,8 +112,8 @@ const runner: ScoreTool = {
     caveats: [
       "Правило валидировано у детей <16 лет с тупой травмой",
       "Чувствительность к клинически значимым CSI 98%, но специфичность низкая",
-      "SCIWORA (Spinal Cord Injury Without Radiographic Abnormality) — актуальна у <8 лет, нужен МРТ",
-      "Младенцы <3 лет плохо коммуницируют — расширенные показания к визуализации",
+      "SCIWORA (Spinal Cord Injury Without Radiographic Abnormality) - актуальна у <8 лет, нужен МРТ",
+      "Младенцы <3 лет плохо коммуницируют - расширенные показания к визуализации",
       "Не заменяет NEXUS и Canadian C-spine (для взрослых)"
     ],
     related: [
@@ -140,7 +140,7 @@ const runner: ScoreTool = {
         title: "Неотложная помощь"
       }
     ],
-    reference: "Leonard JC, Kuppermann N, Olsen C, et al. Factors associated with cervical spine injury in children after blunt trauma. Ann Emerg Med 2011;58:145–155.",
+    reference: "Leonard JC, Kuppermann N, Olsen C, et al. Factors associated with cervical spine injury in children after blunt trauma. Ann Emerg Med 2011;58:145-155.",
     countries: "Международный (PECARN)",
     presets: [
       {
@@ -183,7 +183,7 @@ const runner: ScoreTool = {
         }
       }
     ],
-    info: "### Для чего используется\n**PECARN C-spine rule (Leonard 2011)** — инструмент для выявления детей с тупой травмой, у которых риск клинически значимой травмы шейного отдела позвоночника (CSI) достаточно низок, чтобы отказаться от визуализации.\n\n### 8 факторов риска\n1. Нарушение сознания (GCS <15, AVPU не «A»)\n2. Очаговый неврологический дефицит\n3. Боль в шее\n4. Кривошея\n5. Существенное повреждение туловища\n6. Предрасполагающее состояние (синдром Дауна, Klippel-Feil, ахондроплазия, ревматоидный артрит)\n7. Механизм: ныряние\n8. Высокоэнергетичный MVC\n\n### Интерпретация\n| Факторов | Риск CSI | Тактика |\n|---|---|---|\n| 0 | <1% | Без визуализации, клиническое наблюдение |\n| 1 | 1–2% | Рентген C-spine; индивидуально КТ |\n| ≥2 | Значительный | КТ C-spine, иммобилизация |\n\n### SCIWORA\nSpinal Cord Injury Without Radiographic Abnormality — у <8 лет частое явление (связки эластичнее). При неврологическом дефиците с нормальным рентгеном/КТ — обязательно МРТ.\n\n### Ограничения\n- Валидирован у <16 лет с тупой травмой\n- Не валидирован у младенцев <3 лет (сложная коммуникация)\n- NEXUS/Canadian C-spine — отдельные инструменты для взрослых\n\n### Тактика\n- **0 факторов**: снятие воротника после осмотра\n- **1 фактор**: рентген (AP, лат., odontoid)\n- **≥2 факторов**: КТ, иммобилизация\n- **Очаговый дефицит**: МРТ в дополнение к КТ\n\n### Источник\nLeonard JC et al. *Ann Emerg Med* 2011;58:145–155. Проспективное исследование 540 детей с CSI."
+    info: "### Для чего используется\n**PECARN C-spine rule (Leonard 2011)** - инструмент для выявления детей с тупой травмой, у которых риск клинически значимой травмы шейного отдела позвоночника (CSI) достаточно низок, чтобы отказаться от визуализации.\n\n### 8 факторов риска\n1. Нарушение сознания (GCS <15, AVPU не «A»)\n2. Очаговый неврологический дефицит\n3. Боль в шее\n4. Кривошея\n5. Существенное повреждение туловища\n6. Предрасполагающее состояние (синдром Дауна, Klippel-Feil, ахондроплазия, ревматоидный артрит)\n7. Механизм: ныряние\n8. Высокоэнергетичный MVC\n\n### Интерпретация\n| Факторов | Риск CSI | Тактика |\n|---|---|---|\n| 0 | <1% | Без визуализации, клиническое наблюдение |\n| 1 | 1-2% | Рентген C-spine; индивидуально КТ |\n| ≥2 | Значительный | КТ C-spine, иммобилизация |\n\n### SCIWORA\nSpinal Cord Injury Without Radiographic Abnormality - у <8 лет частое явление (связки эластичнее). При неврологическом дефиците с нормальным рентгеном/КТ - обязательно МРТ.\n\n### Ограничения\n- Валидирован у <16 лет с тупой травмой\n- Не валидирован у младенцев <3 лет (сложная коммуникация)\n- NEXUS/Canadian C-spine - отдельные инструменты для взрослых\n\n### Тактика\n- **0 факторов**: снятие воротника после осмотра\n- **1 фактор**: рентген (AP, лат., odontoid)\n- **≥2 факторов**: КТ, иммобилизация\n- **Очаговый дефицит**: МРТ в дополнение к КТ\n\n### Источник\nLeonard JC et al. *Ann Emerg Med* 2011;58:145-155. Проспективное исследование 540 детей с CSI."
   };
 
 export default runner;

@@ -1,5 +1,5 @@
 // @ts-nocheck
-/** Runner: mpi — Mannheim Peritonitis Index (Wacha 1987) */
+/** Runner: mpi - Mannheim Peritonitis Index (Wacha 1987) */
 import type { ScoreTool } from '../tools-runners';
 
 const runner: ScoreTool = {
@@ -26,7 +26,7 @@ const runner: ScoreTool = {
       { value: '0', label: 'Нет', points: 0 },
       { value: '4', label: 'Да (+4)', points: 4 },
     ] },
-    { id: 'origin', label: 'Источник — НЕ тонкая кишка', type: 'select', options: [
+    { id: 'origin', label: 'Источник - НЕ тонкая кишка', type: 'select', options: [
       { value: '0', label: 'Источник: тонкая кишка', points: 0 },
       { value: '4', label: 'Источник не из тонкой кишки (+4)', points: 4 },
     ] },
@@ -41,15 +41,15 @@ const runner: ScoreTool = {
     ] },
   ],
   bands: [
-    { min: 0, max: 20, label: '< 21', color: '#22C55E', description: 'Низкий риск, смертность 0–2,3%' },
-    { min: 21, max: 29, label: '21–29', color: '#F59E0B', description: 'Умеренный риск, смертность ~ 22%' },
-    { min: 30, max: 47, label: '≥ 30', color: '#991B1B', description: 'Высокий риск, смертность 58–100%' },
+    { min: 0, max: 20, label: '< 21', color: '#22C55E', description: 'Низкий риск, смертность 0-2,3%' },
+    { min: 21, max: 29, label: '21-29', color: '#F59E0B', description: 'Умеренный риск, смертность ~ 22%' },
+    { min: 30, max: 47, label: '≥ 30', color: '#991B1B', description: 'Высокий риск, смертность 58-100%' },
   ],
   caveats: [
     'MPI валидирован Wacha H et al. (1987) на 1253 пациентах',
-    'При MPI ≥ 26 — консервативное ушивание с лапаростомой / relaparotomy on-demand',
+    'При MPI ≥ 26 - консервативное ушивание с лапаростомой / relaparotomy on-demand',
     'Альтернативы: APACHE II, SOFA, POSSUM, PIPAS',
-    'Exudate score — характер интраоперационный, не предоперационный',
+    'Exudate score - характер интраоперационный, не предоперационный',
     'Не применяется у детей < 16 лет',
   ],
   relatedCourses: [
@@ -62,10 +62,10 @@ const runner: ScoreTool = {
     { id: 'hinchey', title: 'Hinchey (дивертикулит)' },
     { id: 'asa-ps', title: 'ASA-PS' },
   ],
-  reference: 'Wacha H, Linder MM, Feldmann U, Wesch G, Gundlach E, Steifensand RA. Mannheim peritonitis index — prediction of risk of death from peritonitis. Theor Surg 1987;1:169–77. Linder MM et al. Chirurg 1987;58:84.',
+  reference: 'Wacha H, Linder MM, Feldmann U, Wesch G, Gundlach E, Steifensand RA. Mannheim peritonitis index - prediction of risk of death from peritonitis. Theor Surg 1987;1:169-77. Linder MM et al. Chirurg 1987;58:84.',
   countries: 'Международный (Германия, Европа, РФ)',
   info: `### Для чего используется
-**Mannheim Peritonitis Index (MPI, Wacha 1987)** — прогноз смертности при **вторичном перитоните**. 8 параметров, 0–47 баллов.
+**Mannheim Peritonitis Index (MPI, Wacha 1987)** - прогноз смертности при **вторичном перитоните**. 8 параметров, 0-47 баллов.
 
 ### Шкала
 | Параметр | Баллы |
@@ -82,9 +82,9 @@ const runner: ScoreTool = {
 ### Интерпретация (Wacha 1987)
 | MPI | Mortality |
 |---|---|
-| < 21 | 0–2,3% |
-| 21–29 | ~ 22% |
-| ≥ 30 | 58–100% |
+| < 21 | 0-2,3% |
+| 21-29 | ~ 22% |
+| ≥ 30 | 58-100% |
 
 ### Критерии органной недостаточности (в оригинале)
 - Креатинин > 177 мкмоль/л
@@ -96,14 +96,14 @@ const runner: ScoreTool = {
 - Paralytic ileus > 24 ч
 
 ### Тактика
-- **MPI < 21** — однократная лапаротомия с санацией, антибиотики 5–7 дней
-- **MPI 21–29** — плановая релапаротомия или on-demand, ICU
-- **MPI ≥ 26** — лапаростома (открытый живот), этапные санации каждые 48–72 ч, damage control
+- **MPI < 21** - однократная лапаротомия с санацией, антибиотики 5-7 дней
+- **MPI 21-29** - плановая релапаротомия или on-demand, ICU
+- **MPI ≥ 26** - лапаростома (открытый живот), этапные санации каждые 48-72 ч, damage control
 
 ### Альтернативы
-- **APACHE II ≥ 20** — эквивалентно MPI ≥ 30
-- **SOFA ≥ 8** — предиктор mortality > 30%
-- **PIPAS score** (2018) — новая предоперационная шкала для ICU
+- **APACHE II ≥ 20** - эквивалентно MPI ≥ 30
+- **SOFA ≥ 8** - предиктор mortality > 30%
+- **PIPAS score** (2018) - новая предоперационная шкала для ICU
 
 ### Источники
 Wacha H et al. *Theor Surg* 1987;1:169. Billing A, Fröhlich D, Schildberg FW. *Br J Surg* 1994;81:209 (validation).

@@ -37,7 +37,7 @@ function guessAudience(sectionId: string): string {
 /** Estimate course volume: 8 topics × 5 hours = ~40h (standard medical course pace) */
 function estimateVolume(course: { difficulty: string }): string {
   const topics = 8;
-  // Hours per topic by difficulty — typical medical education pace
+  // Hours per topic by difficulty - typical medical education pace
   const hoursPerTopic = course.difficulty === 'advanced' ? 6
     : course.difficulty === 'intermediate' ? 5
     : 5;

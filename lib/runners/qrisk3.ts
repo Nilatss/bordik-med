@@ -2,7 +2,7 @@
 /**
  * Runner: qrisk3
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
- * Do not edit by hand — regenerate via `npm run split:runners`.
+ * Do not edit by hand - regenerate via `npm run split:runners`.
  *
  * Loaded lazily via dynamic import from lib/runners/index.ts so the
  * encyclopaedia of clinical content stays out of the main app bundle.
@@ -70,11 +70,11 @@ const runner: CalculatorTool = {
           },
           {
             value: "black_caribbean",
-            label: "Чёрная — Карибы"
+            label: "Чёрная - Карибы"
           },
           {
             value: "black_african",
-            label: "Чёрная — Африка"
+            label: "Чёрная - Африка"
           },
           {
             value: "chinese",
@@ -103,7 +103,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "ckd",
-        label: "ХБП G3–G5",
+        label: "ХБП G3-G5",
         type: "checkbox"
       },
       {
@@ -219,9 +219,9 @@ const runner: CalculatorTool = {
             } else if (r < 20) {
                 interpretation = 'Умеренный 10-летний риск';
                 color = '#F59E0B';
-                details = 'Риск 10–20 %. По NICE CG181 порог начала аторвастатина 20 мг — **10 %**.';
+                details = 'Риск 10-20 %. По NICE CG181 порог начала аторвастатина 20 мг - **10 %**.';
                 actions = [
-                    'Аторвастатин 20 мг/сут — обсудить',
+                    'Аторвастатин 20 мг/сут - обсудить',
                     'Цель снижения non-HDL ≥ 40 %',
                     'Контроль АД < 140/90'
                 ];
@@ -243,10 +243,10 @@ const runner: CalculatorTool = {
                 details,
                 actions,
                 caveats: [
-                    'Упрощённая имплементация — для точного расчёта используйте официальный калькулятор qrisk.org',
+                    'Упрощённая имплементация - для точного расчёта используйте официальный калькулятор qrisk.org',
                     'Полный QRISK3 учитывает мигрень, СКВ, атипичные антипсихотики, ГКС, эректильную дисфункцию, тяжёлое психическое расстройство',
-                    'Валидирован только для UK (QResearch), возрастной диапазон 25–84',
-                    'NICE порог статина — 10 % (QRISK3), ниже чем ASCVD (7,5 %)'
+                    'Валидирован только для UK (QResearch), возрастной диапазон 25-84',
+                    'NICE порог статина - 10 % (QRISK3), ниже чем ASCVD (7,5 %)'
                 ],
                 scale: {
                     segments: [
@@ -352,7 +352,7 @@ const runner: CalculatorTool = {
         }
       }
     ],
-    info: "### Для чего используется\n**QRISK3 (2017)** — UK-алгоритм оценки 10-летнего риска CVD (ИБС, инсульт, ТИА) для первичной профилактики. Официальный инструмент NICE (CG181, 2014 updated) для решения о начале статинотерапии в Великобритании.\n\n### Уникальные факторы QRISK3\nВ отличие от Framingham/ASCVD/SCORE2, QRISK3 учитывает:\n- Этническую принадлежность (9 категорий)\n- Индекс депривации Townsend\n- СКВ, ревматоидный артрит\n- Мигрень\n- Тяжёлое психическое расстройство (шизофрения, БАР)\n- Приём атипичных антипсихотиков\n- Регулярный приём ГКС\n- Эректильную дисфункцию\n- ФП, ХБП (G3–G5)\n- СД 1 и 2 типа раздельно\n\n### NICE-порог для статина\n**QRISK3 ≥ 10 %** — обсудить аторвастатин 20 мг/сут для первичной профилактики.\nНиже 10 % — только образ жизни.\n\n### Формула\nМодель Cox с age^1, age^2, age^3, Fraction(age), age-взаимодействиями. В нашей упрощённой реализации используется основной набор предикторов. **Для точного расчёта обращайтесь к qrisk.org.**\n\n### Ограничения\n- Только для UK-популяции (QResearch база)\n- Возраст 25–84\n- Не для пациентов с уже установленной ASCVD или СГХС\n- Упрощённая реализация в Ironmed — ±2 % от точного; для клинических решений используйте qrisk.org\n\n### Тактика (NICE CG181)\n| QRISK3 | Статин |\n|---|---|\n| < 10 % | Не начинать |\n| ≥ 10 % | Аторвастатин 20 мг/сут |\n| Вторичная профилактика | Аторвастатин 80 мг/сут |\n\n### Источник\nHippisley-Cox J, Coupland C, Brindle P. Development and validation of QRISK3 risk prediction algorithms to estimate future risk of cardiovascular disease: prospective cohort study. *BMJ* 2017;357:j2099.\nNICE Clinical Guideline CG181: Cardiovascular disease: risk assessment and reduction, including lipid modification. 2014 (updated 2023).\nПолный калькулятор: **https://qrisk.org/**"
+    info: "### Для чего используется\n**QRISK3 (2017)** - UK-алгоритм оценки 10-летнего риска CVD (ИБС, инсульт, ТИА) для первичной профилактики. Официальный инструмент NICE (CG181, 2014 updated) для решения о начале статинотерапии в Великобритании.\n\n### Уникальные факторы QRISK3\nВ отличие от Framingham/ASCVD/SCORE2, QRISK3 учитывает:\n- Этническую принадлежность (9 категорий)\n- Индекс депривации Townsend\n- СКВ, ревматоидный артрит\n- Мигрень\n- Тяжёлое психическое расстройство (шизофрения, БАР)\n- Приём атипичных антипсихотиков\n- Регулярный приём ГКС\n- Эректильную дисфункцию\n- ФП, ХБП (G3-G5)\n- СД 1 и 2 типа раздельно\n\n### NICE-порог для статина\n**QRISK3 ≥ 10 %** - обсудить аторвастатин 20 мг/сут для первичной профилактики.\nНиже 10 % - только образ жизни.\n\n### Формула\nМодель Cox с age^1, age^2, age^3, Fraction(age), age-взаимодействиями. В нашей упрощённой реализации используется основной набор предикторов. **Для точного расчёта обращайтесь к qrisk.org.**\n\n### Ограничения\n- Только для UK-популяции (QResearch база)\n- Возраст 25-84\n- Не для пациентов с уже установленной ASCVD или СГХС\n- Упрощённая реализация в Ironmed - ±2 % от точного; для клинических решений используйте qrisk.org\n\n### Тактика (NICE CG181)\n| QRISK3 | Статин |\n|---|---|\n| < 10 % | Не начинать |\n| ≥ 10 % | Аторвастатин 20 мг/сут |\n| Вторичная профилактика | Аторвастатин 80 мг/сут |\n\n### Источник\nHippisley-Cox J, Coupland C, Brindle P. Development and validation of QRISK3 risk prediction algorithms to estimate future risk of cardiovascular disease: prospective cohort study. *BMJ* 2017;357:j2099.\nNICE Clinical Guideline CG181: Cardiovascular disease: risk assessment and reduction, including lipid modification. 2014 (updated 2023).\nПолный калькулятор: **https://qrisk.org/**"
   };
 
 export default runner;

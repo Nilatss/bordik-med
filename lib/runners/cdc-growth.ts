@@ -2,7 +2,7 @@
 /**
  * Runner: cdc-growth
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
- * Do not edit by hand — regenerate via `npm run split:runners`.
+ * Do not edit by hand - regenerate via `npm run split:runners`.
  *
  * Loaded lazily via dynamic import from lib/runners/index.ts so the
  * encyclopaedia of clinical content stays out of the main app bundle.
@@ -199,12 +199,12 @@ const runner: CalculatorTool = {
                 color = '#3B82F6';
                 details = 'ИМТ < 5-го перцентиля по CDC. Возможна нутритивная недостаточность, хроническое заболевание, расстройство пищевого поведения.';
                 actions = [
-                    'Оценка рациона, скрининг РПП (у подростков — EAT-26, SCOFF)',
+                    'Оценка рациона, скрининг РПП (у подростков - EAT-26, SCOFF)',
                     'Исключить целиакию, ВЗК, муковисцидоз, эндокринопатии',
                     'Диетолог'
                 ];
             } else if (pct < 85) {
-                interpretation = 'Норма (5–85-й перц.)';
+                interpretation = 'Норма (5-85-й перц.)';
                 color = '#22C55E';
                 details = 'Здоровый ИМТ для возраста. Продолжать здоровый образ жизни.';
                 actions = [
@@ -213,7 +213,7 @@ const runner: CalculatorTool = {
                     'Плановый контроль 1 раз в год'
                 ];
             } else if (pct < 95) {
-                interpretation = 'Избыточная масса (85–95-й)';
+                interpretation = 'Избыточная масса (85-95-й)';
                 color = '#F59E0B';
                 details = 'Избыточная масса тела. Риск перехода в ожирение и кардиометаболических осложнений.';
                 actions = [
@@ -248,10 +248,10 @@ const runner: CalculatorTool = {
                 details,
                 actions,
                 caveats: [
-                    'Упрощённая аппроксимация LMS-таблиц CDC 2000 — для точного клинического решения используйте CDC Growth Chart App / PediTools',
-                    'ИМТ у детей зависит от возраста и пола — абсолютное значение не интерпретируется как у взрослых',
-                    'Не применима < 2 лет — используйте WHO 0–5',
-                    'Мышечная масса (спортсмены) завышает ИМТ — оценивайте состав тела'
+                    'Упрощённая аппроксимация LMS-таблиц CDC 2000 - для точного клинического решения используйте CDC Growth Chart App / PediTools',
+                    'ИМТ у детей зависит от возраста и пола - абсолютное значение не интерпретируется как у взрослых',
+                    'Не применима < 2 лет - используйте WHO 0-5',
+                    'Мышечная масса (спортсмены) завышает ИМТ - оценивайте состав тела'
                 ],
                 scale: {
                     segments: [
@@ -264,13 +264,13 @@ const runner: CalculatorTool = {
                         {
                             min: 5,
                             max: 85,
-                            label: '5–85',
+                            label: '5-85',
                             color: '#22C55E'
                         },
                         {
                             min: 85,
                             max: 95,
-                            label: '85–95',
+                            label: '85-95',
                             color: '#F59E0B'
                         },
                         {
@@ -292,7 +292,7 @@ const runner: CalculatorTool = {
                 related: [
                     {
                         id: 'who-growth',
-                        title: 'WHO 0–5'
+                        title: 'WHO 0-5'
                     },
                     {
                         id: 'uk-who',
@@ -315,8 +315,8 @@ const runner: CalculatorTool = {
                 ]
             };
         },
-    reference: "CDC Growth Charts 2000 (Kuczmarski). Для детей 2–20 лет в США и как международный вариант > 5 лет.",
-    countries: "США · международный 2–20 лет",
+    reference: "CDC Growth Charts 2000 (Kuczmarski). Для детей 2-20 лет в США и как международный вариант > 5 лет.",
+    countries: "США · международный 2-20 лет",
     presets: [
       {
         label: "♂ 10 лет, 32 кг, 138 см",
@@ -337,7 +337,7 @@ const runner: CalculatorTool = {
         }
       }
     ],
-    info: "### Для чего используется\n**CDC Growth Charts (2000)** — американские референсные кривые для детей и подростков **2–20 лет** (рост, вес, ИМТ-для-возраста). Ключевой инструмент педиатрии в США.\n\n### Параметры\n- Weight-for-age\n- Stature-for-age\n- BMI-for-age (главный индикатор избыточного веса / ожирения)\n- Weight-for-stature (2–5 лет)\n\n### Пороги ИМТ-для-возраста\n| Перцентиль | Классификация |\n|---|---|\n| < 5 | Недостаточная масса |\n| 5–85 | Норма |\n| 85–95 | Избыточная масса |\n| ≥ 95 | Ожирение |\n| ≥ 99 (или BMI ≥ 120 % от 95-го) | Тяжёлое ожирение |\n\n### WHO vs CDC\nВОЗ рекомендует WHO 0–5 лет (стандарт — вскармливание грудью), далее — CDC или национальные. CDC до 5 лет даёт несколько более «тяжёлых» детей по сравнению с WHO.\n\n### Ограничения\n- CDC 2000 основан на данных NHANES до эпидемии ожирения — современные BMI-кривые выше исторических\n- Не использовать у детей < 2 лет — WHO предпочтительнее\n- При задержке/ускорении полового развития — пересматривать по Tanner\n\n### Источник\nKuczmarski RJ et al. CDC growth charts: United States. *Vital Health Stat* 2000;(314):1–27.\nHampl SE et al. AAP Clinical Practice Guideline for Pediatric Obesity. *Pediatrics* 2023;151:e2022060640."
+    info: "### Для чего используется\n**CDC Growth Charts (2000)** - американские референсные кривые для детей и подростков **2-20 лет** (рост, вес, ИМТ-для-возраста). Ключевой инструмент педиатрии в США.\n\n### Параметры\n- Weight-for-age\n- Stature-for-age\n- BMI-for-age (главный индикатор избыточного веса / ожирения)\n- Weight-for-stature (2-5 лет)\n\n### Пороги ИМТ-для-возраста\n| Перцентиль | Классификация |\n|---|---|\n| < 5 | Недостаточная масса |\n| 5-85 | Норма |\n| 85-95 | Избыточная масса |\n| ≥ 95 | Ожирение |\n| ≥ 99 (или BMI ≥ 120 % от 95-го) | Тяжёлое ожирение |\n\n### WHO vs CDC\nВОЗ рекомендует WHO 0-5 лет (стандарт - вскармливание грудью), далее - CDC или национальные. CDC до 5 лет даёт несколько более «тяжёлых» детей по сравнению с WHO.\n\n### Ограничения\n- CDC 2000 основан на данных NHANES до эпидемии ожирения - современные BMI-кривые выше исторических\n- Не использовать у детей < 2 лет - WHO предпочтительнее\n- При задержке/ускорении полового развития - пересматривать по Tanner\n\n### Источник\nKuczmarski RJ et al. CDC growth charts: United States. *Vital Health Stat* 2000;(314):1-27.\nHampl SE et al. AAP Clinical Practice Guideline for Pediatric Obesity. *Pediatrics* 2023;151:e2022060640."
   };
 
 export default runner;

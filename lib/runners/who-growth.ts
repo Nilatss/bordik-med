@@ -2,7 +2,7 @@
 /**
  * Runner: who-growth
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
- * Do not edit by hand — regenerate via `npm run split:runners`.
+ * Do not edit by hand - regenerate via `npm run split:runners`.
  *
  * Loaded lazily via dynamic import from lib/runners/index.ts so the
  * encyclopaedia of clinical content stays out of the main app bundle.
@@ -95,7 +95,7 @@ const runner: CalculatorTool = {
             const sex = String(v.sex);
             const w = Number(v.weight);
             const h = Number(v.height);
-            // Упрощённые медианы WHO (2006) по полу и возрасту (кг и см) — reference anchors
+            // Упрощённые медианы WHO (2006) по полу и возрасту (кг и см) - reference anchors
             const anchors = {
                 m: [
                     {
@@ -265,15 +265,15 @@ const runner: CalculatorTool = {
             } else if (minZ < -1) {
                 interpretation = 'Пограничное (Z −2…−1)';
                 color = '#F59E0B';
-                details = 'Отклонение в пограничной зоне. Нужен мониторинг динамики — один замер не диагноз.';
+                details = 'Отклонение в пограничной зоне. Нужен мониторинг динамики - один замер не диагноз.';
                 actions = [
-                    'Повторить измерение через 1–2 мес',
+                    'Повторить измерение через 1-2 мес',
                     'Оценить рацион и режим кормления'
                 ];
             } else if (zW > 2) {
                 interpretation = 'Z > +2 (избыточная масса)';
                 color = '#F59E0B';
-                details = 'Избыточная масса по WHO (Z > +2). У детей до 5 лет особенно важно — риск последующего ожирения.';
+                details = 'Избыточная масса по WHO (Z > +2). У детей до 5 лет особенно важно - риск последующего ожирения.';
                 actions = [
                     'Консультация диетолога',
                     'Физическая активность, ограничение сладких напитков',
@@ -296,10 +296,10 @@ const runner: CalculatorTool = {
                 details,
                 actions,
                 caveats: [
-                    'Упрощённая реализация по якорным точкам WHO 2006 — для точных значений используйте WHO Anthro / LMS-таблицы',
-                    'Не применимо у недоношенных до скорригированного возраста — используйте Fenton / INTERGROWTH-21st',
-                    'Один замер не диагноз — оценивайте динамику (траекторию роста)',
-                    'WAZ недостоверен при отёках (квашиоркор) — используйте MUAC и клинический осмотр'
+                    'Упрощённая реализация по якорным точкам WHO 2006 - для точных значений используйте WHO Anthro / LMS-таблицы',
+                    'Не применимо у недоношенных до скорригированного возраста - используйте Fenton / INTERGROWTH-21st',
+                    'Один замер не диагноз - оценивайте динамику (траекторию роста)',
+                    'WAZ недостоверен при отёках (квашиоркор) - используйте MUAC и клинический осмотр'
                 ],
                 scale: {
                     segments: [
@@ -340,7 +340,7 @@ const runner: CalculatorTool = {
                 related: [
                     {
                         id: 'cdc-growth',
-                        title: 'CDC 2–20'
+                        title: 'CDC 2-20'
                     },
                     {
                         id: 'uk-who',
@@ -390,7 +390,7 @@ const runner: CalculatorTool = {
         }
       }
     ],
-    info: "### Для чего используется\n**WHO Child Growth Standards (2006)** — международный референс физического развития детей **0–5 лет**. Основан на данных 8440 детей из 6 стран, вскармливаемых грудью и живущих в оптимальных условиях. Рекомендован ВОЗ как универсальный стандарт для всех популяций.\n\n### Параметры\n- Weight-for-age (WAZ)\n- Length/height-for-age (HAZ)\n- Weight-for-length/height (WHZ)\n- BMI-for-age (BAZ)\n- Head circumference-for-age\n- MUAC (mid-upper-arm circumference, 3–59 мес)\n\n### Интерпретация Z-score\n| Z-score | Интерпретация |\n|---|---|\n| < −3 | Тяжёлое отклонение |\n| −3 … −2 | Умеренное отклонение |\n| −2 … −1 | Пограничное |\n| −1 … +1 | Норма |\n| +1 … +2 | Выше среднего |\n| > +2 | Избыточная масса (для WHZ/BAZ) |\n\n### Классификация нутритивных нарушений\n| Показатель | Что отражает |\n|---|---|\n| WAZ | Общее недоедание (underweight) |\n| HAZ | Хроническое — задержка роста (stunting) |\n| WHZ / BAZ | Острое — истощение (wasting) |\n| MUAC < 115 мм | SAM у детей 6–59 мес |\n\n### Ограничения\n- Для недоношенных использовать Fenton / INTERGROWTH-21st до 50 нед PMA\n- Точные перцентили — через WHO Anthro (официальное приложение) или LMS-таблицы\n- Не применимо после 5 лет — переходить на WHO 5–19, CDC или национальные нормы\n\n### Источник\nWHO Multicentre Growth Reference Study Group. *WHO Child Growth Standards*, Geneva, 2006.\nde Onis M et al. *Acta Paediatr* 2006;Suppl 450."
+    info: "### Для чего используется\n**WHO Child Growth Standards (2006)** - международный референс физического развития детей **0-5 лет**. Основан на данных 8440 детей из 6 стран, вскармливаемых грудью и живущих в оптимальных условиях. Рекомендован ВОЗ как универсальный стандарт для всех популяций.\n\n### Параметры\n- Weight-for-age (WAZ)\n- Length/height-for-age (HAZ)\n- Weight-for-length/height (WHZ)\n- BMI-for-age (BAZ)\n- Head circumference-for-age\n- MUAC (mid-upper-arm circumference, 3-59 мес)\n\n### Интерпретация Z-score\n| Z-score | Интерпретация |\n|---|---|\n| < −3 | Тяжёлое отклонение |\n| −3 … −2 | Умеренное отклонение |\n| −2 … −1 | Пограничное |\n| −1 … +1 | Норма |\n| +1 … +2 | Выше среднего |\n| > +2 | Избыточная масса (для WHZ/BAZ) |\n\n### Классификация нутритивных нарушений\n| Показатель | Что отражает |\n|---|---|\n| WAZ | Общее недоедание (underweight) |\n| HAZ | Хроническое - задержка роста (stunting) |\n| WHZ / BAZ | Острое - истощение (wasting) |\n| MUAC < 115 мм | SAM у детей 6-59 мес |\n\n### Ограничения\n- Для недоношенных использовать Fenton / INTERGROWTH-21st до 50 нед PMA\n- Точные перцентили - через WHO Anthro (официальное приложение) или LMS-таблицы\n- Не применимо после 5 лет - переходить на WHO 5-19, CDC или национальные нормы\n\n### Источник\nWHO Multicentre Growth Reference Study Group. *WHO Child Growth Standards*, Geneva, 2006.\nde Onis M et al. *Acta Paediatr* 2006;Suppl 450."
   };
 
 export default runner;

@@ -2,7 +2,7 @@
 /**
  * Runner: prevent
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
- * Do not edit by hand — regenerate via `npm run split:runners`.
+ * Do not edit by hand - regenerate via `npm run split:runners`.
  *
  * Loaded lazily via dynamic import from lib/runners/index.ts so the
  * encyclopaedia of clinical content stays out of the main app bundle.
@@ -183,12 +183,12 @@ const runner: CalculatorTool = {
                 details = 'PREVENT 10-летний риск общего CVD (ASCVD + СН) < 5 %.';
                 actions = [
                     'Образ жизни',
-                    'Повтор оценки каждые 4–6 лет'
+                    'Повтор оценки каждые 4-6 лет'
                 ];
             } else if (r < 7.5) {
                 interpretation = 'Пограничный риск';
                 color = '#FBBF24';
-                details = 'Риск 5–7,5 %. Рассмотреть CAC score для уточнения.';
+                details = 'Риск 5-7,5 %. Рассмотреть CAC score для уточнения.';
                 actions = [
                     'Обсудить статин',
                     'Enhancing factors + CAC'
@@ -196,7 +196,7 @@ const runner: CalculatorTool = {
             } else if (r < 20) {
                 interpretation = 'Промежуточный риск';
                 color = '#F59E0B';
-                details = 'Риск 7,5–20 %. Показана статинотерапия умеренной/высокой интенсивности.';
+                details = 'Риск 7,5-20 %. Показана статинотерапия умеренной/высокой интенсивности.';
                 actions = [
                     'Статин умеренной интенсивности',
                     'Контроль АД < 130/80',
@@ -209,7 +209,7 @@ const runner: CalculatorTool = {
                 actions = [
                     'Статин высокой интенсивности',
                     'Цель LDL-C < 1,8 ммоль/л',
-                    'При СД — SGLT2i/GLP-1 (учёт CKM-синдрома)'
+                    'При СД - SGLT2i/GLP-1 (учёт CKM-синдрома)'
                 ];
             }
             return {
@@ -220,10 +220,10 @@ const runner: CalculatorTool = {
                 details,
                 actions,
                 caveats: [
-                    'PREVENT включает СН в исход — риск не сопоставим напрямую с ASCVD-PCE',
-                    'Разработан на современной мультиэтнической когорте США (2011–2020); лучше калиброван, чем PCE',
+                    'PREVENT включает СН в исход - риск не сопоставим напрямую с ASCVD-PCE',
+                    'Разработан на современной мультиэтнической когорте США (2011-2020); лучше калиброван, чем PCE',
                     'Требует eGFR (CKD-EPI 2021) и BMI; опциональные HbA1c и ACR расширяют точность',
-                    'Только возраст 30–79'
+                    'Только возраст 30-79'
                 ],
                 scale: {
                     segments: [
@@ -281,7 +281,7 @@ const runner: CalculatorTool = {
                 ]
             };
         },
-    reference: "Khan SS et al. Development and Validation of the AHA PREVENT Equations. Circulation 2024;149:430–449.",
+    reference: "Khan SS et al. Development and Validation of the AHA PREVENT Equations. Circulation 2024;149:430-449.",
     countries: "США (AHA 2023)",
     presets: [
       {
@@ -317,7 +317,7 @@ const runner: CalculatorTool = {
         }
       }
     ],
-    info: "### Для чего используется\n**AHA PREVENT (Predicting Risk of cardiovascular disease EVENTs, 2023)** — новое уравнение AHA для расчёта 10- и 30-летнего риска общего CVD (ASCVD **+ сердечная недостаточность**), заменяющее PCE 2013. Основано на когорте > 6 млн человек (2011–2020).\n\n### Особенности\n- Включает **eGFR** и **BMI** (основные факторы; опционально HbA1c, ACR, SDI)\n- **Безрасовое** (нет переменной \"раса\")\n- Использует **non-HDL холестерин** (TC − HDL)\n- Различает 10- и 30-летний горизонт\n- Интегрирует CKM-синдром (кардио-рено-метаболический)\n\n### Формула\nУравнение Weibull/логистического типа с ageC = (age − 55)/10, центрированными non-HDL, HDL, SBP, eGFR. Коэффициенты отличаются для ♂/♀ и включают age-взаимодействия.\n\n### Интерпретация (10-летний, total CVD)\n| Категория | Риск |\n|---|---|\n| Низкий | < 5 % |\n| Пограничный | 5–7,5 % |\n| Промежуточный | 7,5–20 % |\n| Высокий | ≥ 20 % |\n\n### Ограничения\n- Не эквивалентен ASCVD-PCE (включает СН → цифры выше)\n- Возраст 30–79\n- Не применять при установленной ASCVD\n- 30-летний риск — использовать для мотивации молодых пациентов\n\n### Тактика\nТе же пороги для статина (≥ 7,5 %), но интерпретация должна учитывать добавление СН в исход.\n\n### Источник\nKhan SS, Matsushita K, Sang Y et al. Development and Validation of the American Heart Association's PREVENT Equations. *Circulation* 2024;149(6):430–449."
+    info: "### Для чего используется\n**AHA PREVENT (Predicting Risk of cardiovascular disease EVENTs, 2023)** - новое уравнение AHA для расчёта 10- и 30-летнего риска общего CVD (ASCVD **+ сердечная недостаточность**), заменяющее PCE 2013. Основано на когорте > 6 млн человек (2011-2020).\n\n### Особенности\n- Включает **eGFR** и **BMI** (основные факторы; опционально HbA1c, ACR, SDI)\n- **Безрасовое** (нет переменной \"раса\")\n- Использует **non-HDL холестерин** (TC − HDL)\n- Различает 10- и 30-летний горизонт\n- Интегрирует CKM-синдром (кардио-рено-метаболический)\n\n### Формула\nУравнение Weibull/логистического типа с ageC = (age − 55)/10, центрированными non-HDL, HDL, SBP, eGFR. Коэффициенты отличаются для ♂/♀ и включают age-взаимодействия.\n\n### Интерпретация (10-летний, total CVD)\n| Категория | Риск |\n|---|---|\n| Низкий | < 5 % |\n| Пограничный | 5-7,5 % |\n| Промежуточный | 7,5-20 % |\n| Высокий | ≥ 20 % |\n\n### Ограничения\n- Не эквивалентен ASCVD-PCE (включает СН → цифры выше)\n- Возраст 30-79\n- Не применять при установленной ASCVD\n- 30-летний риск - использовать для мотивации молодых пациентов\n\n### Тактика\nТе же пороги для статина (≥ 7,5 %), но интерпретация должна учитывать добавление СН в исход.\n\n### Источник\nKhan SS, Matsushita K, Sang Y et al. Development and Validation of the American Heart Association's PREVENT Equations. *Circulation* 2024;149(6):430-449."
   };
 
 export default runner;

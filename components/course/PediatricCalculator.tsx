@@ -160,7 +160,7 @@ export default function PediatricCalculator() {
                     {drug.calculatedDose.toFixed(2)} {drug.unit}
                     {drug.isMaxed && <span style={{ marginLeft: 'var(--space-1)', fontSize: '0.5625rem', color: 'var(--md-sys-color-error)' }}>(MAX)</span>}
                   </td>
-                  <td style={{ ...tdStyle, fontFamily: 'var(--font-mono)', color: 'var(--md-sys-color-secondary)' }}>{drug.volume || '—'}</td>
+                  <td style={{ ...tdStyle, fontFamily: 'var(--font-mono)', color: 'var(--md-sys-color-secondary)' }}>{drug.volume || '-'}</td>
                   <td style={tdStyle}>{drug.route}</td>
                   <td style={tdStyle}>{drug.notes || ''}</td>
                 </tr>

@@ -1,5 +1,5 @@
 // @ts-nocheck
-/** Runner: door-to — Door-to-X metrics bundle */
+/** Runner: door-to - Door-to-X metrics bundle */
 import type { CalculatorTool } from '../tools-runners';
 
 const runner: CalculatorTool = {
@@ -45,10 +45,10 @@ const runner: CalculatorTool = {
     const onTarget = t > 0 && t <= cfg.target;
 
     let color = '#22C55E';
-    let verdict = `${cfg.name} ${t} мин ≤ ${cfg.target} — target достигнут`;
+    let verdict = `${cfg.name} ${t} мин ≤ ${cfg.target} - target достигнут`;
     if (t === 0) { color = '#6B7280'; verdict = 'Нет данных'; }
     else if (!onTarget) {
-      if (delta > cfg.target) { color = '#EF4444'; verdict = `${cfg.name} ${t} мин — критическая задержка (+${delta} мин)`; }
+      if (delta > cfg.target) { color = '#EF4444'; verdict = `${cfg.name} ${t} мин - критическая задержка (+${delta} мин)`; }
       else { color = '#F59E0B'; verdict = `${cfg.name} ${t} мин > ${cfg.target} (+${delta} мин)`; }
     }
 
@@ -59,7 +59,7 @@ const runner: CalculatorTool = {
       color,
       details: `${cfg.source}. Фактическое ${t} мин vs target ${cfg.target} мин (разница ${delta > 0 ? '+' : ''}${delta} мин).`,
       actions: [
-        'Пре-нотификация СМП — бригада предупреждает госпиталь',
+        'Пре-нотификация СМП - бригада предупреждает госпиталь',
         'Параллельная обработка: триаж + ЭКГ / КТ + лаб одновременно',
         'Stroke: КТ head без контраста → если нет кровоизлияния → tPA',
         'STEMI: ЭКГ ≤ 10 мин → активация cath lab single-call',
@@ -68,16 +68,16 @@ const runner: CalculatorTool = {
         'Audit: ежемесячный разбор всех case > target + root-cause',
       ],
       caveats: [
-        'D2N 60 мин — минимальный target; Elite ≤ 45 мин; Elite Plus ≤ 30 мин',
-        'D2B 90 мин — только primary PCI (non-transfer)',
-        'D2A для сепсиса: SSC 2021 снизил бандл с 3 ч до 1 ч — спорно, см. ProCESS, ARISE, ProMISe',
+        'D2N 60 мин - минимальный target; Elite ≤ 45 мин; Elite Plus ≤ 30 мин',
+        'D2B 90 мин - только primary PCI (non-transfer)',
+        'D2A для сепсиса: SSC 2021 снизил бандл с 3 ч до 1 ч - спорно, см. ProCESS, ARISE, ProMISe',
         'Временные метрики без клинической пользы = чисто bureaucratic target',
-        'Exclusion: учитывать противопоказания (tPA, PCI) — не штрафовать за правильный отказ',
+        'Exclusion: учитывать противопоказания (tPA, PCI) - не штрафовать за правильный отказ',
       ],
       scale: {
         segments: [
           { label: '≤ target', min: 0, max: cfg.target, color: '#22C55E', description: 'Выполнено' },
-          { label: `${cfg.target + 1}–${cfg.target * 2}`, min: cfg.target + 1, max: cfg.target * 2, color: '#F59E0B', description: 'Задержка' },
+          { label: `${cfg.target + 1}-${cfg.target * 2}`, min: cfg.target + 1, max: cfg.target * 2, color: '#F59E0B', description: 'Задержка' },
           { label: `> ${cfg.target * 2}`, min: cfg.target * 2 + 1, max: 600, color: '#EF4444', description: 'Критично' },
         ],
         current: t,
@@ -105,7 +105,7 @@ const runner: CalculatorTool = {
     { label: 'D2EEG 120 мин (задержка)', values: { metric: 'eeg', actualTime: 120 } },
   ],
   info: `### Для чего используется
-**Door-to-X metrics** — временные индикаторы качества неотложной помощи.
+**Door-to-X metrics** - временные индикаторы качества неотложной помощи.
 
 ### Target-таблица
 | Метрика | Target | Источник |

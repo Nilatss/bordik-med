@@ -5,7 +5,7 @@ import { sections, getSectionById, getModulesBySection, getModuleById, type Sect
 import ProfilePage from '@/components/profile/ProfilePage';
 import ToolsPage from '@/components/tools/ToolsPage';
 import dynamic from 'next/dynamic';
-// Lazy-load ToolView — its transitive import of tools-runners.ts is ~446 KB.
+// Lazy-load ToolView - its transitive import of tools-runners.ts is ~446 KB.
 // Deferring it means the Tools list page opens fast; the heavy bundle is only
 // fetched the first time the user opens a specific tool.
 const ToolView = dynamic(() => import('@/components/tools/ToolView'), { ssr: false });
@@ -240,7 +240,7 @@ export default function Home() {
           {/*
             ToolsPage stays mounted for both 'tools' and 'tool' views. When a
             specific tool is open we hide the list via CSS instead of
-            unmounting — this avoids the costly remount (500+ ToolCards,
+            unmounting - this avoids the costly remount (500+ ToolCards,
             filter memos) every time the user closes a tool. Zero visual
             change; the hidden subtree is inert and skipped by layout/paint.
           */}
@@ -307,7 +307,7 @@ export default function Home() {
                   {section.description}
                 </p>
               </div>
-              {/* Roadmap removed — old structure. New curriculum has 12 sections. */}
+              {/* Roadmap removed - old structure. New curriculum has 12 sections. */}
               <ModuleGrid />
             </div>
           )}
@@ -337,19 +337,6 @@ export default function Home() {
           )}
 
           </div>
-          <footer style={{
-            padding: '14px 24px 18px',
-            textAlign: 'center',
-            borderTop: '1px solid #F0F1F5',
-            background: '#FFFFFF',
-          }}>
-            <p style={{
-              fontFamily: 'var(--font-body)', fontSize: 11, color: '#B0B3BA',
-              letterSpacing: '0.02em',
-            }}>
-              Powered by <strong style={{ color: '#6B7280', fontWeight: 600 }}>Bordik</strong>
-            </p>
-          </footer>
         </main>
       </div>
     </div>

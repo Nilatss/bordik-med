@@ -1,5 +1,5 @@
 // @ts-nocheck
-/** Runner: fib4 — FIB-4 / APRI / NAFLD FS / FibroTest / FibroScan */
+/** Runner: fib4 - FIB-4 / APRI / NAFLD FS / FibroTest / FibroScan */
 import type { CalculatorTool } from '../tools-runners';
 
 const runner: CalculatorTool = {
@@ -10,8 +10,8 @@ const runner: CalculatorTool = {
       label: 'Метод',
       type: 'select',
       options: [
-        { value: 'fib4', label: 'FIB-4 — (age × AST) / (Plt × √ALT)' },
-        { value: 'apri', label: 'APRI — (AST/ULN × 100) / Plt' },
+        { value: 'fib4', label: 'FIB-4 - (age × AST) / (Plt × √ALT)' },
+        { value: 'apri', label: 'APRI - (AST/ULN × 100) / Plt' },
         { value: 'nfs', label: 'NAFLD Fibrosis Score (описательно)' },
       ],
     },
@@ -29,9 +29,9 @@ const runner: CalculatorTool = {
     if (tool === 'fib4') {
       const fib4 = (age * ast) / (plt * Math.sqrt(alt));
       let interp = '', color = '#22C55E', details = '';
-      if (fib4 < 1.3) { interp = 'Низкий риск фиброза F3–F4 (NPV 90%) — rule-out advanced fibrosis'; color = '#22C55E'; }
-      else if (fib4 <= 2.67) { interp = 'Неопределённая зона — нужна FibroScan / биопсия'; color = '#F59E0B'; }
-      else { interp = fib4 > 3.25 ? 'Высокая вероятность F3–F4 (PPV 65%) — направить к гепатологу' : 'Промежуточная-высокая зона'; color = '#EF4444'; }
+      if (fib4 < 1.3) { interp = 'Низкий риск фиброза F3-F4 (NPV 90%) - rule-out advanced fibrosis'; color = '#22C55E'; }
+      else if (fib4 <= 2.67) { interp = 'Неопределённая зона - нужна FibroScan / биопсия'; color = '#F59E0B'; }
+      else { interp = fib4 > 3.25 ? 'Высокая вероятность F3-F4 (PPV 65%) - направить к гепатологу' : 'Промежуточная-высокая зона'; color = '#EF4444'; }
       details = `FIB-4 (Sterling 2006) = (${age} × ${ast}) / (${plt} × √${alt}) = ${fib4.toFixed(2)}. Разработан для HIV/HCV, валидирован для NAFLD/MASLD, алкогольной болезни, HBV. Cut-off > 2 у пациентов ≥ 65 лет (избежать false-positive).`;
       return {
         value: fib4.toFixed(2),
@@ -40,14 +40,14 @@ const runner: CalculatorTool = {
         color,
         details,
         actions: [
-          'FIB-4 < 1,3: повторить через 2–3 года при NAFLD',
-          'FIB-4 1,3–2,67: FibroScan (TE) или MR-эластография',
+          'FIB-4 < 1,3: повторить через 2-3 года при NAFLD',
+          'FIB-4 1,3-2,67: FibroScan (TE) или MR-эластография',
           'FIB-4 > 2,67: гепатолог, УЗИ/ЭГДС при циррозе, HCC скрининг каждые 6 мес',
           'Non-invasive panel: FIB-4 → FibroScan → при несоответствии биопсия',
         ],
         caveats: [
-          'FIB-4 > 2 у ≥ 65 лет — новый порог (AASLD 2023)',
-          'AST/ALT повышены при остром гепатите — FIB-4 переоценивает фиброз',
+          'FIB-4 > 2 у ≥ 65 лет - новый порог (AASLD 2023)',
+          'AST/ALT повышены при остром гепатите - FIB-4 переоценивает фиброз',
           'Циррозные: тромбоциты могут быть норма в компенсации',
           'NAFLD → MASLD (новое наименование AASLD 2023)',
         ],
@@ -64,9 +64,9 @@ const runner: CalculatorTool = {
     if (tool === 'apri') {
       const apri = ((ast / uln) * 100) / plt;
       let interp = '', color = '#22C55E';
-      if (apri < 0.5) { interp = 'F0–F1 (нет/минимальный фиброз, NPV ~ 90%)'; color = '#22C55E'; }
+      if (apri < 0.5) { interp = 'F0-F1 (нет/минимальный фиброз, NPV ~ 90%)'; color = '#22C55E'; }
       else if (apri <= 1.5) { interp = 'Промежуточная зона'; color = '#F59E0B'; }
-      else { interp = apri > 2 ? 'F4 цирроз (PPV 65–80%)' : 'F3–F4 (advanced fibrosis)'; color = '#EF4444'; }
+      else { interp = apri > 2 ? 'F4 цирроз (PPV 65-80%)' : 'F3-F4 (advanced fibrosis)'; color = '#EF4444'; }
       return {
         value: apri.toFixed(2),
         unit: '',
@@ -95,18 +95,18 @@ const runner: CalculatorTool = {
     return {
       value: 'NAFLD FS',
       unit: '',
-      interpretation: 'NAFLD Fibrosis Score (Angulo 2007) — 6 параметров: age, BMI, IFG/DM, AST/ALT, platelets, albumin. < –1,455 rule-out advanced fibrosis; > 0,676 rule-in.',
+      interpretation: 'NAFLD Fibrosis Score (Angulo 2007) - 6 параметров: age, BMI, IFG/DM, AST/ALT, platelets, albumin. < -1,455 rule-out advanced fibrosis; > 0,676 rule-in.',
       color: '#3B82F6',
       details: 'Формула: NFS = −1,675 + 0,037 × age + 0,094 × BMI + 1,13 × (IFG/DM) + 0,99 × (AST/ALT) − 0,013 × Plt − 0,66 × albumin.',
       actions: [
-        'Шаг 1 — FIB-4 или NFS (бесплатно, прикроватно)',
-        'Шаг 2 — FibroScan (TE) при промежуточной зоне',
-        'Шаг 3 — MRE или биопсия при несоответствии / клинической важности',
+        'Шаг 1 - FIB-4 или NFS (бесплатно, прикроватно)',
+        'Шаг 2 - FibroScan (TE) при промежуточной зоне',
+        'Шаг 3 - MRE или биопсия при несоответствии / клинической важности',
       ],
       caveats: [
-        'FibroScan (TE, Echosens): < 8 kPa — F0–F2, > 12 kPa — цирроз вероятен',
-        'FibroTest (BioPredictive, Франция) — α2-макроглобулин, apoA1, GGT, haptoglobin, bilirubin, ALT',
-        'MR-эластография — наиболее точна, но дорого/недоступно',
+        'FibroScan (TE, Echosens): < 8 kPa - F0-F2, > 12 kPa - цирроз вероятен',
+        'FibroTest (BioPredictive, Франция) - α2-макроглобулин, apoA1, GGT, haptoglobin, bilirubin, ALT',
+        'MR-эластография - наиболее точна, но дорого/недоступно',
         'AASLD 2023: переход от NAFLD к MASLD (metabolic dysfunction-associated)',
       ],
       related: [
@@ -136,8 +136,8 @@ const runner: CalculatorTool = {
 | FIB-4 | Интерпретация |
 |---|---|
 | < 1,3 | Low risk advanced fibrosis (NPV 90%) |
-| 1,3–2,67 | Grey zone — FibroScan |
-| > 2,67 | High probability F3–F4 |
+| 1,3-2,67 | Grey zone - FibroScan |
+| > 2,67 | High probability F3-F4 |
 | > 3,25 | Very high |
 
 **AASLD 2023**: у пациентов ≥ 65 лет пороги повышаются (FIB-4 > 2 для rule-in).
@@ -147,35 +147,35 @@ const runner: CalculatorTool = {
 
 | APRI | Интерпретация |
 |---|---|
-| < 0,5 | F0–F1 |
-| 0,5–1,5 | Промежуточная |
-| > 1,5 | F3–F4 |
+| < 0,5 | F0-F1 |
+| 0,5-1,5 | Промежуточная |
+| > 1,5 | F3-F4 |
 | > 2 | Цирроз |
 
-**WHO HBV 2015**: APRI > 2 — начало терапии при нормальной ALT.
+**WHO HBV 2015**: APRI > 2 - начало терапии при нормальной ALT.
 
 ### NAFLD Fibrosis Score (Angulo 2007)
 6 параметров: age, BMI, IFG/DM, AST/ALT, Plt, albumin.
-\`NFS < −1,455\` — rule-out; \`> 0,676\` — rule-in advanced fibrosis.
+\`NFS < −1,455\` - rule-out; \`> 0,676\` - rule-in advanced fibrosis.
 
 ### FibroTest (BioPredictive)
-α2-macroglobulin, apoA1, GGT, haptoglobin, bilirubin, ALT — коммерческий тест (Франция). Валидирован для HCV, HBV, NAFLD.
+α2-macroglobulin, apoA1, GGT, haptoglobin, bilirubin, ALT - коммерческий тест (Франция). Валидирован для HCV, HBV, NAFLD.
 
 ### FibroScan (Transient Elastography)
 Ультразвуковая эластография (Echosens). Измеряет stiffness в kPa.
 
 | TE (kPa) | Stage |
 |---|---|
-| < 7,0 | F0–F1 |
-| 7,0–9,5 | F2 |
-| 9,5–12,5 | F3 |
+| < 7,0 | F0-F1 |
+| 7,0-9,5 | F2 |
+| 9,5-12,5 | F3 |
 | > 12,5 | F4 цирроз |
 
 ### MR-elastography
-Самый точный неинвазивный метод, AUROC > 0,95 для F3–F4.
+Самый точный неинвазивный метод, AUROC > 0,95 для F3-F4.
 
 ### Алгоритм (AASLD 2023)
-1. **Скрининг**: FIB-4 (каждые 2–3 года при метаболическом синдроме/T2DM)
+1. **Скрининг**: FIB-4 (каждые 2-3 года при метаболическом синдроме/T2DM)
 2. **Low risk** (< 1,3): наблюдение, lifestyle
 3. **Indeterminate/High** (≥ 1,3): FibroScan или ELF
 4. **Confirmed advanced**: гепатолог, HCC скрининг, эндоскопия при циррозе

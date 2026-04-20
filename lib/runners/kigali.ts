@@ -1,6 +1,6 @@
 // @ts-nocheck
 /**
- * Runner: kigali — Kigali modification of the Berlin ARDS definition (Riviello 2016)
+ * Runner: kigali - Kigali modification of the Berlin ARDS definition (Riviello 2016)
  * Низкоресурсный вариант: SpO₂/FiO₂ вместо PaO₂/FiO₂, УЗИ лёгких + рентген, без PEEP.
  */
 import type { CalculatorTool } from '../tools-runners';
@@ -15,10 +15,10 @@ const runner: CalculatorTool = {
     {
       id: 'severity', label: 'Степень гипоксемии (SpO₂/FiO₂)', type: 'select',
       options: [
-        { value: 'none', label: '> 315 — не ARDS' },
-        { value: 'mild', label: '236–315 — лёгкая' },
-        { value: 'mod', label: '151–235 — умеренная' },
-        { value: 'sev', label: '≤ 150 — тяжёлая' },
+        { value: 'none', label: '> 315 - не ARDS' },
+        { value: 'mild', label: '236-315 - лёгкая' },
+        { value: 'mod', label: '151-235 - умеренная' },
+        { value: 'sev', label: '≤ 150 - тяжёлая' },
       ],
     },
   ],
@@ -40,15 +40,15 @@ const runner: CalculatorTool = {
       };
     }
     const sev = String(v.severity || 'mild');
-    let label = 'Лёгкий ARDS', color = '#F59E0B', details = 'Kigali лёгкий (S/F 236–315).';
+    let label = 'Лёгкий ARDS', color = '#F59E0B', details = 'Kigali лёгкий (S/F 236-315).';
     let actions = ['Низкопоточный O₂ / HFNC / CPAP', 'Консервативная инфузия', 'Лечение причины'];
     if (sev === 'mod') {
       label = 'Умеренный ARDS (Kigali)'; color = '#EF4444';
-      details = 'Kigali умеренный (S/F 151–235). Госпитальная летальность выше, чем при лёгком.';
+      details = 'Kigali умеренный (S/F 151-235). Госпитальная летальность выше, чем при лёгком.';
       actions = ['CPAP/НИВЛ при доступности', 'Vt 6 мл/кг IBW если ИВЛ', 'Прон-позиция (awake prone)', 'Консервативная инфузия'];
     } else if (sev === 'sev') {
       label = 'Тяжёлый ARDS (Kigali)'; color = '#991B1B';
-      details = 'Kigali тяжёлый (S/F ≤ 150). В низкоресурсном окружении — высокая летальность.';
+      details = 'Kigali тяжёлый (S/F ≤ 150). В низкоресурсном окружении - высокая летальность.';
       actions = ['ИВЛ Vt 6 мл/кг IBW + PEEP-таблица ARDSnet', 'Прон-позиция ≥ 16 ч/сут', 'Нейромышечная блокада ≤ 48 ч', 'Транспорт в центр с ECMO, если доступен'];
     } else if (sev === 'none') {
       return {
@@ -68,8 +68,8 @@ const runner: CalculatorTool = {
       details,
       actions,
       caveats: [
-        'Kigali не требует PEEP — создан для низкоресурсных условий (Руанда)',
-        'SpO₂ > 97% делает S/F ненадёжным — интерпретировать с осторожностью',
+        'Kigali не требует PEEP - создан для низкоресурсных условий (Руанда)',
+        'SpO₂ > 97% делает S/F ненадёжным - интерпретировать с осторожностью',
         'УЗИ лёгких зависит от оператора, но позволяет диагностику без CXR',
       ],
       related: [
@@ -84,7 +84,7 @@ const runner: CalculatorTool = {
       ],
     };
   },
-  reference: 'Riviello ED et al. Hospital Incidence and Outcomes of the Acute Respiratory Distress Syndrome Using the Kigali Modification of the Berlin Definition. Am J Respir Crit Care Med 2016;193:52–59.',
+  reference: 'Riviello ED et al. Hospital Incidence and Outcomes of the Acute Respiratory Distress Syndrome Using the Kigali Modification of the Berlin Definition. Am J Respir Crit Care Med 2016;193:52-59.',
   countries: 'Низкоресурсные страны (валидировано в Руанде)',
   presets: [
     { label: 'Лёгкий Kigali', values: { timing: true, bilateral: true, noncardiac: true, sf315: true, severity: 'mild' } },
@@ -92,12 +92,12 @@ const runner: CalculatorTool = {
     { label: 'Тяжёлый Kigali', values: { timing: true, bilateral: true, noncardiac: true, sf315: true, severity: 'sev' } },
   ],
   caveats: [
-    'Не требует PEEP и ABG — ключевое отличие от Berlin 2012',
-    'УЗИ лёгких — равнозначная альтернатива рентгену',
-    'Тяжесть определяется SpO₂/FiO₂: > 315 / 236–315 / 151–235 / ≤ 150',
+    'Не требует PEEP и ABG - ключевое отличие от Berlin 2012',
+    'УЗИ лёгких - равнозначная альтернатива рентгену',
+    'Тяжесть определяется SpO₂/FiO₂: > 315 / 236-315 / 151-235 / ≤ 150',
   ],
   info: `### Для чего используется
-**Kigali modification of the Berlin ARDS Definition (Riviello 2016)** — адаптация Берлинских критериев для стран с ограниченными ресурсами, где ABG и ИВЛ с PEEP недоступны.
+**Kigali modification of the Berlin ARDS Definition (Riviello 2016)** - адаптация Берлинских критериев для стран с ограниченными ресурсами, где ABG и ИВЛ с PEEP недоступны.
 
 ### Отличия от Berlin 2012
 | Критерий | Berlin | Kigali |
@@ -109,12 +109,12 @@ const runner: CalculatorTool = {
 ### Степени по S/F
 | Степень | SpO₂/FiO₂ |
 |---|---|
-| Лёгкий | 236–315 |
-| Умеренный | 151–235 |
+| Лёгкий | 236-315 |
+| Умеренный | 151-235 |
 | Тяжёлый | ≤ 150 |
 
 ### Источник
-Riviello ED et al. Am J Respir Crit Care Med 2016;193:52–9.`,
+Riviello ED et al. Am J Respir Crit Care Med 2016;193:52-9.`,
 };
 
 export default runner;

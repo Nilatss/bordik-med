@@ -34,7 +34,7 @@ const SvgFrame = ({ children, ratio = 'auto' }: { children: React.ReactNode; rat
   </svg>
 );
 
-/* #1.1.0 — Предметы → Медицина (паутина) */
+/* #1.1.0 - Предметы → Медицина (паутина) */
 const Subjects = (): ReactElement => (
   <SvgFrame>
     <circle cx="300" cy="170" r="46" fill={COLORS.ink} />
@@ -62,7 +62,7 @@ const Subjects = (): ReactElement => (
   </SvgFrame>
 );
 
-/* #1.1.1 — Клетка */
+/* #1.1.1 - Клетка */
 const Cell = (): ReactElement => (
   <SvgFrame>
     {/* membrane */}
@@ -93,7 +93,7 @@ const Cell = (): ReactElement => (
   </SvgFrame>
 );
 
-/* #1.1.2 — Митоз */
+/* #1.1.2 - Митоз */
 const Mitosis = (): ReactElement => (
   <SvgFrame>
     {['Интерфаза', 'Профаза', 'Метафаза', 'Анафаза', 'Телофаза', 'Цитокинез'].map((phase, i) => {
@@ -125,7 +125,7 @@ const Mitosis = (): ReactElement => (
   </SvgFrame>
 );
 
-/* #1.1.3 — ДНК двойная спираль */
+/* #1.1.3 - ДНК двойная спираль */
 const DNA = (): ReactElement => (
   <SvgFrame>
     {[...Array(11)].map((_, i) => {
@@ -147,16 +147,16 @@ const DNA = (): ReactElement => (
       <rect x="-10" y="-10" width="180" height="140" fill="#FFF" stroke="#EEE" rx="8" />
       <text x="0" y="10" fontSize="12" fontWeight="700" fill={COLORS.ink}>Основания</text>
       <circle cx="10" cy="35" r="5" fill={COLORS.accent} />
-      <text x="25" y="40" fontSize="11" fill={COLORS.slate}>A — T (2 связи)</text>
+      <text x="25" y="40" fontSize="11" fill={COLORS.slate}>A - T (2 связи)</text>
       <circle cx="10" cy="60" r="5" fill={COLORS.red} />
-      <text x="25" y="65" fontSize="11" fill={COLORS.slate}>G — C (3 связи)</text>
+      <text x="25" y="65" fontSize="11" fill={COLORS.slate}>G - C (3 связи)</text>
       <circle cx="10" cy="90" r="5" fill={COLORS.amber} />
       <text x="25" y="95" fontSize="11" fill={COLORS.slate}>Фосфат + сахар</text>
     </g>
   </SvgFrame>
 );
 
-/* #1.1.4 — Системы органов */
+/* #1.1.4 - Системы органов */
 const BodySystems = (): ReactElement => (
   <SvgFrame>
     {/* silhouette */}
@@ -192,7 +192,7 @@ const BodySystems = (): ReactElement => (
   </SvgFrame>
 );
 
-/* #1.1.5 — Органические соединения */
+/* #1.1.5 - Органические соединения */
 const OrganicCompounds = (): ReactElement => (
   <SvgFrame>
     {['Углеводы', 'Липиды', 'Белки', 'Нуклеиновые', 'Амины', 'Кислоты'].map((name, i) => {
@@ -213,7 +213,7 @@ const OrganicCompounds = (): ReactElement => (
   </SvgFrame>
 );
 
-/* #1.1.6 — pH шкала */
+/* #1.1.6 - pH шкала */
 const pHScale = (): ReactElement => (
   <SvgFrame>
     <defs>
@@ -253,7 +253,7 @@ const pHScale = (): ReactElement => (
   </SvgFrame>
 );
 
-/* #1.1.7 — Сердце + гидравлика */
+/* #1.1.7 - Сердце + гидравлика */
 const Circulation = (): ReactElement => (
   <SvgFrame>
     {/* heart as pump */}
@@ -277,7 +277,7 @@ const Circulation = (): ReactElement => (
   </SvgFrame>
 );
 
-/* #1.1.8 — Масштабы */
+/* #1.1.8 - Масштабы */
 const Scales = (): ReactElement => (
   <SvgFrame>
     <line x1="40" y1="170" x2="560" y2="170" stroke={COLORS.ink} strokeWidth="2" />
@@ -301,7 +301,7 @@ const Scales = (): ReactElement => (
   </SvgFrame>
 );
 
-/* #1.1.9 — Потенциал действия */
+/* #1.1.9 - Потенциал действия */
 const ActionPotential = (): ReactElement => (
   <SvgFrame>
     {/* axes */}
@@ -323,7 +323,7 @@ const ActionPotential = (): ReactElement => (
   </SvgFrame>
 );
 
-/* #1.1.10 — Биопсихосоциальная модель */
+/* #1.1.10 - Биопсихосоциальная модель */
 const BioPsychoSocial = (): ReactElement => (
   <SvgFrame>
     <g opacity="0.55">
@@ -341,7 +341,7 @@ const BioPsychoSocial = (): ReactElement => (
   </SvgFrame>
 );
 
-/* #1.1.11 — Кривая забывания Эббингауза */
+/* #1.1.11 - Кривая забывания Эббингауза */
 const EbbinghausCurve = (): ReactElement => (
   <SvgFrame>
     <line x1="60" y1="280" x2="560" y2="280" stroke={COLORS.ink} strokeWidth="1.5" />
@@ -351,7 +351,7 @@ const EbbinghausCurve = (): ReactElement => (
     {/* without review */}
     <path d="M 60 50 Q 110 180 200 230 T 560 270" fill="none" stroke={COLORS.red} strokeWidth="2.5" />
     <text x="400" y="265" fontSize="10" fill={COLORS.red} fontWeight="600">Без повторений</text>
-    {/* with review — sawtooth */}
+    {/* with review - sawtooth */}
     <path d="M 60 50 Q 90 120 120 180 L 130 80 Q 160 130 200 170 L 210 70 Q 260 120 320 150 L 330 60 Q 400 110 470 130 L 480 55 Q 520 90 560 110"
       fill="none" stroke={COLORS.green} strokeWidth="2.5" />
     <text x="330" y="50" fontSize="10" fill={COLORS.green} fontWeight="600">С повторениями</text>
@@ -385,7 +385,7 @@ const imageMap: Record<string, { src: string; alt: string }> = {
 };
 
 // SVG-based illustrations (kept for topics that don't have real images yet)
-// Note: '1.1.0' intentionally removed — no illustration for Введение.
+// Note: '1.1.0' intentionally removed - no illustration for Введение.
 const illustrationMap: Record<string, () => ReactElement> = {
   '1.1.11': EbbinghausCurve,
 };

@@ -1,9 +1,9 @@
 /**
- * Lightweight metadata for tools — precomputed once at module load so
+ * Lightweight metadata for tools - precomputed once at module load so
  * ToolsPage doesn't have to call getRunner() hundreds of times on every
  * filter change.
  *
- * IMPORTANT: this module must NOT import from './tools-runners' directly —
+ * IMPORTANT: this module must NOT import from './tools-runners' directly -
  * that file is ~446 KB (all clinical info markdown) and pulling it into the
  * ToolsPage bundle adds hundreds of milliseconds of parse time on entry.
  * Instead it uses the generated `tool-meta-data.ts` which carries only the
@@ -54,7 +54,7 @@ export function toolCountries(toolId: string): string | undefined {
  * Why groups: the catalogue has labels like "США", "США (FDA)" and
  * "Международный (KDIGO)" that should cluster together instead of being
  * ranked purely by count. The user asked for "США и всё дальше по США,
- * потом EU и так далее" — i.e. group then sort-within-group.
+ * потом EU и так далее" - i.e. group then sort-within-group.
  */
 const COUNTRY_GROUPS: { prefix: string; flag: string; order: number }[] = [
   { prefix: 'Международный', flag: '🌍', order: 1 },
@@ -82,7 +82,7 @@ function countryMeta(label: string): { group: number; flag: string } {
   return { group: 999, flag: '🏳️' };
 }
 
-/** Flag lookup — used by the UI to render the flag next to each country. */
+/** Flag lookup - used by the UI to render the flag next to each country. */
 export function countryFlag(label: string): string {
   return countryMeta(label).flag;
 }

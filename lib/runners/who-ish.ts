@@ -2,7 +2,7 @@
 /**
  * Runner: who-ish
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
- * Do not edit by hand — regenerate via `npm run split:runners`.
+ * Do not edit by hand - regenerate via `npm run split:runners`.
  *
  * Loaded lazily via dynamic import from lib/runners/index.ts so the
  * encyclopaedia of clinical content stays out of the main app bundle.
@@ -151,7 +151,7 @@ const runner: CalculatorTool = {
             const tc = Number(v.tc);
             const region = String(v.region || 'euroC');
             // WHO/ISH 2019 updated charts use Globorisk/pooled approach. Approximate
-            // via region baseline + points (Mendis 2007 — Bull WHO 85:12). Native charts
+            // via region baseline + points (Mendis 2007 - Bull WHO 85:12). Native charts
             // give 5 categories: <10, 10-<20, 20-<30, 30-<40, ≥40 %.
             const regionBase = {
                 euroA: 0,
@@ -195,7 +195,7 @@ const runner: CalculatorTool = {
             let interpretation = '', color = '', details = '';
             let actions = [];
             if (r < 10) {
-                interpretation = '< 10 % — низкий риск';
+                interpretation = '< 10 % - низкий риск';
                 color = '#22C55E';
                 details = 'WHO категория < 10 %. Модификация образа жизни.';
                 actions = [
@@ -203,35 +203,35 @@ const runner: CalculatorTool = {
                     'Повтор через 5 лет'
                 ];
             } else if (r < 20) {
-                interpretation = '10–< 20 % — умеренный';
+                interpretation = '10-< 20 % - умеренный';
                 color = '#FBBF24';
-                details = 'WHO категория 10–< 20 %. Модификация ФР + терапия АГ при стойком АД ≥ 140/90.';
+                details = 'WHO категория 10-< 20 %. Модификация ФР + терапия АГ при стойком АД ≥ 140/90.';
                 actions = [
                     'Контроль АД < 140/90',
                     'Снижение TC до < 5 ммоль/л',
                     'Отказ от курения'
                 ];
             } else if (r < 30) {
-                interpretation = '20–< 30 % — высокий';
+                interpretation = '20-< 30 % - высокий';
                 color = '#F59E0B';
-                details = 'WHO категория 20–< 30 %. Антигипертензивная терапия + статин показаны.';
+                details = 'WHO категория 20-< 30 %. Антигипертензивная терапия + статин показаны.';
                 actions = [
                     'Антигипертензивная терапия',
                     'Статин',
-                    'Аспирин — индивидуально после оценки риска'
+                    'Аспирин - индивидуально после оценки риска'
                 ];
             } else if (r < 40) {
-                interpretation = '30–< 40 % — очень высокий';
+                interpretation = '30-< 40 % - очень высокий';
                 color = '#EF4444';
-                details = 'WHO категория 30–< 40 %. Полный комплекс профилактики.';
+                details = 'WHO категория 30-< 40 %. Полный комплекс профилактики.';
                 actions = [
                     'АД < 130/80',
                     'Статин высокой интенсивности',
-                    'Аспирин 75–100 мг',
+                    'Аспирин 75-100 мг',
                     'Коррекция СД'
                 ];
             } else {
-                interpretation = '≥ 40 % — экстремальный';
+                interpretation = '≥ 40 % - экстремальный';
                 color = '#991B1B';
                 details = 'WHO категория ≥ 40 %. Агрессивная терапия всех ФР.';
                 actions = [
@@ -247,8 +247,8 @@ const runner: CalculatorTool = {
                 details,
                 actions,
                 caveats: [
-                    'Упрощённая аппроксимация WHO charts — для точного расчёта используйте официальные таблицы WHO 2019',
-                    'Категории WHO — 5 уровней по 10 % (<10, 10-<20, 20-<30, 30-<40, ≥40)',
+                    'Упрощённая аппроксимация WHO charts - для точного расчёта используйте официальные таблицы WHO 2019',
+                    'Категории WHO - 5 уровней по 10 % (<10, 10-<20, 20-<30, 30-<40, ≥40)',
                     'Используется в странах с ограниченными ресурсами (версия без холестерина тоже существует)',
                     'Субрегион выбирайте по стране пациента (WHO Global Health Observatory)'
                 ],
@@ -263,19 +263,19 @@ const runner: CalculatorTool = {
                         {
                             min: 10,
                             max: 20,
-                            label: '10–20',
+                            label: '10-20',
                             color: '#FBBF24'
                         },
                         {
                             min: 20,
                             max: 30,
-                            label: '20–30',
+                            label: '20-30',
                             color: '#F59E0B'
                         },
                         {
                             min: 30,
                             max: 40,
-                            label: '30–40',
+                            label: '30-40',
                             color: '#EF4444'
                         },
                         {
@@ -338,7 +338,7 @@ const runner: CalculatorTool = {
         }
       }
     ],
-    info: "### Для чего используется\n**WHO/ISH Risk Prediction Charts** — упрощённый инструмент оценки 10-летнего риска фатального + нефатального CVD-события для стран с ограниченными ресурсами. Разработан ВОЗ / Международным обществом гипертензии в 2007, **обновлён в 2019** на основе Globorisk.\n\n### Особенности\n- **14 субрегионов** ВОЗ (учитывает эпидемиологию страны)\n- Использует **лабораторную** (с холестерином) и **безлабораторную** версии\n- 5 категорий риска: < 10, 10–< 20, 20–< 30, 30–< 40, ≥ 40 %\n- Простой цветной chart (возраст × SBP × TC × курение × СД)\n\n### Категории и тактика (WHO 2019 HEARTS package)\n| Риск | Тактика |\n|---|---|\n| < 10 % | Модификация образа жизни, повтор через 5 лет |\n| 10–< 20 % | + Антигипертензивная терапия при стойком АД ≥ 140/90 |\n| 20–< 30 % | + Статин |\n| 30–< 40 % | Комплексная медикаментозная профилактика |\n| ≥ 40 % | Агрессивная терапия всех ФР |\n\n### Когда использовать\n- Первичная помощь в странах LMIC\n- Массовый скрининг\n- Когда нет доступа к локально-валидированному алгоритму\n\n### Ограничения\n- Значительно грубее Framingham/ASCVD/SCORE2/QRISK3\n- Упрощённая имплементация в Ironmed — для точного расчёта используйте официальные таблицы WHO\n- Не валидирован для ряда локальных подгрупп\n\n### Источник\nMendis S, Lindholm LH, Mancia G et al. WHO/ISH risk prediction charts. *Bull WHO* 2007;85(12):948.\nWHO. HEARTS technical package: Risk-based CVD management. 2019.\nWHO CVD Risk Chart Working Group. World Health Organization cardiovascular disease risk charts: revised models. *Lancet Glob Health* 2019;7(10):e1332–e1345."
+    info: "### Для чего используется\n**WHO/ISH Risk Prediction Charts** - упрощённый инструмент оценки 10-летнего риска фатального + нефатального CVD-события для стран с ограниченными ресурсами. Разработан ВОЗ / Международным обществом гипертензии в 2007, **обновлён в 2019** на основе Globorisk.\n\n### Особенности\n- **14 субрегионов** ВОЗ (учитывает эпидемиологию страны)\n- Использует **лабораторную** (с холестерином) и **безлабораторную** версии\n- 5 категорий риска: < 10, 10-< 20, 20-< 30, 30-< 40, ≥ 40 %\n- Простой цветной chart (возраст × SBP × TC × курение × СД)\n\n### Категории и тактика (WHO 2019 HEARTS package)\n| Риск | Тактика |\n|---|---|\n| < 10 % | Модификация образа жизни, повтор через 5 лет |\n| 10-< 20 % | + Антигипертензивная терапия при стойком АД ≥ 140/90 |\n| 20-< 30 % | + Статин |\n| 30-< 40 % | Комплексная медикаментозная профилактика |\n| ≥ 40 % | Агрессивная терапия всех ФР |\n\n### Когда использовать\n- Первичная помощь в странах LMIC\n- Массовый скрининг\n- Когда нет доступа к локально-валидированному алгоритму\n\n### Ограничения\n- Значительно грубее Framingham/ASCVD/SCORE2/QRISK3\n- Упрощённая имплементация в Ironmed - для точного расчёта используйте официальные таблицы WHO\n- Не валидирован для ряда локальных подгрупп\n\n### Источник\nMendis S, Lindholm LH, Mancia G et al. WHO/ISH risk prediction charts. *Bull WHO* 2007;85(12):948.\nWHO. HEARTS technical package: Risk-based CVD management. 2019.\nWHO CVD Risk Chart Working Group. World Health Organization cardiovascular disease risk charts: revised models. *Lancet Glob Health* 2019;7(10):e1332-e1345."
   };
 
 export default runner;

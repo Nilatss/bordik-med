@@ -1,5 +1,5 @@
 // @ts-nocheck
-/** Runner: ao-spine — TLICS (Vaccaro 2005) + AO Spine thoracolumbar (Vaccaro 2013) */
+/** Runner: ao-spine - TLICS (Vaccaro 2005) + AO Spine thoracolumbar (Vaccaro 2013) */
 import type { CalculatorTool } from '../tools-runners';
 
 const runner: CalculatorTool = {
@@ -10,8 +10,8 @@ const runner: CalculatorTool = {
       label: 'Система',
       type: 'select',
       options: [
-        { value: 'tlics', label: 'TLICS (Vaccaro 2005) — балльная' },
-        { value: 'ao', label: 'AO Spine (Vaccaro 2013) — морфологическая' },
+        { value: 'tlics', label: 'TLICS (Vaccaro 2005) - балльная' },
+        { value: 'ao', label: 'AO Spine (Vaccaro 2013) - морфологическая' },
       ],
     },
 
@@ -56,15 +56,15 @@ const runner: CalculatorTool = {
       label: 'AO Spine: тип морфологии',
       type: 'select',
       options: [
-        { value: 'A0', label: 'A0 — минорные (остистый/поперечный отросток)' },
-        { value: 'A1', label: 'A1 — вколоченный wedge' },
-        { value: 'A2', label: 'A2 — split (coronal)' },
-        { value: 'A3', label: 'A3 — неполный burst' },
-        { value: 'A4', label: 'A4 — полный burst (обе замыкательные пластины)' },
-        { value: 'B1', label: 'B1 — костный Chance (задняя tension band через кость)' },
-        { value: 'B2', label: 'B2 — задняя tension band разрыв (связочный)' },
-        { value: 'B3', label: 'B3 — передняя tension band (hyperextension)' },
-        { value: 'C', label: 'C — трансляционное повреждение' },
+        { value: 'A0', label: 'A0 - минорные (остистый/поперечный отросток)' },
+        { value: 'A1', label: 'A1 - вколоченный wedge' },
+        { value: 'A2', label: 'A2 - split (coronal)' },
+        { value: 'A3', label: 'A3 - неполный burst' },
+        { value: 'A4', label: 'A4 - полный burst (обе замыкательные пластины)' },
+        { value: 'B1', label: 'B1 - костный Chance (задняя tension band через кость)' },
+        { value: 'B2', label: 'B2 - задняя tension band разрыв (связочный)' },
+        { value: 'B3', label: 'B3 - передняя tension band (hyperextension)' },
+        { value: 'C', label: 'C - трансляционное повреждение' },
       ],
     },
     {
@@ -72,22 +72,22 @@ const runner: CalculatorTool = {
       label: 'AO Spine: неврология (N)',
       type: 'select',
       options: [
-        { value: 'N0', label: 'N0 — норма' },
-        { value: 'N1', label: 'N1 — транзиторный дефицит' },
-        { value: 'N2', label: 'N2 — радикулопатия' },
-        { value: 'N3', label: 'N3 — неполное повреждение / cauda equina' },
-        { value: 'N4', label: 'N4 — полное повреждение спинного мозга' },
-        { value: 'NX', label: 'NX — невозможно оценить' },
+        { value: 'N0', label: 'N0 - норма' },
+        { value: 'N1', label: 'N1 - транзиторный дефицит' },
+        { value: 'N2', label: 'N2 - радикулопатия' },
+        { value: 'N3', label: 'N3 - неполное повреждение / cauda equina' },
+        { value: 'N4', label: 'N4 - полное повреждение спинного мозга' },
+        { value: 'NX', label: 'NX - невозможно оценить' },
       ],
     },
     {
       id: 'ao_m1',
-      label: 'AO Spine: модификатор M1 — сомнение в PLC (МРТ / клиника)',
+      label: 'AO Spine: модификатор M1 - сомнение в PLC (МРТ / клиника)',
       type: 'checkbox',
     },
     {
       id: 'ao_m2',
-      label: 'AO Spine: модификатор M2 — сопутствующее заболевание (АС, DISH, остеопороз, ожог)',
+      label: 'AO Spine: модификатор M2 - сопутствующее заболевание (АС, DISH, остеопороз, ожог)',
       type: 'checkbox',
     },
   ],
@@ -104,17 +104,17 @@ const runner: CalculatorTool = {
       if (total <= 3) {
         interpretation = 'Консервативное лечение';
         color = '#22C55E';
-        details = 'TLICS ≤ 3 — ортез/брейс, мобилизация по переносимости, контрольные рентгены.';
-        actions = ['Thoracolumbar brace (TLSO) 8–12 недель', 'Аналгезия', 'Контроль рентгена 1, 6, 12 нед'];
+        details = 'TLICS ≤ 3 - ортез/брейс, мобилизация по переносимости, контрольные рентгены.';
+        actions = ['Thoracolumbar brace (TLSO) 8-12 недель', 'Аналгезия', 'Контроль рентгена 1, 6, 12 нед'];
       } else if (total === 4) {
-        interpretation = 'Неопределённая зона — выбор хирурга';
+        interpretation = 'Неопределённая зона - выбор хирурга';
         color = '#F59E0B';
-        details = 'TLICS = 4 — клиническое суждение (возраст, комплаенс, форма позвоночника, коморбидность).';
+        details = 'TLICS = 4 - клиническое суждение (возраст, комплаенс, форма позвоночника, коморбидность).';
         actions = ['Обсудить с пациентом плюсы/минусы обеих тактик', 'МРТ для оценки PLC обязательна'];
       } else {
         interpretation = 'Оперативное лечение';
         color = '#EF4444';
-        details = 'TLICS ≥ 5 — показана стабилизация (чаще задняя pedicle screw ± декомпрессия).';
+        details = 'TLICS ≥ 5 - показана стабилизация (чаще задняя pedicle screw ± декомпрессия).';
         actions = ['Хирургическая стабилизация', 'Декомпрессия при неврологическом дефиците', 'МРТ до операции'];
       }
       return {
@@ -134,8 +134,8 @@ const runner: CalculatorTool = {
           unit: 'TLICS',
         },
         caveats: [
-          'TLICS разработан для грудопоясничного отдела (T10–L2 зоны наибольшего биомеханического стресса)',
-          'Для шейного отдела — SLIC (Vaccaro 2007)',
+          'TLICS разработан для грудопоясничного отдела (T10-L2 зоны наибольшего биомеханического стресса)',
+          'Для шейного отдела - SLIC (Vaccaro 2007)',
           'Не учитывает осевую нагрузку у пожилых (остеопороз)',
           'При спондилите (AS, DISH) минимальная травма может быть нестабильной',
         ],
@@ -162,27 +162,27 @@ const runner: CalculatorTool = {
     if (type === 'A0' || type === 'A1') {
       interpretation = 'Консервативное лечение (минорные / compression wedge)';
       color = '#22C55E';
-      details = 'A0 — процесс отростков, A1 — стабильный wedge без затрагивания posterior wall. PLC интактен.';
+      details = 'A0 - процесс отростков, A1 - стабильный wedge без затрагивания posterior wall. PLC интактен.';
       actions = ['TLSO / функциональное лечение', 'Раннее вставание, анальгезия'];
     } else if (type === 'A2' || type === 'A3') {
-      interpretation = 'Вариабельно — чаще консерв., хирургия при нестабильности';
+      interpretation = 'Вариабельно - чаще консерв., хирургия при нестабильности';
       color = '#F59E0B';
-      details = 'A2 (split) — редкий, тактика по клинике. A3 (неполный burst) — без PLC повреждения чаще консерв.';
+      details = 'A2 (split) - редкий, тактика по клинике. A3 (неполный burst) - без PLC повреждения чаще консерв.';
       actions = ['МРТ для оценки PLC', 'Консерв. с контролем рентгена / хирургия при kyphosis > 30°, потеря высоты > 50%'];
     } else if (type === 'A4') {
-      interpretation = 'Полный burst — обсудить хирургию';
+      interpretation = 'Полный burst - обсудить хирургию';
       color = '#F97316';
-      details = 'A4 — обе замыкательные пластины повреждены. Высокий риск прогрессии деформации.';
+      details = 'A4 - обе замыкательные пластины повреждены. Высокий риск прогрессии деформации.';
       actions = ['Короткий segmental posterior fusion', 'Альтернатива: kyphoplasty + посегментная фиксация у пожилых'];
     } else if (type === 'B1' || type === 'B2' || type === 'B3') {
-      interpretation = 'НЕСТАБИЛЬНЫЙ — дистракционное повреждение';
+      interpretation = 'НЕСТАБИЛЬНЫЙ - дистракционное повреждение';
       color = '#EF4444';
       details = 'Tension band injury (костный Chance / связочный / hyperextension). Показана стабилизация.';
       actions = ['Задняя стабилизация (pedicle screws)', 'МРТ обязательна', 'Декомпрессия при N3/N4'];
     } else {
-      interpretation = 'Трансляция — крайне нестабильный';
+      interpretation = 'Трансляция - крайне нестабильный';
       color = '#991B1B';
-      details = 'Тип C — полное смещение по оси. Высочайший риск неврологического дефицита.';
+      details = 'Тип C - полное смещение по оси. Высочайший риск неврологического дефицита.';
       actions = ['Срочная стабилизация', 'ASIA exam, МРТ', 'Multi-level fusion, часто требуется передняя + задняя фиксация'];
     }
     if (neuro === 'N3' || neuro === 'N4') {
@@ -195,10 +195,10 @@ const runner: CalculatorTool = {
       details,
       actions,
       caveats: [
-        'AO Spine — морфологическая (не балльная), тактика строится на ТИПЕ + N + M',
-        'Модификатор M1 — сомнения в целостности PLC, обычно смещает в сторону операции',
-        'M2 — сопутствующая патология (AS, DISH, остеопороз, ожог)',
-        'Для шейного отдела — отдельная AO Spine subaxial (C0/C1–C7)',
+        'AO Spine - морфологическая (не балльная), тактика строится на ТИПЕ + N + M',
+        'Модификатор M1 - сомнения в целостности PLC, обычно смещает в сторону операции',
+        'M2 - сопутствующая патология (AS, DISH, остеопороз, ожог)',
+        'Для шейного отдела - отдельная AO Spine subaxial (C0/C1-C7)',
         'TLICS проще в подсчёте; AO Spine точнее в морфологии',
       ],
       related: [
@@ -212,7 +212,7 @@ const runner: CalculatorTool = {
       ],
     };
   },
-  reference: 'Vaccaro AR et al. A new classification of thoracolumbar injuries: the importance of injury morphology, the integrity of the posterior ligamentous complex, and neurologic status. Spine 2005;30:2325–33. Vaccaro AR et al. AOSpine thoracolumbar spine injury classification system. Eur Spine J 2013;22:2184–201. Vaccaro AR et al. The subaxial cervical spine injury classification system (SLIC). Spine 2007;32:2365–74.',
+  reference: 'Vaccaro AR et al. A new classification of thoracolumbar injuries: the importance of injury morphology, the integrity of the posterior ligamentous complex, and neurologic status. Spine 2005;30:2325-33. Vaccaro AR et al. AOSpine thoracolumbar spine injury classification system. Eur Spine J 2013;22:2184-201. Vaccaro AR et al. The subaxial cervical spine injury classification system (SLIC). Spine 2007;32:2365-74.',
   countries: 'Международный',
   presets: [
     { label: 'TLICS 2: A1 компрессия, PLC ok, N0', values: { system: 'tlics', tlics_morph: '1', tlics_plc: '0', tlics_neuro: '0' } },
@@ -224,7 +224,7 @@ const runner: CalculatorTool = {
   info: `### Для чего используется
 Две дополняющие друг друга классификации повреждений **грудопоясничного отдела позвоночника**.
 
-### TLICS (Vaccaro 2005) — балльная
+### TLICS (Vaccaro 2005) - балльная
 **TLICS = Morphology + PLC + Neurology**
 
 | Morphology | Баллы |
@@ -265,10 +265,10 @@ const runner: CalculatorTool = {
 - N0 норма / N1 транзиторный / N2 radiculopathy / N3 incomplete / N4 complete / NX невозможно оценить
 
 **Modifiers:**
-- **M1** — подозрение на повреждение PLC (МРТ indeterminate)
-- **M2** — сопутствующая патология (AS, DISH, остеопороз)
+- **M1** - подозрение на повреждение PLC (МРТ indeterminate)
+- **M2** - сопутствующая патология (AS, DISH, остеопороз)
 
-### SLIC (Vaccaro 2007) — шейный аналог TLICS
+### SLIC (Vaccaro 2007) - шейный аналог TLICS
 - Morphology: compression 1, burst 2, distraction 3, rotation 4
 - DLC (discoligamentous complex): 0/1/2
 - Neurology: 0/1/2/3
