@@ -560,18 +560,12 @@ function CalculatorBody({ inputs, values, setValues, result }: {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         {nonCheckboxes.map(renderInput)}
         {checkboxes.length > 0 && nonCheckboxes.length > 0 && (
-          // Dashed divider with explicit, equal 8 px margins on TOP and
-          // BOTTOM, on top of the 8 px flex gap applied to every sibling.
-          // That gives 16 px of visible breathing room on each side of the
-          // line — consistent regardless of whether the preceding input is
-          // a number with quick-value chips (tight) or a plain number
-          // (medium), and regardless of whether the following checkbox
-          // has 13 px internal padding.
-          <div style={{
-            borderTop: '1px dashed #E2E4EA',
-            marginTop: 8,
-            marginBottom: 8,
-          }} />
+          // Dashed divider between number/select inputs and checkboxes.
+          // Sits in the same 8 px flex-gap rhythm as every other sibling
+          // — no extra margins. All internal input offsets are normalised
+          // to 8 px (label→input 8, input→chips 8, input→input 8) so the
+          // separator inherits the same cadence.
+          <div style={{ borderTop: '1px dashed #E2E4EA' }} />
         )}
         {checkboxes.map(renderInput)}
       </div>
@@ -1626,7 +1620,7 @@ function InputField({ input, value, onChange }: {
       {input.quickValues && input.quickValues.length > 0 && (
         <div style={{
           display: 'flex', flexWrap: 'wrap', gap: 4,
-          marginTop: 6,
+          marginTop: 8,
         }}>
           {input.quickValues.map((qv) => {
             const isActive = currentNum === qv;
