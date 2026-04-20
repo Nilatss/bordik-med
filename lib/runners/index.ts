@@ -649,6 +649,19 @@ export const RUNNER_LOADERS: Record<string, RunnerLoader> = {
   "cri-vet": () => import('./cri-vet'),
   "plumbs": () => import('./plumbs'),
   "merck-vet": () => import('./merck-vet'),
+  "fdi-dent": () => import('./fdi-dent'),
+  "dmft": () => import('./dmft'),
+  "cast-icdas": () => import('./cast-icdas'),
+  "blacks": () => import('./blacks'),
+  "aap-efp": () => import('./aap-efp'),
+  "cpi": () => import('./cpi'),
+  "gingival": () => import('./gingival'),
+  "bop": () => import('./bop'),
+  "angle": () => import('./angle'),
+  "abo-ce": () => import('./abo-ce'),
+  "bolton": () => import('./bolton'),
+  "anb": () => import('./anb'),
+  "pell-gregory": () => import('./pell-gregory'),
 };
 
 const runnerCache = new Map<string, ToolRunner>();
