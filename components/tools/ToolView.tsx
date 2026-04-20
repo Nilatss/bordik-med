@@ -163,13 +163,11 @@ export default function ToolView({ toolId }: { toolId: string }) {
 
   if (!runner) {
     // Either still fetching the per-runner chunk or the id has no runner yet.
+    // Plain div (no motion): the loading state is short-lived and followed
+    // by the real runner's motion.div — animating twice caused a double
+    // fade flash on first tool open. The main view's animation is enough.
     return (
-      <motion.div
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, ease: [0.05, 0.7, 0.1, 1] }}
-        style={{ display: 'flex', flexDirection: 'column', maxWidth: 760 }}
-      >
+      <div style={{ display: 'flex', flexDirection: 'column', maxWidth: 760 }}>
         <BackButton onClick={closeTool} />
         <Header tool={tool} />
         <div style={{
@@ -180,7 +178,7 @@ export default function ToolView({ toolId }: { toolId: string }) {
             {loading ? 'Загрузка…' : 'Инструмент в разработке. Скоро будет доступен.'}
           </p>
         </div>
-      </motion.div>
+      </div>
     );
   }
 
@@ -308,9 +306,7 @@ export default function ToolView({ toolId }: { toolId: string }) {
 
           {active.kind === 'info' && active.body && (
             <div className="lesson-content tool-info">
-              <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
-                {preprocessToolContent(active.body)}
-              </ReactMarkdown>
+              <MemoisedMarkdown body={active.body} />
             </div>
           )}
 
@@ -451,6 +447,20 @@ function withSexBadges(children: React.ReactNode): React.ReactNode {
 const CALLOUT_EMOJI_RE = /^(ℹ|⚠️|⚠|📷|✓|✅|🎯|💡)\s*/;
 
 /** Convert paragraphs that start with a callout emoji into blockquotes. */
+/**
+ * Memoised markdown renderer for info tabs. `preprocessToolContent` does
+ * string manipulation (ten regex passes); without memoisation it ran on
+ * every ToolView render, including calculator input changes.
+ */
+const MemoisedMarkdown = React.memo(function MemoisedMarkdown({ body }: { body: string }) {
+  const processed = useMemo(() => preprocessToolContent(body), [body]);
+  return (
+    <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
+      {processed}
+    </ReactMarkdown>
+  );
+});
+
 function preprocessToolContent(md: string): string {
   if (!md) return md;
   const lines = md.split('\n');

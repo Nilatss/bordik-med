@@ -210,7 +210,30 @@ function SectionCards({ onSelect }: { onSelect: (id: SectionId) => void }) {
 
 /* ═══ Main ═══ */
 export default function Home() {
-  const { activeSection, activeModuleId, setActiveSection, goHome, closeModule, currentCourseId, closeCourse, showProfile, showLearning, showTools, showStats, showTests, setShowLearning, toggleProfile, activeToolId } = useAppStore();
+  // Narrow selectors — the previous destructure `useAppStore()` subscribed
+  // this component (and its whole subtree) to every store update, so
+  // unrelated writes (scroll index, favourite toggle, search keystroke)
+  // triggered a top-level re-render + cascade. Each field is selected
+  // individually; React bails out when nothing this component reads changes.
+  const activeSection = useAppStore((s) => s.activeSection);
+  const activeModuleId = useAppStore((s) => s.activeModuleId);
+  const currentCourseId = useAppStore((s) => s.currentCourseId);
+  const showProfile = useAppStore((s) => s.showProfile);
+  const showLearning = useAppStore((s) => s.showLearning);
+  const showTools = useAppStore((s) => s.showTools);
+  const showStats = useAppStore((s) => s.showStats);
+  const showTests = useAppStore((s) => s.showTests);
+  const activeToolId = useAppStore((s) => s.activeToolId);
+  // Action refs — stable across the component's lifetime (Zustand returns
+  // the same function reference), so picking them via `getState` once is
+  // equivalent to a selector but without the subscription cost.
+  const setActiveSection = useAppStore((s) => s.setActiveSection);
+  const goHome = useAppStore((s) => s.goHome);
+  const closeModule = useAppStore((s) => s.closeModule);
+  const closeCourse = useAppStore((s) => s.closeCourse);
+  const setShowLearning = useAppStore((s) => s.setShowLearning);
+  const toggleProfile = useAppStore((s) => s.toggleProfile);
+
   const section = activeSection ? getSectionById(activeSection) : null;
   const mod = activeModuleId ? getModuleById(activeModuleId) : null;
 

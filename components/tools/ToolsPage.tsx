@@ -5,7 +5,8 @@ import React, {
   useDeferredValue, useTransition, startTransition,
 } from 'react';
 import { Virtuoso } from 'react-virtuoso';
-import { motion } from 'framer-motion';
+// Removed `import { motion } from 'framer-motion'` — we dropped the
+// per-card fade-in animation to prevent shimmer during Virtuoso recycle.
 import { ArrowRight } from '@/components/icons';
 import { CATALOG_TOOLS, TOOL_CATEGORIES, type CatalogTool } from '@/lib/tools-catalog';
 import {
@@ -24,6 +25,26 @@ import EmojiOrFlag from '@/components/ui/EmojiOrFlag';
    ════════════════════════════════════════════════════════════════ */
 
 type FilterKey = 'cat' | 'sub' | 'cou' | null;
+
+// ─── Precomputed sort keys (module-scope, runs once on first import) ───
+// `localeCompare('ru')` is ~100× slower than `<` on strings, so we bake
+// lowercase (with numeric prefix stripped for categories) here and sort
+// by plain string comparison in the filter pipeline.
+const CATEGORY_SORT_KEY: Record<string, string> = Object.create(null);
+for (const t of CATALOG_TOOLS) {
+  if (!(t.category in CATEGORY_SORT_KEY)) {
+    CATEGORY_SORT_KEY[t.category] = t.category.replace(/^\d+\.\s*/, '').toLowerCase();
+  }
+}
+const TOOL_SORT_KEY: Record<string, string> = Object.create(null);
+for (const t of CATALOG_TOOLS) {
+  TOOL_SORT_KEY[t.id] = (t.subcategory + '\u0000' + t.title).toLowerCase();
+}
+// Module-scope constant for the header pill — previous inline
+// `CATALOG_TOOLS.filter(...).length` ran on every ToolsPage render.
+const READY_COUNT = CATALOG_TOOLS.filter(
+  (t) => t.available || (TOOL_META[t.id]?.hasRunner ?? false)
+).length;
 
 interface FilterOption {
   value: string;
@@ -50,10 +71,10 @@ function stripCategoryNumber(label: string): string {
  *  when the same subcategory name ("Депрессия") occurs in multiple categories.
  */
 type Row =
-  | { kind: 'category'; category: string; count: number }
-  | { kind: 'subcategory'; category: string; subcategory: string; count: number }
-  | { kind: 'cards'; category: string; subcategory: string; tools: CatalogTool[] }
-  | { kind: 'empty' };
+  | { kind: 'category'; category: string; count: number; key: string }
+  | { kind: 'subcategory'; category: string; subcategory: string; count: number; key: string }
+  | { kind: 'cards'; category: string; subcategory: string; tools: CatalogTool[]; key: string }
+  | { kind: 'empty'; key: string };
 
 /* ════════════════════════════════════════════════════════════════
    Filter popover - memoised
@@ -260,12 +281,39 @@ const FilterDropdown = React.memo(function FilterDropdown({
    store with a shallow selector so parent re-renders don't break memo.
    ════════════════════════════════════════════════════════════════ */
 
+/**
+ * Context shared between ToolsPage and every ToolCard. Instead of each
+ * card subscribing to `useAppStore` three times (openTool, toggleFav,
+ * toolsFavourites), the parent subscribes ONCE and distributes via
+ * context. With ~60 cards mounted this cuts store-selector runs by 3×,
+ * and Zustand writes unrelated to favourites no longer wake up cards.
+ */
+interface ToolCardContextValue {
+  openTool: (id: string) => void;
+  toggleFav: (id: string) => void;
+  favouriteSet: ReadonlySet<string>;
+}
+const ToolCardContext = React.createContext<ToolCardContextValue | null>(null);
+
+// Cache per-tool country tags — parsed once per catalogue entry, reused
+// on every ToolCard re-render. The raw countries string is immutable
+// metadata; no need to re-parse on every render.
+const toolCountriesCache: Record<string, { name: string; flag: string }[]> = Object.create(null);
+function getToolCountries(toolId: string): { name: string; flag: string }[] {
+  if (toolId in toolCountriesCache) return toolCountriesCache[toolId];
+  const meta = TOOL_META[toolId];
+  const result = primaryCountriesFor(meta?.countries);
+  toolCountriesCache[toolId] = result;
+  return result;
+}
+
 const ToolCard = React.memo(function ToolCard({ tool }: { tool: CatalogTool }) {
-  const openTool = useAppStore((s) => s.openTool);
-  const isFavourite = useAppStore((s) => s.toolsFavourites.includes(tool.id));
-  const toggleFav = useAppStore((s) => s.toggleFavouriteTool);
+  const ctx = React.useContext(ToolCardContext)!;
+  const { openTool, toggleFav, favouriteSet } = ctx;
+  const isFavourite = favouriteSet.has(tool.id);
   const meta = TOOL_META[tool.id];
   const available = tool.available || (meta?.hasRunner ?? false);
+  const countries = getToolCountries(tool.id);
 
   const handleClick = useCallback(() => {
     if (available) openTool(tool.id);
@@ -286,7 +334,12 @@ const ToolCard = React.memo(function ToolCard({ tool }: { tool: CatalogTool }) {
   }, [available]);
 
   return (
-    <motion.button
+    // Plain <button> instead of motion.button — Virtuoso recycles rows on
+    // scroll, so each re-mount triggered a fresh fade-up animation per
+    // card (60+ cards × framer-motion JS overhead = visible shimmer during
+    // fast scroll). A single CSS fade on the parent list is enough; the
+    // cards themselves render instantly now.
+    <button
       onClick={handleClick}
       onMouseEnter={(e) => {
         handlePrefetch();
@@ -295,14 +348,6 @@ const ToolCard = React.memo(function ToolCard({ tool }: { tool: CatalogTool }) {
       onFocus={handlePrefetch}
       onMouseLeave={(e) => { e.currentTarget.style.background = '#F5F6F8'; }}
       disabled={!available}
-      // Fade-in on mount only. No stagger delay because Virtuoso
-      // mounts/unmounts rows during scroll and staggered re-entry
-      // would look janky. Single card-level fade feels tactile.
-      // The final opacity reflects the disabled state - framer-motion's
-      // animate prop wins over CSS opacity, so we must pass it here too.
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: available ? 1 : 0.48, y: 0 }}
-      transition={{ duration: 0.28, ease: [0.05, 0.7, 0.1, 1] }}
       style={{
         background: '#F5F6F8',
         borderRadius: 'var(--md-sys-shape-corner-extra-large)',
@@ -358,13 +403,10 @@ const ToolCard = React.memo(function ToolCard({ tool }: { tool: CatalogTool }) {
           }}>
             {tool.subcategory}
           </span>
-          {/* Country tags — same pill style as subcategory, each shows the
-              flag emoji + canonical country name (e.g. «🇺🇸 США»). Helps the
-              user see at a glance where the tool is used. We cap at 2 to
-              keep the card tidy; extra regions show as a «+N» pill. */}
-          {(() => {
-            const countries = meta?.countries ? primaryCountriesFor(meta.countries) : [];
-            if (countries.length === 0) return null;
+          {/* Country tags — same pill style as subcategory. The countries
+              array is parsed once per tool id and cached (getToolCountries).
+              We cap at 2 to keep the card tidy; extra regions show as «+N». */}
+          {countries.length > 0 && (() => {
             const visible = countries.slice(0, 2);
             const extra = countries.length - visible.length;
             return (
@@ -478,7 +520,7 @@ const ToolCard = React.memo(function ToolCard({ tool }: { tool: CatalogTool }) {
         </span>
         {available && <ArrowRight size={14} color="var(--md-sys-color-on-surface)" />}
       </div>
-    </motion.button>
+    </button>
   );
 });
 
@@ -494,7 +536,7 @@ function buildRows(
 ): Row[] {
   const rows: Row[] = [];
   for (const { category, tools } of byCategory) {
-    rows.push({ kind: 'category', category, count: tools.length });
+    rows.push({ kind: 'category', category, count: tools.length, key: `c:${category}` });
 
     // Group by subcategory, preserving first-seen order (for stable UI).
     const order: string[] = [];
@@ -511,9 +553,13 @@ function buildRows(
 
     for (const sub of order) {
       const arr = groups.get(sub)!;
-      rows.push({ kind: 'subcategory', category, subcategory: sub, count: arr.length });
+      rows.push({ kind: 'subcategory', category, subcategory: sub, count: arr.length, key: `s:${category}:${sub}` });
       for (let i = 0; i < arr.length; i += COLS) {
-        rows.push({ kind: 'cards', category, subcategory: sub, tools: arr.slice(i, i + COLS) });
+        const slice = arr.slice(i, i + COLS);
+        // Key includes first tool id + count — stable while filter result
+        // order is stable. Avoids per-render .map().join() in computeItemKey.
+        const key = `r:${category}:${sub}:${slice[0]?.id ?? ''}:${slice.length}`;
+        rows.push({ kind: 'cards', category, subcategory: sub, tools: slice, key });
       }
     }
   }
@@ -607,11 +653,44 @@ export default function ToolsPage() {
   const savedScrollIndex = useAppStore((s) => s.toolsScrollIndex);
   const savedScrollOffset = useAppStore((s) => s.toolsScrollOffset);
   const setScroll = useAppStore((s) => s.setToolsScroll);
+  // Throttle scroll writes — Virtuoso fires `rangeChanged` on every scroll
+  // frame. Writing to Zustand on every frame wakes up every subscriber
+  // (including this page's own parent) and jank-ifies fast scrolling.
+  // We batch the latest index+offset and flush at most every 250 ms.
+  const scrollPendingRef = useRef<{ index: number; offset: number } | null>(null);
+  const scrollTimerRef = useRef<number | null>(null);
+  const rangeChangedThrottled = useCallback((range: { startIndex: number }) => {
+    const parent = document.querySelector('main') as HTMLElement | null;
+    const offset = parent?.scrollTop ?? 0;
+    scrollPendingRef.current = { index: range.startIndex, offset };
+    if (scrollTimerRef.current != null) return;
+    scrollTimerRef.current = window.setTimeout(() => {
+      if (scrollPendingRef.current) {
+        setScroll(scrollPendingRef.current.index, scrollPendingRef.current.offset);
+        scrollPendingRef.current = null;
+      }
+      scrollTimerRef.current = null;
+    }, 250);
+  }, [setScroll]);
+  useEffect(() => () => {
+    // Flush on unmount so the last known position is not lost.
+    if (scrollTimerRef.current != null) clearTimeout(scrollTimerRef.current);
+    if (scrollPendingRef.current) setScroll(scrollPendingRef.current.index, scrollPendingRef.current.offset);
+  }, [setScroll]);
 
   // Favourites — populated by the star toggle on every ToolCard.
   const favourites = useAppStore((s) => s.toolsFavourites);
   const favouriteSet = useMemo(() => new Set(favourites), [favourites]);
   const [onlyFavourites, setOnlyFavourites] = useState(false);
+  // Actions the cards need — single subscription each, distributed via
+  // context to avoid 3 selectors per card × ~60 visible cards.
+  const openToolAction = useAppStore((s) => s.openTool);
+  const toggleFavAction = useAppStore((s) => s.toggleFavouriteTool);
+  const cardContextValue = useMemo(() => ({
+    openTool: openToolAction,
+    toggleFav: toggleFavAction,
+    favouriteSet,
+  }), [openToolAction, toggleFavAction, favouriteSet]);
 
   // Auto-disable the «Избранные» filter when the last favourite is removed.
   // Otherwise the list stays empty with no obvious way out — the toggle looks
@@ -709,9 +788,9 @@ export default function ToolsPage() {
   }, [deferredQuery, selectedCategories, selectedSubcategories, selectedCountries, onlyAvailable, onlyFavourites, favouriteSet]);
 
   // Group by category. Categories are sorted alphabetically (ignoring the
-  // leading "N. " numeric prefix so «Акушерство» sits before «Диагностика»
-  // regardless of which numbered slot it's in the catalog). Subcategories
-  // inside each group also sort alphabetically.
+  // leading "N. " numeric prefix). `localeCompare('ru')` is ~100× slower
+  // than plain `<` — we precomputed lowercased sort keys ONCE at module
+  // load (CATEGORY_SORT_KEY, TOOL_SORT_KEY) and compare those instead.
   const byCategory = useMemo(() => {
     const map = new Map<string, CatalogTool[]>();
     for (const t of filtered) {
@@ -719,19 +798,20 @@ export default function ToolsPage() {
       if (arr) arr.push(t);
       else map.set(t.category, [t]);
     }
-    const stripNumPrefix = (s: string) => s.replace(/^\d+\.\s*/, '').toLowerCase();
-    const cats = [...map.keys()].sort((a, b) =>
-      stripNumPrefix(a).localeCompare(stripNumPrefix(b), 'ru')
-    );
+    const cats = [...map.keys()].sort((a, b) => {
+      const ka = CATEGORY_SORT_KEY[a] ?? a;
+      const kb = CATEGORY_SORT_KEY[b] ?? b;
+      return ka < kb ? -1 : ka > kb ? 1 : 0;
+    });
     const out: { category: string; tools: CatalogTool[] }[] = [];
     for (const c of cats) {
       const arr = map.get(c);
       if (arr) {
-        // Sort tools within each category by subcategory then title so the
-        // grouped list reads top-to-bottom alphabetically.
+        // Sort tools within each category by precomputed key.
         const sorted = [...arr].sort((x, y) => {
-          const sub = x.subcategory.localeCompare(y.subcategory, 'ru');
-          return sub !== 0 ? sub : x.title.localeCompare(y.title, 'ru');
+          const kx = TOOL_SORT_KEY[x.id];
+          const ky = TOOL_SORT_KEY[y.id];
+          return kx < ky ? -1 : kx > ky ? 1 : 0;
         });
         out.push({ category: c, tools: sorted });
       }
@@ -753,6 +833,7 @@ export default function ToolsPage() {
   }, []);
 
   return (
+    <ToolCardContext.Provider value={cardContextValue}>
     <div ref={rootRef} style={{ width: '100%' }}>
       <div style={{ marginBottom: 20 }}>
         <h2 style={{
@@ -764,7 +845,7 @@ export default function ToolsPage() {
         <p style={{
           fontFamily: 'var(--font-body)', fontSize: 14, color: '#6B7280', lineHeight: 1.5,
         }}>
-          Полный каталог клинических калькуляторов, шкал, классификаторов и протоколов - {CATALOG_TOOLS.filter((t) => t.available || (TOOL_META[t.id]?.hasRunner ?? false)).length} готовых из {CATALOG_TOOLS.length} по {TOOL_CATEGORIES.length} разделам.
+          Полный каталог клинических калькуляторов, шкал, классификаторов и протоколов - {READY_COUNT} готовых из {CATALOG_TOOLS.length} по {TOOL_CATEGORIES.length} разделам.
         </p>
       </div>
 
@@ -967,23 +1048,15 @@ export default function ToolsPage() {
           initialTopMostItemIndex={savedScrollIndex && savedScrollIndex < rows.length
             ? { index: savedScrollIndex, offset: savedScrollOffset, align: 'start' }
             : 0}
-          rangeChanged={(range) => {
-            // range.startIndex = topmost visible row. Persist lazily.
-            if (!scrollParent) return;
-            // Use the parent scroll position as the offset within the row.
-            const offset = scrollParent.scrollTop - (range.startIndex * 0); // best-effort; offset inside row approximated by scrollTop
-            setScroll(range.startIndex, offset);
-          }}
-          computeItemKey={(_, row) => {
-            if (row.kind === 'category') return `c:${row.category}`;
-            if (row.kind === 'subcategory') return `s:${row.category}:${row.subcategory}`;
-            if (row.kind === 'cards') return `r:${row.category}:${row.subcategory}:${row.tools.map((t) => t.id).join('|')}`;
-            return '_';
-          }}
+          rangeChanged={rangeChangedThrottled}
+          // Keys are precomputed in buildRows so computeItemKey is O(1) —
+          // no per-render string.join() across 500+ tool ids.
+          computeItemKey={(_, row) => row.key}
           itemContent={(_, row) => <RenderedRow row={row} />}
         />
       )}
     </div>
+    </ToolCardContext.Provider>
   );
 }
 
