@@ -8,24 +8,27 @@ import TestGuard from './TestGuard';
 
 interface TestActiveViewProps {
   questions: TestQuestion[];
-  timeLimit?: number;  // ms - undefined for course tests, 3h for module test
+  timeLimit?: number;  // ms - undefined → defaults to 1 hour (3 600 000 ms)
   onComplete: (answers: number[], violations: number) => void;
   onCancel: () => void;
   testLabel: string;   // e.g. "Тест 2" or "Финальный тест модуля"
 }
 
+const DEFAULT_TIME_LIMIT_MS = 60 * 60 * 1000; // 1 hour
+
 export default function TestActiveView({ questions, timeLimit, onComplete, onCancel, testLabel }: TestActiveViewProps) {
+  const effectiveTimeLimit = timeLimit ?? DEFAULT_TIME_LIMIT_MS;
   const [currentQ, setCurrentQ] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<(number | null)[]>(
     Array(questions.length).fill(null)
   );
   const [violations, setViolations] = useState(0);
-  const [timeRemaining, setTimeRemaining] = useState(timeLimit ?? 0);
+  const [timeRemaining, setTimeRemaining] = useState(effectiveTimeLimit);
+  const [confirmExit, setConfirmExit] = useState(false);
   const completedRef = useRef(false);
 
-  // Timer for module tests
+  // Countdown timer (always active — 1 hour default)
   useEffect(() => {
-    if (!timeLimit) return;
     const interval = setInterval(() => {
       setTimeRemaining((prev) => {
         const next = prev - 1000;
@@ -37,15 +40,15 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
       });
     }, 1000);
     return () => clearInterval(interval);
-  }, [timeLimit]);
+  }, []);
 
   // Auto-submit on timer expiry
   useEffect(() => {
-    if (timeLimit && timeRemaining <= 0 && !completedRef.current) {
+    if (timeRemaining <= 0 && !completedRef.current) {
       completedRef.current = true;
       onComplete(selectedAnswers.map((a) => a ?? -1), violations);
     }
-  }, [timeLimit, timeRemaining, selectedAnswers, violations, onComplete]);
+  }, [timeRemaining, selectedAnswers, violations, onComplete]);
 
   const handleViolation = useCallback(() => {
     setViolations((v) => v + 1);
@@ -77,6 +80,10 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
       }
     }
   }, [currentQ, questions.length, selectedAnswers, violations, onComplete]);
+
+  const prevQuestion = useCallback(() => {
+    setCurrentQ((q) => Math.max(0, q - 1));
+  }, []);
 
   const q = questions[currentQ];
   const selected = selectedAnswers[currentQ];
@@ -114,14 +121,13 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
               </h3>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              {timeLimit && (
-                <span style={{
-                  fontFamily: 'var(--font-mono)', fontSize: 16, fontWeight: 700,
-                  color: timeRemaining < 600_000 ? '#B91C1C' : '#1A1A1A',
-                }}>
-                  {formatTimer(timeRemaining)}
-                </span>
-              )}
+              <span style={{
+                fontFamily: 'var(--font-mono)', fontSize: 16, fontWeight: 700,
+                color: timeRemaining < 60_000 ? '#B91C1C' : timeRemaining < 300_000 ? '#D97706' : '#1A1A1A',
+                animation: timeRemaining < 60_000 ? 'bordik-timer-pulse 1s ease-in-out infinite' : undefined,
+              }}>
+                {formatTimer(timeRemaining)}
+              </span>
               {violations > 0 && (
                 <span style={{
                   padding: '3px 8px', borderRadius: 999,
@@ -132,6 +138,33 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
                   {violations} нар.
                 </span>
               )}
+              <button
+                onClick={() => setConfirmExit(true)}
+                aria-label="Прервать тест"
+                title="Прервать тест"
+                style={{
+                  width: 32, height: 32, borderRadius: 8,
+                  background: 'transparent', border: 'none', cursor: 'pointer',
+                  color: '#9CA3AF',
+                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                  transition: 'background 180ms, color 180ms',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = '#FEF2F2';
+                  e.currentTarget.style.color = '#B91C1C';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'transparent';
+                  e.currentTarget.style.color = '#9CA3AF';
+                }}
+              >
+                <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" strokeWidth={2.5}
+                  strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
             </div>
           </div>
           {/* Progress bar */}
@@ -233,20 +266,28 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
           background: '#F5F6F8',
           borderRadius: 14,
         }}>
-          <button onClick={onCancel} style={{
-            padding: '8px 16px',
-            borderRadius: 10,
-            background: 'transparent',
-            color: '#6B7280',
-            border: 'none',
-            cursor: 'pointer',
-            fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
-            transition: 'color 180ms',
-          }}
-            onMouseEnter={(e) => { e.currentTarget.style.color = '#1A1A1A'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.color = '#6B7280'; }}
+          <button
+            onClick={prevQuestion}
+            disabled={currentQ === 0}
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: 6,
+              padding: '8px 16px',
+              borderRadius: 10,
+              background: 'transparent',
+              color: currentQ === 0 ? '#C7CAD1' : '#6B7280',
+              border: 'none',
+              cursor: currentQ === 0 ? 'not-allowed' : 'pointer',
+              fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
+              transition: 'color 180ms',
+            }}
+            onMouseEnter={(e) => { if (currentQ !== 0) e.currentTarget.style.color = '#1A1A1A'; }}
+            onMouseLeave={(e) => { if (currentQ !== 0) e.currentTarget.style.color = '#6B7280'; }}
           >
-            Отменить
+            <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12" />
+              <polyline points="12,19 5,12 12,5" />
+            </svg>
+            Назад
           </button>
           <button
             onClick={nextQuestion}
@@ -275,6 +316,92 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
           </button>
         </div>
       </div>
+
+      {/* Exit confirmation */}
+      <AnimatePresence>
+        {confirmExit && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18 }}
+            style={{
+              position: 'fixed', inset: 0, zIndex: 1000,
+              background: 'rgba(15, 23, 42, 0.55)',
+              backdropFilter: 'blur(2px)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              padding: 24,
+            }}
+            onClick={() => setConfirmExit(false)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 8 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 8 }}
+              transition={{ duration: 0.22, ease: [0.05, 0.7, 0.1, 1] }}
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                background: '#FFFFFF',
+                borderRadius: 16,
+                padding: '28px 28px 22px',
+                maxWidth: 400,
+                width: '100%',
+                boxShadow: '0 24px 48px rgba(15,23,42,0.24)',
+              }}
+            >
+              <h3 style={{
+                fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 700,
+                color: '#1A1A1A', margin: '0 0 8px 0', letterSpacing: '-0.01em',
+              }}>
+                Прервать тест?
+              </h3>
+              <p style={{
+                fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: 400,
+                color: '#6B7280', lineHeight: 1.5, margin: '0 0 22px 0',
+              }}>
+                Прогресс не сохранится. Ответы на {selectedAnswers.filter(a => a !== null).length} из {questions.length} вопросов будут потеряны.
+              </p>
+              <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
+                <button
+                  onClick={() => setConfirmExit(false)}
+                  style={{
+                    padding: '10px 18px', borderRadius: 10,
+                    background: '#F5F6F8', color: '#1A1A1A',
+                    border: 'none', cursor: 'pointer',
+                    fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
+                    transition: 'background 180ms',
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = '#E2E4EA'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = '#F5F6F8'; }}
+                >
+                  Продолжить тест
+                </button>
+                <button
+                  onClick={() => { setConfirmExit(false); onCancel(); }}
+                  style={{
+                    padding: '10px 18px', borderRadius: 10,
+                    background: '#B91C1C', color: '#FFFFFF',
+                    border: 'none', cursor: 'pointer',
+                    fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
+                    transition: 'background 180ms',
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = '#991B1B'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = '#B91C1C'; }}
+                >
+                  Прервать
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <style jsx global>{`
+        @keyframes bordik-timer-pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.55; }
+        }
+      `}</style>
     </TestGuard>
   );
 }
