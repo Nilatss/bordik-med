@@ -589,6 +589,21 @@ export const RUNNER_LOADERS: Record<string, RunnerLoader> = {
   "icd10-da": () => import('./icd10-da'),
   "icf": () => import('./icf'),
   "ru-kr": () => import('./ru-kr'),
+  "uptodate": () => import('./uptodate'),
+  "nice-cks": () => import('./nice-cks'),
+  "prescrire": () => import('./prescrire'),
+  "awmf": () => import('./awmf'),
+  "cochrane": () => import('./cochrane'),
+  "pubmed": () => import('./pubmed'),
+  "consmed": () => import('./consmed'),
+  "mdcalc": () => import('./mdcalc'),
+  "qxmd": () => import('./qxmd'),
+  "evidencepoint": () => import('./evidencepoint'),
+  "osmosis": () => import('./osmosis'),
+  "simman": () => import('./simman'),
+  "netter": () => import('./netter'),
+  "complete-anatomy": () => import('./complete-anatomy'),
+  "osce": () => import('./osce'),
 };
 
 const runnerCache = new Map<string, ToolRunner>();
