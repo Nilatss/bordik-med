@@ -196,10 +196,7 @@ Compliance = выполненные шаги / применимые шаги × 
 ### Ограничения
 - Инфузия 30 мл/кг: ориентир, у ХСН/ХБП — титровать
 - qSOFA/SIRS — скрининг, не диагностика
-- Вазопрессоры через периферию краткосрочно допустимы
-
-### Источник
-Evans L et al. *Surviving Sepsis Campaign: International Guidelines for Management of Sepsis and Septic Shock 2021.* Crit Care Med 2021;49(11):e1063-e1143.`,
+- Вазопрессоры через периферию краткосрочно допустимы`,
 };
 
 export default runner;

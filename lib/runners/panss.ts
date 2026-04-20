@@ -172,10 +172,7 @@ const runner: CalculatorTool = {
 ### Ограничения
 - Требует ~45-минутного структурированного интервью
 - Сертификация интервьюера (PANSS training)
-- Перекрытие негативной симптоматики с EPS и депрессией — нужна дифф. диагностика
-
-### Источник
-Kay SR, Fiszbein A, Opler LA. *The Positive and Negative Syndrome Scale (PANSS) for schizophrenia.* Schizophr Bull. 1987;13:261-276.`,
+- Перекрытие негативной симптоматики с EPS и депрессией — нужна дифф. диагностика`,
 };
 
 export default runner;

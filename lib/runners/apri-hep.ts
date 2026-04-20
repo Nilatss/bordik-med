@@ -124,10 +124,7 @@ const runner: CalculatorTool = {
 ### Ограничения
 - Острый гепатит (АСТ > 10 ×N) даёт ложно-высокий
 - Гемолиз, беременность — искажают
-- FIB-4 валидирован у > 35 лет; не применять у детей и < 35
-
-### Источник
-Sterling RK et al. *Development of a simple noninvasive index to predict significant fibrosis in patients with HIV/HCV coinfection.* Hepatology 2006;43:1317.`,
+- FIB-4 валидирован у > 35 лет; не применять у детей и < 35`,
 };
 
 export default runner;

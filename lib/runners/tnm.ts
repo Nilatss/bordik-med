@@ -170,9 +170,6 @@ const runner: CalculatorTool = {
 ### Ограничения
 - Не заменяет молекулярное стадирование
 - Для лимфом (Ann Arbor), лейкозов (Binet/Rai), миеломы (ISS) и гинекологических опухолей (FIGO) используются отдельные системы
-- Для сарком — Enneking / AJCC с grade
-
-### Источник
-AJCC Cancer Staging Manual, 8th Edition. Springer 2017. ISBN 978-3-319-40617-6.`,
+- Для сарком — Enneking / AJCC с grade`,
 };
 export default runner;

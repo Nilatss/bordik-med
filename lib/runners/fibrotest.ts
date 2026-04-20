@@ -157,10 +157,7 @@ const runner: CalculatorTool = {
 | Экстрагепатический холестаз | Ложно-высокий |
 
 ### Правовое
-**FibroTest / FibroSURE — лицензированный продукт BioPredictive SAS (Франция).** Алгоритм запатентован и требует сертифицированной лаборатории для клинического применения. Этот инструмент — образовательная аппроксимация.
-
-### Источник
-Imbert-Bismut F, Ratziu V, Pieroni L, et al. *Biochemical markers of liver fibrosis in patients with hepatitis C virus infection: a prospective study.* Lancet 2001;357:1069-75.`,
+**FibroTest / FibroSURE — лицензированный продукт BioPredictive SAS (Франция).** Алгоритм запатентован и требует сертифицированной лаборатории для клинического применения. Этот инструмент — образовательная аппроксимация.`,
 };
 
 export default runner;

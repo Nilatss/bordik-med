@@ -131,10 +131,7 @@ const runner: CalculatorTool = {
 - Зависит от качества снимка (проекция, экспозиция)
 - Межэкспертная вариабельность
 - КТ точнее, но хуже доступна
-- Не учитывает динамику (trend важнее single score)
-
-### Источник
-Warren MA et al. Thorax 2018;73(9):840-846.`,
+- Не учитывает динамику (trend важнее single score)`,
 };
 
 export default runner;

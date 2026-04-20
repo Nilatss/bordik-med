@@ -153,10 +153,6 @@ Q T  — например, 16 = верхний правый 1-й моляр
 | Нижн. прав. 3-й моляр | 48 | 32 | ⏌8 |
 
 ### Молочные зубы (20 зубов, A-T в Universal)
-Квадрант FDI 5-8: 51, 52, 53, 54, 55 (верх. правый) → 61-65 → 71-75 → 81-85
-
-### Источники
-- ISO 3950:2016 — Dentistry — Designation system for teeth and areas of the oral cavity
-- FDI: https://www.fdiworlddental.org/`,
+Квадрант FDI 5-8: 51, 52, 53, 54, 55 (верх. правый) → 61-65 → 71-75 → 81-85`,
 };
 export default runner;

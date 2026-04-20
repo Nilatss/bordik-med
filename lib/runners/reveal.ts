@@ -138,10 +138,7 @@ const runner: CalculatorTool = {
 ### Ограничения
 - Разработан для ЛАГ группы 1 (не применять к ЛГ других групп)
 - Основан на реестре США (этнический состав)
-- NT-proBNP предпочтительнее BNP
-
-### Источник
-Benza RL et al. Chest 2019;156(2):323-337. REVEAL Lite 2 — Benza et al. 2020.`,
+- NT-proBNP предпочтительнее BNP`,
 };
 
 export default runner;

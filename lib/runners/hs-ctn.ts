@@ -141,10 +141,7 @@ const runner: CalculatorTool = {
 - baseline > rule-in single threshold
 - ИЛИ ∆ за 1 ч > 5× threshold
 
-**Observe** (серая зона): повторить через 3 ч или дополнительно ЭхоКГ, HEART, КАГ при нестабильности.
-
-### Источник
-Collet JP et al. ESC 2020 NSTE-ACS. Eur Heart J 2021;42:1289.`,
+**Observe** (серая зона): повторить через 3 ч или дополнительно ЭхоКГ, HEART, КАГ при нестабильности.`,
 };
 
 export default runner;

@@ -110,9 +110,6 @@ const runner: CalculatorTool = {
 ### Доступ
 - Институциональная подписка (больница/университет) через EBSCO
 - Мобильное приложение после sync — offline
-- CME кредиты (US)
-
-### Источник
-https://www.dynamed.com/`,
+- CME кредиты (US)`,
 };
 export default runner;

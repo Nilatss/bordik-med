@@ -138,10 +138,7 @@ const runner: CalculatorTool = {
 - Воспалительных процессах
 - Циррозе
 - Почечной недостаточности
-- Доброкачественных новообразованиях
-
-### Источник
-Sturgeon CM et al. National Academy of Clinical Biochemistry LMPG. Clin Chem 2008;54:e11-79.`,
+- Доброкачественных новообразованиях`,
 };
 
 export default runner;

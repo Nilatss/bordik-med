@@ -112,9 +112,6 @@ const runner: CalculatorTool = {
 | PSA-V (первичный скрининг) | ≥0.35–0.75 нг/мл/год |
 | PSA-V (высокий риск) | ≥2.0 нг/мл/год |
 | PSADT после РП | <12 мес (высокий риск), <6 мес (агрессивный) |
-| PSADT у active surveillance | <3 года — пересмотр тактики |
-
-### Источник
-NCCN v1.2024 Prostate Cancer; EAU Prostate Cancer Guidelines.`,
+| PSADT у active surveillance | <3 года — пересмотр тактики |`,
 };
 export default runner;

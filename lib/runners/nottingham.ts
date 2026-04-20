@@ -166,9 +166,6 @@ const runner: CalculatorTool = {
 ### Ограничения
 - Субъективность оценки митозов и плеоморфизма
 - Не заменяет молекулярные тесты (Oncotype, MammaPrint)
-- Для DCIS используется Van Nuys или WHO (не Nottingham)
-
-### Источник
-Elston CW, Ellis IO. **Pathological prognostic factors in breast cancer. I. The value of histological grade in breast cancer: experience from a large study with long-term follow-up.** *Histopathology* 1991;19:403-410.`,
+- Для DCIS используется Van Nuys или WHO (не Nottingham)`,
 };
 export default runner;

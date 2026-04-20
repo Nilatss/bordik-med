@@ -141,10 +141,7 @@ const runner: CalculatorTool = {
 - Разработан в 1985 — современная эпидемиология изменилась
 - Лапароскопия, fast-track surgery снижают риски
 - Резистентность — MRSA, VRE, ESBL — SENIC не учитывает
-- Не учитывает BMI, диабет, курение, hypoalbuminemia
-
-### Источник
-Haley RW et al. *Identifying patients at high risk of surgical wound infection. A simple multivariate index of patient susceptibility and wound contamination.* Am J Epidemiol 1985;121(2):206-15.`,
+- Не учитывает BMI, диабет, курение, hypoalbuminemia`,
 };
 
 export default runner;

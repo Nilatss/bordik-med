@@ -142,9 +142,6 @@ const runner: CalculatorTool = {
 ### Ограничения
 - FIGO не охватывает молекулярный профиль — см. POLE/MSI/p53 классификацию (ProMisE) для эндометрия
 - Для рака яичника BRCA1/2 / HRD статус критичен для выбора PARP-ингибиторов
-- Сложная дифференциация IIIC1 vs IIIC2 для шейки матки требует ПЭТ-КТ
-
-### Источник
-Bhatla N et al. *Revised FIGO staging for carcinoma of the cervix uteri.* Int J Gynaecol Obstet. 2019;145:129-135.`,
+- Сложная дифференциация IIIC1 vs IIIC2 для шейки матки требует ПЭТ-КТ`,
 };
 export default runner;

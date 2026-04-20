@@ -131,10 +131,7 @@ const runner: CalculatorTool = {
 ### DOAC vs INR
 DOAC (апиксабан, ривароксабан, дабигатран) - INR НЕ отражает антикоагулянтный эффект. Использовать:
 - Апиксабан/ривароксабан/эдоксабан → анти-Xa (калиброванный для DOAC)
-- Дабигатран → dTT (разведённый тромбиновый тест) или ecarin clotting time
-
-### Источник
-ACCP CHEST 2022;162:e207. Witt DM et al. Blood Adv 2018;2:3257 (AC guidelines).`,
+- Дабигатран → dTT (разведённый тромбиновый тест) или ecarin clotting time`,
 };
 
 export default runner;

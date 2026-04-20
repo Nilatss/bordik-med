@@ -174,9 +174,6 @@ const runner: CalculatorTool = {
 - ПЭТ требует стандартизации (часто нарушается в клинической практике)
 - Дорого, не всегда доступно
 - Не валидировано для всех опухолей (например, простата, ГЦК — предпочтительны другие трейсеры: PSMA, FAPI)
-- Воспаление и после-лучевые изменения — false-positive
-
-### Источник
-Wahl RL, Jacene H, Kasamon Y, Lodge MA. **From RECIST to PERCIST: Evolving Considerations for PET Response Criteria in Solid Tumors.** *J Nucl Med* 2009;50 Suppl 1:122S-150S.`,
+- Воспаление и после-лучевые изменения — false-positive`,
 };
 export default runner;

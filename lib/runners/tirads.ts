@@ -235,9 +235,6 @@ const runner: CalculatorTool = {
 - Не заменяет клиническую оценку (семейный анамнез, облучение в детстве)
 - В детской и подростковой практике пороги ниже
 - Межнаблюдательская вариабельность ~ 15-25%
-- Не применяется при диффузных заболеваниях (Хашимото, Graves)
-
-### Источник
-Tessler FN et al. **ACR Thyroid Imaging, Reporting and Data System (TI-RADS): White Paper of the ACR TI-RADS Committee.** *J Am Coll Radiol* 2017;14:587-595.`,
+- Не применяется при диффузных заболеваниях (Хашимото, Graves)`,
 };
 export default runner;

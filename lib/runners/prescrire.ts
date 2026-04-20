@@ -99,9 +99,6 @@ const runner: CalculatorTool = {
 ### Подписка
 - La revue Prescrire (франц., ежемес.) — ~€180/год
 - Prescrire International (English, 11 номеров/год)
-- Application mobile (résumé только)
-
-### Источник
-https://english.prescrire.org/`,
+- Application mobile (résumé только)`,
 };
 export default runner;

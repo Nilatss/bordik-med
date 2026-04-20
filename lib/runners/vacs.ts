@@ -162,10 +162,7 @@ const runner: CalculatorTool = {
 - Только для ART-получающих
 - VACS 2.0 (2018) добавляет альбумин, WBC, BMI
 - Раса-компонент критиковали — в VACS 2.0 убран
-- 5-летние оценки — приблизительные
-
-### Источник
-Justice AC et al. *Predictive accuracy of the Veterans Aging Cohort Study index for mortality with HIV infection: a North American cross cohort analysis.* JAIDS 2013;62(2):149-63.`,
+- 5-летние оценки — приблизительные`,
 };
 
 export default runner;

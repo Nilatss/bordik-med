@@ -136,10 +136,7 @@ const runner: CalculatorTool = {
 ### Ограничения
 - Не применим без триггерной патологии
 - Не для хрон. DIC (гигантская гемангиома, аневризма аорты)
-- APL-DIC требует ATRA + агрессивная заместительная терапия
-
-### Источник
-Taylor FB Jr, Toh CH, Hoots WK et al. Towards definition, clinical and laboratory criteria, and a scoring system for disseminated intravascular coagulation. *Thromb Haemost* 2001;86:1327-1330.`,
+- APL-DIC требует ATRA + агрессивная заместительная терапия`,
 };
 
 export default runner;

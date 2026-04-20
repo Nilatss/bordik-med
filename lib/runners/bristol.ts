@@ -151,10 +151,7 @@ const runner: CalculatorTool = {
 - Субъективная шкала
 - Межоценивательная согласованность ~ 85 %
 - Не дифференцирует функциональную/органическую
-- Дети — использовать детскую версию (Bristol BSS-P)
-
-### Источник
-Lewis SJ, Heaton KW. *Stool form scale as a useful guide to intestinal transit time.* Scand J Gastroenterol 1997;32(9):920-4.`,
+- Дети — использовать детскую версию (Bristol BSS-P)`,
 };
 
 export default runner;

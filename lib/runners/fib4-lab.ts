@@ -110,10 +110,7 @@ AGA 2021 предлагает сдвинуть низкий cut-off до **< 2,0
 - Низкая валидация у возраста < 35 лет
 - Острый гепатит искажает
 - Тромбоцитопения вне печёночной патологии → ложно-высокий
-- Не дифференцирует F0 vs F1 vs F2
-
-### Источник
-Sterling RK, Lissen E, Clumeck N, et al. *Development of a simple noninvasive index to predict significant fibrosis in patients with HIV/HCV coinfection.* Hepatology 2006;43:1317-25.`,
+- Не дифференцирует F0 vs F1 vs F2`,
 };
 
 export default runner;

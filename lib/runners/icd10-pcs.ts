@@ -129,10 +129,6 @@ const runner: CalculatorTool = {
 **Other:** Inspection, Map, Fusion, Alteration, Creation, Destruction, Detachment, Control, Repair, Reposition, Drainage, Division
 
 ### 17 разделов (1-й символ)
-0 Med/Surg · 1 OB · 2 Placement · 3 Admin · 4 M&M · 5 Extracorp Assist · 6 Extracorp Therap · 7 Osteo · 8 Other · 9 Chiro · B Imaging · C Nuc Med · D Rad Therapy · F Rehab · G Mental · H SUD · X New Tech
-
-### Источники
-- https://www.cms.gov/medicare/icd-10/2025-icd-10-pcs
-- AHA Coding Clinic for ICD-10-PCS`,
+0 Med/Surg · 1 OB · 2 Placement · 3 Admin · 4 M&M · 5 Extracorp Assist · 6 Extracorp Therap · 7 Osteo · 8 Other · 9 Chiro · B Imaging · C Nuc Med · D Rad Therapy · F Rehab · G Mental · H SUD · X New Tech`,
 };
 export default runner;

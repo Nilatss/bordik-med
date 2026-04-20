@@ -169,10 +169,7 @@ const runner: CalculatorTool = {
 ### Ограничения
 - Требует двух информантов (DSM-5 Criterion C — cross-situational)
 - Стоимость (проприетарный инструмент)
-- Не заменяет клиническое интервью
-
-### Источник
-Conners CK. *Conners 3rd Edition Manual.* MHS; 2008.`,
+- Не заменяет клиническое интервью`,
 };
 
 export default runner;

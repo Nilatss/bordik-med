@@ -113,10 +113,6 @@ C50.9            8500/3 2
 WHO Classification of Tumours (5-е издание, 2019-2024) — 10 томов по локализациям:
 - Digestive · Urinary/Male Genital · Breast · Female Genital · Skin · Endocrine · Soft Tissue/Bone · Head and Neck · CNS · Hematolymphoid
 
-Каждый том содержит обновлённые ICD-O-3 коды + молекулярные критерии (IDH-mutant, BCR-ABL1, EGFR и т.д.).
-
-### Источники
-- IARC: https://www.iacr.com.fr/
-- WHO Classification of Tumours Online: https://tumourclassification.iarc.who.int/`,
+Каждый том содержит обновлённые ICD-O-3 коды + молекулярные критерии (IDH-mutant, BCR-ABL1, EGFR и т.д.).`,
 };
 export default runner;

@@ -133,10 +133,7 @@ AHI = (количество апноэ + гипопноэ) / время сна �
 ### Ограничения
 - Не учитывает длительность событий
 - Не отражает сонливость (ESS дополняет)
-- HSAT может недооценить AHI (отсутствие ЭЭГ → event count / recording time, а не /TST)
-
-### Источник
-AASM Scoring Manual v2.6 (2020). ICSD-3.`,
+- HSAT может недооценить AHI (отсутствие ЭЭГ → event count / recording time, а не /TST)`,
 };
 
 export default runner;

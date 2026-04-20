@@ -158,10 +158,7 @@ const runner: CalculatorTool = {
 - PSI сильно зависит от возраста — переоценивает у пожилых без реальной тяжести
 - Социальные факторы не учтены
 - SMART-COP лучше для предсказания вентиляционной/вазопрессорной поддержки
-- Не для нозокомиальной пневмонии
-
-### Источник
-Metlay JP et al. *Diagnosis and Treatment of Adults with Community-acquired Pneumonia. IDSA/ATS Guideline.* Am J Respir Crit Care Med 2019;200(7):e45-e67.`,
+- Не для нозокомиальной пневмонии`,
 };
 
 export default runner;

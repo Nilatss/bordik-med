@@ -95,9 +95,6 @@ const runner: CalculatorTool = {
 - Вне UK — ограничен с 2021 (NICE policy)
 
 ### Связь с NICE guidelines
-CKS = clinical "quick reference" суммирует полный NICE guideline (напр. NG136 для HTN). Если нужна полная evidence review — NICE guideline; если быстрое решение в primary care — CKS.
-
-### Источник
-https://cks.nice.org.uk/`,
+CKS = clinical "quick reference" суммирует полный NICE guideline (напр. NG136 для HTN). Если нужна полная evidence review — NICE guideline; если быстрое решение в primary care — CKS.`,
 };
 export default runner;

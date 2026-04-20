@@ -112,9 +112,6 @@ const runner: CalculatorTool = {
 |---|---|
 | 4–6 | Низкая |
 | 7–9 | Средняя |
-| 10–12 | Высокая |
-
-### Источник
-Kutikov A, Uzzo RG. J Urol 2009.`,
+| 10–12 | Высокая |`,
 };
 export default runner;

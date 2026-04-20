@@ -130,11 +130,7 @@ Martin-Hopkins LDL = TC - HDL - (TG / adjustable_divisor)
 - Очень высокий риск ASCVD: < 1.4 ммоль/л (< 55 мг/дл) + снижение ≥ 50 %
 - Высокий: < 1.8 ммоль/л (< 70 мг/дл)
 - Умеренный: < 2.6 ммоль/л (< 100 мг/дл)
-- Низкий: < 3.0 ммоль/л (< 116 мг/дл)
-
-### Источник
-Martin SS, Blaha MJ, Elshazly MB et al. JAMA 2013;310:2061.
-Mach F et al. ESC/EAS Guidelines Dyslipidaemias. Eur Heart J 2020;41:111.`,
+- Низкий: < 3.0 ммоль/л (< 116 мг/дл)`,
 };
 
 export default runner;

@@ -142,10 +142,7 @@ const runner: CalculatorTool = {
 - Самоопросник, возможна симуляция / диссимуляция
 - Соматические пункты завышают балл при хронических соматических болезнях, беременности
 - Не валидизирован для деменции, делирия
-- У пожилых (≥65 лет) лучше **GDS-15**
-
-### Источник
-Beck AT, Steer RA, Brown GK. *Manual for the Beck Depression Inventory-II.* San Antonio: Psychological Corporation; 1996.`,
+- У пожилых (≥65 лет) лучше **GDS-15**`,
 };
 
 export default runner;

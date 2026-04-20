@@ -224,10 +224,6 @@ const runner: CalculatorTool = {
 - Не применяется при HER2+ (нужен trastuzumab)
 - Не для TNBC (ER−/PR−/HER2−)
 - Дорого (~ $3-4К за тест)
-- Результат зависит от качества биоматериала
-
-### Источники
-1. Sparano JA et al. **Adjuvant Chemotherapy Guided by a 21-Gene Expression Assay in Breast Cancer (TAILORx).** *NEJM* 2018;379:111-121.
-2. Cardoso F et al. **70-Gene Signature as an Aid to Treatment Decisions (MINDACT).** *NEJM* 2016;375:717-729.`,
+- Результат зависит от качества биоматериала`,
 };
 export default runner;

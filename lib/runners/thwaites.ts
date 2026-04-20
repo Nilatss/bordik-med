@@ -133,10 +133,7 @@ const runner: CalculatorTool = {
 - Валидирован у взрослых в эндемичных регионах
 - У детей — Marais 2010 criteria (definite/probable/possible TBM)
 - Криптококк у ВИЧ+ — отдельно (CrAg-тест)
-- Длительность симптомов спорна — некоторые TBM остро манифестируют
-
-### Источник
-Thwaites GE et al. *Diagnosis of adult tuberculous meningitis by use of clinical and laboratory features.* Lancet 2002;360(9342):1287-92.`,
+- Длительность симптомов спорна — некоторые TBM остро манифестируют`,
 };
 
 export default runner;

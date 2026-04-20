@@ -110,9 +110,6 @@ const runner: CalculatorTool = {
 \`AND\`, \`OR\`, \`NOT\` (заглавные). Скобки для группировки.
 
 ### Truncation
-\`neoplas*\` раскрывается в все слова от "neopl" (минимум 4 символа до *). Отключает explosion для MeSH.
-
-### Источник
-https://pubmed.ncbi.nlm.nih.gov/`,
+\`neoplas*\` раскрывается в все слова от "neopl" (минимум 4 символа до *). Отключает explosion для MeSH.`,
 };
 export default runner;

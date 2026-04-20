@@ -122,9 +122,6 @@ Certainty of evidence: High · Moderate · Low · Very Low (учитывает r
 - **RevMan Web** — бесплатный для авторов Cochrane
 - **Cochrane Crowd** — citizen science для screening
 - **Cochrane Clinical Answers (CCA)** — клинически ориентированные ответы
-- **Cochrane Library app** — мобильный доступ
-
-### Источник
-https://www.cochranelibrary.com/`,
+- **Cochrane Library app** — мобильный доступ`,
 };
 export default runner;

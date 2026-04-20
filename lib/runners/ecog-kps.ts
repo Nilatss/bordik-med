@@ -146,9 +146,6 @@ const runner: CalculatorTool = {
 - Для гериатрии недостаточна — нужна CGA (G8, Balducci, CRASH)
 
 ### G8 скрининг (для ≥ 70 лет)
-G8 ≤ 14 → показана комплексная гериатрическая оценка (CGA). Включает ECOG, но дополняется питанием, когнициями, полипрагмазией.
-
-### Источник
-Oken MM, Creech RH, Tormey DC et al. **Toxicity and response criteria of the Eastern Cooperative Oncology Group.** *Am J Clin Oncol* 1982;5:649-655.`,
+G8 ≤ 14 → показана комплексная гериатрическая оценка (CGA). Включает ECOG, но дополняется питанием, когнициями, полипрагмазией.`,
 };
 export default runner;

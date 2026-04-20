@@ -166,10 +166,7 @@ const runner: CalculatorTool = {
 ### Ограничения
 - Клиническая стадия — не заменяет вирусную нагрузку
 - СВИ (IRIS) может имитировать прогрессию после ART
-- DTG в первой линии с 2019 и при беременности
-
-### Источник
-WHO. *Consolidated Guidelines on HIV Prevention, Testing, Treatment, Service Delivery and Monitoring.* 2021.`,
+- DTG в первой линии с 2019 и при беременности`,
 };
 
 export default runner;

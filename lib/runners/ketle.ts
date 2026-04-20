@@ -124,13 +124,6 @@ const runner: CalculatorTool = {
 ### Международные связи
 - Адаптируют NICE, ESC, WHO, ADA, GOLD
 - Участник ЕАЭС (фармакопея, GMP)
-- Сотрудничество с WHO Europe
-
-### Источники
-- https://www.gov.kz/memleket/entities/dsm
-- https://rcrz.kz/
-- https://knf.kz/
-- https://adilet.zan.kz/
-- https://diseases.medelement.com/`,
+- Сотрудничество с WHO Europe`,
 };
 export default runner;

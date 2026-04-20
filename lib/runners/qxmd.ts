@@ -94,9 +94,6 @@ const runner: CalculatorTool = {
 - Web: https://read.qxmd.com/
 
 ### Бесплатно
-Полностью бесплатно. Полнотекст статей — только если есть institutional subscription.
-
-### Источник
-https://www.qxmd.com/`,
+Полностью бесплатно. Полнотекст статей — только если есть institutional subscription.`,
 };
 export default runner;

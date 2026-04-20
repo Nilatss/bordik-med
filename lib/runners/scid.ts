@@ -174,10 +174,7 @@ const runner: CalculatorTool = {
 - Требует обучения (APA sponsored training) и супервизии
 - Долгое интервью — неудобно в экстренной психиатрии
 - Зависит от valid self-report пациента
-- Культурная валидация ограничена
-
-### Источник
-First MB et al. *SCID-5-CV.* American Psychiatric Association Publishing; 2016.`,
+- Культурная валидация ограничена`,
 };
 
 export default runner;

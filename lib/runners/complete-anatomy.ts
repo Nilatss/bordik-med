@@ -110,9 +110,6 @@ const runner: CalculatorTool = {
 - **Student** — ~$25-30/мес или $130/год (с student verification)
 - **Professional** — ~$50/мес или $250/год
 - **Institutional** — университетская лицензия (variable pricing)
-- **Vision Pro** — отдельная подписка
-
-### Источник
-https://3d4medical.com/apps/complete-anatomy`,
+- **Vision Pro** — отдельная подписка`,
 };
 export default runner;

@@ -148,10 +148,7 @@ AG = Na - (Cl + HCO₃⁻) (норма 8-12, с K: 12-16)
 - **C**AI (acetazolamide)
 - **A**rginine / ammonium
 - **R**TA (I, II, IV)
-- **S**pironolactone
-
-### Источник
-Kassirer JP, Bleich HL. NEJM 1966;275:1067. Adrogue HJ, Madias NE. NEJM 1998;338:26.`,
+- **S**pironolactone`,
 };
 
 export default runner;

@@ -137,10 +137,7 @@ const runner: CalculatorTool = {
 - Педиатрическая шкала
 - Часть критериев субъективна
 - Современная смертность ниже (раннее распознавание, ресусцитация)
-- Не заменяет SOFA/qSOFA
-
-### Источник
-Sinclair JF, Skeoch CH, Hallworth D. *Prognosis of meningococcal septicaemia.* Lancet 1987;2(8549):38.`,
+- Не заменяет SOFA/qSOFA`,
 };
 
 export default runner;

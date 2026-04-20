@@ -192,10 +192,7 @@ DSM-5 рекомендует WHODAS 2.0 (36-item) в **Section III** как meas
 - Требует валидированного перевода на язык пациента
 - Complex scoring — требует WHO syntax (SPSS/SAS/R)
 - Proxy версия менее точна
-- Не оценивает качество жизни (для этого — WHOQOL-BREF)
-
-### Источник
-Üstün TB et al. *Measuring Health and Disability: WHODAS 2.0 Manual.* Geneva: WHO; 2010. https://www.who.int/standards/classifications/international-classification-of-functioning-disability-and-health/whodas`,
+- Не оценивает качество жизни (для этого — WHOQOL-BREF)`,
 };
 
 export default runner;

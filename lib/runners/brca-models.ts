@@ -184,10 +184,6 @@ const runner: CalculatorTool = {
 ### Ограничения
 - Упрощённые модели занижают риск при нестандартных паттернах
 - Не оценивают новые гены (RAD51C/D, BARD1)
-- Denovo мутации не выявляются по семейной истории
-
-### Источник
-Evans DG et al. **Manchester scoring system.** *J Med Genet* 2004;41:474-480.
-NCCN **Genetic/Familial High-Risk Assessment: Breast, Ovarian, and Pancreatic** v3.2023.`,
+- Denovo мутации не выявляются по семейной истории`,
 };
 export default runner;

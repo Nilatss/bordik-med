@@ -128,10 +128,7 @@ const runner: CalculatorTool = {
 ### Ограничения
 - Упрощённая формула в калькуляторе; для официальных z-score используйте GLI desktop software или онлайн-калькулятор ERS
 - Качество манёвра должно соответствовать ATS/ERS 2019 (приемлемость, повторяемость)
-- Этническая поправка критична
-
-### Источник
-Quanjer PH et al. Eur Respir J 2012;40:1324-43. ATS/ERS Technical Statement 2019.`,
+- Этническая поправка критична`,
 };
 
 export default runner;

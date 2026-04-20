@@ -167,9 +167,6 @@ const runner: CalculatorTool = {
 ### Применение
 - Простой скрининговый инструмент прогноза
 - Хорошо коррелирует с выживаемостью даже без молекулярных данных
-- Часто используется в UK и Европе
-
-### Источник
-Galea MH, Blamey RW, Elston CE, Ellis IO. **The Nottingham Prognostic Index in primary breast cancer.** *Breast Cancer Res Treat* 1992;22:207-219.`,
+- Часто используется в UK и Европе`,
 };
 export default runner;

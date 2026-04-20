@@ -109,10 +109,6 @@ IN (Ingredient: Metformin)
 - **RxNorm API** — REST
 - **RxMix** — batch processing
 - **RxImage API** — фото таблеток
-- **Interaction API** — DDI (была deprecated 2024, альтернатива: MedlinePlus DailyMed)
-
-### Источники
-- https://www.nlm.nih.gov/research/umls/rxnorm/
-- RxNav: https://mor.nlm.nih.gov/RxNav/`,
+- **Interaction API** — DDI (была deprecated 2024, альтернатива: MedlinePlus DailyMed)`,
 };
 export default runner;

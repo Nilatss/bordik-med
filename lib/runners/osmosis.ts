@@ -102,9 +102,6 @@ const runner: CalculatorTool = {
 - **Patient Education** — бесплатно для всех
 
 ### Partnership с Elsevier
-С 2021 Osmosis часть Elsevier Learning экосистемы — интеграция с ClinicalKey Student, Elsevier учебниками.
-
-### Источник
-https://www.osmosis.org/`,
+С 2021 Osmosis часть Elsevier Learning экосистемы — интеграция с ClinicalKey Student, Elsevier учебниками.`,
 };
 export default runner;

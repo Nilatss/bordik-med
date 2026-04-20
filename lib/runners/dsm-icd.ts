@@ -169,12 +169,7 @@ const runner: CalculatorTool = {
 ### Ограничения
 - Не все DSM коды имеют точный аналог в ICD (и наоборот)
 - Культурно-специфические синдромы (dhat, koro, ataque de nervios) — по-разному
-- Official crosswalks: APA DSM-5-TR Appendix; WHO ICD-11 Browser
-
-### Источники
-- APA. *DSM-5-TR.* Arlington: APA Publishing; 2022.
-- WHO. *ICD-11 for Mortality and Morbidity Statistics.* Geneva: WHO; 2022. https://icd.who.int/
-- WHO. *ICD-10 Classification of Mental and Behavioural Disorders.* Geneva: WHO; 1992.`,
+- Official crosswalks: APA DSM-5-TR Appendix; WHO ICD-11 Browser`,
 };
 
 export default runner;

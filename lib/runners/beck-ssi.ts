@@ -161,10 +161,7 @@ const runner: CalculatorTool = {
 ### Ограничения
 - Самоопросник — риск диссимуляции (пациент скрывает намерение)
 - Не учитывает историческое поведение (в отличие от C-SSRS)
-- Не заменяет клиническое интервью
-
-### Источник
-Beck AT, Kovacs M, Weissman A. *Assessment of suicidal intention: the Scale for Suicide Ideation.* J Consult Clin Psychol. 1979;47:343-352.`,
+- Не заменяет клиническое интервью`,
 };
 
 export default runner;

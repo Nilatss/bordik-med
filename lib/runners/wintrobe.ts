@@ -112,10 +112,7 @@ const runner: CalculatorTool = {
 ### Ограничения
 - Холодовые агглютинины повышают MCV и MCHC (артефакт)
 - Гипергликемия > 30 ммоль/л → осмотический отёк эритроцитов, ↑MCV
-- Ранний ретикулоцитоз (гемолиз) → ↑MCV (ретикулоциты больше зрелых)
-
-### Источник
-Wintrobe MM. *Classification of the anemias on the basis of differences in the size and hemoglobin content of the red corpuscles.* Proc Soc Exp Biol Med 1930;27:1071.`,
+- Ранний ретикулоцитоз (гемолиз) → ↑MCV (ретикулоциты больше зрелых)`,
 };
 
 export default runner;

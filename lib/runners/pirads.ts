@@ -208,9 +208,6 @@ const runner: CalculatorTool = {
 - Не определяет extraprostatic extension (нужно отдельно в отчёте)
 - Зависит от опыта радиолога (inter-observer variability ~ 60-70%)
 - Не применим после лечения (RT, HIFU) без адаптации
-- Может пропустить cribriform / ductal варианты
-
-### Источник
-Turkbey B, Rosenkrantz AB, Haider MA et al. **Prostate Imaging Reporting and Data System Version 2.1: 2019 Update.** *Eur Urol* 2019;76:340-351.`,
+- Может пропустить cribriform / ductal варианты`,
 };
 export default runner;

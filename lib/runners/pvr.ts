@@ -116,9 +116,6 @@ const runner: CalculatorTool = {
 
 ### Методы
 - УЗИ мочевого пузыря (портативный BladderScan) — предпочтительно
-- Катетеризация — инвазивная, только если УЗИ недоступно
-
-### Источник
-AUA BPH Guideline 2023; EAU Non-neurogenic Male LUTS 2024.`,
+- Катетеризация — инвазивная, только если УЗИ недоступно`,
 };
 export default runner;

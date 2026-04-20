@@ -107,9 +107,6 @@ const runner: CalculatorTool = {
 |---|---|---|
 | 0–2 | Низкий | ~85% |
 | 3–5 | Средний | ~65% |
-| 6–10 | Высокий | ~35% |
-
-### Источник
-Cooperberg MR, J Urol 2005.`,
+| 6–10 | Высокий | ~35% |`,
 };
 export default runner;

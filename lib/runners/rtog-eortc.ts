@@ -235,9 +235,6 @@ const runner: CalculatorTool = {
 ### Ограничения
 - Субъективность grading
 - Не учитывает дозу / объём облучённых тканей (нужны DVH constraints)
-- Для конкретных тканей — специализированные шкалы (LENT-SOMA для гениталий, RTOG для ЦНС)
-
-### Источник
-Cox JD, Stetz J, Pajak TF. **Toxicity criteria of the RTOG and EORTC.** *Int J Radiat Oncol Biol Phys* 1995;31(5):1341-1346.`,
+- Для конкретных тканей — специализированные шкалы (LENT-SOMA для гениталий, RTOG для ЦНС)`,
 };
 export default runner;

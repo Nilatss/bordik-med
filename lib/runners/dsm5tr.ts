@@ -99,10 +99,6 @@ const runner: CalculatorTool = {
 4. **Z-коды** — psychosocial factors (Z63.0 семейный стресс)
 
 ### 22 главы DSM-5-TR
-1. Neurodevelopmental · 2. Schizophrenia spectrum · 3. Bipolar · 4. Depressive · 5. Anxiety · 6. OCRD · 7. Trauma/stressor · 8. Dissociative · 9. Somatic symptom · 10. Feeding/eating · 11. Elimination · 12. Sleep-wake · 13. Sexual dysfunction · 14. Gender dysphoria · 15. Disruptive · 16. Substance-related · 17. Neurocognitive · 18. Personality · 19. Paraphilic · 20. Other · 21. Medication-induced · 22. Other conditions
-
-### Источник
-- APA Publishing. DSM-5-TR. 2022.
-- PsychiatryOnline: https://dsm.psychiatryonline.org/`,
+1. Neurodevelopmental · 2. Schizophrenia spectrum · 3. Bipolar · 4. Depressive · 5. Anxiety · 6. OCRD · 7. Trauma/stressor · 8. Dissociative · 9. Somatic symptom · 10. Feeding/eating · 11. Elimination · 12. Sleep-wake · 13. Sexual dysfunction · 14. Gender dysphoria · 15. Disruptive · 16. Substance-related · 17. Neurocognitive · 18. Personality · 19. Paraphilic · 20. Other · 21. Medication-induced · 22. Other conditions`,
 };
 export default runner;

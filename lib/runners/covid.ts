@@ -157,10 +157,7 @@ const runner: CalculatorTool = {
 ### Ограничения
 - Разработан до вакцинации / Omicron — завышает риск в 2023+
 - Не учитывает окно противовирусной терапии (< 5–7 дн)
-- У иммунокомпрометированных течение атипичное
-
-### Источник
-Knight SR et al. *Risk stratification of patients admitted to hospital with covid-19 using the ISARIC WHO Clinical Characterisation Protocol.* BMJ 2020;370:m3339.`,
+- У иммунокомпрометированных течение атипичное`,
 };
 
 export default runner;

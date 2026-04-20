@@ -118,10 +118,7 @@ const runner: CalculatorTool = {
 ### Ограничения
 - Валидизирован только для **взрослых**
 - Не применим при беременности / HELLP (перекрывающиеся паттерны)
-- Не заменяет ADAMTS13-тест, а ускоряет решение о PEX
-
-### Источник
-Bendapudi PK, Hurwitz S, Fry A et al. Derivation and external validation of the PLASMIC score for rapid assessment of adults with thrombotic microangiopathies: a cohort study. *Lancet Haematol* 2017;4:e157-64.`,
+- Не заменяет ADAMTS13-тест, а ускоряет решение о PEX`,
 };
 
 export default runner;

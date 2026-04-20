@@ -149,9 +149,6 @@ const runner: CalculatorTool = {
 ### Ограничения
 - Категория 3 часто переиспользуется (допустима только после полной оценки)
 - Субъективность в 4A vs 4B
-- Не учитывает клинические факторы (возраст, BRCA)
-
-### Источник
-American College of Radiology. **ACR BI-RADS Atlas, 5th Edition.** Reston, VA: ACR; 2013.`,
+- Не учитывает клинические факторы (возраст, BRCA)`,
 };
 export default runner;

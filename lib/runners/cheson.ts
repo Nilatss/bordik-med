@@ -180,9 +180,6 @@ const runner: CalculatorTool = {
 ### Ограничения
 - Не применимо к CLL, индолентным лимфомам без FDG-авидности (ММ, малопрогрессирующие)
 - Псевдопрогресс и воспаление могут давать false-positive
-- Биопсия КМ всё ещё рекомендована для DLBCL при сомнениях
-
-### Источник
-Cheson BD, Fisher RI, Barrington SF et al. **Recommendations for initial evaluation, staging, and response assessment of Hodgkin and non-Hodgkin lymphoma: the Lugano classification.** *J Clin Oncol* 2014;32(27):3059-3068.`,
+- Биопсия КМ всё ещё рекомендована для DLBCL при сомнениях`,
 };
 export default runner;

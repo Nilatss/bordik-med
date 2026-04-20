@@ -196,10 +196,7 @@ const runner: CalculatorTool = {
 ### Ограничения
 - Требует активного вопрошания — пациент часто не сообщает сам
 - "Нет" ответ не исключает риск — оценивать клинически, с информантами
-- Культурные различия в выражении суицидальности
-
-### Источник
-Posner K, Brown GK, Stanley B, et al. *The Columbia-Suicide Severity Rating Scale: Initial validity and internal consistency findings.* Am J Psychiatry. 2011;168:1266-1277.`,
+- Культурные различия в выражении суицидальности`,
 };
 
 export default runner;

@@ -140,10 +140,7 @@ const runner: CalculatorTool = {
 ### Ограничения
 - Не включает алкоголь (используйте AUDIT)
 - Не для подростков (CRAFFT лучше)
-- Самоотчёт — возможна диссимуляция
-
-### Источник
-Skinner HA. *Addict Behav.* 1982;7:363-371. Yudko E et al. *J Subst Abuse Treat.* 2007;32:189-198.`,
+- Самоотчёт — возможна диссимуляция`,
 };
 
 export default runner;

@@ -173,11 +173,6 @@ const runner: CalculatorTool = {
 ### Ограничения
 - MASCC не применим для пациентов уже на IV антибиотиках
 - CISNE — альтернативная шкала для клинически стабильных
-- Не заменяет клинической оценки
-
-### Источник
-Freifeld AG et al. **IDSA 2010.** *Clin Infect Dis* 2011;52:e56-e93.
-Klastersky J et al. **ESMO 2016.** *Ann Oncol* 2016;27(suppl 5):v111-v118.
-NCCN **Hematopoietic Growth Factors / Prevention and Treatment of Cancer-Related Infections** v1.2024.`,
+- Не заменяет клинической оценки`,
 };
 export default runner;

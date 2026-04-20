@@ -134,10 +134,7 @@ Age-adjusted cutoff (DDU) = возраст (лет) × 5    (DDU = FEU / 2)
 ### Ограничения
 - НЕ применим при беременности (используйте YEARS-pregnancy или CTPA)
 - НЕ применим при онкологии с активной химиотерапией
-- Локальные протоколы могут отличаться - согласуйте с командой
-
-### Источник
-Righini M et al. ADJUST-PE. JAMA 2014;311:1117. van der Hulle T et al. YEARS. Lancet 2017;390:289. Konstantinides SV et al. ESC Guidelines PE 2019;41:543.`,
+- Локальные протоколы могут отличаться - согласуйте с командой`,
 };
 
 export default runner;

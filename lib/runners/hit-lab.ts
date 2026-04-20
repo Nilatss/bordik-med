@@ -158,10 +158,7 @@ const runner: CalculatorTool = {
 - ELISA не дифференцирует патогенные и непатогенные антитела
 - SRA требует референс-лаб, задержка 3-7 дн
 - Быстрые «латексные» агглютинационные тесты — ниже специфичность
-- Спонтанный HIT (без воздействия гепарина) — редкий, но описан
-
-### Источник
-Cuker A, Arepally GM, Chong BH et al. American Society of Hematology 2018 guidelines for management of venous thromboembolism: heparin-induced thrombocytopenia. *Blood Adv* 2018;2:3360-3392.`,
+- Спонтанный HIT (без воздействия гепарина) — редкий, но описан`,
 };
 
 export default runner;

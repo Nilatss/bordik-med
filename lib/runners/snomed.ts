@@ -143,11 +143,6 @@ Clinical finding · Procedure · Body structure · Organism · Substance · Phar
 
 ### Editions
 - **International Edition** — основа (англ., январь + июль)
-- **National Extensions** — US Edition (добавляет CPT mappings), UK Edition (dm+d препараты) и т.д.
-
-### Источники
-- https://www.snomed.org/
-- SNOMED CT Browser: https://browser.ihtsdotools.org/
-- UMLS Metathesaurus (через NIH) — включает SNOMED CT`,
+- **National Extensions** — US Edition (добавляет CPT mappings), UK Edition (dm+d препараты) и т.д.`,
 };
 export default runner;

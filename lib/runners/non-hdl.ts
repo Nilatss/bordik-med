@@ -100,10 +100,7 @@ const runner: CalculatorTool = {
 - Не требует голодания
 - Работает при ТГ > 2.3 ммоль/л (когда Friedewald ненадёжен)
 - Включает атерогенные remnants (VLDL remnants в non-HDL, но не в LDL)
-- Дешевле ApoB (альтернативный маркёр)
-
-### Источник
-Grundy SM et al. JACC 2019;73:e285. Mach F et al. ESC/EAS 2019 Dyslipidaemias. Eur Heart J 2020;41:111.`,
+- Дешевле ApoB (альтернативный маркёр)`,
 };
 
 export default runner;

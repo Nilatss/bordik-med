@@ -122,10 +122,7 @@ const runner: CalculatorTool = {
 ### Ограничения
 - ПВ зависит от реактива; рекомендуют калибровать по МНО или использовать фиксированный контроль
 - DF не учитывает почечную функцию (в отличие от MELD)
-- При одновременной инфекции ГКС повышают смертность
-
-### Источник
-Maddrey WC, Boitnott JK, Bedine MS, et al. *Corticosteroid therapy of alcoholic hepatitis.* Gastroenterology 1978;75:193-9.`,
+- При одновременной инфекции ГКС повышают смертность`,
 };
 
 export default runner;

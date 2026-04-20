@@ -124,9 +124,6 @@ const runner: CalculatorTool = {
 
 ### Клиническое применение (KDIGO 2024 supplement)
 - 2-yr риск ≥10% — плановая консультация нефролога
-- 2-yr риск ≥40% или 5-yr ≥50% — формирование AV-фистулы
-
-### Источник
-Tangri N. JAMA 2011;305(15):1553–1559. www.kidneyfailurerisk.com`,
+- 2-yr риск ≥40% или 5-yr ≥50% — формирование AV-фистулы`,
 };
 export default runner;

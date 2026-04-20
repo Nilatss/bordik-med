@@ -171,9 +171,6 @@ CTCAE не определяет причинно-следственную свя
 ### Ограничения
 - Не все симптомы имеют точный количественный порог — субъективность
 - Межисследовательская вариабельность при одном и том же НЯ
-- PRO-CTCAE (patient-reported outcomes) — дополнение для самооценки пациентом
-
-### Источник
-U.S. Department of Health and Human Services, National Institutes of Health, National Cancer Institute. **Common Terminology Criteria for Adverse Events (CTCAE) Version 5.0.** Published November 27, 2017. https://ctep.cancer.gov/protocolDevelopment/electronic_applications/ctc.htm`,
+- PRO-CTCAE (patient-reported outcomes) — дополнение для самооценки пациентом`,
 };
 export default runner;

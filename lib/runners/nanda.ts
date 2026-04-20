@@ -112,10 +112,6 @@ const runner: CalculatorTool = {
 ### Связь с NIC/NOC
 - **NANDA-I** — что происходит (диагноз)
 - **NIC** — Nursing Interventions Classification (что делать)
-- **NOC** — Nursing Outcomes Classification (что измерить)
-
-### Источники
-- NANDA International: https://nanda.org/
-- Herdman TH et al. NANDA-I 2024-2026. Thieme Publishing.`,
+- **NOC** — Nursing Outcomes Classification (что измерить)`,
 };
 export default runner;

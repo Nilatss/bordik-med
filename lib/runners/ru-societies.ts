@@ -169,11 +169,6 @@ const runner: CalculatorTool = {
 - **EASD** (European Association for the Study of Diabetes) — РАЭ сотрудничает
 - **ESMO** — АОР/RUSSCO участвуют
 - **FIGO** — РОАГ член
-- **WFSA** (анестезиология), **EAN** (неврология), **WHO** — через МЗ РФ
-
-### Источники
-- https://minzdrav.gov.ru/ (НОК МЗ РФ)
-- ФЗ-323 ст.76 "Медицинские профессиональные некоммерческие организации"
-- Сайты обществ (см. таблицу)`,
+- **WFSA** (анестезиология), **EAN** (неврология), **WHO** — через МЗ РФ`,
 };
 export default runner;

@@ -91,9 +91,6 @@ const runner: CalculatorTool = {
 ### Как получить доступ
 - Институциональная подписка (больница/университет) — IP-authentication
 - Индивидуальная подписка ~$599/год (UpToDate Advanced $739)
-- Мобильное приложение после sign-in на web — offline доступ на 30 дней
-
-### Источник
-https://www.uptodate.com/`,
+- Мобильное приложение после sign-in на web — offline доступ на 30 дней`,
 };
 export default runner;

@@ -229,7 +229,16 @@ export default function Home() {
   return (
     <div style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
       <Sidebar />
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, height: '100vh' }}>
+      <div style={{
+        flex: 1, display: 'flex', flexDirection: 'column',
+        minWidth: 0, height: '100vh',
+        // Visually lift the main content over the sidebar — creates a soft card feel.
+        borderTopLeftRadius: 32,
+        borderBottomLeftRadius: 32,
+        background: '#FFFFFF',
+        overflow: 'hidden', // clip inner main's scroll to the rounded corners
+        boxShadow: '0 0 0 1px #F0F1F5',
+      }}>
         <main style={{ flex: 1, overflowY: 'auto', background: '#FFFFFF' }}>
           <div style={{ padding: '20px 24px', minHeight: 'calc(100% - 48px)' }}>
 

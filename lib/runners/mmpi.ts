@@ -174,10 +174,7 @@ const runner: CalculatorTool = {
 - Долгий (1-2 ч)
 - Чтение на уровне 6-го класса минимум
 - Для подростков — MMPI-A
-- MMPI-3 — новая стандартизация (более разнообразная выборка)
-
-### Источник
-Butcher JN et al. *MMPI-2 Manual.* 1989. Ben-Porath YS, Tellegen A. *MMPI-2-RF Manual.* 2008/2020.`,
+- MMPI-3 — новая стандартизация (более разнообразная выборка)`,
 };
 
 export default runner;

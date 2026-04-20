@@ -135,10 +135,7 @@ const runner: ScoreTool = {
 
 ### Ограничения
 - Не применима при тяжёлой деменции (MMSE <15)
-- При умеренной деменции — использовать Cornell Scale for Depression in Dementia (CSDD)
-
-### Источник
-Sheikh JI, Yesavage JA. *Geriatric Depression Scale (GDS): recent evidence and development of a shorter version.* Clin Gerontol. 1986;5:165-173.`,
+- При умеренной деменции — использовать Cornell Scale for Depression in Dementia (CSDD)`,
 };
 
 export default runner;

@@ -115,10 +115,7 @@ FEUrea = (Uurea × PCr) / (Purea × UCr) × 100
 
 ### UCa/Cr
 - < 0.01 → FHH (не оперировать ПГП!)
-- > 0.4 → гиперкальциурия
-
-### Источник
-KDIGO 2024 CKD Guideline. Kidney Int Suppl 2024.`,
+- > 0.4 → гиперкальциурия`,
 };
 
 export default runner;

@@ -176,10 +176,7 @@ const runner: CalculatorTool = {
 - Опирается на восприятие информанта (может быть искажено)
 - Not diagnostic — скрининг/описание, не заменяет DSM интервью
 - US normed (но есть multicultural и national нормы)
-- Cost-licensed — требует покупки у ASEBA
-
-### Источник
-Achenbach TM, Rescorla LA. *Manual for the ASEBA School-Age Forms & Profiles.* University of Vermont; 2001. https://aseba.org/`,
+- Cost-licensed — требует покупки у ASEBA`,
 };
 
 export default runner;

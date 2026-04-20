@@ -147,10 +147,7 @@ const runner: CalculatorTool = {
 ### Ограничения
 - Только у детей с плеоцитозом (WBC ≥ 10)
 - Не валидирован в эре пневмококковой вакцинации полностью
-- Не заменяет клиническую оценку
-
-### Источник
-Nigrovic LE et al. *Clinical prediction rule for identifying children with cerebrospinal fluid pleocytosis at very low risk of bacterial meningitis.* JAMA 2007;297(1):52-60.`,
+- Не заменяет клиническую оценку`,
 };
 
 export default runner;

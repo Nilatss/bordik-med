@@ -183,10 +183,7 @@ R + Z + E + Левофлоксацин × 6 мес.
 - Требуется DST (Xpert MTB/RIF Ultra + фенотипическое)
 - BPaL/BPaLM — доступность препаратов
 - Мониторинг интенсивный
-- Взаимодействия с ART, КОК, ВТЭ-профилактикой
-
-### Источник
-WHO. *Consolidated guidelines on tuberculosis. Module 4: Treatment — Drug-resistant tuberculosis treatment, 2022 update.*`,
+- Взаимодействия с ART, КОК, ВТЭ-профилактикой`,
 };
 
 export default runner;

@@ -191,10 +191,6 @@ const runner: CalculatorTool = {
 ### Ограничения
 - Критика шага 2 — многие гайды (ESMO, NCCN) рекомендуют переход сразу на шаг 3 с низких доз
 - Фиксированные дозы ± «по требованию» обычно менее эффективны, чем регулярные
-- Нейропатическая боль часто не купируется только опиоидами
-
-### Источник
-WHO. **Guidelines for the Pharmacological and Radiotherapeutic Management of Cancer Pain in Adults and Adolescents.** Geneva: WHO; 2018.
-ESMO **Cancer Pain Clinical Practice Guidelines** 2018.`,
+- Нейропатическая боль часто не купируется только опиоидами`,
 };
 export default runner;

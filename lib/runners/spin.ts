@@ -143,10 +143,7 @@ const runner: CalculatorTool = {
 ### Ограничения
 - Самоопросник, нужен клинический интервью для диагноза
 - Не отличает генерализованную от специфической формы
-- Высокая коморбидность с депрессией, ГТР, алкоголем
-
-### Источник
-Connor KM, Davidson JR, Churchill LE, et al. *Psychometric properties of the Social Phobia Inventory (SPIN).* Br J Psychiatry. 2000;176:379-386.`,
+- Высокая коморбидность с депрессией, ГТР, алкоголем`,
 };
 
 export default runner;

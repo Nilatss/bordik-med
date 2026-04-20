@@ -178,9 +178,6 @@ const runner: CalculatorTool = {
 - Только для **локализованного** рака (cT1-T2)
 - Не учитывает молекулярные маркёры (Decipher, Prolaris, Oncotype GPS)
 - Не учитывает MRI-данные (PI-RADS)
-- PSMA-PET повышает точность в высоком риске
-
-### Источник
-D’Amico AV, Whittington R, Malkowicz SB et al. **Biochemical outcome after radical prostatectomy, external beam radiation therapy, or interstitial radiation therapy for clinically localized prostate cancer.** *JAMA* 1998;280:969-974.`,
+- PSMA-PET повышает точность в высоком риске`,
 };
 export default runner;

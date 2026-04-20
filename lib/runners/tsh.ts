@@ -138,10 +138,7 @@ const runner: CalculatorTool = {
 - TSH > 10 - почти всегда лечить L-тироксином
 - TSH 4-10 + норма fT4 + нет симптомов - наблюдение
 - TSH < 0.1 + явный тиреотоксикоз - тиамазол + β-блокатор + TRAb/сцинтиграфия
-- Беременность - цель TSH < 2.5-3.0, контроль каждые 4 нед
-
-### Источник
-Jonklaas J et al. ATA Guidelines for Treatment of Hypothyroidism. Thyroid 2014;24:1670. Ross DS et al. ATA Hyperthyroidism. Thyroid 2016;26:1343.`,
+- Беременность - цель TSH < 2.5-3.0, контроль каждые 4 нед`,
 };
 
 export default runner;

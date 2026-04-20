@@ -197,10 +197,7 @@ const runner: ScoreTool = {
 ### Ограничения
 - Самоопросник — возможна диссимуляция
 - У женщин / пожилых предпочтительнее cutoff ≥7
-- Не выявляет употребление других ПАВ (для этого — DUDIT, ASSIST)
-
-### Источник
-Saunders JB, Aasland OG, Babor TF, et al. *Development of the Alcohol Use Disorders Identification Test (AUDIT).* Addiction. 1993;88:791-804.`,
+- Не выявляет употребление других ПАВ (для этого — DUDIT, ASSIST)`,
 };
 
 export default runner;

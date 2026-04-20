@@ -162,10 +162,7 @@ LR-5 = 95 %+ специфичность для ГЦК → биопсия не н
 - УЗИ чувствителен ~ 63 % для ранних опухолей
 - АФП < 400 нг/мл неспецифичен (беременность, регенерация)
 - NAFLD без цирроза — данные недостаточны
-- HCV после SVR F3 → продолжать скрининг пожизненно
-
-### Источник
-Singal AG et al. *AASLD Practice Guidance on prevention, diagnosis, and treatment of hepatocellular carcinoma.* Hepatology 2023;78(6):1922-1965.`,
+- HCV после SVR F3 → продолжать скрининг пожизненно`,
 };
 
 export default runner;

@@ -172,9 +172,6 @@ const runner: CalculatorTool = {
 ### Ограничения
 - Разработана до эры молекулярной диагностики
 - Не включает размер опухоли напрямую
-- Для мягкотканных сарком чаще используется AJCC / French FNCLCC grading
-
-### Источник
-Enneking WF, Spanier SS, Goodman MA. **A system for the surgical staging of musculoskeletal sarcoma.** *Clin Orthop* 1980;153:106-120.`,
+- Для мягкотканных сарком чаще используется AJCC / French FNCLCC grading`,
 };
 export default runner;

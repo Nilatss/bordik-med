@@ -121,10 +121,7 @@ Cut-off: **< −1,455** — исключает F3–F4 (NPV 93 %); **> 0,676** �
 - ≈30 % пациентов попадают в неопределённую зону
 - Разработан для NAFLD; другие этиологии (HCV, алкоголь) — использовать соответствующие шкалы
 - Гипоальбуминемия вне печени (нефроз, мальабсорбция) → ложно-высокий
-- У возраста > 65 — завышает
-
-### Источник
-Angulo P, Hui JM, Marchesini G, et al. *The NAFLD fibrosis score: a noninvasive system that identifies liver fibrosis in patients with NAFLD.* Hepatology 2007;45:846-54.`,
+- У возраста > 65 — завышает`,
 };
 
 export default runner;

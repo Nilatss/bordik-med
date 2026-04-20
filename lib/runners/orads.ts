@@ -139,10 +139,6 @@ const runner: CalculatorTool = {
 - Не применяется при беременности (отдельный алгоритм)
 - Эндометриоз, decidualized эндометриома — могут имитировать O-RADS 4
 - Оператор-зависим (УЗИ)
-- Для детей / подростков отдельные критерии
-
-### Источник
-Andreotti RF et al. **O-RADS US Risk Stratification and Management System.** *Radiology* 2020;294:168-185.
-Thomassin-Naggara I et al. **O-RADS MRI.** *JAMA Netw Open* 2020;3:e1919896.`,
+- Для детей / подростков отдельные критерии`,
 };
 export default runner;

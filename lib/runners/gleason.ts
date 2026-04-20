@@ -163,9 +163,6 @@ const runner: CalculatorTool = {
 ### Ограничения
 - Межнаблюдательская вариабельность ~ 20%
 - Не учитывает молекулярные маркёры (Decipher, Prolaris, Oncotype GPS)
-- Cribriform и ductal components недооцениваются в обычном Gleason
-
-### Источник
-Epstein JI, Egevad L, Amin MB et al. **The 2014 ISUP Consensus Conference on Gleason Grading.** *Am J Surg Pathol* 2016;40(2):244-252.`,
+- Cribriform и ductal components недооцениваются в обычном Gleason`,
 };
 export default runner;

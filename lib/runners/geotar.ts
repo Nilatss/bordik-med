@@ -123,11 +123,6 @@ const runner: CalculatorTool = {
 ### Ограничения
 - Отставание от западной EBM (1-3 года для переводов)
 - Платная модель ограничивает доступ
-- Для международной практики — дополнять UpToDate, BMJ Best Practice, NICE
-
-### Источники
-- https://www.geotar.ru/
-- https://www.rosmedlib.ru/ (Consultant Vracha)
-- https://www.studentlibrary.ru/ (Consultant Studenta)`,
+- Для международной практики — дополнять UpToDate, BMJ Best Practice, NICE`,
 };
 export default runner;

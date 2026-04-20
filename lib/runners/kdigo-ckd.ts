@@ -123,9 +123,6 @@ const runner: CalculatorTool = {
 |---|---|
 | A1 | <30 |
 | A2 | 30–300 |
-| A3 | >300 |
-
-### Источник
-KDIGO 2012 Clinical Practice Guideline for Evaluation and Management of CKD.`,
+| A3 | >300 |`,
 };
 export default runner;

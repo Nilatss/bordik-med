@@ -168,10 +168,6 @@ const runner: CalculatorTool = {
 ### Ограничения
 - НЕ применяется у гематологических пациентов с ожидаемой длительной (> 7 дней) нейтропенией
 - Trans­plant и intensive induction — всегда high risk
-- Педиатрия — отдельные шкалы
-
-### Источник
-Klastersky J et al. **The Multinational Association for Supportive Care in Cancer risk index.** *J Clin Oncol* 2000;18:3038-3051.
-NCCN **Prevention and Treatment of Cancer-Related Infections** v1.2024.`,
+- Педиатрия — отдельные шкалы`,
 };
 export default runner;

@@ -190,10 +190,6 @@ const runner: CalculatorTool = {
 | **Tyrer-Cuzick (IBIS)** | Сильная семейная история |
 | **BOADICEA / CanRisk** | BRCA + полигенные факторы |
 | **Claus** | Только семейный анамнез |
-| **BRCAPRO** | Оценка BRCA мутации |
-
-### Источник
-Gail MH et al. **BCRAT.** *J Natl Cancer Inst* 1989;81:1879-1886.
-NCI BCRAT online: https://bcrisktool.cancer.gov/`,
+| **BRCAPRO** | Оценка BRCA мутации |`,
 };
 export default runner;

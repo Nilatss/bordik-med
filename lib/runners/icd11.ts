@@ -103,9 +103,6 @@ BA00     — эссенциальная гипертензия
 \`\`\`
 
 ### Post-coordination пример
-\`BA00 & XS25\` — ЭАГ + extension тяжести "severe"
-
-### Источник
-https://icd.who.int/`,
+\`BA00 & XS25\` — ЭАГ + extension тяжести "severe"`,
 };
 export default runner;

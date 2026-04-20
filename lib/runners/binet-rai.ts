@@ -176,9 +176,6 @@ const runner: CalculatorTool = {
 ### Ограничения
 - Не учитывают молекулярный профиль (TP53, IGHV)
 - Не заменяются CLL-IPI, но используются вместе
-- Richter-трансформация (в DLBCL / HL) не отражена
-
-### Источник
-Hallek M et al. **iwCLL guidelines for diagnosis, indications for treatment, response assessment, and supportive management of CLL.** *Blood* 2018;131(25):2745-2760.`,
+- Richter-трансформация (в DLBCL / HL) не отражена`,
 };
 export default runner;

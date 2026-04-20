@@ -174,9 +174,6 @@ const runner: CalculatorTool = {
 ### Ограничения
 - НЕ для симптомных пациентов (только скрининг)
 - Не оценивает медиастинальные лимфоузлы детально
-- Требует сравнения с предыдущими LDCT
-
-### Источник
-**ACR Lung-RADS v2022.** https://www.acr.org/Clinical-Resources/Reporting-and-Data-Systems/Lung-Rads`,
+- Требует сравнения с предыдущими LDCT`,
 };
 export default runner;

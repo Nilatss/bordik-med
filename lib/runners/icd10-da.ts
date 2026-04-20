@@ -164,10 +164,6 @@ K02.51
 - **Black** — классификация поверхностей кариеса (I-VI)
 - **Angle** — классификация прикуса (интегрирован в K07.1)
 - **Ellis** — классификация переломов зубов (в S02.5x)
-- **CPI** (WHO Community Periodontal Index) — скрининг пародонта
-
-### Источники
-- WHO. ICD-DA 3rd ed. Geneva: WHO; 1995.
-- ICD-11 DA-глава: https://icd.who.int/browse/2024-01/mms/en#1643444697`,
+- **CPI** (WHO Community Periodontal Index) — скрининг пародонта`,
 };
 export default runner;

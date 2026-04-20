@@ -137,10 +137,6 @@ Glucose   : MCnc     : Pt   : Ser    : Qn    : —
 ### Ключевые инструменты
 - **LOINC Search** — онлайн (https://loinc.org/search/)
 - **RELMA** — desktop (маппинг локальных → LOINC)
-- **LOINC API** — FHIR TerminologyOperations
-
-### Источник
-- https://loinc.org/
-- Regenstrief Institute, Indianapolis, IN, USA`,
+- **LOINC API** — FHIR TerminologyOperations`,
 };
 export default runner;

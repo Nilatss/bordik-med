@@ -118,10 +118,6 @@ const runner: CalculatorTool = {
 - **Biomedical NLP** (cTAKES, MetaMap, QuickUMLS)
 - **Decision support** системы
 - **Информационный поиск** (PubMed MeSH — часть UMLS)
-- **Маппинг pub genomic/clinical** (TCGA, ClinVar)
-
-### Источник
-- https://www.nlm.nih.gov/research/umls/
-- UTS: https://uts.nlm.nih.gov/`,
+- **Маппинг pub genomic/clinical** (TCGA, ClinVar)`,
 };
 export default runner;

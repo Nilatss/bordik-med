@@ -147,10 +147,6 @@ const runner: CalculatorTool = {
 - Большой inter-individual разброс выживания
 - Не заменяет клиническую оценку
 - Не учитывает отдельные органные дисфункции
-- Может быстро изменяться в финальные дни
-
-### Источник
-Anderson F, Downing GM, Hill J et al. **Palliative Performance Scale (PPS): A New Tool.** *J Palliat Care* 1996;12(1):5-11.
-Victoria Hospice Society. **PPSv2.** 2001.`,
+- Может быстро изменяться в финальные дни`,
 };
 export default runner;

@@ -113,9 +113,6 @@ const runner: CalculatorTool = {
 ### Альтернативы
 - **CAE Healthcare** — METIman, Juno, Apollo
 - **Gaumard** — HAL (S5301), Victoria, Noelle
-- **Limbs & Things** — part-task trainers (узкие навыки)
-
-### Источник
-https://laerdal.com/`,
+- **Limbs & Things** — part-task trainers (узкие навыки)`,
 };
 export default runner;

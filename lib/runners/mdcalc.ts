@@ -102,9 +102,6 @@ const runner: CalculatorTool = {
 - **MDCalc for EHR** — enterprise интеграция (Epic, Cerner)
 
 ### Mobile app
-MDCalc Medical Calculator (iOS/Android) — бесплатно. Offline mode только для CME subscribers.
-
-### Источник
-https://www.mdcalc.com/`,
+MDCalc Medical Calculator (iOS/Android) — бесплатно. Offline mode только для CME subscribers.`,
 };
 export default runner;

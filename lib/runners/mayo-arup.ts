@@ -83,11 +83,6 @@ const runner: CalculatorTool = {
   info: `### Для чего используется
 **Mayo Clinic Laboratories** и **ARUP Laboratories** — крупнейшие референс-лаборатории США, выпускающие онлайн-каталоги тестов с референсными интервалами, клинической интерпретацией и требованиями к образцам.
 
-### Источники
-- mayocliniclabs.com — Mayo Clinic Test Catalog
-- arupconsult.com — ARUP Consult (клиницистский справочник)
-- arup-labs.com — ARUP Test Directory
-
 ### Особенности
 | Характеристика | Mayo | ARUP |
 |---|---|---|

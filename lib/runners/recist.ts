@@ -183,9 +183,6 @@ const runner: CalculatorTool = {
 - Только анатомический ответ (не метаболический)
 - Плохо работает для иммунотерапии (нужен iRECIST)
 - Не учитывает биомаркеры (CEA, CA125, PSA отдельно)
-- Вариабельность межрадиологическая ± 10-20%
-
-### Источник
-Eisenhauer EA, Therasse P, Bogaerts J et al. **New response evaluation criteria in solid tumours: revised RECIST guideline (version 1.1).** *Eur J Cancer* 2009;45(2):228-247.`,
+- Вариабельность межрадиологическая ± 10-20%`,
 };
 export default runner;

@@ -104,9 +104,6 @@ const runner: CalculatorTool = {
 - Фармакоэкономика в системе ОМС РФ
 
 ### Доступ
-https://consilium.orscience.ru/
-
-### Источник
-ISSN 2075-1753 (print) · 2542-2170 (online)`,
+https://consilium.orscience.ru/`,
 };
 export default runner;

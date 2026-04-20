@@ -118,7 +118,7 @@ export default function ToolView({ toolId }: { toolId: string }) {
     // Filter out "Источник" heading from info tabs - we already have a dedicated referenceTab.
     // Runner authors tend to add `### Источник` at the end of info markdown, which would duplicate the tab.
     const infoTabs: Tab[] = (runner.info ? buildInfoTabs(runner.info) : [])
-      .filter(t => t.title.trim().toLowerCase() !== 'источник');
+      .filter(t => !/^(источник[иа]?|литература|references?)$/i.test(t.title.trim()));
     const referenceTab: Tab = {
       id: 'reference',
       title: 'Источник',

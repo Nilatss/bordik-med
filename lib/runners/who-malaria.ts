@@ -142,10 +142,7 @@ const runner: CalculatorTool = {
 ### Ограничения
 - Требует подтверждения (толстая капля / HRP2 РДТ)
 - Смешанные инфекции требуют охвата всех видов
-- Lumefantrine, мефлохин — взаимодействия с CYP3A4
-
-### Источник
-WHO. *Guidelines for the treatment of malaria, 4th edition.* 2023.`,
+- Lumefantrine, мефлохин — взаимодействия с CYP3A4`,
 };
 
 export default runner;

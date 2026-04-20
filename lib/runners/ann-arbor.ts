@@ -173,9 +173,6 @@ const runner: CalculatorTool = {
 ### Ограничения
 - Для DLBCL прогноз лучше предсказывает IPI (а не только Ann Arbor)
 - Для CLL, ММ и острых лейкозов — собственные системы
-- Bulky disease порог дискутируется (≥ 7.5 vs ≥ 10 см)
-
-### Источник
-Cheson BD, Fisher RI, Barrington SF et al. **Recommendations for initial evaluation, staging, and response assessment of Hodgkin and non-Hodgkin lymphoma: the Lugano classification.** *J Clin Oncol* 2014;32(27):3059-3068.`,
+- Bulky disease порог дискутируется (≥ 7.5 vs ≥ 10 см)`,
 };
 export default runner;

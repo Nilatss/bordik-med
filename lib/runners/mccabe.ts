@@ -141,10 +141,7 @@ const runner: CalculatorTool = {
 | APACHE II | ICU смертность, острое состояние |
 | MELD | Цирроз |
 | BODE | ХОБЛ |
-| NYHA | ХСН |
-
-### Источник
-McCabe WR, Jackson GG. *Gram-negative bacteremia: I. Etiology and ecology.* Arch Intern Med 1962;110:847-55.`,
+| NYHA | ХСН |`,
 };
 
 export default runner;

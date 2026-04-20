@@ -96,9 +96,6 @@ const runner: CalculatorTool = {
 | 1–5 | Лёгкое |
 | 6–12 | Умеренное |
 | 13–18 | Тяжёлое |
-| 19–21 | Очень тяжёлое |
-
-### Источник
-Avery K, Donovan J, Peters TJ, et al. Neurourol Urodyn 2004;23:322–330.`,
+| 19–21 | Очень тяжёлое |`,
 };
 export default runner;

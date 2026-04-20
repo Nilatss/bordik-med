@@ -118,11 +118,6 @@ chapter
 | Laterality | нет | да (right/left/bilateral) |
 | Combination codes | мало | много (E11.21 = СД2 + нефропатия) |
 | Placeholder X | нет | есть |
-| 7-й символ | нет | A/D/S для травм |
-
-### Источники
-- CMS: https://www.cms.gov/medicare/coding-billing/icd-10-codes
-- NCHS: https://www.cdc.gov/nchs/icd/icd10cm.htm
-- Бесплатный браузер: https://www.icd10data.com/`,
+| 7-й символ | нет | A/D/S для травм |`,
 };
 export default runner;

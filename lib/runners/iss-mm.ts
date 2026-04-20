@@ -164,9 +164,6 @@ const runner: CalculatorTool = {
 ### Ограничения
 - β2-MG зависит от почечной функции
 - Не учитывает MRD-статус (минимальную остаточную болезнь)
-- R2-ISS (2022) предположительно точнее, но пока не заменил R-ISS
-
-### Источник
-Palumbo A, Avet-Loiseau H, Oliva S et al. **Revised International Staging System for Multiple Myeloma: a report from International Myeloma Working Group.** *J Clin Oncol* 2015;33(26):2863-2869.`,
+- R2-ISS (2022) предположительно точнее, но пока не заменил R-ISS`,
 };
 export default runner;

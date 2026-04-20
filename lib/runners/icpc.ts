@@ -132,10 +132,6 @@ A общее · B кровь · D пищеварение · F глаз · H ух
 ### Особенность — триплет SOAP
 - **S**ubjective → ICPC symptom/RFE
 - **A**ssessment → ICPC diagnosis
-- **P**lan → ICPC process
-
-### Источник
-- WONCA International Classification Committee (WICC)
-- https://www.globalfamilydoctor.com/`,
+- **P**lan → ICPC process`,
 };
 export default runner;

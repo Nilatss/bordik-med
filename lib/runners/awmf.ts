@@ -98,9 +98,6 @@ const runner: CalculatorTool = {
 - **Langversion** — полная научная версия
 - **Kurzversion** — краткая для клиники
 - **Patientenleitlinie** — для пациентов
-- **Evidenzbericht** — систематический обзор с оценкой доказательств
-
-### Источник
-https://www.awmf.org/leitlinien/`,
+- **Evidenzbericht** — систематический обзор с оценкой доказательств`,
 };
 export default runner;

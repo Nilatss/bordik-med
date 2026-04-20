@@ -152,10 +152,7 @@ const runner: CalculatorTool = {
 ### Ограничения
 - Интервью ~15-30 мин, требует опыта
 - Не валидизирована у детей <5 лет (для педиатрии — CMRS)
-- Всегда параллельно оценивать депрессивную симптоматику — смешанные состояния частые
-
-### Источник
-Young RC, Biegel JT, Ziegler VE, Meyer DA. *A rating scale for mania: reliability, validity, sensitivity.* Br J Psychiatry. 1978;133:429-435.`,
+- Всегда параллельно оценивать депрессивную симптоматику — смешанные состояния частые`,
 };
 
 export default runner;

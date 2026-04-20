@@ -184,10 +184,7 @@ const runner: CalculatorTool = {
 - **VRAG-R** (Violence Risk Appraisal Guide) — актуарный
 - **LSI-R** (Level of Service Inventory) — для общего offender risk
 - **Static-99R** — сексуальное насилие
-- **SAVRY** — насилие подростков
-
-### Источник
-Douglas KS et al. *HCR-20V3 User Guide.* Mental Health, Law, and Policy Institute, SFU; 2013.`,
+- **SAVRY** — насилие подростков`,
 };
 
 export default runner;
