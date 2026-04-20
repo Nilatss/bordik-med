@@ -540,6 +540,12 @@ export const RUNNER_LOADERS: Record<string, RunnerLoader> = {
   "mims": () => import('./mims'),
   "asia-drug": () => import('./asia-drug'),
   "sanford": () => import('./sanford'),
+  "credmeds": () => import('./credmeds'),
+  "cpic": () => import('./cpic'),
+  "beers": () => import('./beers'),
+  "pllr": () => import('./pllr'),
+  "harriet-lane": () => import('./harriet-lane'),
+  "who-eml": () => import('./who-eml'),
 };
 
 const runnerCache = new Map<string, ToolRunner>();
