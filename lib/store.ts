@@ -32,6 +32,23 @@ interface AppState {
   showTests: boolean;
   activeToolId: string | null;
 
+  /** Tools page persistent state — filters, scroll, favourites */
+  toolsQuery: string;
+  toolsCategories: string[];
+  toolsSubcategories: string[];
+  toolsCountries: string[];
+  toolsOnlyAvailable: boolean;
+  toolsScrollIndex: number;   // Virtuoso startIndex used on re-mount
+  toolsScrollOffset: number;  // px offset within that row
+  toolsFavourites: string[];  // list of tool ids
+  setToolsQuery: (q: string) => void;
+  setToolsCategories: (c: string[]) => void;
+  setToolsSubcategories: (s: string[]) => void;
+  setToolsCountries: (c: string[]) => void;
+  setToolsOnlyAvailable: (b: boolean) => void;
+  setToolsScroll: (index: number, offset: number) => void;
+  toggleFavouriteTool: (id: string) => void;
+
   /** Test attempts keyed by "{courseId}-{testLevel}" */
   testAttempts: Record<string, TestAttempt[]>;
   /** Highest test level passed per course (0 = none, 1-5) */
@@ -108,6 +125,28 @@ export const useAppStore = create<AppState>()(
       courseTestProgress: {},
       moduleTestAttempts: {},
       completedModules: [],
+
+      // ── Tools page persistent state ──
+      toolsQuery: '',
+      toolsCategories: [],
+      toolsSubcategories: [],
+      toolsCountries: [],
+      toolsOnlyAvailable: false,
+      toolsScrollIndex: 0,
+      toolsScrollOffset: 0,
+      toolsFavourites: [],
+
+      setToolsQuery: (q) => set({ toolsQuery: q }),
+      setToolsCategories: (c) => set({ toolsCategories: c }),
+      setToolsSubcategories: (s) => set({ toolsSubcategories: s }),
+      setToolsCountries: (c) => set({ toolsCountries: c }),
+      setToolsOnlyAvailable: (b) => set({ toolsOnlyAvailable: b }),
+      setToolsScroll: (index, offset) => set({ toolsScrollIndex: index, toolsScrollOffset: offset }),
+      toggleFavouriteTool: (id) => {
+        const favs = get().toolsFavourites;
+        const next = favs.includes(id) ? favs.filter((x) => x !== id) : [...favs, id];
+        set({ toolsFavourites: next });
+      },
 
       openCourse: (id) => set({ currentCourseId: id, showProfile: false }),
       closeCourse: () => set({ currentCourseId: null }),
@@ -242,6 +281,15 @@ export const useAppStore = create<AppState>()(
         testAttempts: state.testAttempts,
         courseTestProgress: state.courseTestProgress,
         moduleTestAttempts: state.moduleTestAttempts,
+        // Tools page — remember user's chosen filters and favourites across sessions.
+        // Scroll position (toolsScrollIndex/Offset) NOT persisted: browsers already
+        // restore scroll on reload, and persisting it would surprise on cold start.
+        toolsQuery: state.toolsQuery,
+        toolsCategories: state.toolsCategories,
+        toolsSubcategories: state.toolsSubcategories,
+        toolsCountries: state.toolsCountries,
+        toolsOnlyAvailable: state.toolsOnlyAvailable,
+        toolsFavourites: state.toolsFavourites,
       }),
     }
   )

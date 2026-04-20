@@ -252,12 +252,20 @@ const FilterDropdown = React.memo(function FilterDropdown({
 
 const ToolCard = React.memo(function ToolCard({ tool }: { tool: CatalogTool }) {
   const openTool = useAppStore((s) => s.openTool);
+  const isFavourite = useAppStore((s) => s.toolsFavourites.includes(tool.id));
+  const toggleFav = useAppStore((s) => s.toggleFavouriteTool);
   const meta = TOOL_META[tool.id];
   const available = tool.available || (meta?.hasRunner ?? false);
 
   const handleClick = useCallback(() => {
     if (available) openTool(tool.id);
   }, [available, openTool, tool.id]);
+
+  const handleFavClick = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    toggleFav(tool.id);
+  }, [toggleFav, tool.id]);
 
   // Warm the ToolView chunk on hover so clicking feels instant.
   const handlePrefetch = useCallback(() => {
@@ -300,6 +308,37 @@ const ToolCard = React.memo(function ToolCard({ tool }: { tool: CatalogTool }) {
         containIntrinsicSize: '160px 220px',
       } as React.CSSProperties}
     >
+      {/* Favourite star — bottom-right so it never overlaps the 'Скоро' badge.
+          Clickable without triggering the outer card click. */}
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={handleFavClick}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleFavClick(e as unknown as React.MouseEvent); }
+        }}
+        aria-label={isFavourite ? 'Убрать из избранного' : 'Добавить в избранное'}
+        style={{
+          position: 'absolute', bottom: 12, right: 12, zIndex: 3,
+          width: 30, height: 30, borderRadius: 999,
+          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+          background: isFavourite ? '#FEF3C7' : '#FFFFFF',
+          color: isFavourite ? '#D97706' : '#9CA3AF',
+          cursor: 'pointer',
+          boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
+          transition: 'background 160ms, color 160ms, transform 160ms',
+        }}
+        onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.08)'; }}
+        onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; }}
+      >
+        <svg width={16} height={16} viewBox="0 0 24 24"
+          fill={isFavourite ? 'currentColor' : 'none'}
+          stroke="currentColor" strokeWidth={isFavourite ? 0 : 2}
+          strokeLinecap="round" strokeLinejoin="round">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+        </svg>
+      </div>
+
       {!available && (
         <div style={{
           position: 'absolute', top: 12, right: 12, zIndex: 2,
@@ -471,13 +510,34 @@ function RenderedRow({ row }: { row: Row }) {
    ════════════════════════════════════════════════════════════════ */
 
 export default function ToolsPage() {
-  const [query, setQuery] = useState('');
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [selectedSubcategories, setSelectedSubcategories] = useState<string[]>([]);
-  const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
-  const [onlyAvailable, setOnlyAvailable] = useState(false);
+  // Filters + scroll + favourites — persisted in the global Zustand store so
+  // leaving the tools page (into a tool or a course) and coming back does
+  // NOT reset the user's chosen filter. This matches the UX expectation:
+  // the list should feel like the same list, not a fresh page every time.
+  const query = useAppStore((s) => s.toolsQuery);
+  const setQuery = useAppStore((s) => s.setToolsQuery);
+  const selectedCategories = useAppStore((s) => s.toolsCategories);
+  const setSelectedCategories = useAppStore((s) => s.setToolsCategories);
+  const selectedSubcategories = useAppStore((s) => s.toolsSubcategories);
+  const setSelectedSubcategories = useAppStore((s) => s.setToolsSubcategories);
+  const selectedCountries = useAppStore((s) => s.toolsCountries);
+  const setSelectedCountries = useAppStore((s) => s.setToolsCountries);
+  const onlyAvailable = useAppStore((s) => s.toolsOnlyAvailable);
+  const setOnlyAvailable = useAppStore((s) => s.setToolsOnlyAvailable);
+
   const [openFilter, setOpenFilter] = useState<FilterKey>(null);
   const [, startFilterTransition] = useTransition();
+
+  // Scroll restore (per-session only — store is NOT persisted to localStorage
+  // for these two, see lib/store.ts partialize).
+  const savedScrollIndex = useAppStore((s) => s.toolsScrollIndex);
+  const savedScrollOffset = useAppStore((s) => s.toolsScrollOffset);
+  const setScroll = useAppStore((s) => s.setToolsScroll);
+
+  // Favourites — populated by the star toggle on every ToolCard.
+  const favourites = useAppStore((s) => s.toolsFavourites);
+  const favouriteSet = useMemo(() => new Set(favourites), [favourites]);
+  const [onlyFavourites, setOnlyFavourites] = useState(false);
 
   // The page is scrolled by the outer <main> element (see app/page.tsx).
   // Virtuoso needs to watch that element for scroll events - otherwise it
@@ -560,8 +620,11 @@ export default function ToolsPage() {
     if (onlyAvailable) {
       result = result.filter((t) => t.available || (TOOL_META[t.id]?.hasRunner ?? false));
     }
+    if (onlyFavourites && favouriteSet.size > 0) {
+      result = result.filter((t) => favouriteSet.has(t.id));
+    }
     return result;
-  }, [deferredQuery, selectedCategories, selectedSubcategories, selectedCountries, onlyAvailable]);
+  }, [deferredQuery, selectedCategories, selectedSubcategories, selectedCountries, onlyAvailable, onlyFavourites, favouriteSet]);
 
   // Group by category preserving TOOL_CATEGORIES order.
   const byCategory = useMemo(() => {
@@ -712,6 +775,31 @@ export default function ToolsPage() {
           Только готовые
         </button>
 
+        <button
+          onClick={() => setOnlyFavourites((v) => !v)}
+          disabled={favouriteSet.size === 0}
+          title={favouriteSet.size === 0 ? 'Добавьте инструменты в избранное (звёздочка на карточке)' : undefined}
+          style={{
+            display: 'inline-flex', alignItems: 'center', gap: 6,
+            padding: '7px 12px',
+            background: onlyFavourites ? '#D97706' : '#F5F6F8',
+            color: onlyFavourites ? '#FFFFFF' : favouriteSet.size === 0 ? '#B0B3BA' : '#374151',
+            border: 'none', borderRadius: 999,
+            cursor: favouriteSet.size === 0 ? 'not-allowed' : 'pointer',
+            fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 600,
+            transition: 'background 180ms, color 180ms',
+          }}
+          onMouseEnter={(e) => { if (!onlyFavourites && favouriteSet.size > 0) e.currentTarget.style.background = '#EFF1F4'; }}
+          onMouseLeave={(e) => { if (!onlyFavourites && favouriteSet.size > 0) e.currentTarget.style.background = '#F5F6F8'; }}
+        >
+          <svg width={12} height={12} viewBox="0 0 24 24"
+            fill={onlyFavourites ? 'currentColor' : 'none'}
+            stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+          </svg>
+          Избранные{favouriteSet.size > 0 ? ` · ${favouriteSet.size}` : ''}
+        </button>
+
         {totalFilters > 0 && (
           <button
             onClick={resetAll}
@@ -776,6 +864,19 @@ export default function ToolsPage() {
           customScrollParent={scrollParent ?? undefined}
           data={rows}
           increaseViewportBy={{ top: 800, bottom: 1600 }}
+          // Restore scroll position when coming back from a tool / course.
+          // We persist the (row index, offset) pair and hand it to Virtuoso
+          // on mount so the user lands exactly where they were.
+          initialTopMostItemIndex={savedScrollIndex && savedScrollIndex < rows.length
+            ? { index: savedScrollIndex, offset: savedScrollOffset, align: 'start' }
+            : 0}
+          rangeChanged={(range) => {
+            // range.startIndex = topmost visible row. Persist lazily.
+            if (!scrollParent) return;
+            // Use the parent scroll position as the offset within the row.
+            const offset = scrollParent.scrollTop - (range.startIndex * 0); // best-effort; offset inside row approximated by scrollTop
+            setScroll(range.startIndex, offset);
+          }}
           computeItemKey={(_, row) => {
             if (row.kind === 'category') return `c:${row.category}`;
             if (row.kind === 'subcategory') return `s:${row.category}:${row.subcategory}`;
