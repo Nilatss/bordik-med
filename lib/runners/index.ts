@@ -732,6 +732,18 @@ export const RUNNER_LOADERS: Record<string, RunnerLoader> = {
   "ses-cd": () => import('./ses-cd'),
   "la-grade": () => import('./la-grade'),
   "oakland": () => import('./oakland'),
+  "ata": () => import('./ata'),
+  "frax-e": () => import('./frax-e'),
+  "ada-easd": () => import('./ada-easd'),
+  "idf-ms": () => import('./idf-ms'),
+  "ferriman": () => import('./ferriman'),
+  "acr-eular": () => import('./acr-eular'),
+  "sledai": () => import('./sledai'),
+  "rodnan": () => import('./rodnan'),
+  "fms-wpi": () => import('./fms-wpi'),
+  "gell-coombs": () => import('./gell-coombs'),
+  "niaid": () => import('./niaid'),
+  "mathews": () => import('./mathews'),
 };
 
 const runnerCache = new Map<string, ToolRunner>();
