@@ -460,6 +460,11 @@ export const RUNNER_LOADERS: Record<string, RunnerLoader> = {
   "eat26": () => import('./eat26'),
   "mchat-autism": () => import('./mchat-autism'),
   "mmpi": () => import('./mmpi'),
+  "scid": () => import('./scid'),
+  "dsm-icd": () => import('./dsm-icd'),
+  "hcr20": () => import('./hcr20'),
+  "cbcl": () => import('./cbcl'),
+  "whodas": () => import('./whodas'),
 };
 
 const runnerCache = new Map<string, ToolRunner>();
