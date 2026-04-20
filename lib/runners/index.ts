@@ -676,6 +676,16 @@ export const RUNNER_LOADERS: Record<string, RunnerLoader> = {
   "ada-cdt": () => import('./ada-cdt'),
   "ace3": () => import('./ace3'),
   "alsfrs": () => import('./alsfrs'),
+  "friedman": () => import('./friedman'),
+  "dhi": () => import('./dhi'),
+  "snot22": () => import('./snot22'),
+  "lund-mackay": () => import('./lund-mackay'),
+  "aphab": () => import('./aphab'),
+  "pta": () => import('./pta'),
+  "meniere": () => import('./meniere'),
+  "dix-hallpike": () => import('./dix-hallpike'),
+  "rsi-rfs": () => import('./rsi-rfs'),
+  "vhi": () => import('./vhi'),
 };
 
 const runnerCache = new Map<string, ToolRunner>();
