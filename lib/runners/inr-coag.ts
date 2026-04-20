@@ -81,14 +81,17 @@ const runner: CalculatorTool = {
         'DOAC: INR НЕ отражает антикоагуляцию, использовать анти-Xa / dTT',
       ],
       scale: {
+        // Visible range 0-6: the clinically meaningful band. Anything above
+        // 6 is already «critical» regardless of how much higher. Previous
+        // 0-15 range squashed the target zone (2-3) into a tiny sliver.
         segments: [
           { min: 0, max: 2, label: 'Низкий', color: '#22C55E' },
           { min: 2, max: 3, label: 'Цель ФП/ВТЭ', color: '#059669' },
           { min: 3, max: 4.5, label: 'Повышен', color: '#F59E0B' },
-          { min: 4.5, max: 10, label: 'Крит.', color: '#EF4444' },
-          { min: 10, max: 15, label: 'Жизнеугр.', color: '#991B1B' },
+          { min: 4.5, max: 6, label: 'Крит. (>4.5)', color: '#EF4444' },
         ],
-        current: inr,
+        // Clamp marker to 6 max — INR above 6 still reads as «Crit.» band.
+        current: Math.min(inr, 6),
         unit: 'INR',
       },
       related: [

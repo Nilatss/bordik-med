@@ -85,13 +85,16 @@ const runner: CalculatorTool = {
         'D-димер повышен при: инфекция, рак, беременность, ДВС, после операций, у пожилых',
       ],
       scale: {
+        // Visible range capped at 3× cutoff. D-dimer values in the thousands
+        // are clinically «high» regardless of how much higher; no need to
+        // stretch the bar to 10× which would squash the decision band.
         segments: [
           { min: 0, max: stdCutoff, label: 'Норма', color: '#22C55E' },
           { min: stdCutoff, max: cutoff, label: 'Age-adj OK', color: '#F59E0B' },
-          { min: cutoff, max: cutoff * 3, label: 'Повышен', color: '#EF4444' },
-          { min: cutoff * 3, max: cutoff * 10, label: 'Выс. повыш.', color: '#991B1B' },
+          { min: cutoff, max: cutoff * 2, label: 'Повышен', color: '#EF4444' },
+          { min: cutoff * 2, max: cutoff * 3, label: 'Выс. повыш.', color: '#991B1B' },
         ],
-        current: dd,
+        current: Math.min(dd, cutoff * 3),
         unit: unit === 'ddu' ? 'мкг/л DDU' : 'мкг/л FEU',
       },
       related: [

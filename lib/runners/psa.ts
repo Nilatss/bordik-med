@@ -74,13 +74,15 @@ const runner: CalculatorTool = {
         'Финастерид/дутастерид снижают PSA в 2 раза',
       ],
       scale: {
+        // Visible range 0-4 ng/mL/yr. Key decision points sit in 0-2;
+        // values above 2 are already «very high» — no need for more bar.
         segments: [
           { min: 0, max: 0.35, label: 'Низкая', color: '#22C55E' },
           { min: 0.35, max: 0.75, label: 'Погранич.', color: '#F59E0B' },
           { min: 0.75, max: 2, label: 'Высокая', color: '#EF4444' },
-          { min: 2, max: 20, label: 'Оч. высокая', color: '#991B1B' },
+          { min: 2, max: 4, label: 'Оч. высокая', color: '#991B1B' },
         ],
-        current: Number(Math.max(0, Math.min(20, velocity)).toFixed(2)),
+        current: Number(Math.max(0, Math.min(4, velocity)).toFixed(2)),
         unit: 'нг/мл/год',
       },
       relatedCourses: [

@@ -309,12 +309,15 @@ const runner: CalculatorTool = {
                         },
                         {
                             min: 10,
-                            max: 100,
+                            max: 20,
                             label: 'Оч. высокий',
                             color: '#991B1B'
                         }
                     ],
-                    current: Number(pct.toFixed(2)),
+                    // Clamp marker to 20 %: anything above is already
+                    // «very high» and the 10-100 range drowned out the
+                    // 0-10 decision band.
+                    current: Number(Math.min(20, pct).toFixed(2)),
                     unit: '%'
                 },
                 caveats: [

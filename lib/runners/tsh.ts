@@ -87,13 +87,16 @@ const runner: CalculatorTool = {
         'Рефлекс-алгоритм: TSH первым → fT4 если TSH выходит из нормы',
       ],
       scale: {
+        // Visible range 0-20 mIU/L. Typical clinical values: <0.4 suppressed,
+        // 0.4-4 normal, 4-10 subclinical, >10 overt hypothyroidism. Showing
+        // up to 100 stretched the normal band into a tiny invisible sliver.
         segments: [
           { min: 0, max: tshLo, label: 'Супресс.', color: '#EF4444' },
           { min: tshLo, max: tshHi, label: 'Норма', color: '#22C55E' },
           { min: tshHi, max: 10, label: 'Субклин.', color: '#F59E0B' },
-          { min: 10, max: 100, label: 'Гипотиреоз', color: '#EF4444' },
+          { min: 10, max: 20, label: 'Гипотиреоз', color: '#EF4444' },
         ],
-        current: Math.min(tsh, 100),
+        current: Math.min(tsh, 20),
         unit: 'мкМЕ/мл',
       },
       related: [

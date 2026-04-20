@@ -109,12 +109,14 @@ const runner: CalculatorTool = {
                         },
                         {
                             min: cutoff,
-                            max: 20000,
+                            max: cutoff * 3,
                             label: 'КТ-ангио',
                             color: '#EF4444'
                         }
                     ],
-                    current: dd,
+                    // Clamp marker to 3× cutoff — above is still «needs CT»,
+                    // no point stretching the bar to 20 000.
+                    current: Math.min(dd, cutoff * 3),
                     unit: 'нг/мл FEU'
                 },
                 related: [

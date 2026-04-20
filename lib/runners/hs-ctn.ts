@@ -94,13 +94,17 @@ const runner: CalculatorTool = {
         'Универсальное определение ИМ (Thygesen 4th): ↑ тропонин + 1 из: ишемия, ЭКГ, визуализация, тромб',
       ],
       scale: {
+        // Visible range capped at 3× rule-in threshold. Troponin values of
+        // hundreds-to-thousands are genuinely above rule-in but the «Rule-in»
+        // band doesn't need to cover a 0-1000 range on the bar; anything
+        // above its threshold is already clinically rule-in.
         segments: [
           { min: 0, max: t.rule_out, label: 'Rule-out', color: '#22C55E' },
           { min: t.rule_out, max: t.low, label: 'Ниже URL', color: '#84CC16' },
           { min: t.low, max: t.rule_in_single, label: 'Серая зона', color: '#F59E0B' },
-          { min: t.rule_in_single, max: 1000, label: 'Rule-in', color: '#EF4444' },
+          { min: t.rule_in_single, max: t.rule_in_single * 2, label: 'Rule-in', color: '#EF4444' },
         ],
-        current: Math.min(val0, 1000),
+        current: Math.min(val0, t.rule_in_single * 2),
         unit: 'нг/л',
       },
       related: [
