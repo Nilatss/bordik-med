@@ -1,22 +1,42 @@
 {
-  "name": "IRON MED ACADEMY",
-  "short_name": "IronMed",
-  "description": "Полный академический курс военной и экстренной медицины с AI-генерацией лекций",
-  "start_url": "/",
+  "name": "Bordik - Медицинская академия",
+  "short_name": "Bordik",
+  "description": "Платформа медицинского обучения: курсы, тесты, клинические калькуляторы и шкалы.",
+  "id": "/?source=pwa",
+  "start_url": "/?source=pwa",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#0a0d14",
-  "theme_color": "#d63031",
-  "orientation": "portrait-primary",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait",
+  "lang": "ru",
+  "dir": "ltr",
+  "background_color": "#FAFAFA",
+  "theme_color": "#FAFAFA",
+  "categories": ["education", "medical", "productivity"],
   "icons": [
     {
       "src": "/icons/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "/icons/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }

@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build --webpack",
     "start": "next start",
     "build:tool-meta": "node scripts/build-tool-meta.mjs",
     "validate:scales": "npx tsx scripts/validate-scales.mjs",
@@ -28,10 +28,12 @@
     "zustand": "^5.0.12"
   },
   "devDependencies": {
+    "@serwist/next": "^9.5.7",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "serwist": "^9.5.7",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
