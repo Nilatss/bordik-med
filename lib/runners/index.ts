@@ -496,6 +496,21 @@ export const RUNNER_LOADERS: Record<string, RunnerLoader> = {
   "pps": () => import('./pps'),
   "who-ladder": () => import('./who-ladder'),
   "aor-ru": () => import('./aor-ru'),
+  "ssc": () => import('./ssc'),
+  "cap-scores": () => import('./cap-scores'),
+  "covid": () => import('./covid'),
+  "hiv-who": () => import('./hiv-who'),
+  "vacs": () => import('./vacs'),
+  "apri-hep": () => import('./apri-hep'),
+  "aasld": () => import('./aasld'),
+  "who-tb": () => import('./who-tb'),
+  "nigrovic": () => import('./nigrovic'),
+  "thwaites": () => import('./thwaites'),
+  "gmsps": () => import('./gmsps'),
+  "who-malaria": () => import('./who-malaria'),
+  "bristol": () => import('./bristol'),
+  "mccabe": () => import('./mccabe'),
+  "senic": () => import('./senic'),
 };
 
 const runnerCache = new Map<string, ToolRunner>();
