@@ -13,9 +13,12 @@ interface TestStartConsentProps {
 
 /**
  * Consent / rules screen shown before every test attempt.
- * User must tick the checkbox to unlock the "Начать тест" button.
- * Explicitly lists forbidden actions and consequences so the user cannot
- * claim "I did not know" after a violation.
+ *
+ * Design: neutral callout style that matches the rest of the app. No red /
+ * orange block-captions inside the rules cards — all section labels are
+ * uppercase grey mono (like field labels elsewhere). The warning icon in
+ * the header is also neutral grey — we've already told the user this is
+ * a test, they don't need a yellow hazard sign.
  */
 export default function TestStartConsent({
   testLabel, questionCount, timeMinutes, onAccept, onDecline,
@@ -28,58 +31,60 @@ export default function TestStartConsent({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, ease: [0.05, 0.7, 0.1, 1] }}
       style={{
-        padding: '24px 28px',
+        padding: '28px 32px',
         background: '#F5F6F8',
-        borderRadius: 16,
+        borderRadius: 20,
       }}
     >
       {/* Label */}
       <p style={{
         fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 600,
         color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
-        marginBottom: 6,
+        margin: '0 0 8px 0',
       }}>
         {testLabel}
       </p>
 
-      {/* Title with warning icon */}
-      <h3 style={{
-        fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 700,
-        color: '#1A1A1A', margin: '0 0 18px 0',
-        letterSpacing: '-0.02em',
-        display: 'flex', alignItems: 'center', gap: 10,
-      }}>
+      {/* Title + neutral icon */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
         <span style={{
-          width: 32, height: 32, borderRadius: 8,
-          background: '#FFFBEB', color: '#B45309',
+          width: 36, height: 36, borderRadius: 10,
+          background: '#FFFFFF', color: '#6B7280',
           display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
           flexShrink: 0,
+          boxShadow: '0 1px 2px rgba(16,24,40,0.06)',
         }}>
           <svg width={18} height={18} viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" strokeWidth={2.5}
+            stroke="currentColor" strokeWidth={2}
             strokeLinecap="round" strokeLinejoin="round">
-            <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
-            <line x1="12" y1="9" x2="12" y2="13" />
-            <line x1="12" y1="17" x2="12.01" y2="17" />
+            <path d="M9 11l3 3L22 4" />
+            <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2h11" />
           </svg>
         </span>
-        Правила прохождения теста
-      </h3>
+        <h3 style={{
+          fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 700,
+          color: '#1A1A1A', margin: 0,
+          letterSpacing: '-0.02em', lineHeight: 1.2,
+        }}>
+          Правила прохождения теста
+        </h3>
+      </div>
 
-      {/* Rules - forbidden */}
+      {/* Forbidden — neutral callout style (like the ФОРМУЛА pattern) */}
       <div style={{
         background: '#FFFFFF', borderRadius: 12,
-        padding: '16px 20px', marginBottom: 12,
+        padding: '18px 20px', marginBottom: 10,
+        borderLeft: '3px solid #D1D5DB',
       }}>
         <p style={{
-          fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700,
-          color: '#B91C1C', textTransform: 'uppercase', letterSpacing: '0.06em',
+          fontFamily: 'var(--font-mono)', fontSize: 10.5, fontWeight: 700,
+          color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
           margin: '0 0 10px 0',
         }}>
           Во время теста запрещено
         </p>
         <ul style={{
-          margin: 0, paddingLeft: 20,
+          margin: 0, paddingLeft: 18,
           fontFamily: 'var(--font-body)', fontSize: 13.5,
           color: '#374151', lineHeight: 1.7,
         }}>
@@ -90,86 +95,111 @@ export default function TestStartConsent({
         </ul>
       </div>
 
-      {/* Rules - consequences */}
+      {/* Consequences — same neutral treatment */}
       <div style={{
         background: '#FFFFFF', borderRadius: 12,
-        padding: '16px 20px', marginBottom: 12,
+        padding: '18px 20px', marginBottom: 18,
+        borderLeft: '3px solid #D1D5DB',
       }}>
         <p style={{
-          fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700,
-          color: '#B45309', textTransform: 'uppercase', letterSpacing: '0.06em',
+          fontFamily: 'var(--font-mono)', fontSize: 10.5, fontWeight: 700,
+          color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
           margin: '0 0 10px 0',
         }}>
           При нарушении
         </p>
         <ul style={{
-          margin: 0, paddingLeft: 20,
+          margin: 0, paddingLeft: 18,
           fontFamily: 'var(--font-body)', fontSize: 13.5,
           color: '#374151', lineHeight: 1.7,
         }}>
           <li>Даётся 10 секунд, чтобы вернуться в окно теста</li>
           <li>1-е и 2-е нарушения - предупреждение</li>
-          <li>3-е нарушение - тест автоматически завершается, попытка не засчитывается</li>
-          <li><strong style={{ color: '#B91C1C' }}>Повторная попытка будет доступна только через 48 часов</strong></li>
+          <li>3-е нарушение - тест завершается, попытка не засчитывается</li>
+          <li>Повторная попытка будет доступна только через 48 часов</li>
         </ul>
       </div>
 
-      {/* Test params */}
+      {/* Test params — chip pills in the muted-neutral palette */}
       <div style={{
         display: 'flex', gap: 10, marginBottom: 18,
       }}>
         <div style={{
-          flex: 1, padding: '10px 14px',
-          background: '#FFFFFF', borderRadius: 10,
-          display: 'flex', alignItems: 'center', gap: 10,
+          flex: 1, padding: '12px 16px',
+          background: '#FFFFFF', borderRadius: 12,
+          display: 'flex', alignItems: 'center', gap: 12,
         }}>
-          <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
-            stroke="#6B7280" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-            <path d="M9 11l3 3 8-8" /><path d="M20 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2h11" />
-          </svg>
+          <span style={{
+            width: 28, height: 28, borderRadius: 8,
+            background: '#F5F6F8', color: '#6B7280',
+            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <svg width={15} height={15} viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 11l3 3 8-8" /><path d="M20 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2h11" />
+            </svg>
+          </span>
           <div>
             <p style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.06em', margin: 0 }}>Вопросов</p>
-            <p style={{ fontFamily: 'var(--font-display)', fontSize: 16, fontWeight: 700, color: '#1A1A1A', margin: 0 }}>{questionCount}</p>
+            <p style={{ fontFamily: 'var(--font-display)', fontSize: 17, fontWeight: 700, color: '#1A1A1A', margin: 0 }}>{questionCount}</p>
           </div>
         </div>
         <div style={{
-          flex: 1, padding: '10px 14px',
-          background: '#FFFFFF', borderRadius: 10,
-          display: 'flex', alignItems: 'center', gap: 10,
+          flex: 1, padding: '12px 16px',
+          background: '#FFFFFF', borderRadius: 12,
+          display: 'flex', alignItems: 'center', gap: 12,
         }}>
-          <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
-            stroke="#6B7280" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="10" /><polyline points="12,6 12,12 16,14" />
-          </svg>
+          <span style={{
+            width: 28, height: 28, borderRadius: 8,
+            background: '#F5F6F8', color: '#6B7280',
+            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <svg width={15} height={15} viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10" /><polyline points="12,6 12,12 16,14" />
+            </svg>
+          </span>
           <div>
             <p style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.06em', margin: 0 }}>Время</p>
-            <p style={{ fontFamily: 'var(--font-display)', fontSize: 16, fontWeight: 700, color: '#1A1A1A', margin: 0 }}>{timeMinutes} мин</p>
+            <p style={{ fontFamily: 'var(--font-display)', fontSize: 17, fontWeight: 700, color: '#1A1A1A', margin: 0 }}>{timeMinutes} мин</p>
           </div>
         </div>
       </div>
 
-      {/* Consent checkbox */}
+      {/* Consent — matches the checkbox look used elsewhere in the app
+          (square with black tick on check, white 1px shadow idle). */}
       <label style={{
-        display: 'flex', alignItems: 'flex-start', gap: 10,
-        padding: '12px 14px',
-        background: agreed ? '#ECFDF5' : '#FFFFFF',
-        borderRadius: 10,
+        display: 'flex', alignItems: 'flex-start', gap: 12,
+        padding: '14px 16px',
+        background: '#FFFFFF',
+        borderRadius: 12,
         cursor: 'pointer',
-        marginBottom: 16,
+        marginBottom: 18,
         transition: 'background 180ms',
-        border: `1px solid ${agreed ? '#A7F3D0' : 'transparent'}`,
       }}>
         <input
           type="checkbox"
           checked={agreed}
           onChange={(e) => setAgreed(e.target.checked)}
-          style={{
-            width: 18, height: 18, flexShrink: 0, marginTop: 1,
-            accentColor: '#10B981', cursor: 'pointer',
-          }}
+          style={{ position: 'absolute', opacity: 0, width: 0, height: 0 }}
         />
         <span style={{
-          fontFamily: 'var(--font-body)', fontSize: 13.5, fontWeight: 500,
+          width: 20, height: 20, borderRadius: 6,
+          background: agreed ? '#1A1A1A' : '#F5F6F8',
+          boxShadow: agreed ? 'none' : '0 0 0 1px #E2E4EA inset',
+          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+          flexShrink: 0, marginTop: 1,
+          transition: 'background 150ms, box-shadow 150ms',
+        }}>
+          {agreed && (
+            <svg width={13} height={13} viewBox="0 0 24 24" fill="none"
+              stroke="#FFFFFF" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="20,6 9,17 4,12" />
+            </svg>
+          )}
+        </span>
+        <span style={{
+          fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: 500,
           color: '#1A1A1A', lineHeight: 1.5,
         }}>
           Я прочитал правила, согласен с ними и понимаю последствия нарушений.
