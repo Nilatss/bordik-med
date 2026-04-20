@@ -557,12 +557,16 @@ function CalculatorBody({ inputs, values, setValues, result }: {
 
   return (
     <div>
-      {/* Single consistent 8px gap for every input, including the
-          number→checkbox transition. The visual separation comes from the
-          checkbox's own background (#F5F6F8 plate) — no extra dividers or
-          paddings needed, keeps spacing uniform across all calculators. */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         {nonCheckboxes.map(renderInput)}
+        {checkboxes.length > 0 && nonCheckboxes.length > 0 && (
+          // Dashed divider between numeric/select inputs and the checkbox
+          // group. Both the gap ABOVE the line and the gap BELOW are the
+          // same 8 px (matches the inter-input rhythm). The line sits in
+          // its own 0-height slot inside the flex column so `gap: 8` from
+          // the outer container applies equally on top and bottom.
+          <div style={{ borderTop: '1px dashed #E2E4EA' }} />
+        )}
         {checkboxes.map(renderInput)}
       </div>
 
