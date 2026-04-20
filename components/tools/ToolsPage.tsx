@@ -30,6 +30,15 @@ interface FilterOption {
   count: number;
   /** Optional leading glyph (e.g. country flag emoji) rendered before the label. */
   flag?: string;
+  /** Optional pretty label shown to the user (defaults to `value`). Used to
+      strip internal "N. " numeric prefixes from categories without breaking
+      filter identity. */
+  label?: string;
+}
+
+/** Strips the leading "N. " numeric prefix from a category string. */
+function stripCategoryNumber(label: string): string {
+  return label.replace(/^\d+\.\s*/, '');
 }
 
 /** One logical row in the virtualised list. Three kinds:
@@ -201,7 +210,7 @@ const FilterDropdown = React.memo(function FilterDropdown({
                   }}>
                     {opt.flag && <EmojiOrFlag emoji={opt.flag} size={16} />}
                     <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                      {opt.value}
+                      {opt.label ?? opt.value}
                     </span>
                   </span>
                   <span style={{
@@ -526,7 +535,7 @@ function RenderedRow({ row }: { row: Row }) {
           color: '#1A1A1A', marginBottom: 18, letterSpacing: '-0.01em',
           display: 'flex', alignItems: 'baseline', gap: 8,
         }}>
-          {row.category}
+          {stripCategoryNumber(row.category)}
           <span style={{
             fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 600,
             color: '#9CA3AF',
@@ -814,7 +823,7 @@ export default function ToolsPage() {
         <FilterDropdown
           label="Разделы"
           icon={<svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>}
-          options={CATEGORY_COUNTS}
+          options={CATEGORY_COUNTS.map((o) => ({ ...o, label: stripCategoryNumber(o.value) }))}
           selected={selectedCategories}
           onChange={setCats}
           open={openFilter === 'cat'}
@@ -918,7 +927,7 @@ export default function ToolsPage() {
           borderBottom: '1px solid #F0F1F5',
         }}>
           {selectedCategories.map((c) => (
-            <FilterChip key={`c-${c}`} label={c}
+            <FilterChip key={`c-${c}`} label={stripCategoryNumber(c)}
               onRemove={() => setCats(selectedCategories.filter((x) => x !== c))} />
           ))}
           {selectedSubcategories.map((c) => (
