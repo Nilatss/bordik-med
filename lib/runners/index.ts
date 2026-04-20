@@ -720,6 +720,18 @@ export const RUNNER_LOADERS: Record<string, RunnerLoader> = {
   "womac-rehab": () => import('./womac-rehab'),
   "odi": () => import('./odi'),
   "foto": () => import('./foto'),
+  "grbas": () => import('./grbas'),
+  "frenchay": () => import('./frenchay'),
+  "mai": () => import('./mai'),
+  "naranjo": () => import('./naranjo'),
+  "pcne": () => import('./pcne'),
+  "medwatch": () => import('./medwatch'),
+  "sbar": () => import('./sbar'),
+  "rome-iv": () => import('./rome-iv'),
+  "uceis": () => import('./uceis'),
+  "ses-cd": () => import('./ses-cd'),
+  "la-grade": () => import('./la-grade'),
+  "oakland": () => import('./oakland'),
 };
 
 const runnerCache = new Map<string, ToolRunner>();
