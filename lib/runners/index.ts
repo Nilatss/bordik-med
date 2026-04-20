@@ -633,6 +633,22 @@ export const RUNNER_LOADERS: Record<string, RunnerLoader> = {
   "paho": () => import('./paho'),
   "saudi": () => import('./saudi'),
   "imci-africa": () => import('./imci-africa'),
+  "cmps-sf": () => import('./cmps-sf'),
+  "colorado-pain": () => import('./colorado-pain'),
+  "bcs": () => import('./bcs'),
+  "purina-fediaf": () => import('./purina-fediaf'),
+  "asa-vet": () => import('./asa-vet'),
+  "vetcot": () => import('./vetcot'),
+  "vcog": () => import('./vcog'),
+  "acvim": () => import('./acvim'),
+  "vhs": () => import('./vhs'),
+  "cbpi": () => import('./cbpi'),
+  "ofa": () => import('./ofa'),
+  "cite": () => import('./cite'),
+  "rer": () => import('./rer'),
+  "cri-vet": () => import('./cri-vet'),
+  "plumbs": () => import('./plumbs'),
+  "merck-vet": () => import('./merck-vet'),
 };
 
 const runnerCache = new Map<string, ToolRunner>();
