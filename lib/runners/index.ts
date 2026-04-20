@@ -556,6 +556,16 @@ export const RUNNER_LOADERS: Record<string, RunnerLoader> = {
   "wintrobe": () => import('./wintrobe'),
   "rpi": () => import('./rpi'),
   "tibc": () => import('./tibc'),
+  "plasmic": () => import('./plasmic'),
+  "dic": () => import('./dic'),
+  "hit-lab": () => import('./hit-lab'),
+  "agapss": () => import('./agapss'),
+  "inr-coag": () => import('./inr-coag'),
+  "age-ddimer": () => import('./age-ddimer'),
+  "tsh": () => import('./tsh'),
+  "cortisol": () => import('./cortisol'),
+  "arr": () => import('./arr'),
+  "calcium-pth": () => import('./calcium-pth'),
 };
 
 const runnerCache = new Map<string, ToolRunner>();
