@@ -557,16 +557,28 @@ function CalculatorBody({ inputs, values, setValues, result }: {
 
   return (
     <div>
-      {/* 24 px rhythm between every top-level input block AND around the
-          dashed separator. Internal offsets inside a single input block
-          (label→field→chips) stay at 8 px so the number input reads as
-          one grouped unit. */}
+      {/* Rhythm rules:
+          – Between sections (number group ↔ separator ↔ checkbox group) 24 px
+          – Between number/select inputs inside the top section          24 px
+          – Between checkboxes inside the bottom section                  6 px
+          – Internal offsets inside a single number block (label/field/
+            chips)                                                        8 px
+          Groups each have their own flex column; the outer layout stitches
+          them with 24 px. */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-        {nonCheckboxes.map(renderInput)}
+        {nonCheckboxes.length > 0 && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+            {nonCheckboxes.map(renderInput)}
+          </div>
+        )}
         {checkboxes.length > 0 && nonCheckboxes.length > 0 && (
           <div style={{ borderTop: '1px dashed #E2E4EA' }} />
         )}
-        {checkboxes.map(renderInput)}
+        {checkboxes.length > 0 && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            {checkboxes.map(renderInput)}
+          </div>
+        )}
       </div>
 
       {result && <ResultCard result={result} />}
