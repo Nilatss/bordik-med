@@ -13,12 +13,43 @@ import { getTestQuestions, getModuleTestQuestions } from '@/lib/questions';
 import { getModuleForCourse } from '@/lib/curriculum';
 import { Check } from '@/components/icons';
 import TestActiveView from './TestActiveView';
+import TestStartConsent from './TestStartConsent';
 
 interface TestPanelProps {
   courseId: string;
 }
 
+type PendingTest = { type: 'course'; level: TestLevel } | { type: 'module'; moduleId: number } | null;
 type ActiveTest = { type: 'course'; level: TestLevel } | { type: 'module'; moduleId: number } | null;
+
+const LOCKOUT_MS = 48 * 60 * 60 * 1000; // 48 hours
+
+function lockoutKey(type: 'course' | 'module', a: string | number, b?: number): string {
+  return type === 'course' ? `bordik:test-lockout:course:${a}:${b}` : `bordik:test-lockout:module:${a}`;
+}
+
+function getLockout(key: string): number {
+  if (typeof window === 'undefined') return 0;
+  const raw = window.localStorage.getItem(key);
+  if (!raw) return 0;
+  const until = Number(raw);
+  if (!Number.isFinite(until) || until <= Date.now()) {
+    window.localStorage.removeItem(key);
+    return 0;
+  }
+  return until;
+}
+
+function setLockout(key: string): number {
+  const until = Date.now() + LOCKOUT_MS;
+  if (typeof window !== 'undefined') window.localStorage.setItem(key, String(until));
+  return until;
+}
+
+function formatHours(ms: number): string {
+  const hours = Math.ceil(ms / 3_600_000);
+  return `${hours} ч`;
+}
 
 interface TestResult {
   score: number;
@@ -38,10 +69,11 @@ export default function TestPanel({ courseId }: TestPanelProps) {
   const moduleUnlocked = moduleId !== undefined ? isModuleTestUnlocked(store, moduleId) : false;
   const modulePassed = moduleId !== undefined ? completedModules.includes(moduleId) : false;
 
+  const [pendingTest, setPendingTest] = useState<PendingTest>(null);
   const [activeTest, setActiveTest] = useState<ActiveTest>(null);
   const [result, setResult] = useState<TestResult | null>(null);
 
-  // Cooldown timers (update every minute)
+  // Cooldown timers (update every minute) + forces re-read of localStorage lockouts
   const [, setTick] = useState(0);
   useEffect(() => {
     const interval = setInterval(() => setTick((t) => t + 1), 60_000);
@@ -49,18 +81,41 @@ export default function TestPanel({ courseId }: TestPanelProps) {
   }, []);
 
   const startCourseTest = useCallback((level: TestLevel) => {
+    // Lockout gate
+    const until = getLockout(lockoutKey('course', courseId, level));
+    if (until > 0) return;
     setResult(null);
-    setActiveTest({ type: 'course', level });
-  }, []);
+    setPendingTest({ type: 'course', level });
+  }, [courseId]);
 
   const startModuleTest = useCallback(() => {
     if (moduleId === undefined) return;
+    const until = getLockout(lockoutKey('module', moduleId));
+    if (until > 0) return;
     setResult(null);
-    setActiveTest({ type: 'module', moduleId });
+    setPendingTest({ type: 'module', moduleId });
   }, [moduleId]);
+
+  const confirmStart = useCallback(() => {
+    if (!pendingTest) return;
+    setActiveTest(pendingTest);
+    setPendingTest(null);
+  }, [pendingTest]);
+
+  const declineStart = useCallback(() => {
+    setPendingTest(null);
+  }, []);
 
   const handleComplete = useCallback((answers: number[], violations: number) => {
     if (!activeTest) return;
+
+    // Set 48h lockout if test ends with a violation penalty (>= MAX violations)
+    if (violations >= 3) {
+      const key = activeTest.type === 'course'
+        ? lockoutKey('course', courseId, activeTest.level)
+        : lockoutKey('module', activeTest.moduleId);
+      setLockout(key);
+    }
 
     if (activeTest.type === 'course') {
       const questions = getTestQuestions(courseId, activeTest.level);
@@ -77,6 +132,27 @@ export default function TestPanel({ courseId }: TestPanelProps) {
   const handleCancel = useCallback(() => {
     setActiveTest(null);
   }, []);
+
+  // ═══ CONSENT SCREEN (before active test) ═══
+  if (pendingTest) {
+    const questions = pendingTest.type === 'course'
+      ? getTestQuestions(courseId, pendingTest.level)
+      : getModuleTestQuestions(pendingTest.moduleId);
+    const timeLimit = pendingTest.type === 'module' ? MODULE_TEST_TIME_MS : 60 * 60 * 1000;
+    const label = pendingTest.type === 'course'
+      ? TEST_LEVEL_NAMES[pendingTest.level]
+      : 'Финальный тест модуля';
+
+    return (
+      <TestStartConsent
+        testLabel={label}
+        questionCount={questions.length}
+        timeMinutes={Math.round(timeLimit / 60_000)}
+        onAccept={confirmStart}
+        onDecline={declineStart}
+      />
+    );
+  }
 
   // ═══ ACTIVE TEST VIEW ═══
   if (activeTest) {
@@ -248,7 +324,11 @@ export default function TestPanel({ courseId }: TestPanelProps) {
         const attempts = testAttempts[key] || [];
         const isPassed = highestPassed >= level;
         const isUnlocked = level === 1 || highestPassed >= level - 1;
-        const cooldown = !isPassed ? getCooldownRemaining(attempts) : 0;
+        const baseCooldown = !isPassed ? getCooldownRemaining(attempts) : 0;
+        const lockoutUntil = !isPassed ? getLockout(lockoutKey('course', courseId, level)) : 0;
+        const lockoutCooldown = lockoutUntil > 0 ? lockoutUntil - Date.now() : 0;
+        const cooldown = Math.max(baseCooldown, lockoutCooldown);
+        const isLockedByViolation = lockoutCooldown > 0;
         const bestScore = attempts.length > 0 ? Math.max(...attempts.map((a) => a.score)) : null;
         const isCurrent = !isPassed && isUnlocked && cooldown <= 0;
 
@@ -382,7 +462,9 @@ export default function TestPanel({ courseId }: TestPanelProps) {
                 ) : !isUnlocked ? (
                   'Пройдите предыдущий тест для разблокировки'
                 ) : cooldown > 0 ? (
-                  `Доступно через ${formatCooldown(cooldown)}`
+                  isLockedByViolation
+                    ? `Нарушение - доступно через ${formatHours(cooldown)}`
+                    : `Доступно через ${formatCooldown(cooldown)}`
                 ) : (
                   <>
                     <span>{QUESTIONS_PER_TEST} вопросов</span>
@@ -436,7 +518,11 @@ export default function TestPanel({ courseId }: TestPanelProps) {
       })}
 
       {/* Module final test card */}
-      {moduleId !== undefined && (
+      {moduleId !== undefined && (() => {
+        const moduleLockoutUntil = getLockout(lockoutKey('module', moduleId));
+        const moduleLockedByViolation = moduleLockoutUntil > Date.now();
+        const moduleLockoutLeft = moduleLockoutUntil - Date.now();
+        return (
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
@@ -517,23 +603,25 @@ export default function TestPanel({ courseId }: TestPanelProps) {
             }}>
               {modulePassed
                 ? 'Модуль полностью пройден'
-                : moduleUnlocked
-                  ? (
-                    <>
-                      <span>{MODULE_TEST_QUESTIONS} вопросов</span>
-                      <span style={{ color: '#D1D5DB' }}>·</span>
-                      <span>3 часа</span>
-                      <span style={{ color: '#D1D5DB' }}>·</span>
-                      <span>{PASS_THRESHOLD_MODULE}% для прохождения</span>
-                    </>
-                  )
-                  : 'Откроется после прохождения всех 5 тестов по каждому курсу модуля'}
+                : moduleLockedByViolation
+                  ? <span style={{ color: '#B91C1C' }}>Нарушение - доступно через {formatHours(moduleLockoutLeft)}</span>
+                  : moduleUnlocked
+                    ? (
+                      <>
+                        <span>{MODULE_TEST_QUESTIONS} вопросов</span>
+                        <span style={{ color: '#D1D5DB' }}>·</span>
+                        <span>3 часа</span>
+                        <span style={{ color: '#D1D5DB' }}>·</span>
+                        <span>{PASS_THRESHOLD_MODULE}% для прохождения</span>
+                      </>
+                    )
+                    : 'Откроется после прохождения всех 5 тестов по каждому курсу модуля'}
             </div>
           </div>
 
           {/* Action */}
           <div style={{ flexShrink: 0 }}>
-            {moduleUnlocked && !modulePassed && (
+            {moduleUnlocked && !modulePassed && !moduleLockedByViolation && (
               <button onClick={startModuleTest} style={{
                 display: 'inline-flex', alignItems: 'center', gap: 6,
                 padding: '10px 18px',
@@ -556,7 +644,8 @@ export default function TestPanel({ courseId }: TestPanelProps) {
             )}
           </div>
         </motion.div>
-      )}
+        );
+      })()}
     </div>
   );
 }
