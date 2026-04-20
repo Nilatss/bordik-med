@@ -708,6 +708,18 @@ export const RUNNER_LOADERS: Record<string, RunnerLoader> = {
   "abcde": () => import('./abcde'),
   "breslow": () => import('./breslow'),
   "posas": () => import('./posas'),
+  "scorten": () => import('./scorten'),
+  "casi": () => import('./casi'),
+  "rosacea": () => import('./rosacea'),
+  "acne": () => import('./acne'),
+  "dlqi": () => import('./dlqi'),
+  "fim-rehab": () => import('./fim-rehab'),
+  "berg-balance": () => import('./berg-balance'),
+  "6mwt": () => import('./6mwt'),
+  "borg": () => import('./borg'),
+  "womac-rehab": () => import('./womac-rehab'),
+  "odi": () => import('./odi'),
+  "foto": () => import('./foto'),
 };
 
 const runnerCache = new Map<string, ToolRunner>();
