@@ -465,6 +465,17 @@ export const RUNNER_LOADERS: Record<string, RunnerLoader> = {
   "hcr20": () => import('./hcr20'),
   "cbcl": () => import('./cbcl'),
   "whodas": () => import('./whodas'),
+  "tnm": () => import('./tnm'),
+  "figo-onco": () => import('./figo-onco'),
+  "enneking": () => import('./enneking'),
+  "ann-arbor": () => import('./ann-arbor'),
+  "binet-rai": () => import('./binet-rai'),
+  "iss-mm": () => import('./iss-mm'),
+  "ecog-kps": () => import('./ecog-kps'),
+  "recist": () => import('./recist'),
+  "cheson": () => import('./cheson'),
+  "percist": () => import('./percist'),
+  "ctcae": () => import('./ctcae'),
 };
 
 const runnerCache = new Map<string, ToolRunner>();
