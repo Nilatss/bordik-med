@@ -604,6 +604,16 @@ export const RUNNER_LOADERS: Record<string, RunnerLoader> = {
   "netter": () => import('./netter'),
   "complete-anatomy": () => import('./complete-anatomy'),
   "osce": () => import('./osce'),
+  "mz-ru": () => import('./mz-ru'),
+  "mz-standards": () => import('./mz-standards'),
+  "formular-ru": () => import('./formular-ru'),
+  "geotar": () => import('./geotar'),
+  "ru-societies": () => import('./ru-societies'),
+  "ru-scales": () => import('./ru-scales'),
+  "ketle": () => import('./ketle'),
+  "cis": () => import('./cis'),
+  "nice-uk": () => import('./nice-uk'),
+  "has-fr": () => import('./has-fr'),
 };
 
 const runnerCache = new Map<string, ToolRunner>();
