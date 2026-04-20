@@ -662,6 +662,20 @@ export const RUNNER_LOADERS: Record<string, RunnerLoader> = {
   "bolton": () => import('./bolton'),
   "anb": () => import('./anb'),
   "pell-gregory": () => import('./pell-gregory'),
+  "ao-cmf": () => import('./ao-cmf'),
+  "lefort": () => import('./lefort'),
+  "vertucci": () => import('./vertucci'),
+  "pai": () => import('./pai'),
+  "asa-dental": () => import('./asa-dental'),
+  "sac-iti": () => import('./sac-iti'),
+  "frankl": () => import('./frankl'),
+  "nolla": () => import('./nolla'),
+  "andreasen": () => import('./andreasen'),
+  "tnm-hn": () => import('./tnm-hn'),
+  "velscope": () => import('./velscope'),
+  "ada-cdt": () => import('./ada-cdt'),
+  "ace3": () => import('./ace3'),
+  "alsfrs": () => import('./alsfrs'),
 };
 
 const runnerCache = new Map<string, ToolRunner>();
