@@ -871,13 +871,8 @@ main:has(.stats-page) {
 @media (max-width: 768px) { .hide-below-md { display: none !important; } }
 @media (min-width: 769px) { .hide-above-md { display: none !important; } }
 
-/* ToolsPage row grid — collapses from 3 cols to 2 (≤ 1200) to 1 (mobile).
-   Padded empty slots are harmless because they have no content / background.
-   Breakpoint pushed up to 1200 because a 3rd card under ~380 px becomes
-   cramped and leaves a big empty column when rows are padded. */
-@media (max-width: 1200px) {
-  .tools-row-grid { grid-template-columns: repeat(2, 1fr) !important; }
-}
+/* ToolsPage row grid — 2 cols baseline (set in JS), collapse to 1 col on
+   mobile where a 2-col layout makes each card too narrow. */
 @media (max-width: 620px) {
   .tools-row-grid { grid-template-columns: 1fr !important; }
 }

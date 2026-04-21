@@ -529,7 +529,11 @@ const ToolCard = React.memo(function ToolCard({ tool }: { tool: CatalogTool }) {
    One row of up to 3 cards → matches the visual 3-col grid.
    ════════════════════════════════════════════════════════════════ */
 
-const COLS = 3;
+/* 2 cards per row is the new baseline — 3-col left too much empty space on
+   mid-sized viewports where the 3rd column padded slot was visible. At
+   content-area widths > 1400 px this still looks balanced; any wider and
+   the cards just grow — which is fine, they're designed to breathe. */
+const COLS = 2;
 
 function buildRows(
   byCategory: { category: string; tools: CatalogTool[] }[]
