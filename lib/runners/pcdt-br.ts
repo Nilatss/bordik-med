@@ -32,15 +32,133 @@ const runner: CalculatorTool = {
   ],
   compute: (v) => {
     const a = String(v.area || 'hiv');
-    const map: Record<string, { name: string; details: string }> = {
-      hiv: { name: 'HIV / AIDS', details: 'PCDT HIV adulto + PCDT HIV pediátrico + PCDT Profilaxia Pré-Exposição (PrEP) + PCDT Profilaxia Pós-Exposição (PEP). Бразилия — один из мировых лидеров по универсальному доступу к ART через SUS с 1996 года. Препараты бесплатно для всех. DTG-базированные режимы первой линии. Тестирование на HIV включено в пренатальный скрининг (Rede Cegonha).' },
-      tb: { name: 'Tuberculose', details: 'PNCT (Programa Nacional de Controle da Tuberculose). Manual de Recomendações para o Controle da Tuberculose no Brasil. Бразилия в topе-30 стран WHO high-burden list. RHZE (rifampicina, isoniazida, pirazinamida, etambutol) — первая линия. Fixed-dose combination. BCG-вакцинация обязательна при рождении. Новый PCDT включает BPaL/BPaLM для DR-TB.' },
-      hepatites: { name: 'Гепатиты B, C', details: 'PCDT Hepatite B + PCDT Hepatite C. DAA (direct-acting antivirals) для HCV — глософвир/ледипасвир, софосбувир/даклатасвир — бесплатно через SUS. Elimination target: WHO 2030. Screen-and-treat в primary care. HBV — TDF / entecavir.' },
-      cancer: { name: 'Oncologia', details: 'PCDT oncológicos — по локализации (mama, colo útero, próstata, cólon, pulmão, estômago, леукемии). CACON (Centros de Alta Complexidade em Oncologia) + UNACON. Доступ через SUS — регулирован судебными решениями (judicialização da saúde — частая проблема для high-cost oncology).' },
-      'doencas-raras': { name: 'Doenças raras', details: 'Política Nacional de Atenção Integral às Pessoas com Doenças Raras (Portaria 199/2014). CER — Centros Especializados em Reabilitação. PCDT para >60 редких заболеваний: фенилкетонурия, гипотиреоз врожд., CF, Gaucher, Pompe, MPS, Fabry, спинальная мышечная атрофия (SMA).' },
-      'saude-mental': { name: 'Saúde mental', details: 'RAPS (Rede de Atenção Psicossocial). CAPS (Centros de Atenção Psicossocial) — community-based модель (Reforma Psiquiátrica). PCDT depressão, transtorno bipolar, esquizofrenia. Psicofármacos через SUS.' },
-      aps: { name: 'Atenção Primária (APS)', details: 'Cadernos de Atenção Básica (CAB) — серия карманных руководств для ESF (Estratégia Saúde da Família). CAB 1-38+ по темам: HAS, DM, gestação, criança, idoso, saúde mental, dor crônica, DST, etc. Бесплатно PDF на gov.br/saude. e-SUS APS — национальная электронная система APS.' },
-      cronicas: { name: 'Doenças crônicas', details: 'PCDT HAS (hipertensão arterial), PCDT DM2, Portaria de Tratamento da Obesidade. Linha de cuidado hipertensão/diabetes (HIPERDIA histórico). Distribuição gratuita de losartana, enalapril, hidroclorotiazida, metformina, glibenclamida, insulina NPH/regular através de Farmácia Popular.' },
+    const map: Record<string, { name: string; details: string; actions: string[]; caveats: string[] }> = {
+      hiv: {
+        name: 'HIV / AIDS',
+        details: 'PCDT HIV adulto + PCDT HIV pediátrico + PCDT Profilaxia Pré-Exposição (PrEP) + PCDT Profilaxia Pós-Exposição (PEP). Бразилия — один из мировых лидеров по универсальному доступу к ART через SUS с 1996 года. Препараты бесплатно для всех. DTG-базированные режимы первой линии. Тестирование на HIV включено в пренатальный скрининг (Rede Cegonha).',
+        actions: [
+          'PCDT HIV adulto: https://www.gov.br/aids/pt-br/central-de-conteudo/pcdts',
+          'PrEP/PEP Brasil: https://www.gov.br/aids/pt-br/assuntos/prevencao-combinada/prep-profilaxia-pre-exposicao',
+          'Departamento de HIV/AIDS: https://www.gov.br/aids/',
+          'Telelab (тестирование): https://telelab.aids.gov.br/',
+        ],
+        caveats: [
+          'DTG 1-я линия (TDF/3TC/DTG); DTG avoided в 1 триместре ранее — сейчас допустим с counseling',
+          'Viremia threshold для смены схемы: 2 × >50 copies/mL на ART',
+          'PrEP — бесплатно всем группам риска через SUS (с 2017)',
+        ],
+      },
+      tb: {
+        name: 'Tuberculose',
+        details: 'PNCT (Programa Nacional de Controle da Tuberculose). Manual de Recomendações para o Controle da Tuberculose no Brasil. Бразилия в топе-30 стран WHO high-burden list. RHZE (rifampicina, isoniazida, pirazinamida, etambutol) — первая линия. Fixed-dose combination. BCG-вакцинация обязательна при рождении. Новый PCDT включает BPaL/BPaLM для DR-TB.',
+        actions: [
+          'PNCT portal: https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/t/tuberculose',
+          'Manual de Recomendações TB: https://bvsms.saude.gov.br/bvs/publicacoes/manual_recomendacoes_controle_tuberculose_brasil_2_ed.pdf',
+          'SITE-TB (система регистрации МЛУ-ТБ): https://sitetb.saude.gov.br/',
+          'BCG календарь: https://www.gov.br/saude/pt-br/vacinacao',
+        ],
+        caveats: [
+          'DOTS — обязательный стандарт наблюдения терапии',
+          'Co-инфекция HIV — тестирование на HIV всем пациентам с ТБ',
+          'BPaL/BPaLM для преXDR/RR-TB уже в PCDT',
+          'Индигенные народы — особая подпрограмма PNCT',
+        ],
+      },
+      hepatites: {
+        name: 'Гепатиты B, C',
+        details: 'PCDT Hepatite B + PCDT Hepatite C. DAA (direct-acting antivirals) для HCV — глософвир/ледипасвир, софосбувир/даклатасвир — бесплатно через SUS. Elimination target: WHO 2030. Screen-and-treat в primary care. HBV — TDF / entecavir.',
+        actions: [
+          'PCDT Hepatite C: https://www.gov.br/conitec/pt-br/midias/protocolos/20200813_pcdt_hepatite_c_relatorio_535_2020.pdf',
+          'PCDT Hepatite B: https://www.gov.br/aids/pt-br/central-de-conteudo/pcdts',
+          'Elimina Hepatites portal: https://www.gov.br/aids/pt-br/assuntos/hepatites-virais',
+          'SIM-C (reg. гепатитов): https://sim-c.aids.gov.br/',
+        ],
+        caveats: [
+          'Pangenotipная схема SOF/VEL 12 недель — стандарт HCV в Brasil',
+          'Скрининг anti-HCV 1 раз всем ≥ 40 лет (Portaria Elimina 2030)',
+          'HBsAg скрининг обязателен в пренатальном наблюдении',
+          'HDV — тестирование всем HBsAg+ (Amazonas — эндемичный)',
+        ],
+      },
+      cancer: {
+        name: 'Oncologia',
+        details: 'PCDT oncológicos — по локализации (mama, colo útero, próstata, cólon, pulmão, estômago, лейкемии). CACON (Centros de Alta Complexidade em Oncologia) + UNACON. Доступ через SUS — регулирован судебными решениями (judicialização da saúde — частая проблема для high-cost oncology).',
+        actions: [
+          'INCA (Instituto Nacional de Câncer): https://www.inca.gov.br/',
+          'PCDT oncológicos (CONITEC): https://www.gov.br/conitec/pt-br/assuntos/protocolos-e-diretrizes',
+          'CACON/UNACON список: https://www.inca.gov.br/assistencia-oncologica',
+          'Carta dos Direitos do Paciente Oncológico SUS',
+        ],
+        caveats: [
+          'Lei 12.732/2012 — начало лечения ≤ 60 дней от диагноза (часто не соблюдается)',
+          'Multi-gene tests, CAR-T, IO — частая judicialização',
+          'Национальный скрининг: шейка матки (Papanicolaou 25–64 л), грудь (маммография 50–69 л каждые 2 года)',
+        ],
+      },
+      'doencas-raras': {
+        name: 'Doenças raras',
+        details: 'Política Nacional de Atenção Integral às Pessoas com Doenças Raras (Portaria 199/2014). CER — Centros Especializados em Reabilitação. PCDT para >60 редких заболеваний: фенилкетонурия, гипотиреоз врожд., CF, Gaucher, Pompe, MPS, Fabry, спинальная мышечная атрофия (SMA).',
+        actions: [
+          'Política Doenças Raras (Portaria 199/2014)',
+          'PCDT específicos (CF, SMA, Gaucher, Pompe, MPS, Fabry): https://www.gov.br/conitec',
+          'Teste do Pezinho ampliado (триагем неонатальна): https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/t/teste-do-pezinho',
+          'Rede Nacional de Doenças Raras',
+        ],
+        caveats: [
+          'SMA — nusinersen через SUS (только типа 1 вначале; тип 2–3 — через суд)',
+          'Enzymes (Gaucher, Pompe, Fabry) — bundled доставка через Secretaria de Saúde',
+          'Teste do Pezinho — 6 болезней бесплатно (расширение 14+ с 2024)',
+          'Judicialização — доминирующий путь доступа к orphan drugs',
+        ],
+      },
+      'saude-mental': {
+        name: 'Saúde mental',
+        details: 'RAPS (Rede de Atenção Psicossocial). CAPS (Centros de Atenção Psicossocial) — community-based модель (Reforma Psiquiátrica). PCDT depressão, transtorno bipolar, esquizofrenia. Psicofármacos через SUS.',
+        actions: [
+          'RAPS portal: https://www.gov.br/saude/pt-br/acesso-a-informacao/acoes-e-programas/rede-de-atencao-psicossocial',
+          'CAPS lista: https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/s/saude-mental',
+          'PCDT depressão/bipolar/esquizofrenia (CONITEC)',
+          'Centro de Valorização da Vida (CVV) 188 — suicide prevention',
+        ],
+        caveats: [
+          'Reforma Psiquiátrica (Lei 10.216/2001) — ориентация на community care, не стационар',
+          'Clozapina, lítio, anticonvulsantes — через SUS по PCDT',
+          'CAPS AD — отдельная сеть для зависимостей',
+          'Политические изменения 2017–2022: возврат к стационарам — обратно отменён',
+        ],
+      },
+      aps: {
+        name: 'Atenção Primária (APS)',
+        details: 'Cadernos de Atenção Básica (CAB) — серия карманных руководств для ESF (Estratégia Saúde da Família). CAB 1-38+ по темам: HAS, DM, gestação, criança, idoso, saúde mental, dor crônica, DST, etc. Бесплатно PDF на gov.br/saude. e-SUS APS — национальная электронная система APS.',
+        actions: [
+          'Cadernos de Atenção Básica: https://aps.saude.gov.br/biblioteca/',
+          'e-SUS APS (система записи): https://sisaps.saude.gov.br/esus/',
+          'Biblioteca Virtual APS: https://aps.saude.gov.br/',
+          'Previne Brasil (fin. ESF): https://aps.saude.gov.br/gestor/financiamento',
+        ],
+        caveats: [
+          'ESF (Estratégia Saúde da Família) — первичная модель APS в SUS',
+          'Agente Comunitário de Saúde (ACS) — ключевое звено, визиты по домам',
+          'Previne Brasil (с 2019) — pay-for-performance финансирование',
+          'e-SUS APS — обязательная регистрация всех консультаций',
+        ],
+      },
+      cronicas: {
+        name: 'Doenças crônicas',
+        details: 'PCDT HAS (hipertensão arterial), PCDT DM2, Portaria de Tratamento da Obesidade. Linha de cuidado hipertensão/diabetes (HIPERDIA histórico). Distribuição gratuita de losartana, enalapril, hidroclorotiazida, metformina, glibenclamida, insulina NPH/regular através de Farmácia Popular.',
+        actions: [
+          'Farmácia Popular (бесплатные HAS/DM): https://www.gov.br/saude/pt-br/assuntos/farmacia-popular',
+          'Linha de Cuidado HAS: https://linhasdecuidado.saude.gov.br/portal/hipertensao-arterial-sistemica-adulto/',
+          'Linha de Cuidado DM2',
+          'CAB 36 (DM2), CAB 37 (HAS): https://aps.saude.gov.br/biblioteca/',
+        ],
+        caveats: [
+          'Farmácia Popular: losartana/enalapril/HCT/metformina/glibenclamida/insulina NPH — бесплатно',
+          'Инсулин быстрого действия аналоги (glargine/aspart) — не всегда в SUS',
+          'GLP-1 RA, SGLT2i — частично в PCDT (semaglutide ещё не универсально)',
+          'Bariatric surgery — через SUS с ИМТ ≥ 35 + комплекации (по протоколу)',
+        ],
+      },
     };
     const e = map[a];
     return {
@@ -50,22 +168,19 @@ const runner: CalculatorTool = {
       interpretation: `Navigate: Brazilian PCDT ${e.name}`,
       details: `Область: ${e.name}\n\n${e.details}\n\nPCDT (Protocolo Clínico e Diretriz Terapêutica) — обязательный протокол SUS. Утверждается CONITEC (Comissão Nacional de Incorporação de Tecnologias no SUS) + Ministério da Saúde через Portaria. Невыполнение PCDT = отсутствие реимбурсации + юридический риск. Judicialização da saúde (судебные иски) — частая проблема для не включённых в PCDT высокостоимостных препаратов.`,
       actions: [
+        ...e.actions,
+        '— Общие источники SUS —',
         'CONITEC portal: https://www.gov.br/conitec/',
         'Ministério da Saúde: https://www.gov.br/saude/',
-        'Cadernos de Atenção Básica: https://aps.saude.gov.br/biblioteca/',
-        'PNCT (tuberculose): https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/t/tuberculose',
-        'Departamento de HIV/AIDS: https://www.gov.br/aids/',
         'ANVISA (регулятор лекарств): https://www.gov.br/anvisa/',
-        'Farmácia Popular: https://www.gov.br/saude/pt-br/assuntos/farmacia-popular',
         'BVS (Biblioteca Virtual em Saúde): https://bvsms.saude.gov.br/',
       ],
       caveats: [
+        ...e.caveats,
+        '— Общие для SUS —',
         'Документы на португальском (Brazilian Portuguese)',
-        'SUS — Sistema Único de Saúde — public universal, но огромные региональные различия (Norte/Nordeste vs Sudeste/Sul)',
-        'PCDT — обязательные для SUS, но частная медицина (саúde suplementar — ANS) имеет собственные правила',
+        'PCDT — обязательные для SUS, но частная медицина (saúde suplementar — ANS) имеет собственные правила',
         'Judicialização — частая практика (пациенты через суд получают препараты не в PCDT)',
-        'ANVISA регулирует лекарства (аналог FDA/EMA) — регистрация отдельно от включения в SUS',
-        'Эндемические болезни: дenge, chikungunya, Zika, febre amarela (желтая лихорадка), лейшманиоз, шистосомоз, Chagas',
       ],
       related: [
         { id: 'imss', title: 'IMSS GPC (Mexico)' },

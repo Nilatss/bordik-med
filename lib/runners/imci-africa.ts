@@ -49,41 +49,163 @@ const runner: CalculatorTool = {
       young: '**Young infant (1 wk - 2 months):** возможная bacterial infection (PSBI — Possible Serious Bacterial Infection) — требуется parenteral АБ; local infection; jaundice; diarrhoea; feeding problem / low weight. Специальные таблицы IMCI Young Infant.',
       child: '**2 months - 5 years:** классические IMCI categories: cough/difficult breathing (pneumonia — fast breathing по возрасту: ≥50/мин 2-12мес, ≥40/мин 1-5лет), diarrhoea (dehydration Plan A/B/C, dysentery, persistent), fever (malaria в endemic areas, measles, meningitis), ear problem, malnutrition (MUAC — 11.5-12.5 SAM/MAM, oedema, visible severe wasting), anaemia, HIV assessment.',
     };
-    const countryNames: Record<string, string> = {
-      nigeria: 'Нигерия',
-      ethiopia: 'Эфиопия',
-      kenya: 'Кения',
-      tanzania: 'Танзания',
-      uganda: 'Уганда',
-      ghana: 'Гана',
-      drc: 'ДР Конго',
-      southafrica: 'ЮАР',
-      afro: 'WHO AFRO регион',
+    const countryMap: Record<string, { name: string; actions: string[]; caveats: string[] }> = {
+      nigeria: {
+        name: 'Нигерия',
+        actions: [
+          'Nigeria FMoH: https://www.health.gov.ng/',
+          'Nigeria IMCI chart booklet (2014 adaptation)',
+          'NPHCDA (immunization): https://nphcda.gov.ng/',
+          'NMEP (malaria): https://nmcp.gov.ng/',
+        ],
+        caveats: [
+          'Malaria: P. falciparum dominant → ACT (AL / DHA-PPQ) первая линия',
+          'Sickle cell disease — высокая распространённость (~2% HbSS), скрининг IMCI-adapted',
+          'Measles outbreaks — периодические, SIA кампании NPHCDA',
+          'Lassa fever — endemic, febrile illness differential',
+        ],
+      },
+      ethiopia: {
+        name: 'Эфиопия',
+        actions: [
+          'Ethiopia MoH: https://www.moh.gov.et/',
+          'Ethiopian IMNCI chart booklet (FMoH 2012)',
+          'EPHI (public health): https://ephi.gov.et/',
+          'HEW (Health Extension Worker) packages — community IMCI',
+        ],
+        caveats: [
+          'HEW programme — 2 HEWs per kebele, доставляют C-IMCI',
+          'Malaria: mixed P. falciparum + P. vivax (только в Африке с высокой vivax долей)',
+          'SAM: high burden, Plumpy\'Nut через OTP (Outpatient Therapeutic Programme)',
+          'Pastoralist populations — mobile health strategies (Afar, Somali regions)',
+        ],
+      },
+      kenya: {
+        name: 'Кения',
+        actions: [
+          'Kenya MoH: https://www.health.go.ke/',
+          'Kenya Paediatric Protocols (Basic Paediatric Protocols — KEMRI/Wellcome)',
+          'KEMRI-Wellcome Clinical Information Network',
+          'NVIP (immunization): https://nvip.moh.go.ke/',
+        ],
+        caveats: [
+          'Basic Paediatric Protocols — Kenyan standard, часто точнее чем IMCI chart',
+          'HIV burden — EID (Early Infant Diagnosis) DNA PCR at 6 wks, routine',
+          'Malaria: endemic в Lake/Coast regions; Highland — low',
+          'Pulse oximetry — roll-out расширяется в county hospitals',
+        ],
+      },
+      tanzania: {
+        name: 'Танзания',
+        actions: [
+          'Tanzania MoH: https://www.moh.go.tz/',
+          'Tanzania IMCI chart booklet (2013)',
+          'NACP (HIV): https://nacp.go.tz/',
+          'IMA World Health — community IMCI support',
+        ],
+        caveats: [
+          'Zanzibar — малярия почти элиминирована; mainland — still endemic',
+          'Community Health Workers — важный элемент C-IMCI',
+          'Schistosomiasis — учитывать в differential (haematuria, abdominal)',
+          'SAM: Plumpy\'Nut через RUTF supply chain',
+        ],
+      },
+      uganda: {
+        name: 'Уганда',
+        actions: [
+          'Uganda MoH: https://www.health.go.ug/',
+          'Uganda Clinical Guidelines (UCG — MoH)',
+          'Uganda IMNCI chart booklet',
+          'UNEPI (immunization): https://www.health.go.ug/programs/unepi/',
+        ],
+        caveats: [
+          'Malaria hyperendemic — ACT + RDT повсеместно',
+          'Ebola outbreaks — periodic (Bundibugyo, Sudan virus); IMCI plus febrile surveillance',
+          'HIV — Option B+ (lifelong ART для всех беременных) с 2012',
+          'Nodding syndrome — north Uganda, IMCI screens for chronic illness',
+        ],
+      },
+      ghana: {
+        name: 'Гана',
+        actions: [
+          'Ghana Health Service: https://www.ghs.gov.gh/',
+          'Ghana Standard Treatment Guidelines (STG 2017)',
+          'CHPS compounds (Community-Based Health Planning & Services)',
+          'NHIS (insurance): https://www.nhis.gov.gh/',
+        ],
+        caveats: [
+          'NHIS покрывает IMCI-level care бесплатно для детей < 18',
+          'Malaria P. falciparum endemic, RDT-directed treatment',
+          'Sickle cell screening — newborn programme в major centres',
+          'Buruli ulcer — endemic в некоторых districts (M. ulcerans)',
+        ],
+      },
+      drc: {
+        name: 'ДР Конго',
+        actions: [
+          'RDC Ministère de la Santé: https://www.minisanterdc.cd/',
+          'PCIME chart booklet (French version)',
+          'PEV (immunization): https://www.minisanterdc.cd/',
+          'WHO AFRO DRC: https://www.afro.who.int/countries/democratic-republic-of-the-congo',
+        ],
+        caveats: [
+          'Franglophone — PCIME (not IMCI) документация',
+          'Malaria hyperendemic + monkeypox (mpox) — endemic clade Ib',
+          'Измерения measles периодические, низкий vaccination coverage',
+          'Conflict zones (E. DRC) — disrupted health system, MSF critical',
+        ],
+      },
+      southafrica: {
+        name: 'ЮАР',
+        actions: [
+          'South Africa NDoH: https://www.health.gov.za/',
+          'SA IMCI chart booklet (NDoH 2014 revision)',
+          'SA Paediatric Association guidelines',
+          'SA EPI schedule: https://www.health.gov.za/immunization/',
+        ],
+        caveats: [
+          'HIV — highest burden in world; PMTCT Option B+ стандарт',
+          'Malaria: только low-transmission areas (Mpumalanga, Limpopo, KZN)',
+          'TB: very high burden — TB screening integrated в IMCI',
+          'Road to Health Booklet — каждый ребёнок, growth + immunisation',
+        ],
+      },
+      afro: {
+        name: 'WHO AFRO регион',
+        actions: [
+          'WHO AFRO: https://www.afro.who.int/',
+          'WHO IMCI global: https://www.who.int/maternal_child_adolescent/topics/child/imci/',
+          'WHO Pocket Book of Hospital Care for Children (2nd ed.)',
+          'WHO ETAT (Emergency Triage Assessment and Treatment)',
+        ],
+        caveats: [
+          'Региональные вариации malaria: endemic vs seasonal vs low-transmission',
+          'HIV: ESA/WCA — разные схемы и burden',
+          'SAM management: CMAM (Community-based Management of Acute Malnutrition) универсально',
+          'ETAT — triage перед IMCI при hospital-level care',
+        ],
+      },
     };
+    const e = countryMap[c];
     return {
-      value: `IMCI — ${countryNames[c]}`,
+      value: `IMCI — ${e.name}`,
       unit: 'WHO/UNICEF IMCI',
       color: '#6B7280',
-      interpretation: `Navigate: IMCI ${countryNames[c]} (${ag})`,
-      details: `Страна: ${countryNames[c]}\n\nВозрастная группа: ${ag === 'newborn' ? '0-7 дней (Newborn)' : ag === 'young' ? '1 нед - 2 мес (Young Infant)' : '2 мес - 5 лет (Child)'}\n\n${ageDetails[ag]}\n\nIMCI workflow:\n1. Assess — check general danger signs → main symptoms → nutrition → HIV status → immunisation\n2. Classify — светофор: RED (refer urgently), YELLOW (treat at health centre), GREEN (home care)\n3. Identify treatment\n4. Treat — first dose before referral if needed\n5. Counsel mother — home care, when to return, feeding\n6. Follow-up\n\nНациональная адаптация IMCI каждой страной учитывает: локальную этиологию малярии (P. falciparum vs P. vivax), HIV bagrount (high в Южной Африке), антибиотики first-line (resistance patterns), доступные лекарства (government formulary).`,
+      interpretation: `Navigate: IMCI ${e.name} (${ag})`,
+      details: `Страна: ${e.name}\n\nВозрастная группа: ${ag === 'newborn' ? '0-7 дней (Newborn)' : ag === 'young' ? '1 нед - 2 мес (Young Infant)' : '2 мес - 5 лет (Child)'}\n\n${ageDetails[ag]}\n\nIMCI workflow:\n1. Assess — check general danger signs → main symptoms → nutrition → HIV status → immunisation\n2. Classify — светофор: RED (refer urgently), YELLOW (treat at health centre), GREEN (home care)\n3. Identify treatment\n4. Treat — first dose before referral if needed\n5. Counsel mother — home care, when to return, feeding\n6. Follow-up\n\nНациональная адаптация IMCI каждой страной учитывает: локальную этиологию малярии (P. falciparum vs P. vivax), HIV bagrount (high в Южной Африке), антибиотики first-line (resistance patterns), доступные лекарства (government formulary).`,
       actions: [
+        ...e.actions,
+        '— Общие источники IMCI —',
         'WHO IMCI: https://www.who.int/maternal_child_adolescent/topics/child/imci/',
-        'IMCI chart booklets (страна-специфичные) — обычно доступны на сайте национального MoH',
-        'Nigeria FMoH: https://www.health.gov.ng/',
-        'Ethiopia MoH: https://www.moh.gov.et/',
-        'Kenya MoH: https://www.health.go.ke/',
-        'Tanzania MoH: https://www.moh.go.tz/',
-        'South Africa NDoH: https://www.health.gov.za/',
         'WHO AFRO: https://www.afro.who.int/',
-        'WHO Pocket Book of Hospital Care for Children (2nd ed.) — референс для secondary care',
+        'WHO Pocket Book of Hospital Care for Children (2nd ed.)',
       ],
       caveats: [
-        'Документы на английском / французском (Francophone Africa: Senegal, Côte d\'Ivoire, Cameroon, DRC partial, ...) / португальском (Angola, Mozambique)',
+        ...e.caveats,
+        '— Общие для IMCI Africa —',
+        'Документы на EN / FR / PT — по колониальной истории',
         'IMCI — протокол первичного звена (health centre level); не замена specialist care',
-        'Caveat: multiple studies показали, что IMCI имеет ограничения для новых угроз (severe pneumonia с пульсоксиметрией, SAM с amoxicillin)',
-        'Адаптация к локальной эпидемиологии: malaria endemic vs non-endemic, HIV high prevalence, МАS burden',
-        'IMNCI (India), AIEPI (LAC), IMCI (Africa) — варианты одной программы',
-        'Обновления: WHO пересматривает chart booklets ~каждые 5-7 лет',
+        'IMNCI (India), AIEPI (LAC), IMCI (Africa) — варианты одной программы WHO',
       ],
       related: [
         { id: 'paho', title: 'PAHO / AIEPI (LAC analog)' },

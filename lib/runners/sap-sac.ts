@@ -32,15 +32,143 @@ const runner: CalculatorTool = {
   ],
   compute: (v) => {
     const s = String(v.specialty || 'pediatria');
-    const map: Record<string, { name: string; society: string; details: string }> = {
-      pediatria: { name: 'Pediatría', society: 'SAP — Sociedad Argentina de Pediatría (с 1911)', details: 'Consensos SAP — одна из старейших и самых уважаемых педиатрических ассоциаций Латинской Америки. Calendario Nacional de Vacunación (совместно с Ministerio). Archivos Argentinos de Pediatría (журнал, высокий импакт в регионе). Guías: bronquiolitis, asma, neumonía, infecciones urinarias, desnutrición, obesidad, TEA, ADHD, pubertad, adolescencia.' },
-      cardio: { name: 'Cardiología', society: 'SAC — Sociedad Argentina de Cardiología + FAC (Federación Argentina de Cardiología)', details: 'Consensos SAC: hipertensión arterial, insuficiencia cardíaca, síndromes coronarios agudos, fibrilación auricular, dislipidemias, valvular. Часто адаптация ESC/ACC с учётом локальной эпидемиологии (enfermedad de Chagas — важная причина ICC в Argentina).' },
-      nefro: { name: 'Nefrología', society: 'SAN — Sociedad Argentina de Nefrología', details: 'Consensos на гемодиализе, перитонеальном диализе, трансплантации, ОПП, ХБП. Registro argentino de diálisis y trasplante.' },
-      diabetes: { name: 'Diabetes', society: 'SAD — Sociedad Argentina de Diabetes', details: 'Guías SAD для DM1, DM2, gestacional. Адаптация ADA/EASD. Высокая распространённость obesidad y DM2.' },
-      terapia: { name: 'Terapia intensiva', society: 'SATI — Sociedad Argentina de Terapia Intensiva', details: 'Guías SATI: shock séptico, SDRA, ventilación mecánica, sedación-analgesia, delirium. Revista SATI.' },
-      ginecologia: { name: 'Ginecología', society: 'FASGO — Federación Argentina de Sociedades de Ginecología y Obstetricia + SOGIBA', details: 'Consensos: control prenatal, preeclampsia, hemorragia postparto, anticoncepción, IVE/ILE (post-Ley 27.610 de 2021 — legal aborto hasta 14 semanas).' },
-      clinica: { name: 'Clínica médica', society: 'SAM — Sociedad Argentina de Medicina', details: 'Консенсусы по hipertensión, diabetes, dislipidemia, EPOC, asma, infecciones. Revista SAM.' },
-      ministerio: { name: 'Ministerio de Salud', society: 'Ministerio de Salud de la Nación + PMI + Programas Nacionales', details: 'Guías clínicas нациоnales, Plan Materno Infantil (PMI), REMEDIAR (дистрибуция бесплатных лекарств), Programa Nacional de Chagas, tuberculosis, HIV, vacunación. Sistema Integrado Mayores (PAMI) — для пожилых.' },
+    const map: Record<string, { name: string; society: string; details: string; actions: string[]; caveats: string[] }> = {
+      pediatria: {
+        name: 'Pediatría',
+        society: 'SAP — Sociedad Argentina de Pediatría (с 1911)',
+        details: 'Consensos SAP — одна из старейших и самых уважаемых педиатрических ассоциаций Латинской Америки. Calendario Nacional de Vacunación (совместно с Ministerio). Archivos Argentinos de Pediatría (журнал, высокий импакт в регионе). Guías: bronquiolitis, asma, neumonía, infecciones urinarias, desnutrición, obesidad, TEA, ADHD, pubertad, adolescencia.',
+        actions: [
+          'SAP portal: https://www.sap.org.ar/',
+          'Archivos Argentinos de Pediatría: https://www.sap.org.ar/publicaciones/archivos-argentinos-de-pediatria/',
+          'Calendario Nacional de Vacunación: https://www.argentina.gob.ar/salud/vacunas',
+          'Consensos SAP (по темам): https://www.sap.org.ar/consensos',
+        ],
+        caveats: [
+          'Calendario Nacional — все вакцины бесплатны и обязательны (Ley 27.491)',
+          'Bronquiolitis — palivizumab только для high-risk ex-preterm',
+          'SUM (Seguimiento Universal de Malformaciones) — SAP programme',
+          'Pediatría social — важная субспециальность в SAP (Chagas, indigenous)',
+        ],
+      },
+      cardio: {
+        name: 'Cardiología',
+        society: 'SAC — Sociedad Argentina de Cardiología + FAC (Federación Argentina de Cardiología)',
+        details: 'Consensos SAC: hipertensión arterial, insuficiencia cardíaca, síndromes coronarios agudos, fibrilación auricular, dislipidemias, valvular. Часто адаптация ESC/ACC с учётом локальной эпидемиологии (enfermedad de Chagas — важная причина ICC в Argentina).',
+        actions: [
+          'SAC portal: https://www.sac.org.ar/',
+          'FAC (Federación Argentina de Cardiología): https://www.fac.org.ar/',
+          'Revista Argentina de Cardiología: https://www.sac.org.ar/revista-argentina-de-cardiologia/',
+          'Consensos SAC: https://www.sac.org.ar/consensos/',
+        ],
+        caveats: [
+          'Chagas cardiomyopathy — очень частая причина ICC в северных провинциях',
+          'Código Rojo / SCA ST — national protocol для STEMI',
+          'DOAC: все 4 в PMO, но реимбурсация зависит от obra social',
+          'Dilatación cardíaca chagásica — digital CT/MRI для риск-стратификации',
+        ],
+      },
+      nefro: {
+        name: 'Nefrología',
+        society: 'SAN — Sociedad Argentina de Nefrología',
+        details: 'Consensos на гемодиализе, перитонеальном диализе, трансплантации, ОПП, ХБП. Registro argentino de diálisis y trasplante.',
+        actions: [
+          'SAN portal: https://www.san.org.ar/',
+          'INCUCAI (transplant coordinator): https://www.argentina.gob.ar/salud/incucai',
+          'Registro Argentino de Diálisis y Trasplante',
+          'Nefrología Argentina (revista SAN)',
+        ],
+        caveats: [
+          'Ley Justina (27.447) — presumed consent для organ donation',
+          'INCUCAI — национальный coordinator для trasplantes',
+          'Hemolytic-uremic syndrome (SUH) — endemic в Argentina (Escherichia coli STEC)',
+          'Peritoneal dialysis — особая роль в rural areas',
+        ],
+      },
+      diabetes: {
+        name: 'Diabetes',
+        society: 'SAD — Sociedad Argentina de Diabetes',
+        details: 'Guías SAD для DM1, DM2, gestacional. Адаптация ADA/EASD. Высокая распространённость obesidad y DM2.',
+        actions: [
+          'SAD portal: https://www.sadbe.org/',
+          'Revista SAD: https://www.sadbe.org/revista/',
+          'ALAD (Asociación Latinoamericana de Diabetes): https://www.alad-latinoamerica.org/',
+          'Programa Nacional de Prevención y Control de DM',
+        ],
+        caveats: [
+          'Ley 23.753 — DM обеспечение 100% cobertura для insulin, tiras, jeringas',
+          'GLP-1 RA — limited cobertura obras sociales (varía)',
+          'CGM (continuous glucose monitoring) — covered для T1DM (по Ley)',
+          'Gestational DM — IADPSG criteria приняты SAD',
+        ],
+      },
+      terapia: {
+        name: 'Terapia intensiva',
+        society: 'SATI — Sociedad Argentina de Terapia Intensiva',
+        details: 'Guías SATI: shock séptico, SDRA, ventilación mecánica, sedación-analgesia, delirium. Revista SATI.',
+        actions: [
+          'SATI portal: https://www.sati.org.ar/',
+          'Revista SATI: https://revista.sati.org.ar/',
+          'FEPIMCTI (federation LAC ICU): http://www.fepimcti.org/',
+          'SATI ECMO working group',
+        ],
+        caveats: [
+          'Sepsis-3 criteria приняты SATI',
+          'ECMO — региональные центры (Buenos Aires, Córdoba)',
+          'Chagas reactivación в ICU (inmunosupresión) — важный DDx',
+          'Hantavirus (Andino) — sur Argentina, ARDS rápido',
+        ],
+      },
+      ginecologia: {
+        name: 'Ginecología',
+        society: 'FASGO — Federación Argentina de Sociedades de Ginecología y Obstetricia + SOGIBA',
+        details: 'Consensos: control prenatal, preeclampsia, hemorragia postparto, anticoncepción, IVE/ILE (post-Ley 27.610 de 2021 — legal aborto hasta 14 semanas).',
+        actions: [
+          'FASGO portal: https://www.fasgo.org.ar/',
+          'SOGIBA (Buenos Aires): https://www.sogiba.org.ar/',
+          'Ley 27.610 IVE/ILE protocolo (MSAL)',
+          'Plan ENIA (adolescent pregnancy prevention)',
+        ],
+        caveats: [
+          'IVE hasta 14 semanas + ILE por causales (salud, violación) — Ley 27.610 (2021)',
+          'Misoprostol + mifepristona — en el vademécum nacional',
+          'HPV vaccination: Cervarix (ноnapent с 2022 в calendar) — 11 años ambos sexos',
+          'Consejerías — obligatorias antes/después IVE',
+        ],
+      },
+      clinica: {
+        name: 'Clínica médica',
+        society: 'SAM — Sociedad Argentina de Medicina',
+        details: 'Консенсусы по hipertensión, diabetes, dislipidemia, EPOC, asma, infecciones. Revista SAM.',
+        actions: [
+          'SAM portal: https://www.sam.org.ar/',
+          'Revista Medicina (Buenos Aires): https://www.medicinabuenosaires.com/',
+          'ACAM (Asociación de Clínicos de la Argentina)',
+          'Congresos SAM (ежегодные)',
+        ],
+        caveats: [
+          'Residencia Clínica Médica — 4 года стандарт',
+          'Medicina Interna — больший scope чем US Internal Medicine',
+          'ECOE — evaluation tool для residentes',
+          'Interplay con Medicina Familiar — overlapping',
+        ],
+      },
+      ministerio: {
+        name: 'Ministerio de Salud',
+        society: 'Ministerio de Salud de la Nación + PMI + Programas Nacionales',
+        details: 'Guías clínicas нациоnales, Plan Materno Infantil (PMI), REMEDIAR (дистрибуция бесплатных лекарств), Programa Nacional de Chagas, tuberculosis, HIV, vacunación. Sistema Integrado Mayores (PAMI) — для пожилых.',
+        actions: [
+          'Ministerio de Salud: https://www.argentina.gob.ar/salud',
+          'Guías MSAL: https://www.argentina.gob.ar/salud/guias-recomendaciones',
+          'PAMI: https://www.pami.org.ar/',
+          'ANMAT: https://www.argentina.gob.ar/anmat',
+        ],
+        caveats: [
+          'REMEDIAR — free medicines для primary care (~70 препаратов в PMO)',
+          'PMO (Programa Médico Obligatorio) — минимальный package для всех obras sociales',
+          'PAMI — Obra Social специальная для jubilados (~5 млн)',
+          'Chagas Programme — mandatory screening беременных + донорство крови',
+        ],
+      },
     };
     const e = map[s];
     return {
@@ -50,22 +178,19 @@ const runner: CalculatorTool = {
       interpretation: `Navigate: Argentine ${e.name}`,
       details: `Специальность: ${e.name}\n\nОбщество: ${e.society}\n\n${e.details}\n\nКонтекст Аргентины: здравоохранение трёхсекторальное — público (provincial MoH + hospitales), obras sociales (социальное страхование для работников), private (prepagas — частные планы). ANMAT — регулятор лекарств.`,
       actions: [
+        ...e.actions,
+        '— Общие источники Argentina —',
+        'Ministerio de Salud: https://www.argentina.gob.ar/salud',
+        'ANMAT: https://www.argentina.gob.ar/anmat',
         'SAP: https://www.sap.org.ar/',
         'SAC: https://www.sac.org.ar/',
-        'SAN: https://www.san.org.ar/',
-        'SAD: https://www.sadbe.org/',
-        'SATI: https://www.sati.org.ar/',
-        'Ministerio de Salud: https://www.argentina.gob.ar/salud',
-        'ANMAT (регулятор): https://www.argentina.gob.ar/anmat',
-        'Archivos Argentinos de Pediatría (SAP journal)',
       ],
       caveats: [
+        ...e.caveats,
+        '— Общие для Аргентины —',
         'Документы на испанском (Rioplatense Spanish)',
-        'Enfermedad de Chagas — эндемическая в Northern Argentina, важная причина кардиомиопатии',
-        'Высокая распространённость obesidad (~28%), DM2, hipertensión',
-        'ANMAT — регулятор лекарств (аналог FDA); Vademécum Nacional de Medicamentos',
         'Three-tier system: público / obras sociales / prepagas',
-        'Ley 27.610 (2021) — легальный аборт до 14 нед. — интегрирован в гинекологическую практику',
+        'Chagas — эндемическая в Northern Argentina, релевантна многим специальностям',
       ],
       related: [
         { id: 'pcdt-br', title: 'PCDT (Brazil)' },

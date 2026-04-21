@@ -32,37 +32,149 @@ const runner: CalculatorTool = {
   ],
   compute: (v) => {
     const t = String(v.topic || 'cardio');
-    const examples: Record<string, string> = {
-      cardio: 'NHG-Standaard Cardiovasculair risicomanagement (CVRM), Atriumfibrilleren, Hartfalen, Acuut coronair syndroom, Perifeer arterieel vaatlijden.',
-      endo: 'NHG-Standaard Diabetes mellitus type 2 (ключевая), Schildklieraandoeningen, Obesitas.',
-      resp: 'NHG-Standaard COPD, Astma bij volwassenen, Astma bij kinderen, Acuut hoesten.',
-      psych: 'NHG-Standaard Depressie, Angst, Slaapproblemen en slaapmiddelen, Problematisch alcoholgebruik, ADHD bij kinderen.',
-      gi: 'NHG-Standaard Maagklachten, Prikkelbare Darm Syndroom, Obstipatie, Acute diarree, GERD.',
-      muskel: 'NHG-Standaard Aspecifieke lagerugpijn, Schouderklachten, Niet-traumatische knieklachten, Artrose.',
-      infect: 'NHG-Standaard Urineweginfecties, Acute keelpijn, Otitis media acuta bij kinderen, Sinusitis, SOA-consult.',
-      preventive: 'PreventieConsult, Griepvaccinatie, Stoppen met roken, Het preventieve consult cardiometabool risico.',
+    const map: Record<string, { details: string; actions: string[]; caveats: string[] }> = {
+      cardio: {
+        details: 'NHG-Standaard Cardiovasculair risicomanagement (CVRM), Atriumfibrilleren, Hartfalen, Acuut coronair syndroom, Perifeer arterieel vaatlijden.',
+        actions: [
+          'NHG CVRM: https://richtlijnen.nhg.org/standaarden/cardiovasculair-risicomanagement',
+          'NHG Atriumfibrilleren: https://richtlijnen.nhg.org/standaarden/atriumfibrilleren',
+          'NHG Hartfalen: https://richtlijnen.nhg.org/standaarden/hartfalen',
+          'Multidisciplinaire richtlijn CVRM (NHG + NIV + NVVC)',
+        ],
+        caveats: [
+          'CVRM gebruik SCORE2 (Europese tabel), niet Framingham',
+          'AF: CHA2DS2-VASc + HAS-BLED; DOAC eerste keus (dabigatran, apixaban, edoxaban, rivaroxaban)',
+          'Statins: simvastatine 40 mg eerste keus; rosuvastatine bij hoog risico',
+          'Verwijscriteria naar cardioloog — expliciet in Standaard',
+        ],
+      },
+      endo: {
+        details: 'NHG-Standaard Diabetes mellitus type 2 (ключевая), Schildklieraandoeningen, Obesitas.',
+        actions: [
+          'NHG DM2: https://richtlijnen.nhg.org/standaarden/diabetes-mellitus-type-2',
+          'NHG Schildklieraandoeningen: https://richtlijnen.nhg.org/standaarden/schildklieraandoeningen',
+          'NHG Obesitas: https://richtlijnen.nhg.org/standaarden/obesitas',
+          'Zorgstandaard Diabetes (NDF)',
+        ],
+        caveats: [
+          'DM2 stepwise: lifestyle → metformine → SU (gliclazide) → insulin/GLP-1RA/SGLT2i',
+          'HbA1c target: ≤ 53 mmol/mol (7%) bij mid-adult, minder strikt bij elderly',
+          'GLP-1 RA vergoed alleen bij BMI ≥ 35 of eerder MI',
+          'Zorgstandaard = multidisciplinaire keten rond patiënt',
+        ],
+      },
+      resp: {
+        details: 'NHG-Standaard COPD, Astma bij volwassenen, Astma bij kinderen, Acuut hoesten.',
+        actions: [
+          'NHG COPD: https://richtlijnen.nhg.org/standaarden/copd',
+          'NHG Astma bij volwassenen: https://richtlijnen.nhg.org/standaarden/astma-bij-volwassenen',
+          'NHG Astma bij kinderen: https://richtlijnen.nhg.org/standaarden/astma-bij-kinderen',
+          'LAN (Long Alliantie Nederland): https://www.longalliantie.nl/',
+        ],
+        caveats: [
+          'COPD: GLI-2012 spirometry reference (niet meer LLN alone)',
+          'Astma: ICS-formoterol als reliever (2023 update, GINA-aligned)',
+          'Saba-only niet meer aanbevolen',
+          'Spirometry verplicht eerste lijn (huisartsenpost / praktijk)',
+        ],
+      },
+      psych: {
+        details: 'NHG-Standaard Depressie, Angst, Slaapproblemen en slaapmiddelen, Problematisch alcoholgebruik, ADHD bij kinderen.',
+        actions: [
+          'NHG Depressie: https://richtlijnen.nhg.org/standaarden/depressie',
+          'NHG Angst: https://richtlijnen.nhg.org/standaarden/angst',
+          'GGZ Standaarden: https://www.ggzstandaarden.nl/',
+          'MIND (patient org): https://mind.nl/',
+        ],
+        caveats: [
+          'POH-GGZ (praktijkondersteuner) — eerste lijn support в NL unique',
+          'SSRI eerste keus voor depressie/angst (sertraline, citalopram)',
+          'Benzodiazepines max. 2 weken (NHG strict)',
+          'Verwijzing GGZ alleen na POH-GGZ screening',
+        ],
+      },
+      gi: {
+        details: 'NHG-Standaard Maagklachten, Prikkelbare Darm Syndroom, Obstipatie, Acute diarree, GERD.',
+        actions: [
+          'NHG Maagklachten: https://richtlijnen.nhg.org/standaarden/maagklachten',
+          'NHG Prikkelbare Darm Syndroom: https://richtlijnen.nhg.org/standaarden/prikkelbare-darm-syndroom',
+          'NHG Obstipatie: https://richtlijnen.nhg.org/standaarden/obstipatie',
+          'Bevolkingsonderzoek darmkanker: https://www.bevolkingsonderzoeknederland.nl/',
+        ],
+        caveats: [
+          'H. pylori: test-and-treat bij < 50 zonder alarmsymptomen',
+          'PPI step-down na 4-8 weken — deprescribing focus',
+          'Colorectal screening 55–75 (2-yearly iFOBT)',
+          'Alarm symptoms — directe endoscopie verwijzing',
+        ],
+      },
+      muskel: {
+        details: 'NHG-Standaard Aspecifieke lagerugpijn, Schouderklachten, Niet-traumatische knieklachten, Artrose.',
+        actions: [
+          'NHG Aspecifieke lagerugpijn: https://richtlijnen.nhg.org/standaarden/aspecifieke-lagerugpijn',
+          'NHG Schouderklachten: https://richtlijnen.nhg.org/standaarden/schouderklachten',
+          'NHG Artrose: https://richtlijnen.nhg.org/standaarden/artrose-van-heup-en-knie',
+          'KNGF (fysiotherapie richtlijnen)',
+        ],
+        caveats: [
+          'Lagerugpijn: geen imaging tenzij red flags',
+          'Paracetamol eerste keus — NSAID beperkt (cardio/GI risk)',
+          'Opioiden vermijden (strenge NHG stance 2022)',
+          'Fysio vergoeding afhankelijk van aanvullend verzekering',
+        ],
+      },
+      infect: {
+        details: 'NHG-Standaard Urineweginfecties, Acute keelpijn, Otitis media acuta bij kinderen, Sinusitis, SOA-consult.',
+        actions: [
+          'NHG Urineweginfecties: https://richtlijnen.nhg.org/standaarden/urineweginfecties',
+          'NHG Acute keelpijn: https://richtlijnen.nhg.org/standaarden/acute-keelpijn',
+          'NHG SOA-consult: https://richtlijnen.nhg.org/standaarden/soa-consult',
+          'SWAB (antibiotica richtlijnen): https://swab.nl/',
+        ],
+        caveats: [
+          'NL heeft laagste antibiotica-gebruik EU (restrictive NHG)',
+          'UTI: nitrofurantoïne 5 dagen eerste keus voor vrouwen',
+          'Acute keelpijn: centor-criteria; meestal viraal, geen AB',
+          'OMA < 2 jr geen AB tenzij severe / bilateraal',
+        ],
+      },
+      preventive: {
+        details: 'PreventieConsult, Griepvaccinatie, Stoppen met roken, Het preventieve consult cardiometabool risico.',
+        actions: [
+          'NHG PreventieConsult: https://richtlijnen.nhg.org/standaarden/het-preventieve-consult-cardiometabool-risico',
+          'RIVM (public health): https://www.rivm.nl/',
+          'Bevolkingsonderzoek (cancer screening): https://www.bevolkingsonderzoeknederland.nl/',
+          'Stoppen met roken: https://www.ikstopnu.nl/',
+        ],
+        caveats: [
+          'Bevolkingsonderzoeken: darmkanker (55–75), borstkanker (50–75), baarmoederhals (30–60)',
+          'Griepvaccinatie: ≥ 60 jr + risicogroepen (NHG-gestuurd)',
+          'HPV: meisjes + jongens 10 jr (RVP)',
+          'SmR (stoppen met roken) — vergoed via basisverzekering',
+        ],
+      },
     };
+    const e = map[t];
     return {
       value: 'NHG-Standaard',
       unit: 'Nederland',
       color: '#6B7280',
       interpretation: 'Navigate: richtlijnen.nhg.org',
-      details: `Категория: ${t}\n\nПримеры NHG-Standaarden:\n${examples[t]}\n\nСтруктура NHG-Standaard:\n1. Inleiding + epidemiologie\n2. Richtlijnen diagnostiek (anamnese, onderzoek, aanvullend onderzoek)\n3. Richtlijnen beleid (niet-medicamenteus + medicamenteus + verwijzing)\n4. Noten — научное обоснование каждой рекомендации\n5. Patiëntenversie (thuisarts.nl)\n\nNHG-Standaarden — основа работы huisarts (семейный врач) в Нидерландах. Система Нидерландов построена на gatekeeper-модели: huisarts — обязательный первый контакт.`,
+      details: `Категория: ${t}\n\nПримеры NHG-Standaarden:\n${e.details}\n\nСтруктура NHG-Standaard:\n1. Inleiding + epidemiologie\n2. Richtlijnen diagnostiek (anamnese, onderzoek, aanvullend onderzoek)\n3. Richtlijnen beleid (niet-medicamenteus + medicamenteus + verwijzing)\n4. Noten — научное обоснование каждой рекомендации\n5. Patiëntenversie (thuisarts.nl)\n\nNHG-Standaarden — основа работы huisarts (семейный врач) в Нидерландах. Система Нидерландов построена на gatekeeper-модели: huisarts — обязательный первый контакт.`,
       actions: [
+        ...e.actions,
+        '— Общие источники —',
         'NHG Richtlijnen: https://richtlijnen.nhg.org/',
-        'Thuisarts (версия для пациентов): https://www.thuisarts.nl/',
-        'NHG-Praktijkhandleiding',
+        'Thuisarts (patient info): https://www.thuisarts.nl/',
         'Farmacotherapeutisch Kompas: https://www.farmacotherapeutischkompas.nl/',
-        'FTR / FTK для лекарственной политики',
         'NHG App — offline доступ',
       ],
       caveats: [
-        'Документы на голландском (nederlands); английских переводов нет',
-        'Адаптированы к голландской системе: huisarts-gatekeeper, eerste lijn vs tweede lijn',
-        'Rationale каждой рекомендации в Noten — отдельная strong evidence section',
-        'Обновления: каждая standaard пересматривается ~5-7 лет',
-        'Реимбурсация via Zorgverzekeringswet (Zvw) и zorgverzekeraars',
-        'Не путать с FMS (Federatie Medisch Specialisten) — рекомендации для специалистов tweede lijn',
+        ...e.caveats,
+        '— Общие для NHG —',
+        'Документы на голландском; английских переводов нет',
+        'Huisarts — gatekeeper, eerste lijn vs tweede lijn',
+        'Niet verwarren met FMS (rekommendaties voor specialisten)',
       ],
       related: [
         { id: 'nice-uk', title: 'NICE (UK)' },
