@@ -783,6 +783,11 @@ main:has(.stats-page) {
     left: 0; top: 0;
     z-index: 50;
     box-shadow: 8px 0 24px rgba(0,0,0,0.08);
+    /* Match the 32 px radius of the desktop main-wrap card on the edges
+       that are visible when the drawer is open (top-right, bottom-right). */
+    border-top-right-radius: 32px;
+    border-bottom-right-radius: 32px;
+    overflow: hidden;
   }
   .app-main-wrap {
     border-top-left-radius: 0 !important;
