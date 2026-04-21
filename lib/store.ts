@@ -102,7 +102,9 @@ export const useAppStore = create<AppState>()(
       activeSection: null,
       activeModuleId: null,
       currentCourseId: null,
-      sidebarOpen: true,
+      // Default closed so mobile first-paint doesn't flash the drawer over
+       // content. Sidebar.tsx opens it on mount if viewport is ≥ 768 px.
+      sidebarOpen: false,
       openModules: [],
       completedCourses: [],
       studyTime: {},

@@ -46,15 +46,22 @@ export default function Sidebar() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchFocus, setSearchFocus] = useState(false);
 
-  // Auto-close sidebar on initial mount if viewport is narrow (< 768 px).
-  // Store default is `open: true` which is correct for desktop; mobile needs
-  // it closed so the drawer doesn't overlay content on page load.
+  // Sidebar opens on desktop by default, stays closed on mobile.
+  // Store default is `false`; we flip it to `true` here on ≥ 768 px.
+  // Running in useEffect is fine — first paint shows no sidebar on any width
+  // (avoids the mobile flash), and desktop users get it back immediately.
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const mq = window.matchMedia('(max-width: 768px)');
-    if (mq.matches && useAppStore.getState().sidebarOpen) {
-      useAppStore.setState({ sidebarOpen: false });
+    const mq = window.matchMedia('(min-width: 768px)');
+    if (mq.matches) {
+      useAppStore.setState({ sidebarOpen: true });
     }
+    // Keep sidebar in sync when viewport crosses the breakpoint (resize / rotate).
+    const onChange = (e: MediaQueryListEvent) => {
+      useAppStore.setState({ sidebarOpen: e.matches });
+    };
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -197,17 +204,20 @@ export default function Sidebar() {
 
   return (
     <>
-      {/* Mobile overlay */}
+      {/* Mobile overlay — dimming backdrop behind the drawer.
+          NOTE: framer-motion's `animate` overrides the inline style, so the
+          opacity MUST be set via animate — otherwise the backdrop renders
+          as pure black (scrim #000000 at opacity: 1) and hides main content. */}
       <AnimatePresence>
         {sidebarOpen && (
           <motion.div
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            animate={{ opacity: 0.32 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2, ease: [0.2, 0, 0, 1] }}
             style={{
               position: 'fixed', inset: 0,
-              background: 'var(--md-sys-color-scrim)', opacity: 0.32, zIndex: 40,
+              background: 'var(--md-sys-color-scrim)', zIndex: 40,
             }}
             className="md:hidden"
             onClick={toggleSidebar}

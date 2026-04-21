@@ -787,7 +787,16 @@ main:has(.stats-page) {
   .app-main-wrap {
     border-top-left-radius: 0 !important;
     border-bottom-left-radius: 0 !important;
+    /* On mobile the sidebar is overlayed (position:fixed, out of flex flow),
+       so main-wrap takes the full viewport width. Force width explicitly in
+       case any parent math shrinks it. */
+    width: 100% !important;
+    min-width: 0;
   }
+}
+/* Very narrow screens — sidebar 86 vw so user can always see main underneath */
+@media (max-width: 380px) {
+  .app-sidebar-aside { width: 86vw !important; }
 }
 
 /* Mobile topbar (hamburger) — only on narrow screens */
