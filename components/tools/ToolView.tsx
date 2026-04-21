@@ -17,6 +17,32 @@ function slugify(s: string): string {
   return s.toLowerCase().replace(/[^a-zа-я0-9]+/gi, '-').replace(/^-+|-+$/g, '');
 }
 
+/**
+ * Split a plain-text string and turn any http(s):// URL into a clickable <a>.
+ * Used for actions/caveats/details where runners often embed reference links.
+ */
+const URL_REGEX = /(https?:\/\/[^\s<>()"']+[^\s<>()"'.,;:!?])/g;
+function linkify(text: string): ReactNode {
+  if (!text || !text.includes('http')) return text;
+  const parts = text.split(URL_REGEX);
+  return parts.map((part, i) => {
+    if (i % 2 === 1) {
+      return (
+        <a
+          key={i}
+          href={part}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: '#2563EB', textDecoration: 'underline', wordBreak: 'break-all' }}
+        >
+          {part}
+        </a>
+      );
+    }
+    return part;
+  });
+}
+
 interface Tab {
   id: string;
   title: string;
@@ -670,7 +696,7 @@ function ResultCard({ result }: { result: CalculatorResult }) {
         fontFamily: 'var(--font-body)', fontSize: 14, color: '#1A1A1A',
         lineHeight: 1.6, fontWeight: 500, margin: 0,
       }}>
-        {interpretation}
+        {linkify(interpretation)}
       </p>
 
       {/* Visual band scale */}
@@ -684,7 +710,7 @@ function ResultCard({ result }: { result: CalculatorResult }) {
       {details && (
         <ResultSection title="Клиническая интерпретация" icon="info">
           <p style={{ margin: 0, color: '#374151', fontSize: 13.5, lineHeight: 1.55 }}>
-            {details}
+            {linkify(details)}
           </p>
         </ResultSection>
       )}
@@ -703,7 +729,7 @@ function ResultCard({ result }: { result: CalculatorResult }) {
                   width: 5, height: 5, borderRadius: '50%',
                   background: color,
                 }} />
-                <span>{a}</span>
+                <span>{linkify(a)}</span>
               </li>
             ))}
           </ul>
@@ -746,7 +772,7 @@ function ResultCard({ result }: { result: CalculatorResult }) {
                 <span style={{
                   flexShrink: 0, marginTop: 5, color: '#F59E0B', fontSize: 12, fontWeight: 700,
                 }}>⚠</span>
-                <span>{c}</span>
+                <span>{linkify(c)}</span>
               </li>
             ))}
           </ul>
