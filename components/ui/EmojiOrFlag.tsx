@@ -1,21 +1,51 @@
 'use client';
 
+// Country flags — shipped as inline SVG React components from
+// country-flag-icons. Bundled with the app, no CDN or network needed,
+// guaranteed to render on Windows Chrome/Firefox where emoji flag
+// glyphs are missing from system fonts.
+import {
+  US, GB, DE, FR, CA, AU, NZ, JP, CN, KR, IN, BR, MX, ES, IT, CH, AT, NL,
+  SA, RU, KZ, BY, UA, TR, IL, ZA, EG, NO, SE, DK, FI, IS,
+} from 'country-flag-icons/react/3x2';
+
+// country-flag-icons exports a FlagComponent with a custom props type
+// (HTMLSVGElement intersection). We treat it structurally via `any` for
+// the registry — actual call site only uses `style` + `aria-hidden`.
+type FlagComp = (props: { style?: React.CSSProperties; 'aria-hidden'?: string | boolean }) => React.JSX.Element;
+
+/** ISO 3166-1 alpha-2 → React SVG flag component. */
+const FLAG_COMPONENTS: Record<string, FlagComp> = {
+  US, GB, DE, FR, CA, AU, NZ, JP, CN, KR, IN, BR, MX, ES, IT, CH, AT, NL,
+  SA, RU, KZ, BY, UA, TR, IL, ZA, EG, NO, SE, DK, FI, IS,
+} as unknown as Record<string, FlagComp>;
+
 /**
- * Renders flag emojis as proper images (Windows Chrome, Firefox lack flag
- * emoji glyphs and would otherwise show blank squares). Falls back to the
- * native emoji font for non-flag emoji like 🌍.
+ * Renders country flags as local SVGs bundled with the app via
+ * `country-flag-icons` — no CDN, no network request, works offline,
+ * guaranteed to show on Windows Chrome/Firefox where flag emoji
+ * glyphs are missing from system fonts.
  *
- * Sources:
- *   – Country flags  → flagcdn.com (ISO 3166-1 alpha-2) — battle-tested CDN
- *   – Multi-flag emoji (ЕС, PAHO etc.) → jsDelivr npm twemoji (SVG)
- *   – Everything else → native font with emoji fallback chain
+ * For multi-country regions (Latin America, Scandinavia, CIS, ASEAN,
+ * International) we map to a custom inline coloured badge.
  */
 interface Props {
   emoji: string;
   size?: number;
 }
 
-/** Map a 2-codepoint flag emoji → ISO 3166-1 alpha-2 ("us", "gb", ...). */
+// Custom inline SVGs for multi-country regions that don't have a single
+// country flag (globe emoji, EU flag etc.). Each is a simple coloured
+// circle with a region abbreviation — readable and lightweight.
+const REGION_SVGS: Record<string, { label: string; bg: string; fg: string }> = {
+  '🌍': { label: 'UN', bg: '#3B82F6', fg: '#FFFFFF' },
+  '🌎': { label: 'LA', bg: '#10B981', fg: '#FFFFFF' },
+  '🌏': { label: 'AS', bg: '#F59E0B', fg: '#FFFFFF' },
+  '🌐': { label: 'CIS', bg: '#6366F1', fg: '#FFFFFF' },
+  '🇪🇺': { label: 'EU', bg: '#003399', fg: '#FFCC00' },
+};
+
+/** Map a 2-codepoint flag emoji → ISO 3166-1 alpha-2 UPPERCASE ("US", "GB"). */
 function flagToIso(str: string): string | null {
   if (!str) return null;
   const cps: number[] = [];
@@ -27,77 +57,89 @@ function flagToIso(str: string): string | null {
   const [a, b] = cps;
   const BASE = 0x1F1E6; // regional indicator A
   if (a < BASE || a > 0x1F1FF || b < BASE || b > 0x1F1FF) return null;
-  // U+1F1E6 = A (0x41), so offset + 0x41 gives ascii upper-case letter.
-  const ch1 = String.fromCharCode(a - BASE + 0x61);
-  const ch2 = String.fromCharCode(b - BASE + 0x61);
+  // U+1F1E6 = A, so offset + 0x41 gives ASCII upper-case letter.
+  const ch1 = String.fromCharCode(a - BASE + 0x41);
+  const ch2 = String.fromCharCode(b - BASE + 0x41);
   return `${ch1}${ch2}`;
 }
 
-/** Twemoji filename for non-flag emoji (globe, world maps, ...). */
-function emojiToTwemojiFile(str: string): string | null {
-  if (!str) return null;
-  const cps: number[] = [];
-  for (const ch of str) {
-    const cp = ch.codePointAt(0);
-    if (cp !== undefined && cp !== 0xFE0F /* variation selector */) cps.push(cp);
-  }
-  if (cps.length === 0) return null;
-  return cps.map((cp) => cp.toString(16)).join('-');
-}
-
 export default function EmojiOrFlag({ emoji, size = 18 }: Props) {
-  const iso = flagToIso(emoji);
-
-  if (iso) {
-    // w40 = 40-px wide PNG (sharp at 2x up to 20 px); w80 for larger.
-    const bucket = size > 24 ? 'w80' : 'w40';
+  // Region badge (Latin America, CIS, ASEAN, UN) rendered as a neutral
+  // coloured pill — no network, no emoji font dependency.
+  const region = REGION_SVGS[emoji];
+  if (region) {
     return (
-      <img
-        src={`https://flagcdn.com/${bucket}/${iso}.png`}
-        width={size}
-        height={Math.round(size * 0.75)}
-        alt=""
+      <span
         style={{
-          display: 'inline-block',
-          verticalAlign: 'middle',
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: size * 1.33, // keep roughly the same aspect ratio as country flags (4:3)
+          height: size,
           flexShrink: 0,
           borderRadius: 2,
+          background: region.bg,
+          color: region.fg,
+          fontFamily: 'var(--font-mono, monospace)',
+          fontSize: Math.round(size * 0.55),
+          fontWeight: 700,
+          letterSpacing: '-0.02em',
+          verticalAlign: 'middle',
         }}
-        draggable={false}
-        loading="lazy"
-      />
+      >
+        {region.label}
+      </span>
     );
   }
 
-  // Non-flag emoji (🌍 🌎 🌐 🇪🇺 isn't a real flag — it's ISO EU, no image).
-  // Try twemoji SVG via jsDelivr npm, fall back to native font on error.
-  const twFile = emojiToTwemojiFile(emoji);
-  if (twFile) {
+  const iso = flagToIso(emoji);
+  if (iso) {
+    // Bundled flag — comes in via country-flag-icons/react/3x2 and
+    // ships inline as part of the JS bundle. No CDN, works offline,
+    // renders identically in every browser.
+    const Flag = FLAG_COMPONENTS[iso];
+    const width = Math.round(size * 1.33);
+    if (Flag) {
+      return (
+        <Flag
+          style={{
+            display: 'inline-block',
+            verticalAlign: 'middle',
+            flexShrink: 0,
+            borderRadius: 2,
+            width,
+            height: size,
+          }}
+          aria-hidden="true"
+        />
+      );
+    }
+    // Fallback for any ISO we didn't explicitly import — shows the
+    // 2-letter code in a grey pill so the UI doesn't break silently.
     return (
-      <img
-        src={`https://cdn.jsdelivr.net/npm/twemoji@14.0.2/assets/svg/${twFile}.svg`}
-        width={size}
-        height={size}
-        alt=""
+      <span
         style={{
-          display: 'inline-block',
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width,
+          height: size,
+          background: '#E2E4EA',
+          color: '#374151',
+          fontSize: Math.round(size * 0.55),
+          fontWeight: 700,
+          borderRadius: 2,
+          fontFamily: 'var(--font-mono, monospace)',
           verticalAlign: 'middle',
           flexShrink: 0,
         }}
-        draggable={false}
-        loading="lazy"
-        onError={(e) => {
-          // Fallback: replace with native span if twemoji 404
-          const el = e.currentTarget;
-          const span = document.createElement('span');
-          span.textContent = emoji;
-          span.style.cssText = `font-size:${size}px;line-height:1;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;`;
-          el.replaceWith(span);
-        }}
-      />
+      >
+        {iso}
+      </span>
     );
   }
 
+  // Anything else → native emoji font.
   return (
     <span style={{
       fontSize: size,
