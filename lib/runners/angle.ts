@@ -43,7 +43,7 @@ const runner: CalculatorTool = {
       unit: 'Angle',
       color: colors[m],
       interpretation: `${full} — ${baseLabel}`,
-      details: `**Класс Angle:** ${full}\n**Соотношение моляров:** ${baseLabel}\n**Overjet:** ${oj} мм (${ojNote})\n**Overbite:** ${ob} мм (${obNote})\n\n- **Class I** — mesiobuccal cusp верхнего 1-го моляра попадает в buccal groove нижнего (нейтральное соотношение, но могут быть аномалии положения зубов)\n- **Class II** — mesiobuccal cusp мезиальнее buccal groove (нижняя челюсть ретружирована)\n  - Div 1 — протрузия верх. резцов\n  - Div 2 — ретрузия центральных, норма/ретрузия латеральных\n- **Class III** — mesiobuccal cusp дистальнее (нижняя челюсть выступает)`,
+      details: `Класс Angle: ${full}\nСоотношение моляров: ${baseLabel}\nOverjet: ${oj} мм (${ojNote})\nOverbite: ${ob} мм (${obNote})\n\n- Class I — mesiobuccal cusp верхнего 1-го моляра попадает в buccal groove нижнего (нейтральное соотношение, но могут быть аномалии положения зубов)\n- Class II — mesiobuccal cusp мезиальнее buccal groove (нижняя челюсть ретружирована)\n  - Div 1 — протрузия верх. резцов\n  - Div 2 — ретрузия центральных, норма/ретрузия латеральных\n- Class III — mesiobuccal cusp дистальнее (нижняя челюсть выступает)`,
       actions: [
         'Class I с crowding: ортодонт. выравнивание (брекеты / элайнеры)',
         'Class II div 1: Twin-block, Herbst, extraction-nonextraction, surgery (тяжёлый)',

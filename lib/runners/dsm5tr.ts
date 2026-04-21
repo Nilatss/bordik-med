@@ -54,7 +54,7 @@ const runner: CalculatorTool = {
       unit: 'DSM-5-TR',
       color: '#6B7280',
       interpretation: `${e.name} — код ${e.dsm} (ICD-10-CM ${e.icd10cm})`,
-      details: `**Расстройство:** ${e.name}\n**DSM-5-TR код:** ${e.dsm}\n**ICD-10-CM parallel:** ${e.icd10cm}\n\n**Критерии:** ${e.criteria}\n\n**Дифференциал:** ${e.diff}`,
+      details: `Расстройство: ${e.name}\nDSM-5-TR код: ${e.dsm}\nICD-10-CM parallel: ${e.icd10cm}\n\nКритерии: ${e.criteria}\n\nДифференциал: ${e.diff}`,
       actions: [
         'APA DSM-5-TR доступен в печати и через PsychiatryOnline (подписка)',
         'Использовать SCID-5 (structured interview) для формального diagnosis',

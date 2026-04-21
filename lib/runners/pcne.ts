@@ -104,7 +104,7 @@ const runner: CalculatorTool = {
       unit: 'PCNE v9.1',
       interpretation: band,
       color,
-      details: `**Проблема:** ${problemText[p]}\n\n**Причина:** ${causeText[c]}\n\n**Вмешательство:** ${i}; Принятие: ${a}; Статус: ${o}.`,
+      details: `Проблема: ${problemText[p]}\n\nПричина: ${causeText[c]}\n\nВмешательство: ${i}; Принятие: ${a}; Статус: ${o}.`,
       actions: [
         'Документировать DRP в структурированной форме (PCNE v9.1) в ЭМК',
         p === 'P2' ? 'Оценить причинность по шкале Naranjo; при необходимости — репорт в фармаконадзор' : '',

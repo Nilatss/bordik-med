@@ -59,7 +59,7 @@ const runner: CalculatorTool = {
       unit: 'NANDA-I',
       color: '#6B7280',
       interpretation: `NANDA-I: ${e.example}`,
-      details: `**Domain:** ${d} — ${e.name}\n\n**Пример сестринского диагноза:** ${e.example}\n\n**Defining characteristics (определяющие характеристики):** ${e.defining}\n\n**Related factors (связанные факторы):** ${e.related}\n\nNANDA-I использует **3-part PES statement**: Problem + Etiology + Signs/Symptoms. Формат: "[Diagnosis] related to [related factors] as evidenced by [defining characteristics]".`,
+      details: `Domain: ${d} — ${e.name}\n\nПример сестринского диагноза: ${e.example}\n\nDefining characteristics (определяющие характеристики): ${e.defining}\n\nRelated factors (связанные факторы): ${e.related}\n\nNANDA-I использует 3-part PES statement: Problem + Etiology + Signs/Symptoms. Формат: "[Diagnosis] related to [related factors] as evidenced by [defining characteristics]".`,
       actions: [
         'NANDA International: https://nanda.org/',
         'Текущее издание: NANDA-I 2024-2026 (13th) — 267 diagnoses',

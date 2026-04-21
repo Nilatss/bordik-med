@@ -54,7 +54,7 @@ const runner: CalculatorTool = {
       unit: 'Le Fort',
       color,
       interpretation: `${names[level]} — ${displacement === 'severe' ? 'ORIF показан' : 'оценить ORIF vs closed reduction'}`,
-      details: `**Уровень:** ${names[level]}\n**Хирургический доступ:** ${approaches[level]}\n\n**Le Fort I** — горизонт через верхнечелюстную пазуху, отделяет альвеолярный отросток.\n**Le Fort II** — пирамидальный, через нос, медиальную стенку орбиты, Zm-sutures.\n**Le Fort III** — полное разобщение лица от черепа через nasofrontal + zygomaticofrontal.`,
+      details: `Уровень: ${names[level]}\nХирургический доступ: ${approaches[level]}\n\nLe Fort I — горизонт через верхнечелюстную пазуху, отделяет альвеолярный отросток.\nLe Fort II — пирамидальный, через нос, медиальную стенку орбиты, Zm-sutures.\nLe Fort III — полное разобщение лица от черепа через nasofrontal + zygomaticofrontal.`,
       actions: [
         'CT с 3D reconstruction (тонкие срезы 1 мм)',
         'Проверка прикуса до и после ORIF (MMF intraop)',

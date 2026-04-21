@@ -37,7 +37,7 @@ const runner: CalculatorTool = {
       unit: '%',
       color,
       interpretation: `Anterior Bolton ${antRatio.toFixed(1)}% — ${label}`,
-      details: `**Anterior ratio** (сумма 6 ниж / 6 верх × 100) = ${antRatio.toFixed(1)}%\n  Норма: **77.2 ± 1.65%**\n  Отклонение: ${antDev >= 0 ? '+' : ''}${antDev.toFixed(1)}% (${Math.abs(antDev) > antSD ? tooth : '—'})\n\n${overallRatio > 0 ? `**Overall ratio** (12/12) = ${overallRatio.toFixed(1)}%\n  Норма: **91.3 ± 1.91%**\n  Отклонение: ${overallDev >= 0 ? '+' : ''}${overallDev.toFixed(1)}%\n` : ''}`,
+      details: `Anterior ratio (сумма 6 ниж / 6 верх × 100) = ${antRatio.toFixed(1)}%\n  Норма: 77.2 ± 1.65%\n  Отклонение: ${antDev >= 0 ? '+' : ''}${antDev.toFixed(1)}% (${Math.abs(antDev) > antSD ? tooth : '—'})\n\n${overallRatio > 0 ? `**Overall ratio** (12/12) = ${overallRatio.toFixed(1)}%\n  Норма: **91.3 ± 1.91%**\n  Отклонение: ${overallDev >= 0 ? '+' : ''}${overallDev.toFixed(1)}%\n` : ''}`,
       actions: [
         'Anterior ratio >77.2 + 2SD → избыток нижних резцов (мб придётся stripping верх)',
         'Anterior ratio <77.2 − 2SD → избыток верхних → ipr, Bolton table',

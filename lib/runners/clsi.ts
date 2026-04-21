@@ -53,7 +53,7 @@ const runner: CalculatorTool = {
       unit: t.unit,
       interpretation,
       color,
-      details: `**${t.label}**: норма ${t.low}–${t.high} ${t.unit}. Критические: <${t.critLow} или >${t.critHigh}.`,
+      details: `${t.label}: норма ${t.low}–${t.high} ${t.unit}. Критические: <${t.critLow} или >${t.critHigh}.`,
       actions: [
         color === '#EF4444' ? 'Критическое значение — немедленно уведомить лечащего врача (CLSI GP47-A)' : null,
         color === '#F59E0B' ? 'Повторить измерение, оценить клиническую картину' : null,

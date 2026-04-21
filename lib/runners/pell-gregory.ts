@@ -51,7 +51,7 @@ const runner: CalculatorTool = {
       unit: 'Pell-Gregory',
       color,
       interpretation: `Pell-Gregory ${r}${d} + Winter ${winterLabel[w]} — ${label}`,
-      details: `**Pell-Gregory:** Class **${r}** (ветвь) + Position **${d}** (глубина)\n**Winter angle:** ${winterLabel[w]}\n**Сложность:** ${label} (sum score ${score}/10)\n\n- **Class I** — места в ретромолярной ямке достаточно; **II** — половина ширины коронки покрыта ветвью; **III** — полностью в ветви\n- **Position A** — на уровне 2-го моляра; **B** — между; **C** — ниже шейки 2М (глубоко)`,
+      details: `Pell-Gregory: Class ${r} (ветвь) + Position ${d} (глубина)\nWinter angle: ${winterLabel[w]}\nСложность: ${label} (sum score ${score}/10)\n\n- Class I — места в ретромолярной ямке достаточно; II — половина ширины коронки покрыта ветвью; III — полностью в ветви\n- Position A — на уровне 2-го моляра; B — между; C — ниже шейки 2М (глубоко)`,
       actions: [
         'IA Mesioangular: удаление в кресле под местной анестезией',
         'IIB/IIIB: возможна остеотомия, coronectomy при близости к IAN',

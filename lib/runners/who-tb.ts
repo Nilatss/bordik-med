@@ -93,7 +93,7 @@ const runner: CalculatorTool = {
       unit: duration,
       interpretation: regimen + (doseNote ? ` · ${doseNote}` : ''),
       color,
-      details: `WHO обновила рекомендации: для MDR/pre-XDR теперь 6-месячный **BPaL/BPaLM** режим вместо 18–20 мес. Для DS-TB остаётся 6 мес (2HRZE/4HR). Все схемы DOTS (direct-observed therapy).`,
+      details: `WHO обновила рекомендации: для MDR/pre-XDR теперь 6-месячный BPaL/BPaLM режим вместо 18–20 мес. Для DS-TB остаётся 6 мес (2HRZE/4HR). Все схемы DOTS (direct-observed therapy).`,
       actions,
       caveats: [
         'Xpert MTB/RIF Ultra — диагностический тест первой линии (выявляет R-резистентность)',

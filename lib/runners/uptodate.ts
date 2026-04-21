@@ -48,7 +48,7 @@ const runner: CalculatorTool = {
       unit: 'UpToDate',
       color: '#6B7280',
       interpretation: `UpToDate: ${e.title}`,
-      details: `**Категория:** ${e.title}\n\n**Объём:** ${e.topics}\n\n**Градации доказательности:** ${e.grades}\n\nUpToDate использует **GRADE-адаптированную систему**:\n- **Grade 1A/1B/1C** — сильная рекомендация (high/moderate/low evidence)\n- **Grade 2A/2B/2C** — слабая рекомендация\n\nКаждая topic содержит: Summary & Recommendations, Introduction, Clinical Manifestations, Diagnosis, Treatment, Patient Education (basic/beyond basics), References.`,
+      details: `Категория: ${e.title}\n\nОбъём: ${e.topics}\n\nГрадации доказательности: ${e.grades}\n\nUpToDate использует GRADE-адаптированную систему:\n- Grade 1A/1B/1C — сильная рекомендация (high/moderate/low evidence)\n- Grade 2A/2B/2C — слабая рекомендация\n\nКаждая topic содержит: Summary & Recommendations, Introduction, Clinical Manifestations, Diagnosis, Treatment, Patient Education (basic/beyond basics), References.`,
       actions: [
         'Открыть https://www.uptodate.com/ (требуется подписка — часто через больницу/вуз)',
         'Мобильное приложение (iOS/Android) — offline после sync',

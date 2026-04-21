@@ -48,7 +48,7 @@ const runner: CalculatorTool = {
       unit: 'AWMF',
       color: '#6B7280',
       interpretation: `AWMF: ${e.title}`,
-      details: `**Специальность:** ${e.title}\n\n**Ведущее общество:** ${e.society}\n\n**Примеры guidelines:** ${e.examples}\n\n**Характерный уровень S:** ${e.preferred}\n\n**AWMF S-Klassifikation (уровень методологии):**\n- **S1** — Handlungsempfehlungen von Expertengruppen (без systematic review, экспертный консенсус 1-2 общества)\n- **S2k** — konsensbasierte Leitlinie (formal structured consensus, несколько обществ, но без systematic review)\n- **S2e** — evidenzbasierte Leitlinie (systematic review, но без formal consensus)\n- **S3** — evidenz- und konsensbasiert (ОБА: systematic review + structured consensus) — наивысшее качество\n- **NVL** (Nationale VersorgungsLeitlinie) — национальная care guideline (BÄK + KBV + AWMF), всегда S3-уровня`,
+      details: `Специальность: ${e.title}\n\nВедущее общество: ${e.society}\n\nПримеры guidelines: ${e.examples}\n\nХарактерный уровень S: ${e.preferred}\n\nAWMF S-Klassifikation (уровень методологии):\n- S1 — Handlungsempfehlungen von Expertengruppen (без systematic review, экспертный консенсус 1-2 общества)\n- S2k — konsensbasierte Leitlinie (formal structured consensus, несколько обществ, но без systematic review)\n- S2e — evidenzbasierte Leitlinie (systematic review, но без formal consensus)\n- S3 — evidenz- und konsensbasiert (ОБА: systematic review + structured consensus) — наивысшее качество\n- NVL (Nationale VersorgungsLeitlinie) — национальная care guideline (BÄK + KBV + AWMF), всегда S3-уровня`,
       actions: [
         'Открыть https://www.awmf.org/leitlinien/aktuelle-leitlinien (главный реестр)',
         'Поиск по номеру AWMF-Register-Nr. (напр. 032-045OL Mammakarzinom)',

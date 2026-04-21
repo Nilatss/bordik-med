@@ -67,7 +67,7 @@ const runner: CalculatorTool = {
       unit: 'ккал/сут',
       interpretation: `RER ${rerR} ккал · DER ${der} ккал (фактор ×${factor})`,
       color: '#4B8DF5',
-      details: `**Вид:** ${sp === 'cat' ? 'кошка' : 'собака'} · **масса** ${w} кг · **статус:** ${f.label}\n\n**RER** (Resting Energy Requirement) = ${w < 2 || w > 30 ? '30 × BW + 70' : '70 × BW^0,75'} = **${rerR} ккал/сут**\n\n**DER** (Daily Energy Requirement) = RER × ${factor} = **${der} ккал/сут**\n\n*FEDIAF Nutritional Guidelines 2021 · Purina BCS*`,
+      details: `Вид: ${sp === 'cat' ? 'кошка' : 'собака'} · масса ${w} кг · статус: ${f.label}\n\nRER (Resting Energy Requirement) = ${w < 2 || w > 30 ? '30 × BW + 70' : '70 × BW^0,75'} = ${rerR} ккал/сут\n\nDER (Daily Energy Requirement) = RER × ${factor} = ${der} ккал/сут\n\n*FEDIAF Nutritional Guidelines 2021 · Purina BCS*`,
       actions: [
         `Рассчитать объём корма: ${der} ккал ÷ калорийность корма (ккал/г)`,
         'Разделить на 2 приёма (собаки) / 3-4 приёма (кошки, щенки)',

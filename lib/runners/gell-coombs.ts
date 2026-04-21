@@ -123,7 +123,7 @@ const runner: CalculatorTool = {
       unit: 'Gell-Coombs',
       interpretation: type,
       color,
-      details: `**Механизм:** ${mechanism}\n\n**Типичные примеры:**\n${examples.map((e) => `- ${e}`).join('\n')}\n\n**Время развития:** ${onset === 'immediate' ? '< 1 ч' : onset === 'rapid' ? '1-24 ч' : onset === 'delayed' ? '> 24 ч — дн.' : 'нед.-мес.'}`,
+      details: `Механизм: ${mechanism}\n\nТипичные примеры:\n${examples.map((e) => `- ${e}`).join('\n')}\n\nВремя развития: ${onset === 'immediate' ? '< 1 ч' : onset === 'rapid' ? '1-24 ч' : onset === 'delayed' ? '> 24 ч — дн.' : 'нед.-мес.'}`,
       actions,
       caveats: [
         'Многие реальные реакции смешанные (например, РА — Тип III + IV)',

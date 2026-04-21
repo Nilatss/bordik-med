@@ -93,7 +93,7 @@ const runner: CalculatorTool = {
       unit: 'ICD-DA',
       color: '#6B7280',
       interpretation: `ICD-10-DA: ${e.title}`,
-      details: `**${e.title}**\n\n**Подкатегории:**\n${e.subs}\n\n**Примечание:** ${e.note}\n\nICD-DA (Application of the ICD to Dentistry and Stomatology) — расширение ICD-10 специально для стоматологии. Использует те же 3-4-значные коды ICD-10, но добавляет 5-е знаки для деталей, специфичных для стоматологии.`,
+      details: `${e.title}\n\nПодкатегории:\n${e.subs}\n\nПримечание: ${e.note}\n\nICD-DA (Application of the ICD to Dentistry and Stomatology) — расширение ICD-10 специально для стоматологии. Использует те же 3-4-значные коды ICD-10, но добавляет 5-е знаки для деталей, специфичных для стоматологии.`,
       actions: [
         'WHO ICD-DA 3rd ed. (1995) — основа; обновления в рамках ICD-10 updates',
         'Использовать вместе с FDI нумерацией зубов для точной локализации',

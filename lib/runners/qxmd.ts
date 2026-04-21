@@ -42,7 +42,7 @@ const runner: CalculatorTool = {
       unit: 'QxMD',
       color: '#6B7280',
       interpretation: `QxMD: ${f}`,
-      details: `**Функция:** ${e.title}\n\n**Описание:** ${e.detail}\n\n**Совет:** ${e.tip}\n\n**QxMD экосистема:**\n- **Read by QxMD** — флагманское приложение для поиска и чтения литературы (iOS/Android/web)\n- **Calculate by QxMD** — медицинские калькуляторы (ранее отдельное приложение, теперь интегрировано в Read)\n- **Account** — единый аккаунт для sync между устройствами\n- **Institutional access** — через больничную/университетскую подписку получается full text (не только abstract)\n\n**Интеграция с Elsevier:**\nQxMD куплен Elsevier в 2015 г. — даёт доступ к ScienceDirect full texts при наличии institutional подписки.`,
+      details: `Функция: ${e.title}\n\nОписание: ${e.detail}\n\nСовет: ${e.tip}\n\nQxMD экосистема:\n- Read by QxMD — флагманское приложение для поиска и чтения литературы (iOS/Android/web)\n- Calculate by QxMD — медицинские калькуляторы (ранее отдельное приложение, теперь интегрировано в Read)\n- Account — единый аккаунт для sync между устройствами\n- Institutional access — через больничную/университетскую подписку получается full text (не только abstract)\n\nИнтеграция с Elsevier:\nQxMD куплен Elsevier в 2015 г. — даёт доступ к ScienceDirect full texts при наличии institutional подписки.`,
       actions: [
         'Скачать Read by QxMD (iOS/Android) или web: https://read.qxmd.com/',
         'Calculate (встроен в Read или отдельно): https://qxcalc.com/',

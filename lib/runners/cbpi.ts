@@ -38,7 +38,7 @@ const runner: CalculatorTool = {
       unit: 'CBPI (0-10 ср.)',
       interpretation: `PS ${psScore} · PI ${piScore} · QoL ${qol} — ${cat}`,
       color,
-      details: `**CBPI** (Canine Brief Pain Inventory, Purdue):\n- **Pain Severity** = ${pSev} / 40 → среднее **${psScore}** / 10\n- **Pain Interference** = ${pInt} / 60 → среднее **${piScore}** / 10\n- **QoL** = ${qol} / 4\n\nМинимальное клинически значимое изменение (MCID): **ΔPS ≥ 1, ΔPI ≥ 2**.`,
+      details: `CBPI (Canine Brief Pain Inventory, Purdue):\n- Pain Severity = ${pSev} / 40 → среднее ${psScore} / 10\n- Pain Interference = ${pInt} / 60 → среднее ${piScore} / 10\n- QoL = ${qol} / 4\n\nМинимальное клинически значимое изменение (MCID): ΔPS ≥ 1, ΔPI ≥ 2.`,
       actions: [
         psScore >= 2 ? 'НПВС (карпрофен 4 мг/кг/сут, мелоксикам 0,1 мг/кг/сут, деракоксиб)' : '',
         psScore >= 4 ? 'Мультимодально: НПВС + габапентин 10 мг/кг × 2-3 + амантадин 3-5 мг/кг/сут' : '',
@@ -47,7 +47,7 @@ const runner: CalculatorTool = {
         'Повтор CBPI через 2-4 нед для оценки ответа (MCID PS ≥ 1)',
       ].filter(Boolean),
       caveats: [
-        'CBPI заполняется **владельцем** — субъективная оценка',
+        'CBPI заполняется владельцем — субъективная оценка',
         'Валидирован для хронической боли при остеоартрите и онкологии',
         'НЕ применять для острой (послеоперационной) боли — используйте CMPS-SF',
         'Только собаки; для кошек — FMPI (Feline Musculoskeletal Pain Index)',

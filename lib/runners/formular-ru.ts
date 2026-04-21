@@ -88,7 +88,7 @@ const runner: CalculatorTool = {
       unit: 'Перечни РФ',
       color: '#6B7280',
       interpretation: `Формуляр: ${e.name} (ATC ${e.atc})`,
-      details: `**Препарат:** ${e.name}\n**МНН (INN):** ${e.inn}\n**ATC:** ${e.atc}\n\n**Включение в перечни:**\n${e.lists}\n\n**Цена:** ${e.price}\n\n**Клиническая заметка:** ${e.notes}`,
+      details: `Препарат: ${e.name}\nМНН (INN): ${e.inn}\nATC: ${e.atc}\n\nВключение в перечни:\n${e.lists}\n\nЦена: ${e.price}\n\nКлиническая заметка: ${e.notes}`,
       actions: [
         'ГРЛС (Государственный реестр ЛС): https://grls.rosminzdrav.ru/',
         'Перечень ЖНВЛП — Распоряжение Правительства РФ №3073-р (обновляется ежегодно)',

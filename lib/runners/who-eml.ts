@@ -63,7 +63,7 @@ const runner: CalculatorTool = {
       unit: '23-я редакция',
       interpretation: `${a} — ключевые эссенциальные препараты для ${p === 'children' ? 'детей' : p === 'both' ? 'взрослых и детей' : 'взрослых'}`,
       color: '#4B8DF5',
-      details: `Область: ${a}. Популяция: ${p}.\n\n**Препараты EML:**\n${e.meds}\n\n**Обоснование WHO:** ${e.rationale}\n\n**Заметки:** ${e.notes}\n\n*WHO Model List of Essential Medicines (EML) — минимальный список препаратов для базовой системы здравоохранения. Обновляется каждые 2 года Expert Committee on Selection and Use of Essential Medicines.*`,
+      details: `Область: ${a}. Популяция: ${p}.\n\nПрепараты EML:\n${e.meds}\n\nОбоснование WHO: ${e.rationale}\n\nЗаметки: ${e.notes}\n\n*WHO Model List of Essential Medicines (EML) — минимальный список препаратов для базовой системы здравоохранения. Обновляется каждые 2 года Expert Committee on Selection and Use of Essential Medicines.*`,
       actions: [
         'Открыть WHO EML (https://list.essentialmeds.org/) — онлайн база с поиском',
         'Сверить с национальным формуляром (EML большинства LMIC основаны на WHO EML)',

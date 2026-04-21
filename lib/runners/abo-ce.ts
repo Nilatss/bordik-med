@@ -39,7 +39,7 @@ const runner: CalculatorTool = {
       unit: 'баллов',
       color,
       interpretation: `ABO CR-Eval ${total} — ${label}`,
-      details: `**ABO Cast-Radiograph Evaluation:**\n1. Alignment: ${a}\n2. Marginal ridges: ${m}\n3. Buccolingual: ${b}\n4. Overjet: ${oj}\n5. Occlusal contacts: ${oc}\n6. Occlusal relationships: ${rel}\n7. Interproximal (panoramic): ${ip}\n\n**Итого:** ${total} штрафных баллов\n**Порог Board:** ≤20 отлично, 21-30 пограничный, >30 неудача (не проходит сертификацию ABO)`,
+      details: `ABO Cast-Radiograph Evaluation:\n1. Alignment: ${a}\n2. Marginal ridges: ${m}\n3. Buccolingual: ${b}\n4. Overjet: ${oj}\n5. Occlusal contacts: ${oc}\n6. Occlusal relationships: ${rel}\n7. Interproximal (panoramic): ${ip}\n\nИтого: ${total} штрафных баллов\nПорог Board: ≤20 отлично, 21-30 пограничный, >30 неудача (не проходит сертификацию ABO)`,
       actions: [
         'ABO CR-Eval — применяется на post-treatment моделях и панорамном снимке',
         'Для сертификации ABO требуется 6 законченных случаев ≤30 баллов',

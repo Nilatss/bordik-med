@@ -38,7 +38,7 @@ const runner: CalculatorTool = {
       diabetes: { name: 'Diabetes / endocrinology', body: 'SDES — Saudi Diabetes & Endocrine Society', details: 'Saudi Guidelines for Management of Diabetes. Очень высокая распространённость DM2 (~18-25% взрослых — одна из высочайших в мире). Рамадан fasting guidelines — международно важный документ (IDF-DAR + SDES). Obesity — ~35-40%.' },
       onko: { name: 'Oncology', body: 'SOS — Saudi Oncology Society + KFSH&RC (King Faisal Specialist Hospital)', details: 'Saudi Cancer Registry. Специфика: высокая частота рака щитовидной железы у женщин, колоректального, молочной железы, NHL. KFSH&RC — ведущий tertiary cancer centre региона.' },
       maternal: { name: 'Maternal / child', body: 'SSOG — Saudi Society of Obstetrics & Gynecology + SPS — Saudi Pediatric Society', details: 'Premarital screening mandatory (HbS, thalassemia). Национальный прививочный календарь (включая доп. вакцины перед Hajj: quadrivalent meningococcal, seasonal influenza). Genetic disorders — высокая распространённость из-за консангвиновых браков.' },
-      hajj: { name: 'Hajj / mass gatherings', body: 'MoH Hajj Directorate + WHO Collaborating Centre for Mass Gatherings Medicine', details: '**Hajj health requirements** — ежегодные обновления (meningococcal ACWY vaccine мандаторна, yellow fever для endemic countries, polio для полиомиелит-endemic). **Heat-related illness** (>45°C), **MERS-CoV** surveillance, **respiratory infections**. Уникальный домен — масштаб 2-3 млн паломников / сезон.' },
+      hajj: { name: 'Hajj / mass gatherings', body: 'MoH Hajj Directorate + WHO Collaborating Centre for Mass Gatherings Medicine', details: 'Hajj health requirements — ежегодные обновления (meningococcal ACWY vaccine мандаторна, yellow fever для endemic countries, polio для полиомиелит-endemic). Heat-related illness (>45°C), MERS-CoV surveillance, respiratory infections. Уникальный домен — масштаб 2-3 млн паломников / сезон.' },
       scfhs: { name: 'SCFHS — сертификация', body: 'Saudi Commission for Health Specialties', details: 'SCFHS регулирует: медицинское образование (Saudi Board programs, эквивалент резидентуры), регистрацию иностранных врачей (Prometric + Data Flow verification), CPD points, professional classification, лицензирование. Единый регистр всех health practitioners в KSA.' },
       drugs: { name: 'Лекарства', body: 'Saudi FDA (SFDA)', details: 'SFDA регулирует лекарства, медизделия, космецевтику, пищу. Регистрация + pharmacovigilance + GMP inspections. SFDA drug list, formulary для NUPCO (National Unified Procurement Company). Реимбурсация: государственные учреждения vs CCHI (Council of Cooperative Health Insurance) для частного сектора.' },
     };
@@ -48,7 +48,7 @@ const runner: CalculatorTool = {
       unit: 'Saudi Arabia',
       color: '#6B7280',
       interpretation: `Navigate: Saudi ${e.name}`,
-      details: `**Домен:** ${e.name}\n\n**Орган:** ${e.body}\n\n${e.details}\n\n**Контекст KSA:** Vision 2030 Health Transformation — корпоратизация MoH, private-sector expansion, national health insurance (CCHI). Население ~35 млн (citizens ~60%, expatriates ~40%).`,
+      details: `Домен: ${e.name}\n\nОрган: ${e.body}\n\n${e.details}\n\nКонтекст KSA: Vision 2030 Health Transformation — корпоратизация MoH, private-sector expansion, national health insurance (CCHI). Население ~35 млн (citizens ~60%, expatriates ~40%).`,
       actions: [
         'Saudi MoH: https://www.moh.gov.sa/',
         'SCFHS: https://www.scfhs.org.sa/',

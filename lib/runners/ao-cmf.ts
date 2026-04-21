@@ -54,7 +54,7 @@ const runner: CalculatorTool = {
       unit: 'AO CMF',
       color: severityColor,
       interpretation: `AO CMF ${code} (${names[region]}), Level ${level} — ${surgical}`,
-      details: `**Регион:** ${names[region]} (code ${code})\n**Уровень:** ${level}\n**Смещение:** ${displacement}\n**Тактика:** ${surgical}\n\nAO CMF — иерархическая система с 3 уровнями детализации: L1 локализация → L2 топография → L3 морфология фрагментации.`,
+      details: `Регион: ${names[region]} (code ${code})\nУровень: ${level}\nСмещение: ${displacement}\nТактика: ${surgical}\n\nAO CMF — иерархическая система с 3 уровнями детализации: L1 локализация → L2 топография → L3 морфология фрагментации.`,
       actions: [
         'CT с 3D реконструкцией — стандарт для middle face/skull base',
         'L3 severe: ORIF титановыми миниплатинами (1.5-2.0 мм)',

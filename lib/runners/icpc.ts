@@ -78,7 +78,7 @@ const runner: CalculatorTool = {
       unit: 'ICPC-2',
       color: '#6B7280',
       interpretation: `ICPC-2 Chapter ${ch} — ${comp}`,
-      details: `**Глава:** ${ch}\n**Компонент:** ${comp}\n\n**Примеры кодов:** ${content}\n\nICPC-2 — 3-символьный код: буква (глава, орган-система) + 2 цифры (компонент + рубрика). Разработана WONCA специально для первичной помощи — отражает **причину визита**, а не только "окончательный" диагноз.`,
+      details: `Глава: ${ch}\nКомпонент: ${comp}\n\nПримеры кодов: ${content}\n\nICPC-2 — 3-символьный код: буква (глава, орган-система) + 2 цифры (компонент + рубрика). Разработана WONCA специально для первичной помощи — отражает причину визита, а не только "окончательный" диагноз.`,
       actions: [
         'WONCA ICPC-2: https://www.globalfamilydoctor.com/groups/WorkingParties/wicc.aspx',
         'ICPC-2 Electronic (ICPC-2e): онлайн браузер',

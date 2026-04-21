@@ -86,7 +86,7 @@ const runner: CalculatorTool = {
       interpretation: `${band} · активных доменов: ${active.length}/24`,
       color,
       details: active.length
-        ? `**Активные проявления:**\n${active.map((x) => `- ${x}`).join('\n')}`
+        ? `Активные проявления:\n${active.map((x) => `- ${x}`).join('\n')}`
         : 'Все 24 домена неактивны.',
       actions,
       caveats: [

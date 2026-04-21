@@ -81,7 +81,7 @@ const runner: CalculatorTool = {
       unit: 'LOINC',
       color: '#6B7280',
       interpretation: `LOINC: ${e.name}`,
-      details: `**Категория:** ${e.name}\n\n**Примеры кодов:**\n${e.examples}\n\n**Примечание:** ${e.note}\n\nКаждый LOINC код имеет 6 осей: **Component · Property · Time · System · Scale · Method**.`,
+      details: `Категория: ${e.name}\n\nПримеры кодов:\n${e.examples}\n\nПримечание: ${e.note}\n\nКаждый LOINC код имеет 6 осей: Component · Property · Time · System · Scale · Method.`,
       actions: [
         'LOINC Search: https://loinc.org/search/',
         'RELMA — desktop tool для маппинга локальных тестов на LOINC (бесплатно)',

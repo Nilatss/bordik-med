@@ -44,7 +44,7 @@ const runner: CalculatorTool = {
       unit: 'AAP/EFP',
       color: colors[s],
       interpretation: `Periodontitis Stage ${s}, Grade ${g}, ${extLabel}`,
-      details: `**Диагноз:** Periodontitis Stage **${s}** (${severity}), Grade **${g}** (${rate} прогрессия), **${extLabel}**\n\n**Stage** оценивает тяжесть + сложность (CAL, потеря зубов, глубина кармана, furcation, mobility).\n**Grade** — скорость прогрессии + модифицирующие факторы (курение, СД).\n**Extent** — локализованный (<30%), генерализованный (≥30%), molar-incisor.`,
+      details: `Диагноз: Periodontitis Stage ${s} (${severity}), Grade ${g} (${rate} прогрессия), ${extLabel}\n\nStage оценивает тяжесть + сложность (CAL, потеря зубов, глубина кармана, furcation, mobility).\nGrade — скорость прогрессии + модифицирующие факторы (курение, СД).\nExtent — локализованный (<30%), генерализованный (≥30%), molar-incisor.`,
       actions: [
         'Stage I-II: нехирургическая терапия (scaling/root planing), гигиена, мотивация',
         'Stage III: SRP + хирургическая пародонтология (flap, GTR, bone graft)',

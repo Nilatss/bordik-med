@@ -54,7 +54,7 @@ const runner: CalculatorTool = {
       unit: t.unit,
       interpretation,
       color,
-      details: `**${t.label}**: ${t.low}–${t.high} ${t.unit}. ${t.note}`,
+      details: `${t.label}: ${t.low}–${t.high} ${t.unit}. ${t.note}`,
       actions: [
         'Сравнить с референсом конкретной лаборатории (Invitro / Helix / ДНКом / Гемотест)',
         'Учесть возраст, пол, беременность, физическую нагрузку',

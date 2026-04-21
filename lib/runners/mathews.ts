@@ -108,7 +108,7 @@ const runner: CalculatorTool = {
       unit: 'AAO-HNS',
       interpretation: verdict,
       color,
-      details: `**Критерии Paradise (документированные эпизоды):**\n- ≥ 7 за 1 год → ${e1 >= 7 && doc ? '✅' : '❌'} (${e1})\n- ≥ 5/год × 2 года → ${e2 >= 5 && doc ? '✅' : '❌'} (${e2})\n- ≥ 3/год × 3 года → ${e3 >= 3 && doc ? '✅' : '❌'} (${e3})\n\n**Показания:**\n${indications.length ? indications.map((x) => `- ${x}`).join('\n') : '- нет'}`,
+      details: `Критерии Paradise (документированные эпизоды):\n- ≥ 7 за 1 год → ${e1 >= 7 && doc ? '✅' : '❌'} (${e1})\n- ≥ 5/год × 2 года → ${e2 >= 5 && doc ? '✅' : '❌'} (${e2})\n- ≥ 3/год × 3 года → ${e3 >= 3 && doc ? '✅' : '❌'} (${e3})\n\nПоказания:\n${indications.length ? indications.map((x) => `- ${x}`).join('\n') : '- нет'}`,
       actions,
       caveats: [
         'Paradise-критерии требуют именно документированных визитов с лихорадкой + экссудатом/шейным лимфаденитом/культурой СГА',

@@ -81,7 +81,7 @@ const runner: CalculatorTool = {
       unit: 'ASEAN',
       color: '#6B7280',
       interpretation: `Navigate: ${e.name} — ${e.main.split(' + ')[0]}`,
-      details: `**Страна:** ${e.name}\n\n**Основной орган:** ${e.main}\n\n**Портал:** ${e.url}\n\n${e.details}`,
+      details: `Страна: ${e.name}\n\nОсновной орган: ${e.main}\n\nПортал: ${e.url}\n\n${e.details}`,
       actions: [
         `Основной портал: ${e.url}`,
         'Singapore MOH: https://www.moh.gov.sg/',

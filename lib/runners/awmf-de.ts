@@ -48,7 +48,7 @@ const runner: CalculatorTool = {
       unit: 'AWMF',
       color: '#6B7280',
       interpretation: `Navigate: awmf.org/leitlinien (${e.society})`,
-      details: `**Специальность:** ${e.name}\n\n**Общество:** ${e.society}\n\n**Примеры S3/NVL рекомендаций:**\n${e.examples}\n\n**Уровни AWMF:**\n- **S1** — экспертный консенсус (без формализованной методологии)\n- **S2k** — консенсус-ориентированная (formal consensus, без системного обзора)\n- **S2e** — доказательная (systematic review)\n- **S3** — доказательная + консенсус (высший уровень, systematic review + structured consensus)\n- **NVL** — Nationale VersorgungsLeitlinie (совместно с BÄK + KBV для chronic conditions)`,
+      details: `Специальность: ${e.name}\n\nОбщество: ${e.society}\n\nПримеры S3/NVL рекомендаций:\n${e.examples}\n\nУровни AWMF:\n- S1 — экспертный консенсус (без формализованной методологии)\n- S2k — консенсус-ориентированная (formal consensus, без системного обзора)\n- S2e — доказательная (systematic review)\n- S3 — доказательная + консенсус (высший уровень, systematic review + structured consensus)\n- NVL — Nationale VersorgungsLeitlinie (совместно с BÄK + KBV для chronic conditions)`,
       actions: [
         'Портал: https://www.awmf.org/leitlinien/',
         'Поиск по специальности (Fachgesellschaft) или ключевым словам (Stichwort)',

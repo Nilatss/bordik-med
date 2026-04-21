@@ -88,7 +88,7 @@ const runner: CalculatorTool = {
       unit: 'ADA/EASD 2023',
       interpretation: verdict,
       color,
-      details: `**HbA1c ${a1c} %** vs цель **${target} %** (разрыв ${gap.toFixed(1)} %)\n\n**1-я линия:**\n${firstLine.map((x) => `- ${x}`).join('\n')}\n\n**Добавочная терапия:**\n${addOn.length ? addOn.map((x) => `- ${x}`).join('\n') : '- зависит от HbA1c-разрыва'}\n\n**Приоритеты ADA/EASD 2023:**\n- При ASCVD / ХСН / ХБП — **SGLT2i и/или GLP-1 RA независимо от HbA1c**\n- При ожирении — GLP-1 RA / тирзепатид\n- При стоимости — СМ / пиоглитазон (вторичная линия)`,
+      details: `HbA1c ${a1c} % vs цель ${target} % (разрыв ${gap.toFixed(1)} %)\n\n1-я линия:\n${firstLine.map((x) => `- ${x}`).join('\n')}\n\nДобавочная терапия:\n${addOn.length ? addOn.map((x) => `- ${x}`).join('\n') : '- зависит от HbA1c-разрыва'}\n\nПриоритеты ADA/EASD 2023:\n- При ASCVD / ХСН / ХБП — SGLT2i и/или GLP-1 RA независимо от HbA1c\n- При ожирении — GLP-1 RA / тирзепатид\n- При стоимости — СМ / пиоглитазон (вторичная линия)`,
       actions,
       caveats,
       scale: {

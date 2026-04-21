@@ -53,7 +53,7 @@ const runner: CalculatorTool = {
       unit: 'ГЭОТАР-Мед',
       color: '#6B7280',
       interpretation: `Ресурс ГЭОТАР: ${e.title}`,
-      details: `**Категория:** ${e.title}\n\n**Платформа:** ${e.platform}\n\n**Примеры изданий:**\n${e.examples}\n\n**Доступ:** ${e.access}`,
+      details: `Категория: ${e.title}\n\nПлатформа: ${e.platform}\n\nПримеры изданий:\n${e.examples}\n\nДоступ: ${e.access}`,
       actions: [
         'Официальный сайт: https://www.geotar.ru/',
         'Consultant Vracha (практикующие): https://www.rosmedlib.ru/',

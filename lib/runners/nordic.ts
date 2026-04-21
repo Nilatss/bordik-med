@@ -56,7 +56,7 @@ const runner: CalculatorTool = {
         main: 'Käypä hoito -suositukset (Duodecim)',
         url: 'https://www.kaypahoito.fi/',
         lang: 'Финский + шведский + английские резюме',
-        details: '**Käypä hoito** (Current Care Guidelines) — одна из старейших и наиболее уважаемых систем гайдлайнов в мире (с 1994). Разработаны Suomalainen Lääkäriseura Duodecim. Каждое руководство: полная версия + carry card + patient version + английское резюме. Методология GRADE. ~100+ guidelines. Terveysportti — портал для профессионалов.',
+        details: 'Käypä hoito (Current Care Guidelines) — одна из старейших и наиболее уважаемых систем гайдлайнов в мире (с 1994). Разработаны Suomalainen Lääkäriseura Duodecim. Каждое руководство: полная версия + carry card + patient version + английское резюме. Методология GRADE. ~100+ guidelines. Terveysportti — портал для профессионалов.',
       },
       is: {
         name: 'Исландия',
@@ -72,7 +72,7 @@ const runner: CalculatorTool = {
       unit: 'Nordic',
       color: '#6B7280',
       interpretation: `Navigate: ${e.name} — ${e.main.split(' + ')[0]}`,
-      details: `**Страна:** ${e.name}\n\n**Основной ресурс:** ${e.main}\n\n**URL:** ${e.url}\n\n**Язык:** ${e.lang}\n\n${e.details}`,
+      details: `Страна: ${e.name}\n\nОсновной ресурс: ${e.main}\n\nURL: ${e.url}\n\nЯзык: ${e.lang}\n\n${e.details}`,
       actions: [
         `Основной портал: ${e.url}`,
         'Käypä hoito (FI): https://www.kaypahoito.fi/',

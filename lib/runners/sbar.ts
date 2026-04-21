@@ -77,7 +77,7 @@ const runner: CalculatorTool = {
       unit: 'шаблон',
       interpretation: band,
       color,
-      details: `**S — Situation:** ${t.s}\n\n**B — Background:** ${t.b}\n\n**A — Assessment:** ${t.a}\n\n**R — Recommendation:** ${t.r}`,
+      details: `S — Situation: ${t.s}\n\nB — Background: ${t.b}\n\nA — Assessment: ${t.a}\n\nR — Recommendation: ${t.r}`,
       actions: [
         'Прежде чем звонить: проверить ЭМК, свежие витальные, анализы, назначения',
         'Записать ключевые цифры (ЧСС, АД, SpO2, Hb, лактат) перед звонком',

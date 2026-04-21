@@ -48,7 +48,7 @@ const runner: CalculatorTool = {
       unit: 'ASA',
       color,
       interpretation: `ASA ${['I','II','III','IV','V'][n-1]}${suffix} — ${setting[n]}`,
-      details: `**Класс:** ASA ${['I','II','III','IV','V'][n-1]}${suffix}\n**Условия:** ${setting[n]}\n${bp ? '\n⚠ **Бисфосфонаты:** MRONJ risk, избегать экстракций / имплантации' : ''}${ac ? '\n⚠ **Антикоагулянты:** локальный гемостаз, tranexamic acid rinse' : ''}`,
+      details: `Класс: ASA ${['I','II','III','IV','V'][n-1]}${suffix}\nУсловия: ${setting[n]}\n${bp ? '\n⚠ **Бисфосфонаты:** MRONJ risk, избегать экстракций / имплантации' : ''}${ac ? '\n⚠ **Антикоагулянты:** локальный гемостаз, tranexamic acid rinse' : ''}`,
       actions: [
         'ASA I-II: рутинные процедуры без ограничений',
         'ASA III: premedication (benzodiazepines), O₂ supplementation, медконсультация',

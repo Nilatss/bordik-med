@@ -48,7 +48,7 @@ const runner: CalculatorTool = {
       unit: 'NICE CKS',
       color: '#6B7280',
       interpretation: `CKS: ${e.title}`,
-      details: `**Topic:** ${e.title}\n\n**Диагностика:** ${e.summary}\n\n**Management:** ${e.guidance}\n\n**Связанный NICE guideline:** ${e.ng}\n\nCKS — **primary care quick reference** от NICE, основан на NICE guidelines + Cochrane + другая evidence. Структура: Summary, Have I got the right topic?, How up-to-date is this topic?, Management, Prescribing information, Background information.`,
+      details: `Topic: ${e.title}\n\nДиагностика: ${e.summary}\n\nManagement: ${e.guidance}\n\nСвязанный NICE guideline: ${e.ng}\n\nCKS — primary care quick reference от NICE, основан на NICE guidelines + Cochrane + другая evidence. Структура: Summary, Have I got the right topic?, How up-to-date is this topic?, Management, Prescribing information, Background information.`,
       actions: [
         'Открыть https://cks.nice.org.uk/topics/' + t.replace(/-/g, '-'),
         'Бесплатно для NHS сотрудников; полный доступ в UK по IP',

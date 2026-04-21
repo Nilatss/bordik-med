@@ -48,7 +48,7 @@ const runner: CalculatorTool = {
       unit: 'ESC Guideline',
       color: '#6B7280',
       interpretation: `ESC ${e.name} ${e.year}`,
-      details: `**Гайдлайн:** ${e.name}\n\n**Год публикации:** ${e.year}\n\n**Соавторы:** ${e.cosponsor}\n\n**Ключевые положения:**\n${e.key}\n\n**Формат ESC:** Full Guidelines (60-200 стр.) + Pocket Guidelines (краткая карманная версия) + Slide sets + ESC Pocket Guidelines app. Class of recommendation (I / IIa / IIb / III) + Level of evidence (A / B / C).`,
+      details: `Гайдлайн: ${e.name}\n\nГод публикации: ${e.year}\n\nСоавторы: ${e.cosponsor}\n\nКлючевые положения:\n${e.key}\n\nФормат ESC: Full Guidelines (60-200 стр.) + Pocket Guidelines (краткая карманная версия) + Slide sets + ESC Pocket Guidelines app. Class of recommendation (I / IIa / IIb / III) + Level of evidence (A / B / C).`,
       actions: [
         'ESC Guidelines portal: https://www.escardio.org/Guidelines',
         'ESC Pocket Guidelines app (iOS/Android) — offline, все актуальные гайдлайны',

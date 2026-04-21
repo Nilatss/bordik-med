@@ -53,7 +53,7 @@ const runner: CalculatorTool = {
       unit: 'МЗ РК',
       color: '#6B7280',
       interpretation: `Нормативная база РК: ${e.title}`,
-      details: `**Документ:** ${e.title}\n\n**Где найти:** ${e.where}\n\n**Содержание:** ${e.content}\n\n**Правовой статус:** ${e.legal}`,
+      details: `Документ: ${e.title}\n\nГде найти: ${e.where}\n\nСодержание: ${e.content}\n\nПравовой статус: ${e.legal}`,
       actions: [
         'МЗ РК: https://www.gov.kz/memleket/entities/dsm',
         'РЦРЗ (Республиканский центр развития здравоохранения): https://rcrz.kz/',

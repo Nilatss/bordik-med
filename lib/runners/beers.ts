@@ -92,7 +92,7 @@ const runner: CalculatorTool = {
       unit: 'Beers 2023',
       interpretation: r.rationale,
       color: rm.color,
-      details: `Препарат/класс: ${dc}. Коморбидность: ${co}. Возраст: ${age}.\n\n**Рекомендация AGS Beers 2023:** ${rm.label}\n\n**Обоснование:** ${r.rationale}\n\n**Общие принципы:**\n- Deprescribing: пересмотреть каждый препарат ежегодно\n- START/STOPP (Европа) — альтернатива Beers\n- Используйте минимальную эффективную дозу\n- Корректируйте на eGFR, массу тела, печёночную функцию`,
+      details: `Препарат/класс: ${dc}. Коморбидность: ${co}. Возраст: ${age}.\n\nРекомендация AGS Beers 2023: ${rm.label}\n\nОбоснование: ${r.rationale}\n\nОбщие принципы:\n- Deprescribing: пересмотреть каждый препарат ежегодно\n- START/STOPP (Европа) — альтернатива Beers\n- Используйте минимальную эффективную дозу\n- Корректируйте на eGFR, массу тела, печёночную функцию`,
       actions: [
         'Сверить в AGS Beers Criteria 2023 — полная таблица в JAGS',
         'Рассмотреть deprescribing: постепенная отмена с заменой',

@@ -56,7 +56,7 @@ const runner: CalculatorTool = {
       unit: 'MSD Vet Manual',
       interpretation: `Раздел «${s}» · ${top.split(',')[0]}...`,
       color: '#4B8DF5',
-      details: `**Темы раздела:**\n${top}\n\n**Источники онлайн:**\n- merckvetmanual.com (США)\n- msdvetmanual.com (остальной мир)\n- Доступно бесплатно с 2005 г.\n\n**Также содержит:** Pet Owner Version (для владельцев) и Professional Version (детально).`,
+      details: `Темы раздела:\n${top}\n\nИсточники онлайн:\n- merckvetmanual.com (США)\n- msdvetmanual.com (остальной мир)\n- Доступно бесплатно с 2005 г.\n\nТакже содержит: Pet Owner Version (для владельцев) и Professional Version (детально).`,
       actions: [
         'Открыть merckvetmanual.com или msdvetmanual.com для полной статьи',
         'Скачать MSD Vet Manual app (iOS / Android)',

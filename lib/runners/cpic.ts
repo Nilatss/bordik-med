@@ -105,7 +105,7 @@ const runner: CalculatorTool = {
       unit: `Evidence ${e.evidence}`,
       interpretation: e.rec,
       color: e.color,
-      details: `Ген: ${g.toUpperCase()}. Препарат: ${d}. Фенотип: ${ph.toUpperCase()}.\n\n**Рекомендация CPIC:** ${e.rec}\n\n**Уровень доказательности:** ${evDesc[e.evidence]}\n\nCPIC (Clinical Pharmacogenetics Implementation Consortium) публикует peer-reviewed гайдлайны по парам ген-препарат с конкретными рекомендациями по дозированию в зависимости от фенотипа.`,
+      details: `Ген: ${g.toUpperCase()}. Препарат: ${d}. Фенотип: ${ph.toUpperCase()}.\n\nРекомендация CPIC: ${e.rec}\n\nУровень доказательности: ${evDesc[e.evidence]}\n\nCPIC (Clinical Pharmacogenetics Implementation Consortium) публикует peer-reviewed гайдлайны по парам ген-препарат с конкретными рекомендациями по дозированию в зависимости от фенотипа.`,
       actions: [
         'Открыть cpicpgx.org → Guidelines → выбрать пару ген-препарат',
         'Сверить фенотип по диплотипу (*1/*2, *2/*17 и т.д.) в таблице CPIC',

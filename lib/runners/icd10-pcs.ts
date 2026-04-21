@@ -74,7 +74,7 @@ const runner: CalculatorTool = {
       unit: 'ICD-10-PCS',
       color: '#6B7280',
       interpretation: `ICD-10-PCS раздел ${s}: ${e.name}`,
-      details: `**Раздел:** ${s} — ${e.name}\n\n**Пример кода:** ${e.example}\n\n**Разбор 7 символов:** ${e.breakdown}\n\nICD-10-PCS — система кодирования ПРОЦЕДУР для стационаров США (разработана 3M для CMS). Все коды — **строго 7 символов** (буквы + цифры).`,
+      details: `Раздел: ${s} — ${e.name}\n\nПример кода: ${e.example}\n\nРазбор 7 символов: ${e.breakdown}\n\nICD-10-PCS — система кодирования ПРОЦЕДУР для стационаров США (разработана 3M для CMS). Все коды — строго 7 символов (буквы + цифры).`,
       actions: [
         'CMS ICD-10-PCS: https://www.cms.gov/medicare/icd-10/2025-icd-10-pcs',
         'Использовать official guidelines FY2025 + coding conventions',

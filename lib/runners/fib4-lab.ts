@@ -32,8 +32,8 @@ const runner: CalculatorTool = {
       unit: 'FIB-4',
       interpretation,
       color,
-      details: `**FIB-4** = Возраст × АСТ / (Тромбоциты × √АЛТ)
-Cut-off (NAFLD/MASLD, AASLD 2023): **< 1,3** — низкий (NPV 90 %), **1,3–2,67** — серая зона, **> 2,67** — распр. фиброз (PPV ~80 %).`,
+      details: `FIB-4 = Возраст × АСТ / (Тромбоциты × √АЛТ)
+Cut-off (NAFLD/MASLD, AASLD 2023): < 1,3 — низкий (NPV 90 %), 1,3–2,67 — серая зона, > 2,67 — распр. фиброз (PPV ~80 %).`,
       actions: [
         stage === 'low' ? 'Контроль FIB-4 каждые 2–3 года; модификация ОЖ' : null,
         stage === 'mid' ? 'Вторичный тест: фиброэластография (FibroScan) или ELF' : null,

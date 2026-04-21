@@ -64,7 +64,7 @@ const runner: CalculatorTool = {
       unit: 'ICF',
       color: '#6B7280',
       interpretation: `ICF component ${d}: ${e.name}`,
-      details: `**Компонент:** ${d} — ${e.name}\n\n**Главы (chapters):**\n${e.chapters}\n\n**Пример кода:** ${e.example}\n\n**Qualifiers (градация):** ${e.qualifier}\n\n**Пример с qualifier:** ${e.note}\n\nICF — биопсихосоциальная модель функционирования: **Health Condition ↔ Body Functions/Structures ↔ Activities ↔ Participation ↔ Environmental Factors ↔ Personal Factors**. Дополняет ICD (диагноз "что") измерением "как функционирует человек".`,
+      details: `Компонент: ${d} — ${e.name}\n\nГлавы (chapters):\n${e.chapters}\n\nПример кода: ${e.example}\n\nQualifiers (градация): ${e.qualifier}\n\nПример с qualifier: ${e.note}\n\nICF — биопсихосоциальная модель функционирования: Health Condition ↔ Body Functions/Structures ↔ Activities ↔ Participation ↔ Environmental Factors ↔ Personal Factors. Дополняет ICD (диагноз "что") измерением "как функционирует человек".`,
       actions: [
         'ICF Browser (WHO): https://icd.who.int/dev11/l-icf/en',
         'ICF-CY (Children and Youth version, 2007) — для педиатрии',

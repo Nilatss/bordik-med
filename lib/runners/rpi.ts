@@ -36,7 +36,7 @@ const runner: CalculatorTool = {
       unit: 'RPI',
       interpretation,
       color,
-      details: `**RPI** = (Ретик % × HCT/HCTнорма) / фактор созревания.
+      details: `RPI = (Ретик % × HCT/HCTнорма) / фактор созревания.
 Фактор созревания: HCT ≥ 35 → 1,0; 25–34 → 1,5; 15–24 → 2,0; < 15 → 2,5.
 Скорректированный ретикулоцит: ${correctedRetic.toFixed(2)} %. Фактор созревания: ${mat.toFixed(1)}.`,
       actions: [

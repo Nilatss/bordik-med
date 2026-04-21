@@ -67,7 +67,7 @@ const runner: CalculatorTool = {
       unit: 'ЕАЭС / СНГ',
       color: '#6B7280',
       interpretation: `Документ ЕАЭС: ${e.title}`,
-      details: `**Документ:** ${e.title}\n\n**Краткое содержание:** ${e.summary}\n\n**Источник / правовая база:** ${e.source}\n\n**Статус применения:** ${e.status}`,
+      details: `Документ: ${e.title}\n\nКраткое содержание: ${e.summary}\n\nИсточник / правовая база: ${e.source}\n\nСтатус применения: ${e.status}`,
       actions: [
         'Евразийская экономическая комиссия (ЕЭК): https://eec.eaeunion.org/',
         'Правовой портал ЕАЭС: https://docs.eaeunion.org/',

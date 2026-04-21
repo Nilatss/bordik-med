@@ -44,7 +44,7 @@ const runner: CalculatorTool = {
       unit: 'PAI',
       color,
       interpretation: `PAI ${score}: ${descs[score]}`,
-      details: `**PAI балл:** ${score}/5\n**Описание:** ${descs[score]}\n**Тактика:** ${action}\n\n**Порог болезни:** PAI ≥ 3 считается apical periodontitis.\n**Успех лечения:** PAI снижается до 1-2 через 4 года (критерий Orstavik).`,
+      details: `PAI балл: ${score}/5\nОписание: ${descs[score]}\nТактика: ${action}\n\nПорог болезни: PAI ≥ 3 считается apical periodontitis.\nУспех лечения: PAI снижается до 1-2 через 4 года (критерий Orstavik).`,
       actions: [
         'PAI 1-2: наблюдение 6-12 мес',
         'PAI 3: качественное эндолечение (rubber dam, NaOCl, obturation)',

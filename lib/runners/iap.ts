@@ -35,12 +35,12 @@ const runner: CalculatorTool = {
       immunization: {
         name: 'Иммунизация',
         body: 'IAP ACVIP — Advisory Committee on Vaccines and Immunization Practices',
-        details: '**IAP Immunization Schedule** — ежегодное обновление, доступно на iapindia.org. Отличается от Government of India Universal Immunization Programme (UIP — бесплатный, ограниченный набор): IAP включает дополнительные вакцины (varicella, HAV, HPV, inf A/B, PCV, rotavirus, typhoid) в зависимости от платёжеспособности семьи. Катч-ап schedules для отставших детей. Специальные рекомендации для недоношенных, иммунодефицитов.',
+        details: 'IAP Immunization Schedule — ежегодное обновление, доступно на iapindia.org. Отличается от Government of India Universal Immunization Programme (UIP — бесплатный, ограниченный набор): IAP включает дополнительные вакцины (varicella, HAV, HPV, inf A/B, PCV, rotavirus, typhoid) в зависимости от платёжеспособности семьи. Катч-ап schedules для отставших детей. Специальные рекомендации для недоношенных, иммунодефицитов.',
       },
       growth: {
         name: 'Рост и развитие',
         body: 'IAP Growth Charts Committee',
-        details: '**IAP Growth Charts (2015, revised)** — национальные центильные карты, адаптированные к индийским детям 5-18 лет (в отличие от WHO Child Growth Standards для <5 лет, которые IAP также использует). Важно: индийские дети в среднем меньше по WHO — использование только WHO может переоценить стунтинг. IAP charts — для 5-18 лет, возраст-специфичный BMI.',
+        details: 'IAP Growth Charts (2015, revised) — национальные центильные карты, адаптированные к индийским детям 5-18 лет (в отличие от WHO Child Growth Standards для <5 лет, которые IAP также использует). Важно: индийские дети в среднем меньше по WHO — использование только WHO может переоценить стунтинг. IAP charts — для 5-18 лет, возраст-специфичный BMI.',
       },
       nutrition: {
         name: 'Питание / malnutrition',
@@ -74,7 +74,7 @@ const runner: CalculatorTool = {
       unit: 'IAP India',
       color: '#6B7280',
       interpretation: `Navigate: IAP ${e.name}`,
-      details: `**Тема:** ${e.name}\n\n**Орган:** ${e.body}\n\n${e.details}\n\n**Контекст Индии:** публичный сектор (UIP, RBSK, JSSK, NHM) + частный (IAP рекомендации). 1.4 млрд населения, 26 млн рождений/год. Высокий burden стунтинга, анемии, неонатальной смертности.`,
+      details: `Тема: ${e.name}\n\nОрган: ${e.body}\n\n${e.details}\n\nКонтекст Индии: публичный сектор (UIP, RBSK, JSSK, NHM) + частный (IAP рекомендации). 1.4 млрд населения, 26 млн рождений/год. Высокий burden стунтинга, анемии, неонатальной смертности.`,
       actions: [
         'IAP portal: https://iapindia.org/',
         'IAP Immunization Schedule: https://iapindia.org/acvip/',

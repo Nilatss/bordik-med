@@ -47,7 +47,7 @@ const runner: CalculatorTool = {
       unit: String(v.system || 'icdas').toUpperCase(),
       color,
       interpretation: `${String(v.system).toUpperCase()} код ${n}: ${treatment}`,
-      details: `**Код:** ${n}\n**Рекомендация:** ${treatment}\n\n**ICDAS II** — 0-6 шкала визуальной детекции (0 здоровый → 6 обширная полость).\n**CAST** расширяет до 9 (пульпит, абсцесс, потерянный зуб).`,
+      details: `Код: ${n}\nРекомендация: ${treatment}\n\nICDAS II — 0-6 шкала визуальной детекции (0 здоровый → 6 обширная полость).\nCAST расширяет до 9 (пульпит, абсцесс, потерянный зуб).`,
       actions: [
         '0-2: неоперативное — fluoride varnish 5% 2-4×/год, casein-phosphate (CPP-ACP)',
         '3-4: герметизация, ART (Atraumatic Restorative Treatment)',

@@ -39,7 +39,7 @@ const runner: CalculatorTool = {
       cancer: { name: 'Oncologia', details: 'PCDT oncológicos — по локализации (mama, colo útero, próstata, cólon, pulmão, estômago, леукемии). CACON (Centros de Alta Complexidade em Oncologia) + UNACON. Доступ через SUS — регулирован судебными решениями (judicialização da saúde — частая проблема для high-cost oncology).' },
       'doencas-raras': { name: 'Doenças raras', details: 'Política Nacional de Atenção Integral às Pessoas com Doenças Raras (Portaria 199/2014). CER — Centros Especializados em Reabilitação. PCDT para >60 редких заболеваний: фенилкетонурия, гипотиреоз врожд., CF, Gaucher, Pompe, MPS, Fabry, спинальная мышечная атрофия (SMA).' },
       'saude-mental': { name: 'Saúde mental', details: 'RAPS (Rede de Atenção Psicossocial). CAPS (Centros de Atenção Psicossocial) — community-based модель (Reforma Psiquiátrica). PCDT depressão, transtorno bipolar, esquizofrenia. Psicofármacos через SUS.' },
-      aps: { name: 'Atenção Primária (APS)', details: '**Cadernos de Atenção Básica (CAB)** — серия карманных руководств для ESF (Estratégia Saúde da Família). CAB 1-38+ по темам: HAS, DM, gestação, criança, idoso, saúde mental, dor crônica, DST, etc. Бесплатно PDF на gov.br/saude. e-SUS APS — национальная электронная система APS.' },
+      aps: { name: 'Atenção Primária (APS)', details: 'Cadernos de Atenção Básica (CAB) — серия карманных руководств для ESF (Estratégia Saúde da Família). CAB 1-38+ по темам: HAS, DM, gestação, criança, idoso, saúde mental, dor crônica, DST, etc. Бесплатно PDF на gov.br/saude. e-SUS APS — национальная электронная система APS.' },
       cronicas: { name: 'Doenças crônicas', details: 'PCDT HAS (hipertensão arterial), PCDT DM2, Portaria de Tratamento da Obesidade. Linha de cuidado hipertensão/diabetes (HIPERDIA histórico). Distribuição gratuita de losartana, enalapril, hidroclorotiazida, metformina, glibenclamida, insulina NPH/regular através de Farmácia Popular.' },
     };
     const e = map[a];
@@ -48,7 +48,7 @@ const runner: CalculatorTool = {
       unit: 'SUS Brasil',
       color: '#6B7280',
       interpretation: `Navigate: Brazilian PCDT ${e.name}`,
-      details: `**Область:** ${e.name}\n\n${e.details}\n\n**PCDT** (Protocolo Clínico e Diretriz Terapêutica) — обязательный протокол SUS. Утверждается CONITEC (Comissão Nacional de Incorporação de Tecnologias no SUS) + Ministério da Saúde через Portaria. Невыполнение PCDT = отсутствие реимбурсации + юридический риск. Judicialização da saúde (судебные иски) — частая проблема для не включённых в PCDT высокостоимостных препаратов.`,
+      details: `Область: ${e.name}\n\n${e.details}\n\nPCDT (Protocolo Clínico e Diretriz Terapêutica) — обязательный протокол SUS. Утверждается CONITEC (Comissão Nacional de Incorporação de Tecnologias no SUS) + Ministério da Saúde через Portaria. Невыполнение PCDT = отсутствие реимбурсации + юридический риск. Judicialização da saúde (судебные иски) — частая проблема для не включённых в PCDT высокостоимостных препаратов.`,
       actions: [
         'CONITEC portal: https://www.gov.br/conitec/',
         'Ministério da Saúde: https://www.gov.br/saude/',

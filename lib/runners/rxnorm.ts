@@ -46,7 +46,7 @@ const runner: CalculatorTool = {
       unit: 'RXCUI',
       color: '#6B7280',
       interpretation: `RxNorm ${tty}: ${e.example}`,
-      details: `**Term Type (TTY):** ${tty} — ${e.name}\n**RXCUI:** ${e.rxcui}\n**Name:** ${e.example}\n\n**Структура:** ${e.structure}\n\nRxNorm создан NLM для нормализации названий лекарств из разных источников (FDA NDC, VA NDF-RT, Multum, First DataBank и др.). RXCUI (RxNorm Concept Unique Identifier) — числовой ID.`,
+      details: `Term Type (TTY): ${tty} — ${e.name}\nRXCUI: ${e.rxcui}\nName: ${e.example}\n\nСтруктура: ${e.structure}\n\nRxNorm создан NLM для нормализации названий лекарств из разных источников (FDA NDC, VA NDF-RT, Multum, First DataBank и др.). RXCUI (RxNorm Concept Unique Identifier) — числовой ID.`,
       actions: [
         'RxNav (NLM): https://mor.nlm.nih.gov/RxNav/',
         'RxNorm API: https://rxnav.nlm.nih.gov/RxNormAPIs.html (REST, бесплатно без регистрации)',

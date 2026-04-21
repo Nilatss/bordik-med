@@ -51,7 +51,7 @@ const runner: CalculatorTool = {
       unit: 'Australia',
       color: '#6B7280',
       interpretation: `Navigate: eTG — ${s}`,
-      details: `**Том eTG:** ${s}\n\n**Содержание:** ${examples[s]}\n\n**Формат eTG:** полностью электронный (eTG Complete — web + mobile app); пересмотр каждые 2-3 года (rolling). Каждая топик-страница: эпидемиология → диагностика → препараты (с дозами + длительностью + альтернативами) → monitoring → когда направить. Ссылки на PBS (Pharmaceutical Benefits Scheme — австралийская субсидированная схема лекарств).\n\n**Доступ:** подписка (институциональная — большинство госпиталей и университетов; персональная). Ссылки на PBS, ARTG (Australian Register of Therapeutic Goods via TGA).`,
+      details: `Том eTG: ${s}\n\nСодержание: ${examples[s]}\n\nФормат eTG: полностью электронный (eTG Complete — web + mobile app); пересмотр каждые 2-3 года (rolling). Каждая топик-страница: эпидемиология → диагностика → препараты (с дозами + длительностью + альтернативами) → monitoring → когда направить. Ссылки на PBS (Pharmaceutical Benefits Scheme — австралийская субсидированная схема лекарств).\n\nДоступ: подписка (институциональная — большинство госпиталей и университетов; персональная). Ссылки на PBS, ARTG (Australian Register of Therapeutic Goods via TGA).`,
       actions: [
         'eTG portal: https://www.tg.org.au/',
         'eTG Complete (subscription) — web + iOS + Android app',

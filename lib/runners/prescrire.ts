@@ -48,7 +48,7 @@ const runner: CalculatorTool = {
       unit: 'Prescrire',
       color: '#6B7280',
       interpretation: `Prescrire verdict: ${e.title}`,
-      details: `**Класс:** ${e.title}\n\n**Общий вердикт:** ${e.verdict}\n\n**Rating:** ${e.stars}\n\n**Примеры:** ${e.examples}\n\n**Prescrire pictogram rating system:**\n- **BRAVO** (★★★★★) — крупный прорыв (ред., напр. ART при ВИЧ)\n- **A real advance** (★★★) — существенный прогресс\n- **Offers an advantage** (★★)\n- **Possibly helpful** (★)\n- **Nothing new** (∅)\n- **Not acceptable** (☒) — риск > польза, избегать\n- **Judgement reserved** (?) — недостаточно данных`,
+      details: `Класс: ${e.title}\n\nОбщий вердикт: ${e.verdict}\n\nRating: ${e.stars}\n\nПримеры: ${e.examples}\n\nPrescrire pictogram rating system:\n- BRAVO (★★★★★) — крупный прорыв (ред., напр. ART при ВИЧ)\n- A real advance (★★★) — существенный прогресс\n- Offers an advantage (★★)\n- Possibly helpful (★)\n- Nothing new (∅)\n- Not acceptable (☒) — риск > польза, избегать\n- Judgement reserved (?) — недостаточно данных`,
       actions: [
         'Открыть https://english.prescrire.org/ (English edition) или https://www.prescrire.org/ (French)',
         'Ежемесячный бюллетень La revue Prescrire (подписка)',

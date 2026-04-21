@@ -53,7 +53,7 @@ const runner: CalculatorTool = {
       unit: 'МЗ РФ',
       color: '#6B7280',
       interpretation: `Нормативная база: ${e.name}`,
-      details: `**Категория:** ${e.name}\n\n**Где искать:**\n${e.where}\n\n**Примеры документов:**\n${e.examples}\n\n**Правовой статус:** ${e.legal}`,
+      details: `Категория: ${e.name}\n\nГде искать:\n${e.where}\n\nПримеры документов:\n${e.examples}\n\nПравовой статус: ${e.legal}`,
       actions: [
         'Официальный сайт МЗ РФ: https://minzdrav.gov.ru/documents',
         'Официальный интернет-портал правовой информации: http://publication.pravo.gov.ru/',

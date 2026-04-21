@@ -32,7 +32,7 @@ const runner: CalculatorTool = {
       unit: '°',
       color,
       interpretation: `ANB ${anb.toFixed(1)}° — ${label}`,
-      details: `**SNA** = ${sna}° (${snaNote})\n**SNB** = ${snb}° (${snbNote})\n**ANB** = SNA − SNB = **${anb.toFixed(1)}°**\n\n**Норма ANB:** 2° ± 2° (0-4°)\n**Интерпретация:**\n- 0-4°: Class I\n- >4°: Class II (скелетный)\n- <0°: Class III (скелетный)\n\n**Метод Steiner (1953)** — SNA, SNB, ANB + Y-axis, occlusal plane, incisor angulation. Риф. точка N-S (передняя основа черепа).`,
+      details: `SNA = ${sna}° (${snaNote})\nSNB = ${snb}° (${snbNote})\nANB = SNA − SNB = ${anb.toFixed(1)}°\n\nНорма ANB: 2° ± 2° (0-4°)\nИнтерпретация:\n- 0-4°: Class I\n- >4°: Class II (скелетный)\n- <0°: Class III (скелетный)\n\nМетод Steiner (1953) — SNA, SNB, ANB + Y-axis, occlusal plane, incisor angulation. Риф. точка N-S (передняя основа черепа).`,
       actions: [
         'ANB 0-4° и хороший мол. класс: ортодонт. alignment (брекеты, aligners)',
         'ANB >7° ребёнок: Twin-block / Herbst для стимуляции роста нижней',

@@ -44,7 +44,7 @@ const runner: CalculatorTool = {
       unit: 'PubMed',
       color: '#6B7280',
       interpretation: `PubMed: ${t}`,
-      details: `**Тип поиска:** ${t}\n\n**Синтаксис:** ${e.syntax}\n\n**Пример запроса:** \`${e.example}\`\n\n**Примечание:** ${e.note}\n\n**Boolean operators:**\n- \`AND\` — пересечение (и A, и B)\n- \`OR\` — объединение (A или B)\n- \`NOT\` — исключение (A без B)\n- Круглые скобки для группировки: \`(A OR B) AND C\`\n\n**Полезные теги:**\n- \`[tiab]\` — title/abstract\n- \`[MeSH]\` — MeSH термин (exploded)\n- \`[au]\` — автор\n- \`[dp]\` — publication date\n- \`[pt]\` — publication type (напр., \`randomized controlled trial[pt]\`)\n- \`[Majr]\` — major MeSH topic\n- \`[TA]\` — journal title abbreviation\n\n**Truncation:** \`neoplas*[tiab]\` — neoplasm, neoplastic, neoplasia (минимум 4 символа до *).`,
+      details: `Тип поиска: ${t}\n\nСинтаксис: ${e.syntax}\n\nПример запроса: \`${e.example}\`\n\nПримечание: ${e.note}\n\nBoolean operators:\n- \`AND\` — пересечение (и A, и B)\n- \`OR\` — объединение (A или B)\n- \`NOT\` — исключение (A без B)\n- Круглые скобки для группировки: \`(A OR B) AND C\`\n\nПолезные теги:\n- \`[tiab]\` — title/abstract\n- \`[MeSH]\` — MeSH термин (exploded)\n- \`[au]\` — автор\n- \`[dp]\` — publication date\n- \`[pt]\` — publication type (напр., \`randomized controlled trial[pt]\`)\n- \`[Majr]\` — major MeSH topic\n- \`[TA]\` — journal title abbreviation\n\nTruncation: \`neoplas*[tiab]\` — neoplasm, neoplastic, neoplasia (минимум 4 символа до *).`,
       actions: [
         'Открыть https://pubmed.ncbi.nlm.nih.gov/',
         'Advanced Search Builder: https://pubmed.ncbi.nlm.nih.gov/advanced/ — визуальный конструктор',

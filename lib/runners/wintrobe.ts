@@ -38,7 +38,7 @@ const runner: CalculatorTool = {
       unit: `MCH ${mch.toFixed(1)} · MCHC ${mchc.toFixed(0)}`,
       interpretation: `${anemiaType}, ${hypoHyper}`,
       color,
-      details: `**Индексы Винтроба**:
+      details: `Индексы Винтроба:
 - MCV = HCT/RBC × 10 = ${mcv.toFixed(1)} fL (норма 80–100)
 - MCH = Hb/RBC = ${mch.toFixed(1)} pg (норма 27–33)
 - MCHC = Hb/HCT × 10 = ${mchc.toFixed(0)} г/л (норма 320–360)`,

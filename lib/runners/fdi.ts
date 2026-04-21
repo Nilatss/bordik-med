@@ -93,7 +93,7 @@ const runner: CalculatorTool = {
       unit: 'FDI',
       color: '#6B7280',
       interpretation: `FDI ${fdi} — ${name} (${quadrantName[q]})`,
-      details: `**FDI (ISO 3950):** ${fdi}\n**Название:** ${name}\n**Квадрант:** ${quadrantName[q]}\n\n**Альтернативные нумерации:**\n- **Universal (США, ADA):** ${universal}\n- **Palmer notation (UK):** ${palmer}\n\nFDI — **two-digit notation**: 1-я цифра = квадрант (1-4 постоянные, 5-8 молочные), 2-я цифра = позиция зуба от центра (1 резец → 8 третий моляр).`,
+      details: `FDI (ISO 3950): ${fdi}\nНазвание: ${name}\nКвадрант: ${quadrantName[q]}\n\nАльтернативные нумерации:\n- Universal (США, ADA): ${universal}\n- Palmer notation (UK): ${palmer}\n\nFDI — two-digit notation: 1-я цифра = квадрант (1-4 постоянные, 5-8 молочные), 2-я цифра = позиция зуба от центра (1 резец → 8 третий моляр).`,
       actions: [
         'FDI World Dental Federation: https://www.fdiworlddental.org/',
         'ISO 3950:2016 — официальный стандарт',

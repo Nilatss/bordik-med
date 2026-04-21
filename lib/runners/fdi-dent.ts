@@ -77,7 +77,7 @@ const runner: CalculatorTool = {
       unit: 'FDI',
       color: '#6B7280',
       interpretation: `FDI ${fdi} — ${name}`,
-      details: `**FDI (ISO 3950):** ${fdi}\n**Зуб:** ${name}\n**Universal (US, ADA):** ${universal}\n**Palmer notation (UK):** ${palmer}\n\nFDI = quadrant.tooth (2-digit). Принят как ISO 3950 (1984, обновления 2009, 2016).`,
+      details: `FDI (ISO 3950): ${fdi}\nЗуб: ${name}\nUniversal (US, ADA): ${universal}\nPalmer notation (UK): ${palmer}\n\nFDI = quadrant.tooth (2-digit). Принят как ISO 3950 (1984, обновления 2009, 2016).`,
       actions: [
         'Использовать FDI в международных публикациях и ВОЗ',
         'В США — Universal numbering (1-32, A-T)',

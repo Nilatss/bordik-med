@@ -58,7 +58,7 @@ const runner: CalculatorTool = {
       unit: cat,
       interpretation: `EPG ${epg} — ${cat}`,
       color,
-      details: `**Вид:** ${sp} · **возраст:** ${cls === 'young' ? 'молодняк' : 'взрослый'}\n**Пороги ${sp}:** низкий ${t.low} · умеренный ${t.mod} · высокий ${t.high} EPG\n\n**Рекомендация:** ${action}\n\n**Антигельминтик:** ${dewormer}`,
+      details: `Вид: ${sp} · возраст: ${cls === 'young' ? 'молодняк' : 'взрослый'}\nПороги ${sp}: низкий ${t.low} · умеренный ${t.mod} · высокий ${t.high} EPG\n\nРекомендация: ${action}\n\nАнтигельминтик: ${dewormer}`,
       actions: [
         epg > t.low ? `Дегельминтизация: ${dewormer}` : 'Без лечения — повтор копрологии через 8-12 нед',
         epg > t.mod ? 'FECRT (fecal egg count reduction test) через 14 дней для контроля резистентности' : '',

@@ -66,7 +66,7 @@ const runner: CalculatorTool = {
       unit: 'FDA PLLR',
       interpretation: section,
       color: e.color,
-      details: `Препарат: ${d}. Статус: ${st}.\n\n**8.1 Pregnancy:** ${e.preg}\n\n**8.2 Lactation:** ${e.lact}\n\n**8.3 Females & Males of Reproductive Potential:** ${e.repro}\n\n**Историческая категория (до 2015):** ${e.old}\n\n*PLLR (Pregnancy and Lactation Labeling Rule) заменила с 30 июня 2015 г. буквенные категории A/B/C/D/X на нарративные разделы с фактическими данными.*`,
+      details: `Препарат: ${d}. Статус: ${st}.\n\n8.1 Pregnancy: ${e.preg}\n\n8.2 Lactation: ${e.lact}\n\n8.3 Females & Males of Reproductive Potential: ${e.repro}\n\nИсторическая категория (до 2015): ${e.old}\n\n*PLLR (Pregnancy and Lactation Labeling Rule) заменила с 30 июня 2015 г. буквенные категории A/B/C/D/X на нарративные разделы с фактическими данными.*`,
       actions: [
         'Открыть DailyMed (dailymed.nlm.nih.gov) → найти препарат → раздел 8 инструкции',
         'Для лактации сверить с LactMed (NIH): lactmed.nlm.nih.gov',

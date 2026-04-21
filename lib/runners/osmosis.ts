@@ -48,7 +48,7 @@ const runner: CalculatorTool = {
       unit: 'Osmosis',
       color: '#6B7280',
       interpretation: `Osmosis: ${e.title}`,
-      details: `**Категория:** ${e.title}\n\n**Объём:** ${e.count}\n\n**Формат:** ${e.format}\n\n**Совет:** ${e.tip}\n\n**Osmosis learning methodology:**\n1. **Whiteboard-style animation** — упрощает сложные концепции\n2. **Spaced repetition** — flashcards с SRS алгоритмом (как Anki)\n3. **Practice questions** — USMLE/NCLEX-style с explanations\n4. **Notes** — структурированные конспекты к видео\n5. **Study groups** — peer learning features\n6. **Progress tracking** — адаптивные рекомендации\n\n**Partnership с Elsevier (2021):**\nOsmosis теперь часть Elsevier Learning — даёт доступ к Elsevier учебникам + ClinicalKey Student при подписке.`,
+      details: `Категория: ${e.title}\n\nОбъём: ${e.count}\n\nФормат: ${e.format}\n\nСовет: ${e.tip}\n\nOsmosis learning methodology:\n1. Whiteboard-style animation — упрощает сложные концепции\n2. Spaced repetition — flashcards с SRS алгоритмом (как Anki)\n3. Practice questions — USMLE/NCLEX-style с explanations\n4. Notes — структурированные конспекты к видео\n5. Study groups — peer learning features\n6. Progress tracking — адаптивные рекомендации\n\nPartnership с Elsevier (2021):\nOsmosis теперь часть Elsevier Learning — даёт доступ к Elsevier учебникам + ClinicalKey Student при подписке.`,
       actions: [
         'Открыть https://www.osmosis.org/ (бесплатные видео на YouTube — osmosisfromelsevier channel)',
         'Мобильное приложение Osmosis (iOS/Android) — offline download',

@@ -95,7 +95,7 @@ const runner: CalculatorTool = {
       unit: 'SCTID',
       color: '#6B7280',
       interpretation: `SNOMED CT: ${e.fsn}`,
-      details: `**SNOMED CT ID (SCTID):** ${e.example}\n**Fully Specified Name (FSN):** ${e.fsn}\n\n**Parent concepts (IS-A):** ${e.parents}\n\n**Иерархия:** ${e.name}\n\nSNOMED CT — крупнейшая медицинская онтология (>350,000 активных concepts). Каждый concept имеет unique SCTID + FSN + synonyms + relationships к другим concepts.`,
+      details: `SNOMED CT ID (SCTID): ${e.example}\nFully Specified Name (FSN): ${e.fsn}\n\nParent concepts (IS-A): ${e.parents}\n\nИерархия: ${e.name}\n\nSNOMED CT — крупнейшая медицинская онтология (>350,000 активных concepts). Каждый concept имеет unique SCTID + FSN + synonyms + relationships к другим concepts.`,
       actions: [
         'SNOMED CT Browser: https://browser.ihtsdotools.org/',
         'SNOMED International portal: https://www.snomed.org/',

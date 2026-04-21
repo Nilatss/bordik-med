@@ -68,7 +68,7 @@ const runner: CalculatorTool = {
       unit: 'ICD-10-CM',
       color: '#6B7280',
       interpretation: `ICD-10-CM пример: ${e.code}`,
-      details: `**Код:** ${e.code}\n**Разбор:** ${e.expanded}\n\n**Примечание:** ${e.note}\n\nICD-10-CM используется в США с 01.10.2015. ~73,000 кодов (vs ~14,000 в WHO ICD-10), обновление ежегодно 1 октября (FY — fiscal year).`,
+      details: `Код: ${e.code}\nРазбор: ${e.expanded}\n\nПримечание: ${e.note}\n\nICD-10-CM используется в США с 01.10.2015. ~73,000 кодов (vs ~14,000 в WHO ICD-10), обновление ежегодно 1 октября (FY — fiscal year).`,
       actions: [
         'CMS ICD-10-CM Browser: https://www.cms.gov/medicare/coding-billing/icd-10-codes',
         'ICD10Data.com — бесплатный поиск кодов с guidelines',

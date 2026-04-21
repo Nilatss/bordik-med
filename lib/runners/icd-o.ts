@@ -53,7 +53,7 @@ const runner: CalculatorTool = {
       unit: 'ICD-O-3',
       color: '#6B7280',
       interpretation: `ICD-O-3: ${e.name}`,
-      details: `**Полный код ICD-O-3:** ${fullCode}\n\n**Topography (локализация, C-код):** ${e.topo}\n**Morphology (гистология, M-код):** M-${e.morph}\n**Behavior code:** ${e.behavior}\n**Grade:** ${e.grade}\n\n**Nosology:** ${e.name}\n\nICD-O-3 использует **двойную ось**: топография (где опухоль, C-коды как в ICD-10 глава II) + морфология (гистологический тип, 4-значный код + behavior + grade).`,
+      details: `Полный код ICD-O-3: ${fullCode}\n\nTopography (локализация, C-код): ${e.topo}\nMorphology (гистология, M-код): M-${e.morph}\nBehavior code: ${e.behavior}\nGrade: ${e.grade}\n\nNosology: ${e.name}\n\nICD-O-3 использует двойную ось: топография (где опухоль, C-коды как в ICD-10 глава II) + морфология (гистологический тип, 4-значный код + behavior + grade).`,
       actions: [
         'IARC ICD-O-3.2: https://www.iacr.com.fr/index.php?option=com_content&view=category&id=100&layout=blog&Itemid=577',
         'WHO Classification of Tumours (Blue Books) — 5th ed (2019-2024) — интегрированы новые коды',

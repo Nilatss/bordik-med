@@ -48,7 +48,7 @@ const runner: CalculatorTool = {
       unit: 'VHS (v)',
       interpretation: `VHS ${vhs} v · норма ${n.range} — ${cat}`,
       color,
-      details: `**Vertebral Heart Score** (Buchanan & Bücheler, 1995)\nДлинная ось: ${L} v · короткая: ${S} v · сумма: **${vhs} v**\nПородная норма: ${n.range}`,
+      details: `Vertebral Heart Score (Buchanan & Bücheler, 1995)\nДлинная ось: ${L} v · короткая: ${S} v · сумма: ${vhs} v\nПородная норма: ${n.range}`,
       actions: [
         vhs <= n.max ? 'Норма — мониторинг 1×/год (для пород риска)' : '',
         vhs > n.max ? 'ЭхоКГ для дифференциации (LA/Ao, LVIDDN)' : '',

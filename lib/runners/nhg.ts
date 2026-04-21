@@ -47,7 +47,7 @@ const runner: CalculatorTool = {
       unit: 'Nederland',
       color: '#6B7280',
       interpretation: 'Navigate: richtlijnen.nhg.org',
-      details: `**Категория:** ${t}\n\n**Примеры NHG-Standaarden:**\n${examples[t]}\n\n**Структура NHG-Standaard:**\n1. Inleiding + epidemiologie\n2. Richtlijnen diagnostiek (anamnese, onderzoek, aanvullend onderzoek)\n3. Richtlijnen beleid (niet-medicamenteus + medicamenteus + verwijzing)\n4. Noten — научное обоснование каждой рекомендации\n5. Patiëntenversie (thuisarts.nl)\n\nNHG-Standaarden — основа работы huisarts (семейный врач) в Нидерландах. Система Нидерландов построена на gatekeeper-модели: huisarts — обязательный первый контакт.`,
+      details: `Категория: ${t}\n\nПримеры NHG-Standaarden:\n${examples[t]}\n\nСтруктура NHG-Standaard:\n1. Inleiding + epidemiologie\n2. Richtlijnen diagnostiek (anamnese, onderzoek, aanvullend onderzoek)\n3. Richtlijnen beleid (niet-medicamenteus + medicamenteus + verwijzing)\n4. Noten — научное обоснование каждой рекомендации\n5. Patiëntenversie (thuisarts.nl)\n\nNHG-Standaarden — основа работы huisarts (семейный врач) в Нидерландах. Система Нидерландов построена на gatekeeper-модели: huisarts — обязательный первый контакт.`,
       actions: [
         'NHG Richtlijnen: https://richtlijnen.nhg.org/',
         'Thuisarts (версия для пациентов): https://www.thuisarts.nl/',

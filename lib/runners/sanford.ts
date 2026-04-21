@@ -60,7 +60,7 @@ const runner: CalculatorTool = {
       unit: 'Sanford',
       interpretation: `${s} · ${p}`,
       color: '#22C55E',
-      details: `Очаг: ${s}. Возбудитель: ${p}.\n\n**Первая линия:** ${e.first}\n\n**Альтернатива:** ${e.alt}\n\n**Длительность:** ${e.duration}\n\n**Заметка:** ${e.note}`,
+      details: `Очаг: ${s}. Возбудитель: ${p}.\n\nПервая линия: ${e.first}\n\nАльтернатива: ${e.alt}\n\nДлительность: ${e.duration}\n\nЗаметка: ${e.note}`,
       actions: [
         'Открыть приложение Sanford Guide (iOS/Android) или webedition.sanfordguide.com',
         'Навигация: Tables → по синдрому или возбудителю',

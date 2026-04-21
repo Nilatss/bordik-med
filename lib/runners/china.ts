@@ -48,7 +48,7 @@ const runner: CalculatorTool = {
       unit: 'China / CMA',
       color: '#6B7280',
       interpretation: `Navigate: Chinese ${e.name}`,
-      details: `**Специальность:** ${e.name}\n\n**Общество:** ${e.society}\n\n**Примеры:** ${e.examples}\n\n**Издание:** гайдлайны публикуются в Chinese Journal of X (中华X杂志), например Chinese Journal of Cardiology (中华心血管病杂志). Ежегодные обновления через CSCO/CSC конгрессы.`,
+      details: `Специальность: ${e.name}\n\nОбщество: ${e.society}\n\nПримеры: ${e.examples}\n\nИздание: гайдлайны публикуются в Chinese Journal of X (中华X杂志), например Chinese Journal of Cardiology (中华心血管病杂志). Ежегодные обновления через CSCO/CSC конгрессы.`,
       actions: [
         'CMA: https://www.cma.org.cn/',
         'NHC (政策): http://www.nhc.gov.cn/',

@@ -50,7 +50,7 @@ const runner: CalculatorTool = {
       unit: 'ICD-11',
       color: '#6B7280',
       interpretation: `ICD-11 Chapter ${ch}: ${e.title}`,
-      details: `**Глава:** ${ch} — ${e.title}\n\n**Примеры stem codes:** ${e.stem}\n\n**Extension codes:** ${e.ext}\n\n**Примечание:** ${e.note}\n\nICD-11 использует **post-coordination**: основной stem code + ноль или более extension codes (X-категория) для уточнения тяжести, острого/хронического, локализации, этиологии и т.д. Формат: буква-цифра-цифра-цифра (напр. BA00).`,
+      details: `Глава: ${ch} — ${e.title}\n\nПримеры stem codes: ${e.stem}\n\nExtension codes: ${e.ext}\n\nПримечание: ${e.note}\n\nICD-11 использует post-coordination: основной stem code + ноль или более extension codes (X-категория) для уточнения тяжести, острого/хронического, локализации, этиологии и т.д. Формат: буква-цифра-цифра-цифра (напр. BA00).`,
       actions: [
         'Открыть ICD-11 Browser: https://icd.who.int/browse/2024-01/mms/en',
         'ICD-11 Coding Tool: https://icd.who.int/ct11/ (автоподсказка кодов)',

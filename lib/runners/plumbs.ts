@@ -96,7 +96,7 @@ const runner: CalculatorTool = {
       unit: sp,
       interpretation: `Plumb's ${cat} — ${sp}`,
       color: '#4B8DF5',
-      details: `**Категория:** ${cat} · **Вид:** ${sp}\n\n**Основные препараты:**\n${list}\n\n*Полные дозы, противопоказания и взаимодействия — в Plumb's Veterinary Drug Handbook 10-е изд. (2023) или Plumb's Veterinary Drugs онлайн.*`,
+      details: `Категория: ${cat} · Вид: ${sp}\n\nОсновные препараты:\n${list}\n\n*Полные дозы, противопоказания и взаимодействия — в Plumb's Veterinary Drug Handbook 10-е изд. (2023) или Plumb's Veterinary Drugs онлайн.*`,
       actions: [
         'Свериться с Plumb\'s Handbook (10-е изд., 2023) или Plumb\'s Veterinary Drugs online',
         'Для кошек — отдельная проверка (многие препараты видоспецифичны)',

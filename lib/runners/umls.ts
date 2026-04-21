@@ -52,7 +52,7 @@ const runner: CalculatorTool = {
       unit: 'CUI',
       color: '#6B7280',
       interpretation: `UMLS: ${e.example} (${e.name})`,
-      details: `**Concept Unique Identifier (CUI):** ${e.cui}\n**Preferred Name:** ${e.example}\n**Semantic Type:** ${e.name}\n\n**Cross-vocabulary mappings:**\n${e.mappings}\n\nUMLS Metathesaurus объединяет 200+ биомедицинских словарей под единым CUI. Каждый concept имеет semantic type (из 127 категорий Semantic Network) и связи (через Semantic Network relationships).`,
+      details: `Concept Unique Identifier (CUI): ${e.cui}\nPreferred Name: ${e.example}\nSemantic Type: ${e.name}\n\nCross-vocabulary mappings:\n${e.mappings}\n\nUMLS Metathesaurus объединяет 200+ биомедицинских словарей под единым CUI. Каждый concept имеет semantic type (из 127 категорий Semantic Network) и связи (через Semantic Network relationships).`,
       actions: [
         'UMLS Metathesaurus Browser: https://uts.nlm.nih.gov/uts/umls/home',
         'UMLS API (REST): https://documentation.uts.nlm.nih.gov/rest/home.html',

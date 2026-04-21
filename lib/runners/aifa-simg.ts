@@ -32,17 +32,17 @@ const runner: CalculatorTool = {
       drugs: {
         name: 'Лекарства — AIFA',
         body: 'Agenzia Italiana del Farmaco',
-        details: '**Note AIFA** — обязательные условия назначения рецептурных препаратов за счёт SSN (Servizio Sanitario Nazionale). Пример: Nota 13 (статины — критерии), Nota 74 (гормоны роста), Nota 79 (бисфосфонаты). **Fasce di rimborsabilità:** A (полное покрытие SSN), C (пациент полностью оплачивает), H (только стационар). **Registri AIFA** — мониторинг дорогих препаратов (онко, биологика, редкие болезни).',
+        details: 'Note AIFA — обязательные условия назначения рецептурных препаратов за счёт SSN (Servizio Sanitario Nazionale). Пример: Nota 13 (статины — критерии), Nota 74 (гормоны роста), Nota 79 (бисфосфонаты). Fasce di rimborsabilità: A (полное покрытие SSN), C (пациент полностью оплачивает), H (только стационар). Registri AIFA — мониторинг дорогих препаратов (онко, биологика, редкие болезни).',
       },
       gp: {
         name: 'Общая практика — SIMG',
         body: 'Società Italiana di Medicina Generale',
-        details: '**SIMG** — ведущее общество врачей общей практики (MMG — medico di medicina generale). Документы: clinical governance, percorsi diagnostico-terapeutici (PDTA), Health Search (национальная БД GP). Примеры: PDTA diabete, PDTA BPCO, PDTA scompenso cardiaco — региональная адаптация к AUSL/ASL.',
+        details: 'SIMG — ведущее общество врачей общей практики (MMG — medico di medicina generale). Документы: clinical governance, percorsi diagnostico-terapeutici (PDTA), Health Search (национальная БД GP). Примеры: PDTA diabete, PDTA BPCO, PDTA scompenso cardiaco — региональная адаптация к AUSL/ASL.',
       },
       national: {
         name: 'SNLG — Sistema Nazionale Linee Guida',
         body: 'ISS (Istituto Superiore di Sanità) — с 2017 по legge Gelli-Bianco',
-        details: '**SNLG** (snlg.iss.it) — официальный национальный реестр линее-гида (Law 24/2017 — Gelli-Bianco). Линии-гида одобренные SNLG имеют юридическую защиту для врачей (safe harbour от медицинских претензий). Методология GRADE. Примеры: linee guida per la gestione del paziente con COVID-19, prevenzione TEV, screening oncologici.',
+        details: 'SNLG (snlg.iss.it) — официальный национальный реестр линее-гида (Law 24/2017 — Gelli-Bianco). Линии-гида одобренные SNLG имеют юридическую защиту для врачей (safe harbour от медицинских претензий). Методология GRADE. Примеры: linee guida per la gestione del paziente con COVID-19, prevenzione TEV, screening oncologici.',
       },
       specialty: {
         name: 'Специализированные общества',
@@ -56,7 +56,7 @@ const runner: CalculatorTool = {
       unit: 'Italia',
       color: '#6B7280',
       interpretation: `Navigate: Italian ${e.name}`,
-      details: `**Домен:** ${e.name}\n\n**Орган:** ${e.body}\n\n${e.details}`,
+      details: `Домен: ${e.name}\n\nОрган: ${e.body}\n\n${e.details}`,
       actions: [
         'AIFA: https://www.aifa.gov.it/',
         'AIFA Note: https://www.aifa.gov.it/note-aifa',

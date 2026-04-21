@@ -82,7 +82,7 @@ const runner: CalculatorTool = {
       unit: pop === 'pediatric' ? 'pKTAS' : 'KTAS',
       color: e.color,
       interpretation: `${e.label} — target: ${e.target}`,
-      details: `**Level:** ${level} (${e.label})\n\n**Популяция:** ${pop === 'pediatric' ? 'Педиатрия (pKTAS, <15 лет)' : 'Взрослые (adult, ≥15 лет)'}\n\n**Целевое время до врача:** ${e.target}\n\n**Типичные примеры:** ${e.examples}\n\n**Disposition / организация:** ${e.disposition}\n\n**KTAS workflow:** первичная сортировка медсестрой triage → presenting complaint (по одной из 168 жалоб у adult / 155 у pKTAS) → модификаторы (гемодинамика, респираторный дистресс, неврология, боль, кровопотеря, температура, comorbidities) → Level 1-5.`,
+      details: `Level: ${level} (${e.label})\n\nПопуляция: ${pop === 'pediatric' ? 'Педиатрия (pKTAS, <15 лет)' : 'Взрослые (adult, ≥15 лет)'}\n\nЦелевое время до врача: ${e.target}\n\nТипичные примеры: ${e.examples}\n\nDisposition / организация: ${e.disposition}\n\nKTAS workflow: первичная сортировка медсестрой triage → presenting complaint (по одной из 168 жалоб у adult / 155 у pKTAS) → модификаторы (гемодинамика, респираторный дистресс, неврология, боль, кровопотеря, температура, comorbidities) → Level 1-5.`,
       actions: [
         level === '1' ? 'Сразу в resuscitation room, мультидисциплинарная команда' : level === '2' ? 'Monitored bed, ECG + labs + imaging в первые 10 мин' : level === '3' ? 'ED койка, плановое обследование' : 'Fast-track / ambulatory',
         'Документировать presenting complaint (CEDIS list — 168 взрослых / 155 педиатрических)',

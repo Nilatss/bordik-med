@@ -94,7 +94,7 @@ const runner: CalculatorTool = {
       unit: 'ATA 2015',
       interpretation: verdict,
       color,
-      details: `**ATA 2015 паттерн:** ${meta.label} (риск малигнизации ${meta.risk}).\n**Порог FNA:** ${pattern === 'benign' ? 'не показан' : `≥ ${meta.threshold} мм`}.\n**Размер узла:** ${size} мм.\n**Цитология:** ${beth === 'none' ? 'не выполнена' : `Bethesda ${beth}`}.`,
+      details: `ATA 2015 паттерн: ${meta.label} (риск малигнизации ${meta.risk}).\nПорог FNA: ${pattern === 'benign' ? 'не показан' : `≥ ${meta.threshold} мм`}.\nРазмер узла: ${size} мм.\nЦитология: ${beth === 'none' ? 'не выполнена' : `Bethesda ${beth}`}.`,
       actions,
       caveats: [
         'FNA не заменяет клиническую оценку — оцените эластографию, лимфоузлы, семейный анамнез',

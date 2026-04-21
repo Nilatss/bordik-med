@@ -53,7 +53,7 @@ const runner: CalculatorTool = {
       unit: 'HAS France',
       color: '#6B7280',
       interpretation: `HAS guidance: ${e.name}`,
-      details: `**Domain:** ${e.name}\n\n**Examples:** ${e.examples}\n\n**Format / methodology:** ${e.format}\n\n**Access:** ${e.access}`,
+      details: `Domain: ${e.name}\n\nExamples: ${e.examples}\n\nFormat / methodology: ${e.format}\n\nAccess: ${e.access}`,
       actions: [
         'HAS main portal: https://www.has-sante.fr/',
         'Recommandations de bonne pratique: https://www.has-sante.fr/jcms/c_5233/fr/recommandations-de-bonne-pratique',

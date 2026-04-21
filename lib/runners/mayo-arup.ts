@@ -51,7 +51,7 @@ const runner: CalculatorTool = {
       unit: t.unit,
       interpretation,
       color,
-      details: `**${t.label}**: ${t.low}–${t.high} ${t.unit}. Образец: ${t.specimen}. ${t.note}`,
+      details: `${t.label}: ${t.low}–${t.high} ${t.unit}. Образец: ${t.specimen}. ${t.note}`,
       actions: [
         'Сравнить с клиникой и предыдущими результатами',
         'Оценить преаналитику: гемолиз, время забора, центрифугирование',

@@ -67,7 +67,7 @@ const runner: CalculatorTool = {
       unit: `${stage} / ${activity}`,
       interpretation: `Фиброз ${stage}, активность ${activity}`,
       color,
-      details: `**FibroTest** оценивает фиброз (F0–F4 METAVIR) по 5 биомаркерам + возраст + пол. **ActiTest** — активность (A0–A3) по АЛТ + те же маркеры.
+      details: `FibroTest оценивает фиброз (F0–F4 METAVIR) по 5 биомаркерам + возраст + пол. ActiTest — активность (A0–A3) по АЛТ + те же маркеры.
 Значение нормализуется на 0–1; cut-off: 0,22 (F0), 0,49 (F2), 0,59 (F3), 0,75 (F4).`,
       actions: [
         stage === 'F3' || stage === 'F4' ? 'Гепатолог + эластометрия для подтверждения' : null,

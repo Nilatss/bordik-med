@@ -39,7 +39,7 @@ const runner: CalculatorTool = {
       unit: 'Black',
       color: e.color,
       interpretation: `Class ${c}: ${e.loc.split(';')[0]}`,
-      details: `**Class ${c} (Black)**\n**Локализация:** ${e.loc}\n\n**Типичная реставрация:** ${e.rest}`,
+      details: `Class ${c} (Black)\nЛокализация: ${e.loc}\n\nТипичная реставрация: ${e.rest}`,
       actions: [
         'Препарирование — minimally invasive (adhesive dentistry)',
         'Матрица + клин для Class II/III/IV (контактный пункт)',

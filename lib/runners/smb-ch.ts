@@ -60,7 +60,7 @@ const runner: CalculatorTool = {
       unit: 'Switzerland',
       color: '#6B7280',
       interpretation: `Navigate: Swiss ${e.name}`,
-      details: `**Домен:** ${e.name}\n\n**Орган:** ${e.body}\n\n**Доступ:** ${e.access}\n\n**Примеры:** ${e.examples}`,
+      details: `Домен: ${e.name}\n\nОрган: ${e.body}\n\nДоступ: ${e.access}\n\nПримеры: ${e.examples}`,
       actions: [
         'Swissmedic: https://www.swissmedic.ch/',
         'Compendium: https://compendium.ch/',

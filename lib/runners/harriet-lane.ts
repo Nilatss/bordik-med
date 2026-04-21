@@ -84,7 +84,7 @@ const runner: CalculatorTool = {
       unit: 'педиатрическая доза',
       interpretation: `${d}: ${e.mgkg}, ${e.freq}`,
       color: '#4B8DF5',
-      details: `Препарат: ${d}. Масса: ${w || '—'} кг. Показание: ${ind}.\n\n**Доза:** ${e.mgkg}\n**Частота:** ${e.freq}\n**Путь:** ${e.route}\n**Макс:** ${e.max}\n**Форма:** ${e.prep}\n**Расчёт для ${w || '?'} кг:** ${calcDose}\n\n**Примечание:** ${e.note}\n\n*Harriet Lane Handbook (Johns Hopkins Hospital) — ведущий справочник педиатрических доз в США.*`,
+      details: `Препарат: ${d}. Масса: ${w || '—'} кг. Показание: ${ind}.\n\nДоза: ${e.mgkg}\nЧастота: ${e.freq}\nПуть: ${e.route}\nМакс: ${e.max}\nФорма: ${e.prep}\nРасчёт для ${w || '?'} кг: ${calcDose}\n\nПримечание: ${e.note}\n\n*Harriet Lane Handbook (Johns Hopkins Hospital) — ведущий справочник педиатрических доз в США.*`,
       actions: [
         'Сверить в Harriet Lane Handbook (23-е изд., 2024) или приложении Harriet Lane',
         'Проверить по возрасту: новорождённые / младенцы имеют отдельные дозы',
