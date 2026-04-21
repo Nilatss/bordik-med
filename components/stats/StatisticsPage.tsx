@@ -1182,7 +1182,7 @@ export default function StatisticsPage() {
       style={{ width: '100%', overflow: 'hidden' }}
     >
       {/* 2-column grid */}
-      <div style={{
+      <div className="stats-2col" style={{
         display: 'grid',
         gridTemplateColumns: 'minmax(0, 1.55fr) minmax(0, 1fr)',
         gap: 12,

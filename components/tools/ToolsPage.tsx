@@ -612,7 +612,7 @@ function RenderedRow({ row }: { row: Row }) {
   const padded = [...row.tools];
   while (padded.length < COLS) padded.push(null as unknown as CatalogTool);
   return (
-    <div style={{
+    <div className="tools-row-grid" style={{
       display: 'grid',
       gridTemplateColumns: `repeat(${COLS}, 1fr)`,
       gap: 'var(--space-3)',

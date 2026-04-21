@@ -715,3 +715,161 @@ main:has(.stats-page) {
 .lesson-content.tool-info a:hover {
   text-decoration-color: #1A1A1A;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+ * RESPONSIVE LAYOUT UTILITIES
+ * Breakpoints: mobile < 640, tablet 640-900, desktop > 900
+ * Applied via className to replace rigid inline gridTemplateColumns
+ * ═══════════════════════════════════════════════════════════════ */
+
+/* 3-column grid → 2-col tablet → 1-col mobile (SectionCards, module/course grids) */
+.rg-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-3);
+}
+@media (max-width: 900px) {
+  .rg-3 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+  .rg-3 { grid-template-columns: 1fr; }
+}
+
+/* 2-column grid → 1-col mobile */
+.rg-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+}
+@media (max-width: 640px) {
+  .rg-2 { grid-template-columns: 1fr; }
+}
+
+/* Main content + TOC sidebar (ToolView, TabbedLessonViewer): stack on tablet */
+.rg-main-toc {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 24px;
+  align-items: start;
+}
+@media (max-width: 1024px) {
+  .rg-main-toc { grid-template-columns: 1fr; gap: 16px; }
+  .rg-main-toc > .toc-sidebar {
+    position: static !important;
+    order: -1; /* TOC above content when stacked */
+    max-height: none !important;
+  }
+}
+
+/* InfoPill row in ToolView header — wrap on narrow screens */
+.info-pill-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+@media (max-width: 900px) {
+  .info-pill-row { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+  .info-pill-row { grid-template-columns: 1fr; }
+}
+
+/* Sidebar (desktop-only as push-layout; drawer on mobile) */
+@media (max-width: 768px) {
+  .app-sidebar-aside {
+    position: fixed !important;
+    left: 0; top: 0;
+    z-index: 50;
+    box-shadow: 8px 0 24px rgba(0,0,0,0.08);
+  }
+  .app-main-wrap {
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+  }
+}
+
+/* Mobile topbar (hamburger) — only on narrow screens */
+.mobile-topbar {
+  display: none;
+}
+@media (max-width: 768px) {
+  .mobile-topbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 52px;
+    padding: 0 16px;
+    background: #FFFFFF;
+    border-bottom: 1px solid #F0F1F5;
+    flex-shrink: 0;
+  }
+}
+
+/* Inner main padding — tighten on mobile */
+.app-main-inner {
+  padding: 20px 24px;
+  min-height: calc(100% - 48px);
+}
+@media (max-width: 640px) {
+  .app-main-inner { padding: 14px 14px; }
+}
+
+/* Tools page / filter wrap — allow scroll-x on narrow screens */
+.tools-filter-wrap {
+  flex-wrap: wrap;
+}
+@media (max-width: 640px) {
+  .tools-filter-wrap {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .tools-filter-wrap::-webkit-scrollbar { display: none; }
+}
+
+/* Tool input row (label + input + quick values) — stack on mobile */
+@media (max-width: 560px) {
+  .tool-input-row {
+    grid-template-columns: 1fr !important;
+    gap: 6px !important;
+  }
+}
+
+/* Tool result header — shrink big h1 on mobile */
+@media (max-width: 640px) {
+  .tool-result-headline {
+    font-size: 32px !important;
+    letter-spacing: -0.02em !important;
+  }
+  .tool-result-subhead { font-size: 13px !important; }
+}
+
+/* Responsive horizontal padding helper */
+.pad-x-page { padding-left: 24px; padding-right: 24px; }
+@media (max-width: 640px) {
+  .pad-x-page { padding-left: 14px; padding-right: 14px; }
+}
+
+/* Hide on mobile / desktop helpers (complement Tailwind md:hidden for legacy) */
+@media (max-width: 768px) { .hide-below-md { display: none !important; } }
+@media (min-width: 769px) { .hide-above-md { display: none !important; } }
+
+/* ToolsPage row grid — collapses from 3 cols to 2 (tablet) to 1 (mobile).
+   Padded empty slots are harmless because they have no content / background. */
+@media (max-width: 900px) {
+  .tools-row-grid { grid-template-columns: repeat(2, 1fr) !important; }
+}
+@media (max-width: 560px) {
+  .tools-row-grid { grid-template-columns: 1fr !important; }
+}
+
+/* StatisticsPage 2-col → stack on tablet */
+@media (max-width: 900px) {
+  .stats-2col { grid-template-columns: 1fr !important; }
+}
+
+/* ProfilePage 2-col (user card + right) → stack on tablet */
+@media (max-width: 900px) {
+  .profile-2col { grid-template-columns: 1fr !important; }
+}

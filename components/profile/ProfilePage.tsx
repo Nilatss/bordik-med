@@ -496,7 +496,7 @@ export default function ProfilePage() {
 
   return (
     <div style={{ width: '100%' }}>
-      <div style={{ display: 'grid', gridTemplateColumns: '500px 1fr', gap: 16, alignItems: 'stretch' }}>
+      <div className="profile-2col" style={{ display: 'grid', gridTemplateColumns: '500px 1fr', gap: 16, alignItems: 'stretch' }}>
 
         {/* LEFT: User card */}
         <div style={{

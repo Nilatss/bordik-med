@@ -149,11 +149,7 @@ export default function TestsPage() {
           }}>
             {category}
           </h3>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            gap: 'var(--space-3)',
-          }}>
+          <div className="rg-3">
             {tests.map((test, i) => (
               <motion.button
                 key={test.id}

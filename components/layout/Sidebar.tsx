@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore } from '@/lib/store';
 import { useT, useLang } from '@/lib/i18n';
@@ -45,6 +45,18 @@ export default function Sidebar() {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [searchFocus, setSearchFocus] = useState(false);
+
+  // Auto-close sidebar on initial mount if viewport is narrow (< 768 px).
+  // Store default is `open: true` which is correct for desktop; mobile needs
+  // it closed so the drawer doesn't overlay content on page load.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const mq = window.matchMedia('(max-width: 768px)');
+    if (mq.matches && useAppStore.getState().sidebarOpen) {
+      useAppStore.setState({ sidebarOpen: false });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const activeNav: NavItem = showProfile
     ? 'profile'
@@ -207,7 +219,7 @@ export default function Sidebar() {
         initial={false}
         animate={{ x: sidebarOpen ? 0 : -300 }}
         transition={{ duration: 0.3, ease: [0.2, 0, 0, 1] }}
-        className="fixed md:sticky top-0 z-50"
+        className="app-sidebar-aside fixed md:sticky top-0 z-50"
         style={{
           width: 280,
           height: '100vh',

@@ -446,9 +446,7 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
   const nextTab = tabs[activeIndex + 1];
 
   return (
-    <div style={{
-      display: 'grid', gridTemplateColumns: '1fr 280px', gap: 24, alignItems: 'start',
-    }}>
+    <div className="rg-main-toc">
       {/* LEFT: Tab content */}
       <div key={active.id} style={{
         background: '#FFFFFF',
@@ -659,7 +657,7 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
       </div>
 
       {/* RIGHT: Tabs sidebar */}
-      <aside style={{
+      <aside className="toc-sidebar" style={{
         position: 'sticky', top: 20,
         background: '#F5F6F8',
         borderRadius: 'var(--md-sys-shape-corner-extra-large)',

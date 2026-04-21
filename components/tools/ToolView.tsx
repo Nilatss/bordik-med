@@ -280,7 +280,7 @@ export default function ToolView({ toolId }: { toolId: string }) {
       {/* Top header - back + tags + title + description + InfoPills (full width, outside grid) */}
       <BackButton onClick={closeTool} />
       <Header tool={tool} kind={kindLabel} />
-      <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 16, marginBottom: 20 }}>
+      <div className="info-pill-row" style={{ marginTop: 16, marginBottom: 20 }}>
         <InfoPill icon={<IconBolt />} label="Тип" value={kindLabel} />
         <InfoPill icon={<IconTag />} label="Раздел" value={tool.subcategory} />
         <InfoPill icon={<IconBook />} label="Источник" value={shortRef(runner.reference)} />
@@ -288,12 +288,7 @@ export default function ToolView({ toolId }: { toolId: string }) {
       </div>
 
       {/* Main grid: content card (left) + TOC sidebar (right) - identical to TabbedLessonViewer */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: '1fr 280px',
-        gap: 24,
-        alignItems: 'start',
-      }}>
+      <div className="rg-main-toc">
         {/* LEFT: tab content card - IDENTICAL to TabbedLessonViewer */}
         <div key={active.id} style={{
           background: '#FFFFFF',
@@ -365,7 +360,7 @@ export default function ToolView({ toolId }: { toolId: string }) {
         </div>
 
         {/* RIGHT: sidebar - "Содержание" - IDENTICAL to TabbedLessonViewer aside */}
-        <aside style={{
+        <aside className="toc-sidebar" style={{
           position: 'sticky', top: 20,
           background: '#F5F6F8',
           borderRadius: 'var(--md-sys-shape-corner-extra-large)',

@@ -70,11 +70,7 @@ export default function ModuleGrid() {
           </button>
         </div>
       ) : (
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(3, 1fr)',
-        gap: 'var(--space-4)',
-      }}>
+      <div className="rg-3" style={{ gap: 'var(--space-4)' }}>
       {filteredModules.map((mod, i) => {
         const completedCount = mod.courses.filter((c) => completedCourses.includes(c.id)).length;
         const progress = mod.courses.length > 0 ? (completedCount / mod.courses.length) * 100 : 0;

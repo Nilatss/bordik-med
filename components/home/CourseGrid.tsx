@@ -73,11 +73,7 @@ export default function CourseGrid({ moduleId }: { moduleId: number }) {
           </button>
         </div>
       ) : (
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: 'var(--space-4)',
-        }}>
+        <div className="rg-3" style={{ gap: 'var(--space-4)' }}>
       {filteredCourses.map((course, i) => {
         const isCompleted = completedCourses.includes(course.id);
 

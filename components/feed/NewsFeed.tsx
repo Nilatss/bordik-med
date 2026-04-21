@@ -94,12 +94,7 @@ export default function NewsFeed() {
       </div>
 
       {/* Quick actions */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(2, 1fr)',
-        gap: 'var(--space-3)',
-        marginBottom: 28,
-      }}>
+      <div className="rg-2" style={{ gap: 'var(--space-3)', marginBottom: 28 }}>
         <button
           onClick={() => setShowLearning(true)}
           style={{

@@ -195,11 +195,7 @@ function SectionCards({ onSelect }: { onSelect: (id: SectionId) => void }) {
           }}>
             {title}
           </h3>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            gap: 'var(--space-3)',
-          }}>
+          <div className="rg-3">
             {ids.map((id, i) => renderSection(id, i))}
           </div>
         </section>
@@ -249,21 +245,44 @@ export default function Home() {
     : showLearning ? 'learning'
     : 'home';
 
+  const toggleSidebar = useAppStore((s) => s.toggleSidebar);
   return (
     <div style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
       <Sidebar />
-      <div style={{
-        flex: 1, display: 'flex', flexDirection: 'column',
-        minWidth: 0, height: '100vh',
-        // Visually lift the main content over the sidebar — creates a soft card feel.
-        borderTopLeftRadius: 32,
-        borderBottomLeftRadius: 32,
-        background: '#FFFFFF',
-        overflow: 'hidden', // clip inner main's scroll to the rounded corners
-        boxShadow: '0 0 0 1px #F0F1F5',
-      }}>
+      <div
+        className="app-main-wrap"
+        style={{
+          flex: 1, display: 'flex', flexDirection: 'column',
+          minWidth: 0, height: '100vh',
+          // Visually lift the main content over the sidebar — creates a soft card feel.
+          borderTopLeftRadius: 32,
+          borderBottomLeftRadius: 32,
+          background: '#FFFFFF',
+          overflow: 'hidden', // clip inner main's scroll to the rounded corners
+          boxShadow: '0 0 0 1px #F0F1F5',
+        }}>
+        {/* Mobile hamburger + title — only shown < 768px */}
+        <div className="mobile-topbar">
+          <button
+            onClick={toggleSidebar}
+            aria-label="Открыть меню"
+            style={{
+              padding: 8, background: 'transparent', border: 'none',
+              borderRadius: 8, cursor: 'pointer', display: 'inline-flex',
+              alignItems: 'center', justifyContent: 'center', color: '#1A1A1A',
+            }}
+          >
+            <svg width={22} height={22} viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+              <line x1={3} y1={6} x2={21} y2={6} />
+              <line x1={3} y1={12} x2={21} y2={12} />
+              <line x1={3} y1={18} x2={21} y2={18} />
+            </svg>
+          </button>
+          <img src="/logo-bordik.png" alt="Bordik" style={{ height: 22, width: 'auto' }} />
+        </div>
         <main style={{ flex: 1, overflowY: 'auto', background: '#FFFFFF' }}>
-          <div style={{ padding: '20px 24px', minHeight: 'calc(100% - 48px)' }}>
+          <div className="app-main-inner">
 
           {view === 'profile' && (
             <ProfilePage />
