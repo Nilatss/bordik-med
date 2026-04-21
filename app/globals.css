@@ -722,16 +722,18 @@ main:has(.stats-page) {
  * Applied via className to replace rigid inline gridTemplateColumns
  * ═══════════════════════════════════════════════════════════════ */
 
-/* 3-column grid → 2-col tablet → 1-col mobile (SectionCards, module/course grids) */
+/* 3-column grid → 2-col (≤ 1200) → 1-col (≤ 620) — SectionCards, module/course
+   grids, tools grid. Kept the 1200 breakpoint high so cards never shrink below
+   their comfortable content width of ~360 px. */
 .rg-3 {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: var(--space-3);
 }
-@media (max-width: 900px) {
+@media (max-width: 1200px) {
   .rg-3 { grid-template-columns: repeat(2, 1fr); }
 }
-@media (max-width: 560px) {
+@media (max-width: 620px) {
   .rg-3 { grid-template-columns: 1fr; }
 }
 
@@ -855,12 +857,14 @@ main:has(.stats-page) {
 @media (max-width: 768px) { .hide-below-md { display: none !important; } }
 @media (min-width: 769px) { .hide-above-md { display: none !important; } }
 
-/* ToolsPage row grid — collapses from 3 cols to 2 (tablet) to 1 (mobile).
-   Padded empty slots are harmless because they have no content / background. */
-@media (max-width: 900px) {
+/* ToolsPage row grid — collapses from 3 cols to 2 (≤ 1200) to 1 (mobile).
+   Padded empty slots are harmless because they have no content / background.
+   Breakpoint pushed up to 1200 because a 3rd card under ~380 px becomes
+   cramped and leaves a big empty column when rows are padded. */
+@media (max-width: 1200px) {
   .tools-row-grid { grid-template-columns: repeat(2, 1fr) !important; }
 }
-@media (max-width: 560px) {
+@media (max-width: 620px) {
   .tools-row-grid { grid-template-columns: 1fr !important; }
 }
 
