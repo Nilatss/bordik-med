@@ -192,7 +192,7 @@ const runner: CalculatorTool = {
       unit: 'WHO/UNICEF IMCI',
       color: '#6B7280',
       interpretation: `Navigate: IMCI ${e.name} (${ag})`,
-      details: `Страна: ${e.name}\n\nВозрастная группа: ${ag === 'newborn' ? '0-7 дней (Newborn)' : ag === 'young' ? '1 нед - 2 мес (Young Infant)' : '2 мес - 5 лет (Child)'}\n\n${ageDetails[ag]}\n\nIMCI workflow:\n1. Assess — check general danger signs → main symptoms → nutrition → HIV status → immunisation\n2. Classify — светофор: RED (refer urgently), YELLOW (treat at health centre), GREEN (home care)\n3. Identify treatment\n4. Treat — first dose before referral if needed\n5. Counsel mother — home care, when to return, feeding\n6. Follow-up\n\nНациональная адаптация IMCI каждой страной учитывает: локальную этиологию малярии (P. falciparum vs P. vivax), HIV bagrount (high в Южной Африке), антибиотики first-line (resistance patterns), доступные лекарства (government formulary).`,
+      details: `Страна: ${e.name}\n\nВозрастная группа: ${ag === 'newborn' ? '0-7 дней (Newborn)' : ag === 'young' ? '1 нед - 2 мес (Young Infant)' : '2 мес - 5 лет (Child)'}\n\n${ageDetails[ag]}`,
       actions: [
         ...e.actions,
         '— Общие источники IMCI —',

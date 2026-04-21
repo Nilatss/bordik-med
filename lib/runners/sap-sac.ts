@@ -176,7 +176,7 @@ const runner: CalculatorTool = {
       unit: 'Argentina',
       color: '#6B7280',
       interpretation: `Navigate: Argentine ${e.name}`,
-      details: `Специальность: ${e.name}\n\nОбщество: ${e.society}\n\n${e.details}\n\nКонтекст Аргентины: здравоохранение трёхсекторальное — público (provincial MoH + hospitales), obras sociales (социальное страхование для работников), private (prepagas — частные планы). ANMAT — регулятор лекарств.`,
+      details: `Специальность: ${e.name}\n\nОбщество: ${e.society}\n\n${e.details}`,
       actions: [
         ...e.actions,
         '— Общие источники Argentina —',

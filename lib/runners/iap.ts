@@ -158,7 +158,7 @@ const runner: CalculatorTool = {
       unit: 'IAP India',
       color: '#6B7280',
       interpretation: `Navigate: IAP ${e.name}`,
-      details: `Тема: ${e.name}\n\nОрган: ${e.body}\n\n${e.details}\n\nКонтекст Индии: публичный сектор (UIP, RBSK, JSSK, NHM) + частный (IAP рекомендации). 1.4 млрд населения, 26 млн рождений/год. Высокий burden стунтинга, анемии, неонатальной смертности.`,
+      details: `Тема: ${e.name}\n\nОрган: ${e.body}\n\n${e.details}`,
       actions: [
         ...e.actions,
         '— Общие источники —',

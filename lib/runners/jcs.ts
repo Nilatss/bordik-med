@@ -158,7 +158,7 @@ const runner: CalculatorTool = {
       unit: 'Japan',
       color: '#6B7280',
       interpretation: `Navigate: Japanese ${e.name}`,
-      details: `Специальность: ${e.name}\n\nОбщество: ${e.society}\n\nПримеры: ${e.examples}\n\nОсобенности: Многие японские гайдлайны имеют английский перевод (часто с задержкой 1-2 года). Minds portal предоставляет методологическую оценку. Японская фармакогенетика: восточноазиатские различия дозирования (warfarin, clopidogrel CYP2C19 LOF частый).`,
+      details: `Специальность: ${e.name}\n\nОбщество: ${e.society}\n\nПримеры: ${e.examples}`,
       actions: [
         ...e.actions,
         '— Общие источники —',

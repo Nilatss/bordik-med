@@ -168,7 +168,7 @@ const runner: CalculatorTool = {
       unit: 'PAHO / AMRO',
       color: '#6B7280',
       interpretation: `Navigate: PAHO ${e.name}`,
-      details: `Программа: ${e.name}\n\n${e.details}\n\nPAHO (основ. 1902) — старейшее международное бюро здравоохранения, WHO Regional Office for the Americas (AMRO). 35 стран-членов. Документы публикуются на испанском, португальском, английском, французском.`,
+      details: `Программа: ${e.name}\n\n${e.details}`,
       actions: [
         ...e.actions,
         '— Общие источники PAHO —',

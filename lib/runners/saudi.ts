@@ -176,7 +176,7 @@ const runner: CalculatorTool = {
       unit: 'Saudi Arabia',
       color: '#6B7280',
       interpretation: `Navigate: Saudi ${e.name}`,
-      details: `Домен: ${e.name}\n\nОрган: ${e.body}\n\n${e.details}\n\nКонтекст KSA: Vision 2030 Health Transformation — корпоратизация MoH, private-sector expansion, national health insurance (CCHI). Население ~35 млн (citizens ~60%, expatriates ~40%).`,
+      details: `Домен: ${e.name}\n\nОрган: ${e.body}\n\n${e.details}`,
       actions: [
         ...e.actions,
         '— Общие источники KSA —',

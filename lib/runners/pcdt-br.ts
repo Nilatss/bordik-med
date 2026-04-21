@@ -166,7 +166,7 @@ const runner: CalculatorTool = {
       unit: 'SUS Brasil',
       color: '#6B7280',
       interpretation: `Navigate: Brazilian PCDT ${e.name}`,
-      details: `Область: ${e.name}\n\n${e.details}\n\nPCDT (Protocolo Clínico e Diretriz Terapêutica) — обязательный протокол SUS. Утверждается CONITEC (Comissão Nacional de Incorporação de Tecnologias no SUS) + Ministério da Saúde через Portaria. Невыполнение PCDT = отсутствие реимбурсации + юридический риск. Judicialização da saúde (судебные иски) — частая проблема для не включённых в PCDT высокостоимостных препаратов.`,
+      details: `Область: ${e.name}\n\n${e.details}`,
       actions: [
         ...e.actions,
         '— Общие источники SUS —',
