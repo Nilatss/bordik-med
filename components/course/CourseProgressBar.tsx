@@ -52,8 +52,12 @@ export default function CourseProgressBar({
           style={{
             position: 'absolute', top: 0, left: 0, bottom: 0,
             width: widthString,
-            background:
-              'repeating-linear-gradient(115deg, #22C55E 0 10px, #1FB85A 10px 20px)',
+            // Solid green base + semi-transparent white diagonal stripes on top.
+            // White at 16% alpha lets the green show through, giving the
+            // stripes a soft translucent feel instead of two solid greens.
+            backgroundColor: '#22C55E',
+            backgroundImage:
+              'repeating-linear-gradient(115deg, rgba(255,255,255,0.16) 0 10px, transparent 10px 20px)',
             borderRadius: 6,
             display: 'flex', alignItems: 'center', paddingLeft: 12,
           }}
