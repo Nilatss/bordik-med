@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useAppStore } from '@/lib/store';
 import { sections, getSectionById, getModulesBySection, getModuleById, type SectionId } from '@/lib/curriculum';
 import dynamic from 'next/dynamic';
@@ -210,6 +211,19 @@ function SectionCards({ onSelect }: { onSelect: (id: SectionId) => void }) {
 
 /* ═══ Main ═══ */
 export default function Home() {
+  // Hide the pre-hydration skeleton (rendered in app/layout.tsx) as soon
+  // as React's first effect runs. Two-phase fade:
+  //   data-ready="1" → CSS opacity transition kicks in
+  //   data-ready="2" → display:none after the fade so the skeleton stops
+  //                    consuming layers / paint cycles.
+  useEffect(() => {
+    document.documentElement.dataset.ready = '1';
+    const t = setTimeout(() => {
+      document.documentElement.dataset.ready = '2';
+    }, 250);
+    return () => clearTimeout(t);
+  }, []);
+
   // Narrow selectors — the previous destructure `useAppStore()` subscribed
   // this component (and its whole subtree) to every store update, so
   // unrelated writes (scroll index, favourite toggle, search keystroke)
