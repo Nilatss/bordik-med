@@ -48,11 +48,15 @@ export default function CourseProgressBar({
           </span>
         </div>
 
-        {/* End label — sits on the right inside the empty grey portion */}
+        {/* End label — sits on the right edge. Switches to white once the
+            green bar grows over it (≥ 80 %) so it stays readable on the
+            stripe pattern. */}
         <span style={{
           position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)',
           fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 600,
-          color: '#6B7280',
+          color: safePct >= 80 ? '#FFFFFF' : '#6B7280',
+          textShadow: safePct >= 80 ? '0 1px 1px rgba(0,0,0,0.18)' : 'none',
+          transition: 'color 200ms ease',
         }}>
           {endLabel}
         </span>
