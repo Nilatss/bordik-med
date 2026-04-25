@@ -132,17 +132,17 @@ export default function CoursePage({ courseId }: CoursePageProps) {
               padding: '12px 24px',
               fontFamily: 'var(--font-body)', fontSize: 14.5, fontWeight: 600,
               color: '#FFFFFF',
-              background: '#1A1A1A',
+              background: '#3B82F6',
               border: 'none', borderRadius: 999,
               cursor: 'pointer',
               transition: 'background 200ms cubic-bezier(0.2,0,0,1), transform 150ms',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = '#2B2B2B';
+              e.currentTarget.style.background = '#2563EB';
               e.currentTarget.style.transform = 'translateY(-1px)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = '#1A1A1A';
+              e.currentTarget.style.background = '#3B82F6';
               e.currentTarget.style.transform = 'translateY(0)';
             }}
           >

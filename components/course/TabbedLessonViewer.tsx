@@ -641,14 +641,14 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
               style={{
                 display: 'inline-flex', alignItems: 'center', gap: 8,
                 padding: '10px 16px',
-                background: '#1A1A1A', color: '#FFF',
+                background: '#3B82F6', color: '#FFF',
                 border: 'none', borderRadius: 10,
                 cursor: 'pointer',
                 fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
                 transition: 'background 180ms',
               }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = '#000000'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = '#1A1A1A'; }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = '#2563EB'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = '#3B82F6'; }}
             >
               {nextTab.short} →
             </button>

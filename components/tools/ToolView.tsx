@@ -1046,7 +1046,7 @@ function NavButton({ onClick, label, dir, primary }: {
       style={{
         display: 'inline-flex', alignItems: 'center', gap: 8,
         padding: '10px 16px',
-        background: primary ? '#1A1A1A' : '#F5F6F8',
+        background: primary ? '#3B82F6' : '#F5F6F8',
         color: primary ? '#FFFFFF' : '#1A1A1A',
         border: 'none', borderRadius: 10,
         cursor: 'pointer',
@@ -1056,10 +1056,10 @@ function NavButton({ onClick, label, dir, primary }: {
         overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.background = primary ? '#000000' : '#EFF1F4';
+        e.currentTarget.style.background = primary ? '#2563EB' : '#EFF1F4';
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.background = primary ? '#1A1A1A' : '#F5F6F8';
+        e.currentTarget.style.background = primary ? '#3B82F6' : '#F5F6F8';
       }}
     >
       {dir === 'prev' ? '← ' : ''}{label}{dir === 'next' ? ' →' : ''}
