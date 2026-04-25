@@ -691,7 +691,6 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
         })()}
         {tabs.map((t, i) => {
           const isActive = t.id === active.id;
-          const isVisited = i <= activeIndex;
           return (
             <button
               key={t.id}
@@ -699,12 +698,13 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
               style={{
                 display: 'flex', alignItems: 'center', gap: 10,
                 padding: '10px 12px',
-                background: isActive ? '#EFF4FF' : 'transparent',
-                color: isActive ? '#1A1A1A' : isVisited ? '#374151' : '#9CA3AF',
+                background: isActive ? '#FFFFFF' : 'transparent',
+                color: isActive ? '#1A1A1A' : '#9CA3AF',
                 border: 'none', borderRadius: 10,
                 cursor: 'pointer', textAlign: 'left',
                 fontFamily: 'var(--font-body)', fontSize: 13,
                 fontWeight: isActive ? 600 : 500,
+                boxShadow: isActive ? '0 1px 2px rgba(16,24,40,0.06), 0 1px 3px rgba(16,24,40,0.04)' : 'none',
                 transition: 'all 150ms ease',
               }}
               onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.background = '#E8E9ED'; }}
@@ -712,10 +712,10 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
             >
               <span style={{
                 display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                width: 22, height: 22, borderRadius: '50%', flexShrink: 0,
-                background: isActive ? '#3B82F6' : isVisited ? '#CBD5E1' : '#E2E4EA',
-                color: isActive ? '#FFF' : isVisited ? '#1A1A1A' : '#6B7280',
-                fontSize: 11, fontWeight: 700,
+                width: 24, height: 24, borderRadius: '50%', flexShrink: 0,
+                background: isActive ? '#3B82F6' : '#E2E4EA',
+                color: isActive ? '#FFF' : '#9CA3AF',
+                fontSize: 11.5, fontWeight: 700,
               }}>
                 {i + 1}
               </span>

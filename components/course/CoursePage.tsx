@@ -190,33 +190,41 @@ export default function CoursePage({ courseId }: CoursePageProps) {
           }}>
             Содержание
           </p>
-          {tabs.map((t, i) => (
-            <div
-              key={t.id}
-              style={{
-                display: 'flex', alignItems: 'center', gap: 10,
-                padding: '10px 12px',
-                background: 'transparent',
-                color: '#9CA3AF',
-                borderRadius: 10,
-                fontFamily: 'var(--font-body)', fontSize: 13,
-                fontWeight: 500,
-                cursor: 'default',
-              }}
-            >
-              <span style={{
-                display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                width: 22, height: 22, borderRadius: '50%',
-                background: '#E2E4EA', color: '#6B7280',
-                fontSize: 11, fontWeight: 700, flexShrink: 0,
-              }}>
-                {i + 1}
-              </span>
-              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                {t.short}
-              </span>
-            </div>
-          ))}
+          {tabs.map((t, i) => {
+            // First topic visualised as «active» so the empty intro page
+            // doesn't look stale — matches what the user will see right
+            // after clicking «Начать обучение».
+            const isFirst = i === 0;
+            return (
+              <div
+                key={t.id}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 10,
+                  padding: '10px 12px',
+                  background: isFirst ? '#FFFFFF' : 'transparent',
+                  color: isFirst ? '#1A1A1A' : '#9CA3AF',
+                  borderRadius: 10,
+                  fontFamily: 'var(--font-body)', fontSize: 13,
+                  fontWeight: isFirst ? 600 : 500,
+                  cursor: 'default',
+                  boxShadow: isFirst ? '0 1px 2px rgba(16,24,40,0.06), 0 1px 3px rgba(16,24,40,0.04)' : 'none',
+                }}
+              >
+                <span style={{
+                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                  width: 24, height: 24, borderRadius: '50%',
+                  background: isFirst ? '#3B82F6' : '#E2E4EA',
+                  color: isFirst ? '#FFF' : '#9CA3AF',
+                  fontSize: 11.5, fontWeight: 700, flexShrink: 0,
+                }}>
+                  {i + 1}
+                </span>
+                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {t.short}
+                </span>
+              </div>
+            );
+          })}
         </aside>
       </div>
     </div>
