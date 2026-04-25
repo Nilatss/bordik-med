@@ -895,11 +895,11 @@ main:has(.stats-page) {
 }
 
 /* Progress-bar stripes — slow seamless drift.
-   Pattern: 135° diagonal hatch with 24 px perpendicular period.
-   Horizontal projection of one period = 24 / cos(45°) ≈ 33.94 px.
-   translateX of exactly that = pixel-identical loop → no perceivable snap.
-   12 s = ~2.8 px/s, deeply peripheral, eye doesn't lock on it. */
+   Pattern: 115° diagonal hatch, 20 px gradient-axis period.
+   Horizontal projection of one period = 20 · sin(115°) ≈ 18.13 px →
+   translateX(18.13px) = pixel-identical position → invisible loop.
+   40 s linear cycle = ~0.45 px/s, deeply peripheral. */
 @keyframes progress-stripes {
   from { transform: translateX(0); }
-  to   { transform: translateX(33.94px); }
+  to   { transform: translateX(18.13px); }
 }

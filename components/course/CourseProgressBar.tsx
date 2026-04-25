@@ -47,21 +47,36 @@ export default function CourseProgressBar({
         background: '#F1F3F6',
         overflow: 'hidden',
       }}>
-        {/* Filled portion — original two-tone diagonal stripes, no animation. */}
+        {/* Filled portion — solid green base. Stripes live on a separate
+            absolutely-positioned inner layer so the slow drift animation
+            doesn't fight with the spring-driven width animation. */}
         <motion.div
           style={{
             position: 'absolute', top: 0, left: 0, bottom: 0,
             width: widthString,
-            // Solid green base + semi-transparent white diagonal stripes on top.
-            // White at 16% alpha lets the green show through, giving the
-            // stripes a soft translucent feel instead of two solid greens.
             backgroundColor: '#22C55E',
-            backgroundImage:
-              'repeating-linear-gradient(115deg, rgba(255,255,255,0.16) 0 10px, transparent 10px 20px)',
             borderRadius: 6,
+            overflow: 'hidden',
             display: 'flex', alignItems: 'center', paddingLeft: 12,
           }}
         >
+          {/* Stripes overlay — translucent white hatch, slow translateX drift.
+              translateX of 18.13 px = horizontal projection of one full 20-px
+              gradient period at 115° (= 20·sin(115°) ≈ 18.13). Pattern is
+              pixel-identical at start and end → loop is seamless, no snap.
+              40s linear → ~0.45 px/s, deeply peripheral, eye doesn't see it. */}
+          <span
+            aria-hidden
+            style={{
+              position: 'absolute', top: 0, bottom: 0,
+              left: -24, width: 'calc(100% + 24px)',
+              backgroundImage:
+                'repeating-linear-gradient(115deg, rgba(255,255,255,0.16) 0 10px, transparent 10px 20px)',
+              animation: 'progress-stripes 40s linear infinite',
+              pointerEvents: 'none',
+              willChange: 'transform',
+            }}
+          />
           <motion.span
             initial={{ opacity: 0, x: -4 }}
             animate={{ opacity: 1, x: 0 }}
