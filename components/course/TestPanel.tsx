@@ -477,7 +477,9 @@ const STATUS_META: Record<TestStatus, {
 }> = {
   passed:    { label: 'Пройден',     bg: '#DCFCE7', fg: '#166534', iconColor: '#16A34A', rowAccent: '#F5F6F8', icon: 'check' },
   available: { label: 'Доступен',    bg: '#DCFCE7', fg: '#166534', iconColor: '#16A34A', rowAccent: '#F5F6F8', icon: 'play' },
-  locked:    { label: 'Закрыто',     bg: '#F3F4F6', fg: '#6B7280', iconColor: '#9CA3AF', rowAccent: '#F5F6F8', icon: 'lock' },
+  // Locked → white chip with the project-standard 2-layer shadow used on
+  // course/section cards (sets the «inactive but interactive» tone).
+  locked:    { label: 'Закрыто',     bg: '#FFFFFF', fg: '#6B7280', iconColor: '#9CA3AF', rowAccent: '#F5F6F8', icon: 'lock' },
   cooldown:  { label: 'Перезарядка', bg: '#FEF3C7', fg: '#92400E', iconColor: '#D97706', rowAccent: '#F5F6F8', icon: 'clock' },
   violation: { label: 'Нарушение',   bg: '#FEE2E2', fg: '#991B1B', iconColor: '#DC2626', rowAccent: '#F5F6F8', icon: 'alert' },
 };
@@ -497,6 +499,9 @@ function StatusIcon({ name, color, size = 11 }: { name: TestStatus; color: strin
 
 function StatusBadge({ status }: { status: TestStatus }) {
   const m = STATUS_META[status];
+  // White-chip statuses (currently only `locked`) get the soft 2-layer
+  // shadow we use everywhere for white-on-grey contrast.
+  const isWhiteChip = m.bg === '#FFFFFF';
   return (
     <span style={{
       display: 'inline-flex', alignItems: 'center', gap: 5,
@@ -505,6 +510,9 @@ function StatusBadge({ status }: { status: TestStatus }) {
       background: m.bg, color: m.fg,
       fontFamily: 'var(--font-body)', fontSize: 11, fontWeight: 600,
       flexShrink: 0,
+      boxShadow: isWhiteChip
+        ? '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)'
+        : 'none',
     }}>
       <StatusIcon name={status} color={m.iconColor} />
       {m.label}
