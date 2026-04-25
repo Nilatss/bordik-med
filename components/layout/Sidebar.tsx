@@ -250,16 +250,24 @@ export default function Sidebar() {
   const totalCourseResults = courseResults.available.length + courseResults.locked.length;
 
   const handleCoursePick = (courseId: string, sectionId: string) => {
-    // Jump into learning flow at that course
+    // Set section first (for breadcrumbs), then open course. openCourse
+    // already clears all other top-level view flags so we don't need to.
     setActiveSection(sectionId as never);
     openCourse(courseId);
     setSearchQuery('');
+    // Auto-close drawer on mobile so the user actually sees the destination
+    if (typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches) {
+      useAppStore.setState({ sidebarOpen: false });
+    }
   };
 
   const handleToolPick = (toolId: string) => {
-    setShowTools(true);
+    // openTool already flips into Tools view + clears other flags.
     openTool(toolId);
     setSearchQuery('');
+    if (typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches) {
+      useAppStore.setState({ sidebarOpen: false });
+    }
   };
 
   const isSearching = q.length > 0;

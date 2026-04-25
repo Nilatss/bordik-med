@@ -155,10 +155,21 @@ export const useAppStore = create<AppState>()(
         set({ toolsFavourites: next });
       },
 
-      openCourse: (id) => set({ currentCourseId: id, showProfile: false }),
+      // Switch to a course view — also clears other top-level view flags so
+       // the navigation works regardless of where the user clicked from
+       // (e.g. from the global sidebar search while on Tools / Tests / Stats).
+      openCourse: (id) => set({
+        currentCourseId: id,
+        showProfile: false, showTools: false, showStats: false,
+        showTests: false, showLearning: false, activeToolId: null,
+      }),
       closeCourse: () => set({ currentCourseId: null }),
 
-      openModule: (id) => set({ activeModuleId: id, currentCourseId: null }),
+      openModule: (id) => set({
+        activeModuleId: id, currentCourseId: null,
+        showProfile: false, showTools: false, showStats: false,
+        showTests: false, showLearning: false, activeToolId: null,
+      }),
       closeModule: () => set({ activeModuleId: null }),
 
       markCompleted: (id) => {
@@ -256,7 +267,14 @@ export const useAppStore = create<AppState>()(
 
       toggleProfile: () => set({ showProfile: true, showLearning: false, showTools: false, showStats: false, showTests: false, activeSection: null, activeModuleId: null, currentCourseId: null, activeToolId: null }),
 
-      openTool: (id) => set({ activeToolId: id }),
+      // Open a specific tool — also flip into the Tools view + clear other
+       // top-level flags so navigation from search works from anywhere.
+      openTool: (id) => set({
+        activeToolId: id,
+        showTools: true,
+        showProfile: false, showStats: false, showTests: false, showLearning: false,
+        activeSection: null, activeModuleId: null, currentCourseId: null,
+      }),
       closeTool: () => set({ activeToolId: null }),
 
       addStudyTime: (courseId, seconds) => {
