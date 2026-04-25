@@ -5,6 +5,7 @@ import type { ReactNode } from 'react';
 import { Children, cloneElement, isValidElement } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { motion, AnimatePresence } from 'framer-motion';
 import { BookOpen } from '@/components/icons';
 import TestPanel from './TestPanel';
 import { CourseIllustration } from './CourseIllustrations';
@@ -448,8 +449,15 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
 
   return (
     <div className="rg-main-toc">
-      {/* LEFT: Tab content */}
-      <div key={active.id} style={{
+      {/* LEFT: Tab content — fade + slide on tab change */}
+      <AnimatePresence mode="wait" initial={false}>
+      <motion.div
+        key={active.id}
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -6 }}
+        transition={{ duration: 0.25, ease: [0.05, 0.7, 0.1, 1] }}
+        style={{
         background: '#FFFFFF',
         borderRadius: 'var(--md-sys-shape-corner-extra-large)',
         padding: 'var(--space-6)',
@@ -655,7 +663,8 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
             </button>
           ) : null}
         </div>
-      </div>
+      </motion.div>
+      </AnimatePresence>
 
       {/* RIGHT: Tabs sidebar */}
       <aside className="toc-sidebar" style={{
@@ -696,30 +705,48 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
               key={t.id}
               onClick={() => setActiveId(t.id)}
               style={{
+                position: 'relative',
                 display: 'flex', alignItems: 'center', gap: 10,
                 padding: '10px 12px',
-                background: isActive ? '#FFFFFF' : 'transparent',
+                background: 'transparent',
                 color: isActive ? '#1A1A1A' : '#9CA3AF',
                 border: 'none', borderRadius: 10,
                 cursor: 'pointer', textAlign: 'left',
                 fontFamily: 'var(--font-body)', fontSize: 13,
                 fontWeight: isActive ? 600 : 500,
-                boxShadow: isActive ? '0 1px 2px rgba(16,24,40,0.06), 0 1px 3px rgba(16,24,40,0.04)' : 'none',
-                transition: 'all 150ms ease',
+                transition: 'color 200ms ease',
               }}
               onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.background = '#E8E9ED'; }}
               onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.background = 'transparent'; }}
             >
+              {isActive && (
+                <motion.span
+                  layoutId="toc-active-pill"
+                  style={{
+                    position: 'absolute', inset: 0,
+                    background: '#FFFFFF',
+                    borderRadius: 10,
+                    boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 1px 3px rgba(16,24,40,0.04)',
+                    zIndex: 0,
+                  }}
+                  transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                />
+              )}
               <span style={{
+                position: 'relative', zIndex: 1,
                 display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
                 width: 24, height: 24, borderRadius: '50%', flexShrink: 0,
                 background: isActive ? '#3B82F6' : '#E2E4EA',
                 color: isActive ? '#FFF' : '#9CA3AF',
                 fontSize: 11.5, fontWeight: 700,
+                transition: 'background 200ms ease, color 200ms ease',
               }}>
                 {i + 1}
               </span>
-              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              <span style={{
+                position: 'relative', zIndex: 1,
+                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+              }}>
                 {t.short}
               </span>
             </button>

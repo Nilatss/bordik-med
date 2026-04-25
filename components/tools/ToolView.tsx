@@ -290,7 +290,14 @@ export default function ToolView({ toolId }: { toolId: string }) {
       {/* Main grid: content card (left) + TOC sidebar (right) - identical to TabbedLessonViewer */}
       <div className="rg-main-toc">
         {/* LEFT: tab content card - IDENTICAL to TabbedLessonViewer */}
-        <div key={active.id} style={{
+        <AnimatePresence mode="wait" initial={false}>
+        <motion.div
+          key={active.id}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -6 }}
+          transition={{ duration: 0.25, ease: [0.05, 0.7, 0.1, 1] }}
+          style={{
           background: '#FFFFFF',
           borderRadius: 'var(--md-sys-shape-corner-extra-large)',
           padding: 'var(--space-6)',
@@ -357,7 +364,8 @@ export default function ToolView({ toolId }: { toolId: string }) {
               <NavButton onClick={() => setActiveId(nextTab.id)} label={nextTab.short} dir="next" primary />
             ) : null}
           </div>
-        </div>
+        </motion.div>
+        </AnimatePresence>
 
         {/* RIGHT: sidebar - "Содержание" - IDENTICAL to TabbedLessonViewer aside */}
         <aside className="toc-sidebar" style={{
@@ -383,26 +391,43 @@ export default function ToolView({ toolId }: { toolId: string }) {
                 key={t.id}
                 onClick={() => setActiveId(t.id)}
                 style={{
+                  position: 'relative',
                   display: 'flex', alignItems: 'center', gap: 10,
                   padding: '10px 12px',
-                  background: isActive ? '#1A1A1A' : 'transparent',
-                  color: isActive ? '#FFFFFF' : '#333',
+                  background: 'transparent',
+                  color: isActive ? '#1A1A1A' : '#333',
                   border: 'none', borderRadius: 10,
                   cursor: 'pointer', textAlign: 'left',
                   fontFamily: 'var(--font-body)', fontSize: 13,
                   fontWeight: isActive ? 600 : 500,
-                  transition: 'all 150ms ease',
+                  transition: 'color 200ms ease',
                 }}
                 onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.background = '#E8E9ED'; }}
                 onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.background = 'transparent'; }}
               >
+                {isActive && (
+                  <motion.span
+                    layoutId="tool-toc-active-pill"
+                    style={{
+                      position: 'absolute', inset: 0,
+                      background: '#FFFFFF',
+                      borderRadius: 10,
+                      boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 1px 3px rgba(16,24,40,0.04)',
+                      zIndex: 0,
+                    }}
+                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                  />
+                )}
                 <span style={{
+                  position: 'relative', zIndex: 1,
                   display: 'flex', flexShrink: 0,
-                  color: isActive ? '#FFF' : '#6B7280',
+                  color: isActive ? '#1A1A1A' : '#6B7280',
+                  transition: 'color 200ms ease',
                 }}>
                   <TabIcon name={t.iconKey} size={16} />
                 </span>
                 <span style={{
+                  position: 'relative', zIndex: 1,
                   overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                   minWidth: 0, flex: 1,
                 }}>
