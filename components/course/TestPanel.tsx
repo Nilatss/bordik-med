@@ -364,10 +364,14 @@ export default function TestPanel({ courseId }: TestPanelProps) {
               ? `${bestScore}/${QUESTIONS_PER_TEST}`
               : `${QUESTIONS_PER_TEST} вопр.`}
             detailRows={[
-              { label: 'Вопросов', value: String(QUESTIONS_PER_TEST) },
-              { label: 'Порог', value: `${PASS_THRESHOLD_TEST}/${QUESTIONS_PER_TEST}` },
-              { label: bestScore !== null ? 'Лучший' : 'Попыток', value: bestScore !== null ? `${bestScore}/${QUESTIONS_PER_TEST}` : String(attempts.length) },
-              { label: 'Статус', value: STATUS_META[status].label },
+              { label: 'Вопросов', value: String(QUESTIONS_PER_TEST), icon: 'list' },
+              { label: 'Порог', value: `${PASS_THRESHOLD_TEST}/${QUESTIONS_PER_TEST}`, icon: 'target' },
+              {
+                label: bestScore !== null ? 'Лучший' : 'Попыток',
+                value: bestScore !== null ? `${bestScore}/${QUESTIONS_PER_TEST}` : String(attempts.length),
+                icon: bestScore !== null ? 'trophy' : 'history',
+              },
+              { label: 'Статус', value: STATUS_META[status].label, icon: 'info' },
             ]}
             description={statusDetail ?? undefined}
             actionLabel={isPassed ? 'Повторить' : isCurrent ? 'Начать тест' : null}
@@ -408,10 +412,10 @@ export default function TestPanel({ courseId }: TestPanelProps) {
             status={moduleStatus}
             rightInfo={`${MODULE_TEST_QUESTIONS} вопр.`}
             detailRows={[
-              { label: 'Вопросов', value: String(MODULE_TEST_QUESTIONS) },
-              { label: 'Время', value: '3 часа' },
-              { label: 'Порог', value: `${PASS_THRESHOLD_MODULE}%` },
-              { label: 'Статус', value: STATUS_META[moduleStatus].label },
+              { label: 'Вопросов', value: String(MODULE_TEST_QUESTIONS), icon: 'list' },
+              { label: 'Время', value: '3 часа', icon: 'clock' },
+              { label: 'Порог', value: `${PASS_THRESHOLD_MODULE}%`, icon: 'target' },
+              { label: 'Статус', value: STATUS_META[moduleStatus].label, icon: 'info' },
             ]}
             description={moduleDetail}
             actionLabel={moduleUnlocked && !modulePassed && !moduleLockedByViolation ? 'Начать тест' : null}
@@ -433,6 +437,26 @@ export default function TestPanel({ courseId }: TestPanelProps) {
    ════════════════════════════════════════════════════════════════ */
 
 type TestStatus = 'passed' | 'available' | 'locked' | 'cooldown' | 'violation';
+
+type PillIcon = 'list' | 'target' | 'trophy' | 'info' | 'clock' | 'history' | 'check' | 'lock';
+
+function PillIconSvg({ name }: { name: PillIcon }) {
+  const common = {
+    width: 14, height: 14, viewBox: '0 0 24 24', fill: 'none' as const,
+    stroke: 'currentColor', strokeWidth: 2,
+    strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const,
+  };
+  switch (name) {
+    case 'list': return <svg {...common}><line x1={8} y1={6} x2={21} y2={6}/><line x1={8} y1={12} x2={21} y2={12}/><line x1={8} y1={18} x2={21} y2={18}/><circle cx={4} cy={6} r={1}/><circle cx={4} cy={12} r={1}/><circle cx={4} cy={18} r={1}/></svg>;
+    case 'target': return <svg {...common}><circle cx={12} cy={12} r={10}/><circle cx={12} cy={12} r={6}/><circle cx={12} cy={12} r={2}/></svg>;
+    case 'trophy': return <svg {...common}><path d="M6 9H4a2 2 0 010-4h2"/><path d="M18 9h2a2 2 0 000-4h-2"/><path d="M6 5h12v6a6 6 0 01-12 0V5z"/><path d="M9 21h6"/><path d="M12 17v4"/></svg>;
+    case 'info': return <svg {...common}><circle cx={12} cy={12} r={10}/><line x1={12} y1={16} x2={12} y2={12}/><line x1={12} y1={8} x2={12.01} y2={8}/></svg>;
+    case 'clock': return <svg {...common}><circle cx={12} cy={12} r={10}/><polyline points="12 6 12 12 16 14"/></svg>;
+    case 'history': return <svg {...common}><polyline points="1 4 1 10 7 10"/><path d="M3.51 15A9 9 0 1012 3.51"/><line x1={12} y1={7} x2={12} y2={12}/><line x1={12} y1={12} x2={15} y2={14}/></svg>;
+    case 'check': return <svg {...common}><polyline points="20 6 9 17 4 12"/></svg>;
+    case 'lock': return <svg {...common}><rect x={3} y={11} width={18} height={11} rx={2}/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>;
+  }
+}
 
 const STATUS_META: Record<TestStatus, {
   label: string;
@@ -485,7 +509,7 @@ interface TestRowProps {
   kind: string;
   status: TestStatus;
   rightInfo: string;
-  detailRows: { label: string; value: string }[];
+  detailRows: { label: string; value: string; icon?: PillIcon }[];
   description?: string;
   actionLabel: string | null;
   actionVariant: 'primary' | 'secondary';
@@ -578,7 +602,7 @@ function TestRow({
               padding: '14px 18px 6px',
               borderTop: '1px solid #F0F1F5',
             }}>
-              {detailRows.map(({ label, value }) => (
+              {detailRows.map(({ label, value, icon }) => (
                 <div key={label} style={{
                   background: '#F5F6F8',
                   borderRadius: 12,
@@ -586,12 +610,18 @@ function TestRow({
                   display: 'flex', flexDirection: 'column', gap: 4,
                   minWidth: 0,
                 }}>
-                  <span style={{
-                    fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-                    color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.06em',
+                  <div style={{
+                    display: 'flex', alignItems: 'center', gap: 6,
+                    color: '#6B7280',
                   }}>
-                    {label}
-                  </span>
+                    {icon && <PillIconSvg name={icon} />}
+                    <span style={{
+                      fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
+                      color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.06em',
+                    }}>
+                      {label}
+                    </span>
+                  </div>
                   <span style={{
                     fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
                     color: '#1A1A1A', lineHeight: 1.35,
