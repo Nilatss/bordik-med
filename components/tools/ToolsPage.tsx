@@ -529,14 +529,31 @@ const ToolCard = React.memo(function ToolCard({ tool }: { tool: CatalogTool }) {
    One row of up to 3 cards → matches the visual 3-col grid.
    ════════════════════════════════════════════════════════════════ */
 
-/* 2 cards per row is the new baseline — 3-col left too much empty space on
-   mid-sized viewports where the 3rd column padded slot was visible. At
-   content-area widths > 1400 px this still looks balanced; any wider and
-   the cards just grow — which is fine, they're designed to breathe. */
-const COLS = 2;
+/* Responsive column count. Hook below tracks viewport width and returns:
+     3  → wide desktop (≥ 1400 px)   — big screens breathe
+     2  → standard desktop / tablet  — cards stay comfortably wide
+     1  → mobile (≤ 620 px)          — single column */
+function useResponsiveCols(): number {
+  const [cols, setCols] = React.useState(2);
+  React.useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const compute = () => {
+      const w = window.innerWidth;
+      if (w >= 1400) return 3;
+      if (w >= 620) return 2;
+      return 1;
+    };
+    setCols(compute());
+    const onResize = () => setCols(compute());
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+  return cols;
+}
 
 function buildRows(
-  byCategory: { category: string; tools: CatalogTool[] }[]
+  byCategory: { category: string; tools: CatalogTool[] }[],
+  COLS: number
 ): Row[] {
   const rows: Row[] = [];
   for (const { category, tools } of byCategory) {
@@ -574,7 +591,7 @@ function buildRows(
    Row renderer for Virtuoso.
    ════════════════════════════════════════════════════════════════ */
 
-function RenderedRow({ row }: { row: Row }) {
+function RenderedRow({ row, cols }: { row: Row; cols: number }) {
   if (row.kind === 'empty') return null;
 
   if (row.kind === 'category') {
@@ -612,13 +629,13 @@ function RenderedRow({ row }: { row: Row }) {
     );
   }
 
-  // Cards row - pad with invisible slots so the grid stays 3 cols.
+  // Cards row - pad with invisible slots so the grid layout stays consistent.
   const padded = [...row.tools];
-  while (padded.length < COLS) padded.push(null as unknown as CatalogTool);
+  while (padded.length < cols) padded.push(null as unknown as CatalogTool);
   return (
     <div className="tools-row-grid" style={{
       display: 'grid',
-      gridTemplateColumns: `repeat(${COLS}, 1fr)`,
+      gridTemplateColumns: `repeat(${cols}, 1fr)`,
       gap: 'var(--space-3)',
       marginBottom: 12,
     }}>
@@ -823,8 +840,12 @@ export default function ToolsPage() {
     return out;
   }, [filtered]);
 
+  // Responsive columns (3 ≥1400 / 2 ≥620 / 1 mobile) — rebuilds rows when
+  // viewport width crosses a breakpoint so cards reflow naturally.
+  const cols = useResponsiveCols();
+
   // Flatten into virtualised rows.
-  const rows = useMemo(() => buildRows(byCategory), [byCategory]);
+  const rows = useMemo(() => buildRows(byCategory, cols), [byCategory, cols]);
 
   const resetAll = useCallback(() => {
     startTransition(() => {
@@ -1056,7 +1077,7 @@ export default function ToolsPage() {
           // Keys are precomputed in buildRows so computeItemKey is O(1) —
           // no per-render string.join() across 500+ tool ids.
           computeItemKey={(_, row) => row.key}
-          itemContent={(_, row) => <RenderedRow row={row} />}
+          itemContent={(_, row) => <RenderedRow row={row} cols={cols} />}
         />
       )}
     </div>

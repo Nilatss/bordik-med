@@ -390,13 +390,11 @@
    STABLE SCROLLBAR GUTTER
    Reserves scrollbar space so content width doesn't shift
    when scrollbar appears/disappears.
+   NOTE: html/body themselves never scroll (outer div has height:100vh +
+   overflow:hidden), so applying `scrollbar-gutter: stable` there was wasting
+   ~10px on the right edge for a phantom scrollbar. Scoped to the actual
+   scroll containers (main) instead.
    ═══════════════════════════════════════════════ */
-html,
-body {
-  scrollbar-gutter: stable;
-}
-
-/* Any scrollable area gets stable gutter to avoid content jumping */
 .scroll-stable,
 main,
 [data-scroll="stable"] {
@@ -871,11 +869,8 @@ main:has(.stats-page) {
 @media (max-width: 768px) { .hide-below-md { display: none !important; } }
 @media (min-width: 769px) { .hide-above-md { display: none !important; } }
 
-/* ToolsPage row grid — 2 cols baseline (set in JS), collapse to 1 col on
-   mobile where a 2-col layout makes each card too narrow. */
-@media (max-width: 620px) {
-  .tools-row-grid { grid-template-columns: 1fr !important; }
-}
+/* ToolsPage row grid — JS already sets the correct columns based on viewport
+   (1 / 2 / 3). No CSS override needed here; the inline style follows `cols`. */
 
 /* StatisticsPage 2-col → stack on tablet */
 @media (max-width: 900px) {
