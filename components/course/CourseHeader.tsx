@@ -2,48 +2,14 @@
 
 import { motion } from 'framer-motion';
 import { getCourseById, getModuleForCourse, getSectionById } from '@/lib/curriculum';
+import { useT } from '@/lib/i18n';
 
-const DIFFICULTY_LABELS: Record<string, string> = {
-  basic: 'Базовый',
-  intermediate: 'Средний',
-  advanced: 'Продвинутый',
-};
-
+// Short detail string for the level pill — kept in English for all locales.
 const DIFFICULTY_DETAILS: Record<string, string> = {
   basic: 'Pre-Entry',
   intermediate: 'Intermediate',
   advanced: 'Advanced',
 };
-
-/** Guess target audience from section/module context */
-function guessAudience(sectionId: string): string {
-  const map: Record<string, string> = {
-    fundamentals: 'Абитуриенты 10-11 класс',
-    biomedical: 'Студенты 1-2 курса',
-    clinical: 'Студенты 3-6 курса',
-    allied: 'Студенты смежных направлений',
-    skills: 'Студенты и ординаторы',
-    hss: 'Все уровни',
-    threads: 'Все уровни',
-    frontier: 'Продвинутые студенты',
-    business: 'Врачи-управленцы',
-    regulatory: 'Все уровни',
-    career: 'Студенты и выпускники',
-    tech: 'Все уровни',
-  };
-  return map[sectionId] || 'Все уровни';
-}
-
-/** Estimate course volume: 8 topics × 5 hours = ~40h (standard medical course pace) */
-function estimateVolume(course: { difficulty: string }): string {
-  const topics = 8;
-  // Hours per topic by difficulty - typical medical education pace
-  const hoursPerTopic = course.difficulty === 'advanced' ? 6
-    : course.difficulty === 'intermediate' ? 5
-    : 5;
-  const totalHours = topics * hoursPerTopic;
-  return `${topics} тем · ~${totalHours} часов`;
-}
 
 interface CourseHeaderProps {
   courseId: string;
@@ -84,14 +50,24 @@ function InfoPill({ icon, label, value }: { icon: React.ReactNode; label: string
 }
 
 export default function CourseHeader({ courseId }: CourseHeaderProps) {
+  const t = useT();
   const course = getCourseById(courseId);
   const mod = getModuleForCourse(courseId);
   if (!course || !mod) return null;
   const section = getSectionById(mod.sectionId);
 
-  const level = `${DIFFICULTY_LABELS[course.difficulty]}${DIFFICULTY_DETAILS[course.difficulty] ? ` (${DIFFICULTY_DETAILS[course.difficulty]})` : ''}`;
-  const audience = guessAudience(mod.sectionId);
-  const volume = estimateVolume(course);
+  const difficultyLabel = t(`courseHeader.level.${course.difficulty}`);
+  const level = `${difficultyLabel}${DIFFICULTY_DETAILS[course.difficulty] ? ` (${DIFFICULTY_DETAILS[course.difficulty]})` : ''}`;
+  // Localised audience by section — falls back to «all levels» for sections
+  // we don't have a specific audience description for.
+  const audienceKey = `courseHeader.audience.${mod.sectionId}`;
+  const audience = t(audienceKey) === audienceKey ? t('courseHeader.audience.allLevels') : t(audienceKey);
+  // Volume is computed (8 topics × hours-per-difficulty), then formatted.
+  const topics = 8;
+  const hoursPerTopic = course.difficulty === 'advanced' ? 6
+    : course.difficulty === 'intermediate' ? 5 : 5;
+  const totalHours = topics * hoursPerTopic;
+  const volume = t('courseHeader.volume', { topics, hours: totalHours });
 
   return (
     <motion.div
@@ -114,7 +90,7 @@ export default function CourseHeader({ courseId }: CourseHeaderProps) {
           backgroundColor: '#E2E4EA',
           color: '#374151',
         }}>
-          {DIFFICULTY_LABELS[course.difficulty]}
+          {difficultyLabel}
         </span>
         {course.tags.map((tag) => (
           <span key={tag} style={{
@@ -167,7 +143,7 @@ export default function CourseHeader({ courseId }: CourseHeaderProps) {
               <polyline points="22,12 18,12 15,21 9,3 6,12 2,12" />
             </svg>
           }
-          label="Уровень"
+          label={t('courseHeader.field.level')}
           value={level}
         />
         <InfoPill
@@ -180,7 +156,7 @@ export default function CourseHeader({ courseId }: CourseHeaderProps) {
               <path d="M16 3.13a4 4 0 010 7.75" />
             </svg>
           }
-          label="Аудитория"
+          label={t('courseHeader.field.audience')}
           value={audience}
         />
         <InfoPill
@@ -191,7 +167,7 @@ export default function CourseHeader({ courseId }: CourseHeaderProps) {
               <polyline points="12,6 12,12 16,14" />
             </svg>
           }
-          label="Объём"
+          label={t('courseHeader.field.volume')}
           value={volume}
         />
       </div>

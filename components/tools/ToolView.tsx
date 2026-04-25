@@ -9,6 +9,7 @@ import { findBand, type ToolInput, type Preset, type CalculatorResult, type Resu
 import { loadRunner } from '@/lib/runners';
 import { TOOL_META, primaryCountriesFor } from '@/lib/tool-meta';
 import { useAppStore } from '@/lib/store';
+import { useT } from '@/lib/i18n';
 import { ArrowLeft } from '@/components/icons';
 import EmojiOrFlag from '@/components/ui/EmojiOrFlag';
 
@@ -117,6 +118,7 @@ function iconKeyForTitle(t: string): string {
 }
 
 export default function ToolView({ toolId }: { toolId: string }) {
+  const t = useT();
   const { closeTool } = useAppStore();
   const tool = useMemo(() => CATALOG_TOOLS.find((t) => t.id === toolId), [toolId]);
 
@@ -136,21 +138,21 @@ export default function ToolView({ toolId }: { toolId: string }) {
 
   const tabs: Tab[] = useMemo(() => {
     if (!runner) return [];
+    const tabKindLabel = runner.kind === 'score' ? t('tool.kind.score') : t('tool.kind.calculator');
     const calcTab: Tab = {
       id: 'calculator',
-      title: runner.kind === 'score' ? 'Шкала' : 'Калькулятор',
-      short: runner.kind === 'score' ? 'Шкала' : 'Калькулятор',
+      title: tabKindLabel,
+      short: tabKindLabel,
       iconKey: 'calc',
       kind: 'calculator',
     };
     // Filter out "Источник" heading from info tabs - we already have a dedicated referenceTab.
-    // Runner authors tend to add `### Источник` at the end of info markdown, which would duplicate the tab.
     const infoTabs: Tab[] = (runner.info ? buildInfoTabs(runner.info) : [])
-      .filter(t => !/^(источник[иа]?|литература|references?)$/i.test(t.title.trim()));
+      .filter((tb) => !/^(источник[иа]?|литература|references?)$/i.test(tb.title.trim()));
     const referenceTab: Tab = {
       id: 'reference',
-      title: 'Источник',
-      short: 'Источник',
+      title: t('tool.tab.source'),
+      short: t('tool.tab.source'),
       iconKey: 'book',
       kind: 'reference',
     };
@@ -179,7 +181,7 @@ export default function ToolView({ toolId }: { toolId: string }) {
   if (!tool) {
     return (
       <div style={{ padding: 40, textAlign: 'center', color: '#9CA3AF' }}>
-        Инструмент не найден.
+        {t('tool.notFound')}
         <div style={{ marginTop: 16 }}>
           <BackButton onClick={closeTool} />
         </div>
@@ -201,7 +203,7 @@ export default function ToolView({ toolId }: { toolId: string }) {
           background: '#F5F6F8', borderRadius: 20, textAlign: 'center',
         }}>
           <p style={{ fontFamily: 'var(--font-body)', fontSize: 14, color: '#6B7280' }}>
-            {loading ? 'Загрузка…' : 'Инструмент в разработке. Скоро будет доступен.'}
+            {loading ? t('tool.loading') : t('tool.runnerSoon')}
           </p>
         </div>
       </div>
@@ -266,7 +268,7 @@ export default function ToolView({ toolId }: { toolId: string }) {
     }
   }
 
-  const kindLabel = runner.kind === 'score' ? 'Шкала' : 'Калькулятор';
+  const kindLabel = runner.kind === 'score' ? t('tool.kind.score') : t('tool.kind.calculator');
 
   return (
     // Page-enter transition cloned from CourseHeader — opacity+translateY fade
@@ -281,10 +283,10 @@ export default function ToolView({ toolId }: { toolId: string }) {
       <BackButton onClick={closeTool} />
       <Header tool={tool} kind={kindLabel} />
       <div className="info-pill-row" style={{ marginTop: 16, marginBottom: 20 }}>
-        <InfoPill icon={<IconBolt />} label="Тип" value={kindLabel} />
-        <InfoPill icon={<IconTag />} label="Раздел" value={tool.subcategory} />
-        <InfoPill icon={<IconBook />} label="Источник" value={shortRef(runner.reference)} />
-        <InfoPill icon={<IconGlobe />} label="Страны" value={runner.countries ?? 'Международный'} />
+        <InfoPill icon={<IconBolt />} label={t('tool.field.type')} value={kindLabel} />
+        <InfoPill icon={<IconTag />} label={t('tool.field.section')} value={tool.subcategory} />
+        <InfoPill icon={<IconBook />} label={t('tool.field.source')} value={shortRef(runner.reference)} />
+        <InfoPill icon={<IconGlobe />} label={t('tool.field.countries')} value={runner.countries ?? t('tool.country.international')} />
       </div>
 
       {/* Main grid: content card (left) + TOC sidebar (right) - identical to TabbedLessonViewer */}
@@ -341,12 +343,11 @@ export default function ToolView({ toolId }: { toolId: string }) {
           {active.kind === 'reference' && (
             <div className="lesson-content tool-info">
               <p style={{ marginBottom: 12 }}>
-                <strong>Источник и клиническая валидация:</strong>
+                <strong>{t('tool.referenceTitle')}</strong>
               </p>
               <p>{cleanReference(runner.reference)}</p>
               <p style={{ marginTop: 20, color: '#6B7280', fontSize: 13 }}>
-                Все пороги, формулы и рекомендации приведены в соответствии с актуальными
-                международными гайдлайнами. Инструмент не заменяет клиническое суждение врача.
+                {t('tool.referenceFooter')}
               </p>
             </div>
           )}
@@ -382,14 +383,14 @@ export default function ToolView({ toolId }: { toolId: string }) {
             padding: '4px 12px 10px',
             margin: 0,
           }}>
-            Содержание
+            {t('course.toc.title')}
           </p>
-          {tabs.map((t) => {
-            const isActive = t.id === active.id;
+          {tabs.map((tab) => {
+            const isActive = tab.id === active.id;
             return (
               <button
-                key={t.id}
-                onClick={() => setActiveId(t.id)}
+                key={tab.id}
+                onClick={() => setActiveId(tab.id)}
                 className={`toc-tab${isActive ? ' is-active' : ''}`}
                 style={{
                   position: 'relative',
@@ -422,14 +423,14 @@ export default function ToolView({ toolId }: { toolId: string }) {
                   color: isActive ? '#1A1A1A' : '#6B7280',
                   transition: 'color 200ms ease',
                 }}>
-                  <TabIcon name={t.iconKey} size={16} />
+                  <TabIcon name={tab.iconKey} size={16} />
                 </span>
                 <span style={{
                   position: 'relative', zIndex: 1,
                   overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                   minWidth: 0, flex: 1,
                 }}>
-                  {t.short}
+                  {tab.short}
                 </span>
               </button>
             );
@@ -662,6 +663,7 @@ function CalculatorBody({ inputs, values, setValues, result }: {
 /* ════════════════ Rich result card ════════════════ */
 
 function ResultCard({ result }: { result: CalculatorResult }) {
+  const t = useT();
   const {
     value, unit, interpretation, color,
     details, actions, differential, caveats, scale, related, relatedCourses,
@@ -726,7 +728,7 @@ function ResultCard({ result }: { result: CalculatorResult }) {
 
       {/* Longer clinical narrative */}
       {details && (
-        <ResultSection title="Клиническая интерпретация" icon="info">
+        <ResultSection title={t('tool.section.interpretation')} icon="info">
           <p style={{ margin: 0, color: '#374151', fontSize: 13.5, lineHeight: 1.55 }}>
             {linkify(details)}
           </p>
@@ -735,7 +737,7 @@ function ResultCard({ result }: { result: CalculatorResult }) {
 
       {/* Recommended next actions */}
       {actions && actions.length > 0 && (
-        <ResultSection title="Дальнейшие действия" icon="arrow">
+        <ResultSection title={t('tool.section.actions')} icon="arrow">
           <ul style={{ margin: 0, paddingLeft: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 6 }}>
             {actions.map((a, i) => (
               <li key={i} style={{
@@ -756,7 +758,7 @@ function ResultCard({ result }: { result: CalculatorResult }) {
 
       {/* Differential / mnemonic breakdown (MUDPILES etc.) */}
       {differential && differential.length > 0 && (
-        <ResultSection title="Дифференциальный диагноз" icon="list">
+        <ResultSection title={t('tool.section.differential')} icon="list">
           <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
             {differential.map((d, i) => (
               <div key={i} style={{
@@ -780,7 +782,7 @@ function ResultCard({ result }: { result: CalculatorResult }) {
 
       {/* Caveats / pitfalls */}
       {caveats && caveats.length > 0 && (
-        <ResultSection title="Важно учесть" icon="warn">
+        <ResultSection title={t('tool.section.caveats')} icon="warn">
           <ul style={{ margin: 0, paddingLeft: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 6 }}>
             {caveats.map((c, i) => (
               <li key={i} style={{
@@ -799,7 +801,7 @@ function ResultCard({ result }: { result: CalculatorResult }) {
 
       {/* Related tools */}
       {related && related.length > 0 && (
-        <ResultSection title="Связанные инструменты" icon="link">
+        <ResultSection title={t('tool.section.related')} icon="link">
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
             {related.map((r) => (
               <button
@@ -839,7 +841,7 @@ function ResultCard({ result }: { result: CalculatorResult }) {
           explicitly listed course ids. Never auto-generated, so we never
           send the user to a lesson that doesn't actually cover this tool. */}
       {relatedCourses && relatedCourses.length > 0 && (
-        <ResultSection title="Связанные курсы" icon="book">
+        <ResultSection title={t('tool.section.relatedCourses')} icon="book">
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
             {relatedCourses.slice(0, 3).map((c) => (
               <button

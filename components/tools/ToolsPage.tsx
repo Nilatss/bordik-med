@@ -10,6 +10,7 @@ import { Virtuoso } from 'react-virtuoso';
 // once when its row mounts; subsequent renders are a no-op.
 import { motion } from 'framer-motion';
 import { ArrowRight } from '@/components/icons';
+import { useT } from '@/lib/i18n';
 import { CATALOG_TOOLS, TOOL_CATEGORIES, type CatalogTool } from '@/lib/tools-catalog';
 import {
   TOOL_META,
@@ -94,6 +95,7 @@ const FilterDropdown = React.memo(function FilterDropdown({
   onOpen: (next: boolean) => void;
   searchable?: boolean;
 }) {
+  const t = useT();
   const [q, setQ] = useState('');
   const deferredQ = useDeferredValue(q);
   const ref = useRef<HTMLDivElement | null>(null);
@@ -174,7 +176,7 @@ const FilterDropdown = React.memo(function FilterDropdown({
               <input
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
-                placeholder="Поиск..."
+                placeholder={t('common.search')}
                 style={{
                   flex: 1, border: 'none', outline: 'none',
                   background: 'transparent',
@@ -191,7 +193,7 @@ const FilterDropdown = React.memo(function FilterDropdown({
                 padding: 20, textAlign: 'center',
                 fontFamily: 'var(--font-body)', fontSize: 12, color: '#9CA3AF',
               }}>
-                Ничего не найдено
+                {t('nav.nothingFound')}
               </div>
             ) : filteredOptions.map((opt) => {
               const checked = selected.includes(opt.value);
@@ -262,7 +264,7 @@ const FilterDropdown = React.memo(function FilterDropdown({
                   color: '#6B7280', padding: 0,
                 }}
               >
-                Сбросить {label.toLowerCase()}
+                {t('tools.reset', { label: label.toLowerCase() })}
               </button>
               <span style={{
                 fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 600,
@@ -310,6 +312,7 @@ function getToolCountries(toolId: string): { name: string; flag: string }[] {
 }
 
 const ToolCard = React.memo(function ToolCard({ tool }: { tool: CatalogTool }) {
+  const t = useT();
   const ctx = React.useContext(ToolCardContext)!;
   const { openTool, toggleFav, favouriteSet } = ctx;
   const isFavourite = favouriteSet.has(tool.id);
@@ -382,7 +385,7 @@ const ToolCard = React.memo(function ToolCard({ tool }: { tool: CatalogTool }) {
             <rect x="3" y="11" width="18" height="11" rx="2" />
             <path d="M7 11V7a5 5 0 0110 0v4" />
           </svg>
-          Скоро
+          {t('tools.inDevelopment')}
         </div>
       )}
 
@@ -461,7 +464,7 @@ const ToolCard = React.memo(function ToolCard({ tool }: { tool: CatalogTool }) {
           onKeyDown={(e) => {
             if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleFavClick(e as unknown as React.MouseEvent); }
           }}
-          aria-label={isFavourite ? 'Убрать из избранного' : 'Добавить в избранное'}
+          aria-label={isFavourite ? t('tool.favorite.removeAria') : t('tool.favorite.addAria')}
           style={{
             width: 26, height: 26, borderRadius: 8,
             display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
@@ -518,7 +521,7 @@ const ToolCard = React.memo(function ToolCard({ tool }: { tool: CatalogTool }) {
           fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', fontWeight: 500,
           color: available ? 'var(--md-sys-color-on-surface)' : '#9CA3AF',
         }}>
-          {available ? 'Открыть инструмент' : 'В разработке'}
+          {available ? t('tools.openTool') : t('tools.cardInDevelopment')}
         </span>
         {available && <ArrowRight size={14} color="var(--md-sys-color-on-surface)" />}
       </div>
@@ -673,6 +676,7 @@ function RenderedRow({ row, cols }: { row: Row; cols: number }) {
    ════════════════════════════════════════════════════════════════ */
 
 export default function ToolsPage() {
+  const t = useT();
   // Filters + scroll + favourites — persisted in the global Zustand store so
   // leaving the tools page (into a tool or a course) and coming back does
   // NOT reset the user's chosen filter. This matches the UX expectation:
@@ -887,12 +891,16 @@ export default function ToolsPage() {
           fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 700,
           color: '#1A1A1A', marginBottom: 6, letterSpacing: '-0.02em',
         }}>
-          Инструменты
+          {t('tools.title')}
         </h2>
         <p style={{
           fontFamily: 'var(--font-body)', fontSize: 14, color: '#6B7280', lineHeight: 1.5,
         }}>
-          Полный каталог клинических калькуляторов, шкал, классификаторов и протоколов - {READY_COUNT} готовых из {CATALOG_TOOLS.length} по {TOOL_CATEGORIES.length} разделам.
+          {t('tools.subtitle', {
+            ready: READY_COUNT,
+            total: CATALOG_TOOLS.length,
+            sections: TOOL_CATEGORIES.length,
+          })}
         </p>
       </div>
 
@@ -913,7 +921,7 @@ export default function ToolsPage() {
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Поиск: BMI, GCS, CHA₂DS₂-VASc, MELD..."
+            placeholder={t('tools.search.placeholder')}
             style={{
               flex: 1,
               border: 'none', outline: 'none',
@@ -930,7 +938,7 @@ export default function ToolsPage() {
                 cursor: 'pointer', color: '#9CA3AF',
                 display: 'flex',
               }}
-              aria-label="Очистить"
+              aria-label={t('tools.clear')}
             >
               <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
@@ -949,7 +957,7 @@ export default function ToolsPage() {
         marginBottom: 20,
       }}>
         <FilterDropdown
-          label="Разделы"
+          label={t('tools.filter.sections')}
           icon={<svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>}
           options={CATEGORY_COUNTS.map((o) => ({ ...o, label: stripCategoryNumber(o.value) }))}
           selected={selectedCategories}
@@ -959,7 +967,7 @@ export default function ToolsPage() {
           searchable
         />
         <FilterDropdown
-          label="Специализации"
+          label={t('tools.filter.specialties')}
           icon={<svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M21 8V7a2 2 0 00-2-2h-5l-2-2H5a2 2 0 00-2 2v11a2 2 0 002 2h14a2 2 0 002-2v-4"/><circle cx="17" cy="14" r="3"/></svg>}
           options={SUBCATEGORY_COUNTS}
           selected={selectedSubcategories}
@@ -969,7 +977,7 @@ export default function ToolsPage() {
           searchable
         />
         <FilterDropdown
-          label="Страны"
+          label={t('tools.filter.countries')}
           icon={<svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><circle cx={12} cy={12} r={10}/><line x1={2} y1={12} x2={22} y2={12}/><path d="M12 2a15 15 0 014 10 15 15 0 01-4 10 15 15 0 01-4-10 15 15 0 014-10z"/></svg>}
           options={COUNTRY_COUNTS}
           selected={selectedCountries}
@@ -997,13 +1005,13 @@ export default function ToolsPage() {
           <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
             <polyline points="20 6 9 17 4 12"/>
           </svg>
-          Только готовые
+          {t('tools.filter.onlyReady')}
         </button>
 
         <button
           onClick={() => setOnlyFavourites((v) => !v)}
           disabled={favouriteSet.size === 0}
-          title={favouriteSet.size === 0 ? 'Добавьте инструменты в избранное (звёздочка на карточке)' : undefined}
+          title={favouriteSet.size === 0 ? t('tools.favoritesEmptyHint') : undefined}
           style={{
             display: 'inline-flex', alignItems: 'center', gap: 6,
             padding: '7px 12px',
@@ -1022,7 +1030,7 @@ export default function ToolsPage() {
             stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
           </svg>
-          Избранные{favouriteSet.size > 0 ? ` · ${favouriteSet.size}` : ''}
+          {t('tools.filter.favourites')}{favouriteSet.size > 0 ? ` · ${favouriteSet.size}` : ''}
         </button>
 
         {totalFilters > 0 && (
@@ -1042,7 +1050,7 @@ export default function ToolsPage() {
             <svg width={11} height={11} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
               <line x1={18} y1={6} x2={6} y2={18}/><line x1={6} y1={6} x2={18} y2={18}/>
             </svg>
-            Сбросить всё
+            {t('tools.resetAll')}
           </button>
         )}
       </div>
@@ -1067,7 +1075,7 @@ export default function ToolsPage() {
               onRemove={() => setCous(selectedCountries.filter((x) => x !== c))} />
           ))}
           {onlyAvailable && (
-            <FilterChip label="Только готовые" onRemove={() => setOnly(false)} />
+            <FilterChip label={t('tools.filter.onlyReady')} onRemove={() => setOnly(false)} />
           )}
         </div>
       )}
@@ -1077,7 +1085,7 @@ export default function ToolsPage() {
           padding: '60px 20px', textAlign: 'center',
           fontFamily: 'var(--font-body)', fontSize: 14, color: '#9CA3AF',
         }}>
-          Ничего не найдено по заданным фильтрам
+          {t('tools.noResults')}
         </div>
       ) : (
         <Virtuoso
@@ -1108,6 +1116,7 @@ export default function ToolsPage() {
 }
 
 function FilterChip({ label, onRemove }: { label: string; onRemove: () => void }) {
+  const t = useT();
   return (
     <span style={{
       display: 'inline-flex', alignItems: 'center', gap: 6,
@@ -1130,7 +1139,7 @@ function FilterChip({ label, onRemove }: { label: string; onRemove: () => void }
         }}
         onMouseEnter={(e) => { e.currentTarget.style.background = '#C7D2FE'; }}
         onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
-        aria-label="Убрать"
+        aria-label={t('tools.remove')}
       >
         <svg width={10} height={10} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
           <line x1={18} y1={6} x2={6} y2={18}/><line x1={6} y1={6} x2={18} y2={18}/>

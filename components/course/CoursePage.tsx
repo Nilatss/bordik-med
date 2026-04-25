@@ -5,6 +5,7 @@ import { getCourseById, getModuleForCourse } from '@/lib/curriculum';
 import { getArticle } from '@/lib/content';
 import { useStudyTimer } from '@/lib/useStudyTimer';
 import { useAppStore } from '@/lib/store';
+import { useT } from '@/lib/i18n';
 import CourseHeader from './CourseHeader';
 import TabbedLessonViewer, { splitIntoTabs, type Tab } from './TabbedLessonViewer';
 import PediatricCalculator from './PediatricCalculator';
@@ -15,6 +16,7 @@ interface CoursePageProps {
 }
 
 export default function CoursePage({ courseId }: CoursePageProps) {
+  const t = useT();
   const course = getCourseById(courseId);
   const mod = getModuleForCourse(courseId);
   const startedCourses = useAppStore((s) => s.startedCourses);
@@ -27,7 +29,7 @@ export default function CoursePage({ courseId }: CoursePageProps) {
   if (!course) {
     return (
       <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <p style={{ fontSize: 'var(--text-sm)', color: 'var(--md-sys-color-on-surface-variant)' }}>Курс не найден</p>
+        <p style={{ fontSize: 'var(--text-sm)', color: 'var(--md-sys-color-on-surface-variant)' }}>{t('course.notFound')}</p>
       </div>
     );
   }
@@ -47,7 +49,9 @@ export default function CoursePage({ courseId }: CoursePageProps) {
     const base = content ? splitIntoTabs(content) : [];
     if (hasTests) {
       base.push({
-        id: 'tests', title: 'Тесты по курсу', short: 'Тесты',
+        id: 'tests',
+        title: t('course.toc.tabTests'),
+        short: t('course.toc.tabTestsShort'),
         iconKey: 'tests', body: '', kind: 'tests',
       });
     }
@@ -55,6 +59,12 @@ export default function CoursePage({ courseId }: CoursePageProps) {
   })();
   const totalTopics = tabs.length;
   const progressPct = isCompleted ? 100 : isStarted ? 0 : 0; // viewer manages live progress
+
+  // Build «Тема N» / topic count plural via i18n
+  const titleN = totalTopics > 0
+    ? t('course.intro.descN', { n: totalTopics })
+    : t('course.intro.ready');
+  const introBody = `${t('course.intro.body')}${hasTests ? ' ' + t('course.intro.bodyTests') : ''}`;
 
   // Once started (or already completed) — show the lesson viewer (it has its
   // own identical TOC sidebar so layout continuity is preserved).
@@ -97,24 +107,20 @@ export default function CoursePage({ courseId }: CoursePageProps) {
               color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
               marginBottom: 8,
             }}>
-              Готовы начать?
+              {t('course.intro.label')}
             </p>
             <h2 style={{
               fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 700,
               color: '#1A1A1A', lineHeight: 1.25, letterSpacing: '-0.01em',
               marginBottom: 8,
             }}>
-              {totalTopics > 0
-                ? `Курс содержит ${totalTopics} ${totalTopics === 1 ? 'тему' : totalTopics < 5 ? 'темы' : 'тем'}.`
-                : 'Курс готов к изучению.'}
+              {titleN}
             </h2>
             <p style={{
               fontFamily: 'var(--font-body)', fontSize: 14, color: '#6B7280',
               lineHeight: 1.55, maxWidth: 640,
             }}>
-              После запуска вы перейдёте к материалу с пошаговой навигацией: каждая тема
-              открывается отдельной вкладкой, а ваш прогресс автоматически сохраняется.
-              {hasTests && ' В конце курса доступен тест для проверки знаний.'}
+              {introBody}
             </p>
           </div>
 
@@ -123,17 +129,19 @@ export default function CoursePage({ courseId }: CoursePageProps) {
             display: 'grid', gap: 10,
             gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
           }}>
-            <StatPill label="Тем" value={totalTopics > 0 ? String(totalTopics) : '—'} />
-            <StatPill label="Тесты" value={hasTests ? 'Да' : 'Нет'} />
-            <StatPill label="Раздел" value={mod?.title ?? '—'} />
+            <StatPill label={t('course.stat.topics')} value={totalTopics > 0 ? String(totalTopics) : '—'} />
+            <StatPill label={t('course.stat.tests')} value={hasTests ? t('course.stat.testsYes') : t('course.stat.testsNo')} />
+            <StatPill label={t('course.stat.section')} value={mod?.title ?? '—'} />
           </div>
 
           {/* Progress bar — striped green track + position marker */}
           <CourseProgressBar
-            currentLabel={progressPct === 0 ? 'Старт' : `Тема ${Math.max(1, Math.round((progressPct / 100) * totalTopics))}`}
-            endLabel={`Тем ${totalTopics}`}
-            startCaption="Начало курса"
-            endCaption="Финал · тест"
+            currentLabel={progressPct === 0
+              ? t('course.progress.start')
+              : t('course.intro.topicN', { n: Math.max(1, Math.round((progressPct / 100) * totalTopics)) })}
+            endLabel={t('course.intro.topicsTotal', { n: totalTopics })}
+            startCaption={t('course.intro.startCaption')}
+            endCaption={t('course.intro.endCaption')}
             pct={progressPct}
           />
 
@@ -163,7 +171,7 @@ export default function CoursePage({ courseId }: CoursePageProps) {
                 e.currentTarget.style.transform = 'translateY(0)';
               }}
             >
-              Начать обучение
+              {t('course.startBtn')}
               <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                 <line x1={5} y1={12} x2={19} y2={12} />
@@ -188,16 +196,16 @@ export default function CoursePage({ courseId }: CoursePageProps) {
             textTransform: 'uppercase', letterSpacing: '0.08em',
             padding: '4px 12px 10px',
           }}>
-            Содержание
+            {t('course.toc.title')}
           </p>
-          {tabs.map((t, i) => {
+          {tabs.map((tab, i) => {
             // First topic visualised as «active» so the empty intro page
             // doesn't look stale — matches what the user will see right
             // after clicking «Начать обучение».
             const isFirst = i === 0;
             return (
               <div
-                key={t.id}
+                key={tab.id}
                 style={{
                   display: 'flex', alignItems: 'center', gap: 10,
                   padding: '10px 12px',
@@ -220,7 +228,7 @@ export default function CoursePage({ courseId }: CoursePageProps) {
                   {i + 1}
                 </span>
                 <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  {t.short}
+                  {tab.short}
                 </span>
               </div>
             );

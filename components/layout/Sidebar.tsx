@@ -467,7 +467,7 @@ export default function Sidebar() {
                     color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
                     display: 'flex', alignItems: 'center', gap: 6,
                   }}>
-                    <span>Инструменты</span>
+                    <span>{t('nav.group.tools')}</span>
                     <span style={{
                       padding: '1px 6px', borderRadius: 999,
                       background: '#E2E4EA', color: '#6B7280',
@@ -629,7 +629,7 @@ export default function Sidebar() {
                           textAlign: 'left',
                           opacity: 0.7,
                         }}
-                        title="Курс станет доступен позже"
+                        title={t('sidebar.courseSoonTooltip')}
                       >
                         <div style={{
                           display: 'flex', alignItems: 'center', gap: 6,
