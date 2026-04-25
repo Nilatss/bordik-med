@@ -653,6 +653,10 @@ function RenderedRow({ row, cols }: { row: Row; cols: number }) {
               duration: 0.3,
               ease: [0.05, 0.7, 0.1, 1],
             }}
+            // Flex column so the inner <button> (default inline-block)
+            // stretches to full width via cross-axis stretch — otherwise
+            // cards collapse to intrinsic size and rows look broken.
+            style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}
           >
             <ToolCard tool={tool} />
           </motion.div>
