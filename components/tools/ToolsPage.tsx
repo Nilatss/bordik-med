@@ -99,6 +99,11 @@ const FilterDropdown = React.memo(function FilterDropdown({
   const [q, setQ] = useState('');
   const deferredQ = useDeferredValue(q);
   const ref = useRef<HTMLDivElement | null>(null);
+  // Anchor side for the floating panel — measured from the trigger's
+  // viewport position when the dropdown opens. If the panel would clip on
+  // the right edge, we anchor to the right of the trigger so it opens
+  // leftward instead. Prevents page-overflow / horizontal-scroll bug.
+  const [anchorRight, setAnchorRight] = useState(false);
 
   useEffect(() => {
     if (!open) return;
@@ -108,6 +113,16 @@ const FilterDropdown = React.memo(function FilterDropdown({
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, [open, onOpen]);
+
+  // Decide which side of the trigger the panel should be anchored to.
+  // 360 px = panel max-width; 16 px buffer.
+  useEffect(() => {
+    if (!open || !ref.current) return;
+    const rect = ref.current.getBoundingClientRect();
+    const PANEL_W = 360;
+    const overflowRight = rect.left + PANEL_W + 16 > window.innerWidth;
+    setAnchorRight(overflowRight);
+  }, [open]);
 
   const count = selected.length;
   const filteredOptions = useMemo(() => {
@@ -155,7 +170,11 @@ const FilterDropdown = React.memo(function FilterDropdown({
 
       {open && (
         <div style={{
-          position: 'absolute', top: 'calc(100% + 8px)', left: 0,
+          position: 'absolute', top: 'calc(100% + 8px)',
+          // Auto-flip: open right of trigger by default; if that would
+          // clip the viewport (rightmost filter button) we anchor to the
+          // right edge of the trigger and open leftward instead.
+          ...(anchorRight ? { right: 0 } : { left: 0 }),
           background: '#FFFFFF',
           borderRadius: 14,
           boxShadow: '0 12px 32px rgba(0,0,0,0.12), 0 2px 6px rgba(0,0,0,0.06)',

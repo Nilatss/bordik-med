@@ -45,7 +45,13 @@
     color: var(--md-sys-color-on-background);
     font-family: var(--font-body);
     font-size: var(--text-base);
+    /* Safety net: never let any descendant cause horizontal page scroll
+       (filter dropdowns near the right edge of the viewport were leaking
+       width and pushing the layout off-screen). Specific scroll containers
+       (e.g. lesson tables) opt back in via overflow-x:auto. */
+    overflow-x: hidden;
   }
+  html { overflow-x: hidden; }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
