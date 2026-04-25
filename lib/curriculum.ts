@@ -2475,8 +2475,14 @@ export function getCourseSearchIndex(): SearchableCourse[] {
   return idx;
 }
 
-/** Simple relevance search - returns up to `limit` best-matching courses */
-export function searchCourses(query: string, limit = 20): SearchableCourse[] {
+/** Simple relevance search - returns up to `limit` best-matching courses.
+ *  `preferSectionId` boosts courses from the section the user is currently
+ *  browsing so context-relevant hits float to the top. */
+export function searchCourses(
+  query: string,
+  limit = 20,
+  preferSectionId?: string,
+): SearchableCourse[] {
   const q = query.trim().toLowerCase();
   if (!q) return [];
   const tokens = q.split(/\s+/).filter(Boolean);
@@ -2487,7 +2493,9 @@ export function searchCourses(query: string, limit = 20): SearchableCourse[] {
     let score = 0;
     for (const tok of tokens) {
       if (!item.haystack.includes(tok)) { score = -1; break; }
-      // Boost if match is in title
+      // Title prefix is the strongest signal (user usually types the start)
+      if (item.course.title.toLowerCase().startsWith(tok)) score += 6;
+      // Boost if match is anywhere in title
       if (item.course.title.toLowerCase().includes(tok)) score += 3;
       // Boost if exact word match
       const re = new RegExp(`\\b${tok.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`);
@@ -2497,7 +2505,11 @@ export function searchCourses(query: string, limit = 20): SearchableCourse[] {
       // Base hit
       score += 1;
     }
-    if (score > 0) scored.push({ item, score });
+    if (score > 0) {
+      // Section context boost — keeps the user inside their current section.
+      if (preferSectionId && item.module.sectionId === preferSectionId) score += 4;
+      scored.push({ item, score });
+    }
   }
   scored.sort((a, b) => b.score - a.score);
   return scored.slice(0, limit).map((s) => s.item);

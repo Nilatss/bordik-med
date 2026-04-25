@@ -5,8 +5,36 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore } from '@/lib/store';
 import { useT, useLang } from '@/lib/i18n';
 import { searchCourses } from '@/lib/curriculum';
+import { CATALOG_TOOLS, type CatalogTool } from '@/lib/tools-catalog';
 
 type NavItem = 'home' | 'learning' | 'tests' | 'tools' | 'stats' | 'profile';
+
+/** Render `text` with all case-insensitive occurrences of `query` wrapped in
+ *  <strong> for bold highlight. Used in search results. */
+function Highlight({ text, query }: { text: string; query: string }) {
+  const trimmed = query.trim();
+  if (!trimmed) return <>{text}</>;
+  const tokens = trimmed.split(/\s+/).filter(Boolean);
+  if (tokens.length === 0) return <>{text}</>;
+  const escaped = tokens
+    .map((t) => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+    .join('|');
+  // Splitter regex (capturing) — produces alternating non-match / match parts
+  const splitter = new RegExp(`(${escaped})`, 'gi');
+  // Stateless matcher — used to decide which slot is a match (avoids the
+  // .test() lastIndex pitfall when /g is set).
+  const matcher = new RegExp(`^(?:${escaped})$`, 'i');
+  const parts = text.split(splitter);
+  return (
+    <>
+      {parts.map((p, i) =>
+        p && matcher.test(p)
+          ? <strong key={i} style={{ fontWeight: 700, color: '#1A1A1A' }}>{p}</strong>
+          : <span key={i}>{p}</span>
+      )}
+    </>
+  );
+}
 
 interface NavDef {
   id: NavItem;
@@ -41,6 +69,7 @@ export default function Sidebar() {
     toggleSidebar,
     openCourse,
     setActiveSection,
+    openTool,
   } = useAppStore();
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -184,11 +213,39 @@ export default function Sidebar() {
   const UNLOCKED_SECTIONS = ['fundamentals'];
   const courseResults = useMemo(() => {
     if (!q || q.length < 2) return { available: [], locked: [] };
-    const all = searchCourses(q, 30);
+    // Context-aware: if user is browsing a specific section, boost hits
+    // from that section so the most relevant ones surface to the top.
+    const all = searchCourses(q, 30, activeSection ?? undefined);
     const available = all.filter((r) => UNLOCKED_SECTIONS.includes(r.module.sectionId));
     const locked = all.filter((r) => !UNLOCKED_SECTIONS.includes(r.module.sectionId));
     return { available, locked };
-  }, [q]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [q, activeSection]);
+
+  // Tools search — only when user is on the Tools page (context-aware).
+  // Otherwise the sidebar would dump 700+ tools into every search; users
+  // browsing courses don't expect that.
+  const toolResults = useMemo<CatalogTool[]>(() => {
+    if (!q || q.length < 2 || !showTools) return [];
+    const tokens = q.split(/\s+/).filter(Boolean);
+    const scored: { item: CatalogTool; score: number }[] = [];
+    for (const t of CATALOG_TOOLS) {
+      const hay = `${t.title} ${t.description} ${t.category} ${t.subcategory}`.toLowerCase();
+      let score = 0;
+      for (const tok of tokens) {
+        if (!hay.includes(tok)) { score = -1; break; }
+        if (t.title.toLowerCase().startsWith(tok)) score += 6;
+        if (t.title.toLowerCase().includes(tok)) score += 3;
+        score += 1;
+      }
+      if (score > 0) {
+        if (t.available) score += 2; // available tools first
+        scored.push({ item: t, score });
+      }
+    }
+    scored.sort((a, b) => b.score - a.score);
+    return scored.slice(0, 12).map((s) => s.item);
+  }, [q, showTools]);
 
   const totalCourseResults = courseResults.available.length + courseResults.locked.length;
 
@@ -199,8 +256,14 @@ export default function Sidebar() {
     setSearchQuery('');
   };
 
+  const handleToolPick = (toolId: string) => {
+    setShowTools(true);
+    openTool(toolId);
+    setSearchQuery('');
+  };
+
   const isSearching = q.length > 0;
-  const hasResults = visibleGroups.length > 0 || totalCourseResults > 0;
+  const hasResults = visibleGroups.length > 0 || totalCourseResults > 0 || toolResults.length > 0;
 
   return (
     <>
@@ -387,6 +450,69 @@ export default function Sidebar() {
                 </div>
               ))}
 
+              {/* Tool results — only when user is on the Tools page */}
+              {isSearching && toolResults.length > 0 && (
+                <div style={{ marginTop: 4 }}>
+                  <p style={{
+                    padding: '6px 16px 6px',
+                    fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
+                    color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
+                    display: 'flex', alignItems: 'center', gap: 6,
+                  }}>
+                    <span>Инструменты</span>
+                    <span style={{
+                      padding: '1px 6px', borderRadius: 999,
+                      background: '#E2E4EA', color: '#6B7280',
+                      fontSize: 9, fontWeight: 700,
+                    }}>
+                      {toolResults.length}
+                    </span>
+                  </p>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    {toolResults.map((tool) => (
+                      <button
+                        key={tool.id}
+                        onClick={() => tool.available && handleToolPick(tool.id)}
+                        disabled={!tool.available}
+                        style={{
+                          width: '100%',
+                          display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
+                          gap: 2,
+                          padding: '9px 14px',
+                          borderRadius: 10,
+                          background: 'transparent',
+                          border: 'none',
+                          cursor: tool.available ? 'pointer' : 'not-allowed',
+                          opacity: tool.available ? 1 : 0.55,
+                          textAlign: 'left',
+                          transition: 'background 150ms',
+                        }}
+                        onMouseEnter={(e) => {
+                          if (tool.available) e.currentTarget.style.background = '#E8E9ED';
+                        }}
+                        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+                      >
+                        <span style={{
+                          fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 500,
+                          color: '#1A1A1A',
+                          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                          maxWidth: '100%',
+                        }}>
+                          <Highlight text={tool.title} query={q} />
+                        </span>
+                        <span style={{
+                          fontFamily: 'var(--font-body)', fontSize: 11, color: '#9CA3AF',
+                          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                          maxWidth: '100%',
+                        }}>
+                          <Highlight text={tool.subcategory} query={q} />
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Course results - available */}
               {isSearching && courseResults.available.length > 0 && (
                 <div style={{ marginTop: 4 }}>
@@ -443,7 +569,7 @@ export default function Sidebar() {
                             overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                             flex: 1, minWidth: 0,
                           }}>
-                            {course.title}
+                            <Highlight text={course.title} query={q} />
                           </span>
                         </div>
                         <span style={{
@@ -452,7 +578,7 @@ export default function Sidebar() {
                           overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                           maxWidth: '100%',
                         }}>
-                          {section?.title || module.title}
+                          <Highlight text={section?.title || module.title} query={q} />
                         </span>
                       </button>
                     ))}
@@ -522,7 +648,7 @@ export default function Sidebar() {
                             overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                             flex: 1, minWidth: 0,
                           }}>
-                            {course.title}
+                            <Highlight text={course.title} query={q} />
                           </span>
                         </div>
                         <span style={{
@@ -531,7 +657,7 @@ export default function Sidebar() {
                           overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                           maxWidth: '100%',
                         }}>
-                          {section?.title || module.title}
+                          <Highlight text={section?.title || module.title} query={q} />
                         </span>
                       </div>
                     ))}
