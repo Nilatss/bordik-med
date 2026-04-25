@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useCallback, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore, getHighestPassedLevel, isModuleTestUnlocked } from '@/lib/store';
 import {
   type TestLevel, type TestQuestion,
@@ -318,8 +318,8 @@ export default function TestPanel({ courseId }: TestPanelProps) {
         </div>
       </div>
 
-      {/* 5 course test cards */}
-      {levels.map((level) => {
+      {/* 5 course test rows */}
+      {levels.map((level, idx) => {
         const key = `${courseId}-${level}`;
         const attempts = testAttempts[key] || [];
         const isPassed = highestPassed >= level;
@@ -332,320 +332,319 @@ export default function TestPanel({ courseId }: TestPanelProps) {
         const bestScore = attempts.length > 0 ? Math.max(...attempts.map((a) => a.score)) : null;
         const isCurrent = !isPassed && isUnlocked && cooldown <= 0;
 
-        // States: passed (green), current (neutral), locked (muted), cooldown (amber)
-        let cardBg = '#F5F6F8';
-        let cardBorder = 'none';
-        let accentColor = '#6B7280';
-        if (isPassed) {
-          cardBg = 'linear-gradient(135deg, #ECFDF5 0%, #F0FDF4 100%)';
-          cardBorder = '1px solid #A7F3D0';
-          accentColor = '#059669';
-        } else if (isCurrent) {
-          cardBg = '#F5F6F8';
-          cardBorder = 'none';
-          accentColor = '#374151';
-        } else if (cooldown > 0) {
-          cardBg = '#F5F6F8';
-          cardBorder = 'none';
-          accentColor = '#6B7280';
-        } else if (!isUnlocked) {
-          cardBg = '#F5F6F8';
-          cardBorder = 'none';
-          accentColor = '#9CA3AF';
-        }
+        // Map state → status (Active / Trial / Cancelled / Past Due / Paused)
+        const status: TestStatus = isPassed
+          ? 'passed'
+          : isLockedByViolation
+            ? 'violation'
+            : cooldown > 0
+              ? 'cooldown'
+              : isCurrent
+                ? 'available'
+                : 'locked';
+
+        const statusDetail = isLockedByViolation
+          ? `Доступно через ${formatHours(cooldown)}`
+          : cooldown > 0
+            ? `Доступно через ${formatCooldown(cooldown)}`
+            : !isUnlocked
+              ? 'Пройдите предыдущий уровень'
+              : isCurrent
+                ? `${QUESTIONS_PER_TEST} вопросов · порог ${PASS_THRESHOLD_TEST}/${QUESTIONS_PER_TEST}`
+                : null;
 
         return (
-          <motion.div
+          <TestRow
             key={level}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.25, delay: level * 0.04, ease: [0.05, 0.7, 0.1, 1] }}
-            style={{
-              background: cardBg,
-              borderRadius: 14,
-              padding: '14px 20px',
-              display: 'flex', alignItems: 'center', gap: 16,
-              border: cardBorder,
-              opacity: !isUnlocked ? 0.65 : 1,
-              boxShadow: 'none',
-              transition: 'all 200ms ease',
-            }}
-          >
-            {/* Status icon */}
-            <div style={{
-              width: 44, height: 44, borderRadius: 12, flexShrink: 0,
-              background: isPassed
-                ? '#10B981'
-                : isCurrent
-                  ? '#FFFFFF'
-                  : cooldown > 0
-                    ? '#FFFFFF'
-                    : '#F3F4F6',
-              boxShadow: (isCurrent || cooldown > 0) ? '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)' : 'none',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              color: isPassed ? '#FFFFFF' : accentColor,
-            }}>
-              {isPassed ? (
-                <Check size={20} color="#FFFFFF" />
-              ) : !isUnlocked ? (
-                <svg width={18} height={18} viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" strokeWidth={1.8}
-                  strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                  <path d="M7 11V7a5 5 0 0110 0v4" />
-                </svg>
-              ) : cooldown > 0 ? (
-                <svg width={18} height={18} viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" strokeWidth={1.8}
-                  strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="10" />
-                  <polyline points="12,6 12,12 16,14" />
-                </svg>
-              ) : (
-                <span style={{
-                  fontFamily: 'var(--font-display)', fontSize: 16,
-                  fontWeight: 700,
-                }}>
-                  {level}
-                </span>
-              )}
-            </div>
-
-            {/* Info */}
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{
-                display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4,
-              }}>
-                <h4 style={{
-                  fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 700,
-                  color: isPassed ? '#064E3B' : isCurrent ? '#1A1A1A' : !isUnlocked ? '#9CA3AF' : '#1A1A1A',
-                  margin: 0,
-                }}>
-                  {TEST_LEVEL_NAMES[level]}
-                </h4>
-                {isPassed && (
-                  <span style={{
-                    padding: '2px 8px', borderRadius: 999,
-                    background: '#10B981', color: '#FFFFFF',
-                    fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-                    letterSpacing: '0.04em', textTransform: 'uppercase',
-                  }}>
-                    Пройден
-                  </span>
-                )}
-                {isCurrent && (
-                  <span style={{
-                    padding: '2px 8px', borderRadius: 999,
-                    background: '#E2E4EA', color: '#374151',
-                    fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-                    letterSpacing: '0.04em', textTransform: 'uppercase',
-                  }}>
-                    Текущий
-                  </span>
-                )}
-              </div>
-              <div style={{
-                fontFamily: 'var(--font-body)', fontSize: 13,
-                color: isPassed ? '#065F46' : !isUnlocked ? '#9CA3AF' : '#6B7280',
-                display: 'flex', alignItems: 'center', gap: 10,
-              }}>
-                {isPassed && bestScore !== null ? (
-                  <>
-                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                      <span style={{ fontWeight: 600, color: '#059669' }}>{bestScore}</span>
-                      <span style={{ color: '#A7F3D0' }}>/</span>
-                      <span>{QUESTIONS_PER_TEST}</span>
-                    </span>
-                    <span style={{ color: '#A7F3D0' }}>·</span>
-                    <span>Лучший результат</span>
-                  </>
-                ) : !isUnlocked ? (
-                  'Пройдите предыдущий тест для разблокировки'
-                ) : cooldown > 0 ? (
-                  isLockedByViolation
-                    ? `Нарушение - доступно через ${formatHours(cooldown)}`
-                    : `Доступно через ${formatCooldown(cooldown)}`
-                ) : (
-                  <>
-                    <span>{QUESTIONS_PER_TEST} вопросов</span>
-                    <span style={{ color: '#D1D5DB' }}>·</span>
-                    <span>{PASS_THRESHOLD_TEST}/{QUESTIONS_PER_TEST} для прохождения</span>
-                  </>
-                )}
-              </div>
-            </div>
-
-            {/* Action */}
-            <div style={{ flexShrink: 0 }}>
-              {isPassed ? (
-                <button onClick={() => startCourseTest(level)} style={{
-                  padding: '8px 16px',
-                  borderRadius: 10,
-                  background: 'transparent', border: '1px solid #D1FAE5',
-                  color: '#059669',
-                  fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
-                  cursor: 'pointer', transition: 'all 150ms',
-                }}
-                  onMouseEnter={(e) => { e.currentTarget.style.background = '#ECFDF5'; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
-                >
-                  Повторить
-                </button>
-              ) : isCurrent ? (
-                <button onClick={() => startCourseTest(level)} style={{
-                  display: 'inline-flex', alignItems: 'center', gap: 6,
-                  padding: '10px 18px',
-                  borderRadius: 10,
-                  background: '#1A1A1A',
-                  color: '#FFFFFF',
-                  border: 'none', cursor: 'pointer',
-                  fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
-                  transition: 'background 180ms',
-                }}
-                  onMouseEnter={(e) => { e.currentTarget.style.background = '#000000'; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = '#1A1A1A'; }}
-                >
-                  Начать
-                  <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="5" y1="12" x2="19" y2="12" />
-                    <polyline points="12,5 19,12 12,19" />
-                  </svg>
-                </button>
-              ) : null}
-            </div>
-          </motion.div>
+            index={idx}
+            title={TEST_LEVEL_NAMES[level]}
+            kind="Уровень"
+            status={status}
+            rightInfo={isPassed && bestScore !== null
+              ? `${bestScore}/${QUESTIONS_PER_TEST}`
+              : `${QUESTIONS_PER_TEST} вопр.`}
+            detailRows={[
+              { label: 'Вопросов', value: String(QUESTIONS_PER_TEST) },
+              { label: 'Порог', value: `${PASS_THRESHOLD_TEST}/${QUESTIONS_PER_TEST}` },
+              { label: bestScore !== null ? 'Лучший' : 'Попыток', value: bestScore !== null ? `${bestScore}/${QUESTIONS_PER_TEST}` : String(attempts.length) },
+              { label: 'Статус', value: STATUS_META[status].label },
+            ]}
+            description={statusDetail ?? undefined}
+            actionLabel={isPassed ? 'Повторить' : isCurrent ? 'Начать тест' : null}
+            actionVariant={isPassed ? 'secondary' : 'primary'}
+            onAction={() => startCourseTest(level)}
+            disabled={!isCurrent && !isPassed}
+          />
         );
       })}
 
-      {/* Module final test card */}
+      {/* Module final test row */}
       {moduleId !== undefined && (() => {
         const moduleLockoutUntil = getLockout(lockoutKey('module', moduleId));
         const moduleLockedByViolation = moduleLockoutUntil > Date.now();
         const moduleLockoutLeft = moduleLockoutUntil - Date.now();
+
+        const moduleStatus: TestStatus = modulePassed
+          ? 'passed'
+          : moduleLockedByViolation
+            ? 'violation'
+            : moduleUnlocked
+              ? 'available'
+              : 'locked';
+
+        const moduleDetail = moduleLockedByViolation
+          ? `Доступно через ${formatHours(moduleLockoutLeft)}`
+          : modulePassed
+            ? 'Модуль полностью пройден'
+            : moduleUnlocked
+              ? `${MODULE_TEST_QUESTIONS} вопросов · 3 часа · ${PASS_THRESHOLD_MODULE}% порог`
+              : 'Откроется после прохождения всех 5 тестов по каждому курсу модуля';
+
         return (
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.25, delay: 0.3, ease: [0.05, 0.7, 0.1, 1] }}
-          style={{
-            background: '#F5F6F8',
-            borderRadius: 14,
-            padding: '14px 20px',
-            display: 'flex', alignItems: 'center', gap: 16,
-            border: 'none',
-            opacity: moduleUnlocked ? 1 : 0.65,
-            marginTop: 4,
-          }}
-        >
-          {/* Icon badge - matches other test cards */}
-          <div style={{
-            width: 44, height: 44, borderRadius: 12, flexShrink: 0,
-            background: modulePassed ? '#22C55E' : '#FFFFFF',
-            boxShadow: !modulePassed ? '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)' : 'none',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            color: modulePassed ? '#FFFFFF' : moduleUnlocked ? '#374151' : '#9CA3AF',
-          }}>
-            {modulePassed ? (
-              <Check size={20} color="#FFFFFF" />
-            ) : !moduleUnlocked ? (
-              <svg width={18} height={18} viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" strokeWidth={1.8}
-                strokeLinecap="round" strokeLinejoin="round">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                <path d="M7 11V7a5 5 0 0110 0v4" />
-              </svg>
-            ) : (
-              <svg width={20} height={20} viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" strokeWidth={1.8}
-                strokeLinecap="round" strokeLinejoin="round">
-                <polygon points="12,2 15,8.5 22,9.5 17,14.5 18.5,21.5 12,18 5.5,21.5 7,14.5 2,9.5 9,8.5" />
-              </svg>
-            )}
-          </div>
-
-          {/* Info */}
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{
-              display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4,
-            }}>
-              <h4 style={{
-                fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 700,
-                color: !moduleUnlocked ? '#9CA3AF' : '#1A1A1A',
-                margin: 0,
-              }}>
-                Финальный тест модуля
-              </h4>
-              {moduleUnlocked && !modulePassed && (
-                <span style={{
-                  padding: '2px 8px', borderRadius: 999,
-                  background: '#E2E4EA', color: '#374151',
-                  fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-                  letterSpacing: '0.04em', textTransform: 'uppercase',
-                }}>
-                  Доступно
-                </span>
-              )}
-              {modulePassed && (
-                <span style={{
-                  padding: '2px 8px', borderRadius: 999,
-                  background: '#22C55E', color: '#FFFFFF',
-                  fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-                  letterSpacing: '0.04em', textTransform: 'uppercase',
-                }}>
-                  Завершён
-                </span>
-              )}
-            </div>
-            <div style={{
-              fontFamily: 'var(--font-body)', fontSize: 13,
-              color: !moduleUnlocked ? '#9CA3AF' : '#6B7280',
-              display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap',
-            }}>
-              {modulePassed
-                ? 'Модуль полностью пройден'
-                : moduleLockedByViolation
-                  ? <span style={{ color: '#B91C1C' }}>Нарушение - доступно через {formatHours(moduleLockoutLeft)}</span>
-                  : moduleUnlocked
-                    ? (
-                      <>
-                        <span>{MODULE_TEST_QUESTIONS} вопросов</span>
-                        <span style={{ color: '#D1D5DB' }}>·</span>
-                        <span>3 часа</span>
-                        <span style={{ color: '#D1D5DB' }}>·</span>
-                        <span>{PASS_THRESHOLD_MODULE}% для прохождения</span>
-                      </>
-                    )
-                    : 'Откроется после прохождения всех 5 тестов по каждому курсу модуля'}
-            </div>
-          </div>
-
-          {/* Action */}
-          <div style={{ flexShrink: 0 }}>
-            {moduleUnlocked && !modulePassed && !moduleLockedByViolation && (
-              <button onClick={startModuleTest} style={{
-                display: 'inline-flex', alignItems: 'center', gap: 6,
-                padding: '10px 18px',
-                borderRadius: 10,
-                background: '#1A1A1A',
-                color: '#FFFFFF',
-                border: 'none', cursor: 'pointer',
-                fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
-                transition: 'background 180ms',
-              }}
-                onMouseEnter={(e) => { e.currentTarget.style.background = '#000000'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = '#1A1A1A'; }}
-              >
-                Начать
-                <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="5" y1="12" x2="19" y2="12" />
-                  <polyline points="12,5 19,12 12,19" />
-                </svg>
-              </button>
-            )}
-          </div>
-        </motion.div>
+          <TestRow
+            index={5}
+            title="Финальный тест модуля"
+            kind="Модуль"
+            status={moduleStatus}
+            rightInfo={`${MODULE_TEST_QUESTIONS} вопр.`}
+            detailRows={[
+              { label: 'Вопросов', value: String(MODULE_TEST_QUESTIONS) },
+              { label: 'Время', value: '3 часа' },
+              { label: 'Порог', value: `${PASS_THRESHOLD_MODULE}%` },
+              { label: 'Статус', value: STATUS_META[moduleStatus].label },
+            ]}
+            description={moduleDetail}
+            actionLabel={moduleUnlocked && !modulePassed && !moduleLockedByViolation ? 'Начать тест' : null}
+            actionVariant="primary"
+            onAction={startModuleTest}
+            disabled={!moduleUnlocked || modulePassed || moduleLockedByViolation}
+            highlight
+          />
         );
       })()}
-    </div>
+
+      </div>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════
+   Expandable test row (subscription-card style).
+   Each test → one row; click to expand full detail panel + action.
+   ════════════════════════════════════════════════════════════════ */
+
+type TestStatus = 'passed' | 'available' | 'locked' | 'cooldown' | 'violation';
+
+const STATUS_META: Record<TestStatus, {
+  label: string;
+  bg: string;
+  fg: string;
+  iconColor: string;
+  rowAccent: string; // subtle row tint
+  icon: 'check' | 'play' | 'lock' | 'clock' | 'alert';
+}> = {
+  passed:    { label: 'Пройден',     bg: '#DCFCE7', fg: '#166534', iconColor: '#16A34A', rowAccent: '#F0FDF4', icon: 'check' },
+  available: { label: 'Доступен',    bg: '#DBEAFE', fg: '#1E40AF', iconColor: '#2563EB', rowAccent: '#F5F8FF', icon: 'play' },
+  locked:    { label: 'Закрыто',     bg: '#F3F4F6', fg: '#6B7280', iconColor: '#9CA3AF', rowAccent: '#F8F9FB', icon: 'lock' },
+  cooldown:  { label: 'Перезарядка', bg: '#FEF3C7', fg: '#92400E', iconColor: '#D97706', rowAccent: '#FFFBEB', icon: 'clock' },
+  violation: { label: 'Нарушение',   bg: '#FEE2E2', fg: '#991B1B', iconColor: '#DC2626', rowAccent: '#FEF2F2', icon: 'alert' },
+};
+
+function StatusIcon({ name, color, size = 11 }: { name: TestStatus; color: string; size?: number }) {
+  const meta = STATUS_META[name];
+  const sw = 2.4;
+  const common = { width: size, height: size, viewBox: '0 0 24 24', fill: 'none' as const, stroke: color, strokeWidth: sw, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const };
+  switch (meta.icon) {
+    case 'check': return <svg {...common}><polyline points="20 6 9 17 4 12" /></svg>;
+    case 'play': return <svg {...common} fill={color} stroke="none"><polygon points="6 4 20 12 6 20 6 4" /></svg>;
+    case 'lock': return <svg {...common}><rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0110 0v4" /></svg>;
+    case 'clock': return <svg {...common}><circle cx={12} cy={12} r={10} /><polyline points="12 6 12 12 16 14" /></svg>;
+    case 'alert': return <svg {...common}><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" /><line x1={12} y1={9} x2={12} y2={13} /><line x1={12} y1={17} x2={12.01} y2={17} /></svg>;
+  }
+}
+
+function StatusBadge({ status }: { status: TestStatus }) {
+  const m = STATUS_META[status];
+  return (
+    <span style={{
+      display: 'inline-flex', alignItems: 'center', gap: 5,
+      padding: '3px 9px',
+      borderRadius: 999,
+      background: m.bg, color: m.fg,
+      fontFamily: 'var(--font-body)', fontSize: 11, fontWeight: 600,
+      flexShrink: 0,
+    }}>
+      <StatusIcon name={status} color={m.iconColor} />
+      {m.label}
+    </span>
+  );
+}
+
+interface TestRowProps {
+  index: number;
+  title: string;
+  kind: string;
+  status: TestStatus;
+  rightInfo: string;
+  detailRows: { label: string; value: string }[];
+  description?: string;
+  actionLabel: string | null;
+  actionVariant: 'primary' | 'secondary';
+  onAction?: () => void;
+  disabled?: boolean;
+  highlight?: boolean; // module test gets a slight emphasis
+}
+
+function TestRow({
+  index, title, kind, status, rightInfo, detailRows,
+  description, actionLabel, actionVariant, onAction, disabled, highlight,
+}: TestRowProps) {
+  const [open, setOpen] = useState(false);
+  const meta = STATUS_META[status];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.04, duration: 0.3, ease: [0.05, 0.7, 0.1, 1] }}
+      style={{
+        background: open ? '#FFFFFF' : meta.rowAccent,
+        border: open
+          ? '1px solid #E5E7EB'
+          : highlight ? '1px solid #E2E4EA' : '1px solid transparent',
+        borderRadius: 14,
+        overflow: 'hidden',
+        boxShadow: open ? '0 1px 2px rgba(16,24,40,0.04), 0 4px 16px rgba(16,24,40,0.04)' : 'none',
+        transition: 'background 200ms ease, border-color 200ms ease, box-shadow 200ms ease',
+      }}
+    >
+      <button
+        onClick={() => setOpen((v) => !v)}
+        style={{
+          width: '100%', display: 'flex', alignItems: 'center', gap: 12,
+          padding: '14px 18px',
+          background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left',
+        }}
+      >
+        <span style={{
+          fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
+          color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.06em',
+          flexShrink: 0,
+        }}>
+          {kind}
+        </span>
+        <span style={{
+          fontFamily: 'var(--font-display)', fontSize: 14.5, fontWeight: 600,
+          color: '#1A1A1A', flexShrink: 0,
+        }}>
+          {title}
+        </span>
+        <StatusBadge status={status} />
+        <span style={{ flex: 1 }} />
+        <span style={{
+          fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
+          color: '#1A1A1A', flexShrink: 0,
+        }}>
+          {rightInfo}
+        </span>
+        <span style={{
+          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+          width: 24, height: 24, borderRadius: 6,
+          background: '#F5F6F8', color: '#6B7280', flexShrink: 0,
+          transition: 'transform 250ms cubic-bezier(0.2,0,0,1)',
+          transform: open ? 'rotate(180deg)' : 'rotate(0deg)',
+        }}>
+          <svg width={12} height={12} viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </span>
+      </button>
+
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            key="body"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25, ease: [0.05, 0.7, 0.1, 1] }}
+            style={{ overflow: 'hidden' }}
+          >
+            <div style={{
+              display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
+              gap: 16,
+              padding: '12px 18px 14px',
+              borderTop: '1px solid #F0F1F5',
+            }}>
+              {detailRows.map(({ label, value }) => (
+                <div key={label} style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                  <span style={{
+                    fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
+                    color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.06em',
+                  }}>
+                    {label}
+                  </span>
+                  <span style={{
+                    fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
+                    color: '#1A1A1A',
+                  }}>
+                    {value}
+                  </span>
+                </div>
+              ))}
+            </div>
+            {description && (
+              <div style={{
+                padding: '0 18px 14px',
+                fontFamily: 'var(--font-body)', fontSize: 13, color: '#4B5563',
+                lineHeight: 1.55,
+              }}>
+                {description}
+              </div>
+            )}
+            {actionLabel && (
+              <div style={{
+                padding: '0 18px 16px',
+                display: 'flex', justifyContent: 'flex-end',
+              }}>
+                <button
+                  onClick={(e) => { e.stopPropagation(); if (!disabled && onAction) onAction(); }}
+                  disabled={disabled}
+                  style={{
+                    display: 'inline-flex', alignItems: 'center', gap: 8,
+                    padding: '10px 18px',
+                    fontFamily: 'var(--font-body)', fontSize: 13.5, fontWeight: 600,
+                    color: actionVariant === 'primary' ? '#FFFFFF' : '#1F2937',
+                    background: actionVariant === 'primary' ? '#3B82F6' : '#F5F6F8',
+                    border: actionVariant === 'secondary' ? '1px solid #E5E7EB' : 'none',
+                    borderRadius: 999,
+                    cursor: disabled ? 'not-allowed' : 'pointer',
+                    opacity: disabled ? 0.5 : 1,
+                    transition: 'background 180ms ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    if (disabled) return;
+                    e.currentTarget.style.background = actionVariant === 'primary' ? '#2563EB' : '#EEF1F4';
+                  }}
+                  onMouseLeave={(e) => {
+                    if (disabled) return;
+                    e.currentTarget.style.background = actionVariant === 'primary' ? '#3B82F6' : '#F5F6F8';
+                  }}
+                >
+                  {actionLabel}
+                  {actionVariant === 'primary' && (
+                    <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round">
+                      <line x1={5} y1={12} x2={19} y2={12} />
+                      <polyline points="12 5 19 12 12 19" />
+                    </svg>
+                  )}
+                </button>
+              </div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 }
