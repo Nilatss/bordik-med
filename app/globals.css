@@ -945,3 +945,53 @@ main:has(.stats-page) {
     padding: 14px !important;
   }
 }
+
+/* Mobile: stack the 3 InfoPills (Уровень / Аудитория / Объём) vertically.
+   Default: row with flex-wrap. On mobile they squish into useless columns
+   that truncate the value. One pill per row reads cleanly. */
+@media (max-width: 640px) {
+  .course-info-pills {
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+  .course-info-pills > * {
+    flex: none !important;
+    width: 100%;
+  }
+}
+
+/* TOC collapsible header (mobile only).
+   Desktop hides .toc-toggle and shows the static title + body always. */
+.toc-toggle {
+  display: none;
+  align-items: center; justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  background: transparent; border: none; cursor: pointer;
+  padding: 4px 8px; border-radius: 8px;
+  text-align: left;
+  transition: background 150ms ease;
+}
+.toc-toggle .toc-toggle-label {
+  display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0;
+  overflow: hidden;
+}
+.toc-toggle .toc-toggle-chevron {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; border-radius: 8px;
+  background: #FFFFFF; color: #6B7280; flex-shrink: 0;
+  transition: transform 220ms cubic-bezier(0.2,0,0,1);
+  box-shadow: 0 1px 2px rgba(16,24,40,0.06);
+}
+.toc-sidebar:not(.is-collapsed) .toc-toggle-chevron {
+  transform: rotate(180deg);
+}
+.toc-toggle:hover { background: #E8E9ED; }
+
+/* On mobile the toggle replaces the static title; collapsing the body
+   hides progress bar + tab list. */
+@media (max-width: 1024px) {
+  .toc-toggle { display: flex; }
+  .toc-static-title { display: none; }
+  .toc-sidebar.is-collapsed .toc-body { display: none; }
+}

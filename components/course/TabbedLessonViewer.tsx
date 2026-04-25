@@ -406,12 +406,28 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [content, showTests]);
   const [activeId, setActiveId] = useState(tabs[0]?.id ?? '');
+  // TOC collapsed on mobile; on desktop CSS keeps the list permanently
+  // visible regardless of this flag.
+  const [tocCollapsed, setTocCollapsed] = useState(true);
 
-  // Scroll to top whenever the user switches tabs — otherwise they land in
-  // the middle of the new topic if the previous one was scrolled down.
+  // Scroll to top of the topic content whenever the user switches tabs.
+  // On mobile we want to land on the topic title (lesson-card), not on
+  // the long course header — scroll the lesson-card into view at the top
+  // of the visible viewport.
   useEffect(() => {
     const main = document.querySelector('main');
-    if (main) main.scrollTo({ top: 0, behavior: 'smooth' });
+    if (!main) return;
+    const isMobile = typeof window !== 'undefined'
+      && window.matchMedia('(max-width: 1024px)').matches;
+    if (isMobile) {
+      const card = main.querySelector('.lesson-card');
+      if (card) {
+        const offset = (card as HTMLElement).offsetTop - 8;
+        main.scrollTo({ top: offset, behavior: 'smooth' });
+        return;
+      }
+    }
+    main.scrollTo({ top: 0, behavior: 'smooth' });
   }, [activeId]);
 
   if (!content) {
@@ -679,15 +695,52 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
       </motion.div>
       </AnimatePresence>
 
-      {/* RIGHT: Tabs sidebar */}
-      <aside className="toc-sidebar" style={{
-        position: 'sticky', top: 20,
-        background: '#F5F6F8',
-        borderRadius: 'var(--md-sys-shape-corner-extra-large)',
-        padding: 16,
-        display: 'flex', flexDirection: 'column', gap: 4,
-      }}>
-        <p style={{
+      {/* RIGHT: Tabs sidebar.
+          On mobile the body is collapsed by default — header acts as a
+          toggle that shows current topic + progress and expands the full
+          list on tap. CSS keeps everything visible on desktop regardless. */}
+      <aside
+        className={`toc-sidebar${tocCollapsed ? ' is-collapsed' : ''}`}
+        style={{
+          position: 'sticky', top: 20,
+          background: '#F5F6F8',
+          borderRadius: 'var(--md-sys-shape-corner-extra-large)',
+          padding: 16,
+          display: 'flex', flexDirection: 'column', gap: 4,
+        }}
+      >
+        {/* Mobile-only toggle header. Desktop CSS hides it. */}
+        <button
+          type="button"
+          className="toc-toggle"
+          onClick={() => setTocCollapsed((v) => !v)}
+          aria-expanded={!tocCollapsed}
+        >
+          <span className="toc-toggle-label">
+            <span style={{
+              fontFamily: 'var(--font-body)', fontSize: 11,
+              fontWeight: 600, color: '#888',
+              textTransform: 'uppercase', letterSpacing: '0.08em',
+            }}>
+              {t('course.toc.title')}
+            </span>
+            <span style={{
+              fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
+              color: '#1A1A1A',
+            }}>
+              {active.short} · {activeIndex + 1}/{tabs.length}
+            </span>
+          </span>
+          <span className="toc-toggle-chevron">
+            <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </span>
+        </button>
+
+        {/* Desktop static label */}
+        <p className="toc-static-title" style={{
           fontFamily: 'var(--font-body)', fontSize: 11,
           fontWeight: 600, color: '#888',
           textTransform: 'uppercase', letterSpacing: '0.08em',
@@ -696,6 +749,7 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
           {t('course.toc.title')}
         </p>
 
+        <div className="toc-body">
         {/* Live progress — striped green bar identical to the intro page */}
         {tabs.length > 1 && (() => {
           const pct = Math.round(((activeIndex + 1) / tabs.length) * 100);
@@ -763,6 +817,7 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
             </button>
           );
         })}
+        </div>
       </aside>
     </div>
   );

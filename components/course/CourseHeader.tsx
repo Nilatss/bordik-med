@@ -132,8 +132,10 @@ export default function CourseHeader({ courseId }: CourseHeaderProps) {
         {course.description}
       </p>
 
-      {/* Info pills: Уровень · Аудитория · Объём */}
-      <div style={{
+      {/* Info pills: Уровень · Аудитория · Объём.
+          On mobile (< 640 px) the .course-info-pills CSS class stacks them
+          one-per-row instead of squeezing into 3 narrow columns. */}
+      <div className="course-info-pills" style={{
         display: 'flex', gap: 10, flexWrap: 'wrap',
       }}>
         <InfoPill
