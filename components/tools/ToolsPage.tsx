@@ -5,8 +5,10 @@ import React, {
   useDeferredValue, useTransition, startTransition,
 } from 'react';
 import { Virtuoso } from 'react-virtuoso';
-// Removed `import { motion } from 'framer-motion'` — we dropped the
-// per-card fade-in animation to prevent shimmer during Virtuoso recycle.
+// Per-row fade-in motion. We keep it on the row wrapper (not on every
+// internal element) so Virtuoso recycle stays cheap — each card animates
+// once when its row mounts; subsequent renders are a no-op.
+import { motion } from 'framer-motion';
 import { ArrowRight } from '@/components/icons';
 import { CATALOG_TOOLS, TOOL_CATEGORIES, type CatalogTool } from '@/lib/tools-catalog';
 import {
@@ -640,7 +642,23 @@ function RenderedRow({ row, cols }: { row: Row; cols: number }) {
       marginBottom: 12,
     }}>
       {padded.map((tool, idx) =>
-        tool ? <ToolCard key={tool.id} tool={tool} /> : <div key={`ph-${idx}`} />
+        tool ? (
+          <motion.div
+            key={tool.id}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              // Stagger across cards in the same row so they cascade in.
+              delay: idx * 0.04,
+              duration: 0.3,
+              ease: [0.05, 0.7, 0.1, 1],
+            }}
+          >
+            <ToolCard tool={tool} />
+          </motion.div>
+        ) : (
+          <div key={`ph-${idx}`} />
+        )
       )}
     </div>
   );
