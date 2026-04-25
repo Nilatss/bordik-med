@@ -387,6 +387,24 @@ export default function TestPanel({ courseId }: TestPanelProps) {
         );
       })}
 
+      {/* Visual divider — separates per-course tests from the module-final
+          row, signals the «boss-fight» moment in the user's progression. */}
+      {moduleId !== undefined && (
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: 12,
+          margin: '6px 4px 2px',
+        }}>
+          <span style={{ flex: 1, height: 1, background: '#E5E7EB' }} />
+          <span style={{
+            fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
+            color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.1em',
+          }}>
+            Финал модуля
+          </span>
+          <span style={{ flex: 1, height: 1, background: '#E5E7EB' }} />
+        </div>
+      )}
+
       {/* Module final test row */}
       {moduleId !== undefined && (() => {
         const moduleLockoutUntil = getLockout(lockoutKey('module', moduleId));
@@ -548,13 +566,24 @@ function TestRow({
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.04, duration: 0.3, ease: [0.05, 0.7, 0.1, 1] }}
       style={{
-        background: open ? '#FFFFFF' : meta.rowAccent,
+        // Highlight mode = the final module-test row. Gives it a soft
+        // amber→cream gradient accent so it visually stands out from the
+        // per-course rows above without breaking the project palette.
+        background: open
+          ? '#FFFFFF'
+          : highlight
+            ? 'linear-gradient(135deg, #FFFBEB 0%, #F5F6F8 100%)'
+            : meta.rowAccent,
         border: open
           ? '1px solid #E5E7EB'
-          : highlight ? '1px solid #E2E4EA' : '1px solid transparent',
+          : highlight ? '1px solid #FDE68A' : '1px solid transparent',
         borderRadius: 14,
         overflow: 'hidden',
-        boxShadow: open ? '0 1px 2px rgba(16,24,40,0.04), 0 4px 16px rgba(16,24,40,0.04)' : 'none',
+        boxShadow: open
+          ? '0 1px 2px rgba(16,24,40,0.04), 0 4px 16px rgba(16,24,40,0.04)'
+          : highlight
+            ? '0 1px 2px rgba(217,119,6,0.06), 0 2px 6px rgba(217,119,6,0.04)'
+            : 'none',
         transition: 'background 200ms ease, border-color 200ms ease, box-shadow 200ms ease',
       }}
     >
@@ -566,16 +595,35 @@ function TestRow({
           background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left',
         }}
       >
-        <span style={{
-          fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-          color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.06em',
-          flexShrink: 0,
-        }}>
-          {kind}
-        </span>
+        {/* Kind tag — neutral mono caps for course rows; gold pill for the
+            module-final row to mark the «final boss» energy. */}
+        {highlight ? (
+          <span style={{
+            display: 'inline-flex', alignItems: 'center', gap: 5,
+            padding: '3px 9px', borderRadius: 8,
+            background: '#FEF3C7', color: '#92400E',
+            fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
+            textTransform: 'uppercase', letterSpacing: '0.06em',
+            flexShrink: 0,
+          }}>
+            <svg width={11} height={11} viewBox="0 0 24 24" fill="#D97706" stroke="none">
+              <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z" />
+            </svg>
+            {kind}
+          </span>
+        ) : (
+          <span style={{
+            fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
+            color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.06em',
+            flexShrink: 0,
+          }}>
+            {kind}
+          </span>
+        )}
         <span style={{
           fontFamily: 'var(--font-display)', fontSize: 14.5, fontWeight: 600,
           color: '#1A1A1A', flexShrink: 0,
+          display: 'inline-flex', alignItems: 'center', gap: 8,
         }}>
           {title}
         </span>
