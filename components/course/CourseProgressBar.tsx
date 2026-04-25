@@ -61,19 +61,17 @@ export default function CourseProgressBar({
             display: 'flex', alignItems: 'center', paddingLeft: 12,
           }}
         >
-          {/* Sliding stripe layer — VERY slow drift, almost imperceptible.
-              30 s for one full pattern period = ~1.1 px/s. Eye reads it as
-              "the bar is alive but nothing is moving" — which is the goal. */}
+          {/* Static diagonal hatch — no animation. Animated stripes were
+              perceived as «racing» regardless of duration / period math
+              (every cycle restart caused a tiny visual snap). The stripes
+              alone communicate «active / in-progress» visually. */}
           <span
             aria-hidden
             style={{
-              position: 'absolute', top: 0, bottom: 0,
-              left: -40, width: 'calc(100% + 40px)',
+              position: 'absolute', inset: 0,
               backgroundImage:
-                'repeating-linear-gradient(135deg, rgba(255,255,255,0.12) 0 8px, transparent 8px 24px)',
-              animation: 'progress-stripes 30s linear infinite',
+                'repeating-linear-gradient(135deg, rgba(255,255,255,0.14) 0 8px, transparent 8px 24px)',
               pointerEvents: 'none',
-              willChange: 'transform',
             }}
           />
           <motion.span
