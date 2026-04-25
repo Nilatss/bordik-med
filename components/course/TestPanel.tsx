@@ -4,6 +4,7 @@ import { useState, useMemo, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore, getHighestPassedLevel, isModuleTestUnlocked } from '@/lib/store';
 import { useT } from '@/lib/i18n';
+import CourseProgressBar from './CourseProgressBar';
 import {
   type TestLevel, type TestQuestion,
   QUESTIONS_PER_TEST, PASS_THRESHOLD_TEST, MODULE_TEST_QUESTIONS,
@@ -179,67 +180,74 @@ export default function TestPanel({ courseId }: TestPanelProps) {
 
   // ═══ RESULT VIEW ═══
   if (result) {
+    const accent = result.passed ? '#16A34A' : '#DC2626';
+    const accentBg = result.passed ? '#F0FDF4' : '#FEF2F2';
+    const accentBorder = result.passed ? '#BBF7D0' : '#FECACA';
     return (
       <div style={{
-        background: '#FFFFFF',
-        borderRadius: 'var(--md-sys-shape-corner-extra-large)',
-        padding: 'var(--space-6)',
+        display: 'flex', flexDirection: 'column', gap: 14,
       }}>
-        {/* Score */}
+        {/* Score card — soft tint, large number, status pill style */}
         <div style={{
-          textAlign: 'center', marginBottom: 'var(--space-6)',
-          padding: 'var(--space-5)',
-          borderRadius: 'var(--md-sys-shape-corner-large)',
-          background: result.passed ? 'var(--md-sys-color-primary-container)' : 'var(--md-sys-color-error-container)',
+          textAlign: 'center',
+          padding: '28px 24px',
+          borderRadius: 14,
+          background: accentBg,
+          border: `1px solid ${accentBorder}`,
         }}>
           <div style={{
-            fontFamily: 'var(--font-display)', fontSize: 'var(--text-2xl)', fontWeight: 700,
-            color: result.passed ? 'var(--md-sys-color-primary)' : 'var(--md-sys-color-error)',
-            marginBottom: 'var(--space-1)',
+            fontFamily: 'var(--font-display)', fontSize: 38, fontWeight: 700,
+            color: accent,
+            marginBottom: 6, letterSpacing: '-0.02em', lineHeight: 1,
           }}>
-            {result.score} / {result.total}
+            {result.score} <span style={{ color: result.passed ? '#86EFAC' : '#FCA5A5' }}>/ {result.total}</span>
           </div>
           <p style={{
-            fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', fontWeight: 500,
-            color: result.passed ? 'var(--md-sys-color-on-primary-container)' : 'var(--md-sys-color-on-error-container)',
+            fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: 600,
+            color: accent,
           }}>
             {result.passed ? t('test.result.passed') : t('test.result.failed')}
           </p>
         </div>
 
-        {/* Per-question breakdown */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)', marginBottom: 'var(--space-5)', maxHeight: 400, overflowY: 'auto' }}>
+        {/* Per-question breakdown — same row aesthetic as test list */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6, maxHeight: 420, overflowY: 'auto', paddingRight: 4 }}>
           {result.questions.map((q, i) => {
             const userAnswer = result.answers[i];
             const isCorrect = userAnswer === q.correctIndex;
             return (
               <div key={q.id} style={{
-                padding: 'var(--space-2) var(--space-3)',
-                borderRadius: 'var(--md-sys-shape-corner-medium)',
-                background: isCorrect
-                  ? 'color-mix(in srgb, var(--md-sys-color-primary) 6%, transparent)'
-                  : 'color-mix(in srgb, var(--md-sys-color-error) 6%, transparent)',
+                padding: '10px 14px',
+                borderRadius: 10,
+                background: isCorrect ? '#F5F6F8' : '#FEF2F2',
+                border: isCorrect ? '1px solid transparent' : '1px solid #FECACA',
               }}>
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--space-2)' }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
                   <span style={{
-                    fontFamily: 'var(--font-mono)', fontSize: 'var(--text-xs)',
-                    color: isCorrect ? 'var(--md-sys-color-primary)' : 'var(--md-sys-color-error)',
-                    fontWeight: 600, flexShrink: 0,
+                    width: 18, height: 18, borderRadius: 6,
+                    background: isCorrect ? '#16A34A' : '#DC2626',
+                    color: '#FFFFFF', flexShrink: 0,
+                    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: 10, fontWeight: 700, marginTop: 1,
                   }}>
-                    {isCorrect ? '✓' : '✗'}
+                    {isCorrect ? (
+                      <svg width={10} height={10} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                    ) : (
+                      <svg width={10} height={10} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round"><line x1={18} y1={6} x2={6} y2={18}/><line x1={6} y1={6} x2={18} y2={18}/></svg>
+                    )}
                   </span>
                   <span style={{
-                    fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)',
-                    color: 'var(--md-sys-color-on-surface)', lineHeight: 1.4,
+                    fontFamily: 'var(--font-body)', fontSize: 13,
+                    color: '#1A1A1A', lineHeight: 1.45, fontWeight: 500,
                   }}>
                     {q.question}
                   </span>
                 </div>
                 {!isCorrect && userAnswer >= 0 && (
-                  <div style={{ marginLeft: 'var(--space-4)', marginTop: 2, fontFamily: 'var(--font-body)', fontSize: '0.625rem', lineHeight: 1.4 }}>
-                    <span style={{ color: 'var(--md-sys-color-error)' }}>{t('test.result.your')}: {q.options[userAnswer]}</span>
+                  <div style={{ marginLeft: 28, marginTop: 4, fontFamily: 'var(--font-body)', fontSize: 11.5, lineHeight: 1.45, color: '#6B7280' }}>
+                    <span style={{ color: '#B91C1C' }}>{t('test.result.your')}: {q.options[userAnswer]}</span>
                     {' · '}
-                    <span style={{ color: 'var(--md-sys-color-primary)', fontWeight: 500 }}>{t('test.result.correct')}: {q.options[q.correctIndex]}</span>
+                    <span style={{ color: '#15803D', fontWeight: 500 }}>{t('test.result.correct')}: {q.options[q.correctIndex]}</span>
                   </div>
                 )}
               </div>
@@ -247,17 +255,22 @@ export default function TestPanel({ courseId }: TestPanelProps) {
           })}
         </div>
 
-        <button onClick={() => setResult(null)} style={{
-          display: 'block', margin: '0 auto',
-          padding: '0 var(--space-6)', height: 40,
-          borderRadius: 'var(--md-sys-shape-corner-full)',
-          background: 'var(--md-sys-color-primary)',
-          color: 'var(--md-sys-color-on-primary)',
-          border: 'none', cursor: 'pointer',
-          fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', fontWeight: 600,
-        }}>
-          {t('common.close')}
-        </button>
+        <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 4 }}>
+          <button onClick={() => setResult(null)} style={{
+            padding: '11px 28px',
+            borderRadius: 10,
+            background: '#3B82F6',
+            color: '#FFFFFF',
+            border: 'none', cursor: 'pointer',
+            fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: 600,
+            transition: 'background 180ms',
+          }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = '#2563EB'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = '#3B82F6'; }}
+          >
+            {t('common.close')}
+          </button>
+        </div>
       </div>
     );
   }
@@ -306,8 +319,16 @@ export default function TestPanel({ courseId }: TestPanelProps) {
             </p>
           </div>
         </div>
-        {/* Progress bar */}
-        <div style={{
+        {/* Progress bar — striped green like CourseProgressBar */}
+        <CourseProgressBar
+          pct={totalProgress}
+          currentLabel={t('test.row.kind.level') + ' ' + Math.max(1, passedCount)}
+          endLabel={t('course.progress.ofTotal', { n: MAX_TEST_LEVELS })}
+          startCaption={t('course.progress.start')}
+          endCaption={t('course.progress.final')}
+        />
+        {/* Legacy block — kept disabled for fallback / git diff continuity */}
+        {false && (<div style={{
           height: 6, background: '#E2E4EA', borderRadius: 999,
         }}>
           <div style={{
@@ -317,7 +338,7 @@ export default function TestPanel({ courseId }: TestPanelProps) {
             borderRadius: 999,
             transition: 'width 400ms ease',
           }} />
-        </div>
+        </div>)}
       </div>
 
       {/* 5 course test rows */}

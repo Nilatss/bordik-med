@@ -47,15 +47,22 @@ export default function CourseProgressBar({
         background: '#F1F3F6',
         overflow: 'hidden',
       }}>
-        {/* Filled portion with diagonal hatch — width animates via spring */}
-        <motion.div style={{
-          position: 'absolute', top: 0, left: 0, bottom: 0,
-          width: widthString,
-          background:
-            'repeating-linear-gradient(115deg, #22C55E 0 10px, #1FB85A 10px 20px)',
-          borderRadius: 6,
-          display: 'flex', alignItems: 'center', paddingLeft: 12,
-        }}>
+        {/* Filled portion with diagonal hatch — width animates via spring,
+            and the stripes themselves drift gently leftward via CSS-keyframes
+            on background-position so the bar feels alive. */}
+        <motion.div
+          style={{
+            position: 'absolute', top: 0, left: 0, bottom: 0,
+            width: widthString,
+            backgroundColor: '#22C55E',
+            backgroundImage:
+              'repeating-linear-gradient(115deg, rgba(255,255,255,0.18) 0 10px, transparent 10px 20px)',
+            backgroundSize: '40px 100%',
+            borderRadius: 6,
+            display: 'flex', alignItems: 'center', paddingLeft: 12,
+            animation: 'progress-stripes 2.4s linear infinite',
+          }}
+        >
           <motion.span
             initial={{ opacity: 0, x: -4 }}
             animate={{ opacity: 1, x: 0 }}

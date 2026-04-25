@@ -893,3 +893,9 @@ main:has(.stats-page) {
 .toc-tab:not(.is-active):hover {
   background: #E8E9ED;
 }
+
+/* Progress-bar stripes — gentle leftward drift to keep the bar alive */
+@keyframes progress-stripes {
+  from { background-position: 0 0; }
+  to   { background-position: -40px 0; }
+}

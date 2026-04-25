@@ -11,18 +11,38 @@ interface TestGuardProps {
   children: React.ReactNode;
 }
 
-const GRACE_MS = 10_000;
+const GRACE_MS = 5_000;
+
+/* Keys that indicate "leaving" the test surface — screenshot, devtools,
+ * print, copy, save-page, alt-tab. Pressing any of them counts as an
+ * immediate violation (no grace period — the action already happened). */
+function isViolationKey(e: KeyboardEvent): boolean {
+  // PrintScreen / Snipping-tool win+shift+s
+  if (e.key === 'PrintScreen') return true;
+  // F12 (devtools)
+  if (e.key === 'F12') return true;
+  // Ctrl/Cmd + (C copy, P print, S save, U view-source, A select-all)
+  const mod = e.ctrlKey || e.metaKey;
+  if (mod && ['c', 'p', 's', 'u', 'a'].includes(e.key.toLowerCase())) return true;
+  // Ctrl+Shift+(I devtools, J devtools-console, C inspect, S full-page-screenshot)
+  if (mod && e.shiftKey && ['I', 'J', 'C', 'S'].includes(e.key.toUpperCase())) return true;
+  // Alt+Tab / Cmd+Tab — these usually generate a window blur instead, but
+  // we also catch them here as a safety net in case the OS surfaces them.
+  if ((e.altKey || e.metaKey) && e.key === 'Tab') return true;
+  return false;
+}
 
 /**
  * Anti-cheat wrapper for active tests.
  *
  * Flow:
- *  1. `visibilitychange` (document.hidden) or window `blur` → start grace-period
- *     countdown (10 s) and show "away" overlay with timer.
- *  2. If the user returns before 10 s expire → cancel timer, do NOT increment
- *     violationCount. Show a brief "вернулись, больше так не делайте" banner.
- *  3. If 10 s elapse away → increment violationCount and show the violation modal.
- *  4. At MAX_VIOLATIONS (3) → call onForceSubmit to end the test with a penalty.
+ *  1. `visibilitychange` / window `blur` → start grace countdown (5 s) and
+ *     show "away" overlay with timer.
+ *  2. Forbidden keypress (PrintScreen / F12 / Ctrl-C / Ctrl-P / etc.)
+ *     → instant violation, no grace.
+ *  3. If the user returns before 5 s elapse → cancel timer, no violation.
+ *  4. If 5 s elapse away → increment violationCount and show modal.
+ *  5. At MAX_VIOLATIONS (3) → call onForceSubmit (test ends with penalty).
  *
  * We intentionally do NOT try to go fullscreen in the new design — it clashed
  * with the consent flow and was easy to exit anyway.
@@ -92,14 +112,32 @@ export default function TestGuard({ active, onViolation, onForceSubmit, violatio
       cancelGrace();
     };
 
+    // Forbidden-key listener — instant violation, no grace.
+    const handleKeydown = (e: KeyboardEvent) => {
+      if (!isViolationKey(e)) return;
+      e.preventDefault();
+      // If a grace countdown is running, cancel it first so this key doesn't
+      // double-count alongside the imminent timer expiry.
+      if (graceTickRef.current) {
+        clearInterval(graceTickRef.current);
+        graceTickRef.current = null;
+        setGraceLeft(0);
+        graceStartRef.current = 0;
+      }
+      onViolation();
+      setShowViolation(true);
+    };
+
     document.addEventListener('visibilitychange', handleVisibility);
     window.addEventListener('blur', handleBlur);
     window.addEventListener('focus', handleFocus);
+    window.addEventListener('keydown', handleKeydown, true); // capture phase
 
     return () => {
       document.removeEventListener('visibilitychange', handleVisibility);
       window.removeEventListener('blur', handleBlur);
       window.removeEventListener('focus', handleFocus);
+      window.removeEventListener('keydown', handleKeydown, true);
       stopGrace();
     };
   }, [active, onViolation, stopGrace]);
@@ -165,6 +203,7 @@ export default function TestGuard({ active, onViolation, onForceSubmit, violatio
               maxWidth: 340, margin: '0 auto',
             }}>
               Если вы не вернётесь за {graceLeft} сек - нарушение будет засчитано.
+              Снимки экрана, devtools, копирование и закрытие вкладки тоже считаются нарушением.
             </p>
           </div>
         </div>
@@ -235,7 +274,7 @@ export default function TestGuard({ active, onViolation, onForceSubmit, violatio
               marginBottom: 20,
               maxWidth: 340, marginLeft: 'auto', marginRight: 'auto',
             }}>
-              Вы не вернулись в окно за 10 секунд. Нарушение засчитано.
+              Вы либо покинули окно теста дольше чем на {Math.round(GRACE_MS / 1000)} секунд, либо нажали запрещённое сочетание клавиш (PrintScreen, F12, Ctrl+C / P / S и т.п.). Нарушение засчитано.
             </p>
 
             <div style={{
@@ -285,14 +324,14 @@ export default function TestGuard({ active, onViolation, onForceSubmit, violatio
                 width: '100%',
                 padding: '12px 24px',
                 borderRadius: 10,
-                background: '#1A1A1A',
+                background: '#3B82F6',
                 color: '#FFFFFF',
                 border: 'none', cursor: 'pointer',
                 fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: 600,
                 transition: 'background 180ms',
               }}
-                onMouseEnter={(e) => { e.currentTarget.style.background = '#000000'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = '#1A1A1A'; }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = '#2563EB'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = '#3B82F6'; }}
               >
                 Продолжить тест
               </button>

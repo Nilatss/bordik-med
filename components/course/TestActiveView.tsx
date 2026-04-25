@@ -215,13 +215,15 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
                       display: 'flex', alignItems: 'center', gap: 12,
                       padding: '12px 16px',
                       borderRadius: 10,
-                      background: isSelected ? '#FFFFFF' : '#FFFFFF',
+                      // Soft blue tint when selected — same accent as Next
+                      // button, far less aggressive than the previous black ring.
+                      background: isSelected ? '#F0F7FF' : '#FFFFFF',
                       boxShadow: isSelected
-                        ? '0 0 0 2px #1A1A1A, 0 2px 8px rgba(0,0,0,0.06)'
+                        ? '0 0 0 1.5px #3B82F6, 0 1px 2px rgba(59,130,246,0.08)'
                         : '0 1px 2px rgba(16,24,40,0.04)',
                       border: 'none',
                       cursor: 'pointer', textAlign: 'left', width: '100%',
-                      transition: 'box-shadow 180ms, transform 180ms',
+                      transition: 'box-shadow 180ms, background 180ms',
                     }}
                     onMouseEnter={(e) => {
                       if (!isSelected) e.currentTarget.style.boxShadow = '0 1px 2px rgba(16,24,40,0.06), 0 2px 8px rgba(16,24,40,0.06)';
@@ -232,7 +234,7 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
                   >
                     <span style={{
                       width: 28, height: 28, borderRadius: 8, flexShrink: 0,
-                      background: isSelected ? '#1A1A1A' : '#F0F1F5',
+                      background: isSelected ? '#3B82F6' : '#F0F1F5',
                       color: isSelected ? '#FFFFFF' : '#666',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       fontFamily: 'var(--font-display)', fontSize: 12, fontWeight: 700,
@@ -296,15 +298,15 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
               display: 'inline-flex', alignItems: 'center', gap: 6,
               padding: '10px 20px',
               borderRadius: 10,
-              background: selected !== null ? '#1A1A1A' : '#E2E4EA',
+              background: selected !== null ? '#3B82F6' : '#E2E4EA',
               color: selected !== null ? '#FFFFFF' : '#9CA3AF',
               border: 'none',
               cursor: selected !== null ? 'pointer' : 'not-allowed',
               fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
               transition: 'background 180ms',
             }}
-            onMouseEnter={(e) => { if (selected !== null) e.currentTarget.style.background = '#000000'; }}
-            onMouseLeave={(e) => { if (selected !== null) e.currentTarget.style.background = '#1A1A1A'; }}
+            onMouseEnter={(e) => { if (selected !== null) e.currentTarget.style.background = '#2563EB'; }}
+            onMouseLeave={(e) => { if (selected !== null) e.currentTarget.style.background = '#3B82F6'; }}
           >
             {isLast ? 'Завершить тест' : 'Далее'}
             {selected !== null && (

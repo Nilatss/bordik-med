@@ -44,12 +44,15 @@ export const COOLDOWN_MS = 24 * 60 * 60 * 1000; // 24 hours
 export const MAX_TEST_LEVELS = 5;
 export const MAX_VIOLATIONS = 3;
 
+// Levels are displayed as plain numbered «Тест N» in the UI — the previous
+// «Основы / Углублённый / Применение / Анализ / Экспертный» suffixes added
+// noise without giving the user useful information about scope.
 export const TEST_LEVEL_NAMES: Record<TestLevel, string> = {
-  1: 'Тест 1 - Основы',
-  2: 'Тест 2 - Углублённый',
-  3: 'Тест 3 - Применение',
-  4: 'Тест 4 - Анализ',
-  5: 'Тест 5 - Экспертный',
+  1: 'Тест 1',
+  2: 'Тест 2',
+  3: 'Тест 3',
+  4: 'Тест 4',
+  5: 'Тест 5',
 };
 
 /* ═══ Grading ═══ */
