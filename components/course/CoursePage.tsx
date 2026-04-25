@@ -8,6 +8,7 @@ import { useAppStore } from '@/lib/store';
 import CourseHeader from './CourseHeader';
 import TabbedLessonViewer, { splitIntoTabs, type Tab } from './TabbedLessonViewer';
 import PediatricCalculator from './PediatricCalculator';
+import CourseProgressBar from './CourseProgressBar';
 
 interface CoursePageProps {
   courseId: string;
@@ -127,37 +128,14 @@ export default function CoursePage({ courseId }: CoursePageProps) {
             <StatPill label="Раздел" value={mod?.title ?? '—'} />
           </div>
 
-          {/* Progress bar */}
-          <div>
-            <div style={{
-              display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
-              marginBottom: 6,
-            }}>
-              <span style={{
-                fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700,
-                color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
-              }}>
-                Прогресс курса
-              </span>
-              <span style={{
-                fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 600,
-                color: '#6B7280',
-              }}>
-                {progressPct}%
-              </span>
-            </div>
-            <div style={{
-              height: 8, borderRadius: 999, background: '#E2E4EA',
-              overflow: 'hidden',
-            }}>
-              <div style={{
-                height: '100%', width: `${progressPct}%`,
-                background: '#3B82F6',
-                borderRadius: 999,
-                transition: 'width 300ms ease',
-              }} />
-            </div>
-          </div>
+          {/* Progress bar — striped green track + position marker */}
+          <CourseProgressBar
+            currentLabel={progressPct === 0 ? 'Старт' : `Тема ${Math.max(1, Math.round((progressPct / 100) * totalTopics))}`}
+            endLabel={`Тем ${totalTopics}`}
+            startCaption="Начало курса"
+            endCaption="Финал · тест"
+            pct={progressPct}
+          />
 
           {/* Start CTA */}
           <div style={{

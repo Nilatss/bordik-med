@@ -10,6 +10,7 @@ import TestPanel from './TestPanel';
 import { CourseIllustration } from './CourseIllustrations';
 import InlineQuiz from './InlineQuiz';
 import DownloadableTable from './DownloadableTable';
+import CourseProgressBar from './CourseProgressBar';
 
 /**
  * Convert single-column tables that hold ℹ/⚠/📷/✓ callouts back into
@@ -673,38 +674,18 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
           Содержание
         </p>
 
-        {/* Live progress — current tab index over total */}
+        {/* Live progress — striped green bar identical to the intro page */}
         {tabs.length > 1 && (() => {
           const pct = Math.round(((activeIndex + 1) / tabs.length) * 100);
           return (
             <div style={{ padding: '0 12px 10px' }}>
-              <div style={{
-                display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
-                marginBottom: 4,
-              }}>
-                <span style={{
-                  fontFamily: 'var(--font-body)', fontSize: 11, color: '#9CA3AF',
-                }}>
-                  {activeIndex + 1} из {tabs.length}
-                </span>
-                <span style={{
-                  fontFamily: 'var(--font-body)', fontSize: 11, fontWeight: 600,
-                  color: '#6B7280',
-                }}>
-                  {pct}%
-                </span>
-              </div>
-              <div style={{
-                height: 6, borderRadius: 999, background: '#E2E4EA',
-                overflow: 'hidden',
-              }}>
-                <div style={{
-                  height: '100%', width: `${pct}%`,
-                  background: '#3B82F6',
-                  borderRadius: 999,
-                  transition: 'width 250ms ease',
-                }} />
-              </div>
+              <CourseProgressBar
+                pct={pct}
+                currentLabel={`Тема ${activeIndex + 1}`}
+                endLabel={`из ${tabs.length}`}
+                startCaption="Старт"
+                endCaption="Финал"
+              />
             </div>
           );
         })()}
