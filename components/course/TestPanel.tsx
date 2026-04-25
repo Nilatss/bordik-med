@@ -606,10 +606,12 @@ function TestRow({
     >
       <button
         onClick={() => setOpen((v) => !v)}
+        className="test-row-header"
         style={{
           width: '100%', display: 'flex', alignItems: 'center', gap: 12,
           padding: '14px 18px',
           background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left',
+          minWidth: 0,
         }}
       >
         {/* Kind tag — neutral mono caps for course rows; gold pill for the
@@ -646,7 +648,7 @@ function TestRow({
         </span>
         <StatusBadge status={status} />
         <span style={{ flex: 1 }} />
-        <span style={{
+        <span className="test-row-info" style={{
           fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
           color: '#1A1A1A', flexShrink: 0,
         }}>
@@ -724,15 +726,16 @@ function TestRow({
               </div>
             )}
             {actionLabel && (
-              <div style={{
+              <div className="test-row-action-wrap" style={{
                 padding: '0 18px 16px',
                 display: 'flex', justifyContent: 'flex-end',
               }}>
                 <button
                   onClick={(e) => { e.stopPropagation(); if (!disabled && onAction) onAction(); }}
                   disabled={disabled}
+                  className="test-row-action-btn"
                   style={{
-                    display: 'inline-flex', alignItems: 'center', gap: 8,
+                    display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                     padding: '10px 18px',
                     fontFamily: 'var(--font-body)', fontSize: 13.5, fontWeight: 600,
                     color: actionVariant === 'primary' ? '#FFFFFF' : '#1F2937',

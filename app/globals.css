@@ -994,10 +994,31 @@ main:has(.stats-page) {
 }
 .toc-toggle:hover { background: #E8E9ED; }
 
-/* On mobile the toggle replaces the static title; collapsing the body
-   hides progress bar + tab list. */
+/* On mobile the toggle replaces the static title.
+   The body is collapsed via React state + AnimatePresence (height anim),
+   not via display:none — gives a smooth slide instead of a hard cut. */
 @media (max-width: 1024px) {
   .toc-toggle { display: flex; }
   .toc-static-title { display: none; }
-  .toc-sidebar.is-collapsed .toc-body { display: none; }
+}
+
+/* TestPanel rows on mobile.
+   - Hide the redundant right-side info ("20 вопр.") because tag + status
+     already convey enough; the row would otherwise wrap awkwardly.
+   - Reduce padding 18 → 12 px so all chips fit.
+   - Full-width primary action button when expanded, instead of right-aligned. */
+@media (max-width: 640px) {
+  .test-row-header {
+    padding: 12px 14px !important;
+    gap: 8px !important;
+    flex-wrap: wrap;
+  }
+  .test-row-info { display: none; }
+  .test-row-action-wrap {
+    padding: 0 14px 14px !important;
+    justify-content: stretch !important;
+  }
+  .test-row-action-btn {
+    width: 100% !important;
+  }
 }

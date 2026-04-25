@@ -406,9 +406,17 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [content, showTests]);
   const [activeId, setActiveId] = useState(tabs[0]?.id ?? '');
-  // TOC collapsed on mobile; on desktop CSS keeps the list permanently
-  // visible regardless of this flag.
+  // TOC defaults: closed on mobile, open on desktop. A media-query listener
+  // keeps the state in sync with viewport changes (resize / orientation).
   const [tocCollapsed, setTocCollapsed] = useState(true);
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const mq = window.matchMedia('(min-width: 1025px)');
+    setTocCollapsed(!mq.matches);
+    const onChange = (e: MediaQueryListEvent) => setTocCollapsed(!e.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
 
   // Scroll to top of the topic content whenever the user switches tabs.
   // On mobile we want to land on the topic title (lesson-card), not on
@@ -749,7 +757,20 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
           {t('course.toc.title')}
         </p>
 
-        <div className="toc-body">
+        {/* TOC body — animated open/close on mobile (the .is-collapsed CSS
+            class controls visibility on desktop = always open). framer-motion
+            animates height so the unfold matches the rest of the app. */}
+        <AnimatePresence initial={false}>
+          {!tocCollapsed && (
+            <motion.div
+              key="toc-body"
+              className="toc-body"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.25, ease: [0.05, 0.7, 0.1, 1] }}
+              style={{ overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: 4 }}
+            >
         {/* Live progress — striped green bar identical to the intro page */}
         {tabs.length > 1 && (() => {
           const pct = Math.round(((activeIndex + 1) / tabs.length) * 100);
@@ -817,7 +838,9 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
             </button>
           );
         })}
-        </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </aside>
     </div>
   );
