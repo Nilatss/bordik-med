@@ -82,11 +82,12 @@ const runner: CalculatorTool = {
     { label: 'Норма', values: { tc: 4.5, hdl: 1.4, risk: 'moderate' } },
     { label: 'Не в цели (выс. риск)', values: { tc: 6.0, hdl: 1.2, risk: 'high' } },
   ],
-  info: `### Для чего используется
+  info: `
+### Для чего используется
 Оценка атерогенной нагрузки через Non-HDL холестерин - сумму всех атерогенных частиц (LDL + VLDL + IDL + Lp(a)).
 
 ### Формула
-**Non-HDL = Общий ХС - HDL**
+\`Non-HDL = Общий ХС - HDL\`
 
 ### Целевые значения (ESC/EAS 2019)
 | ASCVD риск | Non-HDL цель |

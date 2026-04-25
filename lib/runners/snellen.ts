@@ -126,11 +126,12 @@ const runner: CalculatorTool = {
     { label: 'Слабовидение (6/60)', values: { snellen: '6/60', eye: 'od' } },
     { label: 'Слепота (LP)', values: { snellen: 'LP', eye: 'od' } },
   ],
-  info: `### Для чего используется
+  info: `
+### Для чего используется
 Оценка **остроты зрения (VA)** по таблице Snellen с конвертацией в logMAR и категории слабовидения WHO.
 
 ### Формула
-**logMAR = −log10(decimal VA) = log10(denom/num)** (для 6/м или 20/ft)
+\`logMAR = −log10(decimal VA) = log10(denom/num)\` (для 6/м или 20/ft)
 
 ### Соответствия
 | Snellen (6/м) | 20/ft | Decimal | logMAR |

@@ -126,13 +126,14 @@ const runner: CalculatorTool = {
     { label: 'Ребёнок 20 кг, 20 % TBSA',   values: { weight: 20, tbsa: 20, age: 'peds' } },
     { label: 'Крит. взрослый 80 кг, 60 %', values: { weight: 80, tbsa: 60, age: 'adult' } },
   ],
-  info: `### Для чего используется
+  info: `
+### Для чего используется
 **Стартовая инфузионная терапия ожоговой болезни** в первые 24 часа. Сравнивает три формулы: Parkland, Modified Brooke и Galveston (педиатрия).
 
 ### Формулы
-- **Parkland** (Baxter 1968): **V = 4 мл × вес (кг) × %TBSA** Ringer-lactate за 24 часа. Половина за первые 8 ч от момента ожога, остальная - за 16 ч.
-- **Modified Brooke** (ABLS): **V = 2 мл × вес × %TBSA**. Используют когда нужен меньший объём (пожилые, HF).
-- **Galveston (Carvajal)** для детей: **V = 5000 мл × %TBSA × BSA(м²) + 2000 мл × BSA(м²)** maintenance.
+- **Parkland** (Baxter 1968): \`V = 4 мл × вес (кг) × %TBSA\` Ringer-lactate за 24 часа. Половина за первые 8 ч от момента ожога, остальная - за 16 ч.
+- **Modified Brooke** (ABLS): \`V = 2 мл × вес × %TBSA\`. Используют когда нужен меньший объём (пожилые, HF).
+- **Galveston (Carvajal)** для детей: \`V = 5000 мл × %TBSA × BSA(м²) + 2000 мл × BSA(м²)\` maintenance.
 
 ### Интерпретация
 - **Цель диуреза**: взрослые 0,5 мл/кг/ч, дети 1 мл/кг/ч, электроожоги 1-2 мл/кг/ч с alkalinization.
