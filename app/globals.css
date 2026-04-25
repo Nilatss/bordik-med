@@ -752,6 +752,11 @@ main:has(.stats-page) {
   gap: 24px;
   align-items: start;
 }
+/* CRITICAL: grid `1fr` columns default to `min-width: auto` which equals
+   min-content of the cell — long/wide children (tables, illustrations,
+   non-breaking strings) force the column to grow past the viewport.
+   `min-width: 0` lets the cell shrink to its grid track size. */
+.rg-main-toc > * { min-width: 0; }
 @media (max-width: 1024px) {
   .rg-main-toc { grid-template-columns: 1fr; gap: 16px; }
   .rg-main-toc > .toc-sidebar {
@@ -759,6 +764,35 @@ main:has(.stats-page) {
     order: -1; /* TOC above content when stacked */
     max-height: none !important;
   }
+}
+
+/* Lesson tables on mobile — wrap in horizontal scroll instead of forcing
+   the whole page wider than the viewport. */
+@media (max-width: 768px) {
+  .lesson-content table {
+    display: block;
+    overflow-x: auto;
+    max-width: 100%;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Lesson images / picture (illustrations) — never exceed container. */
+.lesson-content img,
+.lesson-content picture {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Long unbreakable strings (URLs, code) inside lesson body should wrap. */
+.lesson-content p,
+.lesson-content li,
+.lesson-content h1,
+.lesson-content h2,
+.lesson-content h3,
+.lesson-content h4 {
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 /* InfoPill row in ToolView header — wrap on narrow screens */
@@ -902,4 +936,12 @@ main:has(.stats-page) {
 @keyframes progress-stripes {
   from { transform: translateX(0); }
   to   { transform: translateX(18.13px); }
+}
+
+/* Mobile: tighten the white lesson card padding so content uses every
+   pixel of the (already narrow) viewport. */
+@media (max-width: 640px) {
+  .lesson-card {
+    padding: 14px !important;
+  }
 }
