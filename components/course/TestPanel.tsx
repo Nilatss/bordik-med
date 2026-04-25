@@ -468,7 +468,7 @@ function StatusBadge({ status }: { status: TestStatus }) {
     <span style={{
       display: 'inline-flex', alignItems: 'center', gap: 5,
       padding: '3px 9px',
-      borderRadius: 999,
+      borderRadius: 8,
       background: m.bg, color: m.fg,
       fontFamily: 'var(--font-body)', fontSize: 11, fontWeight: 600,
       flexShrink: 0,
@@ -617,7 +617,7 @@ function TestRow({
                     color: actionVariant === 'primary' ? '#FFFFFF' : '#1F2937',
                     background: actionVariant === 'primary' ? '#3B82F6' : '#F5F6F8',
                     border: actionVariant === 'secondary' ? '1px solid #E5E7EB' : 'none',
-                    borderRadius: 999,
+                    borderRadius: 10,
                     cursor: disabled ? 'not-allowed' : 'pointer',
                     opacity: disabled ? 0.5 : 1,
                     transition: 'background 180ms ease',
