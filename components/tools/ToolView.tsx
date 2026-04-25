@@ -178,6 +178,14 @@ export default function ToolView({ toolId }: { toolId: string }) {
     setActiveId('calculator');
   }, [toolId]);
 
+  // Scroll to top whenever the user switches tabs inside the tool view —
+  // otherwise the new tab lands at whatever scroll offset the previous
+  // one was at, hiding its header.
+  useEffect(() => {
+    const main = document.querySelector('main');
+    if (main) main.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [activeId]);
+
   if (!tool) {
     return (
       <div style={{ padding: 40, textAlign: 'center', color: '#9CA3AF' }}>

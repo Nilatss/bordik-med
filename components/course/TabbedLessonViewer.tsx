@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { Children, cloneElement, isValidElement } from 'react';
 import ReactMarkdown from 'react-markdown';
@@ -406,6 +406,13 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [content, showTests]);
   const [activeId, setActiveId] = useState(tabs[0]?.id ?? '');
+
+  // Scroll to top whenever the user switches tabs — otherwise they land in
+  // the middle of the new topic if the previous one was scrolled down.
+  useEffect(() => {
+    const main = document.querySelector('main');
+    if (main) main.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [activeId]);
 
   if (!content) {
     return (
