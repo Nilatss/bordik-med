@@ -381,7 +381,7 @@ export default function TestPanel({ courseId }: TestPanelProps) {
             key={level}
             index={idx}
             title={TEST_LEVEL_NAMES[level]}
-            kind={t('test.row.kind.level')}
+            kind=""
             status={status}
             rightInfo={isPassed && bestScore !== null
               ? `${bestScore}/${QUESTIONS_PER_TEST}`
@@ -614,9 +614,10 @@ function TestRow({
           minWidth: 0,
         }}
       >
-        {/* Kind tag — neutral mono caps for course rows; gold pill for the
-            module-final row to mark the «final boss» energy. */}
-        {highlight ? (
+        {/* Kind tag — gold pill for the module-final row only. Per-level
+            rows pass an empty `kind` and skip the tag entirely (the title
+            «Тест N» already conveys the level). */}
+        {highlight && kind ? (
           <span style={{
             display: 'inline-flex', alignItems: 'center', gap: 5,
             padding: '3px 9px', borderRadius: 8,
@@ -630,15 +631,7 @@ function TestRow({
             </svg>
             {kind}
           </span>
-        ) : (
-          <span style={{
-            fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-            color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.06em',
-            flexShrink: 0,
-          }}>
-            {kind}
-          </span>
-        )}
+        ) : null}
         <span style={{
           fontFamily: 'var(--font-display)', fontSize: 14.5, fontWeight: 600,
           color: '#1A1A1A', flexShrink: 0,
