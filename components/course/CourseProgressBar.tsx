@@ -47,33 +47,17 @@ export default function CourseProgressBar({
         background: '#F1F3F6',
         overflow: 'hidden',
       }}>
-        {/* Filled portion — clean diagonal hatch like the reference. The
-            inner moving layer is one full period wider than the visible bar
-            and slides left via translateX → seamless infinite loop without
-            background-position math (which is fragile at angled gradients). */}
+        {/* Filled portion — original two-tone diagonal stripes, no animation. */}
         <motion.div
           style={{
             position: 'absolute', top: 0, left: 0, bottom: 0,
             width: widthString,
-            background: '#22C55E',
+            background:
+              'repeating-linear-gradient(115deg, #22C55E 0 10px, #1FB85A 10px 20px)',
             borderRadius: 6,
-            overflow: 'hidden',
             display: 'flex', alignItems: 'center', paddingLeft: 12,
           }}
         >
-          {/* Static diagonal hatch — no animation. Animated stripes were
-              perceived as «racing» regardless of duration / period math
-              (every cycle restart caused a tiny visual snap). The stripes
-              alone communicate «active / in-progress» visually. */}
-          <span
-            aria-hidden
-            style={{
-              position: 'absolute', inset: 0,
-              backgroundImage:
-                'repeating-linear-gradient(135deg, rgba(255,255,255,0.14) 0 8px, transparent 8px 24px)',
-              pointerEvents: 'none',
-            }}
-          />
           <motion.span
             initial={{ opacity: 0, x: -4 }}
             animate={{ opacity: 1, x: 0 }}
