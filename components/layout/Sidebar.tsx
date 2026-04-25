@@ -327,7 +327,7 @@ export default function Sidebar() {
             color: '#6B7280', marginBottom: 8,
           }}>
             {new Date().toLocaleDateString(
-              { ru: 'ru-RU', en: 'en-GB', kk: 'kk-KZ', uk: 'uk-UA' }[lang] || 'ru-RU',
+              { ru: 'ru-RU', en: 'en-GB', uz: 'uz-UZ' }[lang] || 'ru-RU',
               { day: 'numeric', month: 'long', year: 'numeric' }
             )}
           </p>

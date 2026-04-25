@@ -489,7 +489,7 @@ export default function ProfilePage() {
   const currentLangCode = lang;
 
   // Date in current locale
-  const localeMap: Record<string, string> = { ru: 'ru-RU', en: 'en-GB', kk: 'kk-KZ', uk: 'uk-UA' };
+  const localeMap: Record<string, string> = { ru: 'ru-RU', en: 'en-GB', uz: 'uz-UZ' };
   const dateStr = new Date().toLocaleDateString(localeMap[lang] || 'ru-RU', {
     weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
   });
