@@ -194,7 +194,7 @@ interface Props {
   showTests?: boolean;
 }
 
-interface Tab {
+export interface Tab {
   id: string;
   title: string;
   short: string;
@@ -305,7 +305,7 @@ const TabIcon = ({ name, size = 16 }: { name: string; size?: number }) => {
 };
 
 /** Split markdown by top-level `# ` headings into tabs. */
-function splitIntoTabs(md: string): Tab[] {
+export function splitIntoTabs(md: string): Tab[] {
   const lines = md.split('\n');
   const tabs: Tab[] = [];
   let current: Tab | null = null;
@@ -668,12 +668,49 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
           fontFamily: 'var(--font-body)', fontSize: 11,
           fontWeight: 600, color: '#888',
           textTransform: 'uppercase', letterSpacing: '0.08em',
-          padding: '4px 12px 10px',
+          padding: '4px 12px 6px',
         }}>
           Содержание
         </p>
-        {tabs.map((t) => {
+
+        {/* Live progress — current tab index over total */}
+        {tabs.length > 1 && (() => {
+          const pct = Math.round(((activeIndex + 1) / tabs.length) * 100);
+          return (
+            <div style={{ padding: '0 12px 10px' }}>
+              <div style={{
+                display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
+                marginBottom: 4,
+              }}>
+                <span style={{
+                  fontFamily: 'var(--font-body)', fontSize: 11, color: '#9CA3AF',
+                }}>
+                  {activeIndex + 1} из {tabs.length}
+                </span>
+                <span style={{
+                  fontFamily: 'var(--font-body)', fontSize: 11, fontWeight: 600,
+                  color: '#6B7280',
+                }}>
+                  {pct}%
+                </span>
+              </div>
+              <div style={{
+                height: 6, borderRadius: 999, background: '#E2E4EA',
+                overflow: 'hidden',
+              }}>
+                <div style={{
+                  height: '100%', width: `${pct}%`,
+                  background: '#3B82F6',
+                  borderRadius: 999,
+                  transition: 'width 250ms ease',
+                }} />
+              </div>
+            </div>
+          );
+        })()}
+        {tabs.map((t, i) => {
           const isActive = t.id === active.id;
+          const isVisited = i <= activeIndex;
           return (
             <button
               key={t.id}
@@ -681,8 +718,8 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
               style={{
                 display: 'flex', alignItems: 'center', gap: 10,
                 padding: '10px 12px',
-                background: isActive ? '#1A1A1A' : 'transparent',
-                color: isActive ? '#FFF' : '#333',
+                background: isActive ? '#EFF4FF' : 'transparent',
+                color: isActive ? '#1A1A1A' : isVisited ? '#374151' : '#9CA3AF',
                 border: 'none', borderRadius: 10,
                 cursor: 'pointer', textAlign: 'left',
                 fontFamily: 'var(--font-body)', fontSize: 13,
@@ -693,10 +730,13 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
               onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.background = 'transparent'; }}
             >
               <span style={{
-                display: 'flex', flexShrink: 0,
-                color: isActive ? '#FFF' : '#666',
+                display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                width: 22, height: 22, borderRadius: '50%', flexShrink: 0,
+                background: isActive ? '#3B82F6' : isVisited ? '#CBD5E1' : '#E2E4EA',
+                color: isActive ? '#FFF' : isVisited ? '#1A1A1A' : '#6B7280',
+                fontSize: 11, fontWeight: 700,
               }}>
-                <TabIcon name={t.iconKey} size={16} />
+                {i + 1}
               </span>
               <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {t.short}
