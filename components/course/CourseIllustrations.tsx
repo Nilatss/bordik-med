@@ -408,6 +408,11 @@ export function CourseIllustration({ id }: { id: string }) {
         <img
           src={img.src}
           alt={img.alt}
+          // Native lazy-loading + async decode — defers download of big
+          // course PNGs (some are 1–5 MB) until they're scrolled near the
+          // viewport, removing massive initial-paint cost on slow links.
+          loading="lazy"
+          decoding="async"
           style={{ width: '100%', height: 'auto', display: 'block', borderRadius: 8 }}
         />
       ) : Cmp ? (

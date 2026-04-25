@@ -5,7 +5,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore } from '@/lib/store';
 import { useT, useLang } from '@/lib/i18n';
 import { searchCourses } from '@/lib/curriculum';
-import { CATALOG_TOOLS, type CatalogTool } from '@/lib/tools-catalog';
+// CATALOG_TOOLS (172 kB) is dynamically imported below — lazy until the
+// user actually starts searching while on the Tools view.
+import type { CatalogTool } from '@/lib/tools-catalog';
 
 type NavItem = 'home' | 'learning' | 'tests' | 'tools' | 'stats' | 'profile';
 
@@ -222,14 +224,24 @@ export default function Sidebar() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [q, activeSection]);
 
-  // Tools search — only when user is on the Tools page (context-aware).
-  // Otherwise the sidebar would dump 700+ tools into every search; users
-  // browsing courses don't expect that.
+  // Tools search — context-aware: only fires when user is on the Tools view.
+  // CATALOG_TOOLS is lazy-imported the first time someone actually searches,
+  // so the 172-kB tool catalog doesn't sit in the home-page bundle.
+  const [toolCatalog, setToolCatalog] = useState<CatalogTool[] | null>(null);
+  useEffect(() => {
+    if (!q || q.length < 2 || !showTools || toolCatalog) return;
+    let cancelled = false;
+    import('@/lib/tools-catalog').then((m) => {
+      if (!cancelled) setToolCatalog(m.CATALOG_TOOLS);
+    });
+    return () => { cancelled = true; };
+  }, [q, showTools, toolCatalog]);
+
   const toolResults = useMemo<CatalogTool[]>(() => {
-    if (!q || q.length < 2 || !showTools) return [];
+    if (!q || q.length < 2 || !showTools || !toolCatalog) return [];
     const tokens = q.split(/\s+/).filter(Boolean);
     const scored: { item: CatalogTool; score: number }[] = [];
-    for (const t of CATALOG_TOOLS) {
+    for (const t of toolCatalog) {
       const hay = `${t.title} ${t.description} ${t.category} ${t.subcategory}`.toLowerCase();
       let score = 0;
       for (const tok of tokens) {
@@ -245,7 +257,7 @@ export default function Sidebar() {
     }
     scored.sort((a, b) => b.score - a.score);
     return scored.slice(0, 12).map((s) => s.item);
-  }, [q, showTools]);
+  }, [q, showTools, toolCatalog]);
 
   const totalCourseResults = courseResults.available.length + courseResults.locked.length;
 
