@@ -16,6 +16,9 @@ interface AppState {
   sidebarOpen: boolean;
   openModules: number[];
   completedCourses: string[];
+  /** Courses the user has actively started (clicked «Начать обучение»). Lets us
+   *  show an intro/CTA screen on first open and skip it on subsequent visits. */
+  startedCourses: string[];
   studyTime: Record<string, number>;
   userName: string;
   difficultyFilter: 'all' | 'basic' | 'intermediate' | 'advanced';
@@ -63,6 +66,7 @@ interface AppState {
   openModule: (id: number) => void;
   closeModule: () => void;
   markCompleted: (id: string) => void;
+  startCourse: (id: string) => void;
   setActiveSection: (id: SectionId | null) => void;
   goHome: () => void;
   toggleModule: (id: number) => void;
@@ -107,6 +111,7 @@ export const useAppStore = create<AppState>()(
       sidebarOpen: false,
       openModules: [],
       completedCourses: [],
+      startedCourses: [],
       studyTime: {},
       userName: 'Студент',
       difficultyFilter: 'all',
@@ -160,6 +165,12 @@ export const useAppStore = create<AppState>()(
         const { completedCourses } = get();
         if (!completedCourses.includes(id)) {
           set({ completedCourses: [...completedCourses, id] });
+        }
+      },
+      startCourse: (id) => {
+        const { startedCourses } = get();
+        if (!startedCourses.includes(id)) {
+          set({ startedCourses: [...startedCourses, id] });
         }
       },
 
@@ -277,6 +288,7 @@ export const useAppStore = create<AppState>()(
         userLanguage: state.userLanguage,
         userGoal: state.userGoal,
         completedCourses: state.completedCourses,
+        startedCourses: state.startedCourses,
         completedModules: state.completedModules,
         openModules: state.openModules,
         studyTime: state.studyTime,
