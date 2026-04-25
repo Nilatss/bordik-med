@@ -894,11 +894,12 @@ main:has(.stats-page) {
   background: #E8E9ED;
 }
 
-/* Progress-bar stripes — slow seamless drift via transform on a 28-px-wider
-   inner layer. translateX of one full pattern period (28 px) snaps the
-   pattern back to identical → loop is invisible. 6 s = peripheral motion
-   the eye won't lock onto. */
+/* Progress-bar stripes — slow seamless drift.
+   Pattern: 135° diagonal hatch with 24 px perpendicular period.
+   Horizontal projection of one period = 24 / cos(45°) ≈ 33.94 px.
+   translateX of exactly that = pixel-identical loop → no perceivable snap.
+   12 s = ~2.8 px/s, deeply peripheral, eye doesn't lock on it. */
 @keyframes progress-stripes {
   from { transform: translateX(0); }
-  to   { transform: translateX(28px); }
+  to   { transform: translateX(33.94px); }
 }

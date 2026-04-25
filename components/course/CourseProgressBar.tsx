@@ -61,18 +61,18 @@ export default function CourseProgressBar({
             display: 'flex', alignItems: 'center', paddingLeft: 12,
           }}
         >
-          {/* Sliding stripe layer — pointer-events: none so it doesn't
-              swallow clicks; the inner content is rendered above. */}
+          {/* Sliding stripe layer — vertical stripes (90deg) tile cleanly
+              along the X axis, so translateX of one full period lands on a
+              visually-identical position — completely seamless loop with
+              correct math. Slow 12 s cycle (~3.3 px/s) keeps it peripheral. */}
           <span
             aria-hidden
             style={{
               position: 'absolute', top: 0, bottom: 0,
-              // Wider than parent + offset so translateX(-PERIOD) lands on a
-              // visually-identical position → loop is invisible.
-              left: -28, right: 0, width: 'calc(100% + 28px)',
+              left: -40, width: 'calc(100% + 40px)',
               backgroundImage:
-                'repeating-linear-gradient(135deg, rgba(255,255,255,0.22) 0 10px, transparent 10px 28px)',
-              animation: 'progress-stripes 6s linear infinite',
+                'repeating-linear-gradient(135deg, rgba(255,255,255,0.18) 0 8px, transparent 8px 24px)',
+              animation: 'progress-stripes 12s linear infinite',
               pointerEvents: 'none',
               willChange: 'transform',
             }}
