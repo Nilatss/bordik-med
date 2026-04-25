@@ -371,9 +371,14 @@ export default function TestPanel({ courseId }: TestPanelProps) {
                 value: bestScore !== null ? `${bestScore}/${QUESTIONS_PER_TEST}` : String(attempts.length),
                 icon: bestScore !== null ? 'trophy' : 'history',
               },
-              { label: 'Статус', value: STATUS_META[status].label, icon: 'info' },
             ]}
-            description={statusDetail ?? undefined}
+            description={
+              // Show context only when it adds non-redundant info
+              // (cooldowns, lockouts, locked-by-prerequisite). Skip the
+              // duplicate "20 вопросов · порог" since the same data is
+              // already in the info-pills above.
+              isPassed || isCurrent ? undefined : statusDetail ?? undefined
+            }
             actionLabel={isPassed ? 'Повторить' : isCurrent ? 'Начать тест' : null}
             actionVariant={isPassed ? 'secondary' : 'primary'}
             onAction={() => startCourseTest(level)}
@@ -415,9 +420,13 @@ export default function TestPanel({ courseId }: TestPanelProps) {
               { label: 'Вопросов', value: String(MODULE_TEST_QUESTIONS), icon: 'list' },
               { label: 'Время', value: '3 часа', icon: 'clock' },
               { label: 'Порог', value: `${PASS_THRESHOLD_MODULE}%`, icon: 'target' },
-              { label: 'Статус', value: STATUS_META[moduleStatus].label, icon: 'info' },
             ]}
-            description={moduleDetail}
+            description={
+              // Same rule as course-test rows — skip the duplicate summary.
+              modulePassed || (moduleUnlocked && !moduleLockedByViolation)
+                ? undefined
+                : moduleDetail
+            }
             actionLabel={moduleUnlocked && !modulePassed && !moduleLockedByViolation ? 'Начать тест' : null}
             actionVariant="primary"
             onAction={startModuleTest}
@@ -466,11 +475,11 @@ const STATUS_META: Record<TestStatus, {
   rowAccent: string; // subtle row tint
   icon: 'check' | 'play' | 'lock' | 'clock' | 'alert';
 }> = {
-  passed:    { label: 'Пройден',     bg: '#DCFCE7', fg: '#166534', iconColor: '#16A34A', rowAccent: '#F0FDF4', icon: 'check' },
-  available: { label: 'Доступен',    bg: '#DBEAFE', fg: '#1E40AF', iconColor: '#2563EB', rowAccent: '#F5F8FF', icon: 'play' },
-  locked:    { label: 'Закрыто',     bg: '#F3F4F6', fg: '#6B7280', iconColor: '#9CA3AF', rowAccent: '#F8F9FB', icon: 'lock' },
-  cooldown:  { label: 'Перезарядка', bg: '#FEF3C7', fg: '#92400E', iconColor: '#D97706', rowAccent: '#FFFBEB', icon: 'clock' },
-  violation: { label: 'Нарушение',   bg: '#FEE2E2', fg: '#991B1B', iconColor: '#DC2626', rowAccent: '#FEF2F2', icon: 'alert' },
+  passed:    { label: 'Пройден',     bg: '#DCFCE7', fg: '#166534', iconColor: '#16A34A', rowAccent: '#F5F6F8', icon: 'check' },
+  available: { label: 'Доступен',    bg: '#DCFCE7', fg: '#166534', iconColor: '#16A34A', rowAccent: '#F5F6F8', icon: 'play' },
+  locked:    { label: 'Закрыто',     bg: '#F3F4F6', fg: '#6B7280', iconColor: '#9CA3AF', rowAccent: '#F5F6F8', icon: 'lock' },
+  cooldown:  { label: 'Перезарядка', bg: '#FEF3C7', fg: '#92400E', iconColor: '#D97706', rowAccent: '#F5F6F8', icon: 'clock' },
+  violation: { label: 'Нарушение',   bg: '#FEE2E2', fg: '#991B1B', iconColor: '#DC2626', rowAccent: '#F5F6F8', icon: 'alert' },
 };
 
 function StatusIcon({ name, color, size = 11 }: { name: TestStatus; color: string; size?: number }) {
