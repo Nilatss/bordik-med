@@ -399,7 +399,7 @@ export default function TestPanel({ courseId }: TestPanelProps) {
             fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
             color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.1em',
           }}>
-            Финал модуля
+            Финал курса
           </span>
           <span style={{ flex: 1, height: 1, background: '#E5E7EB' }} />
         </div>
@@ -422,16 +422,16 @@ export default function TestPanel({ courseId }: TestPanelProps) {
         const moduleDetail = moduleLockedByViolation
           ? `Доступно через ${formatHours(moduleLockoutLeft)}`
           : modulePassed
-            ? 'Модуль полностью пройден'
+            ? 'Курс полностью пройден'
             : moduleUnlocked
               ? `${MODULE_TEST_QUESTIONS} вопросов · 3 часа · ${PASS_THRESHOLD_MODULE}% порог`
-              : 'Откроется после прохождения всех 5 тестов по каждому курсу модуля';
+              : 'Откроется после прохождения всех 5 уровней теста курса';
 
         return (
           <TestRow
             index={5}
-            title="Финальный тест модуля"
-            kind="Модуль"
+            title="Финальный тест курса"
+            kind="Курс"
             status={moduleStatus}
             rightInfo={`${MODULE_TEST_QUESTIONS} вопр.`}
             detailRows={[
