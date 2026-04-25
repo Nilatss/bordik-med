@@ -791,7 +791,14 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
           return (
             <button
               key={tab.id}
-              onClick={() => setActiveId(tab.id)}
+              onClick={() => {
+                setActiveId(tab.id);
+                // Auto-collapse TOC on mobile so the user immediately sees
+                // the topic content; on desktop the accordion stays open.
+                if (typeof window !== 'undefined' && window.matchMedia('(max-width: 1024px)').matches) {
+                  setTocCollapsed(true);
+                }
+              }}
               className={`toc-tab${isActive ? ' is-active' : ''}`}
               style={{
                 position: 'relative',
