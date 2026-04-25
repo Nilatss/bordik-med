@@ -390,11 +390,11 @@ export default function ToolView({ toolId }: { toolId: string }) {
               <button
                 key={t.id}
                 onClick={() => setActiveId(t.id)}
+                className={`toc-tab${isActive ? ' is-active' : ''}`}
                 style={{
                   position: 'relative',
                   display: 'flex', alignItems: 'center', gap: 10,
                   padding: '10px 12px',
-                  background: 'transparent',
                   color: isActive ? '#1A1A1A' : '#333',
                   border: 'none', borderRadius: 10,
                   cursor: 'pointer', textAlign: 'left',
@@ -402,8 +402,6 @@ export default function ToolView({ toolId }: { toolId: string }) {
                   fontWeight: isActive ? 600 : 500,
                   transition: 'color 200ms ease',
                 }}
-                onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.background = '#E8E9ED'; }}
-                onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.background = 'transparent'; }}
               >
                 {isActive && (
                   <motion.span

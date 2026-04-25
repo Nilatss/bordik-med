@@ -881,3 +881,15 @@ main:has(.stats-page) {
 @media (max-width: 900px) {
   .profile-2col { grid-template-columns: 1fr !important; }
 }
+
+/* TOC tab buttons — pure CSS hover so leftover inline-style hover bg never
+   gets stuck (React's reconciliation doesn't always clear element.style
+   that was set imperatively in onMouseEnter). Active tab gets its bg from
+   the framer-motion layoutId pill, so hover only applies to non-active. */
+.toc-tab {
+  background: transparent;
+  transition: background 150ms ease;
+}
+.toc-tab:not(.is-active):hover {
+  background: #E8E9ED;
+}

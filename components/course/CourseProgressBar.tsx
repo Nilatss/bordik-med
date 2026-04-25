@@ -1,12 +1,12 @@
 'use client';
 
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { useEffect, useState } from 'react';
+
 /**
  * Striped green progress track with inline position label and end label —
- * styled 1:1 with the insurance-policy reference screenshot. Diagonal hatch
- * pattern uses repeating-linear-gradient over a solid #22C55E base.
- *
- * Used on the course intro page (showing 0% before start) and inside
- * TabbedLessonViewer (live progress while user moves through tabs).
+ * styled 1:1 with the insurance-policy reference screenshot. Width and
+ * percentage number animate smoothly via framer-motion springs.
  */
 export default function CourseProgressBar({
   pct, currentLabel, endLabel, startCaption, endCaption,
@@ -17,8 +17,26 @@ export default function CourseProgressBar({
   startCaption: string;
   endCaption: string;
 }) {
-  // Clamp so the inside chip always has space to render
   const safePct = Math.max(8, Math.min(100, pct));
+
+  // Spring-animated percentage that the bar width and the caption number
+  // both read from — keeps them perfectly in sync.
+  const animatedPct = useSpring(0, { stiffness: 90, damping: 22 });
+  const widthString = useTransform(animatedPct, (v) => `${v}%`);
+  const [displayPct, setDisplayPct] = useState(0);
+
+  useEffect(() => {
+    animatedPct.set(safePct);
+  }, [safePct, animatedPct]);
+
+  // Mirror the spring value into a re-rendered integer so the % caption
+  // and the threshold-driven end-label colour update on each frame.
+  useEffect(() => {
+    return animatedPct.on('change', (v) => setDisplayPct(Math.round(v)));
+  }, [animatedPct]);
+
+  const labelOnGreen = displayPct >= 80;
+
   return (
     <div style={{ width: '100%' }}>
       {/* Bar */}
@@ -29,37 +47,44 @@ export default function CourseProgressBar({
         background: '#F1F3F6',
         overflow: 'hidden',
       }}>
-        {/* Filled portion with diagonal hatch */}
-        <div style={{
+        {/* Filled portion with diagonal hatch — width animates via spring */}
+        <motion.div style={{
           position: 'absolute', top: 0, left: 0, bottom: 0,
-          width: `${safePct}%`,
+          width: widthString,
           background:
             'repeating-linear-gradient(115deg, #22C55E 0 10px, #1FB85A 10px 20px)',
           borderRadius: 6,
-          transition: 'width 350ms ease',
           display: 'flex', alignItems: 'center', paddingLeft: 12,
         }}>
-          <span style={{
-            fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 600,
-            color: '#FFFFFF', whiteSpace: 'nowrap',
-            textShadow: '0 1px 1px rgba(0,0,0,0.12)',
-          }}>
+          <motion.span
+            initial={{ opacity: 0, x: -4 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.3, ease: [0.05, 0.7, 0.1, 1] }}
+            key={currentLabel}
+            style={{
+              fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 600,
+              color: '#FFFFFF', whiteSpace: 'nowrap',
+              textShadow: '0 1px 1px rgba(0,0,0,0.12)',
+            }}
+          >
             {currentLabel}
-          </span>
-        </div>
+          </motion.span>
+        </motion.div>
 
-        {/* End label — sits on the right edge. Switches to white once the
-            green bar grows over it (≥ 80 %) so it stays readable on the
-            stripe pattern. */}
-        <span style={{
-          position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)',
-          fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 600,
-          color: safePct >= 80 ? '#FFFFFF' : '#6B7280',
-          textShadow: safePct >= 80 ? '0 1px 1px rgba(0,0,0,0.18)' : 'none',
-          transition: 'color 200ms ease',
-        }}>
+        {/* End label — switches to white as bar overtakes it (≥ 80 %). */}
+        <motion.span
+          animate={{
+            color: labelOnGreen ? '#FFFFFF' : '#6B7280',
+            textShadow: labelOnGreen ? '0 1px 1px rgba(0,0,0,0.18)' : '0 0 0 rgba(0,0,0,0)',
+          }}
+          transition={{ duration: 0.25 }}
+          style={{
+            position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)',
+            fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 600,
+          }}
+        >
           {endLabel}
-        </span>
+        </motion.span>
       </div>
 
       {/* Captions row */}
@@ -70,7 +95,7 @@ export default function CourseProgressBar({
       }}>
         <span>{startCaption}</span>
         <span style={{ fontWeight: 600, color: '#3B82F6' }}>
-          {pct}% пройдено
+          {displayPct}% пройдено
         </span>
         <span>{endCaption}</span>
       </div>
