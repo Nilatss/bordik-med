@@ -16,8 +16,10 @@ const runner: CalculatorTool = {
     },
     { id: 'noflow', label: 'No-flow (от остановки до СЛР)', type: 'number', unit: 'мин', min: 0, max: 60, step: 1, quickValues: [0, 2, 5, 10, 15, 20] },
     { id: 'lowflow', label: 'Low-flow (от СЛР до ROSC)', type: 'number', unit: 'мин', min: 0, max: 90, step: 1, quickValues: [5, 10, 15, 20, 30, 45] },
-    { id: 'lactate', label: 'Лактат при поступлении', type: 'number', unit: 'ммоль/л', min: 0, max: 25, step: 0.1, quickValues: [2, 4, 6, 8, 10, 15] },
-    { id: 'creat', label: 'Креатинин при поступлении', type: 'number', unit: 'мкмоль/л', min: 30, max: 800, step: 1, quickValues: [80, 120, 180, 250, 400] },
+    { id: 'lactate',
+hint: 'Лактат. Норма: <2 ммоль/л; >4 — лактат-ацидоз', label: 'Лактат при поступлении', type: 'number', unit: 'ммоль/л', min: 0, max: 25, step: 0.1, quickValues: [2, 4, 6, 8, 10, 15] },
+    { id: 'creat',
+hint: 'Креатинин сыворотки. Норма: М 62-115, Ж 53-97 мкмоль/л', label: 'Креатинин при поступлении', type: 'number', unit: 'мкмоль/л', min: 30, max: 800, step: 1, quickValues: [80, 120, 180, 250, 400] },
   ],
   compute: (v) => {
     const nonshock = v.rhythm === 'nonshock' ? 1 : 0;

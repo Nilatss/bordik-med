@@ -28,6 +28,7 @@ const runner: CalculatorTool = {
     },
     {
       id: 'weight',
+      hint: 'Вес в кг (без одежды)',
       label: 'Масса тела (кг)',
       type: 'number',
       placeholder: 'кг',

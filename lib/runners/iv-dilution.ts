@@ -40,6 +40,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "stockVol",
+        hint: 'Объём в миллилитрах',
         label: "Объём препарата (из стока)",
         type: "number",
         unit: "мл",
@@ -56,6 +57,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "bagVol",
+        hint: 'Объём в миллилитрах',
         label: "Итоговый объём в пакете",
         type: "number",
         unit: "мл",

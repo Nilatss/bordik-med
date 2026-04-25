@@ -17,8 +17,10 @@ const runner: CalculatorTool = {
       { value: 'M', label: 'Мужской' },
       { value: 'F', label: 'Женский' },
     ] },
-    { id: 'val0', label: '0 ч значение (нг/л)', type: 'number', unit: 'нг/л', min: 0, max: 100000, step: 0.1, quickValues: [3, 10, 30, 100, 500] },
-    { id: 'val1', label: '1 ч (или 3 ч) значение (нг/л)', type: 'number', unit: 'нг/л', min: 0, max: 100000, step: 0.1, quickValues: [3, 10, 30, 100, 500] },
+    { id: 'val0',
+hint: 'Концентрация в нг/л', label: '0 ч значение (нг/л)', type: 'number', unit: 'нг/л', min: 0, max: 100000, step: 0.1, quickValues: [3, 10, 30, 100, 500] },
+    { id: 'val1',
+hint: 'Концентрация в нг/л', label: '1 ч (или 3 ч) значение (нг/л)', type: 'number', unit: 'нг/л', min: 0, max: 100000, step: 0.1, quickValues: [3, 10, 30, 100, 500] },
     { id: 'interval', label: 'Интервал между заборами', type: 'select', options: [
       { value: '0', label: 'Нет 2-го забора (использовать только 0 ч)' },
       { value: '1', label: '0/1 ч алгоритм (ESC)' },

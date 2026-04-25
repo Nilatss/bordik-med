@@ -7,9 +7,12 @@ import type { CalculatorTool } from '../tools-runners';
 const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
-    { id: 'spo2', label: 'SpO₂', type: 'number', unit: '%', min: 50, max: 100, step: 1, quickValues: [85, 90, 92, 95, 97] },
-    { id: 'fio2', label: 'FiO₂', type: 'number', unit: 'доля (0.21-1.0)', min: 0.21, max: 1.0, step: 0.01, quickValues: [0.3, 0.4, 0.5, 0.6, 0.8, 1.0] },
-    { id: 'rr', label: 'ЧДД', type: 'number', unit: '/мин', min: 5, max: 60, step: 1, quickValues: [20, 25, 30, 35, 40] },
+    { id: 'spo2',
+hint: 'SpO₂, %. Норма: ≥95% на воздухе', label: 'SpO₂', type: 'number', unit: '%', min: 50, max: 100, step: 1, quickValues: [85, 90, 92, 95, 97] },
+    { id: 'fio2',
+hint: 'FiO₂ = доля O₂ во вдыхаемом воздухе (0.21 = атмосферный)', label: 'FiO₂', type: 'number', unit: 'доля (0.21-1.0)', min: 0.21, max: 1.0, step: 0.01, quickValues: [0.3, 0.4, 0.5, 0.6, 0.8, 1.0] },
+    { id: 'rr',
+hint: 'ЧДД, в минуту. Норма: 12-20', label: 'ЧДД', type: 'number', unit: '/мин', min: 5, max: 60, step: 1, quickValues: [20, 25, 30, 35, 40] },
   ],
   compute: (v) => {
     const spo2 = Number(v.spo2);

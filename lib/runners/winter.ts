@@ -23,6 +23,7 @@ const runner: CalculatorTool = {
     inputs: [
       {
         id: "hco3",
+        hint: 'HCO₃⁻ сыворотки. Норма: 22-26 ммоль/л',
         label: "HCO₃⁻ измеренный",
         type: "number",
         unit: "ммоль/л",

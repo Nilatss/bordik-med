@@ -7,8 +7,10 @@ import type {
 const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
-    { id: 'age', label: 'Возраст', type: 'number', unit: 'лет', min: 18, max: 110, step: 1, quickValues: [30, 50, 65, 75, 85] },
-    { id: 'dd', label: 'D-димер (FEU)', type: 'number', unit: 'мкг/л', min: 0, max: 20000, step: 10, quickValues: [300, 500, 800, 1200, 2000] },
+    { id: 'age',
+hint: 'Возраст в годах', label: 'Возраст', type: 'number', unit: 'лет', min: 18, max: 110, step: 1, quickValues: [30, 50, 65, 75, 85] },
+    { id: 'dd',
+hint: 'D-димер. Норма: <500 нг/мл FEU', label: 'D-димер (FEU)', type: 'number', unit: 'мкг/л', min: 0, max: 20000, step: 10, quickValues: [300, 500, 800, 1200, 2000] },
     { id: 'unit', label: 'Единицы D-димера', type: 'select', options: [
       { value: 'feu', label: 'FEU (Fibrinogen Equivalent Units, мкг/л)' },
       { value: 'ddu', label: 'DDU (D-Dimer Units, мкг/л) - делить FEU на 2' },

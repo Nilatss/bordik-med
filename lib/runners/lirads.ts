@@ -10,6 +10,7 @@ const runner: CalculatorTool = {
   inputs: [
     {
       id: 'size',
+      hint: 'Размер в миллиметрах',
       label: 'Размер очага (мм)',
       type: 'number',
       min: 1,

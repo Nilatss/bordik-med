@@ -7,8 +7,10 @@ import type { CalculatorTool } from '../tools-runners';
 const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
-    { id: 'baseCr', label: 'Базовый креатинин', type: 'number', unit: 'мкмоль/л', min: 20, max: 1500, step: 1, quickValues: [60, 80, 100, 120, 150, 200] },
-    { id: 'curCr', label: 'Текущий креатинин', type: 'number', unit: 'мкмоль/л', min: 20, max: 3000, step: 1, quickValues: [100, 150, 200, 300, 400, 600] },
+    { id: 'baseCr',
+hint: 'Креатинин сыворотки. Норма: М 62-115, Ж 53-97 мкмоль/л', label: 'Базовый креатинин', type: 'number', unit: 'мкмоль/л', min: 20, max: 1500, step: 1, quickValues: [60, 80, 100, 120, 150, 200] },
+    { id: 'curCr',
+hint: 'Креатинин сыворотки. Норма: М 62-115, Ж 53-97 мкмоль/л', label: 'Текущий креатинин', type: 'number', unit: 'мкмоль/л', min: 20, max: 3000, step: 1, quickValues: [100, 150, 200, 300, 400, 600] },
     {
       id: 'uo', label: 'Диурез (лучший из критериев)', type: 'select',
       options: [

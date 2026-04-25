@@ -10,9 +10,12 @@ const runner: CalculatorTool = {
       { value: 'm', label: 'Мужской' },
       { value: 'f', label: 'Женский' },
     ]},
-    { id: 'age', label: 'Возраст', type: 'number', unit: 'лет', min: 20, max: 100, step: 1 },
-    { id: 'height', label: 'Рост', type: 'number', unit: 'см', min: 100, max: 220, step: 1 },
-    { id: 'weight', label: 'Вес', type: 'number', unit: 'кг', min: 30, max: 200, step: 1 },
+    { id: 'age',
+hint: 'Возраст в годах', label: 'Возраст', type: 'number', unit: 'лет', min: 20, max: 100, step: 1 },
+    { id: 'height',
+hint: 'Рост в см (без обуви)', label: 'Рост', type: 'number', unit: 'см', min: 100, max: 220, step: 1 },
+    { id: 'weight',
+hint: 'Вес в кг (без одежды)', label: 'Вес', type: 'number', unit: 'кг', min: 30, max: 200, step: 1 },
   ],
   compute: (v) => {
     const d = Number(v.distance || 0);

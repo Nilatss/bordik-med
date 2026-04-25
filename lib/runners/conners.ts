@@ -25,6 +25,7 @@ const runner: CalculatorTool = {
     },
     {
       id: 'age',
+      hint: 'Возраст в годах',
       label: 'Возраст пациента (лет)',
       type: 'number',
       min: 6,

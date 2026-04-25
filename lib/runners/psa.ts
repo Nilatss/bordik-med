@@ -8,11 +8,14 @@ import type {
 const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
-    { id: 'psa1', label: 'PSA #1 (самый ранний)', type: 'number', unit: 'нг/мл', min: 0.01, max: 500, step: 0.01, quickValues: [1, 3, 5, 8] },
+    { id: 'psa1',
+hint: 'Концентрация в нг/мл', label: 'PSA #1 (самый ранний)', type: 'number', unit: 'нг/мл', min: 0.01, max: 500, step: 0.01, quickValues: [1, 3, 5, 8] },
     { id: 'months1', label: 'PSA #1: сколько месяцев назад', type: 'number', unit: 'мес', min: 0, max: 240, step: 1, quickValues: [24, 12, 6] },
-    { id: 'psa2', label: 'PSA #2 (средний)', type: 'number', unit: 'нг/мл', min: 0.01, max: 500, step: 0.01, quickValues: [2, 4, 6, 10] },
+    { id: 'psa2',
+hint: 'Концентрация в нг/мл', label: 'PSA #2 (средний)', type: 'number', unit: 'нг/мл', min: 0.01, max: 500, step: 0.01, quickValues: [2, 4, 6, 10] },
     { id: 'months2', label: 'PSA #2: сколько месяцев назад', type: 'number', unit: 'мес', min: 0, max: 240, step: 1, quickValues: [12, 6, 3] },
-    { id: 'psa3', label: 'PSA #3 (последний, текущий)', type: 'number', unit: 'нг/мл', min: 0.01, max: 500, step: 0.01, quickValues: [3, 5, 8, 14] },
+    { id: 'psa3',
+hint: 'Концентрация в нг/мл', label: 'PSA #3 (последний, текущий)', type: 'number', unit: 'нг/мл', min: 0.01, max: 500, step: 0.01, quickValues: [3, 5, 8, 14] },
   ],
   compute: (v) => {
     const psa1 = Number(v.psa1);

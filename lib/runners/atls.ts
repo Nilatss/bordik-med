@@ -19,6 +19,7 @@ const runner: CalculatorTool = {
     },
     {
       id: 'sbp',
+      hint: 'САД, мм рт.ст. Норма: <130',
       label: 'САД пациента',
       type: 'number',
       unit: 'мм рт.ст.',
@@ -29,6 +30,7 @@ const runner: CalculatorTool = {
     },
     {
       id: 'hr',
+      hint: 'ЧСС, уд/мин. Норма: 60-100',
       label: 'ЧСС',
       type: 'number',
       unit: '/мин',

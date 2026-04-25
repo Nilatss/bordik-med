@@ -30,6 +30,7 @@ const runner: CalculatorTool = {
     },
     {
       id: 'hb',
+      hint: 'Гемоглобин. Норма: М 130-170, Ж 120-150 г/л',
       label: 'Гемоглобин (г/л)',
       type: 'number',
       min: 40,
@@ -39,6 +40,7 @@ const runner: CalculatorTool = {
     },
     {
       id: 'plt',
+      hint: 'Тромбоциты. Норма: 150-400 ×10⁹/л',
       label: 'Тромбоциты (×10⁹/л)',
       type: 'number',
       min: 5,

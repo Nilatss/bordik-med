@@ -19,7 +19,8 @@ const runner: CalculatorTool = {
       { value: 'calcitonin', label: 'Кальцитонин - медуллярный рак ЩЖ' },
     ] },
     { id: 'value', label: 'Значение', type: 'number', unit: '', min: 0, max: 100000, step: 0.1, quickValues: [5, 20, 100, 500, 1000] },
-    { id: 'age', label: 'Возраст', type: 'number', unit: 'лет', min: 18, max: 110, step: 1, quickValues: [40, 55, 70] },
+    { id: 'age',
+hint: 'Возраст в годах', label: 'Возраст', type: 'number', unit: 'лет', min: 18, max: 110, step: 1, quickValues: [40, 55, 70] },
   ],
   compute: (v) => {
     const marker = String(v.marker);

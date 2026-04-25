@@ -23,6 +23,7 @@ const runner: CalculatorTool = {
     inputs: [
       {
         id: "ph",
+        hint: 'pH крови. Норма: 7.35-7.45',
         label: "pH",
         type: "number",
         unit: "",
@@ -39,6 +40,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "pco2",
+        hint: 'Артериальное давление в мм ртутного столба',
         label: "PaCO₂",
         type: "number",
         unit: "мм рт.ст.",
@@ -55,6 +57,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "hco3",
+        hint: 'HCO₃⁻ сыворотки. Норма: 22-26 ммоль/л',
         label: "HCO₃⁻",
         type: "number",
         unit: "ммоль/л",
@@ -70,6 +73,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "na",
+        hint: 'Натрий сыворотки. Норма: 135-145 ммоль/л',
         label: "Na⁺",
         type: "number",
         unit: "ммоль/л",
@@ -84,6 +88,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "cl",
+        hint: 'Хлор. Норма: 96-106 ммоль/л',
         label: "Cl⁻",
         type: "number",
         unit: "ммоль/л",
@@ -99,6 +104,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "albumin",
+        hint: 'Альбумин. Норма: 35-50 г/л',
         label: "Альбумин (для коррекции AG)",
         type: "number",
         unit: "г/л",

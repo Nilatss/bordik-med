@@ -23,6 +23,7 @@ const runner: CalculatorTool = {
     inputs: [
       {
         id: "u_na",
+        hint: 'Натрий сыворотки. Норма: 135-145 ммоль/л',
         label: "Na⁺ мочи",
         type: "number",
         unit: "ммоль/л",
@@ -39,6 +40,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "p_cr",
+        hint: 'Креатинин сыворотки. Норма: М 62-115, Ж 53-97 мкмоль/л',
         label: "Креатинин плазмы",
         type: "number",
         unit: "мкмоль/л",
@@ -55,6 +57,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "p_na",
+        hint: 'Натрий сыворотки. Норма: 135-145 ммоль/л',
         label: "Na⁺ плазмы",
         type: "number",
         unit: "ммоль/л",
@@ -70,6 +73,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "u_cr",
+        hint: 'Креатинин сыворотки. Норма: М 62-115, Ж 53-97 мкмоль/л',
         label: "Креатинин мочи",
         type: "number",
         unit: "мкмоль/л",

@@ -86,6 +86,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "age",
+        hint: 'Возраст в годах',
         label: "Возраст",
         type: "number",
         unit: "лет",
@@ -101,6 +102,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "weight",
+        hint: 'Вес в кг (без одежды)',
         label: "Вес",
         type: "number",
         unit: "кг",
@@ -118,6 +120,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "scr",
+        hint: 'Креатинин сыворотки',
         label: "Креатинин",
         type: "number",
         unit: "мкмоль/л",

@@ -39,6 +39,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "st",
+        hint: 'Размер в миллиметрах',
         label: "Максимальная депрессия ST",
         type: "number",
         unit: "мм",

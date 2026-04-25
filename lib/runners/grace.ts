@@ -23,6 +23,7 @@ const runner: CalculatorTool = {
     inputs: [
       {
         id: "age",
+        hint: 'Возраст в годах',
         label: "Возраст",
         type: "number",
         unit: "лет",
@@ -39,6 +40,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "hr",
+        hint: 'ЧСС, уд/мин. Норма: 60-100',
         label: "ЧСС",
         type: "number",
         unit: "уд/мин",
@@ -55,6 +57,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "sbp",
+        hint: 'САД, мм рт.ст. Норма: <130',
         label: "САД",
         type: "number",
         unit: "мм рт.ст.",
@@ -70,6 +73,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "cr",
+        hint: 'Креатинин сыворотки, мкмоль/л',
         label: "Креатинин",
         type: "number",
         unit: "мкмоль/л",

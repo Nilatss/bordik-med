@@ -7,10 +7,14 @@ import type {
 const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
-    { id: 'ca', label: 'Общий Ca', type: 'number', unit: 'ммоль/л', min: 1.5, max: 4, step: 0.01, quickValues: [2.1, 2.5, 2.8, 3.2] },
-    { id: 'alb', label: 'Альбумин', type: 'number', unit: 'г/л', min: 15, max: 55, step: 1, quickValues: [25, 35, 40, 45] },
-    { id: 'pth', label: 'ПТГ', type: 'number', unit: 'пг/мл', min: 0, max: 2000, step: 1, quickValues: [10, 40, 80, 200, 600] },
-    { id: 'vitd', label: '25-OH витамин D', type: 'number', unit: 'нг/мл', min: 0, max: 150, step: 1, quickValues: [10, 20, 30, 50, 80] },
+    { id: 'ca',
+hint: 'Кальций общий. Норма: 2.15-2.55 ммоль/л', label: 'Общий Ca', type: 'number', unit: 'ммоль/л', min: 1.5, max: 4, step: 0.01, quickValues: [2.1, 2.5, 2.8, 3.2] },
+    { id: 'alb',
+hint: 'Альбумин. Норма: 35-50 г/л', label: 'Альбумин', type: 'number', unit: 'г/л', min: 15, max: 55, step: 1, quickValues: [25, 35, 40, 45] },
+    { id: 'pth',
+hint: 'Концентрация в пг/мл', label: 'ПТГ', type: 'number', unit: 'пг/мл', min: 0, max: 2000, step: 1, quickValues: [10, 40, 80, 200, 600] },
+    { id: 'vitd',
+hint: 'Витамин D (25-OH). Норма: 30-100 нг/мл', label: '25-OH витамин D', type: 'number', unit: 'нг/мл', min: 0, max: 150, step: 1, quickValues: [10, 20, 30, 50, 80] },
     { id: 'urCa', label: '24 ч Ca мочи (опц.)', type: 'number', unit: 'ммоль/сут', min: 0, max: 20, step: 0.1, quickValues: [0, 3, 6, 10] },
   ],
   compute: (v) => {

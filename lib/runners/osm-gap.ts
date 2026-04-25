@@ -38,6 +38,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "na",
+        hint: 'Натрий сыворотки. Норма: 135-145 ммоль/л',
         label: "Na⁺",
         type: "number",
         unit: "ммоль/л",
@@ -52,6 +53,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "glucose",
+        hint: 'Глюкоза плазмы. Натощак: 3.9-5.5 ммоль/л',
         label: "Глюкоза",
         type: "number",
         unit: "ммоль/л",
@@ -68,6 +70,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "urea",
+        hint: 'Мочевина. Норма: 2.5-7.5 ммоль/л',
         label: "Мочевина",
         type: "number",
         unit: "ммоль/л",

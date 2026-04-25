@@ -23,6 +23,7 @@ const runner: CalculatorTool = {
     inputs: [
       {
         id: "diameter",
+        hint: 'Размер в миллиметрах',
         label: "Максимальный диаметр аорты",
         type: "number",
         unit: "мм",
@@ -57,6 +58,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "age",
+        hint: 'Возраст в годах',
         label: "Возраст",
         type: "number",
         unit: "лет",

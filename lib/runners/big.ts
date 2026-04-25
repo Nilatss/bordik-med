@@ -7,6 +7,7 @@ const runner: CalculatorTool = {
   inputs: [
     {
       id: 'bd',
+      hint: 'Концентрация в ммоль/л',
       label: 'Base Deficit (BD, избыток оснований × -1)',
       type: 'number',
       unit: 'ммоль/л',
@@ -17,6 +18,7 @@ const runner: CalculatorTool = {
     },
     {
       id: 'inr',
+      hint: 'МНО. Норма: 0.9-1.2 (без антикоагулянтов)',
       label: 'INR',
       type: 'number',
       unit: '',
@@ -27,6 +29,7 @@ const runner: CalculatorTool = {
     },
     {
       id: 'gcs',
+      hint: 'Шкала комы Глазго. 15 = норма, ≤8 = тяжёлая ЧМТ',
       label: 'GCS (Glasgow Coma Scale)',
       type: 'number',
       unit: '',

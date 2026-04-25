@@ -23,6 +23,7 @@ const runner: CalculatorTool = {
     inputs: [
       {
         id: "age",
+        hint: 'Возраст в годах',
         label: "Возраст",
         type: "number",
         unit: "лет",
@@ -38,6 +39,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "alb",
+        hint: 'Альбумин. Норма: 35-50 г/л',
         label: "Альбумин (день 0)",
         type: "number",
         unit: "г/л",
@@ -52,6 +54,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "bil0",
+        hint: 'Билирубин общий. Норма: 5-21 мкмоль/л',
         label: "Билирубин (день 0)",
         type: "number",
         unit: "мкмоль/л",
@@ -66,6 +69,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "bil7",
+        hint: 'Билирубин общий. Норма: 5-21 мкмоль/л',
         label: "Билирубин (день 7)",
         type: "number",
         unit: "мкмоль/л",
@@ -80,6 +84,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "ck",
+        hint: 'КФК. Норма: М <190, Ж <170 Ед/л',
         label: "Креатинин",
         type: "number",
         unit: "мкмоль/л",
@@ -94,6 +99,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "pt",
+        hint: 'Протромбиновое время, сек',
         label: "ПВ (с)",
         type: "number",
         unit: "сек",

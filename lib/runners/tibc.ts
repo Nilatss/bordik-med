@@ -8,9 +8,12 @@ import type {
 const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
-    { id: 'iron', label: 'Железо сыворотки', type: 'number', unit: 'мкмоль/л', min: 1, max: 100, step: 0.1, quickValues: [6, 12, 20, 30] },
-    { id: 'tibc', label: 'ОЖСС (TIBC)', type: 'number', unit: 'мкмоль/л', min: 20, max: 120, step: 0.1, quickValues: [45, 60, 75, 90] },
-    { id: 'ferritin', label: 'Ферритин', type: 'number', unit: 'мкг/л', min: 1, max: 3000, step: 1, quickValues: [10, 30, 100, 300, 800] },
+    { id: 'iron',
+hint: 'Концентрация в мкмоль/л', label: 'Железо сыворотки', type: 'number', unit: 'мкмоль/л', min: 1, max: 100, step: 0.1, quickValues: [6, 12, 20, 30] },
+    { id: 'tibc',
+hint: 'Концентрация в мкмоль/л', label: 'ОЖСС (TIBC)', type: 'number', unit: 'мкмоль/л', min: 20, max: 120, step: 0.1, quickValues: [45, 60, 75, 90] },
+    { id: 'ferritin',
+hint: 'Ферритин. Низкий: <30 нг/мл', label: 'Ферритин', type: 'number', unit: 'мкг/л', min: 1, max: 3000, step: 1, quickValues: [10, 30, 100, 300, 800] },
     { id: 'sex', label: 'Пол', type: 'select', options: [
       { value: 'm', label: 'Мужской' },
       { value: 'f', label: 'Женский' },

@@ -51,7 +51,8 @@ const runner: CalculatorTool = {
         { value: '0', label: '0' },
       ],
     },
-    { id: 'age', label: 'Возраст', type: 'number', unit: 'лет', min: 0, max: 120, step: 1, quickValues: [25, 40, 54, 55, 70] },
+    { id: 'age',
+hint: 'Возраст в годах', label: 'Возраст', type: 'number', unit: 'лет', min: 0, max: 120, step: 1, quickValues: [25, 40, 54, 55, 70] },
   ],
   compute: (v) => {
     const mech = String(v.mech || 'blunt');

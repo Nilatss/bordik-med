@@ -23,6 +23,7 @@ const runner: CalculatorTool = {
     inputs: [
       {
         id: "hr",
+        hint: 'ЧСС, уд/мин. Норма: 60-100',
         label: "ЧСС",
         type: "number",
         unit: "уд/мин",
@@ -39,6 +40,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "sbp",
+        hint: 'САД, мм рт.ст. Норма: <130',
         label: "САД",
         type: "number",
         unit: "мм рт.ст.",

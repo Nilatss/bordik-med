@@ -8,11 +8,15 @@ import type {
 const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
-    { id: 'age', label: 'Возраст', type: 'number', unit: 'лет', min: 0, max: 100, quickValues: [25, 35, 45, 55, 65] },
+    { id: 'age',
+hint: 'Возраст в годах', label: 'Возраст', type: 'number', unit: 'лет', min: 0, max: 100, quickValues: [25, 35, 45, 55, 65] },
     { id: 'duration', label: 'Длительность симптомов', type: 'number', unit: 'дн', min: 0, max: 90, quickValues: [1, 3, 5, 7, 14, 21] },
-    { id: 'wbc', label: 'Лейкоциты крови', type: 'number', unit: '×10⁹/л', min: 0.5, max: 50, step: 0.1, quickValues: [5, 8, 12, 18, 25] },
-    { id: 'csf_wbc', label: 'WBC в ЦСЖ', type: 'number', unit: 'кл/мкл', min: 0, max: 5000, quickValues: [50, 200, 500, 1000, 3000] },
-    { id: 'csf_neu', label: 'Доля нейтрофилов в ЦСЖ', type: 'number', unit: '%', min: 0, max: 100, quickValues: [10, 30, 50, 70, 90] },
+    { id: 'wbc',
+hint: 'Лейкоциты. Норма: 4-10 ×10⁹/л', label: 'Лейкоциты крови', type: 'number', unit: '×10⁹/л', min: 0.5, max: 50, step: 0.1, quickValues: [5, 8, 12, 18, 25] },
+    { id: 'csf_wbc',
+hint: 'Лейкоциты. Норма: 4-10 ×10⁹/л', label: 'WBC в ЦСЖ', type: 'number', unit: 'кл/мкл', min: 0, max: 5000, quickValues: [50, 200, 500, 1000, 3000] },
+    { id: 'csf_neu',
+hint: 'Абсолютное число нейтрофилов. Норма: 1.8-7.0 ×10⁹/л', label: 'Доля нейтрофилов в ЦСЖ', type: 'number', unit: '%', min: 0, max: 100, quickValues: [10, 30, 50, 70, 90] },
   ],
   compute: (v) => {
     const age = Number(v.age) || 0;

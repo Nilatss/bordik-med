@@ -5,9 +5,11 @@ import type { CalculatorTool } from '../tools-runners';
 const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
-    { id: 'weight', label: 'Масса тела', type: 'number', unit: 'кг', min: 20, max: 200, step: 1, quickValues: [50, 60, 70, 80, 90, 100] },
+    { id: 'weight',
+hint: 'Вес в кг (без одежды)', label: 'Масса тела', type: 'number', unit: 'кг', min: 20, max: 200, step: 1, quickValues: [50, 60, 70, 80, 90, 100] },
     { id: 'ongoing', label: 'Продолжающееся массивное кровотечение', type: 'checkbox' },
-    { id: 'hgb', label: 'Гемоглобин', type: 'number', unit: 'г/л', min: 20, max: 180, step: 1, quickValues: [50, 70, 80, 90, 100] },
+    { id: 'hgb',
+hint: 'Гемоглобин. Норма: М 130-170, Ж 120-150 г/л', label: 'Гемоглобин', type: 'number', unit: 'г/л', min: 20, max: 180, step: 1, quickValues: [50, 70, 80, 90, 100] },
     { id: 'coag', label: 'Лабораторная коагулопатия (INR>1.5, fib<1.5 г/л, тромб<50)', type: 'checkbox' },
   ],
   compute: (v) => {

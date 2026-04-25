@@ -23,6 +23,7 @@ const runner: CalculatorTool = {
     inputs: [
       {
         id: "ageYears",
+        hint: 'Возраст в годах',
         label: "Возраст",
         type: "number",
         unit: "лет",
@@ -55,6 +56,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "weight",
+        hint: 'Вес в кг (без одежды)',
         label: "Масса тела",
         type: "number",
         unit: "кг",
@@ -71,6 +73,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "height",
+        hint: 'Рост в см (без обуви)',
         label: "Рост",
         type: "number",
         unit: "см",

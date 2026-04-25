@@ -23,6 +23,7 @@ const runner: CalculatorTool = {
     inputs: [
       {
         id: "ca",
+        hint: 'Кальций общий. Норма: 2.15-2.55 ммоль/л',
         label: "Ca²⁺ общий",
         type: "number",
         unit: "ммоль/л",
@@ -40,6 +41,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "alb",
+        hint: 'Альбумин. Норма: 35-50 г/л',
         label: "Альбумин",
         type: "number",
         unit: "г/л",

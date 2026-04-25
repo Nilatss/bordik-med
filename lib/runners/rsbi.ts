@@ -7,8 +7,10 @@ import type { CalculatorTool } from '../tools-runners';
 const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
-    { id: 'rr', label: 'ЧДД (во время SBT/T-piece)', type: 'number', unit: '/мин', min: 5, max: 60, step: 1, quickValues: [12, 18, 22, 26, 30, 35] },
-    { id: 'vt', label: 'Дыхательный объём (Vt)', type: 'number', unit: 'мл', min: 50, max: 1000, step: 10, quickValues: [300, 400, 450, 500, 600] },
+    { id: 'rr',
+hint: 'ЧДД, в минуту. Норма: 12-20', label: 'ЧДД (во время SBT/T-piece)', type: 'number', unit: '/мин', min: 5, max: 60, step: 1, quickValues: [12, 18, 22, 26, 30, 35] },
+    { id: 'vt',
+hint: 'Объём в миллилитрах', label: 'Дыхательный объём (Vt)', type: 'number', unit: 'мл', min: 50, max: 1000, step: 10, quickValues: [300, 400, 450, 500, 600] },
   ],
   compute: (v) => {
     const rr = Number(v.rr);

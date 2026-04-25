@@ -23,6 +23,7 @@ const runner: CalculatorTool = {
     inputs: [
       {
         id: "volume",
+        hint: 'Объём в миллилитрах',
         label: "Объём инфузии",
         type: "number",
         unit: "мл",

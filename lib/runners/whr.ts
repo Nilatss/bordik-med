@@ -23,6 +23,7 @@ const runner: CalculatorTool = {
     inputs: [
       {
         id: "waist",
+        hint: 'Рост / длина в сантиметрах',
         label: "Окружность талии",
         type: "number",
         unit: "см",
@@ -39,6 +40,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "hip",
+        hint: 'Рост / длина в сантиметрах',
         label: "Окружность бёдер",
         type: "number",
         unit: "см",

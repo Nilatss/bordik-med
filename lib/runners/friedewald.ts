@@ -23,6 +23,7 @@ const runner: CalculatorTool = {
     inputs: [
       {
         id: "tc",
+        hint: 'Общий холестерин. Норма: <5.0 ммоль/л',
         label: "Общий холестерин",
         type: "number",
         unit: "ммоль/л",
@@ -39,6 +40,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "hdl",
+        hint: 'ЛПВП. Норма: М ≥1.0, Ж ≥1.3 ммоль/л',
         label: "ЛПВП (HDL)",
         type: "number",
         unit: "ммоль/л",
@@ -55,6 +57,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "tg",
+        hint: 'Триглицериды. Норма: <1.7 ммоль/л',
         label: "Триглицериды",
         type: "number",
         unit: "ммоль/л",

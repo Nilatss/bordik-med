@@ -14,7 +14,8 @@ const runner: CalculatorTool = {
       { value: 'uff', label: '24 ч свободный кортизол мочи (UFC)' },
     ] },
     { id: 'cortisol', label: 'Кортизол', type: 'number', unit: 'нмоль/л или нмоль/сут', min: 0, max: 3000, step: 1, quickValues: [50, 150, 300, 500, 1000] },
-    { id: 'acth', label: 'АКТГ (опционально)', type: 'number', unit: 'пг/мл', min: 0, max: 2000, step: 1, quickValues: [0, 15, 50, 100, 300] },
+    { id: 'acth',
+hint: 'Концентрация в пг/мл', label: 'АКТГ (опционально)', type: 'number', unit: 'пг/мл', min: 0, max: 2000, step: 1, quickValues: [0, 15, 50, 100, 300] },
   ],
   compute: (v) => {
     const test = String(v.test);

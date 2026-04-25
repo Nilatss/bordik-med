@@ -10,6 +10,7 @@ const runner: CalculatorTool = {
   inputs: [
     {
       id: 'anc',
+      hint: 'Абсолютное число нейтрофилов. Норма: 1.8-7.0 ×10⁹/л',
       label: 'ANC (абсолютное число нейтрофилов, × 10⁹/л)',
       type: 'number',
       min: 0,
@@ -18,6 +19,7 @@ const runner: CalculatorTool = {
     },
     {
       id: 'temp',
+      hint: 'Температура тела, °C. Норма: 36.0-37.0',
       label: 'Температура (°C)',
       type: 'number',
       min: 35,

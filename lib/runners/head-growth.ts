@@ -23,6 +23,7 @@ const runner: CalculatorTool = {
     inputs: [
       {
         id: "age",
+        hint: 'Возраст в годах',
         label: "Возраст",
         type: "number",
         unit: "мес",
@@ -56,6 +57,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "hc",
+        hint: 'Рост / длина в сантиметрах',
         label: "Окружность головы",
         type: "number",
         unit: "см",
@@ -72,6 +74,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "muac",
+        hint: 'Рост / длина в сантиметрах',
         label: "MUAC (окр. плеча)",
         type: "number",
         unit: "см",

@@ -61,6 +61,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "baseline",
+        hint: 'Концентрация в нг/л',
         label: "Исходный hs-cTn (0 ч)",
         type: "number",
         unit: "нг/л",
@@ -78,6 +79,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "repeat",
+        hint: 'Концентрация в нг/л',
         label: "Повторный hs-cTn (1 или 2 ч)",
         type: "number",
         unit: "нг/л",

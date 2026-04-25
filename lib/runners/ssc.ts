@@ -10,6 +10,7 @@ const runner: CalculatorTool = {
   inputs: [
     {
       id: 'lactate',
+      hint: 'Лактат. Норма: <2 ммоль/л; >4 — лактат-ацидоз',
       label: 'Лактат',
       type: 'number',
       unit: 'ммоль/л',
@@ -20,6 +21,7 @@ const runner: CalculatorTool = {
     },
     {
       id: 'map',
+      hint: 'СрАД = (САД + 2·ДАД)/3. Норма: 70-100',
       label: 'MAP (среднее АД) после инфузии',
       type: 'number',
       unit: 'мм рт.ст.',

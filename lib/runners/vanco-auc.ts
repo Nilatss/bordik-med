@@ -23,6 +23,7 @@ const runner: CalculatorTool = {
     inputs: [
       {
         id: "trough",
+        hint: 'Концентрация в мг/л',
         label: "Концентрация trough",
         type: "number",
         unit: "мг/л",
@@ -86,6 +87,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "mic",
+        hint: 'Концентрация в мг/л',
         label: "МПК (МИК) S. aureus",
         type: "number",
         unit: "мг/л",

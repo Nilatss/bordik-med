@@ -23,8 +23,10 @@ const runner: CalculatorTool = {
       ],
     },
     { id: 'walks', label: 'Способен идти (SIEVE)', type: 'checkbox' },
-    { id: 'rr', label: 'ЧДД', type: 'number', unit: '/мин', min: 0, max: 80, step: 1, quickValues: [0, 8, 12, 20, 30, 40] },
-    { id: 'hr', label: 'ЧСС', type: 'number', unit: '/мин', min: 0, max: 220, step: 1, quickValues: [60, 90, 110, 120, 140] },
+    { id: 'rr',
+hint: 'ЧДД, в минуту. Норма: 12-20', label: 'ЧДД', type: 'number', unit: '/мин', min: 0, max: 80, step: 1, quickValues: [0, 8, 12, 20, 30, 40] },
+    { id: 'hr',
+hint: 'ЧСС, уд/мин. Норма: 60-100', label: 'ЧСС', type: 'number', unit: '/мин', min: 0, max: 220, step: 1, quickValues: [60, 90, 110, 120, 140] },
     { id: 'crt_high', label: 'CRT > 2 с', type: 'checkbox' },
     {
       id: 'gcs',

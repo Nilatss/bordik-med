@@ -23,6 +23,7 @@ const runner: CalculatorTool = {
     inputs: [
       {
         id: "age",
+        hint: 'Возраст в годах',
         label: "Возраст",
         type: "number",
         unit: "лет",
@@ -44,6 +45,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "sbp",
+        hint: 'САД, мм рт.ст. Норма: <130',
         label: "САД",
         type: "number",
         unit: "мм рт.ст.",
@@ -61,6 +63,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "tc",
+        hint: 'Общий холестерин. Норма: <5.0 ммоль/л',
         label: "Общий холестерин",
         type: "number",
         unit: "ммоль/л",
@@ -76,6 +79,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "hdl",
+        hint: 'ЛПВП. Норма: М ≥1.0, Ж ≥1.3 ммоль/л',
         label: "ХС-ЛПВП",
         type: "number",
         unit: "ммоль/л",
@@ -96,6 +100,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "hscrp",
+        hint: 'СРБ. Норма: <5 мг/л',
         label: "hs-CRP",
         type: "number",
         unit: "мг/л",

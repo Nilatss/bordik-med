@@ -23,6 +23,7 @@ const runner: CalculatorTool = {
     inputs: [
       {
         id: "weight",
+        hint: 'Вес в кг (без одежды)',
         label: "Вес",
         type: "number",
         unit: "кг",

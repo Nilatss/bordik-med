@@ -7,7 +7,8 @@ import type {
 const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
-    { id: 'age', label: 'Возраст (лет)', type: 'number', min: 18, max: 120, step: 1, quickValues: [30, 50, 70, 85] },
+    { id: 'age',
+hint: 'Возраст в годах', label: 'Возраст (лет)', type: 'number', min: 18, max: 120, step: 1, quickValues: [30, 50, 70, 85] },
     {
       id: 'sex',
       label: 'Пол',
@@ -35,9 +36,12 @@ const runner: CalculatorTool = {
         { value: 1, label: 'Кровь (свежая / тёмная)' },
       ],
     },
-    { id: 'hr', label: 'ЧСС (уд/мин)', type: 'number', min: 30, max: 200, step: 1, quickValues: [65, 85, 100, 120] },
-    { id: 'sbp', label: 'Систолическое АД (мм рт. ст.)', type: 'number', min: 40, max: 250, step: 1, quickValues: [90, 110, 130, 160] },
-    { id: 'hb', label: 'Гемоглобин (г/л)', type: 'number', min: 30, max: 200, step: 1, quickValues: [70, 100, 120, 140] },
+    { id: 'hr',
+hint: 'ЧСС, уд/мин. Норма: 60-100', label: 'ЧСС (уд/мин)', type: 'number', min: 30, max: 200, step: 1, quickValues: [65, 85, 100, 120] },
+    { id: 'sbp',
+hint: 'САД, мм рт.ст. Норма: <130', label: 'Систолическое АД (мм рт. ст.)', type: 'number', min: 40, max: 250, step: 1, quickValues: [90, 110, 130, 160] },
+    { id: 'hb',
+hint: 'Гемоглобин. Норма: М 130-170, Ж 120-150 г/л', label: 'Гемоглобин (г/л)', type: 'number', min: 30, max: 200, step: 1, quickValues: [70, 100, 120, 140] },
   ],
   compute: (v) => {
     const age = Number(v.age) || 0;

@@ -13,7 +13,8 @@ import type {
 const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
-    { id: 'age', label: 'Возраст, лет', type: 'number', min: 40, max: 90, step: 1, quickValues: [50, 55, 60, 65, 70, 75] },
+    { id: 'age',
+hint: 'Возраст в годах', label: 'Возраст, лет', type: 'number', min: 40, max: 90, step: 1, quickValues: [50, 55, 60, 65, 70, 75] },
     {
       id: 'sex',
       label: 'Пол',
@@ -23,8 +24,10 @@ const runner: CalculatorTool = {
         { value: 'm', label: 'Мужской' },
       ],
     },
-    { id: 'weight', label: 'Вес, кг', type: 'number', min: 30, max: 200, step: 0.5, quickValues: [50, 60, 70, 80] },
-    { id: 'height', label: 'Рост, см', type: 'number', min: 120, max: 210, step: 0.5, quickValues: [155, 160, 165, 170] },
+    { id: 'weight',
+hint: 'Вес в кг (без одежды)', label: 'Вес, кг', type: 'number', min: 30, max: 200, step: 0.5, quickValues: [50, 60, 70, 80] },
+    { id: 'height',
+hint: 'Рост в см (без обуви)', label: 'Рост, см', type: 'number', min: 120, max: 210, step: 0.5, quickValues: [155, 160, 165, 170] },
     { id: 'priorFx', label: 'Предыдущий остеопоротический перелом', type: 'checkbox' },
     { id: 'parentHip', label: 'Перелом бедра у родителей', type: 'checkbox' },
     { id: 'smoker', label: 'Текущее курение', type: 'checkbox' },

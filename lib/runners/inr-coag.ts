@@ -7,7 +7,8 @@ import type {
 const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
-    { id: 'inr', label: 'INR', type: 'number', unit: '', min: 0.8, max: 10, step: 0.1, quickValues: [1.0, 2.0, 2.5, 3.0, 4.0, 6.0] },
+    { id: 'inr',
+hint: 'МНО. Норма: 0.9-1.2 (без антикоагулянтов)', label: 'INR', type: 'number', unit: '', min: 0.8, max: 10, step: 0.1, quickValues: [1.0, 2.0, 2.5, 3.0, 4.0, 6.0] },
     { id: 'context', label: 'Клинический контекст', type: 'select', options: [
       { value: 'warfarin-afib', label: 'Варфарин при ФП (цель 2-3)' },
       { value: 'warfarin-valve', label: 'Варфарин при мех. клапане (цель 2.5-3.5)' },

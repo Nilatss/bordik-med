@@ -46,6 +46,7 @@ const runner: CalculatorTool = {
     },
     {
       id: 'age',
+      hint: 'Возраст в годах',
       label: 'Возраст ребёнка (лет)',
       type: 'number',
       min: 1,

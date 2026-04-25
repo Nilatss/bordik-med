@@ -23,6 +23,7 @@ const runner: CalculatorTool = {
     inputs: [
       {
         id: "value",
+        hint: 'Билирубин общий. Норма: 5-21 мкмоль/л',
         label: "Билирубин",
         type: "number",
         unit: "mg/dL",

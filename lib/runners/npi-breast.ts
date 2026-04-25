@@ -10,6 +10,7 @@ const runner: CalculatorTool = {
   inputs: [
     {
       id: 'size',
+      hint: 'Рост / длина в сантиметрах',
       label: 'Размер опухоли (см)',
       type: 'number',
       min: 0.1,

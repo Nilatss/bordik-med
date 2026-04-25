@@ -8,12 +8,18 @@ import type {
 const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
-    { id: 'ast', label: 'АСТ', type: 'number', unit: 'Ед/л', min: 5, max: 2000, quickValues: [20, 40, 80, 150, 300] },
-    { id: 'ast_uln', label: 'Верхняя норма АСТ', type: 'number', unit: 'Ед/л', min: 20, max: 50, quickValues: [33, 35, 40] },
-    { id: 'alt', label: 'АЛТ', type: 'number', unit: 'Ед/л', min: 5, max: 2000, quickValues: [20, 40, 80, 150, 300] },
-    { id: 'plt', label: 'Тромбоциты', type: 'number', unit: '×10⁹/л', min: 10, max: 600, quickValues: [80, 120, 180, 250, 350] },
-    { id: 'age', label: 'Возраст', type: 'number', unit: 'лет', min: 0, max: 100, quickValues: [30, 45, 55, 65] },
-    { id: 'albumin', label: 'Альбумин', type: 'number', unit: 'г/дл', min: 1, max: 6, step: 0.1, quickValues: [3.0, 3.5, 4.0, 4.5] },
+    { id: 'ast',
+hint: 'АСТ. Норма: М <40, Ж <32 Ед/л', label: 'АСТ', type: 'number', unit: 'Ед/л', min: 5, max: 2000, quickValues: [20, 40, 80, 150, 300] },
+    { id: 'ast_uln',
+hint: 'Активность фермента в Ед/л', label: 'Верхняя норма АСТ', type: 'number', unit: 'Ед/л', min: 20, max: 50, quickValues: [33, 35, 40] },
+    { id: 'alt',
+hint: 'АЛТ. Норма: М <40, Ж <32 Ед/л', label: 'АЛТ', type: 'number', unit: 'Ед/л', min: 5, max: 2000, quickValues: [20, 40, 80, 150, 300] },
+    { id: 'plt',
+hint: 'Тромбоциты. Норма: 150-400 ×10⁹/л', label: 'Тромбоциты', type: 'number', unit: '×10⁹/л', min: 10, max: 600, quickValues: [80, 120, 180, 250, 350] },
+    { id: 'age',
+hint: 'Возраст в годах', label: 'Возраст', type: 'number', unit: 'лет', min: 0, max: 100, quickValues: [30, 45, 55, 65] },
+    { id: 'albumin',
+hint: 'Альбумин. Норма: 35-50 г/л', label: 'Альбумин', type: 'number', unit: 'г/дл', min: 1, max: 6, step: 0.1, quickValues: [3.0, 3.5, 4.0, 4.5] },
   ],
   compute: (v) => {
     const ast = Number(v.ast) || 0;

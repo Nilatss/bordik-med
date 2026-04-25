@@ -8,7 +8,8 @@ import type {
 const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
-    { id: 'age', label: 'Возраст', type: 'number', unit: 'лет', min: 0, max: 120, quickValues: [40, 55, 65, 75, 85] },
+    { id: 'age',
+hint: 'Возраст в годах', label: 'Возраст', type: 'number', unit: 'лет', min: 0, max: 120, quickValues: [40, 55, 65, 75, 85] },
     { id: 'sex', label: 'Пол', type: 'select', options: [
       { value: 'm', label: 'Мужской' }, { value: 'f', label: 'Женский' },
     ]},
@@ -17,11 +18,15 @@ const runner: CalculatorTool = {
       { value: '1', label: '1', points: 1 },
       { value: '2', label: '≥ 2', points: 2 },
     ]},
-    { id: 'rr', label: 'ЧДД', type: 'number', unit: '/мин', min: 8, max: 60, quickValues: [16, 20, 24, 30, 36] },
-    { id: 'spo2', label: 'SpO₂ на комнатном воздухе', type: 'number', unit: '%', min: 50, max: 100, quickValues: [88, 92, 94, 96, 98] },
+    { id: 'rr',
+hint: 'ЧДД, в минуту. Норма: 12-20', label: 'ЧДД', type: 'number', unit: '/мин', min: 8, max: 60, quickValues: [16, 20, 24, 30, 36] },
+    { id: 'spo2',
+hint: 'SpO₂, %. Норма: ≥95% на воздухе', label: 'SpO₂ на комнатном воздухе', type: 'number', unit: '%', min: 50, max: 100, quickValues: [88, 92, 94, 96, 98] },
     { id: 'gcs', label: 'GCS < 15', type: 'checkbox' },
-    { id: 'urea', label: 'Мочевина', type: 'number', unit: 'ммоль/л', min: 1, max: 50, quickValues: [5, 7, 10, 14, 20] },
-    { id: 'crp', label: 'СРБ', type: 'number', unit: 'мг/л', min: 0, max: 500, quickValues: [20, 50, 100, 150, 250] },
+    { id: 'urea',
+hint: 'Мочевина. Норма: 2.5-7.5 ммоль/л', label: 'Мочевина', type: 'number', unit: 'ммоль/л', min: 1, max: 50, quickValues: [5, 7, 10, 14, 20] },
+    { id: 'crp',
+hint: 'СРБ. Норма: <5 мг/л', label: 'СРБ', type: 'number', unit: 'мг/л', min: 0, max: 500, quickValues: [20, 50, 100, 150, 250] },
   ],
   compute: (v) => {
     const age = Number(v.age) || 0;

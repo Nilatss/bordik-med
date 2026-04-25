@@ -23,6 +23,7 @@ const runner: CalculatorTool = {
     inputs: [
       {
         id: "length",
+        hint: 'Рост / длина в сантиметрах',
         label: "Длина тела (рост)",
         type: "number",
         unit: "см",

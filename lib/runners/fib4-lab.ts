@@ -8,10 +8,14 @@ import type {
 const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
-    { id: 'age', label: 'Возраст', type: 'number', unit: 'лет', min: 18, max: 100, quickValues: [35, 50, 60, 70] },
-    { id: 'ast', label: 'АСТ', type: 'number', unit: 'Ед/л', min: 5, max: 2000, quickValues: [25, 60, 120, 250] },
-    { id: 'alt', label: 'АЛТ', type: 'number', unit: 'Ед/л', min: 5, max: 2000, quickValues: [25, 60, 120, 250] },
-    { id: 'plt', label: 'Тромбоциты', type: 'number', unit: '×10⁹/л', min: 20, max: 600, quickValues: [80, 150, 220, 300] },
+    { id: 'age',
+hint: 'Возраст в годах', label: 'Возраст', type: 'number', unit: 'лет', min: 18, max: 100, quickValues: [35, 50, 60, 70] },
+    { id: 'ast',
+hint: 'АСТ. Норма: М <40, Ж <32 Ед/л', label: 'АСТ', type: 'number', unit: 'Ед/л', min: 5, max: 2000, quickValues: [25, 60, 120, 250] },
+    { id: 'alt',
+hint: 'АЛТ. Норма: М <40, Ж <32 Ед/л', label: 'АЛТ', type: 'number', unit: 'Ед/л', min: 5, max: 2000, quickValues: [25, 60, 120, 250] },
+    { id: 'plt',
+hint: 'Тромбоциты. Норма: 150-400 ×10⁹/л', label: 'Тромбоциты', type: 'number', unit: '×10⁹/л', min: 20, max: 600, quickValues: [80, 150, 220, 300] },
   ],
   compute: (v) => {
     const age = Number(v.age) || 0;

@@ -10,6 +10,7 @@ const runner: CalculatorTool = {
   inputs: [
     {
       id: 'b2m',
+      hint: 'Концентрация в мг/л',
       label: 'β2-микроглобулин (мг/л)',
       type: 'number',
       min: 0,
@@ -19,6 +20,7 @@ const runner: CalculatorTool = {
     },
     {
       id: 'albumin',
+      hint: 'Альбумин. Норма: 35-50 г/л',
       label: 'Альбумин (г/л)',
       type: 'number',
       min: 10,

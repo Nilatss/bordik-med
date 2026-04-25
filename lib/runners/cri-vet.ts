@@ -19,7 +19,8 @@ const runner: CalculatorTool = {
         { value: 'dexmed',    label: 'Дексмедетомидин' },
       ],
     },
-    { id: 'weight', label: 'Масса тела (кг)', type: 'number', min: 0.5, max: 80, step: 0.1, unit: 'кг' },
+    { id: 'weight',
+hint: 'Вес в кг (без одежды)', label: 'Масса тела (кг)', type: 'number', min: 0.5, max: 80, step: 0.1, unit: 'кг' },
     { id: 'dose',   label: 'Доза (мкг/кг/мин)', type: 'number', min: 0.01, max: 100, step: 0.01, unit: 'мкг/кг/мин' },
     {
       id: 'conc',

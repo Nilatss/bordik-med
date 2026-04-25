@@ -8,14 +8,17 @@ import type {
 const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
-    { id: 'plt', label: 'Тромбоциты × 10⁹/л', type: 'number', unit: '× 10⁹/л', min: 1, max: 500, step: 1, quickValues: [30, 60, 90, 120, 200] },
+    { id: 'plt',
+hint: 'Тромбоциты. Норма: 150-400 ×10⁹/л', label: 'Тромбоциты × 10⁹/л', type: 'number', unit: '× 10⁹/л', min: 1, max: 500, step: 1, quickValues: [30, 60, 90, 120, 200] },
     { id: 'ddimer', label: 'D-димер / ФДП', type: 'select', options: [
       { value: '0', label: 'Нет повышения' },
       { value: '2', label: 'Умеренное повышение (2-5× ВГН)' },
       { value: '3', label: 'Значительное повышение (> 5× ВГН)' },
     ] },
-    { id: 'pt', label: 'Удлинение ПВ (сек свыше нормы)', type: 'number', unit: 'сек', min: 0, max: 30, step: 0.5, quickValues: [0, 3, 6, 10] },
-    { id: 'fib', label: 'Фибриноген', type: 'number', unit: 'г/л', min: 0.3, max: 10, step: 0.1, quickValues: [0.8, 1.5, 2.5, 4] },
+    { id: 'pt',
+hint: 'Протромбиновое время, сек', label: 'Удлинение ПВ (сек свыше нормы)', type: 'number', unit: 'сек', min: 0, max: 30, step: 0.5, quickValues: [0, 3, 6, 10] },
+    { id: 'fib',
+hint: 'Фибриноген. Норма: 2-4 г/л', label: 'Фибриноген', type: 'number', unit: 'г/л', min: 0.3, max: 10, step: 0.1, quickValues: [0.8, 1.5, 2.5, 4] },
   ],
   compute: (v) => {
     const plt = Number(v.plt) || 0;

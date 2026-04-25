@@ -21,6 +21,7 @@ const runner: CalculatorTool = {
     },
     {
       id: 'size',
+      hint: 'Размер в миллиметрах',
       label: 'Размер узла (максимальный диаметр)',
       type: 'number',
       unit: 'мм',

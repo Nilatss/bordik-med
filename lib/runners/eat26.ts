@@ -25,6 +25,7 @@ const runner: CalculatorTool = {
     },
     {
       id: 'bmi',
+      hint: 'ИМТ = вес (кг) / рост² (м²)',
       label: 'ИМТ (кг/м²)',
       type: 'number',
       min: 10,

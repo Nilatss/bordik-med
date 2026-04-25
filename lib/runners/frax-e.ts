@@ -7,9 +7,11 @@ import type {
 const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
-    { id: 'age', label: 'Возраст', type: 'number', unit: 'лет', min: 40, max: 90, step: 1, quickValues: [50, 60, 65, 70, 75, 80] },
+    { id: 'age',
+hint: 'Возраст в годах', label: 'Возраст', type: 'number', unit: 'лет', min: 40, max: 90, step: 1, quickValues: [50, 60, 65, 70, 75, 80] },
     { id: 'female', label: 'Женский пол', type: 'checkbox' },
-    { id: 'bmi', label: 'ИМТ', type: 'number', unit: 'кг/м²', min: 15, max: 45, step: 0.5, quickValues: [18, 22, 25, 28, 32] },
+    { id: 'bmi',
+hint: 'ИМТ = вес (кг) / рост² (м²)', label: 'ИМТ', type: 'number', unit: 'кг/м²', min: 15, max: 45, step: 0.5, quickValues: [18, 22, 25, 28, 32] },
     { id: 'prevfx', label: 'Предыдущий малоэнергетический перелом', type: 'checkbox' },
     { id: 'parenthip', label: 'Перелом шейки бедра у родителей', type: 'checkbox' },
     { id: 'smoke', label: 'Курение', type: 'checkbox' },

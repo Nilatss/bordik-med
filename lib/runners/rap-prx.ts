@@ -5,9 +5,11 @@ import type { CalculatorTool } from '../tools-runners';
 const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
-    { id: 'prx', label: 'PRx (moving correlation MAP/ICP)', type: 'number', unit: '', min: -1, max: 1, step: 0.05, quickValues: [-0.5, -0.2, 0, 0.2, 0.4, 0.6] },
+    { id: 'prx',
+hint: 'Среднее АД = (САД + 2·ДАД)/3. Норма: 70-100', label: 'PRx (moving correlation MAP/ICP)', type: 'number', unit: '', min: -1, max: 1, step: 0.05, quickValues: [-0.5, -0.2, 0, 0.2, 0.4, 0.6] },
     { id: 'rap', label: 'RAP (correlation AMP/ICP)', type: 'number', unit: '', min: -1, max: 1, step: 0.05, quickValues: [0, 0.3, 0.5, 0.8, 1] },
-    { id: 'cpp', label: 'Текущий CPP', type: 'number', unit: 'мм рт.ст.', min: 20, max: 140, step: 1, quickValues: [50, 60, 70, 80, 90] },
+    { id: 'cpp',
+hint: 'Артериальное давление в мм ртутного столба', label: 'Текущий CPP', type: 'number', unit: 'мм рт.ст.', min: 20, max: 140, step: 1, quickValues: [50, 60, 70, 80, 90] },
   ],
   compute: (v) => {
     const prx = Number(v.prx);

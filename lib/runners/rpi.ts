@@ -9,7 +9,8 @@ const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
     { id: 'retic', label: 'Ретикулоциты', type: 'number', unit: '%', min: 0, max: 40, step: 0.1, quickValues: [0.5, 1.0, 2.0, 5.0, 10] },
-    { id: 'hct', label: 'Гематокрит', type: 'number', unit: '%', min: 10, max: 55, step: 0.1, quickValues: [20, 30, 36, 45] },
+    { id: 'hct',
+hint: 'Гематокрит. Норма: М 40-50%, Ж 36-46%', label: 'Гематокрит', type: 'number', unit: '%', min: 10, max: 55, step: 0.1, quickValues: [20, 30, 36, 45] },
     { id: 'hct_norm', label: 'Норма HCT', type: 'number', unit: '%', min: 35, max: 50, step: 0.1, quickValues: [40, 42, 45] },
   ],
   compute: (v) => {

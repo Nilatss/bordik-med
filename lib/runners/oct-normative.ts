@@ -5,7 +5,8 @@ import type { CalculatorTool } from '../tools-runners';
 const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
-    { id: 'age', label: 'Возраст (лет)', type: 'number', min: 10, max: 95, step: 1, quickValues: [30, 50, 65, 80] },
+    { id: 'age',
+hint: 'Возраст в годах', label: 'Возраст (лет)', type: 'number', min: 10, max: 95, step: 1, quickValues: [30, 50, 65, 80] },
     { id: 'rnfl', label: 'Global RNFL (среднее, мкм)', type: 'number', min: 30, max: 150, step: 1, quickValues: [110, 95, 80, 60] },
     { id: 'macularGCC', label: 'Macular GCC / GCIPL (мкм, опц.)', type: 'number', min: 30, max: 150, step: 1, quickValues: [95, 80, 70, 55] },
     { id: 'signalStrength', label: 'Signal strength (0-10)', type: 'number', min: 0, max: 10, step: 1, quickValues: [6, 7, 8, 9] },

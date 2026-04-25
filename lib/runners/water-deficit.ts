@@ -38,6 +38,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "serumNa",
+        hint: 'Натрий сыворотки. Норма: 135-145 ммоль/л',
         label: "Na⁺ сыворотки",
         type: "number",
         unit: "ммоль/л",
@@ -55,6 +56,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "targetNa",
+        hint: 'Натрий сыворотки. Норма: 135-145 ммоль/л',
         label: "Целевой Na⁺",
         type: "number",
         unit: "ммоль/л",
@@ -70,6 +72,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "weight",
+        hint: 'Вес в кг (без одежды)',
         label: "Вес",
         type: "number",
         unit: "кг",

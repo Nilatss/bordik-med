@@ -23,6 +23,7 @@ const runner: CalculatorTool = {
     inputs: [
       {
         id: "ankle",
+        hint: 'Систолическое АД, мм рт.ст.',
         label: "Лодыжечное САД (больший из DP/PT)",
         type: "number",
         unit: "мм рт.ст.",
@@ -40,6 +41,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "brachial",
+        hint: 'Систолическое АД, мм рт.ст.',
         label: "Плечевое САД (большее из L/R)",
         type: "number",
         unit: "мм рт.ст.",

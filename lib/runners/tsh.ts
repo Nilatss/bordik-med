@@ -7,9 +7,12 @@ import type {
 const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
-    { id: 'tsh', label: 'ТТГ (TSH)', type: 'number', unit: 'мкМЕ/мл', min: 0, max: 200, step: 0.01, quickValues: [0.5, 2.5, 5.0, 10, 50] },
-    { id: 'ft4', label: 'свободный Т4 (fT4)', type: 'number', unit: 'пмоль/л', min: 0, max: 80, step: 0.1, quickValues: [7, 12, 18, 25] },
-    { id: 'ft3', label: 'свободный Т3 (fT3, опционально)', type: 'number', unit: 'пмоль/л', min: 0, max: 40, step: 0.1, quickValues: [0, 3.5, 5.5, 9] },
+    { id: 'tsh',
+hint: 'ТТГ. Норма: 0.4-4.0 мЕд/л', label: 'ТТГ (TSH)', type: 'number', unit: 'мкМЕ/мл', min: 0, max: 200, step: 0.01, quickValues: [0.5, 2.5, 5.0, 10, 50] },
+    { id: 'ft4',
+hint: 'Свободный T4. Норма: 9-22 пмоль/л', label: 'свободный Т4 (fT4)', type: 'number', unit: 'пмоль/л', min: 0, max: 80, step: 0.1, quickValues: [7, 12, 18, 25] },
+    { id: 'ft3',
+hint: 'Свободный T3. Норма: 3.5-6.5 пмоль/л', label: 'свободный Т3 (fT3, опционально)', type: 'number', unit: 'пмоль/л', min: 0, max: 40, step: 0.1, quickValues: [0, 3.5, 5.5, 9] },
     { id: 'pregnant', label: 'Беременность', type: 'checkbox' },
   ],
   compute: (v) => {

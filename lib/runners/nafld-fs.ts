@@ -8,16 +8,22 @@ import type {
 const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
-    { id: 'age', label: 'Возраст', type: 'number', unit: 'лет', min: 18, max: 100, quickValues: [35, 50, 60, 70] },
-    { id: 'bmi', label: 'ИМТ', type: 'number', unit: 'кг/м²', min: 15, max: 60, step: 0.1, quickValues: [24, 28, 32, 36] },
+    { id: 'age',
+hint: 'Возраст в годах', label: 'Возраст', type: 'number', unit: 'лет', min: 18, max: 100, quickValues: [35, 50, 60, 70] },
+    { id: 'bmi',
+hint: 'ИМТ = вес (кг) / рост² (м²)', label: 'ИМТ', type: 'number', unit: 'кг/м²', min: 15, max: 60, step: 0.1, quickValues: [24, 28, 32, 36] },
     { id: 'ifg_dm', label: 'НГН / СД', type: 'select', options: [
       { value: '0', label: 'Нет' },
       { value: '1', label: 'Да' },
     ] },
-    { id: 'ast', label: 'АСТ', type: 'number', unit: 'Ед/л', min: 5, max: 2000, quickValues: [25, 60, 120] },
-    { id: 'alt', label: 'АЛТ', type: 'number', unit: 'Ед/л', min: 5, max: 2000, quickValues: [25, 60, 120] },
-    { id: 'plt', label: 'Тромбоциты', type: 'number', unit: '×10⁹/л', min: 20, max: 600, quickValues: [150, 220, 300] },
-    { id: 'albumin', label: 'Альбумин', type: 'number', unit: 'г/дл', min: 1, max: 6, step: 0.1, quickValues: [3.5, 4.0, 4.5] },
+    { id: 'ast',
+hint: 'АСТ. Норма: М <40, Ж <32 Ед/л', label: 'АСТ', type: 'number', unit: 'Ед/л', min: 5, max: 2000, quickValues: [25, 60, 120] },
+    { id: 'alt',
+hint: 'АЛТ. Норма: М <40, Ж <32 Ед/л', label: 'АЛТ', type: 'number', unit: 'Ед/л', min: 5, max: 2000, quickValues: [25, 60, 120] },
+    { id: 'plt',
+hint: 'Тромбоциты. Норма: 150-400 ×10⁹/л', label: 'Тромбоциты', type: 'number', unit: '×10⁹/л', min: 20, max: 600, quickValues: [150, 220, 300] },
+    { id: 'albumin',
+hint: 'Альбумин. Норма: 35-50 г/л', label: 'Альбумин', type: 'number', unit: 'г/дл', min: 1, max: 6, step: 0.1, quickValues: [3.5, 4.0, 4.5] },
   ],
   compute: (v) => {
     const age = Number(v.age) || 0;

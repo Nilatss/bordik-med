@@ -9,7 +9,8 @@ const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
     { id: 'gfr', label: 'рСКФ (eGFR)', type: 'number', unit: 'мл/мин/1.73м²', min: 1, max: 150, step: 1, quickValues: [95, 75, 55, 38, 22, 10] },
-    { id: 'acr', label: 'Альбумин/креатинин мочи (UACR)', type: 'number', unit: 'мг/г', min: 0, max: 10000, step: 1, quickValues: [10, 100, 500, 1500] },
+    { id: 'acr',
+hint: 'Креатинин сыворотки. Норма: М 62-115, Ж 53-97 мкмоль/л', label: 'Альбумин/креатинин мочи (UACR)', type: 'number', unit: 'мг/г', min: 0, max: 10000, step: 1, quickValues: [10, 100, 500, 1500] },
   ],
   compute: (v) => {
     const gfr = Number(v.gfr);

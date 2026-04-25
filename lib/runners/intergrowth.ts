@@ -23,6 +23,7 @@ const runner: CalculatorTool = {
     inputs: [
       {
         id: "gaWeeks",
+        hint: 'Возраст в годах',
         label: "Гестационный возраст",
         type: "number",
         unit: "нед",
@@ -56,6 +57,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "weight",
+        hint: 'Вес в кг (без одежды)',
         label: "Масса при рождении",
         type: "number",
         unit: "г",
@@ -73,6 +75,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "length",
+        hint: 'Рост / длина в сантиметрах',
         label: "Длина тела",
         type: "number",
         unit: "см",
@@ -88,6 +91,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "hc",
+        hint: 'Рост / длина в сантиметрах',
         label: "Окружность головы",
         type: "number",
         unit: "см",

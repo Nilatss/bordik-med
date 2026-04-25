@@ -5,8 +5,10 @@ import type { CalculatorTool } from '../tools-runners';
 const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
-    { id: 'map', label: 'MAP (среднее АД)', type: 'number', unit: 'мм рт.ст.', min: 30, max: 180, step: 1, quickValues: [60, 70, 80, 90, 100] },
-    { id: 'icp', label: 'ICP (внутричерепное давление)', type: 'number', unit: 'мм рт.ст.', min: 0, max: 80, step: 1, quickValues: [10, 15, 20, 25, 30] },
+    { id: 'map',
+hint: 'СрАД = (САД + 2·ДАД)/3. Норма: 70-100', label: 'MAP (среднее АД)', type: 'number', unit: 'мм рт.ст.', min: 30, max: 180, step: 1, quickValues: [60, 70, 80, 90, 100] },
+    { id: 'icp',
+hint: 'Артериальное давление в мм ртутного столба', label: 'ICP (внутричерепное давление)', type: 'number', unit: 'мм рт.ст.', min: 0, max: 80, step: 1, quickValues: [10, 15, 20, 25, 30] },
     {
       id: 'age',
       label: 'Возрастная группа',

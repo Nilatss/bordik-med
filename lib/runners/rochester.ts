@@ -23,6 +23,7 @@ const runner: CalculatorTool = {
     inputs: [
       {
         id: "ageDays",
+        hint: 'Возраст в годах',
         label: "Возраст (дни)",
         type: "number",
         unit: "дней",
@@ -40,6 +41,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "tempC",
+        hint: 'Температура тела, °C. Норма: 36.0-37.0',
         label: "Температура ректально",
         type: "number",
         unit: "°C",

@@ -7,11 +7,16 @@ import type {
 const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
-    { id: 'ph', label: 'pH', type: 'number', unit: '', min: 6.8, max: 7.8, step: 0.01, quickValues: [7.2, 7.35, 7.4, 7.45, 7.55] },
-    { id: 'pco2', label: 'PaCO₂', type: 'number', unit: 'мм рт.ст.', min: 10, max: 120, step: 1, quickValues: [25, 40, 50, 70] },
-    { id: 'hco3', label: 'HCO₃⁻', type: 'number', unit: 'ммоль/л', min: 3, max: 50, step: 0.1, quickValues: [12, 18, 24, 30, 35] },
-    { id: 'na', label: 'Na', type: 'number', unit: 'ммоль/л', min: 100, max: 180, step: 1, quickValues: [135, 140, 145] },
-    { id: 'cl', label: 'Cl', type: 'number', unit: 'ммоль/л', min: 60, max: 140, step: 1, quickValues: [100, 105, 110] },
+    { id: 'ph',
+hint: 'pH крови. Норма: 7.35-7.45', label: 'pH', type: 'number', unit: '', min: 6.8, max: 7.8, step: 0.01, quickValues: [7.2, 7.35, 7.4, 7.45, 7.55] },
+    { id: 'pco2',
+hint: 'Артериальное давление в мм ртутного столба', label: 'PaCO₂', type: 'number', unit: 'мм рт.ст.', min: 10, max: 120, step: 1, quickValues: [25, 40, 50, 70] },
+    { id: 'hco3',
+hint: 'HCO₃⁻ сыворотки. Норма: 22-26 ммоль/л', label: 'HCO₃⁻', type: 'number', unit: 'ммоль/л', min: 3, max: 50, step: 0.1, quickValues: [12, 18, 24, 30, 35] },
+    { id: 'na',
+hint: 'Натрий сыворотки. Норма: 135-145 ммоль/л', label: 'Na', type: 'number', unit: 'ммоль/л', min: 100, max: 180, step: 1, quickValues: [135, 140, 145] },
+    { id: 'cl',
+hint: 'Хлор. Норма: 96-106 ммоль/л', label: 'Cl', type: 'number', unit: 'ммоль/л', min: 60, max: 140, step: 1, quickValues: [100, 105, 110] },
   ],
   compute: (v) => {
     const ph = Number(v.ph);

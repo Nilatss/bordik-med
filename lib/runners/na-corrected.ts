@@ -23,6 +23,7 @@ const runner: CalculatorTool = {
     inputs: [
       {
         id: "na",
+        hint: 'Натрий сыворотки. Норма: 135-145 ммоль/л',
         label: "Измеренный Na⁺",
         type: "number",
         unit: "ммоль/л",
@@ -38,6 +39,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "glu",
+        hint: 'Глюкоза плазмы, ммоль/л',
         label: "Глюкоза",
         type: "number",
         unit: "ммоль/л",

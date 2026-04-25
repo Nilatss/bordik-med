@@ -11,7 +11,8 @@ import type {
 const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
-    { id: 'weight', label: 'Вес', type: 'number', unit: 'кг', min: 1, max: 250, step: 0.1, quickValues: [10, 20, 40, 60, 70, 80, 100] },
+    { id: 'weight',
+hint: 'Вес в кг (без одежды)', label: 'Вес', type: 'number', unit: 'кг', min: 1, max: 250, step: 0.1, quickValues: [10, 20, 40, 60, 70, 80, 100] },
     { id: 'tbsa',   label: '% TBSA ожогов (II-III ст.)', type: 'number', unit: '%', min: 0, max: 100, step: 0.5, quickValues: [10, 20, 30, 40, 50, 60] },
     { id: 'age',    label: 'Возраст', type: 'select', options: [
       { value: 'adult', label: 'Взрослый (≥ 14 лет)' },

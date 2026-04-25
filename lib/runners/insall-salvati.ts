@@ -7,6 +7,7 @@ const runner: CalculatorTool = {
   inputs: [
     {
       id: 'tl',
+      hint: 'Размер в миллиметрах',
       label: 'TL - длина сухожилия надколенника (lateral X-ray, flexion 20-30°)',
       type: 'number',
       unit: 'мм',
@@ -17,6 +18,7 @@ const runner: CalculatorTool = {
     },
     {
       id: 'pl',
+      hint: 'Размер в миллиметрах',
       label: 'PL - длина надколенника (максимальная диагональ)',
       type: 'number',
       unit: 'мм',

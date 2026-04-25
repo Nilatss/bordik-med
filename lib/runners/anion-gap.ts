@@ -23,6 +23,7 @@ const runner: CalculatorTool = {
     inputs: [
       {
         id: "na",
+        hint: 'Натрий сыворотки. Норма: 135-145 ммоль/л',
         label: "Na⁺",
         type: "number",
         unit: "ммоль/л",
@@ -39,6 +40,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "cl",
+        hint: 'Хлор. Норма: 96-106 ммоль/л',
         label: "Cl⁻",
         type: "number",
         unit: "ммоль/л",
@@ -55,6 +57,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "hco3",
+        hint: 'HCO₃⁻ сыворотки. Норма: 22-26 ммоль/л',
         label: "HCO₃⁻",
         type: "number",
         unit: "ммоль/л",

@@ -8,7 +8,8 @@ import type {
 const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
-    { id: 'age', label: 'Возраст', type: 'number', unit: 'лет', min: 0, max: 120, quickValues: [40, 55, 65, 75, 85] },
+    { id: 'age',
+hint: 'Возраст в годах', label: 'Возраст', type: 'number', unit: 'лет', min: 0, max: 120, quickValues: [40, 55, 65, 75, 85] },
     { id: 'sex', label: 'Пол', type: 'select', options: [
       { value: 'm', label: 'Мужской' }, { value: 'f', label: 'Женский' },
     ]},

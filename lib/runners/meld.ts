@@ -23,6 +23,7 @@ const runner: CalculatorTool = {
     inputs: [
       {
         id: "bili",
+        hint: 'Билирубин общий. Норма: 5-21 мкмоль/л',
         label: "Билирубин",
         type: "number",
         unit: "мкмоль/л",
@@ -40,6 +41,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "inr",
+        hint: 'МНО. Норма: 0.9-1.2 (без антикоагулянтов)',
         label: "INR",
         type: "number",
         unit: "",
@@ -57,6 +59,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "creat",
+        hint: 'Креатинин сыворотки. Норма: М 62-115, Ж 53-97 мкмоль/л',
         label: "Креатинин",
         type: "number",
         unit: "мкмоль/л",

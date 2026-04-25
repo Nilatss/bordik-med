@@ -7,7 +7,8 @@ import type {
 const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
-    { id: 'waist', label: 'Окружность талии', type: 'number', unit: 'см', min: 50, max: 180, step: 1, quickValues: [80, 90, 94, 100, 110] },
+    { id: 'waist',
+hint: 'Рост / длина в сантиметрах', label: 'Окружность талии', type: 'number', unit: 'см', min: 50, max: 180, step: 1, quickValues: [80, 90, 94, 100, 110] },
     {
       id: 'ethnicity',
       label: 'Этнический порог окружности талии',
@@ -21,13 +22,18 @@ const runner: CalculatorTool = {
         { value: 'japan_f', label: 'Японцы — ♀ ≥ 90 см' },
       ],
     },
-    { id: 'tg', label: 'Триглицериды', type: 'number', unit: 'ммоль/л', min: 0.2, max: 10, step: 0.1, quickValues: [1.0, 1.7, 2.5, 4.0] },
-    { id: 'hdl', label: 'ХС-ЛПВП', type: 'number', unit: 'ммоль/л', min: 0.3, max: 3, step: 0.05, quickValues: [0.8, 1.0, 1.3, 1.5] },
+    { id: 'tg',
+hint: 'Триглицериды. Норма: <1.7 ммоль/л', label: 'Триглицериды', type: 'number', unit: 'ммоль/л', min: 0.2, max: 10, step: 0.1, quickValues: [1.0, 1.7, 2.5, 4.0] },
+    { id: 'hdl',
+hint: 'ЛПВП. Норма: М ≥1.0, Ж ≥1.3 ммоль/л', label: 'ХС-ЛПВП', type: 'number', unit: 'ммоль/л', min: 0.3, max: 3, step: 0.05, quickValues: [0.8, 1.0, 1.3, 1.5] },
     { id: 'female', label: 'Женский пол (для HDL-порога)', type: 'checkbox' },
-    { id: 'sbp', label: 'Систол. АД', type: 'number', unit: 'мм рт.ст.', min: 80, max: 220, step: 1, quickValues: [120, 130, 135, 145, 160] },
-    { id: 'dbp', label: 'Диастол. АД', type: 'number', unit: 'мм рт.ст.', min: 40, max: 130, step: 1, quickValues: [75, 85, 90, 95, 100] },
+    { id: 'sbp',
+hint: 'САД, мм рт.ст. Норма: <130', label: 'Систол. АД', type: 'number', unit: 'мм рт.ст.', min: 80, max: 220, step: 1, quickValues: [120, 130, 135, 145, 160] },
+    { id: 'dbp',
+hint: 'ДАД, мм рт.ст. Норма: <85', label: 'Диастол. АД', type: 'number', unit: 'мм рт.ст.', min: 40, max: 130, step: 1, quickValues: [75, 85, 90, 95, 100] },
     { id: 'bphigh', label: 'Принимает антигипертензивные', type: 'checkbox' },
-    { id: 'fpg', label: 'Глюкоза натощак', type: 'number', unit: 'ммоль/л', min: 3, max: 20, step: 0.1, quickValues: [5.0, 5.6, 6.1, 7.0, 9.0] },
+    { id: 'fpg',
+hint: 'Глюкоза плазмы. Натощак: 3.9-5.5 ммоль/л', label: 'Глюкоза натощак', type: 'number', unit: 'ммоль/л', min: 3, max: 20, step: 0.1, quickValues: [5.0, 5.6, 6.1, 7.0, 9.0] },
     { id: 'dm', label: 'СД 2 типа диагностирован', type: 'checkbox' },
   ],
   compute: (v) => {

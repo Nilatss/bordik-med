@@ -39,6 +39,7 @@ const runner: ScoreTool = {
       },
       {
         id: "hyperactivity",
+        hint: 'ЧСС, уд/мин. Норма: 60-100',
         label: "Кол-во симптомов гиперактивности/импульсивности (из 9) с оценкой 2-3",
         type: "number",
         unit: "из 9",

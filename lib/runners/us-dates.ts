@@ -27,6 +27,7 @@ const runner: CalculatorTool = {
     },
     {
       id: 'value',
+      hint: 'Размер в миллиметрах',
       label: 'Значение (мм)',
       type: 'number',
       unit: 'мм',

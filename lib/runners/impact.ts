@@ -23,6 +23,7 @@ const runner: CalculatorTool = {
     inputs: [
       {
         id: "age",
+        hint: 'Возраст в годах',
         label: "Возраст",
         type: "number",
         unit: "лет",
@@ -136,6 +137,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "glucose",
+        hint: 'Глюкоза плазмы. Натощак: 3.9-5.5 ммоль/л',
         label: "Глюкоза, ммоль/л",
         type: "number",
         unit: "ммоль/л",
@@ -152,6 +154,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "hb",
+        hint: 'Гемоглобин. Норма: М 130-170, Ж 120-150 г/л',
         label: "Гемоглобин, г/л",
         type: "number",
         unit: "г/л",

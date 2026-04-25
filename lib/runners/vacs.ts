@@ -8,7 +8,8 @@ import type {
 const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
-    { id: 'age', label: 'Возраст', type: 'number', unit: 'лет', min: 18, max: 100, quickValues: [35, 45, 55, 65, 75] },
+    { id: 'age',
+hint: 'Возраст в годах', label: 'Возраст', type: 'number', unit: 'лет', min: 18, max: 100, quickValues: [35, 45, 55, 65, 75] },
     { id: 'cd4', label: 'CD4', type: 'number', unit: 'кл/мкл', min: 0, max: 2000, quickValues: [50, 150, 300, 500, 800] },
     {
       id: 'vl',
@@ -20,9 +21,11 @@ const runner: CalculatorTool = {
         { value: '2', label: '≥ 100 000' },
       ],
     },
-    { id: 'hb', label: 'Гемоглобин', type: 'number', unit: 'г/дл', min: 4, max: 20, step: 0.1, quickValues: [9, 11, 12, 13, 14] },
+    { id: 'hb',
+hint: 'Гемоглобин. Норма: М 130-170, Ж 120-150 г/л', label: 'Гемоглобин', type: 'number', unit: 'г/дл', min: 4, max: 20, step: 0.1, quickValues: [9, 11, 12, 13, 14] },
     { id: 'fib4', label: 'FIB-4', type: 'number', unit: '', min: 0, max: 20, step: 0.1, quickValues: [0.5, 1.3, 2.0, 3.25, 5.0] },
-    { id: 'egfr', label: 'eGFR', type: 'number', unit: 'мл/мин/1,73м²', min: 5, max: 150, quickValues: [30, 45, 60, 90, 110] },
+    { id: 'egfr',
+hint: 'Расчётная СКФ. ХБП ≥3 при <60', label: 'eGFR', type: 'number', unit: 'мл/мин/1,73м²', min: 5, max: 150, quickValues: [30, 45, 60, 90, 110] },
     { id: 'hcv', label: 'HCV-Ab +', type: 'checkbox' },
   ],
   compute: (v) => {

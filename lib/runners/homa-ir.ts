@@ -23,6 +23,7 @@ const runner: CalculatorTool = {
     inputs: [
       {
         id: "glu",
+        hint: 'Глюкоза плазмы, ммоль/л',
         label: "Глюкоза натощак",
         type: "number",
         unit: "ммоль/л",

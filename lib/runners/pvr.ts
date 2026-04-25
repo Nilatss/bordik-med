@@ -8,8 +8,10 @@ import type {
 const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
-    { id: 'pvr', label: 'Остаточная моча (PVR)', type: 'number', unit: 'мл', min: 0, max: 2000, step: 5, quickValues: [30, 80, 150, 250, 500] },
-    { id: 'age', label: 'Возраст', type: 'number', unit: 'лет', min: 18, max: 110, step: 1, quickValues: [40, 60, 75] },
+    { id: 'pvr',
+hint: 'Объём в миллилитрах', label: 'Остаточная моча (PVR)', type: 'number', unit: 'мл', min: 0, max: 2000, step: 5, quickValues: [30, 80, 150, 250, 500] },
+    { id: 'age',
+hint: 'Возраст в годах', label: 'Возраст', type: 'number', unit: 'лет', min: 18, max: 110, step: 1, quickValues: [40, 60, 75] },
     { id: 'symptoms', label: 'Симптомы (СНМП, ИМП, почечная недост.)', type: 'select', options: [
       { value: 'none', label: 'Нет симптомов', points: 0 },
       { value: 'mild', label: 'Лёгкие СНМП', points: 1 },

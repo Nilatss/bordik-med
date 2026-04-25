@@ -8,8 +8,10 @@ import type {
 const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
-    { id: 'hb', label: 'Гемоглобин', type: 'number', unit: 'г/л', min: 30, max: 250, quickValues: [80, 120, 140, 170] },
-    { id: 'hct', label: 'Гематокрит', type: 'number', unit: '%', min: 10, max: 70, step: 0.1, quickValues: [25, 36, 42, 50] },
+    { id: 'hb',
+hint: 'Гемоглобин. Норма: М 130-170, Ж 120-150 г/л', label: 'Гемоглобин', type: 'number', unit: 'г/л', min: 30, max: 250, quickValues: [80, 120, 140, 170] },
+    { id: 'hct',
+hint: 'Гематокрит. Норма: М 40-50%, Ж 36-46%', label: 'Гематокрит', type: 'number', unit: '%', min: 10, max: 70, step: 0.1, quickValues: [25, 36, 42, 50] },
     { id: 'rbc', label: 'Эритроциты', type: 'number', unit: '×10¹²/л', min: 1, max: 8, step: 0.01, quickValues: [3.5, 4.2, 4.8, 5.5] },
   ],
   compute: (v) => {

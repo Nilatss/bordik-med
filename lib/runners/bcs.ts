@@ -28,6 +28,7 @@ const runner: CalculatorTool = {
     },
     {
       id: 'weight',
+      hint: 'Вес в кг (без одежды)',
       label: 'Текущая масса (кг)',
       type: 'number',
       unit: 'кг',

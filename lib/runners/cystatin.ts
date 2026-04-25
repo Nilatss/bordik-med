@@ -23,6 +23,7 @@ const runner: CalculatorTool = {
     inputs: [
       {
         id: "cysc",
+        hint: 'Концентрация в мг/л',
         label: "Cystatin C",
         type: "number",
         unit: "мг/л",
@@ -39,6 +40,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "age",
+        hint: 'Возраст в годах',
         label: "Возраст",
         type: "number",
         unit: "лет",

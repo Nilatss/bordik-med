@@ -23,6 +23,7 @@ const runner: CalculatorTool = {
     inputs: [
       {
         id: "frontal",
+        hint: 'Размер в миллиметрах',
         label: "Максимальная ширина фронтальных рогов",
         type: "number",
         unit: "мм",
@@ -39,6 +40,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "skull",
+        hint: 'Размер в миллиметрах',
         label: "Внутренняя ширина черепа на том же уровне",
         type: "number",
         unit: "мм",

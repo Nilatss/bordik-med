@@ -10,6 +10,7 @@ const runner: CalculatorTool = {
   inputs: [
     {
       id: 'psa',
+      hint: 'Концентрация в нг/мл',
       label: 'PSA (нг/мл)',
       type: 'number',
       min: 0,

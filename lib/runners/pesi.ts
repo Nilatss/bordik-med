@@ -77,6 +77,7 @@ const runner: ScoreTool = {
       },
       {
         id: "age_years",
+        hint: 'Возраст в годах',
         label: "PESI: Возраст (= баллы)",
         type: "number",
         unit: "лет",

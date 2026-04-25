@@ -23,6 +23,7 @@ const runner: CalculatorTool = {
     inputs: [
       {
         id: "weight",
+        hint: 'Вес в кг (без одежды)',
         label: "Масса (IBW/AdjBW при ожирении)",
         type: "number",
         unit: "кг",
@@ -40,6 +41,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "crcl",
+        hint: 'Креатинин сыворотки. Норма: М 62-115, Ж 53-97 мкмоль/л',
         label: "Клиренс креатинина",
         type: "number",
         unit: "мл/мин",

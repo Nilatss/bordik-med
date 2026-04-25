@@ -8,8 +8,10 @@ import type {
 const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
-    { id: 'cr_base', label: 'Креатинин базовый', type: 'number', unit: 'мкмоль/л', min: 20, max: 2000, step: 1, quickValues: [70, 90, 110, 150] },
-    { id: 'cr_now', label: 'Креатинин текущий', type: 'number', unit: 'мкмоль/л', min: 20, max: 3000, step: 1, quickValues: [150, 200, 300, 450] },
+    { id: 'cr_base',
+hint: 'Креатинин сыворотки. Норма: М 62-115, Ж 53-97 мкмоль/л', label: 'Креатинин базовый', type: 'number', unit: 'мкмоль/л', min: 20, max: 2000, step: 1, quickValues: [70, 90, 110, 150] },
+    { id: 'cr_now',
+hint: 'Креатинин сыворотки. Норма: М 62-115, Ж 53-97 мкмоль/л', label: 'Креатинин текущий', type: 'number', unit: 'мкмоль/л', min: 20, max: 3000, step: 1, quickValues: [150, 200, 300, 450] },
     { id: 'uo', label: 'Диурез', type: 'number', unit: 'мл/кг/ч', min: 0, max: 5, step: 0.05, quickValues: [0.2, 0.4, 0.5, 0.8] },
     { id: 'uo_hours', label: 'Длительность олигурии', type: 'number', unit: 'ч', min: 0, max: 48, step: 1, quickValues: [6, 12, 24] },
     { id: 'rrt', label: 'Начата ЗПТ (диализ)', type: 'checkbox' },

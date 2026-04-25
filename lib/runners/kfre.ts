@@ -8,15 +8,20 @@ import type {
 const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
-    { id: 'age', label: 'Возраст', type: 'number', unit: 'лет', min: 18, max: 100, step: 1, quickValues: [50, 60, 70, 80] },
+    { id: 'age',
+hint: 'Возраст в годах', label: 'Возраст', type: 'number', unit: 'лет', min: 18, max: 100, step: 1, quickValues: [50, 60, 70, 80] },
     { id: 'female', label: 'Женский пол', type: 'checkbox' },
     { id: 'gfr', label: 'рСКФ', type: 'number', unit: 'мл/мин/1.73м²', min: 5, max: 60, step: 1, quickValues: [45, 35, 25, 15] },
     { id: 'acr', label: 'UACR', type: 'number', unit: 'мг/г', min: 1, max: 10000, step: 1, quickValues: [50, 300, 800, 2000] },
     { id: 'use8', label: 'Использовать 8-переменную версию', type: 'checkbox' },
-    { id: 'ca', label: 'Кальций (8-var)', type: 'number', unit: 'ммоль/л', min: 1, max: 3.5, step: 0.01, quickValues: [2.2, 2.35, 2.5] },
-    { id: 'phos', label: 'Фосфор (8-var)', type: 'number', unit: 'ммоль/л', min: 0.3, max: 4, step: 0.01, quickValues: [1.1, 1.4, 1.8] },
-    { id: 'alb', label: 'Альбумин сыворотки (8-var)', type: 'number', unit: 'г/л', min: 10, max: 55, step: 1, quickValues: [38, 35, 30] },
-    { id: 'hco3', label: 'Бикарбонат (8-var)', type: 'number', unit: 'ммоль/л', min: 5, max: 40, step: 0.5, quickValues: [24, 22, 19] },
+    { id: 'ca',
+hint: 'Кальций общий. Норма: 2.15-2.55 ммоль/л', label: 'Кальций (8-var)', type: 'number', unit: 'ммоль/л', min: 1, max: 3.5, step: 0.01, quickValues: [2.2, 2.35, 2.5] },
+    { id: 'phos',
+hint: 'Концентрация в ммоль/л', label: 'Фосфор (8-var)', type: 'number', unit: 'ммоль/л', min: 0.3, max: 4, step: 0.01, quickValues: [1.1, 1.4, 1.8] },
+    { id: 'alb',
+hint: 'Альбумин. Норма: 35-50 г/л', label: 'Альбумин сыворотки (8-var)', type: 'number', unit: 'г/л', min: 10, max: 55, step: 1, quickValues: [38, 35, 30] },
+    { id: 'hco3',
+hint: 'HCO₃⁻ сыворотки. Норма: 22-26 ммоль/л', label: 'Бикарбонат (8-var)', type: 'number', unit: 'ммоль/л', min: 5, max: 40, step: 0.5, quickValues: [24, 22, 19] },
   ],
   compute: (v) => {
     const age = Number(v.age);

@@ -7,7 +7,8 @@ import type { CalculatorTool } from '../tools-runners';
 const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
-    { id: 'weight', label: 'Вес', type: 'number', unit: 'кг', min: 20, max: 250, step: 0.5, quickValues: [50, 60, 70, 80, 90, 100] },
+    { id: 'weight',
+hint: 'Вес в кг (без одежды)', label: 'Вес', type: 'number', unit: 'кг', min: 20, max: 250, step: 0.5, quickValues: [50, 60, 70, 80, 90, 100] },
     {
       id: 'exposure', label: 'Экспозиция к петлевым диуретикам',
       type: 'select',
@@ -16,7 +17,8 @@ const runner: CalculatorTool = {
         { value: 'prior', label: 'Получал петлевые - 1,5 мг/кг' },
       ],
     },
-    { id: 'uo2h', label: 'Диурез за 2 ч после болюса', type: 'number', unit: 'мл', min: 0, max: 2000, step: 10, quickValues: [100, 150, 200, 300, 500] },
+    { id: 'uo2h',
+hint: 'Объём в миллилитрах', label: 'Диурез за 2 ч после болюса', type: 'number', unit: 'мл', min: 0, max: 2000, step: 10, quickValues: [100, 150, 200, 300, 500] },
   ],
   compute: (v) => {
     const w = Number(v.weight);

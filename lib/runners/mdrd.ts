@@ -23,6 +23,7 @@ const runner: CalculatorTool = {
     inputs: [
       {
         id: "age",
+        hint: 'Возраст в годах',
         label: "Возраст",
         type: "number",
         unit: "лет",
@@ -38,6 +39,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "creatinine",
+        hint: 'Креатинин сыворотки. Норма: М 62-115, Ж 53-97 мкмоль/л',
         label: "Креатинин сыворотки",
         type: "number",
         unit: "мкмоль/л",

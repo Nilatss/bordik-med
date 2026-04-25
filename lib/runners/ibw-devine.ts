@@ -23,6 +23,7 @@ const runner: CalculatorTool = {
     inputs: [
       {
         id: "height",
+        hint: 'Рост в см (без обуви)',
         label: "Рост",
         type: "number",
         unit: "см",

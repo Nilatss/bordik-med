@@ -7,11 +7,16 @@ import type {
 const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
-    { id: 'pao2', label: 'PaO₂', type: 'number', unit: 'мм рт.ст.', min: 20, max: 600, step: 1, quickValues: [50, 70, 90, 120] },
-    { id: 'paco2', label: 'PaCO₂', type: 'number', unit: 'мм рт.ст.', min: 10, max: 120, step: 1, quickValues: [30, 40, 50, 60] },
-    { id: 'fio2', label: 'FiO₂', type: 'number', unit: 'доля (0.21-1.0)', min: 0.21, max: 1.0, step: 0.01, quickValues: [0.21, 0.3, 0.5, 0.8, 1.0] },
-    { id: 'patm', label: 'Атм. давление', type: 'number', unit: 'мм рт.ст.', min: 500, max: 800, step: 1, quickValues: [760] },
-    { id: 'age', label: 'Возраст', type: 'number', unit: 'лет', min: 1, max: 110, step: 1, quickValues: [25, 50, 75] },
+    { id: 'pao2',
+hint: 'PaO₂. Норма: 80-100 мм рт.ст.', label: 'PaO₂', type: 'number', unit: 'мм рт.ст.', min: 20, max: 600, step: 1, quickValues: [50, 70, 90, 120] },
+    { id: 'paco2',
+hint: 'PaCO₂. Норма: 35-45 мм рт.ст.', label: 'PaCO₂', type: 'number', unit: 'мм рт.ст.', min: 10, max: 120, step: 1, quickValues: [30, 40, 50, 60] },
+    { id: 'fio2',
+hint: 'FiO₂ = доля O₂ во вдыхаемом воздухе (0.21 = атмосферный)', label: 'FiO₂', type: 'number', unit: 'доля (0.21-1.0)', min: 0.21, max: 1.0, step: 0.01, quickValues: [0.21, 0.3, 0.5, 0.8, 1.0] },
+    { id: 'patm',
+hint: 'Артериальное давление в мм ртутного столба', label: 'Атм. давление', type: 'number', unit: 'мм рт.ст.', min: 500, max: 800, step: 1, quickValues: [760] },
+    { id: 'age',
+hint: 'Возраст в годах', label: 'Возраст', type: 'number', unit: 'лет', min: 1, max: 110, step: 1, quickValues: [25, 50, 75] },
   ],
   compute: (v) => {
     const pao2 = Number(v.pao2);

@@ -7,9 +7,12 @@ import type {
 const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
-    { id: 'tc', label: 'Общий ХС', type: 'number', unit: 'ммоль/л', min: 1, max: 20, step: 0.01, quickValues: [4, 5.5, 7, 9] },
-    { id: 'hdl', label: 'HDL-C', type: 'number', unit: 'ммоль/л', min: 0.3, max: 5, step: 0.01, quickValues: [1.0, 1.3, 1.8] },
-    { id: 'tg', label: 'Триглицериды', type: 'number', unit: 'ммоль/л', min: 0.2, max: 20, step: 0.01, quickValues: [1.0, 2.0, 3.5, 6.0] },
+    { id: 'tc',
+hint: 'Концентрация в ммоль/л', label: 'Общий ХС', type: 'number', unit: 'ммоль/л', min: 1, max: 20, step: 0.01, quickValues: [4, 5.5, 7, 9] },
+    { id: 'hdl',
+hint: 'ЛПВП. Норма: М ≥1.0, Ж ≥1.3 ммоль/л', label: 'HDL-C', type: 'number', unit: 'ммоль/л', min: 0.3, max: 5, step: 0.01, quickValues: [1.0, 1.3, 1.8] },
+    { id: 'tg',
+hint: 'Триглицериды. Норма: <1.7 ммоль/л', label: 'Триглицериды', type: 'number', unit: 'ммоль/л', min: 0.2, max: 20, step: 0.01, quickValues: [1.0, 2.0, 3.5, 6.0] },
   ],
   compute: (v) => {
     const tc = Number(v.tc);

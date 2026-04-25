@@ -29,6 +29,7 @@ const runner: CalculatorTool = {
     },
     {
       id: 'age',
+      hint: 'Возраст в годах',
       label: 'Возраст',
       type: 'number',
       min: 18,

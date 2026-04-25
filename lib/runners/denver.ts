@@ -23,6 +23,7 @@ const runner: CalculatorTool = {
     inputs: [
       {
         id: "ageMonths",
+        hint: 'Возраст в годах',
         label: "Возраст",
         type: "number",
         unit: "мес",

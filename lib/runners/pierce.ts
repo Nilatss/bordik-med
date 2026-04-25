@@ -13,7 +13,8 @@ import type {
 const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
-    { id: 'ga', label: 'Гестационный возраст (нед)', type: 'number', unit: 'нед', min: 20, max: 42, step: 1, quickValues: [28, 32, 34, 37] },
+    { id: 'ga',
+hint: 'Срок беременности (нед+дни)', label: 'Гестационный возраст (нед)', type: 'number', unit: 'нед', min: 20, max: 42, step: 1, quickValues: [28, 32, 34, 37] },
     {
       id: 'chest',
       label: 'Боль в груди или одышка',
@@ -23,10 +24,14 @@ const runner: CalculatorTool = {
         { value: 'yes', label: 'Да' },
       ],
     },
-    { id: 'spo2', label: 'SpO₂ (%)', type: 'number', unit: '%', min: 70, max: 100, step: 1, quickValues: [92, 95, 98] },
-    { id: 'plt', label: 'Тромбоциты (×10⁹/л)', type: 'number', unit: '×10⁹/л', min: 1, max: 500, step: 1, quickValues: [80, 120, 200] },
-    { id: 'cr', label: 'Креатинин (мкмоль/л)', type: 'number', unit: 'мкмоль/л', min: 30, max: 500, step: 1, quickValues: [60, 90, 130] },
-    { id: 'ast', label: 'АСТ (Ед/л)', type: 'number', unit: 'Ед/л', min: 5, max: 2000, step: 1, quickValues: [30, 70, 150] },
+    { id: 'spo2',
+hint: 'SpO₂, %. Норма: ≥95% на воздухе', label: 'SpO₂ (%)', type: 'number', unit: '%', min: 70, max: 100, step: 1, quickValues: [92, 95, 98] },
+    { id: 'plt',
+hint: 'Тромбоциты. Норма: 150-400 ×10⁹/л', label: 'Тромбоциты (×10⁹/л)', type: 'number', unit: '×10⁹/л', min: 1, max: 500, step: 1, quickValues: [80, 120, 200] },
+    { id: 'cr',
+hint: 'Креатинин сыворотки, мкмоль/л', label: 'Креатинин (мкмоль/л)', type: 'number', unit: 'мкмоль/л', min: 30, max: 500, step: 1, quickValues: [60, 90, 130] },
+    { id: 'ast',
+hint: 'АСТ. Норма: М <40, Ж <32 Ед/л', label: 'АСТ (Ед/л)', type: 'number', unit: 'Ед/л', min: 5, max: 2000, step: 1, quickValues: [30, 70, 150] },
   ],
   compute: (v) => {
     const ga = Number(v.ga);

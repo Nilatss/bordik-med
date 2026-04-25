@@ -23,6 +23,7 @@ const runner: CalculatorTool = {
     inputs: [
       {
         id: "age",
+        hint: 'Возраст в годах',
         label: "Возраст",
         type: "number",
         unit: "лет",
@@ -39,6 +40,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "val",
+        hint: 'Концентрация в пг/мл',
         label: "NT-proBNP",
         type: "number",
         unit: "пг/мл",

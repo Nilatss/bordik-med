@@ -25,6 +25,7 @@ const runner: CalculatorTool = {
     },
     {
       id: 'age',
+      hint: 'Возраст в годах',
       label: 'Возраст ребёнка (месяцы)',
       type: 'number',
       min: 16,

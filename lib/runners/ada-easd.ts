@@ -7,13 +7,15 @@ import type {
 const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
-    { id: 'hba1c', label: 'HbA1c', type: 'number', unit: '%', min: 5, max: 14, step: 0.1, quickValues: [6.5, 7.0, 7.5, 8.5, 10, 12] },
+    { id: 'hba1c',
+hint: 'HbA1c. Норма: <5.7%, диабет: ≥6.5%', label: 'HbA1c', type: 'number', unit: '%', min: 5, max: 14, step: 0.1, quickValues: [6.5, 7.0, 7.5, 8.5, 10, 12] },
     { id: 'target', label: 'Целевой HbA1c', type: 'number', unit: '%', min: 6, max: 9, step: 0.1, quickValues: [6.5, 7.0, 7.5, 8.0] },
     { id: 'ascvd', label: 'Установленный ASCVD или высокий риск', type: 'checkbox' },
     { id: 'hf', label: 'Сердечная недостаточность (HFrEF или HFpEF)', type: 'checkbox' },
     { id: 'ckd', label: 'ХБП (рСКФ < 60 или альбуминурия)', type: 'checkbox' },
     { id: 'obesity', label: 'ИМТ ≥ 30 (избыток массы как приоритет)', type: 'checkbox' },
-    { id: 'egfr', label: 'рСКФ', type: 'number', unit: 'мл/мин/1,73м²', min: 10, max: 120, step: 5, quickValues: [30, 45, 60, 90] },
+    { id: 'egfr',
+hint: 'Расчётная СКФ. ХБП ≥3 при <60', label: 'рСКФ', type: 'number', unit: 'мл/мин/1,73м²', min: 10, max: 120, step: 5, quickValues: [30, 45, 60, 90] },
   ],
   compute: (v) => {
     const a1c = Number(v.hba1c) || 7;

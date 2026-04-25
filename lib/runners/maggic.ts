@@ -23,6 +23,7 @@ const runner: CalculatorTool = {
     inputs: [
       {
         id: "age",
+        hint: 'Возраст в годах',
         label: "Возраст",
         type: "number",
         unit: "лет",
@@ -44,6 +45,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "bmi",
+        hint: 'ИМТ = вес (кг) / рост² (м²)',
         label: "ИМТ",
         type: "number",
         unit: "кг/м²",
@@ -61,6 +63,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "sbp",
+        hint: 'САД, мм рт.ст. Норма: <130',
         label: "САД",
         type: "number",
         unit: "мм рт.ст.",
@@ -77,6 +80,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "cr",
+        hint: 'Креатинин сыворотки, мкмоль/л',
         label: "Креатинин",
         type: "number",
         unit: "мкмоль/л",
@@ -93,6 +97,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "ef",
+        hint: 'ФВ ЛЖ по Симпсону. Норма: ≥55%; СНнФВ: ≤40%',
         label: "ФВ ЛЖ",
         type: "number",
         unit: "%",

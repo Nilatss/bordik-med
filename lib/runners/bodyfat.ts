@@ -38,6 +38,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "height",
+        hint: 'Рост в см (без обуви)',
         label: "Рост",
         type: "number",
         unit: "см",
@@ -55,6 +56,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "waist",
+        hint: 'Рост / длина в сантиметрах',
         label: "Окружность талии",
         type: "number",
         unit: "см",
@@ -71,6 +73,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "neck",
+        hint: 'Рост / длина в сантиметрах',
         label: "Окружность шеи",
         type: "number",
         unit: "см",
@@ -87,6 +90,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "hip",
+        hint: 'Рост / длина в сантиметрах',
         label: "Окружность бёдер (только ♀)",
         type: "number",
         unit: "см",

@@ -23,6 +23,7 @@ const runner: CalculatorTool = {
     inputs: [
       {
         id: "scr",
+        hint: 'Креатинин сыворотки',
         label: "Креатинин сыворотки",
         type: "number",
         unit: "мкмоль/л",
@@ -39,6 +40,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "age",
+        hint: 'Возраст в годах',
         label: "Возраст",
         type: "number",
         unit: "лет",

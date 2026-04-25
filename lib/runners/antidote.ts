@@ -7,6 +7,7 @@ const runner: CalculatorTool = {
   inputs: [
     {
       id: 'weight',
+      hint: 'Вес в кг (без одежды)',
       label: 'Масса тела',
       type: 'number',
       unit: 'кг',

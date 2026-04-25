@@ -23,6 +23,7 @@ const runner: CalculatorTool = {
     inputs: [
       {
         id: "height",
+        hint: 'Рост в см (без обуви)',
         label: "Рост ребёнка",
         type: "number",
         unit: "см",
@@ -40,6 +41,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "creat",
+        hint: 'Креатинин сыворотки. Норма: М 62-115, Ж 53-97 мкмоль/л',
         label: "Креатинин",
         type: "number",
         unit: "мкмоль/л",

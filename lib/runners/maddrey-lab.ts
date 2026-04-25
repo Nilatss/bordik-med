@@ -8,11 +8,15 @@ import type {
 const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
-    { id: 'pt', label: 'ПВ пациента', type: 'number', unit: 'сек', min: 8, max: 60, step: 0.1, quickValues: [12, 16, 20, 25] },
+    { id: 'pt',
+hint: 'Протромбиновое время, сек', label: 'ПВ пациента', type: 'number', unit: 'сек', min: 8, max: 60, step: 0.1, quickValues: [12, 16, 20, 25] },
     { id: 'pt_ctrl', label: 'ПВ контроль', type: 'number', unit: 'сек', min: 9, max: 15, step: 0.1, quickValues: [11, 12, 13] },
-    { id: 'bili', label: 'Билирубин общий', type: 'number', unit: 'мкмоль/л', min: 5, max: 1000, step: 1, quickValues: [20, 80, 200, 400] },
-    { id: 'ast', label: 'АСТ', type: 'number', unit: 'Ед/л', min: 10, max: 2000, quickValues: [80, 200, 400] },
-    { id: 'alt', label: 'АЛТ', type: 'number', unit: 'Ед/л', min: 10, max: 2000, quickValues: [40, 100, 200] },
+    { id: 'bili',
+hint: 'Билирубин общий. Норма: 5-21 мкмоль/л', label: 'Билирубин общий', type: 'number', unit: 'мкмоль/л', min: 5, max: 1000, step: 1, quickValues: [20, 80, 200, 400] },
+    { id: 'ast',
+hint: 'АСТ. Норма: М <40, Ж <32 Ед/л', label: 'АСТ', type: 'number', unit: 'Ед/л', min: 10, max: 2000, quickValues: [80, 200, 400] },
+    { id: 'alt',
+hint: 'АЛТ. Норма: М <40, Ж <32 Ед/л', label: 'АЛТ', type: 'number', unit: 'Ед/л', min: 10, max: 2000, quickValues: [40, 100, 200] },
   ],
   compute: (v) => {
     const pt = Number(v.pt) || 0;

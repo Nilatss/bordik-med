@@ -8,7 +8,8 @@ import type {
 const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
-    { id: 'size', label: 'Размер камня', type: 'number', unit: 'мм', min: 1, max: 40, step: 1, quickValues: [4, 6, 10, 15, 20] },
+    { id: 'size',
+hint: 'Размер в миллиметрах', label: 'Размер камня', type: 'number', unit: 'мм', min: 1, max: 40, step: 1, quickValues: [4, 6, 10, 15, 20] },
     { id: 'location', label: 'Локация', type: 'select', options: [
       { value: 'upper', label: 'Верхняя треть мочеточника', points: 0 },
       { value: 'mid', label: 'Средняя треть мочеточника', points: 0 },

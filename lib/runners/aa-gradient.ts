@@ -23,6 +23,7 @@ const runner: CalculatorTool = {
     inputs: [
       {
         id: "fio2",
+        hint: 'FiO₂ = доля O₂ во вдыхаемом воздухе (0.21 = атмосферный)',
         label: "FiO₂",
         type: "number",
         unit: "%",
@@ -40,6 +41,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "paco2",
+        hint: 'PaCO₂. Норма: 35-45 мм рт.ст.',
         label: "PaCO₂",
         type: "number",
         unit: "мм рт.ст.",
@@ -57,6 +59,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "pao2",
+        hint: 'PaO₂. Норма: 80-100 мм рт.ст.',
         label: "PaO₂",
         type: "number",
         unit: "мм рт.ст.",
@@ -74,6 +77,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "age",
+        hint: 'Возраст в годах',
         label: "Возраст",
         type: "number",
         unit: "лет",

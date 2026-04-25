@@ -13,9 +13,12 @@ import type {
 const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
-    { id: 'plt', label: 'Тромбоциты (×10⁹/л)', type: 'number', unit: '×10⁹/л', min: 1, max: 500, step: 1, quickValues: [45, 75, 120, 180] },
-    { id: 'ast', label: 'АСТ (Ед/л)', type: 'number', unit: 'Ед/л', min: 1, max: 3000, step: 1, quickValues: [30, 70, 150, 500] },
-    { id: 'ldh', label: 'ЛДГ (Ед/л)', type: 'number', unit: 'Ед/л', min: 100, max: 5000, step: 10, quickValues: [300, 600, 1000, 2000] },
+    { id: 'plt',
+hint: 'Тромбоциты. Норма: 150-400 ×10⁹/л', label: 'Тромбоциты (×10⁹/л)', type: 'number', unit: '×10⁹/л', min: 1, max: 500, step: 1, quickValues: [45, 75, 120, 180] },
+    { id: 'ast',
+hint: 'АСТ. Норма: М <40, Ж <32 Ед/л', label: 'АСТ (Ед/л)', type: 'number', unit: 'Ед/л', min: 1, max: 3000, step: 1, quickValues: [30, 70, 150, 500] },
+    { id: 'ldh',
+hint: 'ЛДГ. Норма: 135-225 Ед/л', label: 'ЛДГ (Ед/л)', type: 'number', unit: 'Ед/л', min: 100, max: 5000, step: 10, quickValues: [300, 600, 1000, 2000] },
     {
       id: 'hemolysis',
       label: 'Признаки гемолиза (шизоциты / ↑билирубин)',

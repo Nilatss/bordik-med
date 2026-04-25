@@ -16,7 +16,8 @@ const runner: CalculatorTool = {
         { value: 'cat', label: 'Кошка' },
       ],
     },
-    { id: 'weight', label: 'Масса тела (кг)', type: 'number', min: 0.3, max: 100, step: 0.1, unit: 'кг' },
+    { id: 'weight',
+hint: 'Вес в кг (без одежды)', label: 'Масса тела (кг)', type: 'number', min: 0.3, max: 100, step: 0.1, unit: 'кг' },
     {
       id: 'factor',
       label: 'Фактор DER',

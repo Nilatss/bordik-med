@@ -38,6 +38,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "ddimer",
+        hint: 'D-димер. Норма: <500 нг/мл FEU',
         label: "D-димер",
         type: "number",
         unit: "нг/мл FEU",

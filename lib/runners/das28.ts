@@ -55,6 +55,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "crp",
+        hint: 'СРБ. Норма: <5 мг/л',
         label: "СРБ",
         type: "number",
         unit: "мг/л",

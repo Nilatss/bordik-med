@@ -62,6 +62,7 @@ const runner: CalculatorTool = {
     },
     {
       id: 'size',
+      hint: 'Размер в миллиметрах',
       label: 'Максимальный размер узла (мм)',
       type: 'number',
       min: 1,

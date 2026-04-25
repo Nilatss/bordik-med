@@ -12,8 +12,10 @@ const runner: CalculatorTool = {
       { value: 'm', label: 'Мужской' },
       { value: 'f', label: 'Женский' },
     ] },
-    { id: 'age', label: 'Возраст', type: 'number', unit: 'лет', min: 3, max: 95, step: 1, quickValues: [25, 45, 65] },
-    { id: 'height', label: 'Рост', type: 'number', unit: 'см', min: 100, max: 220, step: 1, quickValues: [160, 170, 180] },
+    { id: 'age',
+hint: 'Возраст в годах', label: 'Возраст', type: 'number', unit: 'лет', min: 3, max: 95, step: 1, quickValues: [25, 45, 65] },
+    { id: 'height',
+hint: 'Рост в см (без обуви)', label: 'Рост', type: 'number', unit: 'см', min: 100, max: 220, step: 1, quickValues: [160, 170, 180] },
     { id: 'ethnicity', label: 'Этническая группа', type: 'select', options: [
       { value: 'cauc', label: 'Кавказская (европеоиды)' },
       { value: 'afr', label: 'Афроамериканцы' },
@@ -21,8 +23,10 @@ const runner: CalculatorTool = {
       { value: 'sas', label: 'Юго-Восточная Азия' },
       { value: 'oth', label: 'Другие / смешанные' },
     ] },
-    { id: 'fev1', label: 'ОФВ₁ измеренный', type: 'number', unit: 'л', min: 0.3, max: 7, step: 0.01, quickValues: [2.0, 3.0, 3.5] },
-    { id: 'fvc', label: 'ФЖЕЛ измеренная', type: 'number', unit: 'л', min: 0.5, max: 8, step: 0.01, quickValues: [2.5, 4.0, 4.5] },
+    { id: 'fev1',
+hint: 'Объём в литрах', label: 'ОФВ₁ измеренный', type: 'number', unit: 'л', min: 0.3, max: 7, step: 0.01, quickValues: [2.0, 3.0, 3.5] },
+    { id: 'fvc',
+hint: 'Объём в литрах', label: 'ФЖЕЛ измеренная', type: 'number', unit: 'л', min: 0.5, max: 8, step: 0.01, quickValues: [2.5, 4.0, 4.5] },
   ],
   compute: (v) => {
     const age = Number(v.age) || 25;

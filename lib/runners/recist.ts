@@ -10,6 +10,7 @@ const runner: CalculatorTool = {
   inputs: [
     {
       id: 'baseline',
+      hint: 'Размер в миллиметрах',
       label: 'Сумма диаметров целевых очагов на baseline (мм)',
       type: 'number',
       min: 1,
@@ -19,6 +20,7 @@ const runner: CalculatorTool = {
     },
     {
       id: 'current',
+      hint: 'Размер в миллиметрах',
       label: 'Сумма диаметров на текущем обследовании (мм)',
       type: 'number',
       min: 0,
@@ -28,6 +30,7 @@ const runner: CalculatorTool = {
     },
     {
       id: 'nadir',
+      hint: 'Размер в миллиметрах',
       label: 'Минимальная сумма за всё время наблюдения (nadir, мм)',
       type: 'number',
       min: 0,

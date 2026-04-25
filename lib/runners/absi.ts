@@ -11,7 +11,8 @@ import type {
 const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
-    { id: 'age',       label: 'Возраст', type: 'number', unit: 'лет', min: 0, max: 120, step: 1, quickValues: [25, 40, 55, 70, 85] },
+    { id: 'age',
+hint: 'Возраст в годах',       label: 'Возраст', type: 'number', unit: 'лет', min: 0, max: 120, step: 1, quickValues: [25, 40, 55, 70, 85] },
     { id: 'sex',       label: 'Пол', type: 'select', options: [
       { value: 'm', label: 'Мужской' },
       { value: 'f', label: 'Женский' },

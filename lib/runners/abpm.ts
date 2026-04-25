@@ -23,6 +23,7 @@ const runner: CalculatorTool = {
     inputs: [
       {
         id: "sbp24",
+        hint: 'Систолическое АД, мм рт.ст.',
         label: "24-ч среднее САД",
         type: "number",
         unit: "мм рт. ст.",
@@ -40,6 +41,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "dbp24",
+        hint: 'Диастолическое АД, мм рт.ст.',
         label: "24-ч среднее ДАД",
         type: "number",
         unit: "мм рт. ст.",
@@ -56,6 +58,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "sbp_day",
+        hint: 'Систолическое АД, мм рт.ст.',
         label: "Дневное САД",
         type: "number",
         unit: "мм рт. ст.",
@@ -72,6 +75,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "dbp_day",
+        hint: 'Диастолическое АД, мм рт.ст.',
         label: "Дневное ДАД",
         type: "number",
         unit: "мм рт. ст.",
@@ -88,6 +92,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "sbp_night",
+        hint: 'Систолическое АД, мм рт.ст.',
         label: "Ночное САД",
         type: "number",
         unit: "мм рт. ст.",
@@ -104,6 +109,7 @@ const runner: CalculatorTool = {
       },
       {
         id: "dbp_night",
+        hint: 'Диастолическое АД, мм рт.ст.',
         label: "Ночное ДАД",
         type: "number",
         unit: "мм рт. ст.",
