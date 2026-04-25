@@ -1,6 +1,7 @@
 'use client';
 
 import { useAppStore } from '@/lib/store';
+import { useT } from '@/lib/i18n';
 
 interface NewsItem {
   id: string;
@@ -59,6 +60,7 @@ const TYPE_META: Record<NewsItem['type'], { label: string; color: string; bg: st
 };
 
 export default function NewsFeed() {
+  const t = useT();
   const { userName, setShowLearning, setShowStats } = useAppStore();
 
   return (
@@ -88,7 +90,7 @@ export default function NewsFeed() {
           <p style={{
             fontFamily: 'var(--font-body)', fontSize: 13, color: '#6B7280',
           }}>
-            С возвращением на Bordik <span style={{ marginLeft: 4 }}>👋</span>
+            {t('feed.welcomeOnBordik')} <span style={{ marginLeft: 4 }}>👋</span>
           </p>
         </div>
       </div>
@@ -115,18 +117,18 @@ export default function NewsFeed() {
             fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 600,
             color: '#A3A3A3', textTransform: 'uppercase', letterSpacing: '0.06em',
           }}>
-            Обучение
+            {t('feed.action.learning.kicker')}
           </span>
           <span style={{
             fontFamily: 'var(--font-display)', fontSize: 20, fontWeight: 700,
             letterSpacing: '-0.01em',
           }}>
-            Продолжить учиться →
+            {t('feed.action.learning.title')}
           </span>
           <span style={{
             fontFamily: 'var(--font-body)', fontSize: 13, color: '#BBBBBB',
           }}>
-            Откройте разделы и модули
+            {t('feed.action.learning.desc')}
           </span>
         </button>
 
@@ -156,18 +158,18 @@ export default function NewsFeed() {
             fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 600,
             color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.06em',
           }}>
-            Статистика
+            {t('feed.action.stats.kicker')}
           </span>
           <span style={{
             fontFamily: 'var(--font-display)', fontSize: 20, fontWeight: 700,
             letterSpacing: '-0.01em',
           }}>
-            Ваша активность →
+            {t('feed.action.stats.title')}
           </span>
           <span style={{
             fontFamily: 'var(--font-body)', fontSize: 13, color: '#6B7280',
           }}>
-            Прогресс, тесты, время
+            {t('feed.action.stats.desc')}
           </span>
         </button>
       </div>
@@ -178,7 +180,7 @@ export default function NewsFeed() {
         color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
         marginBottom: 12,
       }}>
-        Новости платформы
+        {t('feed.newsHeader')}
       </h3>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
@@ -201,7 +203,7 @@ export default function NewsFeed() {
                   fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
                   letterSpacing: '0.04em', textTransform: 'uppercase',
                 }}>
-                  {meta.label}
+                  {t(`feed.type.${item.type}`)}
                 </span>
                 {item.badge && (
                   <span style={{
@@ -210,7 +212,7 @@ export default function NewsFeed() {
                     fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
                     letterSpacing: '0.04em', textTransform: 'uppercase',
                   }}>
-                    {item.badge}
+                    {item.badge === 'Новое' ? t('feed.badge.new') : item.badge === 'Скоро' ? t('feed.badge.soon') : item.badge}
                   </span>
                 )}
                 <span style={{

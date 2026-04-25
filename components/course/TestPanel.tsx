@@ -3,6 +3,7 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore, getHighestPassedLevel, isModuleTestUnlocked } from '@/lib/store';
+import { useT } from '@/lib/i18n';
 import {
   type TestLevel, type TestQuestion,
   QUESTIONS_PER_TEST, PASS_THRESHOLD_TEST, MODULE_TEST_QUESTIONS,
@@ -60,6 +61,7 @@ interface TestResult {
 }
 
 export default function TestPanel({ courseId }: TestPanelProps) {
+  const t = useT();
   const store = useAppStore();
   const { testAttempts, courseTestProgress, moduleTestAttempts, completedModules, submitTest, submitModuleTest } = store;
 
@@ -141,7 +143,7 @@ export default function TestPanel({ courseId }: TestPanelProps) {
     const timeLimit = pendingTest.type === 'module' ? MODULE_TEST_TIME_MS : 60 * 60 * 1000;
     const label = pendingTest.type === 'course'
       ? TEST_LEVEL_NAMES[pendingTest.level]
-      : 'Финальный тест модуля';
+      : t('test.moduleFinal');
 
     return (
       <TestStartConsent
@@ -162,7 +164,7 @@ export default function TestPanel({ courseId }: TestPanelProps) {
     const timeLimit = activeTest.type === 'module' ? MODULE_TEST_TIME_MS : undefined;
     const label = activeTest.type === 'course'
       ? TEST_LEVEL_NAMES[activeTest.level]
-      : 'Финальный тест модуля';
+      : t('test.moduleFinal');
 
     return (
       <TestActiveView
@@ -201,7 +203,7 @@ export default function TestPanel({ courseId }: TestPanelProps) {
             fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', fontWeight: 500,
             color: result.passed ? 'var(--md-sys-color-on-primary-container)' : 'var(--md-sys-color-on-error-container)',
           }}>
-            {result.passed ? 'Тест пройден!' : 'Не пройден. Попробуйте через 24 часа.'}
+            {result.passed ? t('test.result.passed') : t('test.result.failed')}
           </p>
         </div>
 
@@ -235,9 +237,9 @@ export default function TestPanel({ courseId }: TestPanelProps) {
                 </div>
                 {!isCorrect && userAnswer >= 0 && (
                   <div style={{ marginLeft: 'var(--space-4)', marginTop: 2, fontFamily: 'var(--font-body)', fontSize: '0.625rem', lineHeight: 1.4 }}>
-                    <span style={{ color: 'var(--md-sys-color-error)' }}>Ваш: {q.options[userAnswer]}</span>
+                    <span style={{ color: 'var(--md-sys-color-error)' }}>{t('test.result.your')}: {q.options[userAnswer]}</span>
                     {' · '}
-                    <span style={{ color: 'var(--md-sys-color-primary)', fontWeight: 500 }}>Верный: {q.options[q.correctIndex]}</span>
+                    <span style={{ color: 'var(--md-sys-color-primary)', fontWeight: 500 }}>{t('test.result.correct')}: {q.options[q.correctIndex]}</span>
                   </div>
                 )}
               </div>
@@ -254,7 +256,7 @@ export default function TestPanel({ courseId }: TestPanelProps) {
           border: 'none', cursor: 'pointer',
           fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', fontWeight: 600,
         }}>
-          Закрыть
+          {t('common.close')}
         </button>
       </div>
     );
@@ -281,13 +283,13 @@ export default function TestPanel({ courseId }: TestPanelProps) {
               color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
               marginBottom: 4,
             }}>
-              Тестирование курса
+              {t('test.title')}
             </p>
             <h3 style={{
               fontFamily: 'var(--font-display)', fontSize: 20, fontWeight: 700,
               color: '#1A1A1A', margin: 0, letterSpacing: '-0.01em',
             }}>
-              Прогресс обучения
+              {t('test.subtitle')}
             </h3>
           </div>
           <div style={{ textAlign: 'right' }}>
@@ -300,7 +302,7 @@ export default function TestPanel({ courseId }: TestPanelProps) {
             <p style={{
               fontFamily: 'var(--font-body)', fontSize: 11, color: '#888', marginTop: 2,
             }}>
-              {totalProgress}% завершено
+              {t('test.percentComplete', { p: totalProgress })}
             </p>
           </div>
         </div>
@@ -344,13 +346,13 @@ export default function TestPanel({ courseId }: TestPanelProps) {
                 : 'locked';
 
         const statusDetail = isLockedByViolation
-          ? `Доступно через ${formatHours(cooldown)}`
+          ? t('test.detail.availableInH', { time: formatHours(cooldown) })
           : cooldown > 0
-            ? `Доступно через ${formatCooldown(cooldown)}`
+            ? t('test.detail.coolingDown', { time: formatCooldown(cooldown) })
             : !isUnlocked
-              ? 'Пройдите предыдущий уровень'
+              ? t('test.detail.passPrev')
               : isCurrent
-                ? `${QUESTIONS_PER_TEST} вопросов · порог ${PASS_THRESHOLD_TEST}/${QUESTIONS_PER_TEST}`
+                ? t('test.detail.questionsLine', { n: QUESTIONS_PER_TEST, pass: PASS_THRESHOLD_TEST, total: QUESTIONS_PER_TEST })
                 : null;
 
         return (
@@ -358,28 +360,24 @@ export default function TestPanel({ courseId }: TestPanelProps) {
             key={level}
             index={idx}
             title={TEST_LEVEL_NAMES[level]}
-            kind="Уровень"
+            kind={t('test.row.kind.level')}
             status={status}
             rightInfo={isPassed && bestScore !== null
               ? `${bestScore}/${QUESTIONS_PER_TEST}`
-              : `${QUESTIONS_PER_TEST} вопр.`}
+              : t('test.row.right.questions', { n: QUESTIONS_PER_TEST })}
             detailRows={[
-              { label: 'Вопросов', value: String(QUESTIONS_PER_TEST), icon: 'list' },
-              { label: 'Порог', value: `${PASS_THRESHOLD_TEST}/${QUESTIONS_PER_TEST}`, icon: 'target' },
+              { label: t('test.row.detail.questions'), value: String(QUESTIONS_PER_TEST), icon: 'list' },
+              { label: t('test.row.detail.threshold'), value: `${PASS_THRESHOLD_TEST}/${QUESTIONS_PER_TEST}`, icon: 'target' },
               {
-                label: bestScore !== null ? 'Лучший' : 'Попыток',
+                label: bestScore !== null ? t('test.row.detail.best') : t('test.row.detail.attempts'),
                 value: bestScore !== null ? `${bestScore}/${QUESTIONS_PER_TEST}` : String(attempts.length),
                 icon: bestScore !== null ? 'trophy' : 'history',
               },
             ]}
             description={
-              // Show context only when it adds non-redundant info
-              // (cooldowns, lockouts, locked-by-prerequisite). Skip the
-              // duplicate "20 вопросов · порог" since the same data is
-              // already in the info-pills above.
               isPassed || isCurrent ? undefined : statusDetail ?? undefined
             }
-            actionLabel={isPassed ? 'Повторить' : isCurrent ? 'Начать тест' : null}
+            actionLabel={isPassed ? t('test.action.repeat') : isCurrent ? t('test.action.startTest') : null}
             actionVariant={isPassed ? 'secondary' : 'primary'}
             onAction={() => startCourseTest(level)}
             disabled={!isCurrent && !isPassed}
@@ -399,7 +397,7 @@ export default function TestPanel({ courseId }: TestPanelProps) {
             fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
             color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.1em',
           }}>
-            Финал курса
+            {t('test.divider.courseFinal')}
           </span>
           <span style={{ flex: 1, height: 1, background: '#E5E7EB' }} />
         </div>
@@ -420,32 +418,31 @@ export default function TestPanel({ courseId }: TestPanelProps) {
               : 'locked';
 
         const moduleDetail = moduleLockedByViolation
-          ? `Доступно через ${formatHours(moduleLockoutLeft)}`
+          ? t('test.detail.availableInH', { time: formatHours(moduleLockoutLeft) })
           : modulePassed
-            ? 'Курс полностью пройден'
+            ? t('test.detail.passedFull')
             : moduleUnlocked
-              ? `${MODULE_TEST_QUESTIONS} вопросов · 3 часа · ${PASS_THRESHOLD_MODULE}% порог`
-              : 'Откроется после прохождения всех 5 уровней теста курса';
+              ? t('test.detail.unlockedDesc', { n: MODULE_TEST_QUESTIONS, p: PASS_THRESHOLD_MODULE })
+              : t('test.detail.lockedPrereq');
 
         return (
           <TestRow
             index={5}
-            title="Финальный тест курса"
-            kind="Курс"
+            title={t('test.module.title')}
+            kind={t('test.row.kind.course')}
             status={moduleStatus}
-            rightInfo={`${MODULE_TEST_QUESTIONS} вопр.`}
+            rightInfo={t('test.row.right.questions', { n: MODULE_TEST_QUESTIONS })}
             detailRows={[
-              { label: 'Вопросов', value: String(MODULE_TEST_QUESTIONS), icon: 'list' },
-              { label: 'Время', value: '3 часа', icon: 'clock' },
-              { label: 'Порог', value: `${PASS_THRESHOLD_MODULE}%`, icon: 'target' },
+              { label: t('test.row.detail.questions'), value: String(MODULE_TEST_QUESTIONS), icon: 'list' },
+              { label: t('test.row.detail.time'), value: t('test.detail.threeHours'), icon: 'clock' },
+              { label: t('test.row.detail.threshold'), value: `${PASS_THRESHOLD_MODULE}%`, icon: 'target' },
             ]}
             description={
-              // Same rule as course-test rows — skip the duplicate summary.
               modulePassed || (moduleUnlocked && !moduleLockedByViolation)
                 ? undefined
                 : moduleDetail
             }
-            actionLabel={moduleUnlocked && !modulePassed && !moduleLockedByViolation ? 'Начать тест' : null}
+            actionLabel={moduleUnlocked && !modulePassed && !moduleLockedByViolation ? t('test.action.startTest') : null}
             actionVariant="primary"
             onAction={startModuleTest}
             disabled={!moduleUnlocked || modulePassed || moduleLockedByViolation}
@@ -516,9 +513,8 @@ function StatusIcon({ name, color, size = 11 }: { name: TestStatus; color: strin
 }
 
 function StatusBadge({ status }: { status: TestStatus }) {
+  const t = useT();
   const m = STATUS_META[status];
-  // White-chip statuses (currently only `locked`) get the soft 2-layer
-  // shadow we use everywhere for white-on-grey contrast.
   const isWhiteChip = m.bg === '#FFFFFF';
   return (
     <span style={{
@@ -533,7 +529,7 @@ function StatusBadge({ status }: { status: TestStatus }) {
         : 'none',
     }}>
       <StatusIcon name={status} color={m.iconColor} />
-      {m.label}
+      {t(`test.status.${status}`)}
     </span>
   );
 }

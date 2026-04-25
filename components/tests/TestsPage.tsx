@@ -2,6 +2,7 @@
 
 import { ArrowRight } from '@/components/icons';
 import { motion } from 'framer-motion';
+import { useT } from '@/lib/i18n';
 
 interface StandaloneTest {
   id: string;
@@ -114,10 +115,11 @@ const TESTS: StandaloneTest[] = [
 ];
 
 export default function TestsPage() {
+  const t = useT();
   // Group by category
-  const grouped = TESTS.reduce<Record<string, StandaloneTest[]>>((acc, t) => {
-    if (!acc[t.category]) acc[t.category] = [];
-    acc[t.category].push(t);
+  const grouped = TESTS.reduce<Record<string, StandaloneTest[]>>((acc, item) => {
+    if (!acc[item.category]) acc[item.category] = [];
+    acc[item.category].push(item);
     return acc;
   }, {});
 
@@ -129,13 +131,13 @@ export default function TestsPage() {
           fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 700,
           color: '#1A1A1A', marginBottom: 6, letterSpacing: '-0.02em',
         }}>
-          Тесты
+          {t('testsPage.title')}
         </h2>
         <p style={{
           fontFamily: 'var(--font-body)', fontSize: 14, color: '#6B7280',
           lineHeight: 1.5,
         }}>
-          Отдельные тесты для подготовки к экзаменам и проверки знаний
+          {t('testsPage.subtitle')}
         </p>
       </div>
 
@@ -202,7 +204,7 @@ export default function TestsPage() {
                       <rect x="3" y="11" width="18" height="11" rx="2" />
                       <path d="M7 11V7a5 5 0 0110 0v4" />
                     </svg>
-                    Скоро
+                    {t('testsPage.soon')}
                   </div>
                 )}
 
@@ -217,7 +219,7 @@ export default function TestsPage() {
                     fontFamily: 'var(--font-mono)', fontSize: '0.625rem', fontWeight: 500,
                     color: 'var(--md-sys-color-on-surface-variant)',
                   }}>
-                    {test.questions} вопросов · {test.duration}
+                    {t('testsPage.questionsDuration', { n: test.questions, duration: test.duration })}
                   </span>
                 </div>
 
@@ -249,7 +251,7 @@ export default function TestsPage() {
                     fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', fontWeight: 500,
                     color: test.unlocked ? 'var(--md-sys-color-on-surface)' : '#9CA3AF',
                   }}>
-                    {test.unlocked ? 'Начать тест' : 'Тест в разработке'}
+                    {test.unlocked ? t('testsPage.startTest') : t('testsPage.inDevelopment')}
                   </span>
                   {test.unlocked && <ArrowRight size={14} color="var(--md-sys-color-on-surface)" />}
                 </div>

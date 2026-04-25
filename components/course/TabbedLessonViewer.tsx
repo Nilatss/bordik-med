@@ -6,6 +6,7 @@ import { Children, cloneElement, isValidElement } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useT } from '@/lib/i18n';
 import { BookOpen } from '@/components/icons';
 import TestPanel from './TestPanel';
 import { CourseIllustration } from './CourseIllustrations';
@@ -390,15 +391,19 @@ export function splitIntoTabs(md: string): Tab[] {
 }
 
 export default function TabbedLessonViewer({ content, courseId, showTests = true }: Props) {
+  const t = useT();
   const tabs = useMemo(() => {
     const base = content ? splitIntoTabs(content) : [];
     if (showTests) {
       base.push({
-        id: 'tests', title: 'Тесты по курсу', short: 'Тесты',
+        id: 'tests',
+        title: t('course.toc.tabTests'),
+        short: t('course.toc.tabTestsShort'),
         iconKey: 'tests', body: '', kind: 'tests',
       });
     }
     return base;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [content, showTests]);
   const [activeId, setActiveId] = useState(tabs[0]?.id ?? '');
 
@@ -418,13 +423,13 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
             fontFamily: 'var(--font-display)', fontSize: 'var(--text-lg)', fontWeight: 500,
             color: 'var(--md-sys-color-on-surface)', marginBottom: 'var(--space-2)',
           }}>
-            Контент готовится
+            {t('course.contentNotReady.title')}
           </h3>
           <p style={{
             fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)',
             color: 'var(--md-sys-color-on-surface-variant)', lineHeight: 1.6,
           }}>
-            Статья для этого курса ещё не добавлена. Она появится здесь по мере наполнения.
+            {t('course.contentNotReady.body')}
           </p>
         </div>
       </div>
@@ -680,7 +685,7 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
           textTransform: 'uppercase', letterSpacing: '0.08em',
           padding: '4px 12px 6px',
         }}>
-          Содержание
+          {t('course.toc.title')}
         </p>
 
         {/* Live progress — striped green bar identical to the intro page */}
@@ -690,20 +695,20 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
             <div style={{ padding: '0 12px 10px' }}>
               <CourseProgressBar
                 pct={pct}
-                currentLabel={`Тема ${activeIndex + 1}`}
-                endLabel={`из ${tabs.length}`}
-                startCaption="Старт"
-                endCaption="Финал"
+                currentLabel={t('course.intro.topicN', { n: activeIndex + 1 })}
+                endLabel={t('course.progress.ofTotal', { n: tabs.length })}
+                startCaption={t('course.progress.start')}
+                endCaption={t('course.progress.final')}
               />
             </div>
           );
         })()}
-        {tabs.map((t, i) => {
-          const isActive = t.id === active.id;
+        {tabs.map((tab, i) => {
+          const isActive = tab.id === active.id;
           return (
             <button
-              key={t.id}
-              onClick={() => setActiveId(t.id)}
+              key={tab.id}
+              onClick={() => setActiveId(tab.id)}
               className={`toc-tab${isActive ? ' is-active' : ''}`}
               style={{
                 position: 'relative',
@@ -745,7 +750,7 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
                 position: 'relative', zIndex: 1,
                 overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
               }}>
-                {t.short}
+                {tab.short}
               </span>
             </button>
           );
