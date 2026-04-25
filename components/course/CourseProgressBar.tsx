@@ -61,18 +61,17 @@ export default function CourseProgressBar({
             display: 'flex', alignItems: 'center', paddingLeft: 12,
           }}
         >
-          {/* Sliding stripe layer — vertical stripes (90deg) tile cleanly
-              along the X axis, so translateX of one full period lands on a
-              visually-identical position — completely seamless loop with
-              correct math. Slow 12 s cycle (~3.3 px/s) keeps it peripheral. */}
+          {/* Sliding stripe layer — VERY slow drift, almost imperceptible.
+              30 s for one full pattern period = ~1.1 px/s. Eye reads it as
+              "the bar is alive but nothing is moving" — which is the goal. */}
           <span
             aria-hidden
             style={{
               position: 'absolute', top: 0, bottom: 0,
               left: -40, width: 'calc(100% + 40px)',
               backgroundImage:
-                'repeating-linear-gradient(135deg, rgba(255,255,255,0.18) 0 8px, transparent 8px 24px)',
-              animation: 'progress-stripes 12s linear infinite',
+                'repeating-linear-gradient(135deg, rgba(255,255,255,0.12) 0 8px, transparent 8px 24px)',
+              animation: 'progress-stripes 30s linear infinite',
               pointerEvents: 'none',
               willChange: 'transform',
             }}
