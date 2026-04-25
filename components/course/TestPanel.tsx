@@ -570,23 +570,32 @@ function TestRow({
             transition={{ duration: 0.25, ease: [0.05, 0.7, 0.1, 1] }}
             style={{ overflow: 'hidden' }}
           >
+            {/* Info-pill grid — matches CourseHeader Уровень/Аудитория/Объём
+                so the expanded card visually rhymes with the page header. */}
             <div style={{
-              display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
-              gap: 16,
-              padding: '12px 18px 14px',
+              display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+              gap: 10,
+              padding: '14px 18px 6px',
               borderTop: '1px solid #F0F1F5',
             }}>
               {detailRows.map(({ label, value }) => (
-                <div key={label} style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                <div key={label} style={{
+                  background: '#F5F6F8',
+                  borderRadius: 12,
+                  padding: '12px 16px',
+                  display: 'flex', flexDirection: 'column', gap: 4,
+                  minWidth: 0,
+                }}>
                   <span style={{
                     fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-                    color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.06em',
+                    color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.06em',
                   }}>
                     {label}
                   </span>
                   <span style={{
                     fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
-                    color: '#1A1A1A',
+                    color: '#1A1A1A', lineHeight: 1.35,
+                    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                   }}>
                     {value}
                   </span>
