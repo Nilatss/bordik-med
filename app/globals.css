@@ -894,8 +894,11 @@ main:has(.stats-page) {
   background: #E8E9ED;
 }
 
-/* Progress-bar stripes — gentle leftward drift to keep the bar alive */
+/* Progress-bar stripes — slow seamless drift via transform on a 28-px-wider
+   inner layer. translateX of one full pattern period (28 px) snaps the
+   pattern back to identical → loop is invisible. 6 s = peripheral motion
+   the eye won't lock onto. */
 @keyframes progress-stripes {
-  from { background-position: 0 0; }
-  to   { background-position: -40px 0; }
+  from { transform: translateX(0); }
+  to   { transform: translateX(28px); }
 }
