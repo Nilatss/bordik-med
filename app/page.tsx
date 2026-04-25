@@ -283,7 +283,10 @@ export default function Home() {
               <line x1={3} y1={18} x2={21} y2={18} />
             </svg>
           </button>
-          <img src="/logo-bordik.png" alt="Bordik" style={{ height: 22, width: 'auto' }} />
+          <picture>
+            <source srcSet="/logo-bordik.webp" type="image/webp" />
+            <img src="/logo-bordik.png" alt="Bordik" style={{ height: 22, width: 'auto' }} />
+          </picture>
         </div>
         <main style={{ flex: 1, overflowY: 'auto', background: '#FFFFFF' }}>
           <div className="app-main-inner">

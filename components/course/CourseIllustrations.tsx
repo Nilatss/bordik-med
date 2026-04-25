@@ -404,17 +404,20 @@ export function CourseIllustration({ id }: { id: string }) {
       padding: 12,
     }}>
       {img ? (
+        // <picture>: modern browsers download the WebP (~50–150 kB),
+        // legacy browsers fall back to the optimised PNG. Native lazy-load
+        // + async decode keep the initial paint snappy on slow links.
         // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={img.src}
-          alt={img.alt}
-          // Native lazy-loading + async decode — defers download of big
-          // course PNGs (some are 1–5 MB) until they're scrolled near the
-          // viewport, removing massive initial-paint cost on slow links.
-          loading="lazy"
-          decoding="async"
-          style={{ width: '100%', height: 'auto', display: 'block', borderRadius: 8 }}
-        />
+        <picture>
+          <source srcSet={img.src.replace(/\.png$/i, '.webp')} type="image/webp" />
+          <img
+            src={img.src}
+            alt={img.alt}
+            loading="lazy"
+            decoding="async"
+            style={{ width: '100%', height: 'auto', display: 'block', borderRadius: 8 }}
+          />
+        </picture>
       ) : Cmp ? (
         <Cmp />
       ) : null}

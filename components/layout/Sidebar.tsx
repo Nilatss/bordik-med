@@ -323,13 +323,17 @@ export default function Sidebar() {
           flexShrink: 0,
         }}
       >
-        {/* Logo */}
+        {/* Logo — WebP first (55 kB), PNG fallback (53 kB) for any
+            browsers that somehow can't handle WebP in 2026. */}
         <div style={{ padding: '20px 24px 0' }}>
-          <img
-            src="/logo-bordik.png"
-            alt="Bordik"
-            style={{ height: 28, width: 'auto', display: 'block' }}
-          />
+          <picture>
+            <source srcSet="/logo-bordik.webp" type="image/webp" />
+            <img
+              src="/logo-bordik.png"
+              alt="Bordik"
+              style={{ height: 28, width: 'auto', display: 'block' }}
+            />
+          </picture>
         </div>
 
         {/* Date + welcome */}
