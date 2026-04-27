@@ -18,6 +18,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { getFaceLandmarker, analyseFaceFrame } from '@/lib/proctoring/face';
+import { getObjectDetector, findForbiddenObjects } from '@/lib/proctoring/objects';
 
 interface ProctoringProps {
   /** Called whenever a suspicious action is detected. Same callback the
@@ -39,14 +40,17 @@ interface ProctoringProps {
   onReadyChange?: (ready: boolean) => void;
 }
 
-// Audio levels in 0–255 byte space (Web Audio analyser output).
-// Roughly:  0–10 = quiet room, 10–35 = ambient breathing/typing,
-// 35–55 = normal speech at 1 m, 55–80 = loud speech, 80+ = shouting/music.
-const AUDIO_NATURAL_MAX_AMP    = 50;
-const AUDIO_WARNING_AMP        = 65;   // sustained → soft warning
-const AUDIO_VIOLATION_AMP      = 90;   // sustained → hard violation
-const AUDIO_HOLD_MS            = 1500;
-const AUDIO_RESET_MS           = 12000;
+// Audio levels — getByteFrequencyData returns 0..255 mapped from
+// minDecibels (default -100 dB) to maxDecibels (0 dB). Empirically:
+//   <8   = silent room          → silence detector
+//   8–25 = ambient typing/HVAC  → natural
+//   25–40 = normal speech       → warn band
+//   40+ = loud speech / shouting → violation
+const AUDIO_NATURAL_MAX_AMP    = 25;
+const AUDIO_WARNING_AMP        = 30;
+const AUDIO_VIOLATION_AMP      = 45;
+const AUDIO_HOLD_MS            = 1200;
+const AUDIO_RESET_MS           = 9000;
 // Silence band — if the mic stays this quiet for SILENCE_HOLD_MS the user
 // is either muted at the OS level or is doing something we can't hear.
 const AUDIO_SILENCE_AMP        = 3;
@@ -69,9 +73,9 @@ const LIP_APERTURE_THRESHOLD   = 0.010;
 const LIP_TALK_HITS_REQUIRED   = 5;
 const LIP_TALK_WINDOW_MS       = 2000;
 const LIP_TALK_RESET_MS        = 8000;
-const YAW_TURNED_THRESHOLD     = 0.35;   // |yaw| > this → head turned to the side
-const YAW_TURNED_HOLD_MS       = 1500;   // must hold for this long → warning
-const YAW_TURNED_RESET_MS      = 8000;
+const YAW_TURNED_THRESHOLD     = 0.20;   // |yaw| > this → head turned to the side
+const YAW_TURNED_HOLD_MS       = 1000;
+const YAW_TURNED_RESET_MS      = 6000;
 
 // Convert 0–255 amplitude to a friendly approximate dBFS for tooltips.
 function ampToDb(amp: number): number {
@@ -91,8 +95,9 @@ export default function Proctoring({
     status: 'loading' | 'ready' | 'error';
     faces: number;
     aperture: number;
+    yaw: number;
     error?: string;
-  }>({ status: 'loading', faces: 0, aperture: 0 });
+  }>({ status: 'loading', faces: 0, aperture: 0, yaw: 0 });
   const [audioDb, setAudioDb] = useState<number>(-100);
 
   // ── Acquire stream once, release on unmount or when `active` flips off
@@ -314,6 +319,7 @@ export default function Proctoring({
     let prevAperture = -1;
     const lipHits: number[] = [];
     let lastLipTalk = 0;
+    let lipTalkCount = 0;          // how many times we already triggered
     let missingSince = 0;
     let lastMissing = 0;
     let lastMulti = 0;
@@ -339,9 +345,12 @@ export default function Proctoring({
         }
         const r = lm.detectForVideo(v, now);
         const stats = analyseFaceFrame(r);
-        setFaceState((prev) => prev.status === 'ready'
-          ? { status: 'ready', faces: r.faceLandmarks?.length ?? 0, aperture: stats.lipAperture }
-          : { status: 'ready', faces: r.faceLandmarks?.length ?? 0, aperture: stats.lipAperture });
+        setFaceState({
+          status: 'ready',
+          faces: r.faceLandmarks?.length ?? 0,
+          aperture: stats.lipAperture,
+          yaw: stats.yaw,
+        });
 
         // Multiple faces → instant violation (cooldown)
         if (stats.multipleFaces && now - lastMulti > MULTI_FACE_RESET_MS) {
@@ -406,10 +415,15 @@ export default function Proctoring({
           ) {
             lastLipTalk = now;
             lipHits.length = 0;
-            onWarning?.(
-              'lip-movement',
-              'Замечено движение губ. Если вы что-то проговариваете — следующее срабатывание будет нарушением.',
-            );
+            lipTalkCount += 1;
+            if (lipTalkCount === 1) {
+              onWarning?.(
+                'lip-movement',
+                'Замечено движение губ. Если вы что-то проговариваете — следующее срабатывание будет нарушением.',
+              );
+            } else {
+              onViolation('lip-movement');
+            }
           }
         } else {
           prevAperture = -1;
@@ -419,6 +433,7 @@ export default function Proctoring({
           status: 'error',
           faces: 0,
           aperture: 0,
+          yaw: 0,
           error: err?.message?.slice(0, 80) || 'load-failed',
         });
       }
@@ -430,6 +445,54 @@ export default function Proctoring({
       stopped = true;
       cancelAnimationFrame(raf);
     };
+  }, [stream, active, onViolation, onWarning]);
+
+  // ── Object detector — phones, books, laptops, monitors in frame.
+  //    Runs ~3 inferences / sec to keep CPU usage low. First detection
+  //    of a forbidden object → instant violation (it's hard to detect a
+  //    phone by accident, so no warning tier).
+  useEffect(() => {
+    if (!stream || !active || !videoRef.current) return;
+    let stopped = false;
+    let raf = 0;
+    let lastInfer = 0;
+    let lastViolation = 0;
+    const RESET_MS = 8000;
+
+    const loop = async () => {
+      if (stopped) return;
+      const now = performance.now();
+      if (now - lastInfer < 350) {  // ~3 fps
+        raf = requestAnimationFrame(loop);
+        return;
+      }
+      lastInfer = now;
+
+      try {
+        const det = await getObjectDetector();
+        const v = videoRef.current;
+        if (!v || v.readyState < 2) {
+          raf = requestAnimationFrame(loop);
+          return;
+        }
+        const r = det.detectForVideo(v, now);
+        const hits = findForbiddenObjects(r);
+        if (hits.length > 0 && now - lastViolation > RESET_MS) {
+          lastViolation = now;
+          const top = hits.sort((a, b) => b.score - a.score)[0];
+          onViolation('object-' + top.cls);
+          onWarning?.(
+            'object-' + top.cls,
+            `В кадре обнаружен запрещённый предмет: ${top.label}. Уберите его.`,
+          );
+        }
+      } catch { /* model load failure — silently skip */ }
+
+      raf = requestAnimationFrame(loop);
+    };
+
+    raf = requestAnimationFrame(loop);
+    return () => { stopped = true; cancelAnimationFrame(raf); };
   }, [stream, active, onViolation, onWarning]);
 
   // ── Track-ended monitor — camera or microphone went away mid-test.
@@ -596,7 +659,7 @@ export default function Proctoring({
         {faceState.status === 'error' ? (
           <>Прокторинг: ошибка модели — {faceState.error ?? 'unknown'}</>
         ) : faceState.status === 'ready' ? (
-          <>Прокторинг активен · лиц: {faceState.faces} · микрофон: {audioDb} dB</>
+          <>Прокторинг · лиц: {faceState.faces} · yaw: {faceState.yaw.toFixed(2)} · мик: {audioDb} dB</>
         ) : (
           <>Загружаем AI-модель прокторинга… подождите</>
         )}

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { getFaceLandmarker } from '@/lib/proctoring/face';
+import { getObjectDetector } from '@/lib/proctoring/objects';
 
 interface TestStartConsentProps {
   testLabel: string;
@@ -53,11 +54,11 @@ function MediaCheck({ onReady }: { onReady: (ok: boolean) => void }) {
   // model is cached, so detection starts the moment the test opens.
   const [aiModelStatus, setAiModelStatus] = useState<'loading' | 'ready' | 'error'>('loading');
 
-  // Warm up the face-landmarker model — loads the 3 MB MediaPipe assets
-  // from CDN so the test page doesn't have to wait for them.
+  // Warm up both AI models — face landmarker (~3 MB) + object detector
+  // (~4 MB) so the test page starts detection immediately.
   useEffect(() => {
     let cancelled = false;
-    getFaceLandmarker()
+    Promise.all([getFaceLandmarker(), getObjectDetector()])
       .then(() => { if (!cancelled) setAiModelStatus('ready'); })
       .catch(() => { if (!cancelled) setAiModelStatus('error'); });
     return () => { cancelled = true; };
@@ -506,16 +507,18 @@ interface Rule {
 }
 const WARN_RULES: Rule[] = [
   { title: 'Полная тишина с микрофона', detail: 'Если микрофон не ловит ни звука дольше 15 секунд — возможно, он выключен в системе или вы в шумоизолирующих наушниках.' },
-  { title: 'Громкий звук', detail: `Уровень от ${ampToDb(MEDIA_CHECK_NATURAL_MAX_AMP)} до ${ampToDb(MEDIA_CHECK_VIOLATION_AMP)} dB удерживается 1.5 сек — например, разговор рядом или включённая музыка.` },
-  { title: 'Лицо пропало из кадра', detail: 'Не видно лица дольше 3 секунд — отвернулись, ушли, наклонили камеру.' },
+  { title: 'Громкий звук (1-я зона)', detail: 'Уровень микрофона перешёл из зелёной в жёлтую зону шкалы и удерживается 1.2 сек — разговор рядом, включённая музыка.' },
+  { title: 'Лицо пропало из кадра', detail: 'Не видно лица дольше 2 секунд — отвернулись, ушли, наклонили камеру.' },
+  { title: 'Голова повёрнута в сторону', detail: 'Лицо в кадре, но смотрите не в камеру дольше 1 секунды.' },
   { title: 'Движение губ (1-е срабатывание)', detail: 'Камера зафиксировала, что вы что-то проговариваете. Следующее срабатывание — нарушение.' },
   { title: 'Размер экрана и окна не сходятся', detail: 'Возможно, идёт зеркалирование экрана или удалённое подключение.' },
 ];
 const VIOLATION_RULES: Rule[] = [
-  { title: 'Очень громкий звук', detail: `Уровень выше ${ampToDb(MEDIA_CHECK_VIOLATION_AMP)} dB удерживается 1.5 сек — крик, разговор в полный голос или громкая музыка.` },
+  { title: 'Очень громкий звук', detail: 'Уровень микрофона перешёл в красную зону шкалы и удерживается 1.5 сек — крик, разговор в полный голос или громкая музыка.' },
   { title: 'Камера закрыта', detail: 'Тёмный кадр (закрытая или направленная вниз камера) дольше 2 секунд.' },
   { title: 'Несколько лиц в кадре', detail: 'В кадр попал второй человек — рядом стоит подсказчик или зашли посторонние.' },
-  { title: 'Повторное движение губ', detail: 'Второе и последующие срабатывания после первого предупреждения.' },
+  { title: 'Запрещённый предмет в кадре', detail: 'AI-детектор увидел телефон, книгу, ноутбук, монитор, клавиатуру или другой посторонний предмет.' },
+  { title: 'Повторное движение губ', detail: 'Второе и последующие срабатывания после первого предупреждения — считаются как нарушение.' },
   { title: 'Переключение вкладки или окна', detail: 'Свернули браузер, переключились на Telegram, новую вкладку, второй монитор.' },
   { title: 'Потеря фокуса окна (Alt+Tab)', detail: 'Окно теста перестало быть активным.' },
   { title: 'Открытие DevTools', detail: 'F12, Ctrl+Shift+I / J / C, контекстное меню «Просмотр кода».' },
