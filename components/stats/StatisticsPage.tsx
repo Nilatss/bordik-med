@@ -1731,7 +1731,7 @@ function RecentAttempts({ attempts }: { attempts: { courseId: string; testLevel:
         <span>Курс / Тест</span>
         <span>Балл</span>
         <span>Дата</span>
-        <span style={{ justifySelf: 'end' }}>Статус</span>
+        <span style={{ justifySelf: 'start' }}>Статус</span>
       </div>
 
       {attempts.map((a, i) => {
@@ -1801,7 +1801,7 @@ function RecentAttempts({ attempts }: { attempts: { courseId: string; testLevel:
 
             {/* Status pill */}
             <span style={{
-              justifySelf: 'end',
+              justifySelf: 'start',
               display: 'inline-flex', alignItems: 'center', gap: 4,
               padding: '3px 10px',
               borderRadius: 999,
