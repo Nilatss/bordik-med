@@ -186,48 +186,10 @@ export default function ToolView({ toolId }: { toolId: string }) {
     if (main) main.scrollTo({ top: 0, behavior: 'smooth' });
   }, [activeId]);
 
-  if (!tool) {
-    return (
-      <div style={{ padding: 40, textAlign: 'center', color: '#9CA3AF' }}>
-        {t('tool.notFound')}
-        <div style={{ marginTop: 16 }}>
-          <BackButton onClick={closeTool} />
-        </div>
-      </div>
-    );
-  }
-
-  if (!runner) {
-    // Either still fetching the per-runner chunk or the id has no runner yet.
-    // Plain div (no motion): the loading state is short-lived and followed
-    // by the real runner's motion.div — animating twice caused a double
-    // fade flash on first tool open. The main view's animation is enough.
-    return (
-      <div style={{ display: 'flex', flexDirection: 'column', maxWidth: 760 }}>
-        <BackButton onClick={closeTool} />
-        <Header tool={tool} />
-        <div style={{
-          marginTop: 24, padding: '40px 24px',
-          background: '#F5F6F8', borderRadius: 20, textAlign: 'center',
-        }}>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: 14, color: '#6B7280' }}>
-            {loading ? t('tool.loading') : t('tool.runnerSoon')}
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  const active = tabs.find((t) => t.id === activeId) ?? tabs[0];
-  const activeIndex = tabs.indexOf(active);
-  const prevTab = tabs[activeIndex - 1];
-  const nextTab = tabs[activeIndex + 1];
-
-  // Memoise result computation - was running on every render (including
-  // hover, parent re-render, layout pill animation). For "calculator" tools
-  // runner.compute() can be heavy; for "score" tools we sort bands + find
-  // band on every render. Keying on `runner` + `values` only.
+  // Memoise result computation - was running on every render. MUST be
+  // declared before any early return below to satisfy Rules of Hooks.
   const result: CalculatorResult | null = useMemo(() => {
+    if (!runner) return null;
     const ready = runner.inputs.every((inp) => {
       if (inp.type === 'number') {
         const v = values[inp.id];
@@ -272,6 +234,43 @@ export default function ToolView({ toolId }: { toolId: string }) {
       relatedCourses: runner.relatedCourses,
     };
   }, [runner, values]);
+
+  if (!tool) {
+    return (
+      <div style={{ padding: 40, textAlign: 'center', color: '#9CA3AF' }}>
+        {t('tool.notFound')}
+        <div style={{ marginTop: 16 }}>
+          <BackButton onClick={closeTool} />
+        </div>
+      </div>
+    );
+  }
+
+  if (!runner) {
+    // Either still fetching the per-runner chunk or the id has no runner yet.
+    // Plain div (no motion): the loading state is short-lived and followed
+    // by the real runner's motion.div — animating twice caused a double
+    // fade flash on first tool open. The main view's animation is enough.
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', maxWidth: 760 }}>
+        <BackButton onClick={closeTool} />
+        <Header tool={tool} />
+        <div style={{
+          marginTop: 24, padding: '40px 24px',
+          background: '#F5F6F8', borderRadius: 20, textAlign: 'center',
+        }}>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: 14, color: '#6B7280' }}>
+            {loading ? t('tool.loading') : t('tool.runnerSoon')}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  const active = tabs.find((t) => t.id === activeId) ?? tabs[0];
+  const activeIndex = tabs.indexOf(active);
+  const prevTab = tabs[activeIndex - 1];
+  const nextTab = tabs[activeIndex + 1];
 
   const kindLabel = runner.kind === 'score' ? t('tool.kind.score') : t('tool.kind.calculator');
 
