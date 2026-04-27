@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { Fragment, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { modules, sections as allSections, TOTAL_COURSES, getCourseById, getModuleForCourse, getSectionById } from '@/lib/curriculum';
 import { useAppStore, formatStudyTime, getTotalStudyTime } from '@/lib/store';
@@ -457,8 +457,9 @@ function Section({ title, subtitle, children, action, tip, delay = 0 }: {
    Intensity = number of test sessions in that bucket.
    ════════════════════════════════════════════════════════════════ */
 interface HeatmapData {
-  cells: number[][]; // [4 rows][N cols]
-  cols: number;      // days in current period
+  cells: number[];          // session count per day (length = cols)
+  bands: number[][];        // hour-band breakdown per day [cols][4]
+  cols: number;
   totalActiveDays: number;
   totalSessions: number;
 }
@@ -486,7 +487,8 @@ function buildHeatmap(testAttempts: Record<string, { timestamp: number }[]>, per
     startTime = yearStart.getTime();
   }
 
-  const cells: number[][] = Array.from({ length: 4 }, () => Array(days).fill(0));
+  const cells: number[] = Array(days).fill(0);
+  const bands: number[][] = Array.from({ length: days }, () => [0, 0, 0, 0]);
   const activeDays = new Set<number>();
   let totalSessions = 0;
 
@@ -497,11 +499,12 @@ function buildHeatmap(testAttempts: Record<string, { timestamp: number }[]>, per
       if (col < 0 || col >= days) continue;
       const date = new Date(a.timestamp);
       const hour = date.getHours();
-      const row =
+      const band =
         hour < 6 ? 0 :
         hour < 12 ? 1 :
         hour < 18 ? 2 : 3;
-      cells[row][col] += 1;
+      cells[col] += 1;
+      bands[col][band] += 1;
       activeDays.add(col);
       totalSessions += 1;
     }
@@ -509,6 +512,7 @@ function buildHeatmap(testAttempts: Record<string, { timestamp: number }[]>, per
 
   return {
     cells,
+    bands,
     cols: days,
     totalActiveDays: activeDays.size,
     totalSessions,
@@ -516,9 +520,9 @@ function buildHeatmap(testAttempts: Record<string, { timestamp: number }[]>, per
 }
 
 function Heatmap({ data, period }: { data: HeatmapData; period: Period }) {
-  const max = Math.max(1, ...data.cells.flat());
-  const labels = ['00–06', '06–12', '12–18', '18–24'];
-  const [hovered, setHovered] = useState<{ row: number; col: number } | null>(null);
+  const max = Math.max(1, ...data.cells);
+  const bandLabels = ['00–06', '06–12', '12–18', '18–24'];
+  const [hovered, setHovered] = useState<number | null>(null);
 
   // Day-axis tick density:
   //   week   → every day
@@ -556,132 +560,126 @@ function Heatmap({ data, period }: { data: HeatmapData; period: Period }) {
 
   return (
     <div style={{
-      display: 'grid',
-      gridTemplateColumns: '54px minmax(0, 1fr)',
-      gap: 8,
+      display: 'flex', flexDirection: 'column', gap: 8, minWidth: 0,
       position: 'relative',
       overflow: 'visible',
     }}>
-      {/* Y-axis labels */}
+      {/* Single row — one cell per day */}
       <div style={{
-        display: 'flex', flexDirection: 'column-reverse', justifyContent: 'space-between',
-        fontFamily: 'var(--font-mono)', fontSize: 10, color: '#9CA3AF',
-        gap: 6, paddingTop: 4, paddingBottom: 28,
+        display: 'grid',
+        gridTemplateColumns: `repeat(${data.cols}, minmax(${minCellPx}px, 1fr))`,
+        gap: period === 'all' ? 2 : 4,
       }}>
-        {labels.map((l) => <span key={l}>{l}</span>)}
-      </div>
-
-      {/* Grid + bottom day axis */}
-      <div style={{
-        display: 'flex', flexDirection: 'column', gap: 8, minWidth: 0,
-        position: 'relative',
-      }}>
-        <div style={{
-          display: 'grid',
-          gridTemplateRows: `repeat(4, 1fr)`,
-          gridTemplateColumns: `repeat(${data.cols}, minmax(${minCellPx}px, 1fr))`,
-          gap: period === 'all' ? 2 : 4,
-        }}>
-          {/* Iterate top-to-bottom = row 3 (18-24) first visually */}
-          {[3, 2, 1, 0].flatMap((row) =>
-            data.cells[row].map((v, col) => {
-              const lvl = v === 0 ? 0 :
-                v >= max * 0.75 ? 4 :
-                v >= max * 0.5 ? 3 :
-                v >= max * 0.25 ? 2 : 1;
-              const isHovered = hovered && hovered.row === row && hovered.col === col;
-              return (
-                <div
-                  key={`${row}-${col}`}
-                  onPointerEnter={() => setHovered({ row, col })}
-                  onPointerLeave={() => setHovered((c) => (c && c.row === row && c.col === col ? null : c))}
-                  className="stats-heat-cell"
-                  style={{
-                    aspectRatio: '1 / 1',
-                    background: HEATMAP_LEVELS[lvl],
-                    borderRadius: 4,
-                    cursor: 'default',
-                    outline: isHovered ? `2px solid ${ACCENT}` : 'none',
-                    outlineOffset: isHovered ? 1 : 0,
-                  }}
-                />
-              );
-            })
-          )}
-        </div>
-
-        {/* Day axis — label content depends on the period */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: `repeat(${data.cols}, minmax(${minCellPx}px, 1fr))`,
-          gap: period === 'all' ? 2 : 4,
-          fontFamily: 'var(--font-mono)', fontSize: 9, color: '#9CA3AF',
-        }}>
-          {Array.from({ length: data.cols }).map((_, i) => {
-            const d = dateForCol(i);
-            let label = '';
-            if (period === 'all') {
-              // Year view — month name once per month, on the 1st
-              if (d.getDate() === 1) {
-                label = d.toLocaleDateString('ru-RU', { month: 'short' }).replace('.', '');
-              }
-            } else if (period === 'month') {
-              // Month view — day number every 5 days, plus 1st
-              const day = d.getDate();
-              if (day === 1 || day % 5 === 0) label = String(day);
-            } else {
-              // Week view — every day
-              label = String(d.getDate());
-            }
-            return (
-              <span key={i} style={{ textAlign: 'center' }}>
-                {label}
-              </span>
-            );
-          })}
-        </div>
-
-        {/* Custom hover tooltip — positioned ABOVE the entire grid so it
-             never sits on top of any cell. */}
-        {hovered && (() => {
-          const v = data.cells[hovered.row][hovered.col];
-          const date = fmtDate(dateForCol(hovered.col));
-          const band = labels[hovered.row];
-          const sessText = v === 0
-            ? 'нет активности'
-            : `${v} ${v === 1 ? 'сессия' : v < 5 ? 'сессии' : 'сессий'}`;
-          const colPct = ((hovered.col + 0.5) / data.cols) * 100;
+        {data.cells.map((v, col) => {
+          const lvl = v === 0 ? 0 :
+            v >= max * 0.75 ? 4 :
+            v >= max * 0.5 ? 3 :
+            v >= max * 0.25 ? 2 : 1;
+          const isHovered = hovered === col;
           return (
             <div
+              key={col}
+              onPointerEnter={() => setHovered(col)}
+              onPointerLeave={() => setHovered((c) => (c === col ? null : c))}
+              className="stats-heat-cell"
               style={{
-                position: 'absolute',
-                left: `${colPct}%`,
-                bottom: 'calc(100% + 8px)',
-                transform: 'translateX(-50%)',
-                background: '#1A1A1A',
-                color: '#F4F5F7',
-                padding: '8px 12px',
-                borderRadius: 8,
-                fontFamily: 'var(--font-body)', fontSize: 12,
-                lineHeight: 1.4,
-                whiteSpace: 'nowrap',
-                pointerEvents: 'none',
-                boxShadow: '0 12px 32px rgba(15, 23, 42, 0.18), 0 4px 12px rgba(15, 23, 42, 0.08)',
-                zIndex: 5,
+                aspectRatio: '1 / 1',
+                background: HEATMAP_LEVELS[lvl],
+                borderRadius: 4,
+                cursor: 'default',
+                outline: isHovered ? `2px solid ${ACCENT}` : 'none',
+                outlineOffset: isHovered ? 1 : 0,
               }}
-            >
-              <div style={{ fontWeight: 600 }}>{date}</div>
-              <div style={{
-                fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700,
-                color: v > 0 ? '#A8C7FF' : '#9CA3AF',
-                marginTop: 2,
-              }}>
-                {band} · {sessText}
-              </div>
-            </div>
+            />
           );
-        })()}
+        })}
       </div>
+
+      {/* Day axis — label content depends on the period */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: `repeat(${data.cols}, minmax(${minCellPx}px, 1fr))`,
+        gap: period === 'all' ? 2 : 4,
+        fontFamily: 'var(--font-mono)', fontSize: 9, color: '#9CA3AF',
+      }}>
+        {Array.from({ length: data.cols }).map((_, i) => {
+          const d = dateForCol(i);
+          let label = '';
+          if (period === 'all') {
+            if (d.getDate() === 1) {
+              label = d.toLocaleDateString('ru-RU', { month: 'short' }).replace('.', '');
+            }
+          } else if (period === 'month') {
+            const day = d.getDate();
+            if (day === 1 || day % 5 === 0) label = String(day);
+          } else {
+            label = String(d.getDate());
+          }
+          return (
+            <span key={i} style={{ textAlign: 'center' }}>
+              {label}
+            </span>
+          );
+        })}
+      </div>
+
+      {/* Custom hover tooltip — date + per-band breakdown. */}
+      {hovered !== null && (() => {
+        const col = hovered;
+        const v = data.cells[col];
+        const dayBands = data.bands[col];
+        const date = fmtDate(dateForCol(col));
+        const colPct = ((col + 0.5) / data.cols) * 100;
+        return (
+          <div
+            style={{
+              position: 'absolute',
+              left: `${colPct}%`,
+              bottom: 'calc(100% + 8px)',
+              transform: 'translateX(-50%)',
+              background: '#1A1A1A',
+              color: '#F4F5F7',
+              padding: '10px 12px',
+              borderRadius: 8,
+              fontFamily: 'var(--font-body)', fontSize: 12,
+              lineHeight: 1.4,
+              whiteSpace: 'nowrap',
+              pointerEvents: 'none',
+              boxShadow: '0 12px 32px rgba(15, 23, 42, 0.18), 0 4px 12px rgba(15, 23, 42, 0.08)',
+              zIndex: 5,
+              minWidth: 180,
+            }}
+          >
+            <div style={{ fontWeight: 600 }}>{date}</div>
+            <div style={{
+              fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700,
+              color: v > 0 ? '#A8C7FF' : '#9CA3AF',
+              marginTop: 2,
+            }}>
+              {v === 0
+                ? 'нет активности'
+                : `${v} ${v === 1 ? 'сессия' : v < 5 ? 'сессии' : 'сессий'}`}
+            </div>
+            {v > 0 && (
+              <div style={{
+                marginTop: 6, paddingTop: 6,
+                borderTop: '1px solid rgba(255,255,255,0.08)',
+                display: 'grid', gridTemplateColumns: 'auto 1fr', columnGap: 10, rowGap: 2,
+                fontFamily: 'var(--font-mono)', fontSize: 11,
+              }}>
+                {bandLabels.map((label, bi) => (
+                  dayBands[bi] > 0 ? (
+                    <Fragment key={label}>
+                      <span style={{ color: '#9CA3AF' }}>{label}</span>
+                      <span style={{ color: '#F4F5F7', fontWeight: 700 }}>×{dayBands[bi]}</span>
+                    </Fragment>
+                  ) : null
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })()}
     </div>
   );
 }
