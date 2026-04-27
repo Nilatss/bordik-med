@@ -61,14 +61,17 @@ const FRAME_RESET_MS           = 15000;
 const FRAME_SHARP_BLUR_LIMIT   = 3;     // edge-magnitude per pixel below this = blurry
 const FRAME_BLUR_HOLD_MS       = 1500;
 
-// Face / lip detection thresholds
-const FACE_MISSING_HOLD_MS     = 2000;   // no face in frame for this long → warning
+// Face / lip / yaw detection thresholds
+const FACE_MISSING_HOLD_MS     = 2000;
 const FACE_MISSING_RESET_MS    = 8000;
 const MULTI_FACE_RESET_MS      = 10000;
 const LIP_APERTURE_THRESHOLD   = 0.010;
 const LIP_TALK_HITS_REQUIRED   = 5;
 const LIP_TALK_WINDOW_MS       = 2000;
 const LIP_TALK_RESET_MS        = 8000;
+const YAW_TURNED_THRESHOLD     = 0.35;   // |yaw| > this → head turned to the side
+const YAW_TURNED_HOLD_MS       = 1500;   // must hold for this long → warning
+const YAW_TURNED_RESET_MS      = 8000;
 
 // Convert 0–255 amplitude to a friendly approximate dBFS for tooltips.
 function ampToDb(amp: number): number {
@@ -314,6 +317,8 @@ export default function Proctoring({
     let missingSince = 0;
     let lastMissing = 0;
     let lastMulti = 0;
+    let yawSince = 0;
+    let lastYaw = 0;
 
     const loop = async () => {
       if (stopped) return;
@@ -364,6 +369,24 @@ export default function Proctoring({
           }
         } else {
           missingSince = 0;
+        }
+
+        // Head-turn detection — yaw ratio above threshold for >1.5s
+        if (stats.hasFace && Math.abs(stats.yaw) > YAW_TURNED_THRESHOLD) {
+          if (yawSince === 0) yawSince = now;
+          else if (
+            now - yawSince > YAW_TURNED_HOLD_MS &&
+            now - lastYaw > YAW_TURNED_RESET_MS
+          ) {
+            lastYaw = now;
+            yawSince = 0;
+            onWarning?.(
+              'face-turned',
+              'Голова сильно повёрнута в сторону. Смотрите прямо в камеру.',
+            );
+          }
+        } else {
+          yawSince = 0;
         }
 
         // Lip movement detection — sliding window of frames where the

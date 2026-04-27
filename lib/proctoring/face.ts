@@ -54,15 +54,20 @@ const UPPER_LIP_INNER = 13;
 const LOWER_LIP_INNER = 14;
 const FACE_TOP        = 10;   // hairline
 const FACE_BOTTOM     = 152;  // chin
+const NOSE_TIP        = 1;
+const LEFT_EYE_OUTER  = 33;   // viewer's right
+const RIGHT_EYE_OUTER = 263;  // viewer's left
 
 export interface FaceFrameStats {
-  /** True iff exactly one face was detected. */
   hasFace: boolean;
-  /** True iff more than one face is in the frame. */
   multipleFaces: boolean;
-  /** Vertical distance between the inner-lip points, normalised by face
-   *  height (0 = closed, ~0.04+ = open mouth). */
   lipAperture: number;
+  /** Horizontal head-yaw ratio: 0 = facing forward, ±1 = nose at one of the
+   *  outer eye corners (head fully turned). Values |x| > 0.35 mean the user
+   *  is looking distinctly to the side. */
+  yaw: number;
+  /** Vertical pitch ratio similar to yaw (above/below eye line). */
+  pitch: number;
 }
 
 export function analyseFaceFrame(result: FaceLandmarkerResult): FaceFrameStats {
@@ -70,17 +75,32 @@ export function analyseFaceFrame(result: FaceLandmarkerResult): FaceFrameStats {
   const hasFace = sets.length === 1;
   const multipleFaces = sets.length > 1;
   let lipAperture = 0;
+  let yaw = 0;
+  let pitch = 0;
   if (sets.length >= 1) {
     const lm = sets[0];
     const upper = lm[UPPER_LIP_INNER];
     const lower = lm[LOWER_LIP_INNER];
     const top = lm[FACE_TOP];
     const bot = lm[FACE_BOTTOM];
+    const nose = lm[NOSE_TIP];
+    const lEye = lm[LEFT_EYE_OUTER];
+    const rEye = lm[RIGHT_EYE_OUTER];
     if (upper && lower && top && bot) {
       const lipDist  = Math.abs(lower.y - upper.y);
       const faceDist = Math.abs(bot.y - top.y) || 1;
       lipAperture = lipDist / faceDist;
     }
+    if (nose && lEye && rEye) {
+      const cx = (lEye.x + rEye.x) / 2;
+      const halfX = Math.abs(rEye.x - lEye.x) / 2 || 1;
+      yaw = (nose.x - cx) / halfX;
+    }
+    if (nose && top && bot) {
+      const cy = (top.y + bot.y) / 2;
+      const halfY = Math.abs(bot.y - top.y) / 2 || 1;
+      pitch = (nose.y - cy) / halfY;
+    }
   }
-  return { hasFace, multipleFaces, lipAperture };
+  return { hasFace, multipleFaces, lipAperture, yaw, pitch };
 }

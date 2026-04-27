@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
+import { getFaceLandmarker } from '@/lib/proctoring/face';
 
 interface TestStartConsentProps {
   testLabel: string;
@@ -47,6 +48,20 @@ function MediaCheck({ onReady }: { onReady: (ok: boolean) => void }) {
   // explicitly fatal (remote desktop). Each has a `severity` so the UI
   // can colour them accordingly.
   const [hints, setHints] = useState<Array<{ id: string; level: 'warn' | 'block'; text: string }>>([]);
+  // Pre-load the MediaPipe Face Landmarker model in the background while
+  // the user reads the rules — by the time they click Начать тест the
+  // model is cached, so detection starts the moment the test opens.
+  const [aiModelStatus, setAiModelStatus] = useState<'loading' | 'ready' | 'error'>('loading');
+
+  // Warm up the face-landmarker model — loads the 3 MB MediaPipe assets
+  // from CDN so the test page doesn't have to wait for them.
+  useEffect(() => {
+    let cancelled = false;
+    getFaceLandmarker()
+      .then(() => { if (!cancelled) setAiModelStatus('ready'); })
+      .catch(() => { if (!cancelled) setAiModelStatus('error'); });
+    return () => { cancelled = true; };
+  }, []);
 
   // Request permissions once
   useEffect(() => {
@@ -213,13 +228,31 @@ function MediaCheck({ onReady }: { onReady: (ok: boolean) => void }) {
     }
   }, [stream]);
 
-  // Combine quality + signal + env hints into final ready flag
+  // Surface AI-model failure as a blocker
+  useEffect(() => {
+    if (aiModelStatus !== 'error') return;
+    setHints((prev) => {
+      if (prev.some((h) => h.id === 'ai-failed')) return prev;
+      return [
+        ...prev,
+        {
+          id: 'ai-failed',
+          level: 'block',
+          text: 'Не удалось загрузить AI-модель прокторинга. Проверьте интернет и попробуйте снова — без неё тест начать нельзя.',
+        },
+      ];
+    });
+  }, [aiModelStatus]);
+
+  // Combine quality + signal + env hints + AI model into final ready flag
   useEffect(() => {
     const blocked = hints.some((h) => h.level === 'block');
-    const ok = !!stream && !!cameraQuality?.ok && hasAudioSignal && !blocked;
+    const ok =
+      !!stream && !!cameraQuality?.ok && hasAudioSignal &&
+      !blocked && aiModelStatus === 'ready';
     onReady(ok);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stream, cameraQuality?.ok, hasAudioSignal, hints]);
+  }, [stream, cameraQuality?.ok, hasAudioSignal, hints, aiModelStatus]);
 
   // Audio analyser → animate level meter
   useEffect(() => {
@@ -336,6 +369,12 @@ function MediaCheck({ onReady }: { onReady: (ok: boolean) => void }) {
           <span style={{ width: 8 }} />
           <StatusDot ok={hasAudioSignal} />
           Микрофон {hasAudioSignal ? 'слышит звук' : 'ждёт звук'}
+          <span style={{ width: 8 }} />
+          <StatusDot ok={aiModelStatus === 'ready'} />
+          AI {
+            aiModelStatus === 'ready' ? 'готов' :
+            aiModelStatus === 'error' ? 'ошибка' : 'грузится'
+          }
         </div>
         {/* Audio meter — fill width is the live amplitude; coloured zones
              behind it mark the natural / warning / violation bands. */}
