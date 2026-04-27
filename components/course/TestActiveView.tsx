@@ -70,6 +70,7 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
         'camera-covered': 'Камера закрыта или направлена в темноту.',
         'camera-blurry': 'Камера резко потеряла фокус — её задели или закрыли.',
         'face-multiple': 'В кадре больше одного человека.',
+        'face-turned': 'Голова повёрнута в сторону — смотрите прямо в камеру.',
         'lip-movement': 'Замечено повторное движение губ — вы что-то проговариваете.',
         'object-cell phone': 'В кадре обнаружен телефон. Уберите его из поля камеры.',
         'object-book':       'В кадре обнаружена книга или блокнот.',

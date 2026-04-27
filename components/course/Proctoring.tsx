@@ -73,9 +73,9 @@ const LIP_APERTURE_THRESHOLD   = 0.010;
 const LIP_TALK_HITS_REQUIRED   = 5;
 const LIP_TALK_WINDOW_MS       = 2000;
 const LIP_TALK_RESET_MS        = 8000;
-const YAW_TURNED_THRESHOLD     = 0.20;   // |yaw| > this → head turned to the side
-const YAW_TURNED_HOLD_MS       = 1000;
-const YAW_TURNED_RESET_MS      = 6000;
+const YAW_TURNED_THRESHOLD     = 0.14;   // |yaw| > this → head turned to the side
+const YAW_TURNED_HOLD_MS       = 600;
+const YAW_TURNED_RESET_MS      = 5000;
 
 // Convert 0–255 amplitude to a friendly approximate dBFS for tooltips.
 function ampToDb(amp: number): number {
@@ -355,6 +355,7 @@ export default function Proctoring({
     let lastMulti = 0;
     let yawSince = 0;
     let lastYaw = 0;
+    let yawTurnCount = 0;
 
     const loop = async () => {
       if (stopped) return;
@@ -410,7 +411,8 @@ export default function Proctoring({
           missingSince = 0;
         }
 
-        // Head-turn detection — yaw ratio above threshold for >1.5s
+        // Head-turn detection — yaw ratio above threshold sustained.
+        // 1st time = warning, 2nd+ = violation.
         if (stats.hasFace && Math.abs(stats.yaw) > YAW_TURNED_THRESHOLD) {
           if (yawSince === 0) yawSince = now;
           else if (
@@ -419,10 +421,15 @@ export default function Proctoring({
           ) {
             lastYaw = now;
             yawSince = 0;
-            onWarning?.(
-              'face-turned',
-              'Голова сильно повёрнута в сторону. Смотрите прямо в камеру.',
-            );
+            yawTurnCount += 1;
+            if (yawTurnCount === 1) {
+              onWarning?.(
+                'face-turned',
+                'Голова повёрнута в сторону. Смотрите прямо в камеру — следующее срабатывание будет нарушением.',
+              );
+            } else {
+              onViolation('face-turned');
+            }
           }
         } else {
           yawSince = 0;
