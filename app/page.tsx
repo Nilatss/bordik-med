@@ -321,8 +321,11 @@ export default function Home() {
             <img src="/logo-bordik.png" alt="Bordik" style={{ height: 22, width: 'auto' }} />
           </picture>
         </div>
-        <main style={{ flex: 1, overflowY: 'auto', background: '#FFFFFF' }}>
-          <div className="app-main-inner">
+        <main style={{
+          flex: 1, overflowY: 'auto', background: '#FFFFFF',
+          display: 'flex', flexDirection: 'column',
+        }}>
+          <div className="app-main-inner" style={{ flex: 1 }}>
 
           {view === 'profile' && (
             <ProfilePage />
@@ -427,10 +430,12 @@ export default function Home() {
             <NewsFeed />
           )}
 
-          {/* Powered-by footer — small unobtrusive credit, shown on every view. */}
+          </div>
+
+          {/* Powered-by footer — full-width strip, pushed to the bottom of
+               the main scroll area thanks to flex:1 on the inner. */}
           <footer style={{
-            marginTop: 32,
-            padding: '20px 0 16px',
+            padding: '16px 24px',
             borderTop: '1px solid #F0F1F5',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
             fontFamily: 'var(--font-body)', fontSize: 12, color: '#9CA3AF',
@@ -444,8 +449,6 @@ export default function Home() {
               Desli
             </span>
           </footer>
-
-          </div>
         </main>
       </div>
     </div>
