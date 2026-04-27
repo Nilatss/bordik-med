@@ -176,7 +176,7 @@ export function BodyMap({ completedCourses }: { completedCourses: string[] }) {
         <svg
           viewBox={`0 0 ${VBW} ${VBH}`}
           width="100%"
-          style={{ maxWidth: 820, display: 'block' }}
+          style={{ maxWidth: 640, display: 'block' }}
           role="img"
           aria-label="Карта систем тела по уровню освоения"
         >
@@ -190,10 +190,13 @@ export function BodyMap({ completedCourses }: { completedCourses: string[] }) {
           {/* Anchor dots + leader lines + labels */}
           {stats.map((s) => {
             const col = regionColor(s.pct);
-            const labelX = s.side === 'left' ? 20  : VBW - 20;
+            const labelX = s.side === 'left' ? 24  : VBW - 24;
             const elbowX = s.side === 'left' ? 180 : VBW - 180;
             const dot = s.anchor;
             const ly = s.labelY;
+            // Leader line meets the label at the SAME Y as the category title,
+            // so the line visually "underlines" the system name. Title text uses
+            // dominantBaseline="middle" to centre vertically on this Y.
             return (
               <g key={s.id}>
                 <line
@@ -204,19 +207,19 @@ export function BodyMap({ completedCourses }: { completedCourses: string[] }) {
                 />
                 <line
                   x1={elbowX} y1={ly}
-                  x2={s.side === 'left' ? labelX + 8 : labelX - 8} y2={ly}
+                  x2={s.side === 'left' ? labelX + 6 : labelX - 6} y2={ly}
                   stroke="rgba(100, 116, 139, 0.55)"
                   strokeWidth={2}
                 />
-                {/* glow ring for active systems */}
+                {/* soft halo for active systems */}
                 {s.pct > 0 && (
                   <circle
-                    cx={dot.x} cy={dot.y} r={20}
-                    fill="none" stroke={col} strokeOpacity={0.25} strokeWidth={5}
+                    cx={dot.x} cy={dot.y} r={18}
+                    fill="none" stroke={col} strokeOpacity={0.22} strokeWidth={4}
                   />
                 )}
                 <circle
-                  cx={dot.x} cy={dot.y} r={11}
+                  cx={dot.x} cy={dot.y} r={9}
                   fill={col}
                   stroke="#FFFFFF"
                   strokeWidth={3}
@@ -224,24 +227,26 @@ export function BodyMap({ completedCourses }: { completedCourses: string[] }) {
 
                 <text
                   x={labelX}
-                  y={ly - 8}
-                  fontSize={28}
+                  y={ly}
+                  fontSize={22}
                   fontFamily="var(--font-body)"
                   fontWeight={700}
                   fill="#1A1A1A"
                   textAnchor={s.side === 'left' ? 'start' : 'end'}
+                  dominantBaseline="middle"
                   style={{ letterSpacing: '-0.005em' }}
                 >
                   {s.label}
                 </text>
                 <text
                   x={labelX}
-                  y={ly + 26}
-                  fontSize={24}
+                  y={ly + 24}
+                  fontSize={18}
                   fontFamily="var(--font-mono)"
                   fontWeight={700}
                   fill={s.pct > 0 ? col : '#9CA3AF'}
                   textAnchor={s.side === 'left' ? 'start' : 'end'}
+                  dominantBaseline="middle"
                 >
                   {s.pct}% · {s.done}/{s.total}
                 </text>
