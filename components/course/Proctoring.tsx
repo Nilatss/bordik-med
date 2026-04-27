@@ -50,8 +50,8 @@ const AUDIO_RESET_MS           = 12000;
 // Silence band — if the mic stays this quiet for SILENCE_HOLD_MS the user
 // is either muted at the OS level or is doing something we can't hear.
 const AUDIO_SILENCE_AMP        = 3;
-const AUDIO_SILENCE_HOLD_MS    = 30_000; // 30 seconds of dead silence
-const AUDIO_SILENCE_RESET_MS   = 60_000;
+const AUDIO_SILENCE_HOLD_MS    = 15_000; // 15 seconds of dead silence
+const AUDIO_SILENCE_RESET_MS   = 45_000;
 const FRAME_DARK_THRESHOLD     = 18;
 const FRAME_DARK_HOLD_MS       = 2000;
 const FRAME_RESET_MS           = 15000;
