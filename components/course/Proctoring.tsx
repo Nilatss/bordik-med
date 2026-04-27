@@ -73,9 +73,9 @@ const LIP_APERTURE_THRESHOLD   = 0.010;
 const LIP_TALK_HITS_REQUIRED   = 5;
 const LIP_TALK_WINDOW_MS       = 2000;
 const LIP_TALK_RESET_MS        = 8000;
-const YAW_TURNED_THRESHOLD     = 0.14;   // |yaw| > this → head turned to the side
-const YAW_TURNED_HOLD_MS       = 600;
-const YAW_TURNED_RESET_MS      = 5000;
+const YAW_TURNED_THRESHOLD     = 0.08;   // |yaw| > this → head turned to the side
+const YAW_TURNED_HOLD_MS       = 350;
+const YAW_TURNED_RESET_MS      = 4000;
 
 // Convert 0–255 amplitude to a friendly approximate dBFS for tooltips.
 function ampToDb(amp: number): number {
@@ -383,14 +383,10 @@ export default function Proctoring({
           yaw: stats.yaw,
         });
 
-        // Multiple faces → instant violation (cooldown)
+        // Multiple faces → instant violation (cooldown). Red banner only.
         if (stats.multipleFaces && now - lastMulti > MULTI_FACE_RESET_MS) {
           lastMulti = now;
           onViolation('face-multiple');
-          onWarning?.(
-            'face-multiple',
-            'В кадре больше одного человека — это нарушение.',
-          );
         }
 
         // No face for a while → warning
@@ -517,11 +513,8 @@ export default function Proctoring({
         if (hits.length > 0 && now - lastViolation > RESET_MS) {
           lastViolation = now;
           const top = hits.sort((a, b) => b.score - a.score)[0];
+          // Red violation banner only (no duplicate yellow warning).
           onViolation('object-' + top.cls);
-          onWarning?.(
-            'object-' + top.cls,
-            `В кадре обнаружен запрещённый предмет: ${top.label}. Уберите его.`,
-          );
         }
       } catch { /* model load failure — silently skip */ }
 
