@@ -55,6 +55,11 @@ const AUDIO_SILENCE_RESET_MS   = 60_000;
 const FRAME_DARK_THRESHOLD     = 18;
 const FRAME_DARK_HOLD_MS       = 2000;
 const FRAME_RESET_MS           = 15000;
+// Camera sharpness watchdog — if the camera goes from "in-focus" at the
+// start to "blurry" mid-test, the user almost certainly nudged or covered
+// the lens. Sustained drop = immediate test termination.
+const FRAME_SHARP_BLUR_LIMIT   = 3;     // edge-magnitude per pixel below this = blurry
+const FRAME_BLUR_HOLD_MS       = 1500;
 
 // Face / lip detection thresholds
 const FACE_MISSING_HOLD_MS     = 3000;   // no face in frame for this long → warning
@@ -211,40 +216,72 @@ export default function Proctoring({
     };
   }, [stream, active, onViolation, onWarning]);
 
-  // ── Camera frame brightness monitor (covered camera detection)
+  // ── Camera frame monitor — measures both brightness (covered camera)
+  //    and sharpness (sudden blur = lens was bumped/covered with cloth).
   useEffect(() => {
     if (!stream || !videoRef.current || !active) return;
     const canvas = document.createElement('canvas');
-    canvas.width = 64; canvas.height = 48;
+    canvas.width = 96; canvas.height = 72;
     const g = canvas.getContext('2d');
     if (!g) return;
-    let lastTriggered = 0;
+    let lastDark = 0;
     let darkSince = 0;
+    let blurSince = 0;
     let raf = 0;
     const tick = () => {
       const v = videoRef.current;
       if (v && v.readyState >= 2) {
         try {
           g.drawImage(v, 0, 0, canvas.width, canvas.height);
-          const px = g.getImageData(0, 0, canvas.width, canvas.height).data;
+          const w = canvas.width, h = canvas.height;
+          const px = g.getImageData(0, 0, w, h).data;
+          // Brightness + luminance grid for sharpness
+          const lum = new Float32Array(w * h);
           let sum = 0;
-          for (let i = 0; i < px.length; i += 4) {
-            sum += (px[i] + px[i + 1] + px[i + 2]) / 3;
+          for (let i = 0, p = 0; i < px.length; i += 4, p++) {
+            const y = 0.299 * px[i] + 0.587 * px[i + 1] + 0.114 * px[i + 2];
+            lum[p] = y;
+            sum += y;
           }
-          const avg = sum / (px.length / 4);
+          const avg = sum / (w * h);
+          let edges = 0; let n = 0;
+          for (let y = 1; y < h - 1; y++) {
+            for (let x = 1; x < w - 1; x++) {
+              const c = lum[y * w + x];
+              edges += Math.abs(c - lum[y * w + x + 1]);
+              edges += Math.abs(c - lum[(y + 1) * w + x]);
+              n++;
+            }
+          }
+          const sharpness = edges / n;
           const now = performance.now();
+
+          // Covered camera (very dark)
           if (avg < FRAME_DARK_THRESHOLD) {
             if (darkSince === 0) darkSince = now;
             else if (
               now - darkSince > FRAME_DARK_HOLD_MS &&
-              now - lastTriggered > FRAME_RESET_MS
+              now - lastDark > FRAME_RESET_MS
             ) {
-              lastTriggered = now;
+              lastDark = now;
               darkSince = 0;
               onViolation('camera-covered');
             }
           } else {
             darkSince = 0;
+          }
+
+          // Suddenly blurry — instant termination, no tolerance.
+          if (sharpness < FRAME_SHARP_BLUR_LIMIT && avg >= FRAME_DARK_THRESHOLD) {
+            if (blurSince === 0) blurSince = now;
+            else if (now - blurSince > FRAME_BLUR_HOLD_MS) {
+              blurSince = 0;
+              onViolation('camera-blurry');
+              onForceEnd?.('camera-blurry');
+              setError('Камера потеряла фокус — тест завершён.');
+            }
+          } else {
+            blurSince = 0;
           }
         } catch { /* CORS or readback failure — ignore */ }
       }
@@ -252,7 +289,7 @@ export default function Proctoring({
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [stream, active, onViolation]);
+  }, [stream, active, onViolation, onForceEnd]);
 
   // ── Face landmark monitor — runs FaceMesh once per ~100 ms.
   //    Detects:  no face / multiple faces / lip movement (talking).

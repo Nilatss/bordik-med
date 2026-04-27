@@ -35,15 +35,18 @@ function MediaCheck({ onReady }: { onReady: (ok: boolean) => void }) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [audioAmp, setAudioAmp] = useState(0);   // 0..255 (raw)
+  const [audioAmp, setAudioAmp] = useState(0);
   const [hasAudioSignal, setHasAudioSignal] = useState(false);
-  // Camera quality state — `null` = still measuring, `true`/`false` = result
   const [cameraQuality, setCameraQuality] = useState<{
     bright: number;
     sharpness: number;
     ok: boolean;
     reason: string | null;
   } | null>(null);
+  // Pre-test environment hints — informational, don't block start unless
+  // explicitly fatal (remote desktop). Each has a `severity` so the UI
+  // can colour them accordingly.
+  const [hints, setHints] = useState<Array<{ id: string; level: 'warn' | 'block'; text: string }>>([]);
 
   // Request permissions once
   useEffect(() => {
@@ -146,12 +149,77 @@ function MediaCheck({ onReady }: { onReady: (ok: boolean) => void }) {
     return () => cancelAnimationFrame(raf);
   }, [stream]);
 
-  // Combine quality + signal into final ready flag
+  // Environment hints — earphones / remote desktop / virtual machine.
+  // Run once after stream is acquired (so labels are populated).
   useEffect(() => {
-    const ok = !!stream && !!cameraQuality?.ok && hasAudioSignal;
+    if (!stream) return;
+    const collected: typeof hints = [];
+
+    // 1. Headphones / earbuds detection via device labels
+    navigator.mediaDevices.enumerateDevices().then((devs) => {
+      const labels = devs
+        .filter((d) => d.kind === 'audiooutput' || d.kind === 'audioinput')
+        .map((d) => d.label.toLowerCase());
+      const earpieceTokens = [
+        'airpods', 'earbuds', 'наушник', 'headset', 'headphone', 'наушники', 'gear iconx',
+        'powerbeats', 'beats', 'galaxy buds', 'pixel buds', 'wf-', 'wh-', 'jabra',
+      ];
+      const found = labels.find((l) => earpieceTokens.some((t) => l.includes(t)));
+      if (found) {
+        collected.push({
+          id: 'earphones',
+          level: 'warn',
+          text: `Похоже, к компьютеру подключены наушники (${found}). Снимите их перед началом — наушники во время теста запрещены.`,
+        });
+      }
+      finalise();
+    }).catch(finalise);
+
+    // 2. WebGL renderer fingerprint — flags virtual GPUs typical of RDP/VM
+    try {
+      const c = document.createElement('canvas');
+      const gl = (c.getContext('webgl') ?? c.getContext('experimental-webgl')) as WebGLRenderingContext | null;
+      if (gl) {
+        const ext = gl.getExtension('WEBGL_debug_renderer_info');
+        const renderer = ext ? String(gl.getParameter(ext.UNMASKED_RENDERER_WEBGL)).toLowerCase() : '';
+        const blockedTokens = ['vmware', 'virtualbox', 'parallels', 'swiftshader', 'llvmpipe', 'remote', 'rdp'];
+        if (blockedTokens.some((t) => renderer.includes(t))) {
+          collected.push({
+            id: 'rdp',
+            level: 'block',
+            text: 'Похоже, тест запущен в виртуальной машине, через удалённый рабочий стол или с программным рендерингом. Это запрещено.',
+          });
+        }
+      }
+    } catch {/* ignore */}
+
+    // 3. Pointer/touch + battery sanity — RDP-type sessions usually have
+    //    no battery and inconsistent screen dimensions.
+    try {
+      const sw = window.screen?.width || 0;
+      const ww = window.innerWidth || 0;
+      // RDP sessions sometimes report HUGE screen-vs-window mismatch
+      if (sw > 0 && ww > 0 && sw / ww > 4) {
+        collected.push({
+          id: 'screen-mismatch',
+          level: 'warn',
+          text: 'Размер экрана и окна сильно расходятся — возможно, идёт удалённое подключение или дублирование экрана.',
+        });
+      }
+    } catch {/* */}
+
+    function finalise() {
+      setHints(collected);
+    }
+  }, [stream]);
+
+  // Combine quality + signal + env hints into final ready flag
+  useEffect(() => {
+    const blocked = hints.some((h) => h.level === 'block');
+    const ok = !!stream && !!cameraQuality?.ok && hasAudioSignal && !blocked;
     onReady(ok);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stream, cameraQuality?.ok, hasAudioSignal]);
+  }, [stream, cameraQuality?.ok, hasAudioSignal, hints]);
 
   // Audio analyser → animate level meter
   useEffect(() => {
@@ -344,6 +412,35 @@ function MediaCheck({ onReady }: { onReady: (ok: boolean) => void }) {
             {cameraQuality.reason}
           </p>
         )}
+        {/* Environment hints (earphones / RDP / VM / screen mismatch). */}
+        {hints.length > 0 && (
+          <ul style={{
+            margin: '10px 0 0', padding: 0,
+            listStyle: 'none',
+            display: 'flex', flexDirection: 'column', gap: 6,
+          }}>
+            {hints.map((h) => (
+              <li key={h.id} style={{
+                display: 'flex', alignItems: 'flex-start', gap: 8,
+                padding: '8px 10px', borderRadius: 8,
+                background: h.level === 'block' ? '#FEF2F2' : '#FFFBEB',
+                border: `1px solid ${h.level === 'block' ? '#FECACA' : '#FCD34D'}`,
+                fontFamily: 'var(--font-body)', fontSize: 12,
+                color: h.level === 'block' ? '#991B1B' : '#92400E',
+                lineHeight: 1.5,
+              }}>
+                <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round"
+                  style={{ flexShrink: 0, marginTop: 2 }}>
+                  <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                  <line x1="12" y1="9" x2="12" y2="13" />
+                  <line x1="12" y1="17" x2="12.01" y2="17" />
+                </svg>
+                <span>{h.text}</span>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
       <style jsx global>{`
@@ -487,15 +584,19 @@ export default function TestStartConsent({
           fontFamily: 'var(--font-body)', fontSize: 13.5,
           color: '#374151', lineHeight: 1.7,
         }}>
-          <li>Уровень звука с микрофона: 50–65 amp ({ampToDb(50)}…{ampToDb(65)} dB) — норма; 65–90 ({ampToDb(65)}…{ampToDb(90)} dB) — предупреждение; выше {ampToDb(90)} dB — нарушение</li>
+          <li>Уровень звука с микрофона: ≤ {ampToDb(50)} dB — норма; до {ampToDb(90)} dB — предупреждение; выше {ampToDb(90)} dB — нарушение</li>
           <li>Полная тишина (микрофон не слышит ничего {`>`} 30 секунд) — предупреждение</li>
           <li>Камера закрыта или направлена в темноту дольше 2 секунд — нарушение</li>
+          <li><strong>Камера резко потеряла фокус (стала мутной)</strong> — тест немедленно завершается. Не трогайте камеру и не закрывайте её рукой.</li>
           <li>Лицо не в кадре дольше 3 секунд — предупреждение</li>
           <li>Несколько лиц в кадре — нарушение</li>
-          <li>Движение губ (даже без звука — проговаривание шёпотом) — предупреждение, далее нарушение</li>
+          <li>Движение губ (проговаривание ответов даже шёпотом) — предупреждение, далее нарушение</li>
           <li>Переключение на другие вкладки, сворачивание окна или потеря фокуса — нарушение</li>
           <li>Открытие DevTools (F12, Ctrl+Shift+I/J/C), копирование или скриншот — нарушение</li>
           <li>Камера или микрофон отключены пользователем посреди теста — тест немедленно завершается с блокировкой на 48 часов</li>
+          <li><strong>Запрещено надевать наушники / earbuds / гарнитуру</strong> — система проверит подключенные устройства до начала и предупредит.</li>
+          <li><strong>Запрещён удалённый рабочий стол / VPN-зеркала / запуск в виртуальной машине</strong> — система определяет такие сессии и блокирует старт теста.</li>
+          <li>Не отходите от компьютера, не двигайте веб-камеру и не разворачивайте её к экрану</li>
         </ul>
       </div>
 
