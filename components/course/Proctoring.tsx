@@ -82,6 +82,15 @@ export default function Proctoring({
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [error, setError] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  // Visible debug — so the user can see at a glance whether face/audio
+  // detection is actually running without opening DevTools.
+  const [faceState, setFaceState] = useState<{
+    status: 'loading' | 'ready' | 'error';
+    faces: number;
+    aperture: number;
+    error?: string;
+  }>({ status: 'loading', faces: 0, aperture: 0 });
+  const [audioDb, setAudioDb] = useState<number>(-100);
 
   // ── Acquire stream once, release on unmount or when `active` flips off
   useEffect(() => {
@@ -157,6 +166,7 @@ export default function Proctoring({
       for (let i = 0; i < data.length; i++) sum += data[i];
       const avg = sum / data.length;
       const now = performance.now();
+      setAudioDb(ampToDb(avg));
       // Violation tier — overrides warning
       if (avg >= AUDIO_VIOLATION_AMP) {
         if (violationSince === 0) violationSince = now;
@@ -324,6 +334,9 @@ export default function Proctoring({
         }
         const r = lm.detectForVideo(v, now);
         const stats = analyseFaceFrame(r);
+        setFaceState((prev) => prev.status === 'ready'
+          ? { status: 'ready', faces: r.faceLandmarks?.length ?? 0, aperture: stats.lipAperture }
+          : { status: 'ready', faces: r.faceLandmarks?.length ?? 0, aperture: stats.lipAperture });
 
         // Multiple faces → instant violation (cooldown)
         if (stats.multipleFaces && now - lastMulti > MULTI_FACE_RESET_MS) {
@@ -378,8 +391,13 @@ export default function Proctoring({
         } else {
           prevAperture = -1;
         }
-      } catch {
-        // Model load failed or browser doesn't support GPU — silently skip
+      } catch (err: any) {
+        setFaceState({
+          status: 'error',
+          faces: 0,
+          aperture: 0,
+          error: err?.message?.slice(0, 80) || 'load-failed',
+        });
       }
       raf = requestAnimationFrame(loop);
     };
@@ -524,23 +542,53 @@ export default function Proctoring({
           boxShadow: '0 12px 32px rgba(15,23,42,0.18), 0 0 0 1px rgba(255,255,255,0.6)',
         }}
       />
-      {/* "REC" badge so the user is reminded monitoring is live */}
+      {/* "REC" badge + live detection status — placed above the preview
+           so the user can confirm at a glance that face & audio analysis
+           are actually running. */}
       <div style={{
         position: 'fixed',
-        right: 24, bottom: 'calc(clamp(120px, 18vw, 180px) * 0.75 + 24px)',
-        display: 'inline-flex', alignItems: 'center', gap: 6,
-        padding: '4px 10px', borderRadius: 999,
-        background: '#1A1A1A', color: '#FFFFFF',
-        fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-        letterSpacing: '0.08em', textTransform: 'uppercase',
+        right: 16,
+        bottom: 'calc(clamp(120px, 18vw, 180px) * 0.75 + 16px + 6px)',
         zIndex: 61,
-        boxShadow: '0 6px 16px rgba(0,0,0,0.18)',
+        display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4,
+        pointerEvents: 'none',
       }}>
-        <span style={{
-          width: 8, height: 8, borderRadius: '50%', background: '#F87171',
-          animation: 'pulse 1.4s ease-in-out infinite',
-        }} />
-        REC
+        {/* Status row */}
+        <div style={{
+          display: 'inline-flex', alignItems: 'center', gap: 6,
+          padding: '4px 10px', borderRadius: 999,
+          background: '#1A1A1A', color: '#FFFFFF',
+          fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
+          letterSpacing: '0.08em', textTransform: 'uppercase',
+          boxShadow: '0 6px 16px rgba(0,0,0,0.18)',
+        }}>
+          <span style={{
+            width: 8, height: 8, borderRadius: '50%', background: '#F87171',
+            animation: 'pulse 1.4s ease-in-out infinite',
+          }} />
+          REC
+        </div>
+        {/* Detection state row — only after the model has had a chance to
+             load. Shows the AI status, face count, audio dB. */}
+        <div style={{
+          display: 'inline-flex', alignItems: 'center', gap: 6,
+          padding: '4px 10px', borderRadius: 8,
+          background: faceState.status === 'error' ? '#FEF2F2'
+            : faceState.status === 'ready' ? '#ECFDF5' : '#F1F5F9',
+          color: faceState.status === 'error' ? '#991B1B'
+            : faceState.status === 'ready' ? '#047857' : '#475569',
+          fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
+          letterSpacing: '0.05em',
+          boxShadow: '0 6px 16px rgba(0,0,0,0.10)',
+        }}>
+          {faceState.status === 'error' ? (
+            <>AI off · {faceState.error ?? 'err'}</>
+          ) : faceState.status === 'ready' ? (
+            <>AI · лиц: {faceState.faces} · {audioDb} dB</>
+          ) : (
+            <>AI: загрузка…</>
+          )}
+        </div>
       </div>
       <style jsx global>{`
         @keyframes pulse {
