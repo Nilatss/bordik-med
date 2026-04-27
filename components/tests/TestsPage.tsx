@@ -126,7 +126,12 @@ export default function TestsPage() {
   return (
     <div style={{ width: '100%' }}>
       {/* Header */}
-      <div style={{ marginBottom: 24 }}>
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1] }}
+        style={{ marginBottom: 24 }}
+      >
         <h2 style={{
           fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 700,
           color: '#1A1A1A', marginBottom: 6, letterSpacing: '-0.02em',
@@ -139,11 +144,17 @@ export default function TestsPage() {
         }}>
           {t('testsPage.subtitle')}
         </p>
-      </div>
+      </motion.div>
 
       {/* Categories */}
-      {Object.entries(grouped).map(([category, tests]) => (
-        <section key={category} style={{ marginBottom: 28 }}>
+      {Object.entries(grouped).map(([category, tests], catIdx) => (
+        <motion.section
+          key={category}
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1], delay: 0.06 + catIdx * 0.06 }}
+          style={{ marginBottom: 28 }}
+        >
           <h3 style={{
             fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700,
             color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
@@ -258,7 +269,7 @@ export default function TestsPage() {
               </motion.button>
             ))}
           </div>
-        </section>
+        </motion.section>
       ))}
     </div>
   );

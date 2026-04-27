@@ -466,7 +466,12 @@ export default function Home() {
 
           {view === 'learning' && (
             <div style={{ margin: '0' }}>
-              <div style={{ marginBottom: 'var(--space-5)' }}>
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1] }}
+                style={{ marginBottom: 'var(--space-5)' }}
+              >
                 <h2 style={{
                   fontFamily: 'var(--font-display)', fontSize: 'var(--text-xl)', fontWeight: 700,
                   color: 'var(--md-sys-color-on-surface)', marginBottom: 'var(--space-1)', letterSpacing: '-0.01em',
@@ -479,7 +484,7 @@ export default function Home() {
                 }}>
                   Выберите раздел для начала
                 </p>
-              </div>
+              </motion.div>
               <SectionCards onSelect={setActiveSection} />
             </div>
           )}

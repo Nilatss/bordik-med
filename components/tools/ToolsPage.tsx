@@ -905,7 +905,12 @@ export default function ToolsPage() {
   return (
     <ToolCardContext.Provider value={cardContextValue}>
     <div ref={rootRef} style={{ width: '100%' }}>
-      <div style={{ marginBottom: 20 }}>
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1] }}
+        style={{ marginBottom: 20 }}
+      >
         <h2 style={{
           fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 700,
           color: '#1A1A1A', marginBottom: 6, letterSpacing: '-0.02em',
@@ -921,10 +926,15 @@ export default function ToolsPage() {
             sections: TOOL_CATEGORIES.length,
           })}
         </p>
-      </div>
+      </motion.div>
 
       {/* Search */}
-      <div style={{ marginBottom: 14 }}>
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1], delay: 0.06 }}
+        style={{ marginBottom: 14 }}
+      >
         <div style={{
           display: 'flex', alignItems: 'center', gap: 10,
           padding: '10px 16px',
@@ -968,13 +978,18 @@ export default function ToolsPage() {
             </button>
           )}
         </div>
-      </div>
+      </motion.div>
 
       {/* Filter bar */}
-      <div style={{
-        display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center',
-        marginBottom: 20,
-      }}>
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1], delay: 0.12 }}
+        style={{
+          display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center',
+          marginBottom: 20,
+        }}
+      >
         <FilterDropdown
           label={t('tools.filter.sections')}
           icon={<svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>}
@@ -1072,7 +1087,7 @@ export default function ToolsPage() {
             {t('tools.resetAll')}
           </button>
         )}
-      </div>
+      </motion.div>
 
       {totalFilters > 0 && (
         <div style={{
