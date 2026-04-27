@@ -861,24 +861,47 @@ interface HexLayout {
   size: number;
 }
 
-function buildHexLayout(rows: SectionProgressRow[]): HexLayout {
-  // Pointy-top hex math.
-  // Rows pattern: 4,5,4,5,4 = 22 (or fewer if rows.length < 22).
-  // Place by zig-zag: middle of the cluster gets the highest-pct row.
-  const ROW_PATTERN = [4, 5, 4, 5, 4];
-  const total = ROW_PATTERN.reduce((s, n) => s + n, 0); // 22
-  const padded = [...rows];
-  // Trim or pad to exactly `total` to keep the cluster symmetric. Padding
-  // entries render as 0% (lightest tint) — visually communicating "section
-  // exists, no progress yet".
-  while (padded.length < total) {
-    padded.push({ id: `__ph${padded.length}`, name: '—', total: 0, done: 0, pct: 0, withContent: 0 });
+function patternFor(n: number): number[] {
+  // Hand-tuned diamond clusters for common counts. Falls back to a generic
+  // ceil(n / rowCount) distribution otherwise.
+  switch (n) {
+    case 1:  return [1];
+    case 2:  return [2];
+    case 3:  return [1, 2];
+    case 4:  return [2, 2];
+    case 5:  return [2, 3];
+    case 6:  return [2, 3, 1];
+    case 7:  return [3, 4];
+    case 8:  return [3, 3, 2];
+    case 9:  return [3, 3, 3];
+    case 10: return [3, 4, 3];
+    case 11: return [3, 4, 4];
+    case 12: return [2, 3, 4, 3];
+    case 13: return [3, 4, 3, 3];
+    case 14: return [3, 4, 4, 3];
+    case 22: return [4, 5, 4, 5, 4];
+    default: {
+      const rowCount = Math.max(2, Math.round(Math.sqrt(n * 0.9)));
+      const result: number[] = [];
+      let remaining = n;
+      for (let i = 0; i < rowCount; i++) {
+        const r = Math.ceil(remaining / (rowCount - i));
+        result.push(r);
+        remaining -= r;
+      }
+      return result;
+    }
   }
-  if (padded.length > total) padded.length = total;
+}
 
-  // Order so the most-complete sections cluster at the centre. We assign
-  // by spiralling outward — but a simpler approximation: sort desc, then
-  // walk cells from the centre outward.
+function buildHexLayout(rows: SectionProgressRow[]): HexLayout {
+  // Pointy-top hex math. Pattern adapts to the actual section count so we
+  // never render filler "—" placeholders. Place most-complete row in the
+  // centre, then expand outward.
+  const ROW_PATTERN = patternFor(rows.length);
+  const total = ROW_PATTERN.reduce((s, n) => s + n, 0);
+  const padded = rows.slice(0, total);
+
   const sorted = [...padded].sort((a, b) => b.pct - a.pct);
 
   const size = 24;            // hex circumradius in px
