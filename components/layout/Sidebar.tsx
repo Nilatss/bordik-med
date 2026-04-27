@@ -8,6 +8,7 @@ import { searchCourses } from '@/lib/curriculum';
 // CATALOG_TOOLS (172 kB) is dynamically imported below — lazy until the
 // user actually starts searching while on the Tools view.
 import type { CatalogTool } from '@/lib/tools-catalog';
+import UserMenu from './UserMenu';
 
 type NavItem = 'home' | 'learning' | 'tests' | 'tools' | 'stats' | 'profile';
 
@@ -691,6 +692,8 @@ export default function Sidebar() {
             </>
           )}
         </nav>
+        {/* User menu — login state at the bottom of the sidebar */}
+        <UserMenu />
       </motion.aside>
     </>
   );

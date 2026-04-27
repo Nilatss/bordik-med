@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { useAppStore } from '@/lib/store';
+import useSupabaseSync from '@/lib/useSupabaseSync';
 import { sections, getSectionById, getModulesBySection, getModuleById, type SectionId } from '@/lib/curriculum';
 import dynamic from 'next/dynamic';
 // ────────────────────────────────────────────────────────────────────
@@ -211,6 +212,10 @@ function SectionCards({ onSelect }: { onSelect: (id: SectionId) => void }) {
 
 /* ═══ Main ═══ */
 export default function Home() {
+  // Cross-device sync — pulls Supabase state on mount/sign-in, pushes
+  // debounced on local store changes. No-op for signed-out users.
+  useSupabaseSync();
+
   // Hide the pre-hydration skeleton (rendered in app/layout.tsx) as soon
   // as React's first effect runs. Two-phase fade:
   //   data-ready="1" → CSS opacity transition kicks in
