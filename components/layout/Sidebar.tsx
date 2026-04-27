@@ -217,9 +217,9 @@ export default function Sidebar() {
   };
 
   const groups: NavGroup[] = [
-    { id: 'main',     title: t('nav.group.main'),    items: ['home', 'learning', 'tests'] },
-    { id: 'services', title: t('nav.group.services'),items: ['tools'] },
-    { id: 'account',  title: t('nav.group.account'), items: ['profile', 'stats'] },
+    { id: 'main',     title: t('nav.group.main'),     items: ['home', 'profile'] },
+    { id: 'study',    title: t('nav.group.study'),    items: ['learning', 'tests', 'stats'] },
+    { id: 'services', title: t('nav.group.services'), items: ['tools'] },
   ];
 
   // Filter by search
@@ -727,6 +727,14 @@ export default function Sidebar() {
             can send a short message; submission opens a mailto: with the
             text prefilled so we get the email in our inbox. */}
         <FeedbackBlock t={t} />
+        {/* App version - small muted text under the feedback section. */}
+        <p style={{
+          margin: '0 16px 8px',
+          fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 500,
+          color: '#9CA3AF', letterSpacing: '0.04em',
+        }}>
+          {t('sidebar.version', { version: '0.1.0' })}
+        </p>
         {/* User menu — login state at the bottom of the sidebar */}
         <UserMenu />
       </motion.aside>
