@@ -259,8 +259,8 @@ export default function StatisticsPage() {
       }}>
         <Section
           delay={300}
-          title="Прогресс по разделам"
-          tip="Каждый шестигранник — один из 22 разделов программы. Цвет показывает процент завершённых курсов в разделе: чем ярче — тем выше прогресс."
+          title="Прогресс по модулям"
+          tip="Каждый шестигранник — один из модулей программы. Цвет показывает процент пройденных курсов в модуле: чем ярче — тем выше прогресс."
           subtitle={`Последние ${PERIOD_LABELS[period].toLowerCase()}`}
         >
           <SectionHex rows={sectionProgress} />
@@ -786,7 +786,7 @@ function SectionHex({ rows }: { rows: SectionProgressRow[] }) {
                   className={`stats-hex-tip${showAsUnavailable ? ' stats-hex-tip--off' : ''}`}
                 >
                   <div className="stats-hex-tip__title">
-                    {isPlaceholder ? 'Раздел недоступен'
+                    {isPlaceholder ? 'Модуль недоступен'
                       : isEmpty ? hoveredCell.row.name
                       : hoveredCell.row.name}
                   </div>
@@ -809,8 +809,8 @@ function SectionHex({ rows }: { rows: SectionProgressRow[] }) {
         borderTop: '1px solid #F0F1F5',
       }}>
         <HexStat dotColor={ACCENT}      value={`${avgPct}%`}      label="Средний прогресс" />
-        <HexStat dotColor="#7AA5FA"     value={`${startedCount}`} label="Разделов начато" border />
-        <HexStat dotColor="#A8C7FF"     value={`${completedCount}`} label="Завершено разделов" />
+        <HexStat dotColor="#7AA5FA"     value={`${startedCount}`} label="Модулей начато" border />
+        <HexStat dotColor="#A8C7FF"     value={`${completedCount}`} label="Завершено модулей" />
       </div>
 
       {/* Top sections list — small, like the % rows under the hex chart */}
