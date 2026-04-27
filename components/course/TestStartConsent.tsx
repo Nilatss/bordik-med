@@ -453,6 +453,154 @@ function MediaCheck({ onReady }: { onReady: (ok: boolean) => void }) {
   );
 }
 
+/* ──────────────────────────────────────────────────────────────────
+   RulesAccordion — full proctoring catalogue split by severity:
+     • Soft warning  (yellow)
+     • Violation     (orange — counts toward 3-strike lockout)
+     • Instant end   (red — test terminates on first occurrence)
+   Each rule lists the trigger, the threshold, and what happens.
+   ────────────────────────────────────────────────────────────────── */
+type Severity = 'warn' | 'violation' | 'instant';
+interface Rule {
+  title: string;
+  detail?: string;
+}
+const WARN_RULES: Rule[] = [
+  { title: 'Полная тишина с микрофона', detail: 'Если микрофон не ловит ни звука дольше 15 секунд — возможно, он выключен в системе или вы в шумоизолирующих наушниках.' },
+  { title: 'Громкий звук', detail: `Уровень от ${ampToDb(MEDIA_CHECK_NATURAL_MAX_AMP)} до ${ampToDb(MEDIA_CHECK_VIOLATION_AMP)} dB удерживается 1.5 сек — например, разговор рядом или включённая музыка.` },
+  { title: 'Лицо пропало из кадра', detail: 'Не видно лица дольше 3 секунд — отвернулись, ушли, наклонили камеру.' },
+  { title: 'Движение губ (1-е срабатывание)', detail: 'Камера зафиксировала, что вы что-то проговариваете. Следующее срабатывание — нарушение.' },
+  { title: 'Размер экрана и окна не сходятся', detail: 'Возможно, идёт зеркалирование экрана или удалённое подключение.' },
+];
+const VIOLATION_RULES: Rule[] = [
+  { title: 'Очень громкий звук', detail: `Уровень выше ${ampToDb(MEDIA_CHECK_VIOLATION_AMP)} dB удерживается 1.5 сек — крик, разговор в полный голос или громкая музыка.` },
+  { title: 'Камера закрыта', detail: 'Тёмный кадр (закрытая или направленная вниз камера) дольше 2 секунд.' },
+  { title: 'Несколько лиц в кадре', detail: 'В кадр попал второй человек — рядом стоит подсказчик или зашли посторонние.' },
+  { title: 'Повторное движение губ', detail: 'Второе и последующие срабатывания после первого предупреждения.' },
+  { title: 'Переключение вкладки или окна', detail: 'Свернули браузер, переключились на Telegram, новую вкладку, второй монитор.' },
+  { title: 'Потеря фокуса окна (Alt+Tab)', detail: 'Окно теста перестало быть активным.' },
+  { title: 'Открытие DevTools', detail: 'F12, Ctrl+Shift+I / J / C, контекстное меню «Просмотр кода».' },
+  { title: 'Копирование / вставка', detail: 'Ctrl+C, Ctrl+A, Ctrl+V — попытка вытащить вопросы или вставить готовый ответ.' },
+  { title: 'Скриншот / печать', detail: 'PrintScreen, Ctrl+P, инструменты захвата экрана.' },
+  { title: '3 нарушения подряд', detail: 'После третьего нарушения тест завершается принудительно, попытка не засчитывается.' },
+];
+const INSTANT_RULES: Rule[] = [
+  { title: 'Камера резко потеряла фокус', detail: 'Изображение стало мутным дольше 1.5 сек (камеру задели, накрыли тканью, навели на стену).' },
+  { title: 'Камера или микрофон отключены пользователем', detail: 'Закрыли крышку камеры, выдернули USB, вышли в системные настройки и сняли разрешение.' },
+  { title: 'Запуск из удалённой сессии или виртуальной машины', detail: 'WebGL-рендерер показывает VirtualBox / VMware / Parallels / RDP / SwiftShader / llvmpipe — система не даст начать.' },
+  { title: 'Прерывание теста кнопкой', detail: 'Если вы сами нажали «Прервать» — тест блокируется на 12 часов.' },
+];
+
+const SEVERITY_META: Record<Severity, { color: string; bg: string; border: string; label: string; title: string; subtitle: string }> = {
+  warn: {
+    color: '#92400E', bg: '#FFFBEB', border: '#FCD34D',
+    label: 'Предупреждение', title: 'Предупреждения',
+    subtitle: 'Не штрафуют — система просто покажет жёлтый баннер. После него поведение надо исправить.',
+  },
+  violation: {
+    color: '#9A3412', bg: '#FFF7ED', border: '#FDBA74',
+    label: 'Нарушение', title: 'Нарушения',
+    subtitle: 'Считаются как «strikes». 1-е и 2-е — предупреждение, 3-е — принудительное завершение и блокировка теста на 24 часа.',
+  },
+  instant: {
+    color: '#991B1B', bg: '#FEF2F2', border: '#FCA5A5',
+    label: 'Мгновенно', title: 'Мгновенное завершение',
+    subtitle: 'Тест закрывается с первого срабатывания, попытка засчитывается как провал, повтор недоступен 48 часов.',
+  },
+};
+
+function RuleSection({ severity, rules }: { severity: Severity; rules: Rule[] }) {
+  const m = SEVERITY_META[severity];
+  return (
+    <div style={{
+      background: '#FFFFFF', borderRadius: 14,
+      padding: '18px 20px', marginBottom: 12,
+      border: `1px solid ${m.border}`,
+    }}>
+      <div style={{
+        display: 'flex', alignItems: 'baseline', gap: 10,
+        marginBottom: 4, flexWrap: 'wrap',
+      }}>
+        <span style={{
+          display: 'inline-flex', alignItems: 'center',
+          padding: '3px 10px', borderRadius: 999,
+          background: m.bg, color: m.color,
+          fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
+          letterSpacing: '0.08em', textTransform: 'uppercase',
+        }}>
+          {m.label}
+        </span>
+        <h4 style={{
+          margin: 0, fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 700,
+          color: '#1A1A1A', letterSpacing: '-0.01em',
+        }}>
+          {m.title}
+        </h4>
+      </div>
+      <p style={{
+        margin: '0 0 12px 0',
+        fontFamily: 'var(--font-body)', fontSize: 12.5, color: '#6B7280',
+        lineHeight: 1.55,
+      }}>
+        {m.subtitle}
+      </p>
+      <ul style={{
+        margin: 0, padding: 0, listStyle: 'none',
+        display: 'flex', flexDirection: 'column', gap: 10,
+      }}>
+        {rules.map((r, i) => (
+          <li key={i} style={{
+            display: 'flex', gap: 10,
+            paddingTop: 10,
+            borderTop: i === 0 ? 'none' : '1px solid #F0F1F5',
+          }}>
+            <span style={{
+              width: 8, height: 8, borderRadius: '50%',
+              background: m.color, flexShrink: 0, marginTop: 8,
+            }} />
+            <div style={{ minWidth: 0 }}>
+              <p style={{
+                margin: 0,
+                fontFamily: 'var(--font-body)', fontSize: 13.5, fontWeight: 600,
+                color: '#1A1A1A', lineHeight: 1.45,
+              }}>
+                {r.title}
+              </p>
+              {r.detail && (
+                <p style={{
+                  margin: '2px 0 0',
+                  fontFamily: 'var(--font-body)', fontSize: 12.5, color: '#6B7280',
+                  lineHeight: 1.55,
+                }}>
+                  {r.detail}
+                </p>
+              )}
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function RulesAccordion() {
+  return (
+    <div style={{ marginBottom: 8 }}>
+      {/* Section heading */}
+      <p style={{
+        fontFamily: 'var(--font-mono)', fontSize: 10.5, fontWeight: 700,
+        color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
+        margin: '6px 0 8px 0',
+      }}>
+        Что отслеживает прокторинг
+      </p>
+      <RuleSection severity="warn" rules={WARN_RULES} />
+      <RuleSection severity="violation" rules={VIOLATION_RULES} />
+      <RuleSection severity="instant" rules={INSTANT_RULES} />
+    </div>
+  );
+}
+
 function ThresholdTick({ pct }: { pct: number }) {
   return (
     <span
@@ -542,10 +690,12 @@ export default function TestStartConsent({
            works before they commit to starting the test. */}
       <MediaCheck onReady={setMediaReady} />
 
-      {/* Camera + microphone requirement — first because it gates the test */}
+      <RulesAccordion />
+
+      {/* Pre-flight requirements card */}
       <div style={{
         background: '#FFFFFF', borderRadius: 12,
-        padding: '18px 20px', marginBottom: 10,
+        padding: '18px 20px', marginBottom: 18,
         borderLeft: '3px solid #3B82F6',
       }}>
         <p style={{
@@ -553,101 +703,18 @@ export default function TestStartConsent({
           color: '#2563EB', textTransform: 'uppercase', letterSpacing: '0.08em',
           margin: '0 0 10px 0',
         }}>
-          Обязательно для прохождения
+          Перед стартом проверьте
         </p>
         <ul style={{
           margin: 0, paddingLeft: 18,
           fontFamily: 'var(--font-body)', fontSize: 13.5,
           color: '#374151', lineHeight: 1.7,
         }}>
-          <li>Включённая камера и микрофон на протяжении всего теста</li>
-          <li>Освещённая комната, чёткое и хорошо видимое лицо в кадре</li>
-          <li>Тишина — без посторонних голосов и шумов</li>
-        </ul>
-      </div>
-
-      {/* Proctoring detections — what we monitor and how the system reacts */}
-      <div style={{
-        background: '#FFFFFF', borderRadius: 12,
-        padding: '18px 20px', marginBottom: 10,
-        borderLeft: '3px solid #6B7280',
-      }}>
-        <p style={{
-          fontFamily: 'var(--font-mono)', fontSize: 10.5, fontWeight: 700,
-          color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.08em',
-          margin: '0 0 10px 0',
-        }}>
-          Что мы автоматически отслеживаем
-        </p>
-        <ul style={{
-          margin: 0, paddingLeft: 18,
-          fontFamily: 'var(--font-body)', fontSize: 13.5,
-          color: '#374151', lineHeight: 1.7,
-        }}>
-          <li>Уровень звука с микрофона: ≤ {ampToDb(50)} dB — норма; до {ampToDb(90)} dB — предупреждение; выше {ampToDb(90)} dB — нарушение</li>
-          <li>Полная тишина (микрофон не слышит ничего {`>`} 15 секунд) — предупреждение</li>
-          <li>Камера закрыта или направлена в темноту дольше 2 секунд — нарушение</li>
-          <li><strong>Камера резко потеряла фокус (стала мутной)</strong> — тест немедленно завершается. Не трогайте камеру и не закрывайте её рукой.</li>
-          <li>Лицо не в кадре дольше 3 секунд — предупреждение</li>
-          <li>Несколько лиц в кадре — нарушение</li>
-          <li>Движение губ (проговаривание ответов даже шёпотом) — предупреждение, далее нарушение</li>
-          <li>Переключение на другие вкладки, сворачивание окна или потеря фокуса — нарушение</li>
-          <li>Открытие DevTools (F12, Ctrl+Shift+I/J/C), копирование или скриншот — нарушение</li>
-          <li>Камера или микрофон отключены пользователем посреди теста — тест немедленно завершается с блокировкой на 48 часов</li>
-          <li><strong>Запрещено надевать наушники / earbuds / гарнитуру</strong> — система проверит подключенные устройства до начала и предупредит.</li>
-          <li><strong>Запрещён удалённый рабочий стол / VPN-зеркала / запуск в виртуальной машине</strong> — система определяет такие сессии и блокирует старт теста.</li>
-          <li>Не отходите от компьютера, не двигайте веб-камеру и не разворачивайте её к экрану</li>
-        </ul>
-      </div>
-
-      {/* Forbidden — neutral callout style */}
-      <div style={{
-        background: '#FFFFFF', borderRadius: 12,
-        padding: '18px 20px', marginBottom: 10,
-        borderLeft: '3px solid #D1D5DB',
-      }}>
-        <p style={{
-          fontFamily: 'var(--font-mono)', fontSize: 10.5, fontWeight: 700,
-          color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
-          margin: '0 0 10px 0',
-        }}>
-          Во время теста запрещено
-        </p>
-        <ul style={{
-          margin: 0, paddingLeft: 18,
-          fontFamily: 'var(--font-body)', fontSize: 13.5,
-          color: '#374151', lineHeight: 1.7,
-        }}>
-          <li>Переключаться на другие вкладки или окна</li>
-          <li>Сворачивать браузер</li>
-          <li>Открывать режим разработчика (F12)</li>
-          <li>Копировать вопросы или ответы</li>
-          <li>Закрывать камеру или говорить вслух</li>
-        </ul>
-      </div>
-
-      {/* Consequences — same neutral treatment */}
-      <div style={{
-        background: '#FFFFFF', borderRadius: 12,
-        padding: '18px 20px', marginBottom: 18,
-        borderLeft: '3px solid #D1D5DB',
-      }}>
-        <p style={{
-          fontFamily: 'var(--font-mono)', fontSize: 10.5, fontWeight: 700,
-          color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
-          margin: '0 0 10px 0',
-        }}>
-          При нарушении
-        </p>
-        <ul style={{
-          margin: 0, paddingLeft: 18,
-          fontFamily: 'var(--font-body)', fontSize: 13.5,
-          color: '#374151', lineHeight: 1.7,
-        }}>
-          <li>Даётся 10 секунд, чтобы вернуться в окно теста</li>
-          <li>1-е и 2-е нарушения - предупреждение</li>
-          <li>3-е нарушение - тест завершается, попытка не засчитывается</li>
-          <li>Повторная попытка будет доступна только через 48 часов</li>
+          <li>Камера и микрофон включены, лицо хорошо освещено</li>
+          <li>Никаких наушников, гарнитур, earbuds в ушах</li>
+          <li>Тест не запущен из удалённого рабочего стола или виртуальной машины</li>
+          <li>Стол свободен от телефона, листов с конспектами и второго монитора</li>
+          <li>Дверь закрыта, рядом нет людей — никто не появится в кадре</li>
         </ul>
       </div>
 
