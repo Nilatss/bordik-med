@@ -199,6 +199,7 @@ export default function StatisticsPage() {
       <div className="stats-kpi-row" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 16 }}>
         <KpiCard
           label="Курсов пройдено"
+          tip="Сколько курсов из общей программы вы уже завершили. Курс считается пройденным после успешной сдачи всех тестов."
           value={`${metrics.coursesDone}`}
           sub={`из ${metrics.coursesTotal}`}
           delta={metrics.completedPct > 0 ? `${metrics.completedPct}% от программы` : 'начни первый курс'}
@@ -207,6 +208,7 @@ export default function StatisticsPage() {
         />
         <KpiCard
           label="Тестов сдано"
+          tip="Количество успешно сданных попыток из всех ваших тестов. В скобках — общее число попыток (включая неудачные)."
           value={`${metrics.passedTests}`}
           sub={`из ${metrics.totalAttempts} попыток`}
           delta={metrics.avgScore > 0 ? `средний балл ${metrics.avgScore}%` : 'нет попыток'}
@@ -215,6 +217,7 @@ export default function StatisticsPage() {
         />
         <KpiCard
           label="Время обучения"
+          tip="Суммарное время, проведённое в курсах и инструментах. Считается, пока вкладка активна."
           value={formatStudyTime(metrics.studyTime).split(' ')[0]}
           sub={formatStudyTime(metrics.studyTime).split(' ').slice(1).join(' ') || ''}
           delta={metrics.studyTime > 0 ? 'продолжайте в том же темпе' : 'начните учиться'}
@@ -224,7 +227,11 @@ export default function StatisticsPage() {
       </div>
 
       {/* Activity heatmap */}
-      <Section title="Активность по часам" subtitle={`${heatmap.totalActiveDays} дней с активностью · ${heatmap.totalSessions} сессий`}>
+      <Section
+        title="Активность по часам"
+        tip="Карта вашей активности за выбранный период. Строки — четыре полосы суток (00–06, 06–12, 12–18, 18–24), столбцы — дни. Чем темнее ячейка, тем больше тестов вы сдали в этот час."
+        subtitle={`${heatmap.totalActiveDays} дней с активностью · ${heatmap.totalSessions} сессий`}
+      >
         <Heatmap data={heatmap} />
       </Section>
 
@@ -235,17 +242,29 @@ export default function StatisticsPage() {
         gap: 14,
         width: '100%',
       }}>
-        <Section title="Прогресс по разделам" subtitle={`Последние ${PERIOD_LABELS[period].toLowerCase()}`}>
+        <Section
+          title="Прогресс по разделам"
+          tip="Каждый шестигранник — один из 22 разделов программы. Цвет показывает процент завершённых курсов в разделе: чем ярче — тем выше прогресс."
+          subtitle={`Последние ${PERIOD_LABELS[period].toLowerCase()}`}
+        >
           <SectionHex rows={sectionProgress} />
         </Section>
 
-        <Section title="Последние тесты" subtitle="Шесть свежих попыток">
+        <Section
+          title="Последние тесты"
+          tip="Шесть последних попыток сдачи теста. Показан балл, дата и статус (пройден / не пройден)."
+          subtitle="Шесть свежих попыток"
+        >
           <RecentAttempts attempts={recentAttempts} />
         </Section>
       </div>
 
       {/* Tool kinds — separate row */}
-      <Section title="Использование инструментов" subtitle="Счётчик открытий по типу инструмента">
+      <Section
+        title="Использование инструментов"
+        tip="Сколько раз вы открывали клинические калькуляторы и шкалы. Дробь справа от полосы — уникальные инструменты из общего числа доступных."
+        subtitle="Счётчик открытий по типу инструмента"
+      >
         <ToolKindsPanel stats={toolKindStats} />
       </Section>
     </div>
@@ -253,12 +272,42 @@ export default function StatisticsPage() {
 }
 
 /* ════════════════════════════════════════════════════════════════
+   InfoTip — hover/focus tooltip rendered next to the (i) icon.
+   Uses pure CSS visibility on hover/focus; no JS state, no layout shift
+   (the tooltip is absolutely positioned so it doesn't push siblings).
+   ════════════════════════════════════════════════════════════════ */
+function InfoTip({ text }: { text: string }) {
+  return (
+    <span
+      tabIndex={0}
+      className="stats-infotip"
+      aria-label={text}
+      style={{
+        position: 'relative',
+        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+        cursor: 'help',
+        outline: 'none',
+      }}
+    >
+      <svg width={13} height={13} viewBox="0 0 24 24" fill="none"
+        stroke="#9CA3AF" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="10" />
+        <line x1="12" y1="16" x2="12" y2="12" />
+        <line x1="12" y1="8" x2="12.01" y2="8" />
+      </svg>
+      <span className="stats-infotip__bubble" role="tooltip">{text}</span>
+    </span>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════
    KPI Card — top row tiles like screenshot's Total Revenue etc.
    ════════════════════════════════════════════════════════════════ */
-function KpiCard({ label, value, sub, delta, deltaPositive, icon }: {
+function KpiCard({ label, value, sub, delta, deltaPositive, icon, tip }: {
   label: string; value: string; sub?: string;
   delta: string; deltaPositive: boolean;
   icon: React.ReactNode;
+  tip?: string;
 }) {
   return (
     <div style={{
@@ -276,12 +325,7 @@ function KpiCard({ label, value, sub, delta, deltaPositive, icon }: {
           display: 'inline-flex', alignItems: 'center', gap: 6,
         }}>
           {label}
-          <svg width={13} height={13} viewBox="0 0 24 24" fill="none"
-            stroke="#9CA3AF" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="10" />
-            <line x1="12" y1="16" x2="12" y2="12" />
-            <line x1="12" y1="8" x2="12.01" y2="8" />
-          </svg>
+          {tip && <InfoTip text={tip} />}
         </span>
         <span style={{
           width: 30, height: 30, borderRadius: 8,
@@ -332,11 +376,12 @@ function KpiCard({ label, value, sub, delta, deltaPositive, icon }: {
 /* ════════════════════════════════════════════════════════════════
    Section card — bottom blocks (Cash flow / Accounts / Tax)
    ════════════════════════════════════════════════════════════════ */
-function Section({ title, subtitle, children, action }: {
+function Section({ title, subtitle, children, action, tip }: {
   title: string;
   subtitle?: string;
   children: React.ReactNode;
   action?: React.ReactNode;
+  tip?: string;
 }) {
   return (
     <div style={{
@@ -358,12 +403,7 @@ function Section({ title, subtitle, children, action }: {
             display: 'inline-flex', alignItems: 'center', gap: 6,
           }}>
             {title}
-            <svg width={13} height={13} viewBox="0 0 24 24" fill="none"
-              stroke="#9CA3AF" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="10" />
-              <line x1="12" y1="16" x2="12" y2="12" />
-              <line x1="12" y1="8" x2="12.01" y2="8" />
-            </svg>
+            {tip && <InfoTip text={tip} />}
           </h3>
           {subtitle && (
             <p style={{
