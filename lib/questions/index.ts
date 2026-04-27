@@ -11,6 +11,7 @@
 
 import type { TestQuestion, TestLevel } from '../quiz';
 import { getCourseById, getModuleById, getModuleForCourse } from '../curriculum';
+import { getCourseTestSlice, getModuleTestSlice, generateContentQuestions } from '../question-generator';
 
 /* ═══════════════════════════════════════════
    Placeholder question generator
@@ -79,34 +80,63 @@ const moduleData: Record<number, {
    Public API
    ═══════════════════════════════════════════ */
 
-/** Get 20 questions for a specific course test level */
+/** Get 20 questions for a specific course test level.
+ *
+ *  Priority:
+ *   1. Hand-written questions registered in `moduleData`.
+ *   2. Auto-generated cloze questions mined from the course's lesson content
+ *      (no duplicates between test levels — each level reads a distinct
+ *      slice of the same deterministic pool).
+ *   3. Static placeholder questions (last-resort fallback for courses with
+ *      neither hand-written questions nor lesson content yet).
+ */
 export function getTestQuestions(courseId: string, testLevel: TestLevel): TestQuestion[] {
   const moduleId = parseInt(courseId.split('.')[0]);
   const data = moduleData[moduleId];
 
-  // Use real questions if available
   if (data?.courseQuestions[courseId]?.[testLevel]) {
     return data.courseQuestions[courseId][testLevel];
   }
 
-  // Fall back to placeholders
+  const generated = getCourseTestSlice(courseId, testLevel);
+  if (generated.length === 20) return generated;
+  // If generator produced something but not a full 20, top up with placeholders
+  // to keep the test playable.
+  if (generated.length > 0) {
+    const filler = generatePlaceholder(courseId, testLevel)
+      .slice(generated.length, 20);
+    return [...generated, ...filler];
+  }
+
   return generatePlaceholder(courseId, testLevel);
 }
 
-/** Get 100 questions for a module final test */
+/** Get 100 questions for a module final test (drawn from later slices of
+ *  each course in the module so it never duplicates per-course tests). */
 export function getModuleTestQuestions(moduleId: number): TestQuestion[] {
   const data = moduleData[moduleId];
-
   if (data?.moduleTestQuestions?.length) {
     return data.moduleTestQuestions;
+  }
+
+  const mod = getModuleById(moduleId);
+  if (mod) {
+    const generated = getModuleTestSlice(mod.courses.map((c) => c.id));
+    if (generated.length === 100) return generated;
+    if (generated.length > 0) {
+      const filler = generateModulePlaceholder(moduleId).slice(generated.length, 100);
+      return [...generated, ...filler];
+    }
   }
 
   return generateModulePlaceholder(moduleId);
 }
 
-/** Check if real (non-placeholder) questions exist for a course test */
+/** Check if real (non-placeholder) questions exist for a course test.
+ *  "Real" means either hand-written or successfully generated from content. */
 export function hasRealQuestions(courseId: string, testLevel: TestLevel): boolean {
   const moduleId = parseInt(courseId.split('.')[0]);
   const data = moduleData[moduleId];
-  return !!data?.courseQuestions[courseId]?.[testLevel]?.length;
+  if (data?.courseQuestions[courseId]?.[testLevel]?.length) return true;
+  return generateContentQuestions(courseId).length >= 20;
 }
