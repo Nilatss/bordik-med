@@ -95,7 +95,8 @@ export default function StatisticsPage() {
   return (
     <div className="stats-page" style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
       {/* Header bar */}
-      <div style={{
+      <div className="stats-block" style={{
+        ['--stats-delay' as any]: '0ms',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         gap: 12, flexWrap: 'wrap',
       }}>
@@ -197,7 +198,9 @@ export default function StatisticsPage() {
 
       {/* KPI cards row */}
       <div className="stats-kpi-row" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 16 }}>
+        {/* each KpiCard wrapped below carries its own stagger delay */}
         <KpiCard
+          delay={60}
           label="Курсов пройдено"
           tip="Сколько курсов из общей программы вы уже завершили. Курс считается пройденным после успешной сдачи всех тестов."
           value={`${metrics.coursesDone}`}
@@ -207,6 +210,7 @@ export default function StatisticsPage() {
           icon={<IconBook />}
         />
         <KpiCard
+          delay={120}
           label="Тестов сдано"
           tip="Количество успешно сданных попыток из всех ваших тестов. В скобках — общее число попыток (включая неудачные)."
           value={`${metrics.passedTests}`}
@@ -216,6 +220,7 @@ export default function StatisticsPage() {
           icon={<IconCheckCircle />}
         />
         <KpiCard
+          delay={180}
           label="Время обучения"
           tip="Суммарное время, проведённое в курсах и инструментах. Считается, пока вкладка активна."
           value={formatStudyTime(metrics.studyTime).split(' ')[0]}
@@ -228,6 +233,7 @@ export default function StatisticsPage() {
 
       {/* Activity heatmap */}
       <Section
+        delay={240}
         title="Активность по часам"
         tip="Карта вашей активности за выбранный период. Строки — четыре полосы суток (00–06, 06–12, 12–18, 18–24), столбцы — дни. Чем темнее ячейка, тем больше тестов вы сдали в этот час."
         subtitle={`${heatmap.totalActiveDays} дней с активностью · ${heatmap.totalSessions} сессий`}
@@ -243,6 +249,7 @@ export default function StatisticsPage() {
         width: '100%',
       }}>
         <Section
+          delay={300}
           title="Прогресс по разделам"
           tip="Каждый шестигранник — один из 22 разделов программы. Цвет показывает процент завершённых курсов в разделе: чем ярче — тем выше прогресс."
           subtitle={`Последние ${PERIOD_LABELS[period].toLowerCase()}`}
@@ -251,6 +258,7 @@ export default function StatisticsPage() {
         </Section>
 
         <Section
+          delay={360}
           title="Последние тесты"
           tip="Шесть последних попыток сдачи теста. Показан балл, дата и статус (пройден / не пройден)."
           subtitle="Шесть свежих попыток"
@@ -261,6 +269,7 @@ export default function StatisticsPage() {
 
       {/* Tool kinds — separate row */}
       <Section
+        delay={420}
         title="Использование инструментов"
         tip="Сколько раз вы открывали клинические калькуляторы и шкалы. Дробь справа от полосы — уникальные инструменты из общего числа доступных."
         subtitle="Счётчик открытий по типу инструмента"
@@ -303,14 +312,16 @@ function InfoTip({ text }: { text: string }) {
 /* ════════════════════════════════════════════════════════════════
    KPI Card — top row tiles like screenshot's Total Revenue etc.
    ════════════════════════════════════════════════════════════════ */
-function KpiCard({ label, value, sub, delta, deltaPositive, icon, tip }: {
+function KpiCard({ label, value, sub, delta, deltaPositive, icon, tip, delay = 0 }: {
   label: string; value: string; sub?: string;
   delta: string; deltaPositive: boolean;
   icon: React.ReactNode;
   tip?: string;
+  delay?: number;
 }) {
   return (
-    <div style={{
+    <div className="stats-block" style={{
+      ['--stats-delay' as any]: `${delay}ms`,
       background: '#FFFFFF',
       border: '1px solid #F0F1F5',
       borderRadius: 16,
@@ -376,15 +387,17 @@ function KpiCard({ label, value, sub, delta, deltaPositive, icon, tip }: {
 /* ════════════════════════════════════════════════════════════════
    Section card — bottom blocks (Cash flow / Accounts / Tax)
    ════════════════════════════════════════════════════════════════ */
-function Section({ title, subtitle, children, action, tip }: {
+function Section({ title, subtitle, children, action, tip, delay = 0 }: {
   title: string;
   subtitle?: string;
   children: React.ReactNode;
   action?: React.ReactNode;
   tip?: string;
+  delay?: number;
 }) {
   return (
-    <div style={{
+    <div className="stats-block" style={{
+      ['--stats-delay' as any]: `${delay}ms`,
       background: '#FFFFFF',
       border: '1px solid #F0F1F5',
       borderRadius: 16,

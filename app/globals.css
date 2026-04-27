@@ -915,6 +915,27 @@ main:has(.stats-page) {
   .stats-2col    { grid-template-columns: 1fr !important; }
 }
 
+/* ─── Stats entrance animations ────────────────────────────────────
+   Staggered fade-up for top-level blocks. Pure CSS so it runs once
+   on mount with no JS overhead and respects prefers-reduced-motion.
+   ───────────────────────────────────────────────────────────────── */
+@keyframes stats-fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.stats-block {
+  opacity: 0;
+  animation: stats-fade-up 480ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: var(--stats-delay, 0ms);
+  will-change: transform, opacity;
+}
+@media (prefers-reduced-motion: reduce) {
+  .stats-block {
+    animation: none;
+    opacity: 1;
+  }
+}
+
 /* ─────────────────────────────────────────────────────────────────
    Stats InfoTip — hover/focus tooltip on the (i) icons.
    Pure-CSS so there's no JS state per tooltip and no re-render cost.
