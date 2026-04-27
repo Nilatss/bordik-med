@@ -675,7 +675,9 @@ function SectionHex({ rows }: { rows: SectionProgressRow[] }) {
           width={layout.width}
           height={layout.height}
           viewBox={`0 0 ${layout.width} ${layout.height}`}
-          style={{ display: 'block', maxWidth: '100%' }}
+          // overflow: visible so the tooltip foreignObject can extend past
+          // the SVG viewBox without being clipped on narrow viewports.
+          style={{ display: 'block', maxWidth: '100%', overflow: 'visible' }}
           // Single, reliable "leave" point — when the cursor exits the SVG
           // the hover state and tooltip clear. Per-cell pointerLeave was
           // unreliable: when scaled hexes overlap neighbours, leave events
@@ -759,10 +761,12 @@ function SectionHex({ rows }: { rows: SectionProgressRow[] }) {
             const showAsUnavailable = isPlaceholder || isEmpty;
             const tipW = 200;
             const tipH = 56;
-            // Centre horizontally on the hex, clamp inside canvas.
-            let tipX = hoveredCell.cx - tipW / 2;
-            if (tipX < 4) tipX = 4;
-            if (tipX + tipW > layout.width - 4) tipX = layout.width - 4 - tipW;
+            // Centre horizontally on the hex. We don't clamp to the SVG
+            // viewBox here because the SVG natural width can be much
+            // smaller than the tooltip on a 12-cell cluster; clamping made
+            // the tooltip overshoot to the right and clip on the left.
+            // SVG has overflow: visible, so extending past the viewBox is OK.
+            const tipX = hoveredCell.cx - tipW / 2;
             // Prefer above the hex; if there's no room, render below.
             const aboveY = hoveredCell.cy - layout.size - tipH - 8;
             const belowY = hoveredCell.cy + layout.size + 8;
