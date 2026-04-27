@@ -563,7 +563,9 @@ function Heatmap({ data, period }: { data: HeatmapData; period: Period }) {
     }}>
       {isCalendar ? (
         // ── Calendar grid (month view) ──
-        <>
+        // Constrained to ~440px max so cells stay a comfortable ~56px square
+        // even on wide cards. Grid is centred horizontally.
+        <div style={{ width: '100%', maxWidth: 440, margin: '0 auto' }}>
           {/* Day-of-week header */}
           <div style={{
             display: 'grid',
@@ -616,7 +618,7 @@ function Heatmap({ data, period }: { data: HeatmapData; period: Period }) {
               );
             })}
           </div>
-        </>
+        </div>
       ) : (
         // ── Single-row strip (week view) ──
         <>
