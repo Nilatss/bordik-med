@@ -219,19 +219,8 @@ export default function TestGuard({ active, onViolation, onForceSubmit, violatio
         </div>
       )}
 
-      {/* Small "you returned" toast */}
-      {active && justReturned && (
-        <div style={{
-          position: 'fixed', top: 20, right: 20, zIndex: 9997,
-          padding: '10px 16px', borderRadius: 10,
-          background: '#FFFBEB', color: '#B45309',
-          fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
-          boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
-          animation: 'bordik-dropdown-fadein 200ms ease-out',
-        }}>
-          Вернулись. Больше так не делайте - нарушение будет засчитано.
-        </div>
-      )}
+      {/* The old "Вернулись" toast was removed — tab switching now counts
+           as an instant violation, so there's no "return" event to greet. */}
 
       {/* Real violation modal (after grace expired) */}
       {showViolation && active && (

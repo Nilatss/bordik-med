@@ -96,7 +96,19 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
       onForceSubmit={handleForceSubmit}
       violationCount={violations}
     >
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      {/* Fullscreen overlay during test attempt — hides the course header,
+           TOC sidebar and any other navigation. The only way out is the
+           "Прервать" confirmation modal that re-uses onCancel. */}
+      <div style={{
+        position: 'fixed', inset: 0, zIndex: 50,
+        background: '#FFFFFF',
+        overflowY: 'auto',
+        padding: '24px clamp(16px, 4vw, 48px) 32px',
+      }}>
+      <div style={{
+        maxWidth: 840, margin: '0 auto',
+        display: 'flex', flexDirection: 'column', gap: 10,
+      }}>
         {/* Header panel - matches TestPanel "Прогресс обучения" */}
         <div style={{
           padding: '20px 24px',
@@ -317,6 +329,7 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
             )}
           </button>
         </div>
+      </div>
       </div>
 
       {/* Exit confirmation */}
