@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from 'react';
 import { getModuleById } from '@/lib/curriculum';
 import { useAppStore } from '@/lib/store';
 
@@ -75,30 +76,33 @@ function resolveCollisions(items: { cx: number; cy: number; w: number }[]) {
 }
 
 export default function Roadmap() {
-  const { completedCourses, openCourse } = useAppStore();
-  const rawItems = getChartItems(completedCourses);
+  const completedCourses = useAppStore((s) => s.completedCourses);
+  const openCourse       = useAppStore((s) => s.openCourse);
 
-  // Compute positions and resolve collisions
-  const positioned = rawItems.map((item) => {
-    const textLen = item.label.length * 5.8 + 20;
-    const pillW = Math.min(Math.max(textLen, 60), 170);
-    return { ...item, cx: scaleX(item.x), cy: scaleY(item.y), w: pillW };
-  });
-  // Clamp pills inside chart area, then resolve collisions
-  const chartLeft = PAD_L;
-  const chartRight = PAD_L + (W - PAD_L - PAD_R);
-  const clampPills = () => {
-    for (const p of positioned) {
-      const half = p.w / 2;
-      if (p.cx - half < chartLeft) p.cx = chartLeft + half + 6;
-      if (p.cx + half > chartRight) p.cx = chartRight - half - 6;
-      if (p.cy - 13 < PAD_T) p.cy = PAD_T + 13 + 4;
-      if (p.cy + 13 > PAD_T + CHART_H) p.cy = PAD_T + CHART_H - 13 - 4;
-    }
-  };
-  clampPills();
-  resolveCollisions(positioned);
-  clampPills();
+  // Position + collision resolution is O(n²) with 8 passes - very heavy.
+  // Memoise on the only input that affects layout (completion state).
+  const positioned = useMemo(() => {
+    const items = getChartItems(completedCourses).map((item) => {
+      const textLen = item.label.length * 5.8 + 20;
+      const pillW = Math.min(Math.max(textLen, 60), 170);
+      return { ...item, cx: scaleX(item.x), cy: scaleY(item.y), w: pillW };
+    });
+    const chartLeft = PAD_L;
+    const chartRight = PAD_L + (W - PAD_L - PAD_R);
+    const clamp = () => {
+      for (const p of items) {
+        const half = p.w / 2;
+        if (p.cx - half < chartLeft)  p.cx = chartLeft + half + 6;
+        if (p.cx + half > chartRight) p.cx = chartRight - half - 6;
+        if (p.cy - 13 < PAD_T)        p.cy = PAD_T + 13 + 4;
+        if (p.cy + 13 > PAD_T + CHART_H) p.cy = PAD_T + CHART_H - 13 - 4;
+      }
+    };
+    clamp();
+    resolveCollisions(items);
+    clamp();
+    return items;
+  }, [completedCourses]);
 
   const yTickLabels = [50, 100, 150, 200];
   const yGridLines = [100, 150, 200];

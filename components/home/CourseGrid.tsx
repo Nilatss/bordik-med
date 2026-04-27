@@ -82,7 +82,7 @@ export default function CourseGrid({ moduleId }: { moduleId: number }) {
             key={course.id}
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.03, duration: 0.3, ease: [0.05, 0.7, 0.1, 1] }}
+            transition={{ delay: Math.min(i, 8) * 0.025, duration: 0.3, ease: [0.05, 0.7, 0.1, 1] }}
             onClick={() => openCourse(course.id)}
             style={{
               background: '#F5F6F8',

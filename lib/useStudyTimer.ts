@@ -17,23 +17,40 @@ export function useStudyTimer(courseId: string | null) {
 
     accumulatedRef.current = 0;
 
-    // Tick every second
-    intervalRef.current = setInterval(() => {
-      accumulatedRef.current += 1;
-
-      // Flush to store every 10 seconds
-      if (accumulatedRef.current >= 10) {
+    const start = () => {
+      if (intervalRef.current) return;
+      intervalRef.current = setInterval(() => {
+        accumulatedRef.current += 1;
+        if (accumulatedRef.current >= 10) {
+          addStudyTime(courseId, accumulatedRef.current);
+          accumulatedRef.current = 0;
+        }
+      }, 1000);
+    };
+    const stop = () => {
+      if (!intervalRef.current) return;
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+      // Flush partial bucket so the user doesn't lose seconds on tab switch
+      if (accumulatedRef.current > 0) {
         addStudyTime(courseId, accumulatedRef.current);
         accumulatedRef.current = 0;
       }
-    }, 1000);
+    };
+
+    // Run only while the tab is visible. On mobile this also pauses when
+    // the user switches apps - saves battery and avoids the ticker getting
+    // throttled by the browser to 1Hz/30s anyway.
+    const onVisibility = () => {
+      if (document.hidden) stop();
+      else start();
+    };
+    if (!document.hidden) start();
+    document.addEventListener('visibilitychange', onVisibility);
 
     return () => {
-      // Flush remaining on unmount
-      if (accumulatedRef.current > 0) {
-        addStudyTime(courseId, accumulatedRef.current);
-      }
-      if (intervalRef.current) clearInterval(intervalRef.current);
+      document.removeEventListener('visibilitychange', onVisibility);
+      stop();
     };
   }, [courseId, addStudyTime]);
 }

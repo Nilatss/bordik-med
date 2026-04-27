@@ -1,23 +1,29 @@
 'use client';
 
+import { useMemo } from 'react';
 import { modules, TOTAL_COURSES } from '@/lib/curriculum';
 import { useAppStore, formatStudyTime, getTotalStudyTime } from '@/lib/store';
 
 export default function ProgressStats() {
-  const { completedCourses, studyTime } = useAppStore();
+  // Select only what we use - avoids re-render on every store mutation
+  const completedCourses = useAppStore((s) => s.completedCourses);
+  const studyTime        = useAppStore((s) => s.studyTime);
 
   const totalCompleted = completedCourses.length;
   const progress = Math.round((totalCompleted / TOTAL_COURSES) * 100);
   const totalTime = getTotalStudyTime(studyTime);
 
-  const byDifficulty = { basic: 0, intermediate: 0, advanced: 0 };
-  for (const mod of modules) {
-    for (const course of mod.courses) {
-      if (completedCourses.includes(course.id)) {
-        byDifficulty[course.difficulty]++;
+  // O(modules × courses) loop - memoise on the small slice that drives it
+  const byDifficulty = useMemo(() => {
+    const acc = { basic: 0, intermediate: 0, advanced: 0 };
+    const completed = new Set(completedCourses);
+    for (const mod of modules) {
+      for (const course of mod.courses) {
+        if (completed.has(course.id)) acc[course.difficulty]++;
       }
     }
-  }
+    return acc;
+  }, [completedCourses]);
 
   const stats = [
     { label: 'Общий прогресс', value: `${progress}%`, sub: `${totalCompleted}/${TOTAL_COURSES}`, showBar: true, barPct: progress },
@@ -83,8 +89,11 @@ export default function ProgressStats() {
                 height: '100%',
                 background: 'var(--md-sys-color-primary)',
                 borderRadius: 'var(--md-sys-shape-corner-full)',
-                width: `${stat.barPct}%`,
-                transition: 'width 300ms cubic-bezier(0.2,0,0,1)',
+                width: '100%',
+                transformOrigin: 'left center',
+                transform: `scaleX(${(stat.barPct ?? 0) / 100})`,
+                transition: 'transform 300ms cubic-bezier(0.2,0,0,1)',
+                willChange: 'transform',
               }} />
             </div>
           )}
