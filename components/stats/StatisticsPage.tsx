@@ -6,7 +6,7 @@ import { useAppStore, formatStudyTime, getTotalStudyTime } from '@/lib/store';
 import { MAX_TEST_LEVELS } from '@/lib/quiz';
 import { RUNNER_KINDS } from '@/lib/tool-meta-data';
 import { CATALOG_TOOLS } from '@/lib/tools-catalog';
-import { BodyMap } from './BodyMap';
+// BodyMap is kept in the codebase (./BodyMap.tsx) but not surfaced — backlog.
 
 /* ════════════════════════════════════════════════════════════════
    Statistics — dashboard rebuilt to match the Findeck reference.
@@ -268,20 +268,9 @@ export default function StatisticsPage() {
         </Section>
       </div>
 
-      {/* Body mastery map — anatomical heatmap of how well the user
-           has covered each body system through completed courses. */}
-      <Section
-        delay={420}
-        title="Изучение тела"
-        tip="Карта анатомических систем по уровню освоения. Курс автоматически относится к системе по ключевым словам в названии и тегах. Цвет точки и подписи — процент пройденных курсов в этой системе."
-        subtitle="Насколько хорошо изучена каждая анатомическая система"
-      >
-        <BodyMap completedCourses={completedCourses} />
-      </Section>
-
       {/* Tool kinds — separate row */}
       <Section
-        delay={480}
+        delay={420}
         title="Использование инструментов"
         tip="Сколько раз вы открывали клинические калькуляторы и шкалы. Дробь справа от полосы — уникальные инструменты из общего числа доступных."
         subtitle="Счётчик открытий по типу инструмента"
