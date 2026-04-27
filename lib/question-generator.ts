@@ -22,33 +22,31 @@ import { content as courseContent } from './content';
 import type { TestQuestion } from './quiz';
 
 /* ───────────────────────────────────────────────────────────────
-   Markdown stripping
+   Sentence + term extraction
    ─────────────────────────────────────────────────────────────── */
-function stripMarkdown(md: string): string {
-  return md
-    .replace(/```[\s\S]*?```/g, ' ')         // fenced code blocks
-    .replace(/`[^`\n]+`/g, ' ')              // inline code
-    .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')   // images
-    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1') // links
-    .replace(/<[^>]+>/g, ' ')                // raw HTML
-    .replace(/\|/g, ' ')                     // table pipes
-    .replace(/^\s*[-*+]\s+/gm, '')           // list bullets
-    .replace(/^\s*\d+\.\s+/gm, '')           // numbered list
-    .replace(/^#{1,6}\s+/gm, '')             // heading markers
-    .replace(/[*_~]/g, '')                   // emphasis chars
-    .replace(/\s+/g, ' ')                    // collapse whitespace
-    .trim();
-}
 
 function extractSentences(md: string): string[] {
-  // Split by sentence terminators that end a clause. Keep only
-  // mid-length sentences — too short are not informative, too long
-  // make the question text unwieldy.
-  const cleaned = stripMarkdown(md);
+  // Strip code/images/links but keep plain text inside tables — every cell
+  // becomes its own quasi-sentence after we replace `|` with a sentence
+  // boundary. This gets us actual factual claims out of the dense tables
+  // typical for this codebase's lessons.
+  const cleaned = md
+    .replace(/```[\s\S]*?```/g, ' ')
+    .replace(/`[^`\n]+`/g, ' ')
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/^\s*[-*+]\s+/gm, '')
+    .replace(/^\s*\d+\.\s+/gm, '')
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/[*_~]/g, '')
+    .replace(/\|/g, '. ')
+    .replace(/\s+/g, ' ')
+    .trim();
   return cleaned
-    .split(/(?<=[.!?])\s+(?=[A-ZА-ЯЁ])/)
-    .map((s) => s.trim())
-    .filter((s) => s.length >= 40 && s.length <= 260);
+    .split(/(?<=[.!?;])\s+/)
+    .map((s) => s.trim().replace(/^[.,;:\s]+|[.,;:\s]+$/g, ''))
+    .filter((s) => s.length >= 30 && s.length <= 260);
 }
 
 function extractKeyTerms(md: string): string[] {
@@ -58,34 +56,54 @@ function extractKeyTerms(md: string): string[] {
   // Bold-emphasised terms: **Term**
   const boldRe = /\*\*([^*\n]{2,60})\*\*/g;
   while ((m = boldRe.exec(md)) !== null) {
-    const t = m[1].trim().replace(/^[«"]|[»"]$/g, '');
+    const t = cleanTerm(m[1]);
     if (looksLikeTerm(t)) terms.add(t);
   }
 
-  // ## Headings (level 2-4)
+  // ## Headings (level 2-4) — strip numeric prefixes like "1.1 Клетка ..."
   const headRe = /^#{2,4}\s+(.+)$/gm;
   while ((m = headRe.exec(md)) !== null) {
-    const t = m[1].trim().replace(/[*`]/g, '');
+    const raw = m[1].trim().replace(/[*`]/g, '');
+    // strip "1.1 " / "Тема 1: " / "1) " prefixes
+    const t = cleanTerm(raw.replace(/^(?:Тема\s+)?\d+(?:[.,)]\d*)*[.\s)]+/i, ''));
     if (looksLikeTerm(t)) terms.add(t);
   }
 
-  // First column of markdown table rows is usually the term.
-  const rowRe = /^\|\s*\*?\*?([^|*\n]{2,40})\*?\*?\s*\|/gm;
+  // First column of markdown table rows = main term.
+  const rowRe = /^\|\s*\*?\*?([^|*\n]{2,50})\*?\*?\s*\|/gm;
   while ((m = rowRe.exec(md)) !== null) {
-    const t = m[1].trim();
+    const t = cleanTerm(m[1]);
     if (looksLikeTerm(t) && !/^[-:]+$/.test(t)) terms.add(t);
+  }
+
+  // Standalone ALL-CAPS abbreviations (АТФ, ДНК, РНК, EКГ ...) — common in
+  // medical text, very useful as cloze answers.
+  const acroRe = /\b([А-ЯA-Z]{2,8})\b/g;
+  while ((m = acroRe.exec(md)) !== null) {
+    const t = m[1];
+    // Avoid trivial words like "ОК" or marker words
+    if (t.length >= 2 && t.length <= 8) terms.add(t);
   }
 
   return Array.from(terms);
 }
 
+function cleanTerm(raw: string): string {
+  return raw
+    .trim()
+    .replace(/^[«"\-–—\s]+|[«"\-–—\s.,:;]+$/g, '')
+    // drop trailing parenthetical clarifications: "АТФ (аденозинтрифосфат)" → "АТФ"
+    .replace(/\s*\([^)]*\)\s*$/, '')
+    .trim();
+}
+
 function looksLikeTerm(t: string): boolean {
-  if (t.length < 3 || t.length > 60) return false;
+  if (t.length < 2 || t.length > 60) return false;
   if (/^\d+$/.test(t)) return false;
-  // Reject obvious sentence starts ("Для каждого X...")
   if (/[.!?]/.test(t)) return false;
-  // Reject pure punctuation / markdown leftovers
   if (!/[А-Яа-яA-Za-z]/.test(t)) return false;
+  // Reject if more than 7 words — that's a sentence, not a term
+  if (t.split(/\s+/).length > 7) return false;
   return true;
 }
 
