@@ -24,13 +24,27 @@ export function getFaceLandmarker(): Promise<FaceLandmarker> {
   if (landmarkerPromise) return landmarkerPromise;
   landmarkerPromise = (async () => {
     const fileset = await FilesetResolver.forVisionTasks(WASM_BASE);
-    return FaceLandmarker.createFromOptions(fileset, {
-      baseOptions: { modelAssetPath: MODEL_URL, delegate: 'GPU' },
-      runningMode: 'VIDEO',
-      numFaces: 2,
-      outputFaceBlendshapes: false,
-      outputFacialTransformationMatrixes: false,
-    });
+    // Try GPU first (faster), fall back to CPU if WebGL fails — GPU
+    // delegate is sometimes blocked in incognito or on locked-down
+    // corporate Chrome.
+    try {
+      return await FaceLandmarker.createFromOptions(fileset, {
+        baseOptions: { modelAssetPath: MODEL_URL, delegate: 'GPU' },
+        runningMode: 'VIDEO',
+        numFaces: 2,
+        outputFaceBlendshapes: false,
+        outputFacialTransformationMatrixes: false,
+      });
+    } catch (gpuErr) {
+      console.warn('[proctoring] GPU delegate failed, falling back to CPU:', gpuErr);
+      return await FaceLandmarker.createFromOptions(fileset, {
+        baseOptions: { modelAssetPath: MODEL_URL, delegate: 'CPU' },
+        runningMode: 'VIDEO',
+        numFaces: 2,
+        outputFaceBlendshapes: false,
+        outputFacialTransformationMatrixes: false,
+      });
+    }
   })();
   return landmarkerPromise;
 }

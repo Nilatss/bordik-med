@@ -62,13 +62,13 @@ const FRAME_SHARP_BLUR_LIMIT   = 3;     // edge-magnitude per pixel below this =
 const FRAME_BLUR_HOLD_MS       = 1500;
 
 // Face / lip detection thresholds
-const FACE_MISSING_HOLD_MS     = 3000;   // no face in frame for this long → warning
-const FACE_MISSING_RESET_MS    = 12000;
-const MULTI_FACE_RESET_MS      = 15000;
-const LIP_APERTURE_THRESHOLD   = 0.012;  // change between consecutive frames
-const LIP_TALK_HITS_REQUIRED   = 6;      // separate frames with lip movement
+const FACE_MISSING_HOLD_MS     = 2000;   // no face in frame for this long → warning
+const FACE_MISSING_RESET_MS    = 8000;
+const MULTI_FACE_RESET_MS      = 10000;
+const LIP_APERTURE_THRESHOLD   = 0.010;
+const LIP_TALK_HITS_REQUIRED   = 5;
 const LIP_TALK_WINDOW_MS       = 2000;
-const LIP_TALK_RESET_MS        = 10000;
+const LIP_TALK_RESET_MS        = 8000;
 
 // Convert 0–255 amplitude to a friendly approximate dBFS for tooltips.
 function ampToDb(amp: number): number {
@@ -542,53 +542,59 @@ export default function Proctoring({
           boxShadow: '0 12px 32px rgba(15,23,42,0.18), 0 0 0 1px rgba(255,255,255,0.6)',
         }}
       />
-      {/* "REC" badge + live detection status — placed above the preview
-           so the user can confirm at a glance that face & audio analysis
-           are actually running. */}
+      {/* Big top-of-screen proctoring status panel — prominent enough that
+           the user can see at a glance whether detection is actually
+           running, and also see a visible error message if the AI model
+           fails to load. */}
       <div style={{
         position: 'fixed',
-        right: 16,
-        bottom: 'calc(clamp(120px, 18vw, 180px) * 0.75 + 16px + 6px)',
+        top: 12, left: '50%', transform: 'translateX(-50%)',
         zIndex: 61,
-        display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4,
-        pointerEvents: 'none',
+        display: 'inline-flex', alignItems: 'center', gap: 10,
+        padding: '8px 14px',
+        borderRadius: 999,
+        background: faceState.status === 'error' ? '#FEF2F2'
+          : faceState.status === 'ready' ? '#1A1A1A' : '#FFF7ED',
+        color: faceState.status === 'error' ? '#991B1B'
+          : faceState.status === 'ready' ? '#FFFFFF' : '#9A3412',
+        boxShadow: '0 8px 24px rgba(0,0,0,0.16)',
+        fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 700,
+        letterSpacing: '0.04em',
+        maxWidth: '90vw',
+        whiteSpace: 'nowrap',
       }}>
-        {/* Status row */}
-        <div style={{
-          display: 'inline-flex', alignItems: 'center', gap: 6,
-          padding: '4px 10px', borderRadius: 999,
-          background: '#1A1A1A', color: '#FFFFFF',
-          fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-          letterSpacing: '0.08em', textTransform: 'uppercase',
-          boxShadow: '0 6px 16px rgba(0,0,0,0.18)',
-        }}>
-          <span style={{
-            width: 8, height: 8, borderRadius: '50%', background: '#F87171',
-            animation: 'pulse 1.4s ease-in-out infinite',
-          }} />
-          REC
-        </div>
-        {/* Detection state row — only after the model has had a chance to
-             load. Shows the AI status, face count, audio dB. */}
-        <div style={{
-          display: 'inline-flex', alignItems: 'center', gap: 6,
-          padding: '4px 10px', borderRadius: 8,
-          background: faceState.status === 'error' ? '#FEF2F2'
-            : faceState.status === 'ready' ? '#ECFDF5' : '#F1F5F9',
-          color: faceState.status === 'error' ? '#991B1B'
-            : faceState.status === 'ready' ? '#047857' : '#475569',
-          fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-          letterSpacing: '0.05em',
-          boxShadow: '0 6px 16px rgba(0,0,0,0.10)',
-        }}>
-          {faceState.status === 'error' ? (
-            <>AI off · {faceState.error ?? 'err'}</>
-          ) : faceState.status === 'ready' ? (
-            <>AI · лиц: {faceState.faces} · {audioDb} dB</>
-          ) : (
-            <>AI: загрузка…</>
-          )}
-        </div>
+        <span style={{
+          width: 8, height: 8, borderRadius: '50%',
+          background: faceState.status === 'error' ? '#DC2626'
+            : faceState.status === 'ready' ? '#34D399'
+            : '#F59E0B',
+          animation: 'pulse 1.4s ease-in-out infinite',
+        }} />
+        {faceState.status === 'error' ? (
+          <>Прокторинг: ошибка модели — {faceState.error ?? 'unknown'}</>
+        ) : faceState.status === 'ready' ? (
+          <>Прокторинг активен · лиц: {faceState.faces} · микрофон: {audioDb} dB</>
+        ) : (
+          <>Загружаем AI-модель прокторинга… подождите</>
+        )}
+      </div>
+
+      {/* Compact REC dot on the preview itself */}
+      <div style={{
+        position: 'fixed',
+        right: 24, bottom: 'calc(clamp(120px, 18vw, 180px) * 0.75 + 22px)',
+        display: 'inline-flex', alignItems: 'center', gap: 6,
+        padding: '3px 9px', borderRadius: 999,
+        background: '#1A1A1A', color: '#FFFFFF',
+        fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
+        letterSpacing: '0.08em', textTransform: 'uppercase',
+        zIndex: 61,
+      }}>
+        <span style={{
+          width: 7, height: 7, borderRadius: '50%', background: '#F87171',
+          animation: 'pulse 1.4s ease-in-out infinite',
+        }} />
+        REC
       </div>
       <style jsx global>{`
         @keyframes pulse {
