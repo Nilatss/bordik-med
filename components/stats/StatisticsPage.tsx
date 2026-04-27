@@ -1,6 +1,6 @@
 'use client';
 
-import { Fragment, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { modules, sections as allSections, TOTAL_COURSES, getCourseById, getModuleForCourse, getSectionById } from '@/lib/curriculum';
 import { useAppStore, formatStudyTime, getTotalStudyTime } from '@/lib/store';
@@ -521,7 +521,6 @@ function buildHeatmap(testAttempts: Record<string, { timestamp: number }[]>, per
 
 function Heatmap({ data, period }: { data: HeatmapData; period: Period }) {
   const max = Math.max(1, ...data.cells);
-  const bandLabels = ['00–06', '06–12', '12–18', '18–24'];
   const [hovered, setHovered] = useState<number | null>(null);
 
   // Day-axis tick density:
@@ -623,13 +622,13 @@ function Heatmap({ data, period }: { data: HeatmapData; period: Period }) {
         })}
       </div>
 
-      {/* Custom hover tooltip — date + per-band breakdown. */}
+      {/* Custom hover tooltip — date + simple "сделано N тестов" line. */}
       {hovered !== null && (() => {
         const col = hovered;
         const v = data.cells[col];
-        const dayBands = data.bands[col];
         const date = fmtDate(dateForCol(col));
         const colPct = ((col + 0.5) / data.cols) * 100;
+        const testWord = v === 1 ? 'тест' : v < 5 ? 'теста' : 'тестов';
         return (
           <div
             style={{
@@ -639,7 +638,7 @@ function Heatmap({ data, period }: { data: HeatmapData; period: Period }) {
               transform: 'translateX(-50%)',
               background: '#1A1A1A',
               color: '#F4F5F7',
-              padding: '10px 12px',
+              padding: '10px 14px',
               borderRadius: 8,
               fontFamily: 'var(--font-body)', fontSize: 12,
               lineHeight: 1.4,
@@ -647,36 +646,16 @@ function Heatmap({ data, period }: { data: HeatmapData; period: Period }) {
               pointerEvents: 'none',
               boxShadow: '0 12px 32px rgba(15, 23, 42, 0.18), 0 4px 12px rgba(15, 23, 42, 0.08)',
               zIndex: 5,
-              minWidth: 180,
             }}
           >
             <div style={{ fontWeight: 600 }}>{date}</div>
             <div style={{
-              fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700,
-              color: v > 0 ? '#A8C7FF' : '#9CA3AF',
+              fontSize: 12,
+              color: v > 0 ? '#F4F5F7' : '#9CA3AF',
               marginTop: 2,
             }}>
-              {v === 0
-                ? 'нет активности'
-                : `${v} ${v === 1 ? 'сессия' : v < 5 ? 'сессии' : 'сессий'}`}
+              {v === 0 ? 'нет активности' : `Сделано ${v} ${testWord}`}
             </div>
-            {v > 0 && (
-              <div style={{
-                marginTop: 6, paddingTop: 6,
-                borderTop: '1px solid rgba(255,255,255,0.08)',
-                display: 'grid', gridTemplateColumns: 'auto 1fr', columnGap: 10, rowGap: 2,
-                fontFamily: 'var(--font-mono)', fontSize: 11,
-              }}>
-                {bandLabels.map((label, bi) => (
-                  dayBands[bi] > 0 ? (
-                    <Fragment key={label}>
-                      <span style={{ color: '#9CA3AF' }}>{label}</span>
-                      <span style={{ color: '#F4F5F7', fontWeight: 700 }}>×{dayBands[bi]}</span>
-                    </Fragment>
-                  ) : null
-                ))}
-              </div>
-            )}
           </div>
         );
       })()}
