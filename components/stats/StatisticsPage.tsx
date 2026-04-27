@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { modules, TOTAL_COURSES, getCourseById, getModuleForCourse, getSectionById } from '@/lib/curriculum';
+import { modules, sections as allSections, TOTAL_COURSES, getCourseById, getModuleForCourse, getSectionById } from '@/lib/curriculum';
 import { useAppStore, formatStudyTime, getTotalStudyTime } from '@/lib/store';
 import { MAX_TEST_LEVELS } from '@/lib/quiz';
 import { RUNNER_KINDS } from '@/lib/tool-meta-data';
@@ -594,8 +594,13 @@ interface SectionProgressRow {
 }
 
 function buildSectionProgress(completedCourses: string[]): SectionProgressRow[] {
-  // Aggregate: section.id → { total, done }
+  // Pre-seed every curriculum section so the hex map always shows ALL real
+  // sections — even ones that don't have modules yet. Sections without
+  // courses appear as 0/0 (still interactive, just with no progress data).
   const byId = new Map<string, { name: string; total: number; done: number }>();
+  for (const s of allSections) {
+    byId.set(s.id, { name: s.title, total: 0, done: 0 });
+  }
   for (const m of modules) {
     const sec = getSectionById(m.sectionId);
     if (!sec) continue;
