@@ -1135,36 +1135,22 @@ function ToolKindsPanel({ stats }: { stats: ToolKindStats }) {
               </div>
 
               {/* Stats row UNDER the bar — opens on left, X из Y on right.
-                   Both halves share identical typography for visual rhythm. */}
+                   Numbers and surrounding text share the same size/font so
+                   the row reads as one consistent line. */}
               <div style={{
                 display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
                 fontFamily: 'var(--font-body)', fontSize: 12,
                 color: '#6B7280', minWidth: 0,
               }}>
                 <span>
-                  <strong style={{
-                    fontFamily: 'var(--font-display)', fontWeight: 700,
-                    color: '#1A1A1A', fontSize: 14, letterSpacing: '-0.01em',
-                  }}>
-                    {k.count}
-                  </strong>
+                  <strong style={{ color: '#1A1A1A', fontWeight: 700 }}>{k.count}</strong>
                   {' '}
                   {k.count === 1 ? 'открытие' : 'открытий'}
                 </span>
                 <span style={{ flexShrink: 0 }}>
-                  <strong style={{
-                    fontFamily: 'var(--font-display)', fontWeight: 700,
-                    color: '#1A1A1A', fontSize: 14, letterSpacing: '-0.01em',
-                  }}>
-                    {k.uniq}
-                  </strong>
+                  <strong style={{ color: '#1A1A1A', fontWeight: 700 }}>{k.uniq}</strong>
                   {' из '}
-                  <strong style={{
-                    fontFamily: 'var(--font-display)', fontWeight: 700,
-                    color: '#1A1A1A', fontSize: 14, letterSpacing: '-0.01em',
-                  }}>
-                    {k.total}
-                  </strong>
+                  <strong style={{ color: '#1A1A1A', fontWeight: 700 }}>{k.total}</strong>
                 </span>
               </div>
             </motion.div>
