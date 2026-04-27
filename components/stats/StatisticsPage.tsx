@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { motion } from 'framer-motion';
 import { modules, TOTAL_COURSES, getCourseById, getModuleForCourse, getSectionById } from '@/lib/curriculum';
 import { useAppStore, formatStudyTime, getTotalStudyTime } from '@/lib/store';
 import { MAX_TEST_LEVELS } from '@/lib/quiz';
@@ -96,15 +97,19 @@ export default function StatisticsPage() {
   return (
     <div className="stats-page" style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
       {/* Header bar — explicit z-index so the period dropdown isn't
-           covered by KPI-row siblings (each .stats-block creates a
+           covered by KPI-row siblings (each motion.div creates its own
            stacking context via the entrance transform). */}
-      <div className="stats-block" style={{
-        ['--stats-delay' as any]: '0ms',
-        position: 'relative',
-        zIndex: 30,
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        gap: 12, flexWrap: 'wrap',
-      }}>
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1], delay: 0 }}
+        style={{
+          position: 'relative',
+          zIndex: 30,
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          gap: 12, flexWrap: 'wrap',
+        }}
+      >
         <div>
           <h1 style={{
             fontFamily: 'var(--font-display)', fontSize: 26, fontWeight: 700,
@@ -199,7 +204,7 @@ export default function StatisticsPage() {
             Экспорт
           </button>
         </div>
-      </div>
+      </motion.div>
 
       {/* KPI cards row */}
       <div className="stats-kpi-row" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 16 }}>
@@ -325,15 +330,19 @@ function KpiCard({ label, value, sub, delta, deltaPositive, icon, tip, delay = 0
   delay?: number;
 }) {
   return (
-    <div className="stats-block" style={{
-      ['--stats-delay' as any]: `${delay}ms`,
-      background: '#FFFFFF',
-      border: '1px solid #F0F1F5',
-      borderRadius: 16,
-      padding: 18,
-      display: 'flex', flexDirection: 'column', gap: 10,
-      minWidth: 0,
-    }}>
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1], delay: delay / 1000 }}
+      style={{
+        background: '#FFFFFF',
+        border: '1px solid #F0F1F5',
+        borderRadius: 16,
+        padding: 18,
+        display: 'flex', flexDirection: 'column', gap: 10,
+        minWidth: 0,
+      }}
+    >
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <span style={{
           fontFamily: 'var(--font-body)', fontSize: 13, color: '#6B7280',
@@ -385,7 +394,7 @@ function KpiCard({ label, value, sub, delta, deltaPositive, icon, tip, delay = 0
         </span>
         {delta}
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -401,15 +410,19 @@ function Section({ title, subtitle, children, action, tip, delay = 0 }: {
   delay?: number;
 }) {
   return (
-    <div className="stats-block" style={{
-      ['--stats-delay' as any]: `${delay}ms`,
-      background: '#FFFFFF',
-      border: '1px solid #F0F1F5',
-      borderRadius: 16,
-      padding: 18,
-      display: 'flex', flexDirection: 'column', gap: 14,
-      minWidth: 0,
-    }}>
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1], delay: delay / 1000 }}
+      style={{
+        background: '#FFFFFF',
+        border: '1px solid #F0F1F5',
+        borderRadius: 16,
+        padding: 18,
+        display: 'flex', flexDirection: 'column', gap: 14,
+        minWidth: 0,
+      }}
+    >
       <div style={{
         display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between',
         gap: 12,
@@ -435,7 +448,7 @@ function Section({ title, subtitle, children, action, tip, delay = 0 }: {
         {action}
       </div>
       {children}
-    </div>
+    </motion.div>
   );
 }
 
