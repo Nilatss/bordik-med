@@ -119,9 +119,7 @@ export default function StatisticsPage() {
           </h1>
           <p style={{
             fontFamily: 'var(--font-body)', fontSize: 13, color: '#6B7280',
-            display: 'inline-flex', alignItems: 'center', gap: 6,
           }}>
-            <span style={{ color: '#9CA3AF' }}>📊</span>
             Аналитика прогресса{userName ? ` — ${userName}` : ''}
           </p>
         </div>
