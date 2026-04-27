@@ -1554,7 +1554,7 @@ export default function TestStartConsent({
         />
         <span style={{
           width: 20, height: 20, borderRadius: 6,
-          background: confirmedClean ? '#1A1A1A' : '#F5F6F8',
+          background: confirmedClean ? '#3B82F6' : '#F5F6F8',
           boxShadow: confirmedClean ? 'none' : '0 0 0 1px #E2E4EA inset',
           display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
           flexShrink: 0, marginTop: 1,
@@ -1594,7 +1594,7 @@ export default function TestStartConsent({
         />
         <span style={{
           width: 20, height: 20, borderRadius: 6,
-          background: agreed ? '#1A1A1A' : '#F5F6F8',
+          background: agreed ? '#3B82F6' : '#F5F6F8',
           boxShadow: agreed ? 'none' : '0 0 0 1px #E2E4EA inset',
           display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
           flexShrink: 0, marginTop: 1,
@@ -1644,15 +1644,15 @@ export default function TestStartConsent({
           style={{
             display: 'inline-flex', alignItems: 'center', gap: 6,
             padding: '10px 20px', borderRadius: 10,
-            background: canStart ? '#1A1A1A' : '#E2E4EA',
+            background: canStart ? '#3B82F6' : '#E2E4EA',
             color: canStart ? '#FFFFFF' : '#9CA3AF',
             border: 'none',
             cursor: canStart ? 'pointer' : 'not-allowed',
             fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
             transition: 'background 180ms',
           }}
-          onMouseEnter={(e) => { if (canStart) e.currentTarget.style.background = '#000000'; }}
-          onMouseLeave={(e) => { if (canStart) e.currentTarget.style.background = '#1A1A1A'; }}
+          onMouseEnter={(e) => { if (canStart) e.currentTarget.style.background = '#2563EB'; }}
+          onMouseLeave={(e) => { if (canStart) e.currentTarget.style.background = '#3B82F6'; }}
         >
           Начать тест
           {canStart && (

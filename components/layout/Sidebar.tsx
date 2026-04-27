@@ -927,13 +927,19 @@ function FeedbackBlock({ t }: { t: (k: string, vars?: Record<string, string | nu
                   disabled={sending || !text.trim()}
                   style={{
                     padding: '9px 18px', borderRadius: 10,
-                    background: sent ? '#10B981' : (!text.trim() ? '#E2E4EA' : '#1A1A1A'),
+                    background: sent ? '#10B981' : (!text.trim() ? '#E2E4EA' : '#3B82F6'),
                     color: !text.trim() && !sent ? '#9CA3AF' : '#FFFFFF',
                     border: 'none',
                     cursor: sending || !text.trim() ? 'not-allowed' : 'pointer',
                     fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
                     transition: 'background 180ms',
                     minWidth: 110,
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!sending && !sent && text.trim()) e.currentTarget.style.background = '#2563EB';
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!sending && !sent && text.trim()) e.currentTarget.style.background = '#3B82F6';
                   }}
                 >
                   {sent ? t('sidebar.feedback.sent') : sending ? t('sidebar.feedback.sending') : t('sidebar.feedback.send')}
