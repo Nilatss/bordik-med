@@ -465,10 +465,17 @@ interface HeatmapData {
 
 function buildHeatmap(testAttempts: Record<string, { timestamp: number }[]>, period: Period): HeatmapData {
   const now = Date.now();
+  const today = new Date();
   let days: number;
-  if (period === 'week') days = 7;
-  else if (period === 'month') days = 31;
-  else days = 31; // 'all' falls back to last month for visual readability
+  if (period === 'week') {
+    days = 7;
+  } else if (period === 'month') {
+    // Calendar days in the current month — exactly how many actual days
+    // we render. April → 30, May → 31, February → 28/29, etc.
+    days = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+  } else {
+    days = 31;
+  }
 
   const cells: number[][] = Array.from({ length: 4 }, () => Array(days).fill(0));
   const activeDays = new Set<number>();
@@ -591,7 +598,8 @@ function Heatmap({ data }: { data: HeatmapData }) {
           ))}
         </div>
 
-        {/* Custom hover tooltip */}
+        {/* Custom hover tooltip — positioned ABOVE the entire grid so it
+             never sits on top of any cell. */}
         {hovered && (() => {
           const v = data.cells[hovered.row][hovered.col];
           const date = fmtDate(dateForCol(hovered.col));
@@ -599,18 +607,14 @@ function Heatmap({ data }: { data: HeatmapData }) {
           const sessText = v === 0
             ? 'нет активности'
             : `${v} ${v === 1 ? 'сессия' : v < 5 ? 'сессии' : 'сессий'}`;
-          // Position tooltip above the grid, anchored to hovered column.
           const colPct = ((hovered.col + 0.5) / data.cols) * 100;
-          // Approximate row position from top: rowIdx (3,2,1,0 visually) — top row (18-24) has visual idx 0
-          const visualRow = 3 - hovered.row; // 0..3 from top
-          const rowFraction = (visualRow + 0.5) / 4;
           return (
             <div
               style={{
                 position: 'absolute',
                 left: `${colPct}%`,
-                top: `calc(${rowFraction * 100}% - 6px)`,
-                transform: 'translate(-50%, -100%)',
+                bottom: 'calc(100% + 8px)',
+                transform: 'translateX(-50%)',
                 background: '#1A1A1A',
                 color: '#F4F5F7',
                 padding: '8px 12px',
