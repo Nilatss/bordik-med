@@ -68,14 +68,45 @@ function MediaCheck({ onReady, onCalibrated }: {
   // the user reads the rules - by the time they click Начать тест the
   // model is cached, so detection starts the moment the test opens.
   const [aiModelStatus, setAiModelStatus] = useState<'loading' | 'ready' | 'error'>('loading');
+  const [aiError, setAiError] = useState<string | null>(null);
+
+  // Mobile / narrow viewport detection - switches layout to stacked single
+  // column when the viewport is too narrow for the side-by-side preview.
+  const [isNarrow, setIsNarrow] = useState(false);
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const mq = window.matchMedia('(max-width: 640px)');
+    const update = () => setIsNarrow(mq.matches);
+    update();
+    mq.addEventListener?.('change', update);
+    return () => mq.removeEventListener?.('change', update);
+  }, []);
 
   // Warm up both AI models - face landmarker (~3 MB) + object detector
-  // (~4 MB) so the test page starts detection immediately.
+  // (~4 MB) so the test page starts detection immediately. Mobile webviews
+  // (in-app browsers in Telegram, Gmail, Instagram) often lack the WASM /
+  // WebGL features the models require - surface a useful message when that
+  // happens so the user knows to open the page in a real browser.
   useEffect(() => {
     let cancelled = false;
     Promise.all([getFaceLandmarker(), getObjectDetector()])
       .then(() => { if (!cancelled) setAiModelStatus('ready'); })
-      .catch(() => { if (!cancelled) setAiModelStatus('error'); });
+      .catch((err: any) => {
+        if (cancelled) return;
+        console.error('[proctoring] AI model load failed:', err);
+        setAiModelStatus('error');
+        // Best-effort hint about why it failed
+        const msg = String(err?.message ?? err ?? '');
+        if (/wasm|simd|webassembly/i.test(msg)) {
+          setAiError('Браузер не поддерживает WebAssembly SIMD. Откройте сайт в Chrome или Safari вместо встроенного браузера.');
+        } else if (/webgl|gpu|gl context/i.test(msg)) {
+          setAiError('Не удалось инициализировать WebGL. Откройте сайт в обычном Chrome / Safari, не во встроенном браузере мессенджера.');
+        } else if (/network|fetch|cors|cdn|abort/i.test(msg)) {
+          setAiError('Не удалось скачать AI-модель с CDN. Проверьте интернет и блокировщики (AdBlock, прокси, корпоративный firewall).');
+        } else {
+          setAiError(msg.slice(0, 140) || 'Неизвестная ошибка загрузки модели.');
+        }
+      });
     return () => { cancelled = true; };
   }, []);
 
@@ -334,17 +365,15 @@ function MediaCheck({ onReady, onCalibrated }: {
   useEffect(() => {
     if (aiModelStatus !== 'error') return;
     setHints((prev) => {
-      if (prev.some((h) => h.id === 'ai-failed')) return prev;
-      return [
-        ...prev,
-        {
-          id: 'ai-failed',
-          level: 'block',
-          text: 'Не удалось загрузить AI-модель прокторинга. Проверьте интернет и попробуйте снова - без неё тест начать нельзя.',
-        },
-      ];
+      const text = aiError
+        ? `Не удалось загрузить AI-модель прокторинга. ${aiError}`
+        : 'Не удалось загрузить AI-модель прокторинга. Проверьте интернет и попробуйте снова - без неё тест начать нельзя.';
+      const idx = prev.findIndex((h) => h.id === 'ai-failed');
+      if (idx >= 0 && prev[idx].text === text) return prev;
+      const next = prev.filter((h) => h.id !== 'ai-failed');
+      return [...next, { id: 'ai-failed', level: 'block', text }];
     });
-  }, [aiModelStatus]);
+  }, [aiModelStatus, aiError]);
 
   // Tell parent whether calibration is done. Calibration also auto-resets
   // if the user later changes camera quality (e.g. the camera goes dark).
@@ -728,19 +757,23 @@ function MediaCheck({ onReady, onCalibrated }: {
       borderLeft: '3px solid #3B82F6',
     }}>
     <div style={{
-      display: 'grid',
-      gridTemplateColumns: 'auto minmax(0, 1fr)',
+      display: isNarrow ? 'flex' : 'grid',
+      flexDirection: isNarrow ? 'column' : undefined,
+      gridTemplateColumns: isNarrow ? undefined : 'auto minmax(0, 1fr)',
       columnGap: 14,
-      alignItems: 'center',
+      rowGap: isNarrow ? 12 : undefined,
+      alignItems: isNarrow ? 'stretch' : 'center',
     }}>
       {/* Video preview */}
       <div style={{
         position: 'relative',
-        width: 132, height: 100,
+        width: isNarrow ? '100%' : 132,
+        height: isNarrow ? 180 : 100,
         borderRadius: 10,
         background: '#0F172A',
         overflow: 'hidden',
         flexShrink: 0,
+        aspectRatio: isNarrow ? '16 / 9' : undefined,
       }}>
         <video
           ref={videoRef}
@@ -1329,9 +1362,9 @@ export default function TestStartConsent({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, ease: [0.05, 0.7, 0.1, 1] }}
       style={{
-        padding: '28px 32px',
+        padding: 'clamp(16px, 4vw, 32px)',
         background: '#F5F6F8',
-        borderRadius: 20,
+        borderRadius: 'clamp(12px, 2vw, 20px)',
       }}
     >
       {/* Label */}
