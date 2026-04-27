@@ -48,6 +48,7 @@ export default function StatisticsPage() {
   const studyTime           = useAppStore((s) => s.studyTime);
   const userName            = useAppStore((s) => s.userName);
   const toolUsage           = useAppStore((s) => s.toolUsage);
+  const startedCourses      = useAppStore((s) => s.startedCourses);
 
   const [period, setPeriod] = useState<Period>('month');
   const [periodOpen, setPeriodOpen] = useState(false);
@@ -82,7 +83,10 @@ export default function StatisticsPage() {
   const heatmap = useMemo(() => buildHeatmap(testAttempts, period), [testAttempts, period]);
 
   /* ─── Section progress (replaces «Accounts overview» bars) ─── */
-  const sectionProgress = useMemo(() => buildSectionProgress(completedCourses), [completedCourses]);
+  const sectionProgress = useMemo(
+    () => buildSectionProgress(completedCourses, startedCourses, testAttempts),
+    [completedCourses, startedCourses, testAttempts],
+  );
 
   /* ─── Tool kinds breakdown — count tool opens grouped by runner kind ── */
   const toolKindStats = useMemo(() => buildToolKindStats(toolUsage), [toolUsage]);
@@ -1018,27 +1022,42 @@ interface SectionProgressRow {
   name: string;
   total: number;
   done: number;
+  /** Courses the user has interacted with (started / attempted / completed). */
+  started: number;
   pct: number;
   /** Section has at least one course with actual lesson content written. */
   withContent: number;
 }
 
-function buildSectionProgress(completedCourses: string[]): SectionProgressRow[] {
-  // Pre-seed every curriculum section so the hex map always shows ALL real
-  // sections. `withContent` tracks how many courses in the section have
-  // actual lesson body written — a section with `withContent === 0` is not
-  // truly "available" for navigation even if courses are listed.
-  const byId = new Map<string, { name: string; total: number; done: number; withContent: number }>();
+function buildSectionProgress(
+  completedCourses: string[],
+  startedCourses: string[],
+  testAttempts: Record<string, { courseId: string }[]>,
+): SectionProgressRow[] {
+  // A course counts as "started" if any of:
+  //   • the user clicked «Начать обучение» (in startedCourses)
+  //   • the user has at least one test attempt for it
+  //   • the course is already completed
+  const startedSet = new Set<string>([
+    ...startedCourses,
+    ...completedCourses,
+    // testAttempts is keyed as `${courseId}-${testLevel}` and the entries
+    // also carry the courseId — split keys to harvest course ids.
+    ...Object.keys(testAttempts).map((k) => k.split('-').slice(0, -1).join('-')),
+  ]);
+
+  const byId = new Map<string, { name: string; total: number; done: number; started: number; withContent: number }>();
   for (const s of allSections) {
-    byId.set(s.id, { name: s.title, total: 0, done: 0, withContent: 0 });
+    byId.set(s.id, { name: s.title, total: 0, done: 0, started: 0, withContent: 0 });
   }
   for (const m of modules) {
     const sec = getSectionById(m.sectionId);
     if (!sec) continue;
-    const slot = byId.get(sec.id) ?? { name: sec.title, total: 0, done: 0, withContent: 0 };
+    const slot = byId.get(sec.id) ?? { name: sec.title, total: 0, done: 0, started: 0, withContent: 0 };
     for (const c of m.courses) {
       slot.total += 1;
       if (completedCourses.includes(c.id)) slot.done += 1;
+      if (startedSet.has(c.id)) slot.started += 1;
       if (courseContent[c.id] && Object.keys(courseContent[c.id]).length > 0) {
         slot.withContent += 1;
       }
@@ -1047,10 +1066,12 @@ function buildSectionProgress(completedCourses: string[]): SectionProgressRow[] 
   }
   return Array.from(byId.entries())
     .map(([id, v]) => ({
-      id, name: v.name, total: v.total, done: v.done, withContent: v.withContent,
+      id, name: v.name, total: v.total, done: v.done, started: v.started,
+      withContent: v.withContent,
       pct: v.total > 0 ? Math.round((v.done / v.total) * 100) : 0,
     }))
-    .sort((a, b) => b.pct - a.pct);
+    // Sort: highest pct first, but among ties show "started" sections before untouched ones
+    .sort((a, b) => b.pct - a.pct || b.started - a.started);
 }
 
 /* ────────────────────────────────────────────────────────────────
@@ -1081,7 +1102,7 @@ function SectionHex({ rows }: { rows: SectionProgressRow[] }) {
   const [hoveredCell, setHoveredCell] = useState<typeof layout.cells[number] | null>(null);
 
   // Aggregate stats — analogues of the reference's three % footer rows.
-  const startedCount   = rows.filter((r) => r.done > 0).length;
+  const startedCount   = rows.filter((r) => r.started > 0).length;
   const completedCount = rows.filter((r) => r.pct >= 100).length;
   const avgPct = rows.length
     ? Math.round(rows.reduce((s, r) => s + r.pct, 0) / rows.length)
@@ -1155,11 +1176,12 @@ function SectionHex({ rows }: { rows: SectionProgressRow[] }) {
                 >
                   <polygon
                     points={hexPoints(c.cx, c.cy, layout.size)}
-                    fill={hexColor(c.row.pct)}
-                    stroke="#FFFFFF"
-                    strokeWidth={2}
+                    fill={hexColor(c.row.pct, c.row.started > 0)}
+                    stroke={c.row.started > 0 && c.row.pct === 0 ? ACCENT : '#FFFFFF'}
+                    strokeWidth={c.row.started > 0 && c.row.pct === 0 ? 2 : 2}
+                    strokeDasharray={c.row.started > 0 && c.row.pct === 0 ? '4 3' : undefined}
                   />
-                  {c.row.pct > 0 && (
+                  {(c.row.pct > 0 || c.row.started > 0) && (
                     <text
                       x={c.cx}
                       y={c.cy + 4}
@@ -1170,7 +1192,7 @@ function SectionHex({ rows }: { rows: SectionProgressRow[] }) {
                       fill={c.row.pct >= 50 ? '#FFFFFF' : ACCENT_DARK}
                       style={{ pointerEvents: 'none' }}
                     >
-                      {c.row.pct}
+                      {c.row.pct === 0 ? '·' : c.row.pct}
                     </text>
                   )}
                 </g>
@@ -1220,7 +1242,9 @@ function SectionHex({ rows }: { rows: SectionProgressRow[] }) {
                   <div className="stats-hex-tip__sub">
                     {isPlaceholder ? 'Скоро появится'
                       : isEmpty ? 'Скоро появится'
-                      : `${hoveredCell.row.pct}% · ${hoveredCell.row.done}/${hoveredCell.row.total}`}
+                      : hoveredCell.row.pct === 0 && hoveredCell.row.started > 0
+                        ? `Начат · ${hoveredCell.row.started}/${hoveredCell.row.total}`
+                        : `${hoveredCell.row.pct}% · ${hoveredCell.row.done}/${hoveredCell.row.total}`}
                   </div>
                 </div>
               </foreignObject>
@@ -1261,7 +1285,7 @@ function SectionHex({ rows }: { rows: SectionProgressRow[] }) {
             }}>
               <span style={{
                 width: 8, height: 8, borderRadius: '50%',
-                background: hexColor(r.pct),
+                background: hexColor(r.pct, r.started > 0),
                 flexShrink: 0,
               }} />
               <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{r.pct}% {r.name}</span>
@@ -1269,7 +1293,17 @@ function SectionHex({ rows }: { rows: SectionProgressRow[] }) {
             <span style={{
               color: '#9CA3AF', fontSize: 11,
               flexShrink: 0,
+              display: 'inline-flex', alignItems: 'center', gap: 6,
             }}>
+              {r.started > 0 && r.done < r.started && (
+                <span style={{
+                  fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
+                  color: ACCENT_DARK,
+                  padding: '1px 6px', borderRadius: 999, background: ACCENT_BG,
+                }}>
+                  начат
+                </span>
+              )}
               {r.done}/{r.total}
             </span>
           </motion.div>
@@ -1384,9 +1418,11 @@ function hexPoints(cx: number, cy: number, size: number): string {
   return pts.join(' ');
 }
 
-function hexColor(pct: number): string {
+function hexColor(pct: number, started?: boolean): string {
   // 5-step blue gradient from light grey to peak accent.
-  if (pct <= 0)    return HEATMAP_LEVELS[0];
+  // Sections with 0% but already STARTED get a faint accent tint instead
+  // of plain grey so they're visibly distinct from untouched modules.
+  if (pct <= 0)    return started ? HEATMAP_LEVELS[1] : HEATMAP_LEVELS[0];
   if (pct < 25)    return HEATMAP_LEVELS[1];
   if (pct < 50)    return HEATMAP_LEVELS[2];
   if (pct < 75)    return HEATMAP_LEVELS[3];
