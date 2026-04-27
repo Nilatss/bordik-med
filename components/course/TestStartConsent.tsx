@@ -18,11 +18,24 @@ interface TestStartConsentProps {
    parent so it can gate the start button alongside the consent
    checkbox.
    ────────────────────────────────────────────────────────────────── */
+// Mirror the thresholds used by Proctoring at runtime so the consent meter
+// shows the SAME natural / warning / violation bands the user will see
+// during the test itself.
+const MEDIA_CHECK_NATURAL_MAX_AMP = 50;
+const MEDIA_CHECK_WARNING_AMP     = 65;
+const MEDIA_CHECK_VIOLATION_AMP   = 90;
+const MEDIA_CHECK_METER_MAX       = 110; // amp value that fills the meter
+
+function ampToDb(amp: number): number {
+  if (amp <= 0) return -100;
+  return Math.round(20 * Math.log10(amp / 255));
+}
+
 function MediaCheck({ onReady }: { onReady: (ok: boolean) => void }) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [audioLevel, setAudioLevel] = useState(0); // 0..100
+  const [audioAmp, setAudioAmp] = useState(0);   // 0..255 (raw)
   const [hasAudioSignal, setHasAudioSignal] = useState(false);
   // Camera quality state — `null` = still measuring, `true`/`false` = result
   const [cameraQuality, setCameraQuality] = useState<{
@@ -157,8 +170,7 @@ function MediaCheck({ onReady }: { onReady: (ok: boolean) => void }) {
       let sum = 0;
       for (let i = 0; i < data.length; i++) sum += data[i];
       const avg = sum / data.length;          // 0..255
-      const pct = Math.min(100, (avg / 80) * 100); // visual scale: 80 ≈ talking
-      setAudioLevel(pct);
+      setAudioAmp(avg);
       if (avg > 8) setHasAudioSignal(true);
       raf = requestAnimationFrame(tick);
     };
@@ -257,30 +269,71 @@ function MediaCheck({ onReady }: { onReady: (ok: boolean) => void }) {
           <StatusDot ok={hasAudioSignal} />
           Микрофон {hasAudioSignal ? 'слышит звук' : 'ждёт звук'}
         </div>
-        {/* Audio meter */}
-        <div style={{
-          position: 'relative',
-          height: 10, borderRadius: 999,
-          background: '#F1F3F6', overflow: 'hidden',
-        }}>
+        {/* Audio meter — fill width is the live amplitude; coloured zones
+             behind it mark the natural / warning / violation bands. */}
+        <div>
           <div style={{
-            position: 'absolute', inset: 0, width: `${audioLevel}%`,
-            background: audioLevel > 70
-              ? 'linear-gradient(90deg, #10B981, #F59E0B 70%, #B91C1C)'
-              : audioLevel > 30
-                ? 'linear-gradient(90deg, #10B981, #34D399)'
-                : '#34D399',
-            borderRadius: 999,
-            transition: 'width 60ms linear, background 200ms',
-          }} />
+            position: 'relative',
+            height: 12, borderRadius: 999,
+            background: '#F1F3F6', overflow: 'hidden',
+          }}>
+            {/* Background zones */}
+            <div style={{
+              position: 'absolute', inset: 0,
+              background: `linear-gradient(90deg,
+                rgba(16,185,129,0.18) 0%,
+                rgba(16,185,129,0.18) ${(MEDIA_CHECK_NATURAL_MAX_AMP / MEDIA_CHECK_METER_MAX) * 100}%,
+                rgba(245,158,11,0.20) ${(MEDIA_CHECK_NATURAL_MAX_AMP / MEDIA_CHECK_METER_MAX) * 100}%,
+                rgba(245,158,11,0.20) ${(MEDIA_CHECK_VIOLATION_AMP / MEDIA_CHECK_METER_MAX) * 100}%,
+                rgba(220,38,38,0.22) ${(MEDIA_CHECK_VIOLATION_AMP / MEDIA_CHECK_METER_MAX) * 100}%,
+                rgba(220,38,38,0.22) 100%)`,
+            }} />
+            {/* Live fill */}
+            <div style={{
+              position: 'absolute', top: 0, left: 0, bottom: 0,
+              width: `${Math.min(100, (audioAmp / MEDIA_CHECK_METER_MAX) * 100)}%`,
+              background: audioAmp >= MEDIA_CHECK_VIOLATION_AMP
+                ? '#DC2626'
+                : audioAmp >= MEDIA_CHECK_WARNING_AMP
+                  ? '#F59E0B'
+                  : '#10B981',
+              borderRadius: 999,
+              transition: 'width 60ms linear, background 200ms',
+            }} />
+            {/* Threshold ticks */}
+            <ThresholdTick pct={(MEDIA_CHECK_NATURAL_MAX_AMP / MEDIA_CHECK_METER_MAX) * 100} />
+            <ThresholdTick pct={(MEDIA_CHECK_VIOLATION_AMP / MEDIA_CHECK_METER_MAX) * 100} />
+          </div>
+          {/* Threshold + live readouts */}
+          <div style={{
+            display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
+            marginTop: 6,
+            fontFamily: 'var(--font-mono)', fontSize: 10, color: '#9CA3AF',
+            letterSpacing: '0.03em',
+          }}>
+            <span><strong style={{ color: '#10B981' }}>норма</strong> ≤ {ampToDb(MEDIA_CHECK_NATURAL_MAX_AMP)} dB</span>
+            <span><strong style={{ color: '#F59E0B' }}>предупр.</strong> {ampToDb(MEDIA_CHECK_NATURAL_MAX_AMP)}…{ampToDb(MEDIA_CHECK_VIOLATION_AMP)} dB</span>
+            <span><strong style={{ color: '#DC2626' }}>наруш.</strong> {`>`} {ampToDb(MEDIA_CHECK_VIOLATION_AMP)} dB</span>
+          </div>
+          {/* Live measurement */}
+          <p style={{
+            margin: '8px 0 0',
+            fontFamily: 'var(--font-body)', fontSize: 12, color: '#6B7280',
+            lineHeight: 1.5,
+          }}>
+            Сейчас:{' '}
+            <strong style={{
+              fontFamily: 'var(--font-mono)',
+              color: audioAmp >= MEDIA_CHECK_VIOLATION_AMP ? '#B91C1C'
+                : audioAmp >= MEDIA_CHECK_WARNING_AMP ? '#B45309'
+                : '#047857',
+            }}>
+              {ampToDb(audioAmp)} dB
+            </strong>
+            {' · '}
+            Скажите что-нибудь, чтобы убедиться, что микрофон ловит звук. Проследите, что лицо хорошо видно в кадре.
+          </p>
         </div>
-        <p style={{
-          margin: '8px 0 0',
-          fontFamily: 'var(--font-body)', fontSize: 12, color: '#6B7280',
-          lineHeight: 1.5,
-        }}>
-          Скажите что-нибудь — должна загореться зелёная шкала. Проследите, что лицо хорошо видно в кадре.
-        </p>
         {/* Per-issue hint when camera quality blocks the start */}
         {stream && cameraQuality && !cameraQuality.ok && cameraQuality.reason && (
           <p style={{
@@ -300,6 +353,19 @@ function MediaCheck({ onReady }: { onReady: (ok: boolean) => void }) {
         }
       `}</style>
     </div>
+  );
+}
+
+function ThresholdTick({ pct }: { pct: number }) {
+  return (
+    <span
+      style={{
+        position: 'absolute', top: -2, bottom: -2,
+        left: `${pct}%`,
+        width: 1.5, background: 'rgba(15, 23, 42, 0.42)',
+        borderRadius: 1,
+      }}
+    />
   );
 }
 
