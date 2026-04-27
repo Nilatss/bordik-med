@@ -95,9 +95,13 @@ export default function StatisticsPage() {
 
   return (
     <div className="stats-page" style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
-      {/* Header bar */}
+      {/* Header bar — explicit z-index so the period dropdown isn't
+           covered by KPI-row siblings (each .stats-block creates a
+           stacking context via the entrance transform). */}
       <div className="stats-block" style={{
         ['--stats-delay' as any]: '0ms',
+        position: 'relative',
+        zIndex: 30,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         gap: 12, flexWrap: 'wrap',
       }}>
@@ -145,7 +149,7 @@ export default function StatisticsPage() {
                 position: 'absolute', top: 'calc(100% + 6px)', right: 0,
                 background: '#FFFFFF',
                 borderRadius: 12,
-                boxShadow: '0 12px 32px rgba(0,0,0,0.12), 0 2px 6px rgba(0,0,0,0.06)',
+                boxShadow: '0 12px 32px rgba(0,0,0,0.10), 0 4px 12px rgba(0,0,0,0.05)',
                 minWidth: 180,
                 padding: 4,
                 zIndex: 30,
