@@ -1367,9 +1367,9 @@ function RecentAttempts({ attempts }: { attempts: { courseId: string; testLevel:
               </span>
             </span>
 
-            {/* Score (neutral) */}
+            {/* Score — same body font/size as title and date */}
             <span className="stats-attempts__score" style={{
-              fontFamily: 'var(--font-mono)', fontSize: 13, fontWeight: 700,
+              fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
               color: '#1A1A1A',
             }}>
               {a.score}/{a.total}
@@ -1377,7 +1377,7 @@ function RecentAttempts({ attempts }: { attempts: { courseId: string; testLevel:
 
             {/* Date */}
             <span className="stats-attempts__date" style={{
-              fontFamily: 'var(--font-mono)', fontSize: 12, color: '#6B7280',
+              fontFamily: 'var(--font-body)', fontSize: 13, color: '#6B7280',
             }}>
               {dateStr}
             </span>
