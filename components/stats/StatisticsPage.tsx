@@ -631,6 +631,14 @@ function SectionHex({ rows }: { rows: SectionProgressRow[] }) {
   // Total slots = 22 — exactly the curriculum section count.
   const layout = useMemo(() => buildHexLayout(rows), [rows]);
   const setActiveSection = useAppStore((s) => s.setActiveSection);
+  const setShowStats = useAppStore((s) => s.setShowStats);
+  // Clicking a hex must (a) close the Stats view and (b) navigate to the
+  // section. setActiveSection alone wouldn't be enough — page.tsx prefers
+  // `showStats` over `activeSection` when picking the view.
+  const goToSection = (id: any) => {
+    setShowStats(false);
+    setActiveSection(id);
+  };
   // Custom in-SVG tooltip — replaces the native browser bubble so we control
   // the dark-on-white styling and can show different copy for unavailable
   // (placeholder) tiles.
@@ -691,7 +699,7 @@ function SectionHex({ rows }: { rows: SectionProgressRow[] }) {
                 // no per-cell motion needed.
                 <g
                   key={c.row.id}
-                  onClick={interactive ? () => setActiveSection(sectionId) : undefined}
+                  onClick={interactive ? () => goToSection(sectionId) : undefined}
                   onPointerEnter={() => setHoveredCell(c)}
                   className={interactive ? 'stats-hex stats-hex--interactive' : 'stats-hex'}
                   // transform-origin in SVG user-space coords. transformBox: fill-box
