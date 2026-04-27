@@ -1022,3 +1022,12 @@ main:has(.stats-page) {
     width: 100% !important;
   }
 }
+
+/* Generic shimmer block — reused by the lazy-route loading fallback so
+   clicking a nav item gives instant visual feedback while the chunk
+   downloads instead of a blank flash. */
+.lc-shimmer {
+  background: linear-gradient(90deg, #F1F3F6 0%, #E8EAEE 50%, #F1F3F6 100%);
+  background-size: 200% 100%;
+  animation: sk-shimmer 1.4s ease-in-out infinite;
+}

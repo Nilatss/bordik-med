@@ -118,6 +118,25 @@ export default function Sidebar() {
     else if (item === 'stats') setShowStats(true);
   };
 
+  /* Prefetch the heavy chunks on hover/focus so they're already cached
+   * by the time the user actually clicks. Each lazy route lives in its
+   * own webpack chunk; calling the import() now forces the browser to
+   * fetch+parse it in the background. Idempotent — repeat hovers are
+   * cheap. */
+  const prefetched = useState(() => new Set<NavItem>())[0];
+  const prefetch = (item: NavItem) => {
+    if (prefetched.has(item)) return;
+    prefetched.add(item);
+    switch (item) {
+      case 'tools':    void import('@/components/tools/ToolsPage'); break;
+      case 'tests':    void import('@/components/tests/TestsPage'); break;
+      case 'stats':    void import('@/components/stats/StatisticsPage'); break;
+      case 'profile':  void import('@/components/profile/ProfilePage'); break;
+      case 'learning': /* no chunk — sections render in app/page.tsx */ break;
+      case 'home':     /* eager */ break;
+    }
+  };
+
   const navItems: Record<NavItem, NavDef> = {
     home: {
       id: 'home',
@@ -444,6 +463,8 @@ export default function Sidebar() {
                         <button
                           key={id}
                           onClick={() => handleNav(id)}
+                          onMouseEnter={() => prefetch(id)}
+                          onFocus={() => prefetch(id)}
                           style={{
                             width: '100%', display: 'flex', alignItems: 'center', gap: 14,
                             padding: '11px 16px',

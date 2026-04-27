@@ -11,13 +11,27 @@ import dynamic from 'next/dynamic';
 // load eagerly. Everything else is fetched on first navigation, which
 // strips ~250 kB of JS off the initial bundle and dramatically improves
 // time-to-interactive on slow devices and 3G connections.
+// Each one ships a lightweight skeleton fallback so the user sees an
+// immediate response on click instead of a blank screen during the
+// chunk download.
 // ────────────────────────────────────────────────────────────────────
-const ToolsPage = dynamic(() => import('@/components/tools/ToolsPage'), { ssr: false });
-const ToolView = dynamic(() => import('@/components/tools/ToolView'), { ssr: false });
-const ProfilePage = dynamic(() => import('@/components/profile/ProfilePage'), { ssr: false });
-const StatisticsPage = dynamic(() => import('@/components/stats/StatisticsPage'), { ssr: false });
-const TestsPage = dynamic(() => import('@/components/tests/TestsPage'), { ssr: false });
-const CoursePage = dynamic(() => import('@/components/course/CoursePage'), { ssr: false });
+function ViewLoading() {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 14, paddingTop: 4 }}>
+      <div className="lc-shimmer" style={{ height: 36, width: 240, borderRadius: 10 }} />
+      <div className="lc-shimmer" style={{ height: 18, width: '60%', borderRadius: 6 }} />
+      <div className="lc-shimmer" style={{ height: 120, width: '100%', borderRadius: 14, marginTop: 10 }} />
+      <div className="lc-shimmer" style={{ height: 120, width: '100%', borderRadius: 14 }} />
+      <div className="lc-shimmer" style={{ height: 120, width: '100%', borderRadius: 14 }} />
+    </div>
+  );
+}
+const ToolsPage = dynamic(() => import('@/components/tools/ToolsPage'), { ssr: false, loading: ViewLoading });
+const ToolView = dynamic(() => import('@/components/tools/ToolView'), { ssr: false, loading: ViewLoading });
+const ProfilePage = dynamic(() => import('@/components/profile/ProfilePage'), { ssr: false, loading: ViewLoading });
+const StatisticsPage = dynamic(() => import('@/components/stats/StatisticsPage'), { ssr: false, loading: ViewLoading });
+const TestsPage = dynamic(() => import('@/components/tests/TestsPage'), { ssr: false, loading: ViewLoading });
+const CoursePage = dynamic(() => import('@/components/course/CoursePage'), { ssr: false, loading: ViewLoading });
 // Module / course grids stay eager — they render alongside the section
 // browser which is the hot path after the home feed.
 import NewsFeed from '@/components/feed/NewsFeed';
