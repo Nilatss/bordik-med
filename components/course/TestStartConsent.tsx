@@ -399,7 +399,12 @@ function MediaCheck({ onReady, onCalibrated }: {
     const missingFrames: Record<string, number> = {};
     const presentClasses = new Set<string>();
     const CLEAR_MISS = 4;          // frames-without-hit before clearing
-    const PERIOD_MS  = 450;        // ~2 fps inference
+    // ~1 fps on mobile / ~2 fps on desktop. Forbidden items show up for
+    // many seconds so this is plenty.
+    const isLp = typeof window !== 'undefined' &&
+      (window.matchMedia('(max-width: 900px)').matches ||
+       window.matchMedia('(pointer: coarse)').matches);
+    const PERIOD_MS = isLp ? 1000 : 450;
 
     // Offscreen canvas for sampling pixel colour around face landmarks
     // (used by the headphone heuristic - we compare luminance of the ear

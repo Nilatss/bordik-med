@@ -94,6 +94,19 @@ function ampToDb(amp: number): number {
   return Math.round(20 * Math.log10(amp / 255));
 }
 
+/** Detect low-power / mobile device once on the client. Used to throttle
+ *  every rAF loop in this component so the test stays smooth on phones. */
+function detectLowPower(): boolean {
+  if (typeof window === 'undefined') return false;
+  const narrow = window.matchMedia('(max-width: 900px)').matches;
+  const coarse = window.matchMedia('(pointer: coarse)').matches;
+  // navigator.deviceMemory is non-standard but supported in Chromium.
+  // Treat ≤ 4 GB or unknown-but-coarse as "low power".
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const mem = (navigator as any).deviceMemory as number | undefined;
+  return narrow || coarse || (typeof mem === 'number' && mem <= 4);
+}
+
 export default function Proctoring({
   onViolation, onWarning, onForceEnd, active, onReadyChange,
 }: ProctoringProps) {
@@ -140,14 +153,25 @@ export default function Proctoring({
     return () => { cancelled = true; };
   }, [active]);
   const [audioDb, setAudioDb] = useState<number>(-100);
+  // Detected once on mount. We use it to throttle every analysis loop
+  // and lower the camera resolution on phones / low-RAM devices.
+  const lowPowerRef = useRef<boolean>(false);
+  useEffect(() => { lowPowerRef.current = detectLowPower(); }, []);
 
   // ── Acquire stream once, release on unmount or when `active` flips off
   useEffect(() => {
     if (!active) return;
     let cancelled = false;
     let acquired: MediaStream | null = null;
+    // Smaller resolution on mobile - getImageData scans, MediaPipe inference
+    // and FFT are all O(pixels). 240x180 is plenty for face detection while
+    // 4× cheaper than 320x240 to process.
+    const lp = detectLowPower();
+    const videoConstraints = lp
+      ? { width: 240, height: 180, frameRate: 24, facingMode: 'user' }
+      : { width: 320, height: 240, facingMode: 'user' };
     navigator.mediaDevices.getUserMedia({
-      video: { width: 320, height: 240, facingMode: 'user' },
+      video: videoConstraints,
       audio: true,
     })
       .then((s) => {
@@ -210,12 +234,25 @@ export default function Proctoring({
     let violationSince = 0;
     let silenceSince = 0;
     let lastDbPush = 0;
+    let lastAnalysis = 0;
+    const lp = lowPowerRef.current;
+    // FFT + integration is O(fftSize). At 60Hz that's a noticeable chunk of
+    // main-thread budget on phones. Throttle the actual analysis to 10Hz
+    // on mobile / 30Hz on desktop - violation-detection holds are 1+ sec
+    // anyway so this loses no fidelity.
+    const ANALYSIS_PERIOD = lp ? 100 : 33;
     const tick = () => {
+      const now = performance.now();
+      if (now - lastAnalysis < ANALYSIS_PERIOD) {
+        raf = requestAnimationFrame(tick);
+        return;
+      }
+      lastAnalysis = now;
       analyser.getByteFrequencyData(data);
       let sum = 0;
       for (let i = 0; i < data.length; i++) sum += data[i];
       const avg = sum / data.length;
-      const now = performance.now();
+      // (now defined above; keep variable name in scope)
       // Throttle React re-renders to 5 Hz — pushing 60 Hz to setState causes
       // heavy main-thread reconciliation that visibly stutters CSS animations.
       if (now - lastDbPush > 200) {
@@ -293,7 +330,18 @@ export default function Proctoring({
     let darkSince = 0;
     let blurSince = 0;
     let raf = 0;
+    let lastAnalysis = 0;
+    // Was running at 60Hz - that's tens of thousands of pixel ops per second
+    // for no benefit. Brightness/blur thresholds use 1.5-2 second hold times,
+    // so 4Hz on mobile / 10Hz on desktop is more than enough.
+    const FRAME_PERIOD = lowPowerRef.current ? 250 : 100;
     const tick = () => {
+      const tnow = performance.now();
+      if (tnow - lastAnalysis < FRAME_PERIOD) {
+        raf = requestAnimationFrame(tick);
+        return;
+      }
+      lastAnalysis = tnow;
       const v = videoRef.current;
       if (v && v.readyState >= 2) {
         try {
@@ -393,11 +441,15 @@ export default function Proctoring({
       }
     } catch {/* ignore parse errors */}
 
+    // Mobile: 5 fps face inference (200 ms). Desktop: 10 fps (100 ms).
+    // Face landmarker + blendshapes is the heaviest single op in this
+    // component - 5 fps on phones halves the CPU load with no UX regression
+    // because all detection holds are ≥500 ms anyway.
+    const FACE_PERIOD = lowPowerRef.current ? 200 : 100;
     const loop = async () => {
       if (stopped) return;
       const now = performance.now();
-      // Throttle to ~10 inferences / second
-      if (now - lastInfer < 100) {
+      if (now - lastInfer < FACE_PERIOD) {
         raf = requestAnimationFrame(loop);
         return;
       }
@@ -579,11 +631,14 @@ export default function Proctoring({
     let lastInfer = 0;
     let lastViolation = 0;
     const RESET_MS = 8000;
+    // Object detector is heavy and a forbidden item rarely flickers in/out
+    // in <1 sec, so we can cut to ~1 fps on mobile / 3 fps on desktop.
+    const OBJ_PERIOD = lowPowerRef.current ? 900 : 350;
 
     const loop = async () => {
       if (stopped) return;
       const now = performance.now();
-      if (now - lastInfer < 350) {  // ~3 fps
+      if (now - lastInfer < OBJ_PERIOD) {
         raf = requestAnimationFrame(loop);
         return;
       }
@@ -769,7 +824,8 @@ export default function Proctoring({
           : '#FCD34D'
         }`,
         boxShadow: '0 1px 2px rgba(15,23,42,0.04)',
-        backdropFilter: 'blur(6px)',
+        // backdrop-filter: blur is expensive on mobile - skip on low-power
+        backdropFilter: lowPowerRef.current ? undefined : 'blur(6px)',
         fontFamily: 'var(--font-mono)', fontSize: 10.5, fontWeight: 600,
         letterSpacing: '0.03em',
         maxWidth: '70vw',
