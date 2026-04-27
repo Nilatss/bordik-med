@@ -463,7 +463,6 @@ export default function Sidebar() {
                         <button
                           key={id}
                           onClick={() => handleNav(id)}
-                          onMouseEnter={() => prefetch(id)}
                           onFocus={() => prefetch(id)}
                           style={{
                             width: '100%', display: 'flex', alignItems: 'center', gap: 14,
@@ -473,7 +472,10 @@ export default function Sidebar() {
                             border: 'none', cursor: 'pointer',
                             transition: 'background 150ms ease',
                           }}
-                          onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.background = '#E8E9ED'; }}
+                          onMouseEnter={(e) => {
+                            prefetch(id);
+                            if (!isActive) e.currentTarget.style.background = '#E8E9ED';
+                          }}
                           onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.background = 'transparent'; }}
                         >
                           <span style={{
