@@ -325,7 +325,7 @@ export default function Home() {
           flex: 1, overflowY: 'auto', background: '#FFFFFF',
           display: 'flex', flexDirection: 'column',
         }}>
-          <div className="app-main-inner" style={{ flex: 1 }}>
+          <div className="app-main-inner">
 
           {view === 'profile' && (
             <ProfilePage />
@@ -432,9 +432,13 @@ export default function Home() {
 
           </div>
 
-          {/* Powered-by footer — full-width strip, pushed to the bottom of
-               the main scroll area thanks to flex:1 on the inner. */}
+          {/* Powered-by footer — sticky-to-bottom via marginTop: auto.
+               When content is short, the auto-margin eats the remaining
+               vertical space and pushes the footer to the bottom of the
+               viewport. When content is taller than viewport, the footer
+               flows naturally at the very end of the scroll area. */}
           <footer style={{
+            marginTop: 'auto',
             padding: '16px 24px',
             borderTop: '1px solid #F0F1F5',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
