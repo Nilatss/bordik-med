@@ -1369,7 +1369,7 @@ function RecentAttempts({ attempts }: { attempts: { courseId: string; testLevel:
 
             {/* Score — same body font/size as title and date */}
             <span className="stats-attempts__score" style={{
-              fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
+              fontFamily: 'var(--font-body)', fontSize: 13,
               color: '#1A1A1A',
             }}>
               {a.score}/{a.total}
