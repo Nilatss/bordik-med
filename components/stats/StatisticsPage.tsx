@@ -7,6 +7,7 @@ import { useAppStore, formatStudyTime, getTotalStudyTime } from '@/lib/store';
 import { MAX_TEST_LEVELS } from '@/lib/quiz';
 import { RUNNER_KINDS } from '@/lib/tool-meta-data';
 import { CATALOG_TOOLS } from '@/lib/tools-catalog';
+import { content as courseContent } from '@/lib/content';
 // BodyMap is kept in the codebase (./BodyMap.tsx) but not surfaced — backlog.
 
 /* ════════════════════════════════════════════════════════════════
@@ -591,27 +592,35 @@ interface SectionProgressRow {
   total: number;
   done: number;
   pct: number;
+  /** Section has at least one course with actual lesson content written. */
+  withContent: number;
 }
 
 function buildSectionProgress(completedCourses: string[]): SectionProgressRow[] {
   // Pre-seed every curriculum section so the hex map always shows ALL real
-  // sections — even ones that don't have modules yet. Sections without
-  // courses appear as 0/0 (still interactive, just with no progress data).
-  const byId = new Map<string, { name: string; total: number; done: number }>();
+  // sections. `withContent` tracks how many courses in the section have
+  // actual lesson body written — a section with `withContent === 0` is not
+  // truly "available" for navigation even if courses are listed.
+  const byId = new Map<string, { name: string; total: number; done: number; withContent: number }>();
   for (const s of allSections) {
-    byId.set(s.id, { name: s.title, total: 0, done: 0 });
+    byId.set(s.id, { name: s.title, total: 0, done: 0, withContent: 0 });
   }
   for (const m of modules) {
     const sec = getSectionById(m.sectionId);
     if (!sec) continue;
-    const slot = byId.get(sec.id) ?? { name: sec.title, total: 0, done: 0 };
-    slot.total += m.courses.length;
-    slot.done  += m.courses.filter((c) => completedCourses.includes(c.id)).length;
+    const slot = byId.get(sec.id) ?? { name: sec.title, total: 0, done: 0, withContent: 0 };
+    for (const c of m.courses) {
+      slot.total += 1;
+      if (completedCourses.includes(c.id)) slot.done += 1;
+      if (courseContent[c.id] && Object.keys(courseContent[c.id]).length > 0) {
+        slot.withContent += 1;
+      }
+    }
     byId.set(sec.id, slot);
   }
   return Array.from(byId.entries())
     .map(([id, v]) => ({
-      id, name: v.name, total: v.total, done: v.done,
+      id, name: v.name, total: v.total, done: v.done, withContent: v.withContent,
       pct: v.total > 0 ? Math.round((v.done / v.total) * 100) : 0,
     }))
     .sort((a, b) => b.pct - a.pct);
@@ -689,10 +698,11 @@ function SectionHex({ rows }: { rows: SectionProgressRow[] }) {
               : layout.cells;
             return renderOrder.map((c) => {
               const isPlaceholder = c.row.id.startsWith('__ph');
-              // A section is "available" only if it actually has courses.
-              // Sections present in the curriculum config but with zero
-              // courses behave like placeholders — show as unavailable.
-              const hasContent = c.row.total > 0;
+              // A section is "available" only if at least one of its courses
+              // has actual lesson content written. Curriculum config lists
+              // many courses but most are still empty stubs — those sections
+              // show as unavailable until content lands.
+              const hasContent = c.row.withContent > 0;
               const sectionId = (isPlaceholder || !hasContent) ? null : (c.row.id as any);
               const interactive = !!sectionId;
               return (
@@ -745,7 +755,7 @@ function SectionHex({ rows }: { rows: SectionProgressRow[] }) {
                typography and wraps long section names. */}
           {hoveredCell && (() => {
             const isPlaceholder = hoveredCell.row.id.startsWith('__ph');
-            const isEmpty = !isPlaceholder && hoveredCell.row.total === 0;
+            const isEmpty = !isPlaceholder && hoveredCell.row.withContent === 0;
             const showAsUnavailable = isPlaceholder || isEmpty;
             const tipW = 200;
             const tipH = 56;
@@ -862,7 +872,7 @@ function buildHexLayout(rows: SectionProgressRow[]): HexLayout {
   // entries render as 0% (lightest tint) — visually communicating "section
   // exists, no progress yet".
   while (padded.length < total) {
-    padded.push({ id: `__ph${padded.length}`, name: '—', total: 0, done: 0, pct: 0 });
+    padded.push({ id: `__ph${padded.length}`, name: '—', total: 0, done: 0, pct: 0, withContent: 0 });
   }
   if (padded.length > total) padded.length = total;
 
