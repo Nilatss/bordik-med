@@ -543,18 +543,15 @@ function Heatmap({ data }: { data: HeatmapData }) {
               return (
                 <motion.div
                   key={`${row}-${col}`}
-                  initial={{ opacity: 0, scale: 0.7 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  whileHover={{
-                    scale: 1.18,
-                    boxShadow: '0 4px 10px rgba(15, 23, 42, 0.15)',
-                  }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
                   transition={{
                     duration: 0.25,
                     ease: [0.05, 0.7, 0.1, 1],
                     delay: Math.min(0.4, 0.005 * cellIdx),
                   }}
                   title={v > 0 ? `${v} тест${v === 1 ? '' : v < 5 ? 'а' : 'ов'}` : 'нет активности'}
+                  className="stats-heat-cell"
                   style={{
                     aspectRatio: '1 / 1',
                     background: HEATMAP_LEVELS[lvl],
@@ -661,14 +658,11 @@ function SectionHex({ rows }: { rows: SectionProgressRow[] }) {
             return (
               <motion.g
                 key={c.row.id}
-                initial={{ opacity: 0, scale: 0.6 }}
-                animate={{ opacity: 1, scale: 1 }}
-                whileHover={interactive ? {
-                  scale: 1.12,
-                  filter: 'drop-shadow(0 4px 8px rgba(15, 23, 42, 0.18))',
-                } : undefined}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
                 transition={{ duration: 0.32, ease: [0.05, 0.7, 0.1, 1], delay: 0.025 * i }}
                 onClick={interactive ? () => setActiveSection(sectionId) : undefined}
+                className={interactive ? 'stats-hex stats-hex--interactive' : 'stats-hex'}
                 style={{
                   transformOrigin: `${c.cx}px ${c.cy}px`,
                   transformBox: 'fill-box' as any,

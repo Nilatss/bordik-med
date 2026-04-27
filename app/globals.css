@@ -927,6 +927,25 @@ main:has(.stats-page) {
 
 /* Stats entrance animations now use framer-motion (matches CoursePage). */
 
+/* Section hex tiles: CSS-driven hover so the scale transition is owned by
+   the browser (framer-motion's whileHover on <motion.g> can stay stuck on
+   pointer leave because SVG hit-testing changes once the scaled polygon
+   covers neighbouring tiles). */
+.stats-hex          { transition: transform 180ms cubic-bezier(0.05, 0.7, 0.1, 1), filter 180ms ease; }
+.stats-hex--interactive:hover {
+  transform: scale(1.12);
+  filter: drop-shadow(0 4px 8px rgba(15, 23, 42, 0.18));
+}
+
+/* Heatmap cells: same CSS-driven hover. */
+.stats-heat-cell {
+  transition: transform 160ms cubic-bezier(0.05, 0.7, 0.1, 1), box-shadow 160ms ease;
+}
+.stats-heat-cell:hover {
+  transform: scale(1.18);
+  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.15);
+}
+
 /* ─────────────────────────────────────────────────────────────────
    Stats InfoTip — hover/focus tooltip on the (i) icons.
    Pure-CSS so there's no JS state per tooltip and no re-render cost.
