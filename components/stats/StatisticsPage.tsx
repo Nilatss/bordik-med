@@ -676,9 +676,11 @@ function SectionHex({ rows }: { rows: SectionProgressRow[] }) {
                   onPointerEnter={() => setHoveredCell(c)}
                   onPointerLeave={() => setHoveredCell((curr) => (curr === c ? null : curr))}
                   className={interactive ? 'stats-hex stats-hex--interactive' : 'stats-hex'}
+                  // transform-origin in SVG user-space coords. transformBox: fill-box
+                  // would re-anchor to bbox top-left and skew the hex sideways on
+                  // scale; the default user-space behaviour is what we want here.
                   style={{
                     transformOrigin: `${c.cx}px ${c.cy}px`,
-                    transformBox: 'fill-box' as any,
                     cursor: interactive ? 'pointer' : 'not-allowed',
                   }}
                 >
