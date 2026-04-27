@@ -294,14 +294,23 @@
   border: 1px solid #EAECEF;
   border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-  /* `table-layout: auto` lets columns size to content, then evenly distribute
-     remaining space — keeps short tables looking full-width, but lets long
-     headings keep their line breaks instead of being cropped. */
   table-layout: auto;
+  /* `overflow: hidden` is ignored on `display: table` so corner cells get
+     their own border-radius below to follow the table outline. */
+  overflow: hidden;
 }
+/* Round corner cells so the cell backgrounds (header tint, zebra rows) sit
+   inside the table's rounded outline. */
+.lesson-content table thead tr:first-child th:first-child  { border-top-left-radius: 12px; }
+.lesson-content table thead tr:first-child th:last-child   { border-top-right-radius: 12px; }
+.lesson-content table tbody tr:last-child td:first-child   { border-bottom-left-radius: 12px; }
+.lesson-content table tbody tr:last-child td:last-child    { border-bottom-right-radius: 12px; }
+/* Same treatment when the table has no <thead> — first body row is the top. */
+.lesson-content table tbody tr:first-child td:first-child  { border-top-left-radius: 12px; }
+.lesson-content table tbody tr:first-child td:last-child   { border-top-right-radius: 12px; }
 .lesson-content thead th {
   background: #F0F1F5;
-  padding: 12px 16px;
+  padding: 10px 14px;
   text-align: left;
   font-weight: 600;
   font-family: var(--font-display);
@@ -312,11 +321,11 @@
   border-bottom: 1px solid #E5E7EB;
 }
 .lesson-content tbody td {
-  padding: 12px 16px;
+  padding: 10px 14px;
   border-bottom: 1px solid #F0F1F3;
   color: #2B2B2B;
   vertical-align: top;
-  line-height: 1.55;
+  line-height: 1.5;
 }
 .lesson-content tbody tr:nth-child(odd) td {
   background: #FAFBFC;
