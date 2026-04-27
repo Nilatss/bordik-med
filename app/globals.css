@@ -943,6 +943,18 @@ main:has(.stats-page) {
 
 /* Stats entrance animations now use framer-motion (matches CoursePage). */
 
+/* Test in-progress view — mobile spacing */
+@media (max-width: 480px) {
+  .test-active__head-row {
+    flex-direction: column;
+    align-items: flex-start !important;
+  }
+  .test-active__head-row > div:last-child {
+    width: 100%;
+    justify-content: space-between !important;
+  }
+}
+
 /* Section hex tiles: CSS-driven hover so the scale transition is owned by
    the browser (framer-motion's whileHover on <motion.g> can stay stuck on
    pointer leave because SVG hit-testing changes once the scaled polygon

@@ -102,25 +102,28 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
       {/* Fullscreen overlay during test attempt — hides the course header,
            TOC sidebar and any other navigation. The only way out is the
            "Прервать" confirmation modal that re-uses onCancel. */}
-      <div style={{
+      <div className="test-active" style={{
         position: 'fixed', inset: 0, zIndex: 50,
         background: '#FFFFFF',
         overflowY: 'auto',
-        padding: '24px clamp(16px, 4vw, 48px) 32px',
+        padding: 'clamp(14px, 3vw, 32px) clamp(12px, 4vw, 48px) clamp(20px, 4vw, 32px)',
       }}>
       <div style={{
         maxWidth: 840, margin: '0 auto',
         display: 'flex', flexDirection: 'column', gap: 10,
       }}>
         {/* Header panel - matches TestPanel "Прогресс обучения" */}
-        <div style={{
-          padding: '20px 24px',
+        <div className="test-active__head" style={{
+          padding: 'clamp(14px, 3vw, 20px) clamp(14px, 3vw, 24px)',
           background: '#F5F6F8',
           borderRadius: 14,
           color: '#1A1A1A',
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-            <div>
+          <div className="test-active__head-row" style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            gap: 10, flexWrap: 'wrap', marginBottom: 12,
+          }}>
+            <div style={{ minWidth: 0 }}>
               <p style={{
                 fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 600,
                 color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
@@ -129,13 +132,14 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
                 {testLabel}
               </p>
               <h3 style={{
-                fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 700,
+                fontFamily: 'var(--font-display)', fontSize: 'clamp(15px, 4vw, 18px)', fontWeight: 700,
                 color: '#1A1A1A', margin: 0, letterSpacing: '-0.01em',
+                whiteSpace: 'nowrap',
               }}>
                 Вопрос {currentQ + 1} из {questions.length}
               </h3>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
               <span style={{
                 fontFamily: 'var(--font-mono)', fontSize: 16, fontWeight: 700,
                 color: timeRemaining < 60_000 ? '#B91C1C' : timeRemaining < 300_000 ? '#D97706' : '#1A1A1A',
@@ -207,11 +211,11 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
             style={{
               background: '#F5F6F8',
               borderRadius: 14,
-              padding: '22px 24px',
+              padding: 'clamp(16px, 3vw, 22px) clamp(16px, 3vw, 24px)',
             }}
           >
             <h4 style={{
-              fontFamily: 'var(--font-display)', fontSize: 16, fontWeight: 700,
+              fontFamily: 'var(--font-display)', fontSize: 'clamp(14px, 3.6vw, 16px)', fontWeight: 700,
               color: '#1A1A1A', marginBottom: 18,
               lineHeight: 1.45, letterSpacing: '-0.01em',
             }}>
@@ -228,7 +232,7 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
                     onClick={() => selectOption(idx)}
                     style={{
                       display: 'flex', alignItems: 'center', gap: 12,
-                      padding: '12px 16px',
+                      padding: 'clamp(10px, 2.6vw, 12px) clamp(12px, 3vw, 16px)',
                       borderRadius: 10,
                       // Soft blue tint when selected — same accent as Next
                       // button, far less aggressive than the previous black ring.
@@ -264,7 +268,7 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
                       ) : letter}
                     </span>
                     <span style={{
-                      fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: 500,
+                      fontFamily: 'var(--font-body)', fontSize: 'clamp(13px, 3.2vw, 14px)', fontWeight: 500,
                       color: '#1A1A1A', lineHeight: 1.5,
                     }}>
                       {option}
@@ -279,7 +283,8 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
         {/* Navigation */}
         <div style={{
           display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-          padding: '14px 24px',
+          gap: 8,
+          padding: 'clamp(12px, 3vw, 14px) clamp(14px, 3vw, 24px)',
           background: '#F5F6F8',
           borderRadius: 14,
         }}>

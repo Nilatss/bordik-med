@@ -485,15 +485,15 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
 
   return (
     <div className="rg-main-toc">
-      {/* LEFT: Tab content — fade + slide on tab change */}
-      <AnimatePresence mode="wait" initial={false}>
-      <motion.div
+      {/* LEFT: Tab content. The previous fade+slide AnimatePresence kept the
+           old content on screen for 250 ms while the new ReactMarkdown
+           re-parsed and re-rendered (10–50 KB of markdown with a heavy
+           custom component map) — that work blocked the main thread and
+           caused other animations on the page (progress bar spring) to
+           visibly stutter. Switching tabs instantly is far smoother. */}
+      <div
         key={active.id}
         className="lesson-card"
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -6 }}
-        transition={{ duration: 0.25, ease: [0.05, 0.7, 0.1, 1] }}
         style={{
         background: '#FFFFFF',
         borderRadius: 'var(--md-sys-shape-corner-extra-large)',
@@ -700,8 +700,7 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
             </button>
           ) : null}
         </div>
-      </motion.div>
-      </AnimatePresence>
+      </div>
 
       {/* RIGHT: Tabs sidebar.
           On mobile the body is collapsed by default — header acts as a
