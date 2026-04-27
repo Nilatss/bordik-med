@@ -24,6 +24,13 @@ function MediaCheck({ onReady }: { onReady: (ok: boolean) => void }) {
   const [error, setError] = useState<string | null>(null);
   const [audioLevel, setAudioLevel] = useState(0); // 0..100
   const [hasAudioSignal, setHasAudioSignal] = useState(false);
+  // Camera quality state — `null` = still measuring, `true`/`false` = result
+  const [cameraQuality, setCameraQuality] = useState<{
+    bright: number;
+    sharpness: number;
+    ok: boolean;
+    reason: string | null;
+  } | null>(null);
 
   // Request permissions once
   useEffect(() => {
@@ -40,7 +47,8 @@ function MediaCheck({ onReady }: { onReady: (ok: boolean) => void }) {
         }
         acquired = s;
         setStream(s);
-        onReady(true);
+        // Don't report ready yet — wait for the camera-quality + mic-signal
+        // checks below to confirm the room is usable.
       })
       .catch((err) => {
         const msg =
@@ -68,6 +76,69 @@ function MediaCheck({ onReady }: { onReady: (ok: boolean) => void }) {
       videoRef.current.srcObject = null;
     }
   }, [stream]);
+
+  // Camera quality monitor — measures brightness + sharpness of the frame.
+  // Sharpness is approximated via an edge-magnitude sum (Sobel-style on the
+  // luminance channel) — blurry frames have a much lower edge total.
+  useEffect(() => {
+    if (!stream || !videoRef.current) return;
+    const canvas = document.createElement('canvas');
+    canvas.width = 96; canvas.height = 72;
+    const g = canvas.getContext('2d');
+    if (!g) return;
+    let raf = 0;
+    const tick = () => {
+      const v = videoRef.current;
+      if (v && v.readyState >= 2) {
+        try {
+          g.drawImage(v, 0, 0, canvas.width, canvas.height);
+          const w = canvas.width, h = canvas.height;
+          const data = g.getImageData(0, 0, w, h).data;
+          // Build luminance grid
+          const lum = new Float32Array(w * h);
+          let sum = 0;
+          for (let i = 0, p = 0; i < data.length; i += 4, p++) {
+            const y = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+            lum[p] = y;
+            sum += y;
+          }
+          const bright = sum / lum.length; // 0..255
+          // Edge magnitude (simplified: |∂x| + |∂y|)
+          let edges = 0; let n = 0;
+          for (let y = 1; y < h - 1; y++) {
+            for (let x = 1; x < w - 1; x++) {
+              const c = lum[y * w + x];
+              const dx = Math.abs(c - lum[y * w + (x + 1)]);
+              const dy = Math.abs(c - lum[(y + 1) * w + x]);
+              edges += dx + dy;
+              n++;
+            }
+          }
+          const sharpness = edges / n; // higher = sharper
+          let ok = true;
+          let reason: string | null = null;
+          if (bright < 35) {
+            ok = false; reason = 'Слишком темно — включите свет.';
+          } else if (bright > 235) {
+            ok = false; reason = 'Засветка кадра — отойдите от лампы или окна.';
+          } else if (sharpness < 4) {
+            ok = false; reason = 'Изображение размыто — протрите камеру и наведите фокус.';
+          }
+          setCameraQuality({ bright, sharpness, ok, reason });
+        } catch { /* ignore */ }
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [stream]);
+
+  // Combine quality + signal into final ready flag
+  useEffect(() => {
+    const ok = !!stream && !!cameraQuality?.ok && hasAudioSignal;
+    onReady(ok);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stream, cameraQuality?.ok, hasAudioSignal]);
 
   // Audio analyser → animate level meter
   useEffect(() => {
@@ -175,13 +246,13 @@ function MediaCheck({ onReady }: { onReady: (ok: boolean) => void }) {
       {/* Status + mic meter */}
       <div style={{ minWidth: 0 }}>
         <div style={{
-          display: 'flex', alignItems: 'center', gap: 8,
+          display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap',
           fontFamily: 'var(--font-mono)', fontSize: 10.5, fontWeight: 700,
           color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
           marginBottom: 8,
         }}>
-          <StatusDot ok={!!stream} />
-          Камера {stream ? 'работает' : 'отключена'}
+          <StatusDot ok={!!stream && !!cameraQuality?.ok} />
+          Камера {stream ? (cameraQuality?.ok ? 'готова' : 'не годится') : 'отключена'}
           <span style={{ width: 8 }} />
           <StatusDot ok={hasAudioSignal} />
           Микрофон {hasAudioSignal ? 'слышит звук' : 'ждёт звук'}
@@ -210,6 +281,16 @@ function MediaCheck({ onReady }: { onReady: (ok: boolean) => void }) {
         }}>
           Скажите что-нибудь — должна загореться зелёная шкала. Проследите, что лицо хорошо видно в кадре.
         </p>
+        {/* Per-issue hint when camera quality blocks the start */}
+        {stream && cameraQuality && !cameraQuality.ok && cameraQuality.reason && (
+          <p style={{
+            margin: '8px 0 0',
+            fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 600,
+            color: '#B91C1C', lineHeight: 1.5,
+          }}>
+            {cameraQuality.reason}
+          </p>
+        )}
       </div>
 
       <style jsx global>{`

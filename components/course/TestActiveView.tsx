@@ -30,6 +30,8 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
   const [timeRemaining, setTimeRemaining] = useState(effectiveTimeLimit);
   const [confirmExit, setConfirmExit] = useState(false);
   const [proctorReady, setProctorReady] = useState(false);
+  const [warning, setWarning] = useState<string | null>(null);
+  const warningTimerRef = useRef<number | null>(null);
   const completedRef = useRef(false);
 
   // Countdown timer — only starts after proctoring is ready (camera/mic
@@ -68,6 +70,29 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
       onComplete(selectedAnswers.map((a) => a ?? -1), violations + 1);
     }
   }, [selectedAnswers, violations, onComplete]);
+
+  /** Camera or microphone went away mid-test — proctoring spec requires
+   *  immediate termination, no extra warnings. */
+  const handleProctorForceEnd = useCallback(() => {
+    if (completedRef.current) return;
+    completedRef.current = true;
+    // Bump violations so the cooldown side-effect in TestPanel.handleComplete
+    // (which checks violations >= 3 for the 48h lockout) records this as a
+    // serious event.
+    onComplete(selectedAnswers.map((a) => a ?? -1), Math.max(violations + 1, 3));
+  }, [selectedAnswers, violations, onComplete]);
+
+  /** Soft warning — sustained loud audio etc. Doesn't bump the counter,
+   *  just shows a transient banner so the user can correct themselves. */
+  const handleProctorWarning = useCallback((_reason: string, message: string) => {
+    setWarning(message);
+    if (warningTimerRef.current) window.clearTimeout(warningTimerRef.current);
+    warningTimerRef.current = window.setTimeout(() => setWarning(null), 4500);
+  }, []);
+
+  useEffect(() => () => {
+    if (warningTimerRef.current) window.clearTimeout(warningTimerRef.current);
+  }, []);
 
   const selectOption = useCallback((idx: number) => {
     setSelectedAnswers((prev) => {
@@ -111,6 +136,8 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
         active
         onReadyChange={setProctorReady}
         onViolation={handleViolation}
+        onWarning={handleProctorWarning}
+        onForceEnd={handleProctorForceEnd}
       />
 
       {/* Fullscreen overlay during test attempt — hides the course header,
@@ -130,6 +157,38 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
         maxWidth: 840, margin: '0 auto',
         display: 'flex', flexDirection: 'column', gap: 10,
       }}>
+        {/* Soft warning banner — shows when proctoring detects a soft
+             issue (loud audio etc.). Auto-dismisses after a few seconds. */}
+        <AnimatePresence>
+          {warning && (
+            <motion.div
+              key={warning}
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.22, ease: [0.05, 0.7, 0.1, 1] }}
+              style={{
+                padding: '10px 14px',
+                background: '#FFFBEB',
+                border: '1px solid #FCD34D',
+                color: '#92400E',
+                borderRadius: 10,
+                fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
+                display: 'flex', alignItems: 'center', gap: 10,
+              }}
+            >
+              <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round"
+                style={{ flexShrink: 0 }}>
+                <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                <line x1="12" y1="9" x2="12" y2="13" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
+              <span>{warning}</span>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Header panel - matches TestPanel "Прогресс обучения" */}
         <div className="test-active__head" style={{
           padding: 'clamp(14px, 3vw, 20px) clamp(14px, 3vw, 24px)',

@@ -20,9 +20,15 @@ import { useEffect, useRef, useState } from 'react';
 
 interface ProctoringProps {
   /** Called whenever a suspicious action is detected. Same callback the
-   *  rest of TestGuard uses so violations accumulate together. The
-   *  argument is the reason for logging — parent can ignore it. */
+   *  rest of TestGuard uses so violations accumulate together. */
   onViolation: (reason?: string) => void;
+  /** Soft warning — shown as a transient banner, doesn't bump the
+   *  3-strikes counter. Used for sustained loud audio (above the
+   *  natural-speech band but below the cheating threshold). */
+  onWarning?: (reason: string, message: string) => void;
+  /** Hard end — camera or microphone went away mid-test. Test ends
+   *  immediately with the user's progress recorded as a failed attempt. */
+  onForceEnd?: (reason: string) => void;
   /** Active state — when false, the overlay does nothing (stream stays
    *  released). The parent component disables monitoring when the test
    *  finishes / aborts. */
@@ -32,14 +38,27 @@ interface ProctoringProps {
   onReadyChange?: (ready: boolean) => void;
 }
 
-const AUDIO_VIOLATION_THRESHOLD = 38;   // 0–255 average frequency amplitude
-const AUDIO_VIOLATION_HOLD_MS   = 1500; // must be loud for this long
-const AUDIO_RESET_MS            = 12000; // cool-down between audio violations
-const FRAME_DARK_THRESHOLD      = 18;   // 0–255 average brightness
-const FRAME_DARK_HOLD_MS        = 2000;
-const FRAME_RESET_MS            = 15000;
+// Audio levels in 0–255 byte space (Web Audio analyser output).
+// Roughly:  0–10 = quiet room, 10–35 = ambient breathing/typing,
+// 35–55 = normal speech at 1 m, 55–80 = loud speech, 80+ = shouting/music.
+const AUDIO_NATURAL_MAX_AMP    = 50;   // upper edge of "natural" band
+const AUDIO_WARNING_AMP        = 65;   // sustained → soft warning
+const AUDIO_VIOLATION_AMP      = 90;   // sustained → hard violation
+const AUDIO_HOLD_MS            = 1500; // must hold for this long
+const AUDIO_RESET_MS           = 12000;
+const FRAME_DARK_THRESHOLD     = 18;
+const FRAME_DARK_HOLD_MS       = 2000;
+const FRAME_RESET_MS           = 15000;
 
-export default function Proctoring({ onViolation, active, onReadyChange }: ProctoringProps) {
+// Convert 0–255 amplitude to a friendly approximate dBFS for tooltips.
+function ampToDb(amp: number): number {
+  if (amp <= 0) return -100;
+  return Math.round(20 * Math.log10(amp / 255));
+}
+
+export default function Proctoring({
+  onViolation, onWarning, onForceEnd, active, onReadyChange,
+}: ProctoringProps) {
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [error, setError] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -90,7 +109,10 @@ export default function Proctoring({ onViolation, active, onReadyChange }: Proct
     }
   }, [stream]);
 
-  // ── Audio level monitor
+  // ── Audio level monitor — 3-tier:
+  //   • below AUDIO_NATURAL_MAX_AMP → all good
+  //   • AUDIO_WARNING_AMP held 1.5s   → soft warning (banner)
+  //   • AUDIO_VIOLATION_AMP held 1.5s → hard violation (counter +1)
   useEffect(() => {
     if (!stream || !active) return;
     const audioTracks = stream.getAudioTracks();
@@ -103,26 +125,47 @@ export default function Proctoring({ onViolation, active, onReadyChange }: Proct
     analyser.fftSize = 256;
     src.connect(analyser);
     const data = new Uint8Array(analyser.frequencyBinCount);
-    let lastTriggered = 0;
-    let loudSince = 0;
+    let lastWarning = 0;
+    let lastViolation = 0;
+    let warningSince = 0;
+    let violationSince = 0;
     const tick = () => {
       analyser.getByteFrequencyData(data);
       let sum = 0;
       for (let i = 0; i < data.length; i++) sum += data[i];
       const avg = sum / data.length;
       const now = performance.now();
-      if (avg > AUDIO_VIOLATION_THRESHOLD) {
-        if (loudSince === 0) loudSince = now;
+      // Violation tier — overrides warning
+      if (avg >= AUDIO_VIOLATION_AMP) {
+        if (violationSince === 0) violationSince = now;
         else if (
-          now - loudSince > AUDIO_VIOLATION_HOLD_MS &&
-          now - lastTriggered > AUDIO_RESET_MS
+          now - violationSince > AUDIO_HOLD_MS &&
+          now - lastViolation > AUDIO_RESET_MS
         ) {
-          lastTriggered = now;
-          loudSince = 0;
-          onViolation('audio');
+          lastViolation = now;
+          violationSince = 0;
+          warningSince = 0;
+          onViolation('audio-loud');
         }
       } else {
-        loudSince = 0;
+        violationSince = 0;
+      }
+      // Warning tier (between natural and violation)
+      if (avg >= AUDIO_WARNING_AMP && avg < AUDIO_VIOLATION_AMP) {
+        if (warningSince === 0) warningSince = now;
+        else if (
+          now - warningSince > AUDIO_HOLD_MS &&
+          now - lastWarning > AUDIO_RESET_MS
+        ) {
+          lastWarning = now;
+          warningSince = 0;
+          onWarning?.(
+            'audio-loud',
+            `Слишком громко (${ampToDb(avg)} dB). Говорите тише — следующее превышение будет засчитано как нарушение.`,
+          );
+        }
+      } else if (avg < AUDIO_NATURAL_MAX_AMP) {
+        warningSince = 0;
       }
       raf = requestAnimationFrame(tick);
     };
@@ -132,7 +175,7 @@ export default function Proctoring({ onViolation, active, onReadyChange }: Proct
       try { src.disconnect(); } catch {/* */}
       try { ctx.close(); } catch {/* */}
     };
-  }, [stream, active, onViolation]);
+  }, [stream, active, onViolation, onWarning]);
 
   // ── Camera frame brightness monitor (covered camera detection)
   useEffect(() => {
@@ -177,17 +220,31 @@ export default function Proctoring({ onViolation, active, onReadyChange }: Proct
     return () => cancelAnimationFrame(raf);
   }, [stream, active, onViolation]);
 
-  // ── Track-ended monitor (user revoked access mid-test)
+  // ── Track-ended monitor — camera or microphone went away mid-test.
+  //    Per the proctoring spec this is an immediate test termination, not
+  //    a "warn and continue". We notify the parent via onForceEnd; the
+  //    parent records the attempt as a failed/aborted try.
   useEffect(() => {
     if (!stream || !active) return;
     const tracks = stream.getTracks();
-    const handleEnded = () => {
-      onViolation('media-stopped');
-      setError('Доступ к камере или микрофону прекращён. Тест завершается.');
+    const handleEnded = (kind: 'camera' | 'microphone') => () => {
+      const reason = kind === 'camera' ? 'camera-stopped' : 'microphone-stopped';
+      const message = kind === 'camera'
+        ? 'Камера отключилась. Тест завершён.'
+        : 'Микрофон отключился. Тест завершён.';
+      onViolation(reason);
+      onForceEnd?.(reason);
+      setError(message);
     };
-    tracks.forEach((t) => t.addEventListener('ended', handleEnded));
-    return () => tracks.forEach((t) => t.removeEventListener('ended', handleEnded));
-  }, [stream, active, onViolation]);
+    const handleVideoEnd = handleEnded('camera');
+    const handleAudioEnd = handleEnded('microphone');
+    stream.getVideoTracks().forEach((t) => t.addEventListener('ended', handleVideoEnd));
+    stream.getAudioTracks().forEach((t) => t.addEventListener('ended', handleAudioEnd));
+    return () => {
+      stream.getVideoTracks().forEach((t) => t.removeEventListener('ended', handleVideoEnd));
+      stream.getAudioTracks().forEach((t) => t.removeEventListener('ended', handleAudioEnd));
+    };
+  }, [stream, active, onViolation, onForceEnd]);
 
   if (error) {
     return (
