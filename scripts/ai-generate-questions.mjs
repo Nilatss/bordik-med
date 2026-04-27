@@ -126,18 +126,41 @@ async function generateViaGemini(courseId, markdown) {
       responseMimeType: 'application/json',
     },
   };
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
-  if (!res.ok) {
+  // Retry on transient 5xx with exponential backoff. 429 (quota) is fatal —
+  // re-run later. 5xx + ECONNRESET get up to 4 retries.
+  const maxAttempts = 5;
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    let res;
+    try {
+      res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+    } catch (e) {
+      if (attempt === maxAttempts) throw e;
+      const wait = 1000 * Math.pow(2, attempt);
+      process.stdout.write(`(net err, retry in ${wait / 1000}s) `);
+      await new Promise((r) => setTimeout(r, wait));
+      continue;
+    }
+    if (res.ok) {
+      const data = await res.json();
+      const text = data?.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
+      return parseJsonArray(text);
+    }
     const errText = await res.text();
+    if (res.status === 503 || res.status === 502 || res.status === 500) {
+      if (attempt < maxAttempts) {
+        const wait = 1000 * Math.pow(2, attempt);
+        process.stdout.write(`(${res.status}, retry in ${wait / 1000}s) `);
+        await new Promise((r) => setTimeout(r, wait));
+        continue;
+      }
+    }
     throw new Error(`Gemini API ${res.status}: ${errText.slice(0, 500)}`);
   }
-  const data = await res.json();
-  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
-  return parseJsonArray(text);
+  throw new Error('Gemini API: exhausted retries');
 }
 
 async function generateViaAnthropic(courseId, markdown) {
