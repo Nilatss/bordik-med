@@ -925,6 +925,7 @@ function buildToolKindStats(usage: Record<string, number>): ToolKindStats {
 }
 
 function ToolKindsPanel({ stats }: { stats: ToolKindStats }) {
+  const openTool = useAppStore((s) => s.openTool);
   if (stats.total === 0) {
     return <EmptyHint text="Откройте любой инструмент — счётчики появятся здесь." />;
   }
@@ -1042,20 +1043,30 @@ function ToolKindsPanel({ stats }: { stats: ToolKindStats }) {
         </div>
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           {stats.topTools.map((t, i) => (
-            <motion.div
+            <motion.button
               key={t.id}
+              type="button"
+              onClick={() => openTool(t.id)}
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.28, ease: [0.05, 0.7, 0.1, 1], delay: 0.05 * i }}
+              whileHover={{ background: '#F8F9FB' }}
               style={{
                 display: 'grid',
-                gridTemplateColumns: '24px minmax(0, 1fr) auto auto',
+                gridTemplateColumns: '24px minmax(0, 1fr) auto auto auto',
                 columnGap: 10,
                 alignItems: 'center',
                 padding: '10px 14px',
                 borderTop: i === 0 ? 'none' : '1px solid #F4F5F8',
+                borderLeft: 'none', borderRight: 'none', borderBottom: 'none',
+                background: 'transparent',
+                cursor: 'pointer',
+                textAlign: 'left',
                 fontFamily: 'var(--font-body)', fontSize: 13,
+                width: '100%',
+                transition: 'background 160ms',
               }}
+              aria-label={`Открыть инструмент: ${t.title}`}
             >
               <span style={{
                 fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700,
@@ -1078,7 +1089,12 @@ function ToolKindsPanel({ stats }: { stats: ToolKindStats }) {
               }}>
                 ×{t.count}
               </span>
-            </motion.div>
+              <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
+                stroke="#9CA3AF" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round"
+                style={{ flexShrink: 0 }}>
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </motion.button>
           ))}
         </div>
       </div>
