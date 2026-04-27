@@ -504,9 +504,21 @@ function buildHeatmap(testAttempts: Record<string, { timestamp: number }[]>, per
 function Heatmap({ data }: { data: HeatmapData }) {
   const max = Math.max(1, ...data.cells.flat());
   const labels = ['00–06', '06–12', '12–18', '18–24'];
+  const [hovered, setHovered] = useState<{ row: number; col: number } | null>(null);
 
   // Day-axis tick density: show every 1 for ≤7 cols, every 5 for 31 cols.
   const tickEvery = data.cols <= 7 ? 1 : 5;
+  const now = new Date();
+
+  // Resolve a calendar date for a given column. Column N (rightmost) = today.
+  const dateForCol = (col: number) => {
+    const ageDays = data.cols - 1 - col;
+    const d = new Date(now);
+    d.setDate(d.getDate() - ageDays);
+    return d;
+  };
+  const fmtDate = (d: Date) =>
+    d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', weekday: 'short' });
 
   return (
     <div style={{
@@ -514,6 +526,7 @@ function Heatmap({ data }: { data: HeatmapData }) {
       gridTemplateColumns: '54px 1fr',
       gap: 8,
       overflowX: 'auto',
+      position: 'relative',
     }}>
       {/* Y-axis labels */}
       <div style={{
@@ -525,7 +538,10 @@ function Heatmap({ data }: { data: HeatmapData }) {
       </div>
 
       {/* Grid + bottom day axis */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, minWidth: 0 }}>
+      <div style={{
+        display: 'flex', flexDirection: 'column', gap: 8, minWidth: 0,
+        position: 'relative',
+      }}>
         <div style={{
           display: 'grid',
           gridTemplateRows: `repeat(4, 1fr)`,
@@ -534,30 +550,26 @@ function Heatmap({ data }: { data: HeatmapData }) {
           minWidth: data.cols > 14 ? Math.max(420, data.cols * 14) : undefined,
         }}>
           {/* Iterate top-to-bottom = row 3 (18-24) first visually */}
-          {[3, 2, 1, 0].flatMap((row, rowIdx) =>
+          {[3, 2, 1, 0].flatMap((row) =>
             data.cells[row].map((v, col) => {
               const lvl = v === 0 ? 0 :
                 v >= max * 0.75 ? 4 :
                 v >= max * 0.5 ? 3 :
                 v >= max * 0.25 ? 2 : 1;
-              const cellIdx = rowIdx * data.cols + col;
+              const isHovered = hovered && hovered.row === row && hovered.col === col;
               return (
-                <motion.div
+                <div
                   key={`${row}-${col}`}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{
-                    duration: 0.25,
-                    ease: [0.05, 0.7, 0.1, 1],
-                    delay: Math.min(0.4, 0.005 * cellIdx),
-                  }}
-                  title={v > 0 ? `${v} тест${v === 1 ? '' : v < 5 ? 'а' : 'ов'}` : 'нет активности'}
+                  onPointerEnter={() => setHovered({ row, col })}
+                  onPointerLeave={() => setHovered((c) => (c && c.row === row && c.col === col ? null : c))}
                   className="stats-heat-cell"
                   style={{
                     aspectRatio: '1 / 1',
                     background: HEATMAP_LEVELS[lvl],
                     borderRadius: 4,
                     cursor: 'default',
+                    outline: isHovered ? `2px solid ${ACCENT}` : 'none',
+                    outlineOffset: isHovered ? 1 : 0,
                   }}
                 />
               );
@@ -578,6 +590,50 @@ function Heatmap({ data }: { data: HeatmapData }) {
             </span>
           ))}
         </div>
+
+        {/* Custom hover tooltip */}
+        {hovered && (() => {
+          const v = data.cells[hovered.row][hovered.col];
+          const date = fmtDate(dateForCol(hovered.col));
+          const band = labels[hovered.row];
+          const sessText = v === 0
+            ? 'нет активности'
+            : `${v} ${v === 1 ? 'сессия' : v < 5 ? 'сессии' : 'сессий'}`;
+          // Position tooltip above the grid, anchored to hovered column.
+          const colPct = ((hovered.col + 0.5) / data.cols) * 100;
+          // Approximate row position from top: rowIdx (3,2,1,0 visually) — top row (18-24) has visual idx 0
+          const visualRow = 3 - hovered.row; // 0..3 from top
+          const rowFraction = (visualRow + 0.5) / 4;
+          return (
+            <div
+              style={{
+                position: 'absolute',
+                left: `${colPct}%`,
+                top: `calc(${rowFraction * 100}% - 6px)`,
+                transform: 'translate(-50%, -100%)',
+                background: '#1A1A1A',
+                color: '#F4F5F7',
+                padding: '8px 12px',
+                borderRadius: 8,
+                fontFamily: 'var(--font-body)', fontSize: 12,
+                lineHeight: 1.4,
+                whiteSpace: 'nowrap',
+                pointerEvents: 'none',
+                boxShadow: '0 12px 32px rgba(15, 23, 42, 0.18), 0 4px 12px rgba(15, 23, 42, 0.08)',
+                zIndex: 5,
+              }}
+            >
+              <div style={{ fontWeight: 600 }}>{date}</div>
+              <div style={{
+                fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700,
+                color: v > 0 ? '#A8C7FF' : '#9CA3AF',
+                marginTop: 2,
+              }}>
+                {band} · {sessText}
+              </div>
+            </div>
+          );
+        })()}
       </div>
     </div>
   );
@@ -1314,7 +1370,7 @@ function RecentAttempts({ attempts }: { attempts: { courseId: string; testLevel:
         <span>Курс / Тест</span>
         <span>Балл</span>
         <span>Дата</span>
-        <span style={{ textAlign: 'right' }}>Статус</span>
+        <span style={{ justifySelf: 'end' }}>Статус</span>
       </div>
 
       {attempts.map((a, i) => {
