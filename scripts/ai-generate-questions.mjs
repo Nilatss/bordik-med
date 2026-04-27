@@ -84,45 +84,60 @@ function loadCourseMarkdown(file) {
 }
 
 /* ─── Prompt ─────────────────────────────────────────────────── */
-const SYSTEM_PROMPT = `Ты — методист медицинского образования. Твоя задача — на основе предоставленного учебного материала составить 200 высококачественных тестовых вопросов с одним правильным ответом и тремя дистракторами (всего 4 варианта).
+const SYSTEM_PROMPT = `Ты — методист медицинского образования. Тебе дан учебный материал — это ЕДИНСТВЕННЫЙ источник, из которого можно брать факты для вопросов.
 
-Требования к вопросам:
-1. Каждый вопрос проверяет ПОНИМАНИЕ материала, а не дословное запоминание.
-2. Формулировка — полноценное предложение БЕЗ пропусков ("___"), без обращений на "ты".
-3. Все 4 варианта правдоподобны и из одной категории (если ответ — название органоида, дистракторы тоже органоиды).
-4. НИКОГДА не используйте "все перечисленные", "ничего из перечисленного", "А и Б".
-5. НЕ берите формулировки из заголовков. Только из фактического содержания.
-6. Вопросы НЕ повторяются — ни по смыслу, ни по формулировке.
-7. Распределение по типам:
-   • 60% — фактологические ("Какой гормон…", "Что является функцией…")
-   • 25% — клиническое применение ("При каком заболевании…", "Что произойдёт при нарушении…")
-   • 15% — на различение похожих понятий ("Чем отличается X от Y?")
-8. Все вопросы и ответы — на русском языке.
-9. correctIndex — индекс правильного варианта в массиве options (0–3). Распределение случайное (~25% на каждую позицию).
+🔒 КРИТИЧЕСКОЕ ПРАВИЛО (нарушение = брак):
+Каждый вопрос должен проверять факт, ПРЯМО упомянутый в материале. Если ты не можешь процитировать конкретное предложение/строку таблицы из материала, подтверждающее правильный ответ — НЕ создавай этот вопрос. Запрещено:
+• Привлекать общие медицинские знания, которых нет в материале
+• Спрашивать про термины, не упомянутые в материале (например, "биопсия", "гиперемия", "тироксин", "плевра", "антиген" — если их нет в тексте, такие вопросы запрещены)
+• Спрашивать про факты, выходящие за рамки материала (например, размер органов, цифры, которых нет в тексте)
+• Использовать в дистракторах термины, которых нет в материале
 
-Формат ответа — ТОЛЬКО JSON-массив без обёрток и комментариев:
+✅ Каждый вопрос строится только из:
+• таблиц материала (ячейки таблиц — главный источник фактов)
+• конкретных утверждений из абзацев
+• цифр, формул, классификаций, явно указанных в тексте
+
+Технические требования:
+1. Формулировка — полноценное предложение БЕЗ пропусков ("___"), без обращений на "ты".
+2. Все 4 варианта правдоподобны и из одной категории, при этом ВСЕ варианты (и правильный, и дистракторы) должны быть терминами/понятиями ИЗ ЭТОГО ЖЕ МАТЕРИАЛА.
+3. Запрещено: "все перечисленные", "ничего из перечисленного", "А и Б".
+4. НЕ брать формулировки из заголовков (## Тема X.Y).
+5. Вопросы не повторяются — ни по смыслу, ни по формулировке.
+6. Распределение типов:
+   • 60% — фактологические по таблицам и абзацам
+   • 25% — клинические связи, явно указанные в материале
+   • 15% — на различение похожих понятий, упомянутых в материале вместе
+7. Все на русском.
+8. correctIndex — индекс правильного варианта (0–3), распределение случайное.
+
+Сколько получится по этим правилам — столько и сгенерируй (целевое — 200, но если материал не позволяет — лучше меньше, но строго по тексту). НЕ выдумывай вопросы, чтобы добрать до 200.
+
+Формат ответа — ТОЛЬКО JSON-массив без обёрток:
 [
-  { "id": "ai-COURSE-1", "question": "...", "options": ["...","...","...","..."], "correctIndex": 0 },
+  { "id": "ai-COURSE-N", "question": "...", "options": ["...","...","...","..."], "correctIndex": 0|1|2|3 },
   ...
 ]`;
 
-function userPromptFor(courseId, markdown) {
-  return `КУРС: ${courseId}\n\nМАТЕРИАЛ:\n\n${markdown}\n\nСформируй ровно 200 вопросов в виде JSON-массива.`;
+function userPromptFor(courseId, markdown, batch) {
+  const focus = batch ? `\n\nЭТО ЗАПРОС №${batch.idx} из ${batch.total} — нужно сгенерировать ${batch.size} вопросов, тематически отличных от других батчей.\nФокус этого батча: ${batch.focus}` : '';
+  const count = batch ? batch.size : 200;
+  return `КУРС: ${courseId}\n\nМАТЕРИАЛ:\n\n${markdown}${focus}\n\nСформируй ровно ${count} вопросов в виде JSON-массива.`;
 }
 
 /* ─── Provider implementations ───────────────────────────────── */
 
-async function generateViaGemini(courseId, markdown) {
+async function geminiCall(courseId, markdown, batch) {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_KEY}`;
   const body = {
     contents: [{
       role: 'user',
-      parts: [{ text: SYSTEM_PROMPT + '\n\n---\n\n' + userPromptFor(courseId, markdown) }],
+      parts: [{ text: SYSTEM_PROMPT + '\n\n---\n\n' + userPromptFor(courseId, markdown, batch) }],
     }],
     generationConfig: {
       temperature: 0.7,
       topP: 0.95,
-      maxOutputTokens: 32000,
+      maxOutputTokens: 65000,
       responseMimeType: 'application/json',
     },
   };
@@ -163,6 +178,28 @@ async function generateViaGemini(courseId, markdown) {
   throw new Error('Gemini API: exhausted retries');
 }
 
+/** Run 4 batches × 50 questions to bypass per-call output-token caps. */
+async function generateViaGemini(courseId, markdown) {
+  const focuses = [
+    'клеточная биология, генетика, наследственность (Тема 1)',
+    'химия и pH, биологические молекулы, лекарства (Тема 2)',
+    'физика и медицина, статистика, расчёт доз (Темы 3–4)',
+    'психология, медицинская терминология, методы обучения (Темы 5–7)',
+  ];
+  const all = [];
+  for (let i = 0; i < focuses.length; i++) {
+    process.stdout.write(`[batch ${i + 1}/${focuses.length}] `);
+    const arr = await geminiCall(courseId, markdown, {
+      idx: i + 1,
+      total: focuses.length,
+      size: 50,
+      focus: focuses[i],
+    });
+    all.push(...arr);
+  }
+  return all;
+}
+
 async function generateViaAnthropic(courseId, markdown) {
   const body = {
     model: 'claude-sonnet-4-5-20250929',
@@ -191,12 +228,51 @@ async function generateViaAnthropic(courseId, markdown) {
 function parseJsonArray(text) {
   const cleaned = text.replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/i, '').trim();
   const start = cleaned.indexOf('[');
+  if (start < 0) throw new Error('No JSON array in response');
+  // Try strict parse from [ to last ]
   const end = cleaned.lastIndexOf(']');
-  if (start < 0 || end < 0) throw new Error('No JSON array in response');
-  const json = cleaned.slice(start, end + 1);
-  const arr = JSON.parse(json);
-  if (!Array.isArray(arr)) throw new Error('Response is not an array');
-  return arr;
+  if (end > start) {
+    try {
+      const arr = JSON.parse(cleaned.slice(start, end + 1));
+      if (Array.isArray(arr)) return arr;
+    } catch {
+      /* fall through to recovery */
+    }
+  }
+  // Recovery: walk through the content from `[`, parse each top-level JSON
+  // object greedily. This salvages the longest prefix of valid questions
+  // when the model truncates mid-output.
+  const out = [];
+  let i = start + 1;
+  while (i < cleaned.length) {
+    while (i < cleaned.length && /[\s,]/.test(cleaned[i])) i++;
+    if (cleaned[i] !== '{') break;
+    let depth = 0, j = i, inStr = false, esc = false;
+    for (; j < cleaned.length; j++) {
+      const ch = cleaned[j];
+      if (inStr) {
+        if (esc) { esc = false; continue; }
+        if (ch === '\\') { esc = true; continue; }
+        if (ch === '"') inStr = false;
+      } else {
+        if (ch === '"') inStr = true;
+        else if (ch === '{') depth++;
+        else if (ch === '}') {
+          depth--;
+          if (depth === 0) { j++; break; }
+        }
+      }
+    }
+    if (depth !== 0) break;
+    try {
+      out.push(JSON.parse(cleaned.slice(i, j)));
+    } catch {
+      break;
+    }
+    i = j;
+  }
+  if (out.length === 0) throw new Error('Could not recover any JSON objects');
+  return out;
 }
 
 const generateForCourse = (courseId, markdown) =>
