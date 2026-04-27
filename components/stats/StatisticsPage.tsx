@@ -1122,8 +1122,9 @@ function ToolKindsPanel({ stats }: { stats: ToolKindStats }) {
                 {k.label}
               </span>
 
-              {/* Bar */}
+              {/* Bar — full card width, under the title+icon row */}
               <div style={{
+                gridColumn: '1 / span 2',
                 height: 6, borderRadius: 999,
                 background: '#F1F3F6', overflow: 'hidden', minWidth: 0,
               }}>
@@ -1139,6 +1140,7 @@ function ToolKindsPanel({ stats }: { stats: ToolKindStats }) {
                    Numbers and surrounding text share the same size/font so
                    the row reads as one consistent line. */}
               <div style={{
+                gridColumn: '1 / span 2',
                 display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
                 fontFamily: 'var(--font-body)', fontSize: 12,
                 color: '#6B7280', minWidth: 0,
