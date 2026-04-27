@@ -464,8 +464,35 @@ export default function TestStartConsent({
           color: '#374151', lineHeight: 1.7,
         }}>
           <li>Включённая камера и микрофон на протяжении всего теста</li>
-          <li>Освещённая комната и хорошо видимое лицо в кадре</li>
-          <li>Тишина — посторонние голоса будут засчитаны как нарушение</li>
+          <li>Освещённая комната, чёткое и хорошо видимое лицо в кадре</li>
+          <li>Тишина — без посторонних голосов и шумов</li>
+        </ul>
+      </div>
+
+      {/* Proctoring detections — what we monitor and how the system reacts */}
+      <div style={{
+        background: '#FFFFFF', borderRadius: 12,
+        padding: '18px 20px', marginBottom: 10,
+        borderLeft: '3px solid #6B7280',
+      }}>
+        <p style={{
+          fontFamily: 'var(--font-mono)', fontSize: 10.5, fontWeight: 700,
+          color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.08em',
+          margin: '0 0 10px 0',
+        }}>
+          Что мы автоматически отслеживаем
+        </p>
+        <ul style={{
+          margin: 0, paddingLeft: 18,
+          fontFamily: 'var(--font-body)', fontSize: 13.5,
+          color: '#374151', lineHeight: 1.7,
+        }}>
+          <li>Уровень звука с микрофона: 50–65 amp ({ampToDb(50)}…{ampToDb(65)} dB) — норма; 65–90 ({ampToDb(65)}…{ampToDb(90)} dB) — предупреждение; выше {ampToDb(90)} dB — нарушение</li>
+          <li>Полная тишина (микрофон не слышит ничего {`>`} 30 секунд) — предупреждение</li>
+          <li>Камера закрыта или направлена в темноту дольше 2 секунд — нарушение</li>
+          <li>Переключение на другие вкладки, сворачивание окна или потеря фокуса — нарушение</li>
+          <li>Открытие DevTools (F12, Ctrl+Shift+I/J/C), копирование или скриншот — нарушение</li>
+          <li>Камера или микрофон отключены пользователем посреди теста — тест немедленно завершается с блокировкой на 48 часов</li>
         </ul>
       </div>
 

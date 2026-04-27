@@ -41,11 +41,16 @@ interface ProctoringProps {
 // Audio levels in 0–255 byte space (Web Audio analyser output).
 // Roughly:  0–10 = quiet room, 10–35 = ambient breathing/typing,
 // 35–55 = normal speech at 1 m, 55–80 = loud speech, 80+ = shouting/music.
-const AUDIO_NATURAL_MAX_AMP    = 50;   // upper edge of "natural" band
+const AUDIO_NATURAL_MAX_AMP    = 50;
 const AUDIO_WARNING_AMP        = 65;   // sustained → soft warning
 const AUDIO_VIOLATION_AMP      = 90;   // sustained → hard violation
-const AUDIO_HOLD_MS            = 1500; // must hold for this long
+const AUDIO_HOLD_MS            = 1500;
 const AUDIO_RESET_MS           = 12000;
+// Silence band — if the mic stays this quiet for SILENCE_HOLD_MS the user
+// is either muted at the OS level or is doing something we can't hear.
+const AUDIO_SILENCE_AMP        = 3;
+const AUDIO_SILENCE_HOLD_MS    = 30_000; // 30 seconds of dead silence
+const AUDIO_SILENCE_RESET_MS   = 60_000;
 const FRAME_DARK_THRESHOLD     = 18;
 const FRAME_DARK_HOLD_MS       = 2000;
 const FRAME_RESET_MS           = 15000;
@@ -127,8 +132,10 @@ export default function Proctoring({
     const data = new Uint8Array(analyser.frequencyBinCount);
     let lastWarning = 0;
     let lastViolation = 0;
+    let lastSilence = 0;
     let warningSince = 0;
     let violationSince = 0;
+    let silenceSince = 0;
     const tick = () => {
       analyser.getByteFrequencyData(data);
       let sum = 0;
@@ -166,6 +173,23 @@ export default function Proctoring({
         }
       } else if (avg < AUDIO_NATURAL_MAX_AMP) {
         warningSince = 0;
+      }
+      // Silence tier — mic stuck below baseline (likely muted at OS level)
+      if (avg <= AUDIO_SILENCE_AMP) {
+        if (silenceSince === 0) silenceSince = now;
+        else if (
+          now - silenceSince > AUDIO_SILENCE_HOLD_MS &&
+          now - lastSilence > AUDIO_SILENCE_RESET_MS
+        ) {
+          lastSilence = now;
+          silenceSince = 0;
+          onWarning?.(
+            'audio-silent',
+            'Микрофон не ловит ни звука — проверьте, что он не выключен в настройках системы.',
+          );
+        }
+      } else {
+        silenceSince = 0;
       }
       raf = requestAnimationFrame(tick);
     };
