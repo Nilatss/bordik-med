@@ -26,11 +26,29 @@ import type { TestQuestion } from './quiz';
    ─────────────────────────────────────────────────────────────── */
 
 function extractSentences(md: string): string[] {
-  // Strip code/images/links but keep plain text inside tables — every cell
-  // becomes its own quasi-sentence after we replace `|` with a sentence
-  // boundary. This gets us actual factual claims out of the dense tables
-  // typical for this codebase's lessons.
-  const cleaned = md
+  // Step 1 — drop ALL heading lines entirely. We never want a heading text
+  // to become the basis of a question (cloze sentences like "1.2 _____
+  // Понимание генетики..." are what the user explicitly excluded).
+  // We also drop short emphasis-only lines and table-divider rows.
+  const noHeadings = md
+    .split(/\n/)
+    .filter((line) => {
+      const t = line.trim();
+      if (!t) return false;
+      if (/^#{1,6}\s/.test(t))            return false; // markdown headings
+      if (/^\|?\s*[-:]+\s*(\|\s*[-:]+\s*)*\|?$/.test(t)) return false; // table dividers
+      // ALL-CAPS standalone lines (course banners like "ДОВУЗОВСКАЯ ПОДГОТОВКА")
+      if (/^[А-ЯA-Z0-9\s\-.,]+$/.test(t) && t.length < 80) return false;
+      // Lines starting with section numbers: "1.2 Генетика ..." — these are
+      // heading text without the leading `#`.
+      if (/^\d+(?:\.\d+){0,3}\s+[А-ЯA-Z]/.test(t)) return false;
+      return true;
+    })
+    .join('\n');
+
+  // Step 2 — strip the rest of markdown noise but keep body text + tables
+  // (table cells become quasi-sentences via `|` → `. `).
+  const cleaned = noHeadings
     .replace(/```[\s\S]*?```/g, ' ')
     .replace(/`[^`\n]+`/g, ' ')
     .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
@@ -38,15 +56,24 @@ function extractSentences(md: string): string[] {
     .replace(/<[^>]+>/g, ' ')
     .replace(/^\s*[-*+]\s+/gm, '')
     .replace(/^\s*\d+\.\s+/gm, '')
-    .replace(/^#{1,6}\s+/gm, '')
     .replace(/[*_~]/g, '')
     .replace(/\|/g, '. ')
     .replace(/\s+/g, ' ')
     .trim();
+
+  // Step 3 — split into sentences and reject any that look like residual
+  // heading material (start with a section number, no real verb, etc.).
   return cleaned
     .split(/(?<=[.!?;])\s+/)
     .map((s) => s.trim().replace(/^[.,;:\s]+|[.,;:\s]+$/g, ''))
-    .filter((s) => s.length >= 30 && s.length <= 260);
+    .filter((s) => {
+      if (s.length < 40 || s.length > 260) return false;
+      // Skip section-number lead-ins
+      if (/^\d+(?:\.\d+){0,3}\s/.test(s)) return false;
+      // Need at least 6 words to be a real claim
+      if (s.split(/\s+/).length < 6) return false;
+      return true;
+    });
 }
 
 function extractKeyTerms(md: string): string[] {
