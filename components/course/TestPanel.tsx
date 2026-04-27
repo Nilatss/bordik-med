@@ -243,13 +243,6 @@ export default function TestPanel({ courseId }: TestPanelProps) {
                     {q.question}
                   </span>
                 </div>
-                {!isCorrect && userAnswer >= 0 && (
-                  <div style={{ marginLeft: 28, marginTop: 4, fontFamily: 'var(--font-body)', fontSize: 11.5, lineHeight: 1.45, color: '#6B7280' }}>
-                    <span style={{ color: '#B91C1C' }}>{t('test.result.your')}: {q.options[userAnswer]}</span>
-                    {' · '}
-                    <span style={{ color: '#15803D', fontWeight: 500 }}>{t('test.result.correct')}: {q.options[q.correctIndex]}</span>
-                  </div>
-                )}
               </div>
             );
           })}

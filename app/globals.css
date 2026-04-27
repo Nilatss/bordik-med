@@ -278,9 +278,18 @@
   color: #A16207;
 }
 
-/* Tables - clean card-like */
+/* Tables - clean card-like.
+   `display: block` + `overflow-x: auto` make tables scroll horizontally
+   instead of overflowing the column on narrow lesson areas (e.g. when the
+   right-hand TOC sidebar is visible on tablet/desktop and squeezes the
+   content area). On wide desktops the table content fits naturally so the
+   scrollbar does not appear. */
 .lesson-content table {
+  display: block;
   width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   font-size: 13px;
   border-collapse: separate;
   border-spacing: 0;
@@ -288,7 +297,6 @@
   background: #FFFFFF;
   border: 1px solid #EAECEF;
   border-radius: 12px;
-  overflow: hidden;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 .lesson-content thead th {
@@ -772,16 +780,7 @@ main:has(.stats-page) {
   }
 }
 
-/* Lesson tables on mobile — wrap in horizontal scroll instead of forcing
-   the whole page wider than the viewport. */
-@media (max-width: 768px) {
-  .lesson-content table {
-    display: block;
-    overflow-x: auto;
-    max-width: 100%;
-    -webkit-overflow-scrolling: touch;
-  }
-}
+/* Lesson tables already scroll horizontally — see base rule above. */
 
 /* Lesson images / picture (illustrations) — never exceed container. */
 .lesson-content img,
