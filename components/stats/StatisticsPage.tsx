@@ -654,6 +654,12 @@ function SectionHex({ rows }: { rows: SectionProgressRow[] }) {
           height={layout.height}
           viewBox={`0 0 ${layout.width} ${layout.height}`}
           style={{ display: 'block', maxWidth: '100%' }}
+          // Single, reliable "leave" point — when the cursor exits the SVG
+          // the hover state and tooltip clear. Per-cell pointerLeave was
+          // unreliable: when scaled hexes overlap neighbours, leave events
+          // race with enter events and the previous cell could stay marked
+          // as hovered indefinitely.
+          onPointerLeave={() => setHoveredCell(null)}
         >
           {/* Render unhovered cells first, then hovered last so it draws on top.
                (SVG has no z-index — paint order is the only way.)
@@ -682,7 +688,6 @@ function SectionHex({ rows }: { rows: SectionProgressRow[] }) {
                   key={c.row.id}
                   onClick={interactive ? () => setActiveSection(sectionId) : undefined}
                   onPointerEnter={() => setHoveredCell(c)}
-                  onPointerLeave={() => setHoveredCell((curr) => (curr === c ? null : curr))}
                   className={interactive ? 'stats-hex stats-hex--interactive' : 'stats-hex'}
                   // transform-origin in SVG user-space coords. transformBox: fill-box
                   // would re-anchor to bbox top-left and skew the hex sideways on
