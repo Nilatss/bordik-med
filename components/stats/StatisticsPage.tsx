@@ -545,6 +545,10 @@ function Heatmap({ data }: { data: HeatmapData }) {
                   key={`${row}-${col}`}
                   initial={{ opacity: 0, scale: 0.7 }}
                   animate={{ opacity: 1, scale: 1 }}
+                  whileHover={{
+                    scale: 1.18,
+                    boxShadow: '0 4px 10px rgba(15, 23, 42, 0.15)',
+                  }}
                   transition={{
                     duration: 0.25,
                     ease: [0.05, 0.7, 0.1, 1],
@@ -624,6 +628,7 @@ function SectionHex({ rows }: { rows: SectionProgressRow[] }) {
   // Pattern (rows of cols): 4-5-6-5-4-… giving a roughly diamond cluster.
   // Total slots = 22 — exactly the curriculum section count.
   const layout = useMemo(() => buildHexLayout(rows), [rows]);
+  const setActiveSection = useAppStore((s) => s.setActiveSection);
 
   // Aggregate stats — analogues of the reference's three % footer rows.
   const startedCount   = rows.filter((r) => r.done > 0).length;
@@ -649,37 +654,55 @@ function SectionHex({ rows }: { rows: SectionProgressRow[] }) {
           viewBox={`0 0 ${layout.width} ${layout.height}`}
           style={{ display: 'block', maxWidth: '100%' }}
         >
-          {layout.cells.map((c, i) => (
-            <motion.g
-              key={c.row.id}
-              initial={{ opacity: 0, scale: 0.6 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.32, ease: [0.05, 0.7, 0.1, 1], delay: 0.025 * i }}
-              style={{ transformOrigin: `${c.cx}px ${c.cy}px`, transformBox: 'fill-box' as any }}
-            >
-              <title>{`${c.row.name} — ${c.row.pct}% (${c.row.done}/${c.row.total})`}</title>
-              <polygon
-                points={hexPoints(c.cx, c.cy, layout.size)}
-                fill={hexColor(c.row.pct)}
-                stroke="#FFFFFF"
-                strokeWidth={2}
-              />
-              {c.row.pct > 0 && (
-                <text
-                  x={c.cx}
-                  y={c.cy + 4}
-                  textAnchor="middle"
-                  fontSize={11}
-                  fontFamily="var(--font-mono)"
-                  fontWeight={700}
-                  fill={c.row.pct >= 50 ? '#FFFFFF' : ACCENT_DARK}
-                  style={{ pointerEvents: 'none' }}
-                >
-                  {c.row.pct}
-                </text>
-              )}
-            </motion.g>
-          ))}
+          {layout.cells.map((c, i) => {
+            const isPlaceholder = c.row.id.startsWith('__ph');
+            const sectionId = isPlaceholder ? null : (c.row.id as any);
+            const interactive = !!sectionId;
+            return (
+              <motion.g
+                key={c.row.id}
+                initial={{ opacity: 0, scale: 0.6 }}
+                animate={{ opacity: 1, scale: 1 }}
+                whileHover={interactive ? {
+                  scale: 1.12,
+                  filter: 'drop-shadow(0 4px 8px rgba(15, 23, 42, 0.18))',
+                } : undefined}
+                transition={{ duration: 0.32, ease: [0.05, 0.7, 0.1, 1], delay: 0.025 * i }}
+                onClick={interactive ? () => setActiveSection(sectionId) : undefined}
+                style={{
+                  transformOrigin: `${c.cx}px ${c.cy}px`,
+                  transformBox: 'fill-box' as any,
+                  cursor: interactive ? 'pointer' : 'default',
+                }}
+              >
+                <title>
+                  {isPlaceholder
+                    ? '—'
+                    : `${c.row.name} — ${c.row.pct}% (${c.row.done}/${c.row.total})${interactive ? ' · нажмите, чтобы открыть раздел' : ''}`}
+                </title>
+                <polygon
+                  points={hexPoints(c.cx, c.cy, layout.size)}
+                  fill={hexColor(c.row.pct)}
+                  stroke="#FFFFFF"
+                  strokeWidth={2}
+                />
+                {c.row.pct > 0 && (
+                  <text
+                    x={c.cx}
+                    y={c.cy + 4}
+                    textAnchor="middle"
+                    fontSize={11}
+                    fontFamily="var(--font-mono)"
+                    fontWeight={700}
+                    fill={c.row.pct >= 50 ? '#FFFFFF' : ACCENT_DARK}
+                    style={{ pointerEvents: 'none' }}
+                  >
+                    {c.row.pct}
+                  </text>
+                )}
+              </motion.g>
+            );
+          })}
         </svg>
       </div>
 
