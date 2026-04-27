@@ -1304,8 +1304,8 @@ function RecentAttempts({ attempts }: { attempts: { courseId: string; testLevel:
       {/* Column header — hidden on mobile, where each row stacks instead */}
       <div className="stats-attempts__head" style={{
         display: 'grid',
-        gridTemplateColumns: 'minmax(0, 1fr) auto auto auto',
-        columnGap: 18,
+        gridTemplateColumns: 'minmax(0, 1fr) 56px 64px 100px',
+        columnGap: 14,
         padding: '12px 14px',
         fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
         color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
@@ -1333,8 +1333,8 @@ function RecentAttempts({ attempts }: { attempts: { courseId: string; testLevel:
             className="stats-attempts__row"
             style={{
               display: 'grid',
-              gridTemplateColumns: 'minmax(0, 1fr) auto auto auto',
-              columnGap: 18,
+              gridTemplateColumns: 'minmax(0, 1fr) 56px 64px 100px',
+              columnGap: 14,
               alignItems: 'center',
               padding: '12px 14px',
               borderTop: '1px solid #F4F5F8',
