@@ -243,11 +243,11 @@ export default function StatisticsPage() {
       {/* Activity heatmap */}
       <Section
         delay={240}
-        title="Активность по часам"
+        title="Активность по дням"
         tip="Карта вашей активности за выбранный период. Строки — четыре полосы суток (00–06, 06–12, 12–18, 18–24), столбцы — дни. Чем темнее ячейка, тем больше тестов вы сдали в этот час."
         subtitle={`${heatmap.totalActiveDays} дней с активностью · ${heatmap.totalSessions} сессий`}
       >
-        <Heatmap data={heatmap} />
+        <Heatmap data={heatmap} period={period} />
       </Section>
 
       {/* Bottom 2-col grid: Section progress hex | Recent attempts */}
@@ -467,14 +467,22 @@ function buildHeatmap(testAttempts: Record<string, { timestamp: number }[]>, per
   const now = Date.now();
   const today = new Date();
   let days: number;
+  let endTime: number;       // timestamp of "today's midnight + 24h" — anchors col data.cols-1
   if (period === 'week') {
     days = 7;
+    endTime = now;
   } else if (period === 'month') {
     // Calendar days in the current month — exactly how many actual days
     // we render. April → 30, May → 31, February → 28/29, etc.
     days = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+    endTime = now;
   } else {
-    days = 31;
+    // 'all time' shows the entire CURRENT year (1 Jan → 31 Dec). The grid
+    // size matches days-of-year so leap years get 366 cells.
+    const yearStart = new Date(today.getFullYear(), 0, 1).getTime();
+    const yearEnd   = new Date(today.getFullYear(), 11, 31).getTime();
+    days = Math.round((yearEnd - yearStart) / (24 * 60 * 60 * 1000)) + 1;
+    endTime = yearEnd + 24 * 60 * 60 * 1000;
   }
 
   const cells: number[][] = Array.from({ length: 4 }, () => Array(days).fill(0));
@@ -484,7 +492,7 @@ function buildHeatmap(testAttempts: Record<string, { timestamp: number }[]>, per
   // Iterate every attempt; bucket into (day-from-end, hour-band)
   for (const list of Object.values(testAttempts)) {
     for (const a of list) {
-      const ageMs = now - a.timestamp;
+      const ageMs = endTime - a.timestamp;
       const ageDays = Math.floor(ageMs / (24 * 60 * 60 * 1000));
       if (ageDays < 0 || ageDays >= days) continue;
       const col = days - 1 - ageDays;
@@ -508,19 +516,29 @@ function buildHeatmap(testAttempts: Record<string, { timestamp: number }[]>, per
   };
 }
 
-function Heatmap({ data }: { data: HeatmapData }) {
+function Heatmap({ data, period }: { data: HeatmapData; period: Period }) {
   const max = Math.max(1, ...data.cells.flat());
   const labels = ['00–06', '06–12', '12–18', '18–24'];
   const [hovered, setHovered] = useState<{ row: number; col: number } | null>(null);
 
-  // Day-axis tick density: show every 1 for ≤7 cols, every 5 for 31 cols.
-  const tickEvery = data.cols <= 7 ? 1 : 5;
-  const now = new Date();
+  // Day-axis tick density:
+  //   week   → every day
+  //   month  → every 5 days
+  //   year   → every ~30 days
+  const tickEvery = data.cols <= 7 ? 1 : data.cols <= 31 ? 5 : 30;
+  const today = new Date();
 
-  // Resolve a calendar date for a given column. Column N (rightmost) = today.
+  // Resolve a calendar date for a given column. Anchor depends on period:
+  //   year  → 1 Jan of current year is col 0
+  //   else  → today is the rightmost column.
   const dateForCol = (col: number) => {
+    if (period === 'all') {
+      const d = new Date(today.getFullYear(), 0, 1);
+      d.setDate(d.getDate() + col);
+      return d;
+    }
     const ageDays = data.cols - 1 - col;
-    const d = new Date(now);
+    const d = new Date(today);
     d.setDate(d.getDate() - ageDays);
     return d;
   };
@@ -584,18 +602,35 @@ function Heatmap({ data }: { data: HeatmapData }) {
           )}
         </div>
 
-        {/* Day axis */}
+        {/* Day axis — label content depends on the period */}
         <div style={{
           display: 'grid',
           gridTemplateColumns: `repeat(${data.cols}, minmax(14px, 1fr))`,
           gap: 4,
           fontFamily: 'var(--font-mono)', fontSize: 9, color: '#9CA3AF',
         }}>
-          {Array.from({ length: data.cols }).map((_, i) => (
-            <span key={i} style={{ textAlign: 'center' }}>
-              {i % tickEvery === 0 ? data.cols - i : ''}
-            </span>
-          ))}
+          {Array.from({ length: data.cols }).map((_, i) => {
+            const d = dateForCol(i);
+            let label = '';
+            if (period === 'all') {
+              // Year view — month name once per month, on the 1st
+              if (d.getDate() === 1) {
+                label = d.toLocaleDateString('ru-RU', { month: 'short' }).replace('.', '');
+              }
+            } else if (period === 'month') {
+              // Month view — day number every 5 days, plus 1st
+              const day = d.getDate();
+              if (day === 1 || day % 5 === 0) label = String(day);
+            } else {
+              // Week view — every day
+              label = String(d.getDate());
+            }
+            return (
+              <span key={i} style={{ textAlign: 'center' }}>
+                {label}
+              </span>
+            );
+          })}
         </div>
 
         {/* Custom hover tooltip — positioned ABOVE the entire grid so it
