@@ -64,7 +64,7 @@ interface TestResult {
 export default function TestPanel({ courseId }: TestPanelProps) {
   const t = useT();
   const store = useAppStore();
-  const { testAttempts, courseTestProgress, moduleTestAttempts, completedModules, submitTest, submitModuleTest } = store;
+  const { testAttempts, courseTestProgress, moduleTestAttempts, completedModules, submitTest, submitModuleTest, abortTest, abortModuleTest } = store;
 
   const mod = getModuleForCourse(courseId);
   const moduleId = mod?.id;
@@ -132,9 +132,14 @@ export default function TestPanel({ courseId }: TestPanelProps) {
     setActiveTest(null);
   }, [activeTest, courseId, submitTest, submitModuleTest]);
 
-  const handleCancel = useCallback(() => {
+  const handleCancel = useCallback((partialAnswers: (number | null)[], violations: number) => {
+    if (activeTest?.type === 'course') {
+      abortTest(courseId, activeTest.level, partialAnswers, violations);
+    } else if (activeTest?.type === 'module') {
+      abortModuleTest(activeTest.moduleId, partialAnswers, 0, violations);
+    }
     setActiveTest(null);
-  }, []);
+  }, [activeTest, courseId, abortTest, abortModuleTest]);
 
   // ═══ CONSENT SCREEN (before active test) ═══
   if (pendingTest) {

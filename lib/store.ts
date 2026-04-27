@@ -100,6 +100,23 @@ interface AppState {
     timeUsedMs: number,
     violations?: number,
   ) => { score: number; total: number; passed: boolean };
+
+  /** Record an aborted course test — user clicked Прервать.
+   *  Treated as a failed attempt with a shorter (12h) cooldown. */
+  abortTest: (
+    courseId: string,
+    testLevel: TestLevel,
+    answers: (number | null)[],
+    violations?: number,
+  ) => void;
+
+  /** Same for module final test. */
+  abortModuleTest: (
+    moduleId: number,
+    answers: (number | null)[],
+    timeUsedMs: number,
+    violations?: number,
+  ) => void;
 }
 
 export const useAppStore = create<AppState>()(
@@ -237,6 +254,42 @@ export const useAppStore = create<AppState>()(
 
         set(updates);
         return { score, total, passed };
+      },
+
+      abortTest: (courseId, testLevel, answers, violations = 0) => {
+        const sanitizedAnswers = answers.map((a) => (a == null ? -1 : a));
+        const attempt: TestAttempt = {
+          courseId, testLevel,
+          answers: sanitizedAnswers,
+          score: 0,
+          total: sanitizedAnswers.length,
+          passed: false,
+          timestamp: Date.now(),
+          violations,
+          aborted: true,
+        };
+        const key = `${courseId}-${testLevel}`;
+        const { testAttempts } = get();
+        const prev = testAttempts[key] || [];
+        set({ testAttempts: { ...testAttempts, [key]: [...prev, attempt] } });
+      },
+
+      abortModuleTest: (moduleId, answers, timeUsedMs, violations = 0) => {
+        const sanitizedAnswers = answers.map((a) => (a == null ? -1 : a));
+        const attempt: ModuleTestAttempt = {
+          moduleId,
+          answers: sanitizedAnswers,
+          score: 0,
+          total: sanitizedAnswers.length,
+          passed: false,
+          timestamp: Date.now(),
+          timeUsedMs,
+          violations,
+          aborted: true,
+        };
+        const { moduleTestAttempts } = get();
+        const prev = moduleTestAttempts[moduleId] || [];
+        set({ moduleTestAttempts: { ...moduleTestAttempts, [moduleId]: [...prev, attempt] } });
       },
 
       setActiveSection: (id) => set({ activeSection: id, activeModuleId: null, currentCourseId: null }),

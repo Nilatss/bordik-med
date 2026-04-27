@@ -6,11 +6,14 @@ import type { TestQuestion } from '@/lib/quiz';
 import { formatTimer } from '@/lib/quiz';
 import TestGuard from './TestGuard';
 
+/* Abort callback signature — TestPanel wants the partial answers and the
+   current violation count so it can persist a Прервать attempt with the
+   user's progress at abort time. */
 interface TestActiveViewProps {
   questions: TestQuestion[];
   timeLimit?: number;  // ms - undefined → defaults to 1 hour (3 600 000 ms)
   onComplete: (answers: number[], violations: number) => void;
-  onCancel: () => void;
+  onCancel: (partialAnswers: (number | null)[], violations: number) => void;
   testLabel: string;   // e.g. "Тест 2" or "Финальный тест модуля"
 }
 
@@ -372,10 +375,33 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
               </h3>
               <p style={{
                 fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: 400,
-                color: '#6B7280', lineHeight: 1.5, margin: '0 0 22px 0',
+                color: '#6B7280', lineHeight: 1.5, margin: '0 0 14px 0',
               }}>
                 Прогресс не сохранится. Ответы на {selectedAnswers.filter(a => a !== null).length} из {questions.length} вопросов будут потеряны.
               </p>
+              <div style={{
+                background: '#FEF2F2',
+                border: '1px solid #FECACA',
+                borderRadius: 12,
+                padding: '12px 14px',
+                margin: '0 0 22px 0',
+                display: 'flex', alignItems: 'flex-start', gap: 10,
+              }}>
+                <svg width={18} height={18} viewBox="0 0 24 24" fill="none"
+                  stroke="#B91C1C" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
+                  style={{ flexShrink: 0, marginTop: 1 }}>
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="12" y1="8" x2="12" y2="12" />
+                  <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+                <div style={{
+                  fontFamily: 'var(--font-body)', fontSize: 13, lineHeight: 1.5,
+                  color: '#991B1B',
+                }}>
+                  <strong style={{ fontWeight: 700 }}>Тест будет заблокирован на 12 часов.</strong>
+                  {' '}Перезайти и пройти этот тест заново можно будет только после окончания этого срока.
+                </div>
+              </div>
               <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
                 <button
                   onClick={() => setConfirmExit(false)}
@@ -392,7 +418,7 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
                   Продолжить тест
                 </button>
                 <button
-                  onClick={() => { setConfirmExit(false); onCancel(); }}
+                  onClick={() => { setConfirmExit(false); onCancel(selectedAnswers, violations); }}
                   style={{
                     padding: '10px 18px', borderRadius: 10,
                     background: '#B91C1C', color: '#FFFFFF',

@@ -20,6 +20,9 @@ export interface TestAttempt {
   passed: boolean;
   timestamp: number;
   violations: number;
+  /** User aborted the test mid-way (clicked Прервать). Triggers a shorter
+   *  12h cooldown but counts as a failed attempt for stats. */
+  aborted?: boolean;
 }
 
 export interface ModuleTestAttempt {
@@ -31,6 +34,7 @@ export interface ModuleTestAttempt {
   timestamp: number;
   timeUsedMs: number;
   violations: number;
+  aborted?: boolean;
 }
 
 /* ═══ Constants ═══ */
@@ -40,7 +44,8 @@ export const PASS_THRESHOLD_TEST = 18;          // 90% of 20
 export const MODULE_TEST_QUESTIONS = 100;
 export const PASS_THRESHOLD_MODULE = 90;         // 90% of 100
 export const MODULE_TEST_TIME_MS = 3 * 60 * 60 * 1000; // 3 hours
-export const COOLDOWN_MS = 24 * 60 * 60 * 1000; // 24 hours
+export const COOLDOWN_MS = 24 * 60 * 60 * 1000;          // 24 hours — failed attempt
+export const ABORT_COOLDOWN_MS = 12 * 60 * 60 * 1000;    // 12 hours — user aborted
 export const MAX_TEST_LEVELS = 5;
 export const MAX_VIOLATIONS = 3;
 
@@ -83,13 +88,18 @@ export function gradeModuleTest(
 
 /* ═══ Cooldown ═══ */
 
-/** Returns ms remaining, or 0 if no cooldown. Only triggers on last-attempt FAILURE. */
+/** Returns ms remaining, or 0 if no cooldown.
+ *  • Aborted attempt    → 12h cooldown
+ *  • Otherwise failed   → 24h cooldown
+ *  • Passed             → no cooldown
+ */
 export function getCooldownRemaining(attempts: TestAttempt[] | ModuleTestAttempt[]): number {
   if (attempts.length === 0) return 0;
   const last = attempts[attempts.length - 1];
   if (last.passed) return 0;
+  const window = last.aborted ? ABORT_COOLDOWN_MS : COOLDOWN_MS;
   const elapsed = Date.now() - last.timestamp;
-  return Math.max(0, COOLDOWN_MS - elapsed);
+  return Math.max(0, window - elapsed);
 }
 
 /** Format cooldown ms to Russian string */
