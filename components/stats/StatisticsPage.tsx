@@ -1721,7 +1721,7 @@ function RecentAttempts({ attempts }: { attempts: { courseId: string; testLevel:
       {/* Column header — hidden on mobile, where each row stacks instead */}
       <div className="stats-attempts__head" style={{
         display: 'grid',
-        gridTemplateColumns: 'minmax(0, 1fr) 56px 64px 100px',
+        gridTemplateColumns: 'minmax(0, 1fr) 56px 64px 110px',
         columnGap: 14,
         padding: '12px 14px',
         fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
@@ -1731,7 +1731,7 @@ function RecentAttempts({ attempts }: { attempts: { courseId: string; testLevel:
         <span>Курс / Тест</span>
         <span>Балл</span>
         <span>Дата</span>
-        <span style={{ justifySelf: 'end' }}>Статус</span>
+        <span style={{ justifySelf: 'center' }}>Статус</span>
       </div>
 
       {attempts.map((a, i) => {
@@ -1750,7 +1750,7 @@ function RecentAttempts({ attempts }: { attempts: { courseId: string; testLevel:
             className="stats-attempts__row"
             style={{
               display: 'grid',
-              gridTemplateColumns: 'minmax(0, 1fr) 56px 64px 100px',
+              gridTemplateColumns: 'minmax(0, 1fr) 56px 64px 110px',
               columnGap: 14,
               alignItems: 'center',
               padding: '12px 14px',
@@ -1801,7 +1801,7 @@ function RecentAttempts({ attempts }: { attempts: { courseId: string; testLevel:
 
             {/* Status pill */}
             <span style={{
-              justifySelf: 'end',
+              justifySelf: 'center',
               display: 'inline-flex', alignItems: 'center', gap: 4,
               padding: '3px 10px',
               borderRadius: 999,
