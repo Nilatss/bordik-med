@@ -655,62 +655,74 @@ function SectionHex({ rows }: { rows: SectionProgressRow[] }) {
           viewBox={`0 0 ${layout.width} ${layout.height}`}
           style={{ display: 'block', maxWidth: '100%' }}
         >
-          {layout.cells.map((c, i) => {
-            const isPlaceholder = c.row.id.startsWith('__ph');
-            const sectionId = isPlaceholder ? null : (c.row.id as any);
-            const interactive = !!sectionId;
-            return (
-              <motion.g
-                key={c.row.id}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.32, ease: [0.05, 0.7, 0.1, 1], delay: 0.025 * i }}
-                onClick={interactive ? () => setActiveSection(sectionId) : undefined}
-                onPointerEnter={() => setHoveredCell(c)}
-                onPointerLeave={() => setHoveredCell((curr) => (curr === c ? null : curr))}
-                className={interactive ? 'stats-hex stats-hex--interactive' : 'stats-hex'}
-                style={{
-                  transformOrigin: `${c.cx}px ${c.cy}px`,
-                  transformBox: 'fill-box' as any,
-                  cursor: interactive ? 'pointer' : 'not-allowed',
-                }}
-              >
-                <polygon
-                  points={hexPoints(c.cx, c.cy, layout.size)}
-                  fill={hexColor(c.row.pct)}
-                  stroke="#FFFFFF"
-                  strokeWidth={2}
-                />
-                {c.row.pct > 0 && (
-                  <text
-                    x={c.cx}
-                    y={c.cy + 4}
-                    textAnchor="middle"
-                    fontSize={11}
-                    fontFamily="var(--font-mono)"
-                    fontWeight={700}
-                    fill={c.row.pct >= 50 ? '#FFFFFF' : ACCENT_DARK}
-                    style={{ pointerEvents: 'none' }}
-                  >
-                    {c.row.pct}
-                  </text>
-                )}
-              </motion.g>
-            );
-          })}
+          {/* Render unhovered cells first, then hovered last so it draws on top.
+               (SVG has no z-index — paint order is the only way.) */}
+          {(() => {
+            const renderOrder = hoveredCell
+              ? [...layout.cells.filter((c) => c !== hoveredCell), hoveredCell]
+              : layout.cells;
+            return renderOrder.map((c) => {
+              const i = layout.cells.indexOf(c);
+              const isPlaceholder = c.row.id.startsWith('__ph');
+              const sectionId = isPlaceholder ? null : (c.row.id as any);
+              const interactive = !!sectionId;
+              return (
+                <motion.g
+                  key={c.row.id}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.32, ease: [0.05, 0.7, 0.1, 1], delay: 0.025 * i }}
+                  onClick={interactive ? () => setActiveSection(sectionId) : undefined}
+                  onPointerEnter={() => setHoveredCell(c)}
+                  onPointerLeave={() => setHoveredCell((curr) => (curr === c ? null : curr))}
+                  className={interactive ? 'stats-hex stats-hex--interactive' : 'stats-hex'}
+                  style={{
+                    transformOrigin: `${c.cx}px ${c.cy}px`,
+                    transformBox: 'fill-box' as any,
+                    cursor: interactive ? 'pointer' : 'not-allowed',
+                  }}
+                >
+                  <polygon
+                    points={hexPoints(c.cx, c.cy, layout.size)}
+                    fill={hexColor(c.row.pct)}
+                    stroke="#FFFFFF"
+                    strokeWidth={2}
+                  />
+                  {c.row.pct > 0 && (
+                    <text
+                      x={c.cx}
+                      y={c.cy + 4}
+                      textAnchor="middle"
+                      fontSize={11}
+                      fontFamily="var(--font-mono)"
+                      fontWeight={700}
+                      fill={c.row.pct >= 50 ? '#FFFFFF' : ACCENT_DARK}
+                      style={{ pointerEvents: 'none' }}
+                    >
+                      {c.row.pct}
+                    </text>
+                  )}
+                </motion.g>
+              );
+            });
+          })()}
 
           {/* Custom hover tooltip — rendered last so it draws above hexes.
-               Uses foreignObject so the bubble inherits site typography and
-               wraps long section names automatically. */}
+               Centred on the hovered hex; flips below the hex when there's
+               no room above. Uses foreignObject so the bubble inherits site
+               typography and wraps long section names. */}
           {hoveredCell && (() => {
             const isPlaceholder = hoveredCell.row.id.startsWith('__ph');
             const tipW = 200;
-            const tipH = 50;
-            // Position above the hovered hex; clamp inside the SVG canvas.
+            const tipH = 56;
+            // Centre horizontally on the hex, clamp inside canvas.
             let tipX = hoveredCell.cx - tipW / 2;
-            const tipY = Math.max(2, hoveredCell.cy - hoveredCell.cy * 0 - tipH - layout.size - 6);
             if (tipX < 4) tipX = 4;
             if (tipX + tipW > layout.width - 4) tipX = layout.width - 4 - tipW;
+            // Prefer above the hex; if there's no room, render below.
+            const aboveY = hoveredCell.cy - layout.size - tipH - 8;
+            const belowY = hoveredCell.cy + layout.size + 8;
+            const tipY = aboveY >= 4 ? aboveY : belowY;
             return (
               <foreignObject
                 x={tipX}
