@@ -772,58 +772,47 @@ function FeedbackBlock({ t }: { t: (k: string, vars?: Record<string, string | nu
 
   return (
     <>
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        style={{
-          margin: '8px 12px 12px',
-          padding: '12px 14px',
-          background: '#FFFFFF',
-          border: '1px solid #E5E7EB',
-          borderRadius: 12,
-          textAlign: 'left',
-          cursor: 'pointer',
-          display: 'flex', alignItems: 'flex-start', gap: 10,
-          transition: 'background 150ms, border-color 150ms',
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.background = '#F8FAFC';
-          e.currentTarget.style.borderColor = '#CBD5E1';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.background = '#FFFFFF';
-          e.currentTarget.style.borderColor = '#E5E7EB';
-        }}
-        aria-label={t('sidebar.feedback.title')}
-      >
-        <span style={{
-          width: 28, height: 28, borderRadius: 8,
-          background: '#FEF3C7', color: '#D97706',
-          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-          flexShrink: 0,
+      {/* Same visual language as nav items: section header + flat
+          transparent button with hover grey, neutral icon. */}
+      <div style={{ padding: '4px 12px 12px', marginTop: 4 }}>
+        <p style={{
+          padding: '6px 16px 6px',
+          fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
+          color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
+          margin: 0,
         }}>
-          <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">
-            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
-          </svg>
-        </span>
-        <span style={{ minWidth: 0, flex: 1 }}>
+          {t('sidebar.feedback.section')}
+        </p>
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          aria-label={t('sidebar.feedback.title')}
+          style={{
+            width: '100%', display: 'flex', alignItems: 'center', gap: 14,
+            padding: '11px 16px',
+            borderRadius: 12,
+            background: 'transparent',
+            border: 'none', cursor: 'pointer',
+            transition: 'background 150ms ease',
+            textAlign: 'left',
+          }}
+          onMouseEnter={(e) => { e.currentTarget.style.background = '#E8E9ED'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+        >
+          <span style={{ display: 'flex', color: '#999', flexShrink: 0 }}>
+            <svg width={20} height={20} viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+            </svg>
+          </span>
           <span style={{
-            display: 'block',
-            fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
-            color: '#1A1A1A', lineHeight: 1.3,
+            fontFamily: 'var(--font-body)', fontSize: 14.5, fontWeight: 400,
+            color: '#777',
           }}>
             {t('sidebar.feedback.title')}
           </span>
-          <span style={{
-            display: 'block', marginTop: 2,
-            fontFamily: 'var(--font-body)', fontSize: 11.5, color: '#6B7280',
-            lineHeight: 1.4,
-          }}>
-            {t('sidebar.feedback.subtitle')}
-          </span>
-        </span>
-      </button>
+        </button>
+      </div>
 
       <AnimatePresence>
         {open && (
@@ -857,11 +846,12 @@ function FeedbackBlock({ t }: { t: (k: string, vars?: Record<string, string | nu
               <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
                 <span style={{
                   width: 36, height: 36, borderRadius: 10,
-                  background: '#FEF3C7', color: '#D97706',
+                  background: '#F5F6F8', color: '#6B7280',
                   display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                  boxShadow: '0 1px 2px rgba(16,24,40,0.06)',
                 }}>
                   <svg width={18} height={18} viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">
+                    stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                     <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
                   </svg>
                 </span>
@@ -889,15 +879,22 @@ function FeedbackBlock({ t }: { t: (k: string, vars?: Record<string, string | nu
                 style={{
                   width: '100%', resize: 'vertical', minHeight: 120,
                   padding: '12px 14px',
-                  borderRadius: 10, border: '1px solid #E5E7EB',
-                  background: '#F8FAFC',
+                  borderRadius: 12, border: 'none',
+                  background: '#F5F6F8',
                   fontFamily: 'var(--font-body)', fontSize: 13.5, color: '#1A1A1A',
                   lineHeight: 1.5,
                   outline: 'none',
-                  transition: 'border-color 150ms, background 150ms',
+                  boxShadow: 'inset 0 0 0 1px transparent',
+                  transition: 'box-shadow 150ms, background 150ms',
                 }}
-                onFocus={(e) => { e.currentTarget.style.borderColor = '#94A3B8'; e.currentTarget.style.background = '#FFFFFF'; }}
-                onBlur={(e) => { e.currentTarget.style.borderColor = '#E5E7EB'; e.currentTarget.style.background = '#F8FAFC'; }}
+                onFocus={(e) => {
+                  e.currentTarget.style.boxShadow = 'inset 0 0 0 1px #1A1A1A';
+                  e.currentTarget.style.background = '#FFFFFF';
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.boxShadow = 'inset 0 0 0 1px transparent';
+                  e.currentTarget.style.background = '#F5F6F8';
+                }}
               />
               <div style={{
                 display: 'flex', justifyContent: 'flex-end', gap: 8,
