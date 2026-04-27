@@ -116,6 +116,13 @@ export default function Sidebar() {
     else if (item === 'tests') setShowTests(true);
     else if (item === 'tools') setShowTools(true);
     else if (item === 'stats') setShowStats(true);
+    // Auto-close drawer on mobile so the user actually sees the destination.
+    // Profile is a modal panel that overlays the sidebar - closing the
+    // sidebar there would hide the modal too, so we leave it alone.
+    if (item !== 'profile' && typeof window !== 'undefined' &&
+        window.matchMedia('(max-width: 768px)').matches) {
+      useAppStore.setState({ sidebarOpen: false });
+    }
   };
 
   /* Prefetch the heavy chunks on hover/focus so they're already cached
