@@ -563,9 +563,9 @@ function Heatmap({ data, period }: { data: HeatmapData; period: Period }) {
     }}>
       {isCalendar ? (
         // ── Calendar grid (month view) ──
-        // Constrained to ~440px max so cells stay a comfortable ~56px square
-        // even on wide cards. Grid is centred horizontally.
-        <div style={{ width: '100%', maxWidth: 440, margin: '0 auto' }}>
+        // Cells stretch the full card width as wide rectangles — taller than
+        // the year heatmap dots, but not square.
+        <div style={{ width: '100%' }}>
           {/* Day-of-week header */}
           <div style={{
             display: 'grid',
@@ -601,7 +601,7 @@ function Heatmap({ data, period }: { data: HeatmapData; period: Period }) {
                   onPointerLeave={inMonth ? () => setHovered((c) => (c === dayIdx ? null : c)) : undefined}
                   className="stats-heat-cell"
                   style={{
-                    aspectRatio: '1 / 1',
+                    height: 56,
                     background: lvl < 0 ? 'transparent' : HEATMAP_LEVELS[lvl],
                     borderRadius: 6,
                     cursor: inMonth ? 'default' : undefined,
