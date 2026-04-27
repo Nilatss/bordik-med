@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import type { TestQuestion } from '@/lib/quiz';
 import { formatTimer } from '@/lib/quiz';
 import TestGuard from './TestGuard';
+import Proctoring from './Proctoring';
 
 /* Abort callback signature — TestPanel wants the partial answers and the
    current violation count so it can persist a Прервать attempt with the
@@ -28,10 +29,14 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
   const [violations, setViolations] = useState(0);
   const [timeRemaining, setTimeRemaining] = useState(effectiveTimeLimit);
   const [confirmExit, setConfirmExit] = useState(false);
+  const [proctorReady, setProctorReady] = useState(false);
   const completedRef = useRef(false);
 
-  // Countdown timer (always active — 1 hour default)
+  // Countdown timer — only starts after proctoring is ready (camera/mic
+  // permissions granted) so the user isn't penalised by time spent on the
+  // permission prompt.
   useEffect(() => {
+    if (!proctorReady) return;
     const interval = setInterval(() => {
       setTimeRemaining((prev) => {
         const next = prev - 1000;
@@ -43,7 +48,7 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
       });
     }, 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [proctorReady]);
 
   // Auto-submit on timer expiry
   useEffect(() => {
@@ -99,6 +104,15 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
       onForceSubmit={handleForceSubmit}
       violationCount={violations}
     >
+      {/* Camera + microphone proctoring. Mounts on top of the test overlay
+           — gates the test until permissions are granted, then live-monitors
+           audio + camera frames for suspicious activity. */}
+      <Proctoring
+        active
+        onReadyChange={setProctorReady}
+        onViolation={handleViolation}
+      />
+
       {/* Fullscreen overlay during test attempt — hides the course header,
            TOC sidebar and any other navigation. The only way out is the
            "Прервать" confirmation modal that re-uses onCancel. */}
@@ -107,6 +121,10 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
         background: '#FFFFFF',
         overflowY: 'auto',
         padding: 'clamp(14px, 3vw, 32px) clamp(12px, 4vw, 48px) clamp(20px, 4vw, 32px)',
+        // While we're waiting for camera/mic permissions, dim the test so
+        // the user can't peek at questions before agreeing.
+        opacity: proctorReady ? 1 : 0,
+        pointerEvents: proctorReady ? undefined : 'none',
       }}>
       <div style={{
         maxWidth: 840, margin: '0 auto',

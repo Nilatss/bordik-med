@@ -70,7 +70,31 @@ export default function TestStartConsent({
         </h3>
       </div>
 
-      {/* Forbidden — neutral callout style (like the ФОРМУЛА pattern) */}
+      {/* Camera + microphone requirement — first because it gates the test */}
+      <div style={{
+        background: '#FFFFFF', borderRadius: 12,
+        padding: '18px 20px', marginBottom: 10,
+        borderLeft: '3px solid #3B82F6',
+      }}>
+        <p style={{
+          fontFamily: 'var(--font-mono)', fontSize: 10.5, fontWeight: 700,
+          color: '#2563EB', textTransform: 'uppercase', letterSpacing: '0.08em',
+          margin: '0 0 10px 0',
+        }}>
+          Обязательно для прохождения
+        </p>
+        <ul style={{
+          margin: 0, paddingLeft: 18,
+          fontFamily: 'var(--font-body)', fontSize: 13.5,
+          color: '#374151', lineHeight: 1.7,
+        }}>
+          <li>Включённая камера и микрофон на протяжении всего теста</li>
+          <li>Освещённая комната и хорошо видимое лицо в кадре</li>
+          <li>Тишина — посторонние голоса будут засчитаны как нарушение</li>
+        </ul>
+      </div>
+
+      {/* Forbidden — neutral callout style */}
       <div style={{
         background: '#FFFFFF', borderRadius: 12,
         padding: '18px 20px', marginBottom: 10,
@@ -92,6 +116,7 @@ export default function TestStartConsent({
           <li>Сворачивать браузер</li>
           <li>Открывать режим разработчика (F12)</li>
           <li>Копировать вопросы или ответы</li>
+          <li>Закрывать камеру или говорить вслух</li>
         </ul>
       </div>
 
