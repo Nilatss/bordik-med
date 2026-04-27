@@ -1,12 +1,13 @@
 'use client';
 
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { motion, useSpring, useTransform } from 'framer-motion';
+import { useEffect } from 'react';
 
 /**
- * Striped green progress track with inline position label and end label —
- * styled 1:1 with the insurance-policy reference screenshot. Width and
- * percentage number animate smoothly via framer-motion springs.
+ * Striped green progress track with inline position label and end label.
+ * The bar WIDTH animates via a framer-motion spring; the % caption is
+ * derived directly from `pct` to avoid forcing a React re-render on every
+ * spring frame (~60 fps), which used to make topic switches feel laggy.
  */
 export default function CourseProgressBar({
   pct, currentLabel, endLabel, startCaption, endCaption,
@@ -19,23 +20,19 @@ export default function CourseProgressBar({
 }) {
   const safePct = Math.max(8, Math.min(100, pct));
 
-  // Spring-animated percentage that the bar width and the caption number
-  // both read from — keeps them perfectly in sync.
-  const animatedPct = useSpring(0, { stiffness: 90, damping: 22 });
+  // Spring-animated percentage drives the bar width only — no setState
+  // bridge, no per-frame React re-renders.
+  const animatedPct = useSpring(safePct, { stiffness: 110, damping: 24 });
   const widthString = useTransform(animatedPct, (v) => `${v}%`);
-  const [displayPct, setDisplayPct] = useState(0);
 
   useEffect(() => {
     animatedPct.set(safePct);
   }, [safePct, animatedPct]);
 
-  // Mirror the spring value into a re-rendered integer so the % caption
-  // and the threshold-driven end-label colour update on each frame.
-  useEffect(() => {
-    return animatedPct.on('change', (v) => setDisplayPct(Math.round(v)));
-  }, [animatedPct]);
-
-  const labelOnGreen = displayPct >= 80;
+  // The end-label colour switch is now driven by the prop value (instant
+  // change) rather than the animated value — visually the threshold is
+  // crossed at the same moment the user picks a new topic anyway.
+  const labelOnGreen = safePct >= 80;
 
   return (
     <div style={{ width: '100%' }}>
@@ -101,7 +98,7 @@ export default function CourseProgressBar({
       }}>
         <span>{startCaption}</span>
         <span style={{ fontWeight: 600, color: '#3B82F6' }}>
-          {displayPct}% пройдено
+          {safePct}% пройдено
         </span>
         <span>{endCaption}</span>
       </div>
