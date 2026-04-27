@@ -33,68 +33,69 @@ const VBW = 1400;
 const VBH = 1680;
 
 /* Anchor positions tuned to the muscle-anatomy poster:
-     Front body  ≈ centre x 380, span y 100..1620
-     Back  body  ≈ centre x 1010, span y 100..1620
-   Most organ-system anchors land on the front view; a few (kidneys,
-   spinal/back muscles, glutes) anchor on the back view. */
+     Front body  ≈ centre x 490, span y 220..1620, torso x 380..600
+     Back  body  ≈ centre x 985, span y 220..1620, torso x 880..1090
+   Each label sits on the SAME side as its anchor — no leader line ever
+   crosses through the figure. Front-body anchors → labels on the left,
+   back-body anchors → labels on the right. */
 const SYSTEMS: BodySystem[] = [
-  // ── Left-column labels (anchor mostly on front body) ──
+  // ── Front body — left-side labels ──
   { id: 'brain',        label: 'Мозг и нервы',
     keywords: ['невро','мозг','нейро','инсульт','эпилепс','деменц','паркинсон','когнит'],
-    anchor: { x: 380, y: 180 }, side: 'left',  labelY: 110 },
+    anchor: { x: 490, y: 280 }, side: 'left',  labelY: 130 },
 
   { id: 'eyes',         label: 'Глаза и ЛОР',
     keywords: ['офтальм','глаз','зрени','лор','оторин','слух','ухо','нос'],
-    anchor: { x: 350, y: 230 }, side: 'left',  labelY: 270 },
+    anchor: { x: 470, y: 330 }, side: 'left',  labelY: 280 },
 
   { id: 'heart',        label: 'Сердце и сосуды',
     keywords: ['кардио','серд','сосуд','артери','коронар','аритм','инфаркт','гипертен','давлени'],
-    anchor: { x: 380, y: 480 }, side: 'left',  labelY: 430 },
+    anchor: { x: 490, y: 540 }, side: 'left',  labelY: 430 },
 
   { id: 'lungs',        label: 'Лёгкие',
     keywords: ['пульмо','легк','бронх','астм','хобл','пневмон','дыхан','респират'],
-    anchor: { x: 290, y: 480 }, side: 'left',  labelY: 590 },
+    anchor: { x: 430, y: 540 }, side: 'left',  labelY: 580 },
 
   { id: 'gi',           label: 'Пищеварение',
     keywords: ['гастро','кишеч','желуд','пищевар','панкреат','жёлчн','желчн','диаре','запор'],
-    anchor: { x: 380, y: 720 }, side: 'left',  labelY: 750 },
-
-  { id: 'reproductive', label: 'Гинекология',
-    keywords: ['акушер','гинекол','беремен','репродукт','роды','плод','матк'],
-    anchor: { x: 380, y: 950 }, side: 'left',  labelY: 910 },
-
-  { id: 'msk',          label: 'Кости и суставы',
-    keywords: ['травма','ортопед','мышц','кост','сустав','ревмат','позвонк','остеопор'],
-    anchor: { x: 300, y: 1110 }, side: 'left', labelY: 1090 },
-
-  // ── Right-column labels ──
-  { id: 'psych',        label: 'Психика',
-    keywords: ['психиатр','психо','депресс','тревож','шизофрен','биполяр','ментал'],
-    anchor: { x: 1010, y: 180 }, side: 'right', labelY: 110 },
-
-  { id: 'endocrine',    label: 'Эндокринология',
-    keywords: ['эндокрин','диабет','щитовид','гормон','гипоф','надпочеч','тирео'],
-    anchor: { x: 390, y: 290 }, side: 'right', labelY: 270 },
+    anchor: { x: 490, y: 780 }, side: 'left',  labelY: 730 },
 
   { id: 'liver',        label: 'Печень',
     keywords: ['гепат','печен','цирроз','желч'],
-    anchor: { x: 440, y: 620 }, side: 'right', labelY: 430 },
+    anchor: { x: 560, y: 720 }, side: 'left',  labelY: 880 },
+
+  { id: 'reproductive', label: 'Гинекология',
+    keywords: ['акушер','гинекол','беремен','репродукт','роды','плод','матк'],
+    anchor: { x: 490, y: 1010 }, side: 'left',  labelY: 1030 },
+
+  // ── Back body — right-side labels ──
+  { id: 'psych',        label: 'Психика',
+    keywords: ['психиатр','психо','депресс','тревож','шизофрен','биполяр','ментал'],
+    anchor: { x: 985, y: 280 }, side: 'right', labelY: 130 },
+
+  { id: 'endocrine',    label: 'Эндокринология',
+    keywords: ['эндокрин','диабет','щитовид','гормон','гипоф','надпочеч','тирео'],
+    anchor: { x: 985, y: 400 }, side: 'right', labelY: 280 },
 
   { id: 'skin',         label: 'Кожа',
     keywords: ['дермат','кож','экзем','псориаз','акне','меланом'],
-    anchor: { x: 230, y: 360 }, side: 'right', labelY: 590 },
-
-  { id: 'kidney',       label: 'Почки и моча',
-    keywords: ['нефро','почеч','мочев','уролог','диализ','фильтрац'],
-    anchor: { x: 980, y: 720 }, side: 'right', labelY: 750 },
-
-  { id: 'pediatrics',   label: 'Педиатрия',
-    keywords: ['педиатр','дет','новорожд','младенч','грудничк'],
-    anchor: { x: 1010, y: 950 }, side: 'right', labelY: 910 },
+    anchor: { x: 1060, y: 540 }, side: 'right', labelY: 430 },
 
   { id: 'blood',        label: 'Кровь и иммунитет',
     keywords: ['гематол','кров','анеми','лейкоз','иммун','аллерг','инфекц','вакцин'],
-    anchor: { x: 1010, y: 470 }, side: 'right', labelY: 1090 },
+    anchor: { x: 985, y: 600 }, side: 'right', labelY: 580 },
+
+  { id: 'kidney',       label: 'Почки и моча',
+    keywords: ['нефро','почеч','мочев','уролог','диализ','фильтрац'],
+    anchor: { x: 985, y: 800 }, side: 'right', labelY: 730 },
+
+  { id: 'pediatrics',   label: 'Педиатрия',
+    keywords: ['педиатр','дет','новорожд','младенч','грудничк'],
+    anchor: { x: 985, y: 980 }, side: 'right', labelY: 880 },
+
+  { id: 'msk',          label: 'Кости и суставы',
+    keywords: ['травма','ортопед','мышц','кост','сустав','ревмат','позвонк','остеопор'],
+    anchor: { x: 945, y: 1180 }, side: 'right', labelY: 1030 },
 ];
 
 interface BodySystemStats {
