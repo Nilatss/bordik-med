@@ -929,93 +929,205 @@ function ToolKindsPanel({ stats }: { stats: ToolKindStats }) {
     return <EmptyHint text="Откройте любой инструмент — счётчики появятся здесь." />;
   }
   return (
-    <div style={{
+    <div className="stats-toolkinds" style={{
       display: 'grid',
-      gridTemplateColumns: 'minmax(0, 1.1fr) minmax(0, 1fr)',
-      gap: 16,
+      gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1.05fr)',
+      gap: 18,
     }}>
-      {/* Left: kinds breakdown bars */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-        {stats.byKind.map((k, i) => (
-          <motion.div
-            key={k.kind}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, ease: [0.05, 0.7, 0.1, 1], delay: 0.04 * i }}
-          >
-            <div style={{
-              display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
-              fontFamily: 'var(--font-body)', fontSize: 13,
-              marginBottom: 6,
-            }}>
-              <span style={{ fontWeight: 600, color: '#1A1A1A' }}>{k.label}</span>
-              <span style={{ color: '#9CA3AF', fontSize: 12 }}>
-                {k.count} {k.count === 1 ? 'открытие' : 'открытий'} ·{' '}
-                <strong style={{ color: '#1A1A1A' }}>{k.uniq}/{k.total}</strong>
+      {/* Left — kinds breakdown as KPI-style cards */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10, minWidth: 0 }}>
+        {stats.byKind.map((k, i) => {
+          const tint = k.kind === 'calculator' ? ACCENT : '#7AA5FA';
+          const tintBg = k.kind === 'calculator' ? ACCENT_BG : '#EFF4FF';
+          return (
+            <motion.div
+              key={k.kind}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, ease: [0.05, 0.7, 0.1, 1], delay: 0.05 * i }}
+              style={{
+                display: 'grid',
+                gridTemplateColumns: '36px minmax(0, 1fr) auto',
+                columnGap: 12,
+                rowGap: 6,
+                alignItems: 'center',
+                padding: '12px 14px',
+                background: '#FFFFFF',
+                border: '1px solid #F0F1F5',
+                borderRadius: 12,
+                minWidth: 0,
+              }}
+            >
+              {/* Icon square */}
+              <span style={{
+                gridRow: '1 / span 2',
+                width: 36, height: 36, borderRadius: 8,
+                background: tintBg, color: tint,
+                display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                flexShrink: 0,
+              }}>
+                {k.kind === 'calculator' ? <IconCalc /> : <IconScale />}
               </span>
-            </div>
-            <div style={{
-              height: 8, borderRadius: 999, background: '#F1F3F6',
-              overflow: 'hidden',
-            }}>
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: `${k.pct}%` }}
-                transition={{ duration: 0.6, ease: [0.05, 0.7, 0.1, 1], delay: 0.1 + 0.04 * i }}
-                style={{
-                  height: '100%',
-                  background: k.kind === 'calculator' ? ACCENT : '#7AA5FA',
-                  borderRadius: 999,
-                }}
-              />
-            </div>
-          </motion.div>
-        ))}
+
+              {/* Name + sub */}
+              <span style={{
+                fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: 600,
+                color: '#1A1A1A', letterSpacing: '-0.005em',
+                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+              }}>
+                {k.label}
+              </span>
+
+              {/* Count badge */}
+              <span style={{
+                justifySelf: 'end',
+                display: 'inline-flex', alignItems: 'baseline', gap: 4,
+                fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 700,
+                color: '#1A1A1A', letterSpacing: '-0.01em',
+              }}>
+                {k.count}
+                <span style={{
+                  fontFamily: 'var(--font-body)', fontSize: 11, fontWeight: 500,
+                  color: '#9CA3AF',
+                }}>
+                  {k.count === 1 ? 'открытие' : 'открытий'}
+                </span>
+              </span>
+
+              {/* Bar + pct */}
+              <div style={{
+                gridColumn: '2 / span 2',
+                display: 'flex', alignItems: 'center', gap: 10, minWidth: 0,
+              }}>
+                <div style={{
+                  flex: 1, height: 6, borderRadius: 999,
+                  background: '#F1F3F6', overflow: 'hidden', minWidth: 0,
+                }}>
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${k.pct}%` }}
+                    transition={{ duration: 0.6, ease: [0.05, 0.7, 0.1, 1], delay: 0.12 + 0.05 * i }}
+                    style={{ height: '100%', background: tint, borderRadius: 999 }}
+                  />
+                </div>
+                <span style={{
+                  fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700,
+                  color: tint, flexShrink: 0,
+                  minWidth: 56, textAlign: 'right',
+                }}>
+                  {k.uniq}/{k.total}
+                </span>
+              </div>
+            </motion.div>
+          );
+        })}
       </div>
 
-      {/* Right: top opened tools */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 6, minWidth: 0 }}>
+      {/* Right — Top tools list */}
+      <div style={{
+        display: 'flex', flexDirection: 'column',
+        background: '#FFFFFF',
+        border: '1px solid #F0F1F5',
+        borderRadius: 12,
+        overflow: 'hidden',
+        minWidth: 0,
+      }}>
         <div style={{
+          padding: '12px 14px 8px',
           fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-          color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.06em',
-          padding: '4px 10px',
+          color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
+          borderBottom: '1px solid #F4F5F8',
         }}>
-          Топ инструментов
+          Топ открываемых инструментов
         </div>
-        {stats.topTools.map((t, i) => (
-          <motion.div
-            key={t.id}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, ease: [0.05, 0.7, 0.1, 1], delay: 0.05 * i }}
-            style={{
-              display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) auto',
-              gap: 8, padding: '8px 10px',
-              background: '#F8F9FB', borderRadius: 10,
-              fontFamily: 'var(--font-body)', fontSize: 12.5,
-              color: '#1A1A1A', alignItems: 'center',
-            }}>
-            <span style={{
-              overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-              fontWeight: 500,
-            }}>
-              {t.title}
-            </span>
-            <span style={{
-              display: 'inline-flex', alignItems: 'center', gap: 6,
-              fontWeight: 600, color: ACCENT_DARK,
-            }}>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          {stats.topTools.map((t, i) => (
+            <motion.div
+              key={t.id}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.28, ease: [0.05, 0.7, 0.1, 1], delay: 0.05 * i }}
+              style={{
+                display: 'grid',
+                gridTemplateColumns: '24px minmax(0, 1fr) auto auto',
+                columnGap: 10,
+                alignItems: 'center',
+                padding: '10px 14px',
+                borderTop: i === 0 ? 'none' : '1px solid #F4F5F8',
+                fontFamily: 'var(--font-body)', fontSize: 13,
+              }}
+            >
               <span style={{
-                fontSize: 10, color: '#9CA3AF', fontWeight: 500,
+                fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700,
+                color: '#9CA3AF',
               }}>
-                {t.kind === 'calculator' ? 'калькулятор' : 'шкала'}
+                {String(i + 1).padStart(2, '0')}
               </span>
-              ×{t.count}
-            </span>
-          </motion.div>
-        ))}
+              <span style={{
+                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                fontWeight: 600, color: '#1A1A1A',
+              }}>
+                {t.title}
+              </span>
+              <KindPill kind={t.kind} />
+              <span style={{
+                display: 'inline-flex', alignItems: 'center',
+                padding: '2px 8px', borderRadius: 999,
+                background: ACCENT_BG, color: ACCENT_DARK,
+                fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700,
+              }}>
+                ×{t.count}
+              </span>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </div>
+  );
+}
+
+function KindPill({ kind }: { kind: string }) {
+  const isCalc = kind === 'calculator';
+  return (
+    <span style={{
+      display: 'inline-flex', alignItems: 'center', gap: 4,
+      padding: '2px 8px', borderRadius: 999,
+      background: isCalc ? '#EFF4FF' : '#F1F5FB',
+      color:      isCalc ? ACCENT_DARK : '#475569',
+      fontFamily: 'var(--font-body)', fontSize: 10.5, fontWeight: 600,
+      letterSpacing: '0.005em', whiteSpace: 'nowrap',
+    }}>
+      {isCalc ? 'калькулятор' : 'шкала'}
+    </span>
+  );
+}
+
+function IconCalc() {
+  return (
+    <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <rect x="4" y="2" width="16" height="20" rx="2" />
+      <line x1="8" y1="6" x2="16" y2="6" />
+      <line x1="8" y1="11" x2="8.01" y2="11" />
+      <line x1="12" y1="11" x2="12.01" y2="11" />
+      <line x1="16" y1="11" x2="16.01" y2="11" />
+      <line x1="8" y1="15" x2="8.01" y2="15" />
+      <line x1="12" y1="15" x2="12.01" y2="15" />
+      <line x1="16" y1="15" x2="16.01" y2="15" />
+      <line x1="8" y1="19" x2="16" y2="19" />
+    </svg>
+  );
+}
+function IconScale() {
+  return (
+    <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 7h18" />
+      <path d="M6 7l-3 7a4 4 0 0 0 6 0l-3-7z" />
+      <path d="M18 7l-3 7a4 4 0 0 0 6 0l-3-7z" />
+      <path d="M12 3v18" />
+      <path d="M9 21h6" />
+    </svg>
   );
 }
 

@@ -911,8 +911,9 @@ main:has(.stats-page) {
 
 /* Stats KPI row: 3-up on desktop, stack on mobile */
 @media (max-width: 720px) {
-  .stats-kpi-row { grid-template-columns: 1fr !important; }
-  .stats-2col    { grid-template-columns: 1fr !important; }
+  .stats-kpi-row    { grid-template-columns: 1fr !important; }
+  .stats-2col       { grid-template-columns: 1fr !important; }
+  .stats-toolkinds  { grid-template-columns: 1fr !important; }
 }
 
 /* Stats entrance animations now use framer-motion (matches CoursePage). */
