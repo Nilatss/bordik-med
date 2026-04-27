@@ -478,9 +478,13 @@ function buildHeatmap(testAttempts: Record<string, { timestamp: number }[]>, per
   let startTime: number;
   let days: number;
   if (period === 'week') {
+    // Current ISO-style week: column 0 = Monday of this week, column 6 = Sunday.
+    // Future days of the week are still rendered as empty cells.
     days = 7;
     const start = new Date(today);
-    start.setDate(start.getDate() - 6);
+    const dow = start.getDay();        // 0 = Sun .. 6 = Sat
+    const offsetToMon = (dow + 6) % 7; // Mon → 0, Sun → 6
+    start.setDate(start.getDate() - offsetToMon);
     start.setHours(0, 0, 0, 0);
     startTime = start.getTime();
   } else if (period === 'month') {
@@ -535,11 +539,13 @@ function Heatmap({ data, period }: { data: HeatmapData; period: Period }) {
     if (period === 'month') {
       return new Date(today.getFullYear(), today.getMonth(), col + 1);
     }
-    // week — col 0 is data.cols-1 days ago
-    const ageDays = data.cols - 1 - col;
-    const d = new Date(today);
-    d.setDate(d.getDate() - ageDays);
-    return d;
+    // week — col 0 is THIS week's Monday
+    const monday = new Date(today);
+    const dow = monday.getDay();
+    const offsetToMon = (dow + 6) % 7;
+    monday.setDate(monday.getDate() - offsetToMon);
+    monday.setDate(monday.getDate() + col);
+    return monday;
   };
   const fmtDate = (d: Date) =>
     d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', weekday: 'short' });
