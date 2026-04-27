@@ -689,7 +689,11 @@ function SectionHex({ rows }: { rows: SectionProgressRow[] }) {
               : layout.cells;
             return renderOrder.map((c) => {
               const isPlaceholder = c.row.id.startsWith('__ph');
-              const sectionId = isPlaceholder ? null : (c.row.id as any);
+              // A section is "available" only if it actually has courses.
+              // Sections present in the curriculum config but with zero
+              // courses behave like placeholders — show as unavailable.
+              const hasContent = c.row.total > 0;
+              const sectionId = (isPlaceholder || !hasContent) ? null : (c.row.id as any);
               const interactive = !!sectionId;
               return (
                 // Plain <g> — entrance/exit animations on hex cells caused
@@ -741,6 +745,8 @@ function SectionHex({ rows }: { rows: SectionProgressRow[] }) {
                typography and wraps long section names. */}
           {hoveredCell && (() => {
             const isPlaceholder = hoveredCell.row.id.startsWith('__ph');
+            const isEmpty = !isPlaceholder && hoveredCell.row.total === 0;
+            const showAsUnavailable = isPlaceholder || isEmpty;
             const tipW = 200;
             const tipH = 56;
             // Centre horizontally on the hex, clamp inside canvas.
@@ -763,14 +769,16 @@ function SectionHex({ rows }: { rows: SectionProgressRow[] }) {
                 <div
                   // @ts-ignore - xmlns required for foreignObject HTML content
                   xmlns="http://www.w3.org/1999/xhtml"
-                  className={`stats-hex-tip${isPlaceholder ? ' stats-hex-tip--off' : ''}`}
+                  className={`stats-hex-tip${showAsUnavailable ? ' stats-hex-tip--off' : ''}`}
                 >
                   <div className="stats-hex-tip__title">
-                    {isPlaceholder ? 'Раздел недоступен' : hoveredCell.row.name}
+                    {isPlaceholder ? 'Раздел недоступен'
+                      : isEmpty ? hoveredCell.row.name
+                      : hoveredCell.row.name}
                   </div>
                   <div className="stats-hex-tip__sub">
-                    {isPlaceholder
-                      ? 'Скоро появится'
+                    {isPlaceholder ? 'Скоро появится'
+                      : isEmpty ? 'Скоро появится'
                       : `${hoveredCell.row.pct}% · ${hoveredCell.row.done}/${hoveredCell.row.total}`}
                   </div>
                 </div>
