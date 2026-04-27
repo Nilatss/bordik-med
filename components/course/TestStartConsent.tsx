@@ -95,14 +95,33 @@ function MediaCheck({ onReady, onCalibrated }: {
         if (cancelled) return;
         console.error('[proctoring] AI model load failed:', err);
         setAiModelStatus('error');
-        // Best-effort hint about why it failed
-        const msg = String(err?.message ?? err ?? '');
+
+        // Pull a usable diagnostic string out of whatever was rejected.
+        // MediaPipe / script-load failures often reject with a DOM Event
+        // object whose .toString() is "[object Event]" - useless to the user.
+        // Build a structured message in those cases.
+        const isDomEvent = typeof Event !== 'undefined' && err instanceof Event;
+        let msg: string;
+        if (isDomEvent) {
+          // ErrorEvent has .filename / .message; generic Event has .type
+          const ev = err as ErrorEvent & { type: string };
+          const target = (ev.target as HTMLScriptElement | null);
+          const src = target?.src ?? '';
+          msg = ev.message || src || `${ev.type}-event`;
+        } else if (err && typeof err === 'object') {
+          msg = String(err.message ?? err.name ?? '');
+        } else {
+          msg = String(err ?? '');
+        }
+
+        // Pick the most likely cause based on the message content
         if (/wasm|simd|webassembly/i.test(msg)) {
           setAiError('Браузер не поддерживает WebAssembly SIMD. Откройте сайт в Chrome или Safari вместо встроенного браузера.');
         } else if (/webgl|gpu|gl context/i.test(msg)) {
           setAiError('Не удалось инициализировать WebGL. Откройте сайт в обычном Chrome / Safari, не во встроенном браузере мессенджера.');
-        } else if (/network|fetch|cors|cdn|abort/i.test(msg)) {
-          setAiError('Не удалось скачать AI-модель с CDN. Проверьте интернет и блокировщики (AdBlock, прокси, корпоративный firewall).');
+        } else if (isDomEvent || /network|fetch|cors|cdn|abort|jsdelivr|googleapis|load|script/i.test(msg)) {
+          // Most "[object Event]" failures are CDN script/asset load rejections
+          setAiError('Не удалось скачать AI-модель с CDN (jsdelivr / mediapipe-models). Проверьте интернет, отключите AdBlock и попробуйте «Проверить заново».');
         } else {
           setAiError(msg.slice(0, 140) || 'Неизвестная ошибка загрузки модели.');
         }
@@ -227,10 +246,41 @@ function MediaCheck({ onReady, onCalibrated }: {
    *  Runs automatically on stream acquisition and on `devicechange` events,
    *  and can be triggered manually via the "Проверить заново" button when
    *  the user thinks they fixed something. */
+  // Mirror reactive aiModelStatus into a ref so the stable runEnvCheck
+  // callback always sees the current value without changing identity.
+  const aiModelStatusRef = useRef(aiModelStatus);
+  useEffect(() => { aiModelStatusRef.current = aiModelStatus; }, [aiModelStatus]);
+
   const runEnvCheck = useCallback(async () => {
     if (!stream) return;
     setEnvChecking(true);
     const collected: typeof hints = [];
+
+    // 0. If the AI model previously failed (CDN blocked, transient network),
+    //    retry loading it on this manual recheck. resetXxx() drops the cached
+    //    rejected promise so the next getXxx() actually re-fetches.
+    if (aiModelStatusRef.current === 'error') {
+      try {
+        const [{ resetFaceLandmarker, getFaceLandmarker }, { resetObjectDetector, getObjectDetector }] = await Promise.all([
+          import('@/lib/proctoring/face'),
+          import('@/lib/proctoring/objects'),
+        ]);
+        resetFaceLandmarker();
+        resetObjectDetector();
+        setAiError(null);
+        setAiModelStatus('loading');
+        try {
+          await Promise.all([getFaceLandmarker(), getObjectDetector()]);
+          setAiModelStatus('ready');
+        } catch (err: any) {
+          setAiModelStatus('error');
+          const msg = err && typeof err === 'object'
+            ? String((err as Error).message ?? '')
+            : String(err ?? '');
+          setAiError(msg.slice(0, 140) || 'Повтор загрузки не удался. Проверьте интернет и AdBlock.');
+        }
+      } catch {/* ignore - main loader will retry on next mount */}
+    }
 
     // 1. Headphones / earbuds detection via device labels.
     try {

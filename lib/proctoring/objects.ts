@@ -30,7 +30,7 @@ let detectorPromise: Promise<ObjectDetector> | null = null;
 
 export function getObjectDetector(): Promise<ObjectDetector> {
   if (detectorPromise) return detectorPromise;
-  detectorPromise = (async () => {
+  const p = (async () => {
     const fileset = await FilesetResolver.forVisionTasks(WASM_BASE);
     try {
       return await ObjectDetector.createFromOptions(fileset, {
@@ -48,7 +48,15 @@ export function getObjectDetector(): Promise<ObjectDetector> {
       });
     }
   })();
+  // Drop cached rejection on failure so a manual retry can re-fetch.
+  p.catch(() => { detectorPromise = null; });
+  detectorPromise = p;
   return detectorPromise;
+}
+
+/** Force a fresh load on next call - used by the "Проверить заново" button. */
+export function resetObjectDetector(): void {
+  detectorPromise = null;
 }
 
 export interface ForbiddenHit {

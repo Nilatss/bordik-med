@@ -45,7 +45,7 @@ let landmarkerPromise: Promise<FaceLandmarker> | null = null;
 export function getFaceLandmarker(): Promise<FaceLandmarker> {
   if (landmarkerPromise) return landmarkerPromise;
   patchMediaPipeInfoLogs();
-  landmarkerPromise = (async () => {
+  const p = (async () => {
     const fileset = await FilesetResolver.forVisionTasks(WASM_BASE);
     // Try GPU first (faster), fall back to CPU if WebGL fails — GPU
     // delegate is sometimes blocked in incognito or on locked-down
@@ -69,7 +69,17 @@ export function getFaceLandmarker(): Promise<FaceLandmarker> {
       });
     }
   })();
+  // If loading fails (CDN blocked, network error), drop the cached
+  // rejection so a manual retry actually re-fetches.
+  p.catch(() => { landmarkerPromise = null; });
+  landmarkerPromise = p;
   return landmarkerPromise;
+}
+
+/** Force a fresh load on next call - used by the "Проверить заново" button
+ *  when AI loading initially failed (CDN blocked, transient network). */
+export function resetFaceLandmarker(): void {
+  landmarkerPromise = null;
 }
 
 /** MediaPipe FaceMesh landmark indices for the centre of upper / lower lips. */
