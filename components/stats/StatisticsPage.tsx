@@ -676,9 +676,7 @@ function SectionHex({ rows }: { rows: SectionProgressRow[] }) {
                 }}
               >
                 <title>
-                  {isPlaceholder
-                    ? '—'
-                    : `${c.row.name} — ${c.row.pct}% (${c.row.done}/${c.row.total})${interactive ? ' · нажмите, чтобы открыть раздел' : ''}`}
+                  {isPlaceholder ? '—' : `${c.row.name} · ${c.row.pct}%`}
                 </title>
                 <polygon
                   points={hexPoints(c.cx, c.cy, layout.size)}
