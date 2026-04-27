@@ -464,38 +464,37 @@ interface HeatmapData {
 }
 
 function buildHeatmap(testAttempts: Record<string, { timestamp: number }[]>, period: Period): HeatmapData {
-  const now = Date.now();
   const today = new Date();
+  // startTime = local midnight of column 0; days = column count.
+  // Months align to the calendar — col 0 is the 1st of the current month,
+  // col days-1 is the last day. Year aligns to 1 Jan / 31 Dec.
+  let startTime: number;
   let days: number;
-  let endTime: number;       // timestamp of "today's midnight + 24h" — anchors col data.cols-1
   if (period === 'week') {
     days = 7;
-    endTime = now;
+    const start = new Date(today);
+    start.setDate(start.getDate() - 6);
+    start.setHours(0, 0, 0, 0);
+    startTime = start.getTime();
   } else if (period === 'month') {
-    // Calendar days in the current month — exactly how many actual days
-    // we render. April → 30, May → 31, February → 28/29, etc.
     days = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
-    endTime = now;
+    startTime = new Date(today.getFullYear(), today.getMonth(), 1, 0, 0, 0, 0).getTime();
   } else {
-    // 'all time' shows the entire CURRENT year (1 Jan → 31 Dec). The grid
-    // size matches days-of-year so leap years get 366 cells.
-    const yearStart = new Date(today.getFullYear(), 0, 1).getTime();
-    const yearEnd   = new Date(today.getFullYear(), 11, 31).getTime();
-    days = Math.round((yearEnd - yearStart) / (24 * 60 * 60 * 1000)) + 1;
-    endTime = yearEnd + 24 * 60 * 60 * 1000;
+    const yearStart = new Date(today.getFullYear(), 0, 1, 0, 0, 0, 0);
+    const yearEnd   = new Date(today.getFullYear(), 11, 31, 23, 59, 59, 999);
+    days = Math.round((yearEnd.getTime() - yearStart.getTime()) / (24 * 60 * 60 * 1000)) + 1;
+    startTime = yearStart.getTime();
   }
 
   const cells: number[][] = Array.from({ length: 4 }, () => Array(days).fill(0));
   const activeDays = new Set<number>();
   let totalSessions = 0;
 
-  // Iterate every attempt; bucket into (day-from-end, hour-band)
   for (const list of Object.values(testAttempts)) {
     for (const a of list) {
-      const ageMs = endTime - a.timestamp;
-      const ageDays = Math.floor(ageMs / (24 * 60 * 60 * 1000));
-      if (ageDays < 0 || ageDays >= days) continue;
-      const col = days - 1 - ageDays;
+      const offsetMs = a.timestamp - startTime;
+      const col = Math.floor(offsetMs / (24 * 60 * 60 * 1000));
+      if (col < 0 || col >= days) continue;
       const date = new Date(a.timestamp);
       const hour = date.getHours();
       const row =
@@ -528,15 +527,20 @@ function Heatmap({ data, period }: { data: HeatmapData; period: Period }) {
   const tickEvery = data.cols <= 7 ? 1 : data.cols <= 31 ? 5 : 30;
   const today = new Date();
 
-  // Resolve a calendar date for a given column. Anchor depends on period:
-  //   year  → 1 Jan of current year is col 0
-  //   else  → today is the rightmost column.
+  // Resolve a calendar date for a given column.
+  //   year   → col 0 = 1 Jan
+  //   month  → col 0 = 1st of current month
+  //   week   → col days-1 = today
   const dateForCol = (col: number) => {
     if (period === 'all') {
       const d = new Date(today.getFullYear(), 0, 1);
       d.setDate(d.getDate() + col);
       return d;
     }
+    if (period === 'month') {
+      return new Date(today.getFullYear(), today.getMonth(), col + 1);
+    }
+    // week
     const ageDays = data.cols - 1 - col;
     const d = new Date(today);
     d.setDate(d.getDate() - ageDays);
@@ -545,13 +549,18 @@ function Heatmap({ data, period }: { data: HeatmapData; period: Period }) {
   const fmtDate = (d: Date) =>
     d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', weekday: 'short' });
 
+  // Year has 365 cells — let them shrink below the 14px floor so the heatmap
+  // fits in the card and overflow stays visible (otherwise the tooltip is
+  // clipped by overflow:auto).
+  const minCellPx = period === 'all' ? 0 : 14;
+
   return (
     <div style={{
       display: 'grid',
-      gridTemplateColumns: '54px 1fr',
+      gridTemplateColumns: '54px minmax(0, 1fr)',
       gap: 8,
-      overflowX: 'auto',
       position: 'relative',
+      overflow: 'visible',
     }}>
       {/* Y-axis labels */}
       <div style={{
@@ -570,9 +579,8 @@ function Heatmap({ data, period }: { data: HeatmapData; period: Period }) {
         <div style={{
           display: 'grid',
           gridTemplateRows: `repeat(4, 1fr)`,
-          gridTemplateColumns: `repeat(${data.cols}, minmax(14px, 1fr))`,
-          gap: 4,
-          minWidth: data.cols > 14 ? Math.max(420, data.cols * 14) : undefined,
+          gridTemplateColumns: `repeat(${data.cols}, minmax(${minCellPx}px, 1fr))`,
+          gap: period === 'all' ? 2 : 4,
         }}>
           {/* Iterate top-to-bottom = row 3 (18-24) first visually */}
           {[3, 2, 1, 0].flatMap((row) =>
@@ -605,8 +613,8 @@ function Heatmap({ data, period }: { data: HeatmapData; period: Period }) {
         {/* Day axis — label content depends on the period */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: `repeat(${data.cols}, minmax(14px, 1fr))`,
-          gap: 4,
+          gridTemplateColumns: `repeat(${data.cols}, minmax(${minCellPx}px, 1fr))`,
+          gap: period === 'all' ? 2 : 4,
           fontFamily: 'var(--font-mono)', fontSize: 9, color: '#9CA3AF',
         }}>
           {Array.from({ length: data.cols }).map((_, i) => {
