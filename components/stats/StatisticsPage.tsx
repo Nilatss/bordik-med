@@ -244,10 +244,16 @@ export default function StatisticsPage() {
       <Section
         delay={240}
         title="Активность по дням"
-        tip="Карта вашей активности за выбранный период. Строки — четыре полосы суток (00–06, 06–12, 12–18, 18–24), столбцы — дни. Чем темнее ячейка, тем больше тестов вы сдали в этот час."
-        subtitle={`${heatmap.totalActiveDays} дней с активностью · ${heatmap.totalSessions} сессий`}
+        tip="Карта вашей активности за выбранный период. Каждая ячейка — один календарный день, цвет показывает сколько тестов вы сдали в этот день."
+        subtitle={
+          period === 'all'
+            ? 'Активность за год — листайте между годами'
+            : `${heatmap.totalActiveDays} дней с активностью · ${heatmap.totalSessions} сессий`
+        }
       >
-        <Heatmap data={heatmap} period={period} />
+        {period === 'all'
+          ? <YearHeatmap testAttempts={testAttempts} />
+          : <Heatmap data={heatmap} period={period} />}
       </Section>
 
       {/* Bottom 2-col grid: Section progress hex | Recent attempts */}
@@ -660,6 +666,272 @@ function Heatmap({ data, period }: { data: HeatmapData; period: Period }) {
         );
       })()}
     </div>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════
+   YearHeatmap — GitHub-style contribution graph for the "All time" view.
+   7 rows (days of week), N columns (weeks). Year switcher below.
+   ════════════════════════════════════════════════════════════════ */
+function YearHeatmap({ testAttempts }: {
+  testAttempts: Record<string, { timestamp: number }[]>;
+}) {
+  const currentYear = new Date().getFullYear();
+  const [year, setYear] = useState<number>(currentYear);
+  const [hovered, setHovered] = useState<number | null>(null);
+
+  // Pre-compute years that have at least one attempt + always current year.
+  const availableYears = useMemo(() => {
+    const set = new Set<number>([currentYear]);
+    for (const list of Object.values(testAttempts)) {
+      for (const a of list) set.add(new Date(a.timestamp).getFullYear());
+    }
+    return Array.from(set).sort();
+  }, [testAttempts, currentYear]);
+
+  const yearData = useMemo(() => {
+    const yearStart = new Date(year, 0, 1, 0, 0, 0, 0);
+    const yearEnd   = new Date(year, 11, 31, 23, 59, 59, 999);
+    const dayMs = 24 * 60 * 60 * 1000;
+    const days = Math.round((yearEnd.getTime() - yearStart.getTime()) / dayMs) + 1;
+    const counts = Array(days).fill(0);
+    let total = 0;
+    let activeDays = 0;
+    for (const list of Object.values(testAttempts)) {
+      for (const a of list) {
+        const offset = a.timestamp - yearStart.getTime();
+        if (offset < 0 || offset >= days * dayMs) continue;
+        const di = Math.floor(offset / dayMs);
+        if (counts[di] === 0) activeDays += 1;
+        counts[di] += 1;
+        total += 1;
+      }
+    }
+    // Day-of-week of Jan 1 (0=Sun..6=Sat). We use Mon-first layout.
+    const jan1 = yearStart.getDay();
+    const leadingPad = (jan1 + 6) % 7; // Mon → 0
+    const weeks = Math.ceil((days + leadingPad) / 7);
+    return { counts, days, leadingPad, weeks, total, activeDays };
+  }, [testAttempts, year]);
+
+  const max = Math.max(1, ...yearData.counts);
+  const monthLabels = ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
+  const dowLabels   = ['Пн', '', 'Ср', '', 'Пт', '', 'Вс'];
+
+  // Build month-label positions: for each week column, what month does its
+  // first cell belong to? Place a label at the FIRST week of that month.
+  const monthOfWeek: (number | null)[] = useMemo(() => {
+    const out: (number | null)[] = Array(yearData.weeks).fill(null);
+    let lastMonth = -1;
+    for (let w = 0; w < yearData.weeks; w++) {
+      // Find first valid day in this week (cell index = w*7 - leadingPad)
+      const firstDayIdx = w * 7 - yearData.leadingPad;
+      if (firstDayIdx < 0 || firstDayIdx >= yearData.days) continue;
+      const date = new Date(year, 0, 1 + firstDayIdx);
+      const m = date.getMonth();
+      if (m !== lastMonth) {
+        out[w] = m;
+        lastMonth = m;
+      }
+    }
+    return out;
+  }, [yearData, year]);
+
+  const dayDate = (di: number) => {
+    const d = new Date(year, 0, 1);
+    d.setDate(d.getDate() + di);
+    return d;
+  };
+  const fmtDate = (d: Date) =>
+    d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', weekday: 'short' });
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      {/* Grid */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: '24px minmax(0, 1fr)',
+        columnGap: 6,
+        position: 'relative',
+        overflow: 'visible',
+      }}>
+        {/* Top-left empty + month labels row */}
+        <div />
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: `repeat(${yearData.weeks}, minmax(0, 1fr))`,
+          columnGap: 3,
+          fontFamily: 'var(--font-mono)', fontSize: 10, color: '#9CA3AF',
+          marginBottom: 4,
+        }}>
+          {monthOfWeek.map((m, w) => (
+            <span key={w} style={{ textAlign: 'left', whiteSpace: 'nowrap' }}>
+              {m !== null ? monthLabels[m] : ''}
+            </span>
+          ))}
+        </div>
+
+        {/* Day-of-week labels */}
+        <div style={{
+          display: 'grid',
+          gridTemplateRows: 'repeat(7, 1fr)',
+          rowGap: 3,
+          fontFamily: 'var(--font-mono)', fontSize: 9, color: '#9CA3AF',
+        }}>
+          {dowLabels.map((l, i) => (
+            <span key={i} style={{ display: 'flex', alignItems: 'center' }}>
+              {l}
+            </span>
+          ))}
+        </div>
+
+        {/* The 7×weeks cell grid */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: `repeat(${yearData.weeks}, minmax(0, 1fr))`,
+          gridTemplateRows: 'repeat(7, 1fr)',
+          gap: 3,
+          gridAutoFlow: 'column',
+          position: 'relative',
+        }}>
+          {Array.from({ length: yearData.weeks * 7 }).map((_, idx) => {
+            const di = idx - yearData.leadingPad;
+            const inYear = di >= 0 && di < yearData.days;
+            const v = inYear ? yearData.counts[di] : 0;
+            const lvl = !inYear ? -1
+              : v === 0 ? 0
+              : v >= max * 0.75 ? 4
+              : v >= max * 0.5 ? 3
+              : v >= max * 0.25 ? 2
+              : 1;
+            const isHovered = hovered === di && inYear;
+            return (
+              <div
+                key={idx}
+                onPointerEnter={inYear ? () => setHovered(di) : undefined}
+                onPointerLeave={inYear ? () => setHovered((c) => (c === di ? null : c)) : undefined}
+                className="stats-heat-cell"
+                style={{
+                  aspectRatio: '1 / 1',
+                  background: lvl < 0 ? 'transparent' : HEATMAP_LEVELS[lvl],
+                  borderRadius: 3,
+                  cursor: inYear ? 'default' : undefined,
+                  outline: isHovered ? `2px solid ${ACCENT}` : 'none',
+                  outlineOffset: isHovered ? 1 : 0,
+                }}
+              />
+            );
+          })}
+
+          {/* Tooltip */}
+          {hovered !== null && (() => {
+            const v = yearData.counts[hovered];
+            const date = fmtDate(dayDate(hovered));
+            // Compute the cell's column (week) for tooltip horizontal anchor
+            const col = Math.floor((hovered + yearData.leadingPad) / 7);
+            const colPct = ((col + 0.5) / yearData.weeks) * 100;
+            const word = v === 1 ? 'тест' : v < 5 ? 'теста' : 'тестов';
+            return (
+              <div style={{
+                position: 'absolute',
+                left: `${colPct}%`,
+                bottom: 'calc(100% + 8px)',
+                transform: 'translateX(-50%)',
+                background: '#1A1A1A',
+                color: '#F4F5F7',
+                padding: '10px 14px',
+                borderRadius: 8,
+                fontFamily: 'var(--font-body)', fontSize: 12,
+                lineHeight: 1.4,
+                whiteSpace: 'nowrap',
+                pointerEvents: 'none',
+                boxShadow: '0 12px 32px rgba(15, 23, 42, 0.18), 0 4px 12px rgba(15, 23, 42, 0.08)',
+                zIndex: 5,
+              }}>
+                <div style={{ fontWeight: 600 }}>{date}</div>
+                <div style={{
+                  fontSize: 12,
+                  color: v > 0 ? '#F4F5F7' : '#9CA3AF',
+                  marginTop: 2,
+                }}>
+                  {v === 0 ? 'нет активности' : `Сделано ${v} ${word}`}
+                </div>
+              </div>
+            );
+          })()}
+        </div>
+      </div>
+
+      {/* Year switcher + summary */}
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        gap: 12, paddingTop: 12, borderTop: '1px solid #F0F1F5',
+        flexWrap: 'wrap',
+      }}>
+        <div style={{
+          fontFamily: 'var(--font-body)', fontSize: 12, color: '#6B7280',
+        }}>
+          <strong style={{ color: '#1A1A1A', fontWeight: 700 }}>{yearData.activeDays}</strong>
+          {' '}{yearData.activeDays === 1 ? 'день' : yearData.activeDays < 5 ? 'дня' : 'дней'} активности
+          {' · '}
+          <strong style={{ color: '#1A1A1A', fontWeight: 700 }}>{yearData.total}</strong>
+          {' '}{yearData.total === 1 ? 'тест' : yearData.total < 5 ? 'теста' : 'тестов'}
+        </div>
+
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+          <YearArrow disabled={!availableYears.includes(year - 1) && year - 1 < availableYears[0]}
+            onClick={() => setYear((y) => y - 1)} dir="prev" />
+          {availableYears.map((y) => (
+            <button
+              key={y}
+              type="button"
+              onClick={() => setYear(y)}
+              style={{
+                padding: '4px 10px',
+                borderRadius: 999,
+                border: 'none',
+                cursor: 'pointer',
+                fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 700,
+                background: y === year ? ACCENT : 'transparent',
+                color:      y === year ? '#FFFFFF' : '#6B7280',
+                transition: 'background 160ms, color 160ms',
+              }}
+            >
+              {y}
+            </button>
+          ))}
+          <YearArrow disabled={year + 1 > currentYear} onClick={() => setYear((y) => y + 1)} dir="next" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function YearArrow({ disabled, onClick, dir }: {
+  disabled: boolean; onClick: () => void; dir: 'prev' | 'next';
+}) {
+  return (
+    <button
+      type="button"
+      onClick={disabled ? undefined : onClick}
+      disabled={disabled}
+      aria-label={dir === 'prev' ? 'Предыдущий год' : 'Следующий год'}
+      style={{
+        width: 26, height: 26, borderRadius: 999,
+        background: 'transparent', border: 'none',
+        cursor: disabled ? 'not-allowed' : 'pointer',
+        opacity: disabled ? 0.3 : 1,
+        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+        color: '#6B7280',
+      }}
+    >
+      <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round">
+        {dir === 'prev'
+          ? <polyline points="15 18 9 12 15 6" />
+          : <polyline points="9 18 15 12 9 6" />}
+      </svg>
+    </button>
   );
 }
 
