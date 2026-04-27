@@ -946,6 +946,40 @@ main:has(.stats-page) {
   box-shadow: 0 4px 10px rgba(15, 23, 42, 0.15);
 }
 
+/* Hex tile custom tooltip (rendered via SVG foreignObject) */
+.stats-hex-tip {
+  background: #1A1A1A;
+  color: #F4F5F7;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  line-height: 1.4;
+  letter-spacing: -0.005em;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18), 0 4px 12px rgba(15, 23, 42, 0.08);
+  pointer-events: none;
+  display: inline-block;
+  max-width: 100%;
+  position: relative;
+}
+.stats-hex-tip__title {
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.stats-hex-tip__sub {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: #A8C7FF;
+  margin-top: 2px;
+  letter-spacing: 0.005em;
+}
+.stats-hex-tip--off .stats-hex-tip__sub {
+  color: #FCA5A5;
+}
+
 /* ─────────────────────────────────────────────────────────────────
    Stats InfoTip — hover/focus tooltip on the (i) icons.
    Pure-CSS so there's no JS state per tooltip and no re-render cost.

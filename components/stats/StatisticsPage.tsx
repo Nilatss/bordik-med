@@ -626,6 +626,10 @@ function SectionHex({ rows }: { rows: SectionProgressRow[] }) {
   // Total slots = 22 — exactly the curriculum section count.
   const layout = useMemo(() => buildHexLayout(rows), [rows]);
   const setActiveSection = useAppStore((s) => s.setActiveSection);
+  // Custom in-SVG tooltip — replaces the native browser bubble so we control
+  // the dark-on-white styling and can show different copy for unavailable
+  // (placeholder) tiles.
+  const [hoveredCell, setHoveredCell] = useState<typeof layout.cells[number] | null>(null);
 
   // Aggregate stats — analogues of the reference's three % footer rows.
   const startedCount   = rows.filter((r) => r.done > 0).length;
@@ -662,16 +666,15 @@ function SectionHex({ rows }: { rows: SectionProgressRow[] }) {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.32, ease: [0.05, 0.7, 0.1, 1], delay: 0.025 * i }}
                 onClick={interactive ? () => setActiveSection(sectionId) : undefined}
+                onPointerEnter={() => setHoveredCell(c)}
+                onPointerLeave={() => setHoveredCell((curr) => (curr === c ? null : curr))}
                 className={interactive ? 'stats-hex stats-hex--interactive' : 'stats-hex'}
                 style={{
                   transformOrigin: `${c.cx}px ${c.cy}px`,
                   transformBox: 'fill-box' as any,
-                  cursor: interactive ? 'pointer' : 'default',
+                  cursor: interactive ? 'pointer' : 'not-allowed',
                 }}
               >
-                <title>
-                  {isPlaceholder ? '—' : `${c.row.name} · ${c.row.pct}%`}
-                </title>
                 <polygon
                   points={hexPoints(c.cx, c.cy, layout.size)}
                   fill={hexColor(c.row.pct)}
@@ -695,6 +698,45 @@ function SectionHex({ rows }: { rows: SectionProgressRow[] }) {
               </motion.g>
             );
           })}
+
+          {/* Custom hover tooltip — rendered last so it draws above hexes.
+               Uses foreignObject so the bubble inherits site typography and
+               wraps long section names automatically. */}
+          {hoveredCell && (() => {
+            const isPlaceholder = hoveredCell.row.id.startsWith('__ph');
+            const tipW = 200;
+            const tipH = 50;
+            // Position above the hovered hex; clamp inside the SVG canvas.
+            let tipX = hoveredCell.cx - tipW / 2;
+            const tipY = Math.max(2, hoveredCell.cy - hoveredCell.cy * 0 - tipH - layout.size - 6);
+            if (tipX < 4) tipX = 4;
+            if (tipX + tipW > layout.width - 4) tipX = layout.width - 4 - tipW;
+            return (
+              <foreignObject
+                x={tipX}
+                y={tipY}
+                width={tipW}
+                height={tipH}
+                pointerEvents="none"
+                style={{ overflow: 'visible' }}
+              >
+                <div
+                  // @ts-ignore - xmlns required for foreignObject HTML content
+                  xmlns="http://www.w3.org/1999/xhtml"
+                  className={`stats-hex-tip${isPlaceholder ? ' stats-hex-tip--off' : ''}`}
+                >
+                  <div className="stats-hex-tip__title">
+                    {isPlaceholder ? 'Раздел недоступен' : hoveredCell.row.name}
+                  </div>
+                  <div className="stats-hex-tip__sub">
+                    {isPlaceholder
+                      ? 'Скоро появится'
+                      : `${hoveredCell.row.pct}% · ${hoveredCell.row.done}/${hoveredCell.row.total}`}
+                  </div>
+                </div>
+              </foreignObject>
+            );
+          })()}
         </svg>
       </div>
 
