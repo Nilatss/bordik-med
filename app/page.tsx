@@ -427,6 +427,31 @@ export default function Home() {
             <NewsFeed />
           )}
 
+          {/* Powered-by footer — small unobtrusive credit, shown on every view. */}
+          <footer style={{
+            marginTop: 32,
+            padding: '20px 0 16px',
+            borderTop: '1px solid #F0F1F5',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+            fontFamily: 'var(--font-body)', fontSize: 12, color: '#9CA3AF',
+            letterSpacing: '0.01em',
+          }}>
+            <span>Powered by</span>
+            <span style={{
+              display: 'inline-flex', alignItems: 'center', gap: 6,
+              fontFamily: 'var(--font-display)', fontSize: 13, fontWeight: 700,
+              color: '#1A1A1A', letterSpacing: '-0.01em',
+            }}>
+              <span aria-hidden="true" style={{
+                display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                width: 18, height: 18, borderRadius: 4,
+                background: 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)',
+                color: '#FFFFFF', fontSize: 11, fontWeight: 800,
+              }}>D</span>
+              Desli
+            </span>
+          </footer>
+
           </div>
         </main>
       </div>
