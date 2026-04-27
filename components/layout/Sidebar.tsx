@@ -219,7 +219,7 @@ export default function Sidebar() {
   const groups: NavGroup[] = [
     { id: 'main',     title: t('nav.group.main'),    items: ['home', 'learning', 'tests'] },
     { id: 'services', title: t('nav.group.services'),items: ['tools'] },
-    { id: 'account',  title: t('nav.group.account'), items: ['stats', 'profile'] },
+    { id: 'account',  title: t('nav.group.account'), items: ['profile', 'stats'] },
   ];
 
   // Filter by search
@@ -722,9 +722,222 @@ export default function Sidebar() {
             </>
           )}
         </nav>
+        {/* Feedback / suggestion box - sits above the user menu in the
+            previously empty bottom space. Opens a modal where the user
+            can send a short message; submission opens a mailto: with the
+            text prefilled so we get the email in our inbox. */}
+        <FeedbackBlock t={t} />
         {/* User menu — login state at the bottom of the sidebar */}
         <UserMenu />
       </motion.aside>
+    </>
+  );
+}
+
+/* ──────────────────────────────────────────────────────────────────
+   Feedback block — sits at the bottom of the sidebar between the nav
+   and the UserMenu. Click "Написать" → modal with textarea → submit
+   opens user's mail client with the message body pre-filled.
+   The dest email is stored in NEXT_PUBLIC_FEEDBACK_EMAIL with a sane
+   fallback so the feature works out of the box.
+   ────────────────────────────────────────────────────────────────── */
+const FEEDBACK_EMAIL =
+  (process.env.NEXT_PUBLIC_FEEDBACK_EMAIL as string | undefined) || 'feedback@bordik.app';
+
+function FeedbackBlock({ t }: { t: (k: string, vars?: Record<string, string | number>) => string }) {
+  const [open, setOpen] = useState(false);
+  const [text, setText] = useState('');
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+
+  const submit = () => {
+    const body = text.trim();
+    if (!body) return;
+    setSending(true);
+    try {
+      const subject = encodeURIComponent('Bordik — обратная связь');
+      const mailto = `mailto:${FEEDBACK_EMAIL}?subject=${subject}&body=${encodeURIComponent(body)}`;
+      window.location.href = mailto;
+      setSent(true);
+      setTimeout(() => {
+        setOpen(false);
+        setText('');
+        setSent(false);
+        setSending(false);
+      }, 1200);
+    } catch {
+      setSending(false);
+    }
+  };
+
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        style={{
+          margin: '8px 12px 12px',
+          padding: '12px 14px',
+          background: '#FFFFFF',
+          border: '1px solid #E5E7EB',
+          borderRadius: 12,
+          textAlign: 'left',
+          cursor: 'pointer',
+          display: 'flex', alignItems: 'flex-start', gap: 10,
+          transition: 'background 150ms, border-color 150ms',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = '#F8FAFC';
+          e.currentTarget.style.borderColor = '#CBD5E1';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = '#FFFFFF';
+          e.currentTarget.style.borderColor = '#E5E7EB';
+        }}
+        aria-label={t('sidebar.feedback.title')}
+      >
+        <span style={{
+          width: 28, height: 28, borderRadius: 8,
+          background: '#FEF3C7', color: '#D97706',
+          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+          flexShrink: 0,
+        }}>
+          <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+          </svg>
+        </span>
+        <span style={{ minWidth: 0, flex: 1 }}>
+          <span style={{
+            display: 'block',
+            fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
+            color: '#1A1A1A', lineHeight: 1.3,
+          }}>
+            {t('sidebar.feedback.title')}
+          </span>
+          <span style={{
+            display: 'block', marginTop: 2,
+            fontFamily: 'var(--font-body)', fontSize: 11.5, color: '#6B7280',
+            lineHeight: 1.4,
+          }}>
+            {t('sidebar.feedback.subtitle')}
+          </span>
+        </span>
+      </button>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18 }}
+            onClick={() => !sending && setOpen(false)}
+            style={{
+              position: 'fixed', inset: 0, zIndex: 9999,
+              background: 'rgba(15,23,42,0.45)',
+              backdropFilter: 'blur(2px)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              padding: 20,
+            }}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96, y: 8 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.96, y: 8 }}
+              transition={{ duration: 0.22, ease: [0.05, 0.7, 0.1, 1] }}
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                width: '100%', maxWidth: 460,
+                background: '#FFFFFF', borderRadius: 16,
+                padding: '24px 24px 20px',
+                boxShadow: '0 24px 48px rgba(15,23,42,0.24)',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+                <span style={{
+                  width: 36, height: 36, borderRadius: 10,
+                  background: '#FEF3C7', color: '#D97706',
+                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                }}>
+                  <svg width={18} height={18} viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+                  </svg>
+                </span>
+                <h3 style={{
+                  margin: 0,
+                  fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 700,
+                  color: '#1A1A1A', letterSpacing: '-0.01em',
+                }}>
+                  {t('sidebar.feedback.modalTitle')}
+                </h3>
+              </div>
+              <p style={{
+                margin: '0 0 14px',
+                fontFamily: 'var(--font-body)', fontSize: 13, color: '#6B7280',
+                lineHeight: 1.5,
+              }}>
+                {t('sidebar.feedback.modalDescription')}
+              </p>
+              <textarea
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                placeholder={t('sidebar.feedback.placeholder')}
+                disabled={sending}
+                rows={5}
+                style={{
+                  width: '100%', resize: 'vertical', minHeight: 120,
+                  padding: '12px 14px',
+                  borderRadius: 10, border: '1px solid #E5E7EB',
+                  background: '#F8FAFC',
+                  fontFamily: 'var(--font-body)', fontSize: 13.5, color: '#1A1A1A',
+                  lineHeight: 1.5,
+                  outline: 'none',
+                  transition: 'border-color 150ms, background 150ms',
+                }}
+                onFocus={(e) => { e.currentTarget.style.borderColor = '#94A3B8'; e.currentTarget.style.background = '#FFFFFF'; }}
+                onBlur={(e) => { e.currentTarget.style.borderColor = '#E5E7EB'; e.currentTarget.style.background = '#F8FAFC'; }}
+              />
+              <div style={{
+                display: 'flex', justifyContent: 'flex-end', gap: 8,
+                marginTop: 14,
+              }}>
+                <button
+                  type="button"
+                  onClick={() => !sending && setOpen(false)}
+                  disabled={sending}
+                  style={{
+                    padding: '9px 16px', borderRadius: 10,
+                    background: 'transparent', border: 'none',
+                    color: '#6B7280', cursor: sending ? 'not-allowed' : 'pointer',
+                    fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
+                  }}
+                >
+                  {t('sidebar.feedback.cancel')}
+                </button>
+                <button
+                  type="button"
+                  onClick={submit}
+                  disabled={sending || !text.trim()}
+                  style={{
+                    padding: '9px 18px', borderRadius: 10,
+                    background: sent ? '#10B981' : (!text.trim() ? '#E2E4EA' : '#1A1A1A'),
+                    color: !text.trim() && !sent ? '#9CA3AF' : '#FFFFFF',
+                    border: 'none',
+                    cursor: sending || !text.trim() ? 'not-allowed' : 'pointer',
+                    fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
+                    transition: 'background 180ms',
+                    minWidth: 110,
+                  }}
+                >
+                  {sent ? t('sidebar.feedback.sent') : sending ? t('sidebar.feedback.sending') : t('sidebar.feedback.send')}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }
