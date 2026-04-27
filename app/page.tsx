@@ -26,6 +26,57 @@ function ViewLoading() {
     </div>
   );
 }
+
+/**
+ * Lightweight placeholder used for views that are temporarily parked in the
+ * backlog (Profile, Home/NewsFeed). Renders a centred card with title +
+ * description so the navigation remains functional but the actual feature
+ * is hidden until we ship its update.
+ */
+function ComingSoonStub({ title, description }: { title: string; description: string }) {
+  return (
+    <div style={{
+      minHeight: '50vh',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      padding: '40px 16px',
+    }}>
+      <div style={{
+        maxWidth: 480, width: '100%',
+        background: '#FFFFFF',
+        border: '1px solid #F0F1F5',
+        borderRadius: 18,
+        padding: '28px 28px 30px',
+        textAlign: 'center',
+      }}>
+        <div style={{
+          display: 'inline-flex', alignItems: 'center', gap: 6,
+          padding: '4px 10px',
+          borderRadius: 999,
+          background: '#EFF4FF',
+          color: '#2563EB',
+          fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700,
+          letterSpacing: '0.06em', textTransform: 'uppercase',
+          marginBottom: 14,
+        }}>
+          Скоро
+        </div>
+        <h2 style={{
+          fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 700,
+          color: '#1A1A1A', letterSpacing: '-0.02em',
+          marginBottom: 8,
+        }}>
+          {title}
+        </h2>
+        <p style={{
+          fontFamily: 'var(--font-body)', fontSize: 14, color: '#6B7280',
+          lineHeight: 1.6,
+        }}>
+          {description}
+        </p>
+      </div>
+    </div>
+  );
+}
 const ToolsPage = dynamic(() => import('@/components/tools/ToolsPage'), { ssr: false, loading: ViewLoading });
 const ToolView = dynamic(() => import('@/components/tools/ToolView'), { ssr: false, loading: ViewLoading });
 const ProfilePage = dynamic(() => import('@/components/profile/ProfilePage'), { ssr: false, loading: ViewLoading });
@@ -327,8 +378,15 @@ export default function Home() {
         }}>
           <div className="app-main-inner">
 
+          {/* Profile and Home (NewsFeed) views are parked in the backlog —
+               original components are still imported and ready to swap back
+               in once the feature work resumes. For now both views render a
+               lightweight "coming soon" stub. */}
           {view === 'profile' && (
-            <ProfilePage />
+            <ComingSoonStub
+              title="Профиль"
+              description="Раздел временно отключён — мы доработаем его и вернём позже."
+            />
           )}
 
           {/*
@@ -427,7 +485,10 @@ export default function Home() {
           )}
 
           {view === 'home' && (
-            <NewsFeed />
+            <ComingSoonStub
+              title="Главная"
+              description="Лента новостей вернётся после редизайна. Загляните в Обучение или Инструменты."
+            />
           )}
 
           </div>
