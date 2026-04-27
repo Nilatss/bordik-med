@@ -1213,7 +1213,7 @@ function ToolKindsPanel({ stats }: { stats: ToolKindStats }) {
               </span>
               <span style={{
                 overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                fontWeight: 600, color: '#1A1A1A',
+                fontSize: 10.5, fontWeight: 600, color: '#1A1A1A',
               }}>
                 {t.title}
               </span>
