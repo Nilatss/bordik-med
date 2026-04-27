@@ -27,6 +27,7 @@ export default function useSupabaseSync() {
   useEffect(() => {
     let cancelled = false;
     const sb = getSupabaseBrowserClient();
+    if (!sb) return; // Backend not configured — local-only mode.
 
     const pull = async () => {
       const { data: { session } } = await sb.auth.getSession();
@@ -106,6 +107,8 @@ export default function useSupabaseSync() {
 
   // ─── 2. Push debounced ──────────────────────────────────────────
   useEffect(() => {
+    // Bail when backend isn't configured.
+    if (!getSupabaseBrowserClient()) return;
     // Subscribe to the specific subset of store fields that we sync.
     // unsubscribe on unmount.
     const queuePush = () => {

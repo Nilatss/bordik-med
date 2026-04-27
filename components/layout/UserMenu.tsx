@@ -18,6 +18,7 @@ export default function UserMenu() {
 
   useEffect(() => {
     const sb = getSupabaseBrowserClient();
+    if (!sb) { setLoading(false); return; }
     sb.auth.getUser().then(({ data: { user } }) => {
       setEmail(user?.email ?? null);
       setLoading(false);
@@ -29,6 +30,8 @@ export default function UserMenu() {
   }, []);
 
   if (loading) return null;
+  // Backend not configured → don't render the user menu at all.
+  if (!getSupabaseBrowserClient()) return null;
 
   if (!email) {
     return (
@@ -60,6 +63,7 @@ export default function UserMenu() {
 
   const signOut = async () => {
     const sb = getSupabaseBrowserClient();
+    if (!sb) return;
     await sb.auth.signOut();
   };
 

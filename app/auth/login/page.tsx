@@ -40,6 +40,11 @@ function LoginInner() {
     setPhase('sending');
     setError(null);
     const sb = getSupabaseBrowserClient();
+    if (!sb) {
+      setError('Backend ещё не настроен (нет NEXT_PUBLIC_SUPABASE_* переменных).');
+      setPhase('idle');
+      return;
+    }
     const { error } = await sb.auth.signInWithOtp({
       email: email.trim(),
       options: {
@@ -56,6 +61,10 @@ function LoginInner() {
 
   const signInWithGoogle = async () => {
     const sb = getSupabaseBrowserClient();
+    if (!sb) {
+      setError('Backend ещё не настроен.');
+      return;
+    }
     await sb.auth.signInWithOAuth({
       provider: 'google',
       options: { redirectTo: `${window.location.origin}/auth/callback` },

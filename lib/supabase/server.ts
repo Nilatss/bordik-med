@@ -2,19 +2,21 @@ import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 
 /**
- * Server-side Supabase client — for use inside Server Components,
- * Route Handlers, and Server Actions. Reads/writes auth cookies via
- * the Next.js cookies() store, so the same session that the browser
- * established is recognised here without any extra wiring.
+ * Server-side Supabase client. Returns `null` when env vars are missing
+ * so API routes can respond with a clean 503 instead of crashing the
+ * Next.js server runtime.
  *
  * NOTE: must be awaited because next/headers cookies() is async in
  * Next.js 15+.
  */
 export async function getSupabaseServerClient() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !key) return null;
   const cookieStore = await cookies();
   return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    url,
+    key,
     {
       cookies: {
         getAll() {

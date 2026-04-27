@@ -22,6 +22,7 @@ import { getSupabaseServerClient } from '@/lib/supabase/server';
  */
 export async function GET() {
   const sb = await getSupabaseServerClient();
+  if (!sb) return NextResponse.json({ error: 'backend not configured' }, { status: 503 });
   const { data: { user } } = await sb.auth.getUser();
   if (!user) return NextResponse.json({ error: 'unauthorised' }, { status: 401 });
 
@@ -67,6 +68,7 @@ interface SyncPayload {
 
 export async function POST(req: Request) {
   const sb = await getSupabaseServerClient();
+  if (!sb) return NextResponse.json({ error: 'backend not configured' }, { status: 503 });
   const { data: { user } } = await sb.auth.getUser();
   if (!user) return NextResponse.json({ error: 'unauthorised' }, { status: 401 });
 

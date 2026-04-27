@@ -19,6 +19,11 @@ export async function GET(request: Request) {
 
   if (code) {
     const sb = await getSupabaseServerClient();
+    if (!sb) {
+      return NextResponse.redirect(
+        new URL(`/auth/login?error=${encodeURIComponent('Backend ещё не настроен')}`, url.origin),
+      );
+    }
     const { error } = await sb.auth.exchangeCodeForSession(code);
     if (error) {
       // Fall back to login page with error toast
