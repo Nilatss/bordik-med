@@ -1101,9 +1101,10 @@ function ToolKindsPanel({ stats }: { stats: ToolKindStats }) {
                 minWidth: 0,
               }}
             >
-              {/* Icon square */}
+              {/* Icon square — aligned with the title row only, not vertically
+                   centered across the whole card. */}
               <span style={{
-                gridRow: '1 / span 3',
+                gridRow: '1',
                 width: 36, height: 36, borderRadius: 8,
                 background: tintBg, color: tint,
                 display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
