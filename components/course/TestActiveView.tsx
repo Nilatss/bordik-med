@@ -31,7 +31,9 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
   const [confirmExit, setConfirmExit] = useState(false);
   const [proctorReady, setProctorReady] = useState(false);
   const [warning, setWarning] = useState<string | null>(null);
+  const [violationModal, setViolationModal] = useState<{ reason: string; message: string; count: number } | null>(null);
   const warningTimerRef = useRef<number | null>(null);
+  const violationTimerRef = useRef<number | null>(null);
   const completedRef = useRef(false);
 
   // Countdown timer — only starts after proctoring is ready (camera/mic
@@ -60,8 +62,40 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
     }
   }, [timeRemaining, selectedAnswers, violations, onComplete]);
 
-  const handleViolation = useCallback(() => {
-    setViolations((v) => v + 1);
+  const handleViolation = useCallback((reason?: string) => {
+    setViolations((v) => {
+      const next = v + 1;
+      const messageMap: Record<string, string> = {
+        'audio-loud': 'Слишком громкий звук — крик, разговор или громкая музыка.',
+        'camera-covered': 'Камера закрыта или направлена в темноту.',
+        'camera-blurry': 'Камера резко потеряла фокус — её задели или закрыли.',
+        'face-multiple': 'В кадре больше одного человека.',
+        'lip-movement': 'Замечено повторное движение губ — вы что-то проговариваете.',
+        'object-cell phone': 'В кадре обнаружен телефон. Уберите его из поля камеры.',
+        'object-book':       'В кадре обнаружена книга или блокнот.',
+        'object-laptop':     'В кадре обнаружен ноутбук.',
+        'object-tv':         'В кадре обнаружен монитор или экран.',
+        'object-keyboard':   'В кадре обнаружена внешняя клавиатура.',
+        'tab-hidden':        'Вы переключились на другую вкладку или окно.',
+        'window-blur':       'Окно теста потеряло фокус (Alt+Tab или клик в другое приложение).',
+        'devtools':          'Открытие DevTools запрещено во время теста.',
+        'copy':              'Копирование вопросов или ответов запрещено.',
+        'screenshot':        'Скриншоты и печать страницы запрещены.',
+        'alt-tab':           'Переключение окна (Alt+Tab) запрещено.',
+        'forbidden-key':     'Использована запрещённая комбинация клавиш.',
+        'camera-stopped':    'Вы отключили камеру — тест завершается.',
+        'microphone-stopped': 'Вы отключили микрофон — тест завершается.',
+        'media-stopped':     'Доступ к камере или микрофону прекращён.',
+      };
+      const reasonStr = reason ?? '';
+      const msg = messageMap[reasonStr]
+        ?? (reasonStr.startsWith('object-') ? 'В кадре обнаружен запрещённый предмет.'
+        :   'Зафиксировано нарушение регламента теста.');
+      setViolationModal({ reason: reasonStr, message: msg, count: next });
+      if (violationTimerRef.current) window.clearTimeout(violationTimerRef.current);
+      violationTimerRef.current = window.setTimeout(() => setViolationModal(null), 5000);
+      return next;
+    });
   }, []);
 
   const handleForceSubmit = useCallback(() => {
@@ -185,6 +219,78 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
                 <line x1="12" y1="17" x2="12.01" y2="17" />
               </svg>
               <span>{warning}</span>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* HARD violation banner — red, more prominent than warning,
+             explains exactly what was violated and shows the running count. */}
+        <AnimatePresence>
+          {violationModal && (
+            <motion.div
+              key={violationModal.message + violationModal.count}
+              initial={{ opacity: 0, y: -10, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -10, scale: 0.97 }}
+              transition={{ duration: 0.22, ease: [0.05, 0.7, 0.1, 1] }}
+              style={{
+                padding: '14px 16px',
+                background: '#FEF2F2',
+                border: '1px solid #FCA5A5',
+                color: '#991B1B',
+                borderRadius: 12,
+                fontFamily: 'var(--font-body)', fontSize: 13.5,
+                display: 'flex', alignItems: 'flex-start', gap: 12,
+                boxShadow: '0 6px 16px rgba(220,38,38,0.10)',
+              }}
+            >
+              <svg width={20} height={20} viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round"
+                style={{ flexShrink: 0, marginTop: 1 }}>
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+              <div style={{ minWidth: 0, flex: 1 }}>
+                <div style={{
+                  fontFamily: 'var(--font-mono)', fontSize: 10.5, fontWeight: 700,
+                  letterSpacing: '0.08em', textTransform: 'uppercase',
+                  color: '#B91C1C', marginBottom: 4,
+                }}>
+                  Нарушение #{violationModal.count} из 3
+                </div>
+                <div style={{ fontWeight: 600, lineHeight: 1.5 }}>
+                  {violationModal.message}
+                </div>
+                {violationModal.count >= 3 && (
+                  <div style={{
+                    fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 600,
+                    color: '#7F1D1D', marginTop: 6,
+                  }}>
+                    Это было третье нарушение — тест завершается, повторная попытка через 24 часа.
+                  </div>
+                )}
+              </div>
+              <button
+                onClick={() => {
+                  if (violationTimerRef.current) window.clearTimeout(violationTimerRef.current);
+                  setViolationModal(null);
+                }}
+                aria-label="Закрыть"
+                style={{
+                  width: 24, height: 24, borderRadius: 6,
+                  background: 'transparent', border: 'none', cursor: 'pointer',
+                  color: '#991B1B', display: 'inline-flex',
+                  alignItems: 'center', justifyContent: 'center',
+                  flexShrink: 0,
+                }}
+              >
+                <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
             </motion.div>
           )}
         </AnimatePresence>

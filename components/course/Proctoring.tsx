@@ -98,6 +98,36 @@ export default function Proctoring({
     yaw: number;
     error?: string;
   }>({ status: 'loading', faces: 0, aperture: 0, yaw: 0 });
+
+  // Pre-warm the cached models in parallel — the consent screen has
+  // already loaded them in most cases, so this resolves immediately.
+  // Once model promise settles, flip the badge to "ready" without waiting
+  // for the first inference frame so the user doesn't see stale "loading".
+  useEffect(() => {
+    if (!active) return;
+    let cancelled = false;
+    Promise.all([
+      import('@/lib/proctoring/face').then((m) => m.getFaceLandmarker()),
+      import('@/lib/proctoring/objects').then((m) => m.getObjectDetector()),
+    ])
+      .then(() => {
+        if (!cancelled) {
+          setFaceState((prev) => prev.status === 'loading'
+            ? { ...prev, status: 'ready' }
+            : prev);
+        }
+      })
+      .catch((err: any) => {
+        if (!cancelled) {
+          setFaceState((prev) => ({
+            ...prev,
+            status: 'error',
+            error: err?.message?.slice(0, 80) || 'load-failed',
+          }));
+        }
+      });
+    return () => { cancelled = true; };
+  }, [active]);
   const [audioDb, setAudioDb] = useState<number>(-100);
 
   // ── Acquire stream once, release on unmount or when `active` flips off

@@ -5,7 +5,7 @@ import { MAX_VIOLATIONS } from '@/lib/quiz';
 
 interface TestGuardProps {
   active: boolean;
-  onViolation: () => void;
+  onViolation: (reason?: string) => void;
   onForceSubmit: () => void;
   violationCount: number;
   children: React.ReactNode;
@@ -101,21 +101,21 @@ export default function TestGuard({ active, onViolation, onForceSubmit, violatio
     // Switching tabs / minimising the window / losing focus is now an
     // instant violation — no grace countdown. The user explicitly asked
     // that tab-switching count toward the cheat counter immediately.
-    const fireVisibilityViolation = () => {
+    const fireVisibilityViolation = (reason: string) => {
       if (graceTickRef.current) {
         clearInterval(graceTickRef.current);
         graceTickRef.current = null;
         setGraceLeft(0);
         graceStartRef.current = 0;
       }
-      onViolation();
+      onViolation(reason);
       setShowViolation(true);
     };
     const handleVisibility = () => {
-      if (document.hidden) fireVisibilityViolation();
+      if (document.hidden) fireVisibilityViolation('tab-hidden');
     };
     const handleBlur = () => {
-      fireVisibilityViolation();
+      fireVisibilityViolation('window-blur');
     };
     const handleFocus = () => {
       // returning to the tab no longer cancels anything — the violation
@@ -126,15 +126,20 @@ export default function TestGuard({ active, onViolation, onForceSubmit, violatio
     const handleKeydown = (e: KeyboardEvent) => {
       if (!isViolationKey(e)) return;
       e.preventDefault();
-      // If a grace countdown is running, cancel it first so this key doesn't
-      // double-count alongside the imminent timer expiry.
       if (graceTickRef.current) {
         clearInterval(graceTickRef.current);
         graceTickRef.current = null;
         setGraceLeft(0);
         graceStartRef.current = 0;
       }
-      onViolation();
+      // Map specific keys to reason codes so the violation modal can
+      // explain exactly what tripped.
+      let reason = 'forbidden-key';
+      if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && /^[ijc]$/i.test(e.key))) reason = 'devtools';
+      else if (e.ctrlKey && /^[cax]$/i.test(e.key)) reason = 'copy';
+      else if (e.key === 'PrintScreen' || (e.ctrlKey && /^[ps]$/i.test(e.key))) reason = 'screenshot';
+      else if (e.altKey && e.key === 'Tab') reason = 'alt-tab';
+      onViolation(reason);
       setShowViolation(true);
     };
 
