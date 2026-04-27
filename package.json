@@ -15,6 +15,7 @@
   "dependencies": {
     "@fontsource-variable/jetbrains-mono": "^5.2.8",
     "@fontsource-variable/montserrat": "^5.2.8",
+    "@mediapipe/tasks-vision": "^0.10.34",
     "@supabase/ssr": "^0.10.2",
     "@supabase/supabase-js": "^2.104.1",
     "country-flag-icons": "^1.6.16",

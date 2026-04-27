@@ -17,6 +17,7 @@
  */
 
 import { useEffect, useRef, useState } from 'react';
+import { getFaceLandmarker, analyseFaceFrame } from '@/lib/proctoring/face';
 
 interface ProctoringProps {
   /** Called whenever a suspicious action is detected. Same callback the
@@ -54,6 +55,15 @@ const AUDIO_SILENCE_RESET_MS   = 60_000;
 const FRAME_DARK_THRESHOLD     = 18;
 const FRAME_DARK_HOLD_MS       = 2000;
 const FRAME_RESET_MS           = 15000;
+
+// Face / lip detection thresholds
+const FACE_MISSING_HOLD_MS     = 3000;   // no face in frame for this long → warning
+const FACE_MISSING_RESET_MS    = 12000;
+const MULTI_FACE_RESET_MS      = 15000;
+const LIP_APERTURE_THRESHOLD   = 0.012;  // change between consecutive frames
+const LIP_TALK_HITS_REQUIRED   = 6;      // separate frames with lip movement
+const LIP_TALK_WINDOW_MS       = 2000;
+const LIP_TALK_RESET_MS        = 10000;
 
 // Convert 0–255 amplitude to a friendly approximate dBFS for tooltips.
 function ampToDb(amp: number): number {
@@ -243,6 +253,106 @@ export default function Proctoring({
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
   }, [stream, active, onViolation]);
+
+  // ── Face landmark monitor — runs FaceMesh once per ~100 ms.
+  //    Detects:  no face / multiple faces / lip movement (talking).
+  useEffect(() => {
+    if (!stream || !active || !videoRef.current) return;
+    let stopped = false;
+    let raf = 0;
+    let lastInfer = 0;
+    let prevAperture = -1;
+    const lipHits: number[] = [];
+    let lastLipTalk = 0;
+    let missingSince = 0;
+    let lastMissing = 0;
+    let lastMulti = 0;
+
+    const loop = async () => {
+      if (stopped) return;
+      const now = performance.now();
+      // Throttle to ~10 inferences / second
+      if (now - lastInfer < 100) {
+        raf = requestAnimationFrame(loop);
+        return;
+      }
+      lastInfer = now;
+
+      try {
+        const lm = await getFaceLandmarker();
+        const v = videoRef.current;
+        if (!v || v.readyState < 2) {
+          raf = requestAnimationFrame(loop);
+          return;
+        }
+        const r = lm.detectForVideo(v, now);
+        const stats = analyseFaceFrame(r);
+
+        // Multiple faces → instant violation (cooldown)
+        if (stats.multipleFaces && now - lastMulti > MULTI_FACE_RESET_MS) {
+          lastMulti = now;
+          onViolation('face-multiple');
+          onWarning?.(
+            'face-multiple',
+            'В кадре больше одного человека — это нарушение.',
+          );
+        }
+
+        // No face for a while → warning
+        if (!stats.hasFace && !stats.multipleFaces) {
+          if (missingSince === 0) missingSince = now;
+          else if (
+            now - missingSince > FACE_MISSING_HOLD_MS &&
+            now - lastMissing > FACE_MISSING_RESET_MS
+          ) {
+            lastMissing = now;
+            missingSince = 0;
+            onWarning?.(
+              'face-missing',
+              'Не вижу лица в кадре. Сядьте по центру и держите камеру направленной на лицо.',
+            );
+          }
+        } else {
+          missingSince = 0;
+        }
+
+        // Lip movement detection — sliding window of frames where the
+        // aperture jumped more than the threshold; if too many in 2 s and
+        // the audio level is in the silent band → likely whispering.
+        if (stats.hasFace) {
+          if (prevAperture >= 0) {
+            const delta = Math.abs(stats.lipAperture - prevAperture);
+            if (delta > LIP_APERTURE_THRESHOLD) lipHits.push(now);
+          }
+          prevAperture = stats.lipAperture;
+          // Drop old hits outside the window
+          while (lipHits.length && now - lipHits[0] > LIP_TALK_WINDOW_MS) lipHits.shift();
+          if (
+            lipHits.length >= LIP_TALK_HITS_REQUIRED &&
+            now - lastLipTalk > LIP_TALK_RESET_MS
+          ) {
+            lastLipTalk = now;
+            lipHits.length = 0;
+            onWarning?.(
+              'lip-movement',
+              'Замечено движение губ. Если вы что-то проговариваете — следующее срабатывание будет нарушением.',
+            );
+          }
+        } else {
+          prevAperture = -1;
+        }
+      } catch {
+        // Model load failed or browser doesn't support GPU — silently skip
+      }
+      raf = requestAnimationFrame(loop);
+    };
+
+    raf = requestAnimationFrame(loop);
+    return () => {
+      stopped = true;
+      cancelAnimationFrame(raf);
+    };
+  }, [stream, active, onViolation, onWarning]);
 
   // ── Track-ended monitor — camera or microphone went away mid-test.
   //    Per the proctoring spec this is an immediate test termination, not
