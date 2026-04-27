@@ -656,10 +656,17 @@ function SectionHex({ rows }: { rows: SectionProgressRow[] }) {
           style={{ display: 'block', maxWidth: '100%' }}
         >
           {/* Render unhovered cells first, then hovered last so it draws on top.
-               (SVG has no z-index — paint order is the only way.) */}
+               (SVG has no z-index — paint order is the only way.)
+               We compare by row.id rather than object reference so a stale
+               hoveredCell from a previous layout never gets re-appended next
+               to the new cell with the same id (would duplicate React keys). */}
           {(() => {
-            const renderOrder = hoveredCell
-              ? [...layout.cells.filter((c) => c !== hoveredCell), hoveredCell]
+            const hoveredId = hoveredCell?.row.id ?? null;
+            const renderOrder = hoveredId
+              ? [
+                  ...layout.cells.filter((c) => c.row.id !== hoveredId),
+                  ...layout.cells.filter((c) => c.row.id === hoveredId),
+                ]
               : layout.cells;
             return renderOrder.map((c) => {
               const i = layout.cells.indexOf(c);
