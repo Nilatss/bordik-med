@@ -18,10 +18,33 @@ import {
 const WASM_BASE = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.34/wasm';
 const MODEL_URL = 'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/latest/face_landmarker.task';
 
+/**
+ * MediaPipe writes "INFO: Created TensorFlow Lite XNNPACK delegate for CPU."
+ * via console.error even though it's just informational. Next.js dev overlay
+ * catches console.error and shows it as a red error popup, which is alarming.
+ * Patch console.error once to swallow this specific MediaPipe info line.
+ */
+let mpLogPatched = false;
+function patchMediaPipeInfoLogs() {
+  if (mpLogPatched || typeof window === 'undefined') return;
+  mpLogPatched = true;
+  const orig = console.error.bind(console);
+  console.error = (...args: any[]) => {
+    const first = args[0];
+    if (typeof first === 'string' && /XNNPACK delegate|TensorFlow Lite/i.test(first)) {
+      // Demote MediaPipe's INFO messages to console.info — they aren't errors.
+      console.info(...args);
+      return;
+    }
+    orig(...args);
+  };
+}
+
 let landmarkerPromise: Promise<FaceLandmarker> | null = null;
 
 export function getFaceLandmarker(): Promise<FaceLandmarker> {
   if (landmarkerPromise) return landmarkerPromise;
+  patchMediaPipeInfoLogs();
   landmarkerPromise = (async () => {
     const fileset = await FilesetResolver.forVisionTasks(WASM_BASE);
     // Try GPU first (faster), fall back to CPU if WebGL fails — GPU
@@ -32,7 +55,7 @@ export function getFaceLandmarker(): Promise<FaceLandmarker> {
         baseOptions: { modelAssetPath: MODEL_URL, delegate: 'GPU' },
         runningMode: 'VIDEO',
         numFaces: 2,
-        outputFaceBlendshapes: false,
+        outputFaceBlendshapes: true,   // needed for eye gaze (eyeLook* shapes)
         outputFacialTransformationMatrixes: false,
       });
     } catch (gpuErr) {
@@ -41,7 +64,7 @@ export function getFaceLandmarker(): Promise<FaceLandmarker> {
         baseOptions: { modelAssetPath: MODEL_URL, delegate: 'CPU' },
         runningMode: 'VIDEO',
         numFaces: 2,
-        outputFaceBlendshapes: false,
+        outputFaceBlendshapes: true,   // needed for eye gaze (eyeLook* shapes)
         outputFacialTransformationMatrixes: false,
       });
     }
@@ -66,8 +89,20 @@ export interface FaceFrameStats {
    *  outer eye corners (head fully turned). Values |x| > 0.35 mean the user
    *  is looking distinctly to the side. */
   yaw: number;
-  /** Vertical pitch ratio similar to yaw (above/below eye line). */
+  /** Vertical pitch ratio: ≈0 forward, +x looking down, −x looking up. */
   pitch: number;
+  /** Eye gaze X (horizontal) from blendshapes: −1 = looking left, +1 = right.
+   *  Independent of head yaw — catches users glancing sideways without
+   *  turning the head. */
+  gazeX: number;
+  /** Eye gaze Y (vertical): −1 = looking up, +1 = looking down. */
+  gazeY: number;
+}
+
+/** Pull a blendshape score by name, 0 if absent. */
+function bs(cats: Array<{ categoryName: string; score: number }>, name: string): number {
+  const m = cats.find((c) => c.categoryName === name);
+  return m ? m.score : 0;
 }
 
 export function analyseFaceFrame(result: FaceLandmarkerResult): FaceFrameStats {
@@ -77,6 +112,8 @@ export function analyseFaceFrame(result: FaceLandmarkerResult): FaceFrameStats {
   let lipAperture = 0;
   let yaw = 0;
   let pitch = 0;
+  let gazeX = 0;
+  let gazeY = 0;
   if (sets.length >= 1) {
     const lm = sets[0];
     const upper = lm[UPPER_LIP_INNER];
@@ -101,6 +138,26 @@ export function analyseFaceFrame(result: FaceLandmarkerResult): FaceFrameStats {
       const halfY = Math.abs(bot.y - top.y) / 2 || 1;
       pitch = (nose.y - cy) / halfY;
     }
+    // Eye gaze from blendshapes (0..1 each).
+    // MediaPipe blendshape names are from the avatar's perspective:
+    //   eyeLookInLeft  = left eye rotated toward nose  → user looks RIGHT
+    //   eyeLookOutLeft = left eye rotated away from nose → user looks LEFT
+    //   eyeLookInRight = right eye rotated toward nose → user looks LEFT
+    //   eyeLookOutRight = right eye rotated away → user looks RIGHT
+    const blends = result.faceBlendshapes?.[0]?.categories;
+    if (blends && blends.length > 0) {
+      const inL  = bs(blends, 'eyeLookInLeft');
+      const outL = bs(blends, 'eyeLookOutLeft');
+      const inR  = bs(blends, 'eyeLookInRight');
+      const outR = bs(blends, 'eyeLookOutRight');
+      const upL  = bs(blends, 'eyeLookUpLeft');
+      const upR  = bs(blends, 'eyeLookUpRight');
+      const dnL  = bs(blends, 'eyeLookDownLeft');
+      const dnR  = bs(blends, 'eyeLookDownRight');
+      // Average both eyes; positive X = looking right, positive Y = down
+      gazeX = ((inL + outR) - (outL + inR)) / 2;
+      gazeY = ((dnL + dnR) - (upL + upR)) / 2;
+    }
   }
-  return { hasFace, multipleFaces, lipAperture, yaw, pitch };
+  return { hasFace, multipleFaces, lipAperture, yaw, pitch, gazeX, gazeY };
 }

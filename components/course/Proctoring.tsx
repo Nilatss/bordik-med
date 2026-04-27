@@ -73,9 +73,20 @@ const LIP_APERTURE_THRESHOLD   = 0.010;
 const LIP_TALK_HITS_REQUIRED   = 5;
 const LIP_TALK_WINDOW_MS       = 2000;
 const LIP_TALK_RESET_MS        = 8000;
-const YAW_TURNED_THRESHOLD     = 0.08;   // |yaw| > this → head turned to the side
+const YAW_TURNED_THRESHOLD     = 0.12;   // |yaw| > this → head turned to the side
 const YAW_TURNED_HOLD_MS       = 350;
 const YAW_TURNED_RESET_MS      = 4000;
+// Pitch — head tilted up/down. Pitch is in head-aspect-ratio units; the
+// resting pose already sits around ±0.10–0.15 depending on camera height,
+// so the threshold has to be quite forgiving to avoid false positives.
+const PITCH_TILTED_THRESHOLD   = 0.35;
+const PITCH_TILTED_HOLD_MS     = 1500;
+const PITCH_TILTED_RESET_MS    = 6000;
+// Eye gaze — blendshape sum, 0..1. 0.35 = clearly looking sideways with eyes
+// (without turning head). Holds shorter than head — eyes move quickly.
+const GAZE_OFF_THRESHOLD       = 0.35;
+const GAZE_OFF_HOLD_MS         = 700;
+const GAZE_OFF_RESET_MS        = 5000;
 
 // Convert 0–255 amplitude to a friendly approximate dBFS for tooltips.
 function ampToDb(amp: number): number {
@@ -198,13 +209,19 @@ export default function Proctoring({
     let warningSince = 0;
     let violationSince = 0;
     let silenceSince = 0;
+    let lastDbPush = 0;
     const tick = () => {
       analyser.getByteFrequencyData(data);
       let sum = 0;
       for (let i = 0; i < data.length; i++) sum += data[i];
       const avg = sum / data.length;
       const now = performance.now();
-      setAudioDb(ampToDb(avg));
+      // Throttle React re-renders to 5 Hz — pushing 60 Hz to setState causes
+      // heavy main-thread reconciliation that visibly stutters CSS animations.
+      if (now - lastDbPush > 200) {
+        lastDbPush = now;
+        setAudioDb(ampToDb(avg));
+      }
       // Violation tier — overrides warning
       if (avg >= AUDIO_VIOLATION_AMP) {
         if (violationSince === 0) violationSince = now;
@@ -356,6 +373,25 @@ export default function Proctoring({
     let yawSince = 0;
     let lastYaw = 0;
     let yawTurnCount = 0;
+    let pitchSince = 0;
+    let lastPitch = 0;
+    let pitchCount = 0;
+    let gazeSince = 0;
+    let lastGaze = 0;
+    let gazeCount = 0;
+
+    // Read calibration baseline captured on the consent screen — yaw/pitch
+    // are *relative* to the user's natural pose, so a low-mounted webcam
+    // doesn't constantly trip the pitch detector.
+    let yawBase = 0, pitchBase = 0;
+    try {
+      const raw = sessionStorage.getItem('proctoring-baseline');
+      if (raw) {
+        const b = JSON.parse(raw);
+        if (typeof b?.yaw === 'number') yawBase = b.yaw;
+        if (typeof b?.pitch === 'number') pitchBase = b.pitch;
+      }
+    } catch {/* ignore parse errors */}
 
     const loop = async () => {
       if (stopped) return;
@@ -380,7 +416,7 @@ export default function Proctoring({
           status: 'ready',
           faces: r.faceLandmarks?.length ?? 0,
           aperture: stats.lipAperture,
-          yaw: stats.yaw,
+          yaw: stats.yaw - yawBase,
         });
 
         // Multiple faces → instant violation (cooldown). Red banner only.
@@ -407,9 +443,13 @@ export default function Proctoring({
           missingSince = 0;
         }
 
+        // Subtract calibrated baseline so the "neutral" pose reads ~0.
+        const yawRel   = stats.yaw   - yawBase;
+        const pitchRel = stats.pitch - pitchBase;
+
         // Head-turn detection — yaw ratio above threshold sustained.
         // 1st time = warning, 2nd+ = violation.
-        if (stats.hasFace && Math.abs(stats.yaw) > YAW_TURNED_THRESHOLD) {
+        if (stats.hasFace && Math.abs(yawRel) > YAW_TURNED_THRESHOLD) {
           if (yawSince === 0) yawSince = now;
           else if (
             now - yawSince > YAW_TURNED_HOLD_MS &&
@@ -429,6 +469,54 @@ export default function Proctoring({
           }
         } else {
           yawSince = 0;
+        }
+
+        // Head pitch detection — looking up or down for too long.
+        if (stats.hasFace && Math.abs(pitchRel) > PITCH_TILTED_THRESHOLD) {
+          if (pitchSince === 0) pitchSince = now;
+          else if (
+            now - pitchSince > PITCH_TILTED_HOLD_MS &&
+            now - lastPitch > PITCH_TILTED_RESET_MS
+          ) {
+            lastPitch = now;
+            pitchSince = 0;
+            pitchCount += 1;
+            const dir = pitchRel < 0 ? 'вверх' : 'вниз';
+            if (pitchCount === 1) {
+              onWarning?.(
+                'face-pitch',
+                `Голова сильно наклонена ${dir}. Держите лицо в кадре фронтально — следующее срабатывание будет нарушением.`,
+              );
+            } else {
+              onViolation('face-pitch');
+            }
+          }
+        } else {
+          pitchSince = 0;
+        }
+
+        // Eye gaze detection — eyes off-center even if head stays still.
+        const gazeMag = Math.max(Math.abs(stats.gazeX), Math.abs(stats.gazeY));
+        if (stats.hasFace && gazeMag > GAZE_OFF_THRESHOLD) {
+          if (gazeSince === 0) gazeSince = now;
+          else if (
+            now - gazeSince > GAZE_OFF_HOLD_MS &&
+            now - lastGaze > GAZE_OFF_RESET_MS
+          ) {
+            lastGaze = now;
+            gazeSince = 0;
+            gazeCount += 1;
+            if (gazeCount === 1) {
+              onWarning?.(
+                'eye-gaze',
+                'Глаза смотрят не в экран. Сосредоточьтесь на тесте — следующее срабатывание будет нарушением.',
+              );
+            } else {
+              onViolation('eye-gaze');
+            }
+          }
+        } else {
+          gazeSince = 0;
         }
 
         // Lip movement detection — sliding window of frames where the
@@ -658,40 +746,47 @@ export default function Proctoring({
           boxShadow: '0 12px 32px rgba(15,23,42,0.18), 0 0 0 1px rgba(255,255,255,0.6)',
         }}
       />
-      {/* Big top-of-screen proctoring status panel — prominent enough that
-           the user can see at a glance whether detection is actually
-           running, and also see a visible error message if the AI model
-           fails to load. */}
+      {/* Discreet bottom-of-screen proctoring status pill — visible enough
+           to confirm detection is alive, but not so prominent that it
+           steals attention from the test content. Errors get a clearly
+           red palette so the user can't miss a model failure. */}
       <div style={{
         position: 'fixed',
-        top: 12, left: '50%', transform: 'translateX(-50%)',
+        bottom: 14, left: 16,
         zIndex: 61,
-        display: 'inline-flex', alignItems: 'center', gap: 10,
-        padding: '8px 14px',
+        display: 'inline-flex', alignItems: 'center', gap: 8,
+        padding: '5px 11px',
         borderRadius: 999,
         background: faceState.status === 'error' ? '#FEF2F2'
-          : faceState.status === 'ready' ? '#1A1A1A' : '#FFF7ED',
+          : faceState.status === 'ready' ? 'rgba(255,255,255,0.85)'
+          : '#FFF7ED',
         color: faceState.status === 'error' ? '#991B1B'
-          : faceState.status === 'ready' ? '#FFFFFF' : '#9A3412',
-        boxShadow: '0 8px 24px rgba(0,0,0,0.16)',
-        fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 700,
-        letterSpacing: '0.04em',
-        maxWidth: '90vw',
+          : faceState.status === 'ready' ? '#64748B'
+          : '#9A3412',
+        border: `1px solid ${
+          faceState.status === 'error' ? '#FCA5A5'
+          : faceState.status === 'ready' ? '#E2E8F0'
+          : '#FCD34D'
+        }`,
+        boxShadow: '0 1px 2px rgba(15,23,42,0.04)',
+        backdropFilter: 'blur(6px)',
+        fontFamily: 'var(--font-mono)', fontSize: 10.5, fontWeight: 600,
+        letterSpacing: '0.03em',
+        maxWidth: '70vw',
         whiteSpace: 'nowrap',
       }}>
         <span style={{
-          width: 8, height: 8, borderRadius: '50%',
+          width: 6, height: 6, borderRadius: '50%',
           background: faceState.status === 'error' ? '#DC2626'
-            : faceState.status === 'ready' ? '#34D399'
+            : faceState.status === 'ready' ? '#10B981'
             : '#F59E0B',
-          animation: 'pulse 1.4s ease-in-out infinite',
         }} />
         {faceState.status === 'error' ? (
-          <>Прокторинг: ошибка модели — {faceState.error ?? 'unknown'}</>
+          <>прокторинг: ошибка - {faceState.error ?? 'unknown'}</>
         ) : faceState.status === 'ready' ? (
-          <>Прокторинг · лиц: {faceState.faces} · yaw: {faceState.yaw.toFixed(2)} · мик: {audioDb} dB</>
+          <>прокторинг активен · лиц {faceState.faces} · yaw {faceState.yaw.toFixed(2)} · мик {audioDb} dB</>
         ) : (
-          <>Загружаем AI-модель прокторинга… подождите</>
+          <>загружаем AI-модель прокторинга…</>
         )}
       </div>
 
@@ -708,14 +803,16 @@ export default function Proctoring({
       }}>
         <span style={{
           width: 7, height: 7, borderRadius: '50%', background: '#F87171',
-          animation: 'pulse 1.4s ease-in-out infinite',
         }} />
         REC
       </div>
       <style jsx global>{`
         @keyframes pulse {
-          0%, 100% { opacity: 1; }
-          50%      { opacity: 0.35; }
+          0%   { opacity: 1.00; }
+          25%  { opacity: 0.85; }
+          50%  { opacity: 0.55; }
+          75%  { opacity: 0.85; }
+          100% { opacity: 1.00; }
         }
       `}</style>
     </>
