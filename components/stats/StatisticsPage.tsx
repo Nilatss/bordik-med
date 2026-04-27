@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { modules, sections as allSections, TOTAL_COURSES, getCourseById, getModuleForCourse, getSectionById } from '@/lib/curriculum';
 import { useAppStore, formatStudyTime, getTotalStudyTime } from '@/lib/store';
 import { MAX_TEST_LEVELS } from '@/lib/quiz';
@@ -251,9 +251,19 @@ export default function StatisticsPage() {
             : `${heatmap.totalActiveDays} дней с активностью · ${heatmap.totalSessions} сессий`
         }
       >
-        {period === 'all'
-          ? <YearHeatmap testAttempts={testAttempts} />
-          : <Heatmap data={heatmap} period={period} />}
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={period}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.28, ease: [0.05, 0.7, 0.1, 1] }}
+          >
+            {period === 'all'
+              ? <YearHeatmap testAttempts={testAttempts} />
+              : <Heatmap data={heatmap} period={period} />}
+          </motion.div>
+        </AnimatePresence>
       </Section>
 
       {/* Bottom 2-col grid: Section progress hex | Recent attempts */}
