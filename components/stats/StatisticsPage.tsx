@@ -1342,7 +1342,7 @@ function RecentAttempts({ attempts }: { attempts: { courseId: string; testLevel:
               background: 'transparent',
               cursor: course ? 'pointer' : 'default',
               textAlign: 'left',
-              fontFamily: 'var(--font-body)', fontSize: 10.5,
+              fontFamily: 'var(--font-body)', fontSize: 12,
               width: '100%',
               transition: 'background 160ms',
             }}
@@ -1354,22 +1354,22 @@ function RecentAttempts({ attempts }: { attempts: { courseId: string; testLevel:
               display: 'flex', flexDirection: 'column', gap: 1,
             }}>
               <span style={{
-                fontSize: 10.5, fontWeight: 600, color: '#1A1A1A',
+                fontSize: 12, fontWeight: 600, color: '#1A1A1A',
                 overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
               }}>
                 {course?.title ?? a.courseId}
               </span>
               <span className="stats-attempts__sub-mobile" style={{
-                fontSize: 10.5, color: '#9CA3AF',
+                fontSize: 11, color: '#9CA3AF',
                 display: 'none',
               }}>
                 {a.score}/{a.total} · {dateStr}
               </span>
             </span>
 
-            {/* Score — uniform pill-size font */}
+            {/* Score — matches Section Progress list size (12px) */}
             <span className="stats-attempts__score" style={{
-              fontFamily: 'var(--font-body)', fontSize: 10.5,
+              fontFamily: 'var(--font-body)', fontSize: 12,
               color: '#1A1A1A',
             }}>
               {a.score}/{a.total}
@@ -1377,12 +1377,12 @@ function RecentAttempts({ attempts }: { attempts: { courseId: string; testLevel:
 
             {/* Date */}
             <span className="stats-attempts__date" style={{
-              fontFamily: 'var(--font-body)', fontSize: 10.5, color: '#6B7280',
+              fontFamily: 'var(--font-body)', fontSize: 12, color: '#6B7280',
             }}>
               {dateStr}
             </span>
 
-            {/* Status pill — same compact size */}
+            {/* Status pill */}
             <span style={{
               justifySelf: 'end',
               display: 'inline-flex', alignItems: 'center', gap: 4,
@@ -1390,7 +1390,7 @@ function RecentAttempts({ attempts }: { attempts: { courseId: string; testLevel:
               borderRadius: 999,
               background: a.passed ? '#DCFCE7' : '#FEF2F2',
               color:      a.passed ? '#15803D' : '#B91C1C',
-              fontFamily: 'var(--font-body)', fontSize: 10.5, fontWeight: 600,
+              fontFamily: 'var(--font-body)', fontSize: 11, fontWeight: 600,
               whiteSpace: 'nowrap',
             }}>
               {a.passed ? 'Пройден' : 'Не пройден'}
