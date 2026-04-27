@@ -912,6 +912,7 @@ main:has(.stats-page) {
 /* Stats KPI row: 3-up on desktop, stack on mobile */
 @media (max-width: 720px) {
   .stats-kpi-row { grid-template-columns: 1fr !important; }
+  .stats-2col    { grid-template-columns: 1fr !important; }
 }
 
 /* ToolsPage row grid — JS already sets the correct columns based on viewport

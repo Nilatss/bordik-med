@@ -4,6 +4,8 @@ import { useMemo, useState } from 'react';
 import { modules, TOTAL_COURSES, getCourseById, getModuleForCourse, getSectionById } from '@/lib/curriculum';
 import { useAppStore, formatStudyTime, getTotalStudyTime } from '@/lib/store';
 import { MAX_TEST_LEVELS } from '@/lib/quiz';
+import { RUNNER_KINDS } from '@/lib/tool-meta-data';
+import { CATALOG_TOOLS } from '@/lib/tools-catalog';
 
 /* ════════════════════════════════════════════════════════════════
    Statistics — dashboard rebuilt to match the Findeck reference.
@@ -42,6 +44,7 @@ export default function StatisticsPage() {
   const testAttempts        = useAppStore((s) => s.testAttempts);
   const studyTime           = useAppStore((s) => s.studyTime);
   const userName            = useAppStore((s) => s.userName);
+  const toolUsage           = useAppStore((s) => s.toolUsage);
 
   const [period, setPeriod] = useState<Period>('month');
   const [periodOpen, setPeriodOpen] = useState(false);
@@ -77,6 +80,9 @@ export default function StatisticsPage() {
 
   /* ─── Section progress (replaces «Accounts overview» bars) ─── */
   const sectionProgress = useMemo(() => buildSectionProgress(completedCourses), [completedCourses]);
+
+  /* ─── Tool kinds breakdown — count tool opens grouped by runner kind ── */
+  const toolKindStats = useMemo(() => buildToolKindStats(toolUsage), [toolUsage]);
 
   /* ─── Recent test attempts table (replaces «Tax Liabilities») */
   const recentAttempts = useMemo(() => {
@@ -222,21 +228,26 @@ export default function StatisticsPage() {
         <Heatmap data={heatmap} />
       </Section>
 
-      {/* Bottom 2-col grid: Section progress | Recent attempts */}
+      {/* Bottom 2-col grid: Section progress hex | Recent attempts */}
       <div className="stats-2col" style={{
         display: 'grid',
         gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1.4fr)',
         gap: 14,
         width: '100%',
       }}>
-        <Section title="Прогресс по разделам" subtitle="Завершённость каждого блока программы">
-          <SectionProgress rows={sectionProgress} />
+        <Section title="Прогресс по разделам" subtitle={`Последние ${PERIOD_LABELS[period].toLowerCase()}`}>
+          <SectionHex rows={sectionProgress} />
         </Section>
 
         <Section title="Последние тесты" subtitle="Шесть свежих попыток">
           <RecentAttempts attempts={recentAttempts} />
         </Section>
       </div>
+
+      {/* Tool kinds — separate row */}
+      <Section title="Использование инструментов" subtitle="Счётчик открытий по типу инструмента">
+        <ToolKindsPanel stats={toolKindStats} />
+      </Section>
     </div>
   );
 }
@@ -521,41 +532,393 @@ function buildSectionProgress(completedCourses: string[]): SectionProgressRow[] 
       id, name: v.name, total: v.total, done: v.done,
       pct: v.total > 0 ? Math.round((v.done / v.total) * 100) : 0,
     }))
-    .sort((a, b) => b.pct - a.pct)
-    .slice(0, 6); // top 6 to keep card compact
+    .sort((a, b) => b.pct - a.pct);
 }
 
-function SectionProgress({ rows }: { rows: SectionProgressRow[] }) {
+/* ────────────────────────────────────────────────────────────────
+   SectionHex — honeycomb cluster visualisation, matches the
+   reference Findeck/email "Performance" hexagon heatmap.
+   Each hex = one curriculum section, colour intensity = % completion.
+   Below the cluster: 3 summary metrics (% started / completed / avg).
+   ────────────────────────────────────────────────────────────── */
+function SectionHex({ rows }: { rows: SectionProgressRow[] }) {
+  // Layout: tight cluster of 22 sections. We sort by completion desc and
+  // place the most-complete sections in the centre (mirrors the reference's
+  // hot core). Offset rows produce a real hex packing.
+  // Pattern (rows of cols): 4-5-6-5-4-… giving a roughly diamond cluster.
+  // Total slots = 22 — exactly the curriculum section count.
+  const layout = useMemo(() => buildHexLayout(rows), [rows]);
+
+  // Aggregate stats — analogues of the reference's three % footer rows.
+  const startedCount   = rows.filter((r) => r.done > 0).length;
+  const completedCount = rows.filter((r) => r.pct >= 100).length;
+  const avgPct = rows.length
+    ? Math.round(rows.reduce((s, r) => s + r.pct, 0) / rows.length)
+    : 0;
+
   if (rows.length === 0) {
     return <EmptyHint text="Прогресс появится после первого пройденного курса." />;
   }
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-      {rows.map((r) => (
-        <div key={r.id}>
-          <div style={{
-            display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
-            fontFamily: 'var(--font-body)', fontSize: 13,
-            marginBottom: 6,
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 14, alignItems: 'stretch' }}>
+      {/* Hex cluster */}
+      <div style={{
+        display: 'flex', justifyContent: 'center',
+        padding: '4px 0 8px',
+      }}>
+        <svg
+          width={layout.width}
+          height={layout.height}
+          viewBox={`0 0 ${layout.width} ${layout.height}`}
+          style={{ display: 'block', maxWidth: '100%' }}
+        >
+          {layout.cells.map((c) => (
+            <g key={c.row.id}>
+              <title>{`${c.row.name} — ${c.row.pct}% (${c.row.done}/${c.row.total})`}</title>
+              <polygon
+                points={hexPoints(c.cx, c.cy, layout.size)}
+                fill={hexColor(c.row.pct)}
+                stroke="#FFFFFF"
+                strokeWidth={2}
+              />
+              {c.row.pct > 0 && (
+                <text
+                  x={c.cx}
+                  y={c.cy + 4}
+                  textAnchor="middle"
+                  fontSize={11}
+                  fontFamily="var(--font-mono)"
+                  fontWeight={700}
+                  fill={c.row.pct >= 50 ? '#FFFFFF' : ACCENT_DARK}
+                  style={{ pointerEvents: 'none' }}
+                >
+                  {c.row.pct}
+                </text>
+              )}
+            </g>
+          ))}
+        </svg>
+      </div>
+
+      {/* Summary stat row — three columns separated by faint dividers */}
+      <div style={{
+        display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)',
+        gap: 0, padding: '12px 0 4px',
+        borderTop: '1px solid #F0F1F5',
+      }}>
+        <HexStat dotColor={ACCENT}      value={`${avgPct}%`}      label="Средний прогресс" />
+        <HexStat dotColor="#7AA5FA"     value={`${startedCount}`} label="Разделов начато" border />
+        <HexStat dotColor="#A8C7FF"     value={`${completedCount}`} label="Завершено разделов" />
+      </div>
+
+      {/* Top sections list — small, like the % rows under the hex chart */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+        {rows.slice(0, 4).map((r) => (
+          <div key={r.id} style={{
+            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+            fontFamily: 'var(--font-body)', fontSize: 12,
+            padding: '6px 0',
+            borderTop: '1px solid #F8F9FB',
           }}>
-            <span style={{ fontWeight: 500, color: '#1A1A1A' }}>{r.name}</span>
-            <span style={{ color: '#9CA3AF', fontSize: 12 }}>
-              {r.done}/{r.total} · <strong style={{ color: '#1A1A1A' }}>{r.pct}%</strong>
+            <span style={{
+              display: 'inline-flex', alignItems: 'center', gap: 8,
+              color: '#1A1A1A', fontWeight: 500,
+              minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+            }}>
+              <span style={{
+                width: 8, height: 8, borderRadius: '50%',
+                background: hexColor(r.pct),
+                flexShrink: 0,
+              }} />
+              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{r.pct}% {r.name}</span>
+            </span>
+            <span style={{
+              color: '#9CA3AF', fontSize: 11,
+              display: 'inline-flex', alignItems: 'center', gap: 4,
+              flexShrink: 0,
+            }}>
+              {r.done}/{r.total}
+              <svg width={10} height={10} viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
             </span>
           </div>
-          <div style={{
-            height: 8, borderRadius: 999, background: '#F1F3F6',
-            overflow: 'hidden',
-          }}>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* Hex helpers ────────────────────────────────────────────────── */
+interface HexCell {
+  row: SectionProgressRow;
+  cx: number;
+  cy: number;
+}
+interface HexLayout {
+  cells: HexCell[];
+  width: number;
+  height: number;
+  size: number;
+}
+
+function buildHexLayout(rows: SectionProgressRow[]): HexLayout {
+  // Pointy-top hex math.
+  // Rows pattern: 4,5,4,5,4 = 22 (or fewer if rows.length < 22).
+  // Place by zig-zag: middle of the cluster gets the highest-pct row.
+  const ROW_PATTERN = [4, 5, 4, 5, 4];
+  const total = ROW_PATTERN.reduce((s, n) => s + n, 0); // 22
+  const padded = [...rows];
+  // Trim or pad to exactly `total` to keep the cluster symmetric. Padding
+  // entries render as 0% (lightest tint) — visually communicating "section
+  // exists, no progress yet".
+  while (padded.length < total) {
+    padded.push({ id: `__ph${padded.length}`, name: '—', total: 0, done: 0, pct: 0 });
+  }
+  if (padded.length > total) padded.length = total;
+
+  // Order so the most-complete sections cluster at the centre. We assign
+  // by spiralling outward — but a simpler approximation: sort desc, then
+  // walk cells from the centre outward.
+  const sorted = [...padded].sort((a, b) => b.pct - a.pct);
+
+  const size = 24;            // hex circumradius in px
+  const w = Math.sqrt(3) * size;  // hex width
+  const h = 2 * size;             // hex height
+  const dy = 0.75 * h;            // vertical step between rows
+
+  // Generate raw centre coords for the pattern, then sort by distance from
+  // the centre of mass — that's where we'll place top-pct rows first.
+  const slots: { cx: number; cy: number }[] = [];
+  const maxCols = Math.max(...ROW_PATTERN);
+  for (let r = 0; r < ROW_PATTERN.length; r++) {
+    const cols = ROW_PATTERN[r];
+    const offset = (maxCols - cols) * (w / 2);
+    for (let c = 0; c < cols; c++) {
+      slots.push({
+        cx: offset + c * w + w / 2,
+        cy: r * dy + h / 2,
+      });
+    }
+  }
+
+  const totalW = maxCols * w;
+  const totalH = (ROW_PATTERN.length - 1) * dy + h;
+  const cx0 = totalW / 2;
+  const cy0 = totalH / 2;
+
+  // Sort slots by distance from cluster centre asc.
+  const ordered = slots
+    .map((s, i) => ({ s, i, d: Math.hypot(s.cx - cx0, s.cy - cy0) }))
+    .sort((a, b) => a.d - b.d);
+
+  const cells: HexCell[] = ordered.map((o, i) => ({
+    row: sorted[i],
+    cx: o.s.cx,
+    cy: o.s.cy,
+  }));
+
+  return { cells, width: totalW, height: totalH, size };
+}
+
+function hexPoints(cx: number, cy: number, size: number): string {
+  // Pointy-top hexagon
+  const pts: string[] = [];
+  for (let i = 0; i < 6; i++) {
+    const angle = Math.PI / 180 * (60 * i - 90);
+    pts.push(`${(cx + size * Math.cos(angle)).toFixed(2)},${(cy + size * Math.sin(angle)).toFixed(2)}`);
+  }
+  return pts.join(' ');
+}
+
+function hexColor(pct: number): string {
+  // 5-step blue gradient from light grey to peak accent.
+  if (pct <= 0)    return HEATMAP_LEVELS[0];
+  if (pct < 25)    return HEATMAP_LEVELS[1];
+  if (pct < 50)    return HEATMAP_LEVELS[2];
+  if (pct < 75)    return HEATMAP_LEVELS[3];
+  return HEATMAP_LEVELS[4];
+}
+
+function HexStat({ dotColor, value, label, border }: {
+  dotColor: string; value: string; label: string; border?: boolean;
+}) {
+  return (
+    <div style={{
+      padding: '0 12px',
+      borderLeft:  border ? '1px solid #F0F1F5' : 'none',
+      borderRight: border ? '1px solid #F0F1F5' : 'none',
+      textAlign: 'left',
+    }}>
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: 6,
+        fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 18,
+        color: '#1A1A1A', letterSpacing: '-0.01em',
+      }}>
+        <span style={{
+          width: 10, height: 10, borderRadius: '50%',
+          background: dotColor,
+        }} />
+        {value}
+      </div>
+      <div style={{
+        fontFamily: 'var(--font-body)', fontSize: 11, color: '#9CA3AF',
+        marginTop: 2,
+      }}>
+        {label}
+      </div>
+    </div>
+  );
+}
+
+/* ────────────────────────────────────────────────────────────────
+   ToolKindsPanel — open counters by runner kind.
+   ────────────────────────────────────────────────────────────── */
+interface ToolKindStats {
+  total: number;
+  byKind: { kind: string; label: string; count: number; uniq: number; total: number; pct: number }[];
+  topTools: { id: string; title: string; count: number; kind: string }[];
+}
+
+function buildToolKindStats(usage: Record<string, number>): ToolKindStats {
+  const KIND_LABELS: Record<string, string> = {
+    calculator: 'Калькуляторы',
+    score: 'Шкалы и опросники',
+  };
+
+  // Total available per kind from runner registry (denominator).
+  const totalByKind: Record<string, number> = Object.create(null);
+  for (const id of Object.keys(RUNNER_KINDS)) {
+    const k = RUNNER_KINDS[id];
+    totalByKind[k] = (totalByKind[k] ?? 0) + 1;
+  }
+
+  // User-side counts.
+  const useByKind: Record<string, { count: number; uniq: Set<string> }> = Object.create(null);
+  let total = 0;
+  for (const [id, n] of Object.entries(usage)) {
+    if (n <= 0) continue;
+    const k = RUNNER_KINDS[id];
+    if (!k) continue;
+    const slot = useByKind[k] ?? { count: 0, uniq: new Set() };
+    slot.count += n;
+    slot.uniq.add(id);
+    useByKind[k] = slot;
+    total += n;
+  }
+
+  const byKind = Object.keys(totalByKind)
+    .sort((a, b) => (useByKind[b]?.count ?? 0) - (useByKind[a]?.count ?? 0))
+    .map((kind) => {
+      const tot = totalByKind[kind] ?? 0;
+      const u = useByKind[kind] ?? { count: 0, uniq: new Set<string>() };
+      return {
+        kind,
+        label: KIND_LABELS[kind] ?? kind,
+        count: u.count,
+        uniq:  u.uniq.size,
+        total: tot,
+        pct:   tot > 0 ? Math.round((u.uniq.size / tot) * 100) : 0,
+      };
+    });
+
+  // Build a quick id → title lookup once for the top-tools list.
+  const topTools = Object.entries(usage)
+    .filter(([, n]) => n > 0)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
+    .map(([id, count]) => {
+      const t = CATALOG_TOOLS.find((x) => x.id === id);
+      return {
+        id,
+        title: t?.title ?? id,
+        count,
+        kind: RUNNER_KINDS[id] ?? 'calculator',
+      };
+    });
+
+  return { total, byKind, topTools };
+}
+
+function ToolKindsPanel({ stats }: { stats: ToolKindStats }) {
+  if (stats.total === 0) {
+    return <EmptyHint text="Откройте любой инструмент — счётчики появятся здесь." />;
+  }
+  return (
+    <div style={{
+      display: 'grid',
+      gridTemplateColumns: 'minmax(0, 1.1fr) minmax(0, 1fr)',
+      gap: 16,
+    }}>
+      {/* Left: kinds breakdown bars */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+        {stats.byKind.map((k) => (
+          <div key={k.kind}>
             <div style={{
-              height: '100%', width: `${r.pct}%`,
-              background: ACCENT,
-              borderRadius: 999,
-              transition: 'width 400ms ease',
-            }} />
+              display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
+              fontFamily: 'var(--font-body)', fontSize: 13,
+              marginBottom: 6,
+            }}>
+              <span style={{ fontWeight: 600, color: '#1A1A1A' }}>{k.label}</span>
+              <span style={{ color: '#9CA3AF', fontSize: 12 }}>
+                {k.count} {k.count === 1 ? 'открытие' : 'открытий'} ·{' '}
+                <strong style={{ color: '#1A1A1A' }}>{k.uniq}/{k.total}</strong>
+              </span>
+            </div>
+            <div style={{
+              height: 8, borderRadius: 999, background: '#F1F3F6',
+              overflow: 'hidden',
+            }}>
+              <div style={{
+                height: '100%', width: `${k.pct}%`,
+                background: k.kind === 'calculator' ? ACCENT : '#7AA5FA',
+                borderRadius: 999,
+                transition: 'width 400ms ease',
+              }} />
+            </div>
           </div>
+        ))}
+      </div>
+
+      {/* Right: top opened tools */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 6, minWidth: 0 }}>
+        <div style={{
+          fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
+          color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.06em',
+          padding: '4px 10px',
+        }}>
+          Топ инструментов
         </div>
-      ))}
+        {stats.topTools.map((t) => (
+          <div key={t.id} style={{
+            display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) auto',
+            gap: 8, padding: '8px 10px',
+            background: '#F8F9FB', borderRadius: 10,
+            fontFamily: 'var(--font-body)', fontSize: 12.5,
+            color: '#1A1A1A', alignItems: 'center',
+          }}>
+            <span style={{
+              overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+              fontWeight: 500,
+            }}>
+              {t.title}
+            </span>
+            <span style={{
+              display: 'inline-flex', alignItems: 'center', gap: 6,
+              fontWeight: 600, color: ACCENT_DARK,
+            }}>
+              <span style={{
+                fontSize: 10, color: '#9CA3AF', fontWeight: 500,
+              }}>
+                {t.kind === 'calculator' ? 'калькулятор' : 'шкала'}
+              </span>
+              ×{t.count}
+            </span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

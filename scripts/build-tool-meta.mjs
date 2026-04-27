@@ -27,6 +27,7 @@ const files = readdirSync(RUNNERS_DIR)
 
 const ids = [];
 const countries = {};
+const kinds = {};
 
 for (const f of files) {
   const id = f.replace(/\.ts$/, '');
@@ -36,6 +37,8 @@ for (const f of files) {
   // varies between hand-written and auto-recovered runners.
   const m = src.match(/^\s+countries:\s*['"]([^'"]+)['"]/m);
   if (m) countries[id] = m[1];
+  const k = src.match(/^\s+kind:\s*['"]([a-zA-Z_-]+)['"]/m);
+  if (k) kinds[id] = k[1];
 }
 
 let out = '/**\n';
@@ -53,8 +56,14 @@ out += 'export const RUNNER_COUNTRIES: Readonly<Record<string, string>> = {\n';
 for (const [k, v] of Object.entries(countries)) {
   out += '  ' + JSON.stringify(k) + ': ' + JSON.stringify(v) + ',\n';
 }
+out += '};\n\n';
+out += 'export type RunnerKind = "calculator" | "score";\n\n';
+out += 'export const RUNNER_KINDS: Readonly<Record<string, RunnerKind>> = {\n';
+for (const [k, v] of Object.entries(kinds)) {
+  out += '  ' + JSON.stringify(k) + ': ' + JSON.stringify(v) + ',\n';
+}
 out += '};\n';
 
 writeFileSync(OUT, out);
 console.log(`Wrote ${OUT}`);
-console.log(`  ${ids.length} runners, ${Object.keys(countries).length} with countries`);
+console.log(`  ${ids.length} runners, ${Object.keys(countries).length} with countries, ${Object.keys(kinds).length} with kind`);

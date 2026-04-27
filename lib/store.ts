@@ -44,6 +44,8 @@ interface AppState {
   toolsScrollIndex: number;   // Virtuoso startIndex used on re-mount
   toolsScrollOffset: number;  // px offset within that row
   toolsFavourites: string[];  // list of tool ids
+  /** Per-tool open count — used by stats page to surface kind breakdown */
+  toolUsage: Record<string, number>;
   setToolsQuery: (q: string) => void;
   setToolsCategories: (c: string[]) => void;
   setToolsSubcategories: (s: string[]) => void;
@@ -142,6 +144,7 @@ export const useAppStore = create<AppState>()(
       toolsScrollIndex: 0,
       toolsScrollOffset: 0,
       toolsFavourites: [],
+      toolUsage: {},
 
       setToolsQuery: (q) => set({ toolsQuery: q }),
       setToolsCategories: (c) => set({ toolsCategories: c }),
@@ -269,12 +272,16 @@ export const useAppStore = create<AppState>()(
 
       // Open a specific tool — also flip into the Tools view + clear other
        // top-level flags so navigation from search works from anywhere.
-      openTool: (id) => set({
-        activeToolId: id,
-        showTools: true,
-        showProfile: false, showStats: false, showTests: false, showLearning: false,
-        activeSection: null, activeModuleId: null, currentCourseId: null,
-      }),
+      openTool: (id) => {
+        const { toolUsage } = get();
+        set({
+          activeToolId: id,
+          showTools: true,
+          showProfile: false, showStats: false, showTests: false, showLearning: false,
+          activeSection: null, activeModuleId: null, currentCourseId: null,
+          toolUsage: { ...toolUsage, [id]: (toolUsage[id] ?? 0) + 1 },
+        });
+      },
       closeTool: () => set({ activeToolId: null }),
 
       addStudyTime: (courseId, seconds) => {
@@ -322,6 +329,7 @@ export const useAppStore = create<AppState>()(
         toolsCountries: state.toolsCountries,
         toolsOnlyAvailable: state.toolsOnlyAvailable,
         toolsFavourites: state.toolsFavourites,
+        toolUsage: state.toolUsage,
       }),
     }
   )
