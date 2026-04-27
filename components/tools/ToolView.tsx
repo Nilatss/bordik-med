@@ -1200,6 +1200,110 @@ function shortRef(ref: string): string {
   return s;
 }
 
+/**
+ * Favourite toggle pill. Idle = neutral grey; Active = amber/gold (same
+ * palette as the module-final test pill on TestPanel: bg #FEF3C7, fg #92400E,
+ * star fill #D97706, border #FDE68A).
+ *
+ * Animation on add (idle → active):
+ *   - Whole pill: spring scale pop 1 → 1.12 → 1
+ *   - Star: scale 0 → 1.4 → 1 with a quarter-turn rotation, anchored at center
+ *   - 6 sparkle particles burst outward and fade
+ * On remove: silent shrink, no burst.
+ */
+function FavouriteButton({ isFavourite, onToggle }: {
+  isFavourite: boolean;
+  onToggle: () => void;
+}) {
+  // burstKey changes only when the user JUST added to favourites - drives
+  // <AnimatePresence> for the sparkle particles. The button itself relies
+  // on framer-motion's `animate` prop tied to `isFavourite`.
+  const [burstKey, setBurstKey] = useState(0);
+  const handleClick = () => {
+    if (!isFavourite) setBurstKey((k) => k + 1);
+    onToggle();
+  };
+  // 6 sparkles around the star at evenly spaced angles
+  const sparkles = useMemo(
+    () => Array.from({ length: 6 }, (_, i) => {
+      const angle = (i / 6) * Math.PI * 2;
+      return {
+        x: Math.cos(angle) * 22,
+        y: Math.sin(angle) * 22,
+      };
+    }),
+    [],
+  );
+  return (
+    <motion.button
+      type="button"
+      onClick={handleClick}
+      aria-label={isFavourite ? 'Убрать из избранного' : 'Добавить в избранное'}
+      animate={{ scale: 1 }}
+      whileTap={{ scale: 0.94 }}
+      transition={{ type: 'spring', stiffness: 480, damping: 22 }}
+      style={{
+        marginLeft: 'auto',
+        position: 'relative',
+        display: 'inline-flex', alignItems: 'center', gap: 6,
+        padding: '5px 10px 5px 8px', borderRadius: 999,
+        background: isFavourite ? '#FEF3C7' : '#F0F1F5',
+        color: isFavourite ? '#92400E' : '#6B7280',
+        border: isFavourite ? '1px solid #FDE68A' : '1px solid transparent',
+        cursor: 'pointer',
+        fontFamily: 'var(--font-body)', fontSize: 11, fontWeight: 600,
+        transition: 'background 160ms, color 160ms, border-color 160ms',
+        overflow: 'visible',
+      }}
+      onMouseEnter={(e) => {
+        if (!isFavourite) e.currentTarget.style.background = '#E2E4EA';
+        else e.currentTarget.style.background = '#FDE68A';
+      }}
+      onMouseLeave={(e) => {
+        if (!isFavourite) e.currentTarget.style.background = '#F0F1F5';
+        else e.currentTarget.style.background = '#FEF3C7';
+      }}
+    >
+      <motion.span
+        style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 11, height: 11 }}
+        // Star itself: pop on add, gentle shrink-to-baseline on remove
+        animate={isFavourite
+          ? { scale: [0.6, 1.4, 1], rotate: [-90, 12, 0] }
+          : { scale: 1, rotate: 0 }}
+        transition={{ duration: 0.45, ease: [0.05, 0.7, 0.1, 1] }}
+      >
+        <svg width={11} height={11} viewBox="0 0 24 24"
+          fill={isFavourite ? '#D97706' : 'none'}
+          stroke={isFavourite ? '#D97706' : 'currentColor'}
+          strokeWidth={isFavourite ? 0 : 2}
+          strokeLinecap="round" strokeLinejoin="round">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+        </svg>
+
+        {/* Sparkle burst on add. Re-mounted via burstKey so each click replays. */}
+        <AnimatePresence>
+          {isFavourite && burstKey > 0 && sparkles.map((s, i) => (
+            <motion.span
+              key={`${burstKey}-${i}`}
+              initial={{ x: 0, y: 0, opacity: 1, scale: 0.6 }}
+              animate={{ x: s.x, y: s.y, opacity: 0, scale: 0.2 }}
+              transition={{ duration: 0.6, ease: [0.2, 0.8, 0.2, 1], delay: i * 0.012 }}
+              style={{
+                position: 'absolute', left: '50%', top: '50%',
+                width: 4, height: 4, marginLeft: -2, marginTop: -2,
+                borderRadius: '50%',
+                background: i % 2 === 0 ? '#F59E0B' : '#FBBF24',
+                pointerEvents: 'none',
+              }}
+            />
+          ))}
+        </AnimatePresence>
+      </motion.span>
+      {isFavourite ? 'В избранном' : 'В избранное'}
+    </motion.button>
+  );
+}
+
 function Header({ tool, kind }: {
   tool: { id: string; title: string; subcategory: string; category: string; description?: string };
   kind?: string;
@@ -1252,33 +1356,12 @@ function Header({ tool, kind }: {
             +{toolCountries.length - 3}
           </span>
         )}
-        {/* Favourite toggle — inline with the tag row so it sits on the
-            same visual line, matching the card behaviour. */}
-        <button
-          type="button"
-          onClick={() => toggleFav(tool.id)}
-          aria-label={isFavourite ? 'Убрать из избранного' : 'Добавить в избранное'}
-          style={{
-            marginLeft: 'auto',
-            display: 'inline-flex', alignItems: 'center', gap: 6,
-            padding: '5px 10px 5px 8px', borderRadius: 999,
-            background: isFavourite ? '#1A1A1A' : '#F0F1F5',
-            color: isFavourite ? '#FFFFFF' : '#6B7280',
-            border: 'none', cursor: 'pointer',
-            fontFamily: 'var(--font-body)', fontSize: 11, fontWeight: 600,
-            transition: 'background 160ms, color 160ms',
-          }}
-          onMouseEnter={(e) => { if (!isFavourite) e.currentTarget.style.background = '#E2E4EA'; }}
-          onMouseLeave={(e) => { if (!isFavourite) e.currentTarget.style.background = '#F0F1F5'; }}
-        >
-          <svg width={11} height={11} viewBox="0 0 24 24"
-            fill={isFavourite ? 'currentColor' : 'none'}
-            stroke="currentColor" strokeWidth={isFavourite ? 0 : 2}
-            strokeLinecap="round" strokeLinejoin="round">
-            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-          </svg>
-          {isFavourite ? 'В избранном' : 'В избранное'}
-        </button>
+        {/* Favourite toggle - amber/gold palette matches the module-final
+            test pill on TestPanel. Pop animation on add, sparkle burst. */}
+        <FavouriteButton
+          isFavourite={isFavourite}
+          onToggle={() => toggleFav(tool.id)}
+        />
       </div>
       <h1 style={{
         fontFamily: 'var(--font-display)',
