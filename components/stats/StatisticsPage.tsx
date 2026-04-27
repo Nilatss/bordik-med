@@ -669,16 +669,17 @@ function SectionHex({ rows }: { rows: SectionProgressRow[] }) {
                 ]
               : layout.cells;
             return renderOrder.map((c) => {
-              const i = layout.cells.indexOf(c);
               const isPlaceholder = c.row.id.startsWith('__ph');
               const sectionId = isPlaceholder ? null : (c.row.id as any);
               const interactive = !!sectionId;
               return (
-                <motion.g
+                // Plain <g> — entrance/exit animations on hex cells caused
+                // every cell to re-run its fade-in whenever hoveredCell
+                // changed (state update → React re-renders the IIFE → motion
+                // re-evaluates each child). Hover scale is now CSS-only;
+                // no per-cell motion needed.
+                <g
                   key={c.row.id}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.32, ease: [0.05, 0.7, 0.1, 1], delay: 0.025 * i }}
                   onClick={interactive ? () => setActiveSection(sectionId) : undefined}
                   onPointerEnter={() => setHoveredCell(c)}
                   onPointerLeave={() => setHoveredCell((curr) => (curr === c ? null : curr))}
@@ -711,7 +712,7 @@ function SectionHex({ rows }: { rows: SectionProgressRow[] }) {
                       {c.row.pct}
                     </text>
                   )}
-                </motion.g>
+                </g>
               );
             });
           })()}
