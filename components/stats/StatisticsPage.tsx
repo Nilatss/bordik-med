@@ -535,21 +535,28 @@ function Heatmap({ data }: { data: HeatmapData }) {
           minWidth: data.cols > 14 ? Math.max(420, data.cols * 14) : undefined,
         }}>
           {/* Iterate top-to-bottom = row 3 (18-24) first visually */}
-          {[3, 2, 1, 0].flatMap((row) =>
+          {[3, 2, 1, 0].flatMap((row, rowIdx) =>
             data.cells[row].map((v, col) => {
               const lvl = v === 0 ? 0 :
                 v >= max * 0.75 ? 4 :
                 v >= max * 0.5 ? 3 :
                 v >= max * 0.25 ? 2 : 1;
+              const cellIdx = rowIdx * data.cols + col;
               return (
-                <div
+                <motion.div
                   key={`${row}-${col}`}
+                  initial={{ opacity: 0, scale: 0.7 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{
+                    duration: 0.25,
+                    ease: [0.05, 0.7, 0.1, 1],
+                    delay: Math.min(0.4, 0.005 * cellIdx),
+                  }}
                   title={v > 0 ? `${v} тест${v === 1 ? '' : v < 5 ? 'а' : 'ов'}` : 'нет активности'}
                   style={{
                     aspectRatio: '1 / 1',
                     background: HEATMAP_LEVELS[lvl],
                     borderRadius: 4,
-                    transition: 'background 200ms',
                     cursor: 'default',
                   }}
                 />
@@ -644,8 +651,14 @@ function SectionHex({ rows }: { rows: SectionProgressRow[] }) {
           viewBox={`0 0 ${layout.width} ${layout.height}`}
           style={{ display: 'block', maxWidth: '100%' }}
         >
-          {layout.cells.map((c) => (
-            <g key={c.row.id}>
+          {layout.cells.map((c, i) => (
+            <motion.g
+              key={c.row.id}
+              initial={{ opacity: 0, scale: 0.6 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.32, ease: [0.05, 0.7, 0.1, 1], delay: 0.025 * i }}
+              style={{ transformOrigin: `${c.cx}px ${c.cy}px`, transformBox: 'fill-box' as any }}
+            >
               <title>{`${c.row.name} — ${c.row.pct}% (${c.row.done}/${c.row.total})`}</title>
               <polygon
                 points={hexPoints(c.cx, c.cy, layout.size)}
@@ -667,7 +680,7 @@ function SectionHex({ rows }: { rows: SectionProgressRow[] }) {
                   {c.row.pct}
                 </text>
               )}
-            </g>
+            </motion.g>
           ))}
         </svg>
       </div>
@@ -685,13 +698,18 @@ function SectionHex({ rows }: { rows: SectionProgressRow[] }) {
 
       {/* Top sections list — small, like the % rows under the hex chart */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-        {rows.slice(0, 4).map((r) => (
-          <div key={r.id} style={{
-            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-            fontFamily: 'var(--font-body)', fontSize: 12,
-            padding: '6px 0',
-            borderTop: '1px solid #F8F9FB',
-          }}>
+        {rows.slice(0, 4).map((r, i) => (
+          <motion.div
+            key={r.id}
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.28, ease: [0.05, 0.7, 0.1, 1], delay: 0.05 * i }}
+            style={{
+              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+              fontFamily: 'var(--font-body)', fontSize: 12,
+              padding: '6px 0',
+              borderTop: '1px solid #F8F9FB',
+            }}>
             <span style={{
               display: 'inline-flex', alignItems: 'center', gap: 8,
               color: '#1A1A1A', fontWeight: 500,
@@ -710,7 +728,7 @@ function SectionHex({ rows }: { rows: SectionProgressRow[] }) {
             }}>
               {r.done}/{r.total}
             </span>
-          </div>
+          </motion.div>
         ))}
       </div>
     </div>
@@ -920,8 +938,13 @@ function ToolKindsPanel({ stats }: { stats: ToolKindStats }) {
     }}>
       {/* Left: kinds breakdown bars */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-        {stats.byKind.map((k) => (
-          <div key={k.kind}>
+        {stats.byKind.map((k, i) => (
+          <motion.div
+            key={k.kind}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, ease: [0.05, 0.7, 0.1, 1], delay: 0.04 * i }}
+          >
             <div style={{
               display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
               fontFamily: 'var(--font-body)', fontSize: 13,
@@ -937,14 +960,18 @@ function ToolKindsPanel({ stats }: { stats: ToolKindStats }) {
               height: 8, borderRadius: 999, background: '#F1F3F6',
               overflow: 'hidden',
             }}>
-              <div style={{
-                height: '100%', width: `${k.pct}%`,
-                background: k.kind === 'calculator' ? ACCENT : '#7AA5FA',
-                borderRadius: 999,
-                transition: 'width 400ms ease',
-              }} />
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${k.pct}%` }}
+                transition={{ duration: 0.6, ease: [0.05, 0.7, 0.1, 1], delay: 0.1 + 0.04 * i }}
+                style={{
+                  height: '100%',
+                  background: k.kind === 'calculator' ? ACCENT : '#7AA5FA',
+                  borderRadius: 999,
+                }}
+              />
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
 
@@ -957,14 +984,19 @@ function ToolKindsPanel({ stats }: { stats: ToolKindStats }) {
         }}>
           Топ инструментов
         </div>
-        {stats.topTools.map((t) => (
-          <div key={t.id} style={{
-            display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) auto',
-            gap: 8, padding: '8px 10px',
-            background: '#F8F9FB', borderRadius: 10,
-            fontFamily: 'var(--font-body)', fontSize: 12.5,
-            color: '#1A1A1A', alignItems: 'center',
-          }}>
+        {stats.topTools.map((t, i) => (
+          <motion.div
+            key={t.id}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, ease: [0.05, 0.7, 0.1, 1], delay: 0.05 * i }}
+            style={{
+              display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) auto',
+              gap: 8, padding: '8px 10px',
+              background: '#F8F9FB', borderRadius: 10,
+              fontFamily: 'var(--font-body)', fontSize: 12.5,
+              color: '#1A1A1A', alignItems: 'center',
+            }}>
             <span style={{
               overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
               fontWeight: 500,
@@ -982,7 +1014,7 @@ function ToolKindsPanel({ stats }: { stats: ToolKindStats }) {
               </span>
               ×{t.count}
             </span>
-          </div>
+          </motion.div>
         ))}
       </div>
     </div>
@@ -1010,19 +1042,24 @@ function RecentAttempts({ attempts }: { attempts: { courseId: string; testLevel:
         <span>Дата</span>
         <span style={{ textAlign: 'right' }}>Статус</span>
       </div>
-      {attempts.map((a) => {
+      {attempts.map((a, i) => {
         const course = getCourseById(a.courseId);
         const date = new Date(a.timestamp);
         const dateStr = date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
         return (
-          <div key={a.timestamp + a.courseId + a.testLevel} style={{
-            display: 'grid', gridTemplateColumns: '2fr 0.7fr 0.9fr 0.7fr',
-            gap: 8, padding: '10px',
-            background: '#F8F9FB', borderRadius: 10,
-            fontFamily: 'var(--font-body)', fontSize: 12.5,
-            color: '#1A1A1A',
-            alignItems: 'center',
-          }}>
+          <motion.div
+            key={a.timestamp + a.courseId + a.testLevel}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, ease: [0.05, 0.7, 0.1, 1], delay: 0.04 * i }}
+            style={{
+              display: 'grid', gridTemplateColumns: '2fr 0.7fr 0.9fr 0.7fr',
+              gap: 8, padding: '10px',
+              background: '#F8F9FB', borderRadius: 10,
+              fontFamily: 'var(--font-body)', fontSize: 12.5,
+              color: '#1A1A1A',
+              alignItems: 'center',
+            }}>
             <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
               <span style={{ fontWeight: 600 }}>{course?.title ?? a.courseId}</span>
               <span style={{ color: '#9CA3AF', marginLeft: 6 }}>· Тест {a.testLevel}</span>
@@ -1032,7 +1069,7 @@ function RecentAttempts({ attempts }: { attempts: { courseId: string; testLevel:
             <span style={{ textAlign: 'right' }}>
               <StatusPill passed={a.passed} />
             </span>
-          </div>
+          </motion.div>
         );
       })}
     </div>
