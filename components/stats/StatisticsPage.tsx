@@ -620,12 +620,30 @@ function Heatmap({ data, period }: { data: HeatmapData; period: Period }) {
           </div>
         </div>
       ) : (
-        // ── Single-row strip (week view) ──
-        <>
+        // ── Week view — same visual as calendar but a single row of 7 cells.
+        <div style={{ width: '100%' }}>
+          {/* Day-of-week header — based on actual dates so order is correct
+               regardless of which weekday "today" lands on. */}
           <div style={{
             display: 'grid',
-            gridTemplateColumns: `repeat(${data.cols}, minmax(14px, 1fr))`,
-            gap: 4,
+            gridTemplateColumns: 'repeat(7, 1fr)',
+            gap: 6,
+            fontFamily: 'var(--font-mono)', fontSize: 10, color: '#9CA3AF',
+            paddingBottom: 4,
+          }}>
+            {Array.from({ length: data.cols }).map((_, i) => {
+              const d = dateForCol(i);
+              const dow = d.toLocaleDateString('ru-RU', { weekday: 'short' });
+              const cap = dow.charAt(0).toUpperCase() + dow.slice(1).replace('.', '');
+              return (
+                <span key={i} style={{ textAlign: 'center' }}>{cap}</span>
+              );
+            })}
+          </div>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(7, 1fr)',
+            gap: 6,
           }}>
             {data.cells.map((v, col) => {
               const lvl = v === 0 ? 0 :
@@ -633,6 +651,7 @@ function Heatmap({ data, period }: { data: HeatmapData; period: Period }) {
                 v >= max * 0.5 ? 3 :
                 v >= max * 0.25 ? 2 : 1;
               const isHovered = hovered === col;
+              const day = dateForCol(col).getDate();
               return (
                 <div
                   key={col}
@@ -640,28 +659,24 @@ function Heatmap({ data, period }: { data: HeatmapData; period: Period }) {
                   onPointerLeave={() => setHovered((c) => (c === col ? null : c))}
                   className="stats-heat-cell"
                   style={{
-                    aspectRatio: '1 / 1',
+                    height: 56,
                     background: HEATMAP_LEVELS[lvl],
-                    borderRadius: 4,
+                    borderRadius: 6,
                     cursor: 'default',
                     outline: isHovered ? `2px solid ${ACCENT}` : 'none',
                     outlineOffset: isHovered ? 1 : 0,
+                    display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-end',
+                    padding: 4,
+                    fontFamily: 'var(--font-mono)', fontSize: 10,
+                    color: lvl >= 3 ? 'rgba(255,255,255,0.85)' : '#6B7280',
                   }}
-                />
+                >
+                  {day}
+                </div>
               );
             })}
           </div>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: `repeat(${data.cols}, minmax(14px, 1fr))`,
-            gap: 4,
-            fontFamily: 'var(--font-mono)', fontSize: 9, color: '#9CA3AF',
-          }}>
-            {Array.from({ length: data.cols }).map((_, i) => (
-              <span key={i} style={{ textAlign: 'center' }}>{dateForCol(i).getDate()}</span>
-            ))}
-          </div>
-        </>
+        </div>
       )}
 
       {/* Custom hover tooltip — date + simple "сделано N тестов" line. */}
