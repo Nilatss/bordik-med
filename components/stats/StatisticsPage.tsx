@@ -528,28 +528,14 @@ function buildHeatmap(testAttempts: Record<string, { timestamp: number }[]>, per
 function Heatmap({ data, period }: { data: HeatmapData; period: Period }) {
   const max = Math.max(1, ...data.cells);
   const [hovered, setHovered] = useState<number | null>(null);
-
-  // Day-axis tick density:
-  //   week   → every day
-  //   month  → every 5 days
-  //   year   → every ~30 days
-  const tickEvery = data.cols <= 7 ? 1 : data.cols <= 31 ? 5 : 30;
   const today = new Date();
 
-  // Resolve a calendar date for a given column.
-  //   year   → col 0 = 1 Jan
-  //   month  → col 0 = 1st of current month
-  //   week   → col days-1 = today
+  // Resolve a calendar date for a given day index.
   const dateForCol = (col: number) => {
-    if (period === 'all') {
-      const d = new Date(today.getFullYear(), 0, 1);
-      d.setDate(d.getDate() + col);
-      return d;
-    }
     if (period === 'month') {
       return new Date(today.getFullYear(), today.getMonth(), col + 1);
     }
-    // week
+    // week — col 0 is data.cols-1 days ago
     const ageDays = data.cols - 1 - col;
     const d = new Date(today);
     d.setDate(d.getDate() - ageDays);
@@ -558,10 +544,16 @@ function Heatmap({ data, period }: { data: HeatmapData; period: Period }) {
   const fmtDate = (d: Date) =>
     d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', weekday: 'short' });
 
-  // Year has 365 cells — let them shrink below the 14px floor so the heatmap
-  // fits in the card and overflow stays visible (otherwise the tooltip is
-  // clipped by overflow:auto).
-  const minCellPx = period === 'all' ? 0 : 14;
+  // For the month view we render a calendar grid (7 cols × weeks rows) so
+  // cells are big enough to read. Compute leading/trailing padding to align
+  // the 1st of the month under its real weekday.
+  const isCalendar = period === 'month';
+  const monthFirstDow = isCalendar
+    ? new Date(today.getFullYear(), today.getMonth(), 1).getDay()
+    : 0;
+  const leadingPad = isCalendar ? (monthFirstDow + 6) % 7 : 0; // Mon = 0
+  const weeks = isCalendar ? Math.ceil((leadingPad + data.cols) / 7) : 1;
+  const totalCells = isCalendar ? weeks * 7 : data.cols;
 
   return (
     <div style={{
@@ -569,79 +561,129 @@ function Heatmap({ data, period }: { data: HeatmapData; period: Period }) {
       position: 'relative',
       overflow: 'visible',
     }}>
-      {/* Single row — one cell per day */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: `repeat(${data.cols}, minmax(${minCellPx}px, 1fr))`,
-        gap: period === 'all' ? 2 : 4,
-      }}>
-        {data.cells.map((v, col) => {
-          const lvl = v === 0 ? 0 :
-            v >= max * 0.75 ? 4 :
-            v >= max * 0.5 ? 3 :
-            v >= max * 0.25 ? 2 : 1;
-          const isHovered = hovered === col;
-          return (
-            <div
-              key={col}
-              onPointerEnter={() => setHovered(col)}
-              onPointerLeave={() => setHovered((c) => (c === col ? null : c))}
-              className="stats-heat-cell"
-              style={{
-                aspectRatio: '1 / 1',
-                background: HEATMAP_LEVELS[lvl],
-                borderRadius: 4,
-                cursor: 'default',
-                outline: isHovered ? `2px solid ${ACCENT}` : 'none',
-                outlineOffset: isHovered ? 1 : 0,
-              }}
-            />
-          );
-        })}
-      </div>
-
-      {/* Day axis — label content depends on the period */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: `repeat(${data.cols}, minmax(${minCellPx}px, 1fr))`,
-        gap: period === 'all' ? 2 : 4,
-        fontFamily: 'var(--font-mono)', fontSize: 9, color: '#9CA3AF',
-      }}>
-        {Array.from({ length: data.cols }).map((_, i) => {
-          const d = dateForCol(i);
-          let label = '';
-          if (period === 'all') {
-            if (d.getDate() === 1) {
-              label = d.toLocaleDateString('ru-RU', { month: 'short' }).replace('.', '');
-            }
-          } else if (period === 'month') {
-            const day = d.getDate();
-            if (day === 1 || day % 5 === 0) label = String(day);
-          } else {
-            label = String(d.getDate());
-          }
-          return (
-            <span key={i} style={{ textAlign: 'center' }}>
-              {label}
-            </span>
-          );
-        })}
-      </div>
+      {isCalendar ? (
+        // ── Calendar grid (month view) ──
+        <>
+          {/* Day-of-week header */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(7, 1fr)',
+            gap: 6,
+            fontFamily: 'var(--font-mono)', fontSize: 10, color: '#9CA3AF',
+            paddingBottom: 4,
+          }}>
+            {['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'].map((d) => (
+              <span key={d} style={{ textAlign: 'center' }}>{d}</span>
+            ))}
+          </div>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(7, 1fr)',
+            gridAutoRows: '1fr',
+            gap: 6,
+          }}>
+            {Array.from({ length: totalCells }).map((_, idx) => {
+              const dayIdx = idx - leadingPad;
+              const inMonth = dayIdx >= 0 && dayIdx < data.cols;
+              const v = inMonth ? data.cells[dayIdx] : 0;
+              const lvl = !inMonth ? -1
+                : v === 0 ? 0
+                : v >= max * 0.75 ? 4
+                : v >= max * 0.5 ? 3
+                : v >= max * 0.25 ? 2 : 1;
+              const isHovered = hovered === dayIdx && inMonth;
+              return (
+                <div
+                  key={idx}
+                  onPointerEnter={inMonth ? () => setHovered(dayIdx) : undefined}
+                  onPointerLeave={inMonth ? () => setHovered((c) => (c === dayIdx ? null : c)) : undefined}
+                  className="stats-heat-cell"
+                  style={{
+                    aspectRatio: '1 / 1',
+                    background: lvl < 0 ? 'transparent' : HEATMAP_LEVELS[lvl],
+                    borderRadius: 6,
+                    cursor: inMonth ? 'default' : undefined,
+                    outline: isHovered ? `2px solid ${ACCENT}` : 'none',
+                    outlineOffset: isHovered ? 1 : 0,
+                    display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-end',
+                    padding: 4,
+                    fontFamily: 'var(--font-mono)', fontSize: 10,
+                    color: lvl >= 3 ? 'rgba(255,255,255,0.85)' : '#6B7280',
+                  }}
+                >
+                  {inMonth ? dayIdx + 1 : ''}
+                </div>
+              );
+            })}
+          </div>
+        </>
+      ) : (
+        // ── Single-row strip (week view) ──
+        <>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: `repeat(${data.cols}, minmax(14px, 1fr))`,
+            gap: 4,
+          }}>
+            {data.cells.map((v, col) => {
+              const lvl = v === 0 ? 0 :
+                v >= max * 0.75 ? 4 :
+                v >= max * 0.5 ? 3 :
+                v >= max * 0.25 ? 2 : 1;
+              const isHovered = hovered === col;
+              return (
+                <div
+                  key={col}
+                  onPointerEnter={() => setHovered(col)}
+                  onPointerLeave={() => setHovered((c) => (c === col ? null : c))}
+                  className="stats-heat-cell"
+                  style={{
+                    aspectRatio: '1 / 1',
+                    background: HEATMAP_LEVELS[lvl],
+                    borderRadius: 4,
+                    cursor: 'default',
+                    outline: isHovered ? `2px solid ${ACCENT}` : 'none',
+                    outlineOffset: isHovered ? 1 : 0,
+                  }}
+                />
+              );
+            })}
+          </div>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: `repeat(${data.cols}, minmax(14px, 1fr))`,
+            gap: 4,
+            fontFamily: 'var(--font-mono)', fontSize: 9, color: '#9CA3AF',
+          }}>
+            {Array.from({ length: data.cols }).map((_, i) => (
+              <span key={i} style={{ textAlign: 'center' }}>{dateForCol(i).getDate()}</span>
+            ))}
+          </div>
+        </>
+      )}
 
       {/* Custom hover tooltip — date + simple "сделано N тестов" line. */}
       {hovered !== null && (() => {
         const col = hovered;
         const v = data.cells[col];
         const date = fmtDate(dateForCol(col));
-        const colPct = ((col + 0.5) / data.cols) * 100;
         const testWord = v === 1 ? 'тест' : v < 5 ? 'теста' : 'тестов';
+        // Tooltip horizontal anchor:
+        //   calendar  → centred on the cell's weekday column (1..7)
+        //   week strip → centred on the day in the linear strip
+        const colPct = isCalendar
+          ? (((leadingPad + col) % 7 + 0.5) / 7) * 100
+          : ((col + 0.5) / data.cols) * 100;
+        // Tooltip vertical anchor: above the row the cell lives in.
+        const rowOfCell = isCalendar ? Math.floor((leadingPad + col) / 7) : 0;
         return (
           <div
             style={{
               position: 'absolute',
               left: `${colPct}%`,
-              bottom: 'calc(100% + 8px)',
-              transform: 'translateX(-50%)',
+              top: isCalendar ? `calc(${(rowOfCell / weeks) * 100}% + 24px)` : undefined,
+              bottom: isCalendar ? undefined : 'calc(100% + 8px)',
+              transform: isCalendar ? 'translate(-50%, -100%)' : 'translateX(-50%)',
               background: '#1A1A1A',
               color: '#F4F5F7',
               padding: '10px 14px',
