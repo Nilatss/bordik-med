@@ -223,58 +223,55 @@ export default function ToolView({ toolId }: { toolId: string }) {
   const prevTab = tabs[activeIndex - 1];
   const nextTab = tabs[activeIndex + 1];
 
-  const ready = runner.inputs.every((inp) => {
-    if (inp.type === 'number') {
-      const v = values[inp.id];
-      return typeof v === 'number' && !isNaN(v);
-    }
-    return values[inp.id] !== undefined;
-  });
-
-  let result: CalculatorResult | null = null;
-  if (ready) {
-    if (runner.kind === 'calculator') {
-      try { result = runner.compute(values); } catch { result = null; }
-    } else {
-      let total = 0;
-      for (const inp of runner.inputs) {
-        if (inp.type === 'checkbox' && values[inp.id] === true && inp.points) {
-          total += inp.points;
-        } else if (inp.type === 'select' && inp.options) {
-          const opt = inp.options.find((o) => String(o.value) === String(values[inp.id]));
-          if (opt?.points) total += opt.points;
-        }
+  // Memoise result computation - was running on every render (including
+  // hover, parent re-render, layout pill animation). For "calculator" tools
+  // runner.compute() can be heavy; for "score" tools we sort bands + find
+  // band on every render. Keying on `runner` + `values` only.
+  const result: CalculatorResult | null = useMemo(() => {
+    const ready = runner.inputs.every((inp) => {
+      if (inp.type === 'number') {
+        const v = values[inp.id];
+        return typeof v === 'number' && !isNaN(v);
       }
-      const band = findBand(runner.bands, total);
-      // Some runners define bands in descending order of min (e.g. AVPU:
-      // 4 → 3 → 2 → 1). The renderer assumes ascending min, which would
-      // otherwise draw the scale left-to-right as 4→1 and misplace labels
-      // and the marker. Sort a copy before handing it to the scale.
-      const sortedBands = [...runner.bands].sort((a, b) => a.min - b.min);
-      result = {
-        value: String(total),
-        unit: `из ${runner.maxScore}`,
-        interpretation: `${band.label} · ${band.description}`,
-        color: band.color,
-        // Auto-build a visual scale from the sorted bands array
-        scale: {
-          segments: sortedBands.map((b) => ({
-            min: b.min,
-            max: b.max,
-            label: b.label,
-            color: b.color,
-          })),
-          current: total,
-          unit: `из ${runner.maxScore}`,
-        },
-        details: band.details,
-        actions: band.actions,
-        caveats: runner.caveats,
-        related: runner.related,
-        relatedCourses: runner.relatedCourses,
-      };
+      return values[inp.id] !== undefined;
+    });
+    if (!ready) return null;
+    if (runner.kind === 'calculator') {
+      try { return runner.compute(values); } catch { return null; }
     }
-  }
+    let total = 0;
+    for (const inp of runner.inputs) {
+      if (inp.type === 'checkbox' && values[inp.id] === true && inp.points) {
+        total += inp.points;
+      } else if (inp.type === 'select' && inp.options) {
+        const opt = inp.options.find((o) => String(o.value) === String(values[inp.id]));
+        if (opt?.points) total += opt.points;
+      }
+    }
+    const band = findBand(runner.bands, total);
+    const sortedBands = [...runner.bands].sort((a, b) => a.min - b.min);
+    return {
+      value: String(total),
+      unit: `из ${runner.maxScore}`,
+      interpretation: `${band.label} · ${band.description}`,
+      color: band.color,
+      scale: {
+        segments: sortedBands.map((b) => ({
+          min: b.min,
+          max: b.max,
+          label: b.label,
+          color: b.color,
+        })),
+        current: total,
+        unit: `из ${runner.maxScore}`,
+      },
+      details: band.details,
+      actions: band.actions,
+      caveats: runner.caveats,
+      related: runner.related,
+      relatedCourses: runner.relatedCourses,
+    };
+  }, [runner, values]);
 
   const kindLabel = runner.kind === 'score' ? t('tool.kind.score') : t('tool.kind.calculator');
 
@@ -1642,7 +1639,11 @@ function SelectField({ input, value, onChange }: {
   );
 }
 
-function InputField({ input, value, onChange }: {
+// React.memo with custom equality that IGNORES onChange identity. The parent
+// passes a fresh arrow-fn for onChange on every render (closure over input.id),
+// so default memo wouldn't help. We only re-render when the input definition
+// or its value actually changes.
+const InputField = React.memo(function InputField({ input, value, onChange }: {
   input: ToolInput;
   value: number | boolean | string | undefined;
   onChange: (v: number | boolean | string) => void;
@@ -1786,4 +1787,4 @@ function InputField({ input, value, onChange }: {
       )}
     </div>
   );
-}
+}, (prev, next) => prev.input === next.input && prev.value === next.value);
