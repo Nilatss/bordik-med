@@ -909,6 +909,11 @@ main:has(.stats-page) {
 @media (max-width: 768px) { .hide-below-md { display: none !important; } }
 @media (min-width: 769px) { .hide-above-md { display: none !important; } }
 
+/* Stats KPI row: 3-up on desktop, stack on mobile */
+@media (max-width: 720px) {
+  .stats-kpi-row { grid-template-columns: 1fr !important; }
+}
+
 /* ToolsPage row grid — JS already sets the correct columns based on viewport
    (1 / 2 / 3). No CSS override needed here; the inline style follows `cols`. */
 

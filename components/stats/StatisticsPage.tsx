@@ -190,7 +190,7 @@ export default function StatisticsPage() {
       </div>
 
       {/* KPI cards row */}
-      <div className="stats-kpi-row">
+      <div className="stats-kpi-row" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 16 }}>
         <KpiCard
           label="Курсов пройдено"
           value={`${metrics.coursesDone}`}
