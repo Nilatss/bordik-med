@@ -98,18 +98,28 @@ export default function TestGuard({ active, onViolation, onForceSubmit, violatio
       setTimeout(() => setJustReturned(false), 3000);
     };
 
+    // Switching tabs / minimising the window / losing focus is now an
+    // instant violation — no grace countdown. The user explicitly asked
+    // that tab-switching count toward the cheat counter immediately.
+    const fireVisibilityViolation = () => {
+      if (graceTickRef.current) {
+        clearInterval(graceTickRef.current);
+        graceTickRef.current = null;
+        setGraceLeft(0);
+        graceStartRef.current = 0;
+      }
+      onViolation();
+      setShowViolation(true);
+    };
     const handleVisibility = () => {
-      if (document.hidden) startGrace();
-      else cancelGrace();
+      if (document.hidden) fireVisibilityViolation();
     };
-
     const handleBlur = () => {
-      // window.blur → treat same as visibility hidden
-      startGrace();
+      fireVisibilityViolation();
     };
-
     const handleFocus = () => {
-      cancelGrace();
+      // returning to the tab no longer cancels anything — the violation
+      // already fired the moment the user left.
     };
 
     // Forbidden-key listener — instant violation, no grace.
