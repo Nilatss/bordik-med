@@ -1090,9 +1090,9 @@ function ToolKindsPanel({ stats }: { stats: ToolKindStats }) {
               transition={{ duration: 0.3, ease: [0.05, 0.7, 0.1, 1], delay: 0.05 * i }}
               style={{
                 display: 'grid',
-                gridTemplateColumns: '36px minmax(0, 1fr) auto',
+                gridTemplateColumns: '36px minmax(0, 1fr)',
                 columnGap: 12,
-                rowGap: 6,
+                rowGap: 8,
                 alignItems: 'center',
                 padding: '12px 14px',
                 background: '#FFFFFF',
@@ -1103,7 +1103,7 @@ function ToolKindsPanel({ stats }: { stats: ToolKindStats }) {
             >
               {/* Icon square */}
               <span style={{
-                gridRow: '1 / span 2',
+                gridRow: '1 / span 3',
                 width: 36, height: 36, borderRadius: 8,
                 background: tintBg, color: tint,
                 display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
@@ -1112,7 +1112,7 @@ function ToolKindsPanel({ stats }: { stats: ToolKindStats }) {
                 {k.kind === 'calculator' ? <IconCalc /> : <IconScale />}
               </span>
 
-              {/* Name + sub */}
+              {/* Title row — just the kind label */}
               <span style={{
                 fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: 600,
                 color: '#1A1A1A', letterSpacing: '-0.005em',
@@ -1121,44 +1121,50 @@ function ToolKindsPanel({ stats }: { stats: ToolKindStats }) {
                 {k.label}
               </span>
 
-              {/* Count badge */}
-              <span style={{
-                justifySelf: 'end',
-                display: 'inline-flex', alignItems: 'baseline', gap: 4,
-                fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 700,
-                color: '#1A1A1A', letterSpacing: '-0.01em',
+              {/* Bar */}
+              <div style={{
+                height: 6, borderRadius: 999,
+                background: '#F1F3F6', overflow: 'hidden', minWidth: 0,
               }}>
-                {k.count}
-                <span style={{
-                  fontFamily: 'var(--font-body)', fontSize: 11, fontWeight: 500,
-                  color: '#9CA3AF',
-                }}>
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${k.pct}%` }}
+                  transition={{ duration: 0.6, ease: [0.05, 0.7, 0.1, 1], delay: 0.12 + 0.05 * i }}
+                  style={{ height: '100%', background: tint, borderRadius: 999 }}
+                />
+              </div>
+
+              {/* Stats row UNDER the bar — opens on left, X из Y on right.
+                   Both halves share identical typography for visual rhythm. */}
+              <div style={{
+                display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
+                fontFamily: 'var(--font-body)', fontSize: 12,
+                color: '#6B7280', minWidth: 0,
+              }}>
+                <span>
+                  <strong style={{
+                    fontFamily: 'var(--font-display)', fontWeight: 700,
+                    color: '#1A1A1A', fontSize: 14, letterSpacing: '-0.01em',
+                  }}>
+                    {k.count}
+                  </strong>
+                  {' '}
                   {k.count === 1 ? 'открытие' : 'открытий'}
                 </span>
-              </span>
-
-              {/* Bar + pct */}
-              <div style={{
-                gridColumn: '2 / span 2',
-                display: 'flex', alignItems: 'center', gap: 10, minWidth: 0,
-              }}>
-                <div style={{
-                  flex: 1, height: 6, borderRadius: 999,
-                  background: '#F1F3F6', overflow: 'hidden', minWidth: 0,
-                }}>
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${k.pct}%` }}
-                    transition={{ duration: 0.6, ease: [0.05, 0.7, 0.1, 1], delay: 0.12 + 0.05 * i }}
-                    style={{ height: '100%', background: tint, borderRadius: 999 }}
-                  />
-                </div>
-                <span style={{
-                  fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700,
-                  color: tint, flexShrink: 0,
-                  minWidth: 56, textAlign: 'right',
-                }}>
-                  {k.uniq}/{k.total}
+                <span style={{ flexShrink: 0 }}>
+                  <strong style={{
+                    fontFamily: 'var(--font-display)', fontWeight: 700,
+                    color: '#1A1A1A', fontSize: 14, letterSpacing: '-0.01em',
+                  }}>
+                    {k.uniq}
+                  </strong>
+                  {' из '}
+                  <strong style={{
+                    fontFamily: 'var(--font-display)', fontWeight: 700,
+                    color: '#1A1A1A', fontSize: 14, letterSpacing: '-0.01em',
+                  }}>
+                    {k.total}
+                  </strong>
                 </span>
               </div>
             </motion.div>
@@ -1309,14 +1315,13 @@ function RecentAttempts({ attempts }: { attempts: { courseId: string; testLevel:
       {/* Column header — hidden on mobile, where each row stacks instead */}
       <div className="stats-attempts__head" style={{
         display: 'grid',
-        gridTemplateColumns: '24px minmax(0, 1fr) 70px 70px 90px',
+        gridTemplateColumns: 'minmax(0, 1fr) 70px 70px 90px',
         columnGap: 12,
         padding: '12px 14px',
         fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
         color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
         borderBottom: '1px solid #F4F5F8',
       }}>
-        <span />
         <span>Курс / Тест</span>
         <span>Балл</span>
         <span>Дата</span>
@@ -1327,7 +1332,6 @@ function RecentAttempts({ attempts }: { attempts: { courseId: string; testLevel:
         const course = getCourseById(a.courseId);
         const date = new Date(a.timestamp);
         const dateStr = date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
-        const ratio = a.total > 0 ? a.score / a.total : 0;
         return (
           <motion.button
             key={a.timestamp + a.courseId + a.testLevel}
@@ -1340,7 +1344,7 @@ function RecentAttempts({ attempts }: { attempts: { courseId: string; testLevel:
             className="stats-attempts__row"
             style={{
               display: 'grid',
-              gridTemplateColumns: '24px minmax(0, 1fr) 70px 70px 90px',
+              gridTemplateColumns: 'minmax(0, 1fr) 70px 70px 90px',
               columnGap: 12,
               alignItems: 'center',
               padding: '12px 14px',
@@ -1355,28 +1359,6 @@ function RecentAttempts({ attempts }: { attempts: { courseId: string; testLevel:
             }}
             aria-label={course ? `Открыть курс: ${course.title}` : a.courseId}
           >
-            {/* Status icon */}
-            <span style={{
-              width: 20, height: 20, borderRadius: '50%',
-              background: a.passed ? '#DCFCE7' : '#FEF2F2',
-              color:      a.passed ? '#16A34A' : '#DC2626',
-              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-              flexShrink: 0,
-            }}>
-              {a.passed ? (
-                <svg width={11} height={11} viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" strokeWidth={3.2} strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
-              ) : (
-                <svg width={10} height={10} viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" strokeWidth={3.2} strokeLinecap="round" strokeLinejoin="round">
-                  <line x1={18} y1={6} x2={6} y2={18}/>
-                  <line x1={6} y1={6} x2={18} y2={18}/>
-                </svg>
-              )}
-            </span>
-
             {/* Course title + test level */}
             <span style={{
               minWidth: 0,
@@ -1396,10 +1378,10 @@ function RecentAttempts({ attempts }: { attempts: { courseId: string; testLevel:
               </span>
             </span>
 
-            {/* Score (mono, accent) */}
+            {/* Score (neutral) */}
             <span className="stats-attempts__score" style={{
               fontFamily: 'var(--font-mono)', fontSize: 13, fontWeight: 700,
-              color: ratio >= 0.9 ? '#16A34A' : ratio >= 0.7 ? ACCENT_DARK : '#B91C1C',
+              color: '#1A1A1A',
             }}>
               {a.score}/{a.total}
             </span>

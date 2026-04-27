@@ -918,7 +918,7 @@ main:has(.stats-page) {
      and the table head; show mobile sub-line under the title instead. */
   .stats-attempts__head { display: none !important; }
   .stats-attempts__row {
-    grid-template-columns: 24px minmax(0, 1fr) auto !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
   }
   .stats-attempts__score,
   .stats-attempts__date  { display: none !important; }
