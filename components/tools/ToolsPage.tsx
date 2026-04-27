@@ -379,7 +379,7 @@ const CardFavButton = React.memo(function CardFavButton({
         cursor: 'pointer', flexShrink: 0,
         overflow: 'visible',
         boxShadow: isFavourite
-          ? '0 2px 6px rgba(217,119,6,0.18)'
+          ? 'none'
           : '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
         transition: 'background 160ms, color 160ms, box-shadow 160ms, border-color 160ms',
       }}
