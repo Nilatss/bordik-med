@@ -683,8 +683,8 @@ function Heatmap({ data, period }: { data: HeatmapData; period: Period }) {
             style={{
               position: 'absolute',
               left: `${colPct}%`,
-              top: isCalendar ? `calc(${(rowOfCell / weeks) * 100}% + 24px)` : undefined,
-              bottom: isCalendar ? undefined : 'calc(100% + 8px)',
+              top: isCalendar ? `calc(${(rowOfCell / weeks) * 100}% - 4px)` : undefined,
+              bottom: isCalendar ? undefined : 'calc(100% + 14px)',
               transform: isCalendar ? 'translate(-50%, -100%)' : 'translateX(-50%)',
               background: '#1A1A1A',
               color: '#F4F5F7',
