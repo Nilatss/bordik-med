@@ -25,8 +25,14 @@ declare const self: ServiceWorkerGlobalScope;
 
 const serwist = new Serwist({
   precacheEntries: self.__SW_MANIFEST,
-  skipWaiting: true,
-  clientsClaim: true,
+  // CRITICAL: keep both false. With skipWaiting + clientsClaim true, every
+  // background update auto-activates and silently RELOADS the page (via
+  // controllerchange). Users see "the site refreshed for no reason while I
+  // was reading", which is what they reported. The PwaRegistrar shows a
+  // dismissable toast - the user explicitly clicks "Обновить", we then
+  // postMessage SKIP_WAITING and the page reloads on their terms.
+  skipWaiting: false,
+  clientsClaim: false,
   navigationPreload: true,
 
   // Extra runtime-caching rules (on top of the Serwist defaults)
@@ -102,3 +108,13 @@ const serwist = new Serwist({
 });
 
 serwist.addEventListeners();
+
+// Explicit handler for the toast "Обновить" button. PwaRegistrar posts
+// { type: 'SKIP_WAITING' } to the waiting worker - we activate it on demand,
+// which fires controllerchange in the page and triggers the user-initiated
+// reload. Without this listener the toast button does nothing.
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
