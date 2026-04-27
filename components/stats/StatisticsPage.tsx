@@ -1151,69 +1151,141 @@ function IconScale() {
    Recent attempts table — replaces "Tax Liabilities"
    ════════════════════════════════════════════════════════════════ */
 function RecentAttempts({ attempts }: { attempts: { courseId: string; testLevel: number; score: number; total: number; passed: boolean; timestamp: number }[] }) {
+  const openCourse = useAppStore((s) => s.openCourse);
   if (attempts.length === 0) {
     return <EmptyHint text="Сданные тесты появятся здесь." />;
   }
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-      {/* header */}
-      <div style={{
-        display: 'grid', gridTemplateColumns: '2fr 0.7fr 0.9fr 0.7fr',
-        gap: 8, padding: '4px 10px',
+    <div className="stats-attempts" style={{
+      display: 'flex', flexDirection: 'column',
+      background: '#FFFFFF',
+      border: '1px solid #F0F1F5',
+      borderRadius: 12,
+      overflow: 'hidden',
+      minWidth: 0,
+    }}>
+      {/* Column header — hidden on mobile, where each row stacks instead */}
+      <div className="stats-attempts__head" style={{
+        display: 'grid',
+        gridTemplateColumns: '24px minmax(0, 1fr) 70px 70px 90px',
+        columnGap: 12,
+        padding: '12px 14px',
         fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-        color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.06em',
+        color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
+        borderBottom: '1px solid #F4F5F8',
       }}>
+        <span />
         <span>Курс / Тест</span>
         <span>Балл</span>
         <span>Дата</span>
         <span style={{ textAlign: 'right' }}>Статус</span>
       </div>
+
       {attempts.map((a, i) => {
         const course = getCourseById(a.courseId);
         const date = new Date(a.timestamp);
         const dateStr = date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
+        const ratio = a.total > 0 ? a.score / a.total : 0;
         return (
-          <motion.div
+          <motion.button
             key={a.timestamp + a.courseId + a.testLevel}
-            initial={{ opacity: 0, y: 8 }}
+            type="button"
+            onClick={() => course && openCourse(a.courseId)}
+            initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, ease: [0.05, 0.7, 0.1, 1], delay: 0.04 * i }}
+            transition={{ duration: 0.28, ease: [0.05, 0.7, 0.1, 1], delay: 0.05 * i }}
+            whileHover={{ background: '#F8F9FB' }}
+            className="stats-attempts__row"
             style={{
-              display: 'grid', gridTemplateColumns: '2fr 0.7fr 0.9fr 0.7fr',
-              gap: 8, padding: '10px',
-              background: '#F8F9FB', borderRadius: 10,
-              fontFamily: 'var(--font-body)', fontSize: 12.5,
-              color: '#1A1A1A',
+              display: 'grid',
+              gridTemplateColumns: '24px minmax(0, 1fr) 70px 70px 90px',
+              columnGap: 12,
               alignItems: 'center',
+              padding: '12px 14px',
+              borderTop: '1px solid #F4F5F8',
+              borderLeft: 'none', borderRight: 'none', borderBottom: 'none',
+              background: 'transparent',
+              cursor: course ? 'pointer' : 'default',
+              textAlign: 'left',
+              fontFamily: 'var(--font-body)', fontSize: 13,
+              width: '100%',
+              transition: 'background 160ms',
+            }}
+            aria-label={course ? `Открыть курс: ${course.title}` : a.courseId}
+          >
+            {/* Status icon */}
+            <span style={{
+              width: 20, height: 20, borderRadius: '50%',
+              background: a.passed ? '#DCFCE7' : '#FEF2F2',
+              color:      a.passed ? '#16A34A' : '#DC2626',
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+              flexShrink: 0,
             }}>
-            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-              <span style={{ fontWeight: 600 }}>{course?.title ?? a.courseId}</span>
-              <span style={{ color: '#9CA3AF', marginLeft: 6 }}>· Тест {a.testLevel}</span>
+              {a.passed ? (
+                <svg width={11} height={11} viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" strokeWidth={3.2} strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              ) : (
+                <svg width={10} height={10} viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" strokeWidth={3.2} strokeLinecap="round" strokeLinejoin="round">
+                  <line x1={18} y1={6} x2={6} y2={18}/>
+                  <line x1={6} y1={6} x2={18} y2={18}/>
+                </svg>
+              )}
             </span>
-            <span style={{ fontWeight: 600 }}>{a.score}/{a.total}</span>
-            <span style={{ color: '#6B7280' }}>{dateStr}</span>
-            <span style={{ textAlign: 'right' }}>
-              <StatusPill passed={a.passed} />
+
+            {/* Course title + test level */}
+            <span style={{
+              minWidth: 0,
+              display: 'flex', flexDirection: 'column', gap: 1,
+            }}>
+              <span style={{
+                fontWeight: 600, color: '#1A1A1A',
+                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+              }}>
+                {course?.title ?? a.courseId}
+              </span>
+              <span className="stats-attempts__sub-mobile" style={{
+                fontFamily: 'var(--font-mono)', fontSize: 11, color: '#9CA3AF',
+                display: 'none',
+              }}>
+                {a.score}/{a.total} · {dateStr}
+              </span>
             </span>
-          </motion.div>
+
+            {/* Score (mono, accent) */}
+            <span className="stats-attempts__score" style={{
+              fontFamily: 'var(--font-mono)', fontSize: 13, fontWeight: 700,
+              color: ratio >= 0.9 ? '#16A34A' : ratio >= 0.7 ? ACCENT_DARK : '#B91C1C',
+            }}>
+              {a.score}/{a.total}
+            </span>
+
+            {/* Date */}
+            <span className="stats-attempts__date" style={{
+              fontFamily: 'var(--font-mono)', fontSize: 12, color: '#6B7280',
+            }}>
+              {dateStr}
+            </span>
+
+            {/* Status pill — compact, right-aligned */}
+            <span style={{
+              justifySelf: 'end',
+              display: 'inline-flex', alignItems: 'center', gap: 4,
+              padding: '3px 10px',
+              borderRadius: 999,
+              background: a.passed ? '#DCFCE7' : '#FEF2F2',
+              color:      a.passed ? '#15803D' : '#B91C1C',
+              fontFamily: 'var(--font-body)', fontSize: 11, fontWeight: 600,
+              whiteSpace: 'nowrap',
+            }}>
+              {a.passed ? 'Пройден' : 'Не пройден'}
+            </span>
+          </motion.button>
         );
       })}
     </div>
-  );
-}
-
-function StatusPill({ passed }: { passed: boolean }) {
-  return (
-    <span style={{
-      display: 'inline-flex', alignItems: 'center', gap: 4,
-      padding: '2px 8px',
-      borderRadius: 999,
-      background: passed ? '#DCFCE7' : '#FEF2F2',
-      color:      passed ? '#166534' : '#B91C1C',
-      fontFamily: 'var(--font-body)', fontSize: 11, fontWeight: 600,
-    }}>
-      {passed ? '✓' : '✗'} {passed ? 'Пройден' : 'Не пройден'}
-    </span>
   );
 }
 

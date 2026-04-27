@@ -913,6 +913,16 @@ main:has(.stats-page) {
   .stats-kpi-row    { grid-template-columns: 1fr !important; }
   .stats-2col       { grid-template-columns: 1fr !important; }
   .stats-toolkinds  { grid-template-columns: 1fr !important; }
+  /* Recent attempts: collapse the table into a 2-column row
+     (status icon + title-with-meta + status pill). Hide score/date columns
+     and the table head; show mobile sub-line under the title instead. */
+  .stats-attempts__head { display: none !important; }
+  .stats-attempts__row {
+    grid-template-columns: 24px minmax(0, 1fr) auto !important;
+  }
+  .stats-attempts__score,
+  .stats-attempts__date  { display: none !important; }
+  .stats-attempts__sub-mobile { display: inline !important; }
 }
 
 /* Stats entrance animations now use framer-motion (matches CoursePage). */
