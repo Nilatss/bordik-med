@@ -3,6 +3,16 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Политика конфиденциальности',
   description: 'Как Bordik / IronMed Academy обрабатывает персональные данные.',
+  alternates: {
+    canonical: '/privacy',
+    languages: {
+      // P2-SEO-2 — currently only the Russian version exists; the
+      // x-default + ru-RU hreflang pair tells Google we are Russian-
+      // language and that there's no separate localised URL.
+      'ru-RU':     '/privacy',
+      'x-default': '/privacy',
+    },
+  },
 };
 
 const LAST_UPDATED = '2026-04-28';

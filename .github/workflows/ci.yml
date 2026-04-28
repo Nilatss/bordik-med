@@ -1,0 +1,59 @@
+name: CI
+
+# P2-CQ-1 — gate every PR on type-check, tests, and bundle leak scan.
+# Fast — completes in ~90 s. No external API access required.
+
+on:
+  pull_request:
+    branches: [master]
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: type-check + tests + leak-scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        # Use ci instead of install so the lock-file is honoured exactly.
+        run: npm ci --no-audit --no-fund
+
+      - name: Sync MediaPipe (self-hosted WASM)
+        # Mirrors prebuild step — gives leak-scan something to scan.
+        run: npm run sync:mediapipe
+
+      - name: TypeScript type-check
+        run: npx tsc --noEmit -p tsconfig.json
+
+      - name: Run unit + golden tests
+        run: npm test
+
+      - name: Build for leak scan
+        # We don't ship the artifact, only need the bundle to grep.
+        # `next build` honours `prebuild` so all generated files exist.
+        env:
+          NODE_ENV: production
+          # Minimal env so build doesn't fail on missing config; real
+          # secrets stay in Vercel.
+          NEXT_PUBLIC_APP_URL: https://ironmed-academy.vercel.app
+        run: npm run build
+
+      - name: Bundle secret-leak scan
+        run: npm run check:leaks

@@ -32,6 +32,15 @@ export const metadata: Metadata = {
     follow: true,
     nocache: false,
   },
+  // Canonical + hreflang. Russian-only for now; expansion to UZ/EN
+  // happens once the i18n routing is wired up — see P2-SEO-2.
+  alternates: {
+    canonical: '/',
+    languages: {
+      'ru-RU':     '/',
+      'x-default': '/',
+    },
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',

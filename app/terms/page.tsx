@@ -3,6 +3,13 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Условия использования',
   description: 'Условия использования платформы Bordik / IronMed Academy.',
+  alternates: {
+    canonical: '/terms',
+    languages: {
+      'ru-RU':     '/terms',
+      'x-default': '/terms',
+    },
+  },
 };
 
 const LAST_UPDATED = '2026-04-28';
