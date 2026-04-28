@@ -25,7 +25,7 @@ function call(weight: number): HsResult {
 
 function hourly(r: HsResult): number {
   const m = r.value.match(/(\d+(?:\.\d+)?)/);
-  return m ? parseFloat(m[1]) : NaN;
+  return m && m[1] ? parseFloat(m[1]) : NaN;
 }
 
 describe('holliday-segar · compute', () => {

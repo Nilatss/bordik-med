@@ -127,8 +127,8 @@ export function analyseFaceFrame(result: FaceLandmarkerResult): FaceFrameStats {
   let pitch = 0;
   let gazeX = 0;
   let gazeY = 0;
-  if (sets.length >= 1) {
-    const lm = sets[0];
+  const lm = sets[0];
+  if (lm) {
     const upper = lm[UPPER_LIP_INNER];
     const lower = lm[LOWER_LIP_INNER];
     const top = lm[FACE_TOP];

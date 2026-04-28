@@ -181,7 +181,7 @@ async function geminiCall(prompt: string, expectArray = false): Promise<unknown>
         parsed = JSON.parse(text);
       } catch {
         const m = text.match(/```(?:json)?\s*([\s\S]*?)```/);
-        if (m) parsed = JSON.parse(m[1]);
+        if (m && m[1]) parsed = JSON.parse(m[1]);
         else throw new Error('gemini-bad-json');
       }
       if (expectArray && !Array.isArray(parsed)) {

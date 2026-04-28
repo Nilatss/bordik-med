@@ -25,12 +25,12 @@ function call(weight: number, tbsa: number): PResult {
 
 function totalMl(r: PResult): number {
   const m = r.value.match(/(\d+)/);
-  return m ? parseInt(m[1], 10) : NaN;
+  return m && m[1] ? parseInt(m[1], 10) : NaN;
 }
 
 function first8hMl(r: PResult): number {
   const m = r.unit.match(/(\d+)\s*мл в первые 8 ч/);
-  return m ? parseInt(m[1], 10) : NaN;
+  return m && m[1] ? parseInt(m[1], 10) : NaN;
 }
 
 describe('parkland · compute', () => {

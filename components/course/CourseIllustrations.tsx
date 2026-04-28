@@ -74,7 +74,7 @@ const Cell = (): ReactElement => (
     <circle cx="310" cy="160" r="15" fill={COLORS.purple} opacity="0.35" />
     <text x="300" y="240" textAnchor="middle" fontSize="11" fill={COLORS.purple} fontWeight="600">Ядро</text>
     {/* mitochondria */}
-    {[[140, 120], [460, 130], [150, 220], [460, 230]].map(([x, y], i) => (
+    {([[140, 120], [460, 130], [150, 220], [460, 230]] as [number, number][]).map(([x, y], i) => (
       <g key={`mt${i}`}>
         <ellipse cx={x} cy={y} rx="24" ry="12" fill={COLORS.red} opacity="0.2" />
         <ellipse cx={x} cy={y} rx="24" ry="12" fill="none" stroke={COLORS.red} strokeWidth="1.6" />
@@ -83,7 +83,7 @@ const Cell = (): ReactElement => (
     ))}
     <text x="140" y="95" textAnchor="middle" fontSize="10" fill={COLORS.red} fontWeight="600">Митохондрии</text>
     {/* ribosomes */}
-    {[[240, 90], [360, 90], [240, 250], [360, 250]].map(([x, y], i) => (
+    {([[240, 90], [360, 90], [240, 250], [360, 250]] as [number, number][]).map(([x, y], i) => (
       <circle key={`r${i}`} cx={x} cy={y} r="5" fill={COLORS.green} />
     ))}
     <text x="240" y="78" textAnchor="middle" fontSize="10" fill={COLORS.green} fontWeight="600">Рибосомы</text>

@@ -70,18 +70,21 @@ function tokenize(src: string): Token[] {
   let i = 0;
   const n = src.length;
   while (i < n) {
-    const ch = src[i];
+    // i < n by loop condition, so src[i] is always defined; the
+    // non-null assertion silences `noUncheckedIndexedAccess` while
+    // staying honest about runtime invariants.
+    const ch = src[i]!;
     if (/\s/.test(ch)) { i++; continue; }
     if (/[0-9]/.test(ch) || (ch === '.' && /[0-9]/.test(src[i + 1] ?? ''))) {
       let j = i;
-      while (j < n && /[0-9.]/.test(src[j])) j++;
+      while (j < n && /[0-9.]/.test(src[j]!)) j++;
       tokens.push({ kind: 'num', text: src.slice(i, j), pos: i });
       i = j;
       continue;
     }
     if (/[a-zA-Z_]/.test(ch)) {
       let j = i;
-      while (j < n && /[a-zA-Z0-9_]/.test(src[j])) j++;
+      while (j < n && /[a-zA-Z0-9_]/.test(src[j]!)) j++;
       tokens.push({ kind: 'id', text: src.slice(i, j), pos: i });
       i = j;
       continue;
@@ -280,6 +283,7 @@ export function validateDslSpec(spec: DslSpec): string[] {
   }
   for (let i = 0; i < spec.bands.length; i++) {
     const b = spec.bands[i];
+    if (!b) continue;
     try { parse(b.when); }
     catch (err) {
       issues.push(`bands[${i}].when invalid: ${err instanceof Error ? err.message : String(err)}`);

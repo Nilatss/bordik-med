@@ -24,23 +24,28 @@ export function parseQuestions(md: string): Question[] {
   const questions: Question[] = [];
 
   for (let idx = 0; idx < rows.length; idx++) {
-    const raw = rows[idx].replace(/^\|\s*|\s*\|$/g, '').trim();
+    const row = rows[idx];
+    if (!row) continue;
+    const raw = row.replace(/^\|\s*|\s*\|$/g, '').trim();
     if (!/^Вопрос/i.test(raw)) continue;
 
     const parts = raw.split(/<br>/i).map((s) => s.trim()).filter(Boolean);
-    const header = parts[0].replace(/^Вопрос\s*\d+:\s*/i, '');
+    const first = parts[0];
+    if (!first) continue;
+    const header = first.replace(/^Вопрос\s*\d+:\s*/i, '');
 
     const options: Option[] = [];
     let explanation = '';
 
     for (let i = 1; i < parts.length; i++) {
       const p = parts[i];
+      if (!p) continue;
       const optMatch = p.match(/^([A-DА-Г])\)\s*(.+)$/);
       if (optMatch) {
-        let text = optMatch[2];
+        let text = optMatch[2] ?? '';
         const correct = /←\s*правильный\s*ответ/i.test(text);
         text = text.replace(/←\s*правильный\s*ответ/i, '').trim();
-        options.push({ letter: optMatch[1], text, correct });
+        options.push({ letter: optMatch[1] ?? '', text, correct });
         continue;
       }
       if (/^Объяснение:/i.test(p)) {
@@ -59,7 +64,12 @@ function shuffle<T>(arr: T[]): T[] {
   const copy = [...arr];
   for (let i = copy.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [copy[i], copy[j]] = [copy[j], copy[i]];
+    const a = copy[i];
+    const b = copy[j];
+    if (a !== undefined && b !== undefined) {
+      copy[i] = b;
+      copy[j] = a;
+    }
   }
   return copy;
 }

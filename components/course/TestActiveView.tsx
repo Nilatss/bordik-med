@@ -159,6 +159,10 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
   const selected = selectedAnswers[currentQ];
   const isLast = currentQ === questions.length - 1;
 
+  // Defensive: if currentQ has somehow drifted out of range (e.g. a
+  // stale persisted index against a shorter question pool), bail.
+  if (!q) return null;
+
   return (
     <TestGuard
       active={true}

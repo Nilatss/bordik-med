@@ -68,8 +68,10 @@ export async function bulkCacheTools(
     const cache = await caches.open(CACHE_NAME);
     for (let i = 0; i < ids.length; i++) {
       if (signal?.aborted) break;
+      const id = ids[i];
+      if (!id) continue;
       try {
-        const url = TOOL_URL(ids[i]);
+        const url = TOOL_URL(id);
         if (!(await cache.match(url))) await cache.add(url);
         ok++;
       } catch {

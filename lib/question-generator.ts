@@ -83,14 +83,14 @@ function extractKeyTerms(md: string): string[] {
   // Bold-emphasised terms: **Term**
   const boldRe = /\*\*([^*\n]{2,60})\*\*/g;
   while ((m = boldRe.exec(md)) !== null) {
-    const t = cleanTerm(m[1]);
+    const t = cleanTerm(m[1] ?? '');
     if (looksLikeTerm(t)) terms.add(t);
   }
 
   // ## Headings (level 2-4) — strip numeric prefixes like "1.1 Клетка ..."
   const headRe = /^#{2,4}\s+(.+)$/gm;
   while ((m = headRe.exec(md)) !== null) {
-    const raw = m[1].trim().replace(/[*`]/g, '');
+    const raw = (m[1] ?? '').trim().replace(/[*`]/g, '');
     // strip "1.1 " / "Тема 1: " / "1) " prefixes
     const t = cleanTerm(raw.replace(/^(?:Тема\s+)?\d+(?:[.,)]\d*)*[.\s)]+/i, ''));
     if (looksLikeTerm(t)) terms.add(t);
@@ -99,7 +99,7 @@ function extractKeyTerms(md: string): string[] {
   // First column of markdown table rows = main term.
   const rowRe = /^\|\s*\*?\*?([^|*\n]{2,50})\*?\*?\s*\|/gm;
   while ((m = rowRe.exec(md)) !== null) {
-    const t = cleanTerm(m[1]);
+    const t = cleanTerm(m[1] ?? '');
     if (looksLikeTerm(t) && !/^[-:]+$/.test(t)) terms.add(t);
   }
 
@@ -109,7 +109,7 @@ function extractKeyTerms(md: string): string[] {
   while ((m = acroRe.exec(md)) !== null) {
     const t = m[1];
     // Avoid trivial words like "ОК" or marker words
-    if (t.length >= 2 && t.length <= 8) terms.add(t);
+    if (t && t.length >= 2 && t.length <= 8) terms.add(t);
   }
 
   return Array.from(terms);
@@ -154,7 +154,12 @@ function seededShuffle<T>(arr: T[], seed: number): T[] {
   const out = [...arr];
   for (let i = out.length - 1; i > 0; i--) {
     const j = Math.floor(rng() * (i + 1));
-    [out[i], out[j]] = [out[j], out[i]];
+    const a = out[i];
+    const b = out[j];
+    if (a !== undefined && b !== undefined) {
+      out[i] = b;
+      out[j] = a;
+    }
   }
   return out;
 }
@@ -182,7 +187,7 @@ export function generateContentQuestions(courseId: string): TestQuestion[] {
 
   for (let i = 0; i < shuffled.length; i++) {
     const sentence = shuffled[i];
-    if (usedSentences.has(sentence)) continue;
+    if (!sentence || usedSentences.has(sentence)) continue;
 
     // Pick the LONGEST term that occurs in the sentence (more specific).
     const matched = terms
@@ -204,11 +209,13 @@ export function generateContentQuestions(courseId: string): TestQuestion[] {
     const options = seededShuffle([matched, ...distractors], seed + i * 7 + 13);
     const correctIndex = options.indexOf(matched) as 0 | 1 | 2 | 3;
     if (options.length !== 4) continue;
+    const o0 = options[0], o1 = options[1], o2 = options[2], o3 = options[3];
+    if (!o0 || !o1 || !o2 || !o3) continue;
 
     questions.push({
       id: `gen-${courseId}-${questions.length}`,
       question: `Заполните пропуск: «${cloze}»`,
-      options: [options[0], options[1], options[2], options[3]],
+      options: [o0, o1, o2, o3],
       correctIndex,
     });
 
@@ -241,7 +248,7 @@ export function getModuleTestSlice(courseIds: string[]): TestQuestion[] {
     const pool = generateContentQuestions(cid);
     for (let i = 100; i < pool.length && out.length < 100; i++) {
       const q = pool[i];
-      if (seen.has(q.question)) continue;
+      if (!q || seen.has(q.question)) continue;
       seen.add(q.question);
       out.push(q);
     }

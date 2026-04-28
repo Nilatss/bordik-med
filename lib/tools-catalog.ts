@@ -1021,8 +1021,8 @@ export const CATALOG_TOOLS: CatalogTool[] = [
 export function groupByCategory(tools: CatalogTool[]): Record<string, CatalogTool[]> {
   const groups: Record<string, CatalogTool[]> = {};
   for (const t of tools) {
-    if (!groups[t.category]) groups[t.category] = [];
-    groups[t.category].push(t);
+    const bucket = groups[t.category] ?? (groups[t.category] = []);
+    bucket.push(t);
   }
   return groups;
 }
@@ -1031,8 +1031,8 @@ export function groupByCategory(tools: CatalogTool[]): Record<string, CatalogToo
 export function groupBySubcategory(tools: CatalogTool[]): Record<string, CatalogTool[]> {
   const groups: Record<string, CatalogTool[]> = {};
   for (const t of tools) {
-    if (!groups[t.subcategory]) groups[t.subcategory] = [];
-    groups[t.subcategory].push(t);
+    const bucket = groups[t.subcategory] ?? (groups[t.subcategory] = []);
+    bucket.push(t);
   }
   return groups;
 }

@@ -62,7 +62,9 @@ function resolveCollisions(items: { cx: number; cy: number; w: number }[]) {
   for (let pass = 0; pass < 8; pass++) {
     for (let i = 0; i < items.length; i++) {
       for (let j = i + 1; j < items.length; j++) {
-        const a = items[i], b = items[j];
+        const a = items[i];
+        const b = items[j];
+        if (!a || !b) continue;
         const overlapX = (a.w / 2 + b.w / 2 + 4) - Math.abs(a.cx - b.cx);
         const overlapY = 30 - Math.abs(a.cy - b.cy);
         if (overlapX > 0 && overlapY > 0) {

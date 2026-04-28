@@ -183,7 +183,7 @@ export const COUNTRY_COUNTS: { value: string; count: number; flag: string }[] = 
   }
 
   return Object.entries(counts)
-    .map(([value, count]) => ({ value, count, flag: flags[value], _order: orders[value] ?? 999 }))
+    .map(([value, count]) => ({ value, count, flag: flags[value] ?? '', _order: orders[value] ?? 999 }))
     .sort((a, b) => {
       if (a._order !== b._order) return a._order - b._order;
       if (b.count !== a.count) return b.count - a.count;

@@ -250,7 +250,7 @@ export default function Proctoring({
       lastAnalysis = now;
       analyser.getByteFrequencyData(data);
       let sum = 0;
-      for (let i = 0; i < data.length; i++) sum += data[i];
+      for (let i = 0; i < data.length; i++) sum += data[i] ?? 0;
       const avg = sum / data.length;
       // (now defined above; keep variable name in scope)
       // Throttle React re-renders to 5 Hz — pushing 60 Hz to setState causes
@@ -352,7 +352,7 @@ export default function Proctoring({
           const lum = new Float32Array(w * h);
           let sum = 0;
           for (let i = 0, p = 0; i < px.length; i += 4, p++) {
-            const y = 0.299 * px[i] + 0.587 * px[i + 1] + 0.114 * px[i + 2];
+            const y = 0.299 * (px[i] ?? 0) + 0.587 * (px[i + 1] ?? 0) + 0.114 * (px[i + 2] ?? 0);
             lum[p] = y;
             sum += y;
           }
@@ -360,9 +360,9 @@ export default function Proctoring({
           let edges = 0; let n = 0;
           for (let y = 1; y < h - 1; y++) {
             for (let x = 1; x < w - 1; x++) {
-              const c = lum[y * w + x];
-              edges += Math.abs(c - lum[y * w + x + 1]);
-              edges += Math.abs(c - lum[(y + 1) * w + x]);
+              const c = lum[y * w + x] ?? 0;
+              edges += Math.abs(c - (lum[y * w + x + 1] ?? 0));
+              edges += Math.abs(c - (lum[(y + 1) * w + x] ?? 0));
               n++;
             }
           }
@@ -581,7 +581,7 @@ export default function Proctoring({
           }
           prevAperture = stats.lipAperture;
           // Drop old hits outside the window
-          while (lipHits.length && now - lipHits[0] > LIP_TALK_WINDOW_MS) lipHits.shift();
+          while (lipHits.length && now - (lipHits[0] ?? now) > LIP_TALK_WINDOW_MS) lipHits.shift();
           if (
             lipHits.length >= LIP_TALK_HITS_REQUIRED &&
             now - lastLipTalk > LIP_TALK_RESET_MS
@@ -657,7 +657,7 @@ export default function Proctoring({
           lastViolation = now;
           const top = hits.sort((a, b) => b.score - a.score)[0];
           // Red violation banner only (no duplicate yellow warning).
-          onViolation('object-' + top.cls);
+          if (top) onViolation('object-' + top.cls);
         }
       } catch { /* model load failure — silently skip */ }
 

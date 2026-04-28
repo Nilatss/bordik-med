@@ -94,7 +94,7 @@ const moduleData: Record<number, {
  *      hand-written questions or lesson content).
  */
 export function getTestQuestions(courseId: string, testLevel: TestLevel): TestQuestion[] {
-  const moduleId = parseInt(courseId.split('.')[0]);
+  const moduleId = parseInt(courseId.split('.')[0] ?? '0');
   const data = moduleData[moduleId];
 
   if (data?.courseQuestions[courseId]?.[testLevel]) {
@@ -154,7 +154,7 @@ export function getModuleTestQuestions(moduleId: number): TestQuestion[] {
 /** Check if real (non-placeholder) questions exist for a course test.
  *  "Real" means hand-written, AI-generated, or sufficient cloze-generated. */
 export function hasRealQuestions(courseId: string, testLevel: TestLevel): boolean {
-  const moduleId = parseInt(courseId.split('.')[0]);
+  const moduleId = parseInt(courseId.split('.')[0] ?? '0');
   const data = moduleData[moduleId];
   if (data?.courseQuestions[courseId]?.[testLevel]?.length) return true;
   if (AI_COURSE_TESTS[courseId]?.[testLevel]?.length) return true;
