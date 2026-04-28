@@ -4,10 +4,10 @@ import React, { useState, useMemo, useEffect, Children, isValidElement, cloneEle
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { CATALOG_TOOLS } from '@/lib/tools-catalog';
+import { useCatalog, type CatalogMetaItem } from '@/lib/catalog-client';
 import { findBand, type ToolInput, type Preset, type CalculatorResult, type ResultScaleSegment, type ToolRunner } from '@/lib/tools-runners';
 import { loadRunner } from '@/lib/runners';
-import { TOOL_META, primaryCountriesFor } from '@/lib/tool-meta';
+import { primaryCountriesFor } from '@/lib/tool-meta-helpers';
 import { useAppStore } from '@/lib/store';
 import { useT } from '@/lib/i18n';
 import { ArrowLeft } from '@/components/icons';
@@ -120,7 +120,15 @@ function iconKeyForTitle(t: string): string {
 export default function ToolView({ toolId }: { toolId: string }) {
   const t = useT();
   const { closeTool } = useAppStore();
-  const tool = useMemo(() => CATALOG_TOOLS.find((t) => t.id === toolId), [toolId]);
+  // Catalog arrives async via fetch /catalog.meta.json. While it's loading,
+  // `tool` is undefined - the component below shows the loading state. The
+  // runner load runs in parallel so by the time both arrive the page can
+  // render in one paint.
+  const catalog = useCatalog();
+  const tool = useMemo<CatalogMetaItem | undefined>(
+    () => catalog?.find((c) => c.id === toolId),
+    [catalog, toolId],
+  );
 
   // Load the runner lazily - this triggers a per-runner dynamic import so the
   // 3+ MB encyclopaedia of clinical content stays out of the main bundle.
@@ -1305,12 +1313,12 @@ function FavouriteButton({ isFavourite, onToggle }: {
 }
 
 function Header({ tool, kind }: {
-  tool: { id: string; title: string; subcategory: string; category: string; description?: string };
+  tool: { id: string; title: string; subcategory: string; category: string; description?: string; countries?: string | null };
   kind?: string;
 }) {
   const isFavourite = useAppStore((s) => s.toolsFavourites.includes(tool.id));
   const toggleFav = useAppStore((s) => s.toggleFavouriteTool);
-  const toolCountries = primaryCountriesFor(TOOL_META[tool.id]?.countries);
+  const toolCountries = primaryCountriesFor(tool.countries);
 
   return (
     <div>

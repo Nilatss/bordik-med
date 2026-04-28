@@ -6,7 +6,7 @@ import { modules, sections as allSections, TOTAL_COURSES, getCourseById, getModu
 import { useAppStore, formatStudyTime, getTotalStudyTime } from '@/lib/store';
 import { MAX_TEST_LEVELS } from '@/lib/quiz';
 import { RUNNER_KINDS } from '@/lib/tool-meta-data';
-import { CATALOG_TOOLS } from '@/lib/tools-catalog';
+import { useCatalog, type CatalogMetaItem } from '@/lib/catalog-client';
 import { content as courseContent } from '@/lib/content';
 // BodyMap is kept in the codebase (./BodyMap.tsx) but not surfaced — backlog.
 
@@ -89,7 +89,11 @@ export default function StatisticsPage() {
   );
 
   /* ─── Tool kinds breakdown — count tool opens grouped by runner kind ── */
-  const toolKindStats = useMemo(() => buildToolKindStats(toolUsage), [toolUsage]);
+  const catalog = useCatalog();
+  const toolKindStats = useMemo(
+    () => buildToolKindStats(toolUsage, catalog),
+    [toolUsage, catalog],
+  );
 
   /* ─── Recent test attempts table (replaces «Tax Liabilities») */
   const recentAttempts = useMemo(() => {
@@ -1469,7 +1473,10 @@ interface ToolKindStats {
   topTools: { id: string; title: string; count: number; kind: string }[];
 }
 
-function buildToolKindStats(usage: Record<string, number>): ToolKindStats {
+function buildToolKindStats(
+  usage: Record<string, number>,
+  catalog: readonly CatalogMetaItem[] | null,
+): ToolKindStats {
   const KIND_LABELS: Record<string, string> = {
     calculator: 'Калькуляторы',
     score: 'Шкалы и опросники',
@@ -1517,7 +1524,7 @@ function buildToolKindStats(usage: Record<string, number>): ToolKindStats {
     .sort((a, b) => b[1] - a[1])
     .slice(0, 5)
     .map(([id, count]) => {
-      const t = CATALOG_TOOLS.find((x) => x.id === id);
+      const t = catalog?.find((x) => x.id === id);
       return {
         id,
         title: t?.title ?? id,
