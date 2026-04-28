@@ -344,18 +344,64 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: 'ironmed-progress',
-      version: 2,
-      migrate: (persistedState: any, version: number) => {
+      version: 3,
+      // Hardened migrate: tolerant of corrupt or attacker-tampered
+      // localStorage. We never trust persisted JSON blindly - every
+      // top-level key is type-guarded, anything failing the guard is
+      // silently dropped (better empty than booby-trapped). Bumped to
+      // v3 to also re-run guards on already-migrated v2 stores.
+      migrate: (persistedState: unknown, version: number) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const raw = (persistedState ?? {}) as Record<string, any>;
+
+        // v1 → v2 schema shift
         if (version < 2) {
-          // Remove old quiz state, initialize new test state
-          delete persistedState.quizAttempts;
-          delete persistedState.quizBestScores;
-          persistedState.testAttempts = {};
-          persistedState.courseTestProgress = {};
-          persistedState.moduleTestAttempts = {};
-          persistedState.completedModules = [];
+          delete raw.quizAttempts;
+          delete raw.quizBestScores;
+          raw.testAttempts = {};
+          raw.courseTestProgress = {};
+          raw.moduleTestAttempts = {};
+          raw.completedModules = [];
         }
-        return persistedState as AppState;
+
+        // v2 → v3: re-validate every key. No structural change, just
+        // typing the trash out.
+        const isStr = (v: unknown): v is string => typeof v === 'string';
+        const isStrArr = (v: unknown): v is string[] =>
+          Array.isArray(v) && v.every(isStr);
+        const isNumArr = (v: unknown): v is number[] =>
+          Array.isArray(v) && v.every((x) => typeof x === 'number' && Number.isFinite(x));
+        const isObj = (v: unknown): v is Record<string, unknown> =>
+          typeof v === 'object' && v !== null && !Array.isArray(v);
+
+        // Drop keys that don't match expected shape. Every defaulting
+        // value here matches AppState's initial state, so the store
+        // remains usable even if the entire persisted blob was junk.
+        const safe: Record<string, unknown> = {};
+        if (isStr(raw.userName))       safe.userName = raw.userName.slice(0, 200);
+        if (isStr(raw.userEmail))      safe.userEmail = raw.userEmail.slice(0, 320);
+        if (isStr(raw.userStatus))     safe.userStatus = raw.userStatus.slice(0, 50);
+        if (isStr(raw.userCountry))    safe.userCountry = raw.userCountry.slice(0, 80);
+        if (isStr(raw.userSpecialty))  safe.userSpecialty = raw.userSpecialty.slice(0, 120);
+        if (isStr(raw.userLanguage))   safe.userLanguage = raw.userLanguage.slice(0, 10);
+        if (isStr(raw.userGoal))       safe.userGoal = raw.userGoal.slice(0, 200);
+        if (isStrArr(raw.completedCourses)) safe.completedCourses = raw.completedCourses;
+        if (isStrArr(raw.startedCourses))   safe.startedCourses = raw.startedCourses;
+        if (isNumArr(raw.completedModules)) safe.completedModules = raw.completedModules;
+        if (isNumArr(raw.openModules))      safe.openModules = raw.openModules;
+        if (isObj(raw.studyTime))           safe.studyTime = raw.studyTime;
+        if (isObj(raw.testAttempts))        safe.testAttempts = raw.testAttempts;
+        if (isObj(raw.courseTestProgress))  safe.courseTestProgress = raw.courseTestProgress;
+        if (isObj(raw.moduleTestAttempts))  safe.moduleTestAttempts = raw.moduleTestAttempts;
+        if (isStr(raw.toolsQuery))          safe.toolsQuery = raw.toolsQuery.slice(0, 200);
+        if (isStrArr(raw.toolsCategories))  safe.toolsCategories = raw.toolsCategories;
+        if (isStrArr(raw.toolsSubcategories)) safe.toolsSubcategories = raw.toolsSubcategories;
+        if (isStrArr(raw.toolsCountries))   safe.toolsCountries = raw.toolsCountries;
+        if (typeof raw.toolsOnlyAvailable === 'boolean') safe.toolsOnlyAvailable = raw.toolsOnlyAvailable;
+        if (isStrArr(raw.toolsFavourites))  safe.toolsFavourites = raw.toolsFavourites;
+        if (isObj(raw.toolUsage))           safe.toolUsage = raw.toolUsage;
+
+        return safe as unknown as AppState;
       },
       partialize: (state) => ({
         userName: state.userName,

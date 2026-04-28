@@ -13,7 +13,7 @@
  */
 import { defaultCache } from '@serwist/next/worker';
 import type { PrecacheEntry, SerwistGlobalConfig } from 'serwist';
-import { Serwist, NetworkFirst, StaleWhileRevalidate, CacheFirst, ExpirationPlugin } from 'serwist';
+import { Serwist, NetworkFirst, NetworkOnly, StaleWhileRevalidate, CacheFirst, ExpirationPlugin } from 'serwist';
 
 declare global {
   interface WorkerGlobalScope extends SerwistGlobalConfig {
@@ -37,6 +37,22 @@ const serwist = new Serwist({
 
   // Extra runtime-caching rules (on top of the Serwist defaults)
   runtimeCaching: [
+    // ── /api/* must NEVER be cached. These responses are auth-coupled
+    // (Bearer cookies, JWT, per-user data) and a stale cache hit after
+    // fullLogout could leak the previous user's data on a shared device.
+    // NetworkOnly forwards every call directly to the network.
+    {
+      matcher: ({ url, sameOrigin }) => sameOrigin && url.pathname.startsWith('/api/'),
+      handler: new NetworkOnly(),
+    },
+    // ── Auth callback and Supabase OAuth flows must also bypass cache.
+    {
+      matcher: ({ url, sameOrigin }) => sameOrigin && (
+        url.pathname.startsWith('/auth/') ||
+        url.pathname.startsWith('/account/')
+      ),
+      handler: new NetworkOnly(),
+    },
     // ── Catalog metadata + search index. NetworkFirst with a fast cache
     // fallback so users get fresh content online and instant offline reads.
     // The build script regenerates these on every deploy, so the network

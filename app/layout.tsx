@@ -3,6 +3,7 @@ import './globals.css';
 import CopyProtection from '@/components/CopyProtection';
 import PwaRegistrar from '@/components/PwaRegistrar';
 import { BFCacheGuard } from '@/components/BFCacheGuard';
+import { StorageBanner } from '@/components/StorageBanner';
 
 const APP_NAME = 'Bordik';
 const APP_TITLE = 'Bordik - Платформа медицинского обучения';
@@ -150,6 +151,7 @@ export default function RootLayout({
         <PwaRegistrar />
         <CopyProtection />
         <BFCacheGuard />
+        <StorageBanner />
         {children}
       </body>
     </html>
