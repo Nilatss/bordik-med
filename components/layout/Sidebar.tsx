@@ -8,7 +8,13 @@ import { searchCourses } from '@/lib/curriculum';
 // CATALOG_TOOLS (172 kB) is dynamically imported below — lazy until the
 // user actually starts searching while on the Tools view.
 import type { CatalogTool } from '@/lib/tools-catalog';
-import UserMenu from './UserMenu';
+import nextDynamic from 'next/dynamic';
+
+// UserMenu pulls @supabase (~50 kB gz). Lazy-loading it stops Sidebar
+// (which is eager on every route) from dragging Supabase into the
+// initial home bundle. The visual placeholder during chunk download
+// is just the existing avatar circle from the static SVG below.
+const UserMenu = nextDynamic(() => import('./UserMenu'), { ssr: false });
 
 type NavItem = 'home' | 'learning' | 'tests' | 'tools' | 'stats' | 'profile';
 
