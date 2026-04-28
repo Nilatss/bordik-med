@@ -444,13 +444,20 @@ const ToolCard = React.memo(function ToolCard({ tool }: { tool: CatalogTool }) {
     toggleFav(tool.id);
   }, [toggleFav, tool.id]);
 
-  // Warm the ToolView chunk on hover so clicking feels instant.
+  // Warm the chunks needed to render this specific tool on hover/focus.
+  // ToolView (markdown stack) + tools-runners (registry lookup) + the
+  // SPECIFIC runner file (e.g. ./runners/cha2ds2-vasc). Without warming
+  // the per-tool runner, clicking still waits ~150-300ms for that chunk
+  // to download. Prefetching on hover hides the latency completely.
   const handlePrefetch = useCallback(() => {
     if (!available) return;
     import('@/components/tools/ToolView').catch(() => {});
-    // also warm the runners module
     import('@/lib/tools-runners').catch(() => {});
-  }, [available]);
+    // Lazy-import the registry, then trigger the per-tool import.
+    import('@/lib/runners')
+      .then((m) => m.loadRunner(tool.id))
+      .catch(() => { /* missing runner / network - silent */ });
+  }, [available, tool.id]);
 
   return (
     // Plain <button> instead of motion.button — Virtuoso recycles rows on
