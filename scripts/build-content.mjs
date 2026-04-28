@@ -36,6 +36,7 @@ const ToolKindSchema = v.picklist(['calculator', 'score']);
 const CatalogMetaItemSchema = v.object({
   id: v.pipe(v.string(), v.minLength(1)),
   title: v.pipe(v.string(), v.minLength(1)),
+  description: v.string(),
   category: v.string(),
   subcategory: v.string(),
   hasRunner: v.boolean(),
@@ -164,6 +165,7 @@ function main() {
     const row = {
       id: t.id,
       title: t.title,
+      description: t.description,
       category: t.category,
       subcategory: t.subcategory,
       hasRunner: runnerIds.has(t.id),

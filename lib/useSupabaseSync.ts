@@ -3,6 +3,13 @@
 import { useEffect, useRef } from 'react';
 import { useAppStore } from './store';
 import { getSupabaseBrowserClient } from './supabase/client';
+import {
+  enqueueSync,
+  flushSyncQueue,
+  hasPendingSync,
+  requestBackgroundSync,
+  type SyncPayload,
+} from './sync-queue';
 
 /**
  * Cross-device sync between the local Zustand store and Supabase.
@@ -116,36 +123,42 @@ export default function useSupabaseSync() {
       debounce.current = setTimeout(async () => {
         if (!pulled.current) return; // never push before initial pull
         const s = useAppStore.getState();
+        const payload = {
+          completedCourses: s.completedCourses,
+          startedCourses: s.startedCourses,
+          courseTestProgress: s.courseTestProgress,
+          completedModules: s.completedModules,
+          studyTime: s.studyTime,
+          toolsFavourites: s.toolsFavourites,
+          toolsSettings: {
+            query: s.toolsQuery,
+            categories: s.toolsCategories,
+            subcategories: s.toolsSubcategories,
+            countries: s.toolsCountries,
+            onlyAvailable: s.toolsOnlyAvailable,
+          },
+          profile: {
+            displayName: s.userName,
+            status: s.userStatus,
+            country: s.userCountry,
+            specialty: s.userSpecialty,
+            language: s.userLanguage,
+            goal: s.userGoal,
+          },
+        };
         try {
-          await fetch('/api/sync', {
+          const r = await fetch('/api/sync', {
             method: 'POST',
             headers: { 'content-type': 'application/json' },
-            body: JSON.stringify({
-              completedCourses: s.completedCourses,
-              startedCourses: s.startedCourses,
-              courseTestProgress: s.courseTestProgress,
-              completedModules: s.completedModules,
-              studyTime: s.studyTime,
-              toolsFavourites: s.toolsFavourites,
-              toolsSettings: {
-                query: s.toolsQuery,
-                categories: s.toolsCategories,
-                subcategories: s.toolsSubcategories,
-                countries: s.toolsCountries,
-                onlyAvailable: s.toolsOnlyAvailable,
-              },
-              profile: {
-                displayName: s.userName,
-                status: s.userStatus,
-                country: s.userCountry,
-                specialty: s.userSpecialty,
-                language: s.userLanguage,
-                goal: s.userGoal,
-              },
-            }),
+            body: JSON.stringify(payload),
           });
+          if (!r.ok) throw new Error(`sync-${r.status}`);
         } catch {
-          // silent — local store is already updated, will retry next change
+          // Network down OR server transient. Persist the latest payload
+          // so it survives a tab close, and ask the SW (or the `online`
+          // listener fallback) to flush when connectivity returns.
+          enqueueSync(payload);
+          requestBackgroundSync().catch(() => {});
         }
       }, 1500);
     };
@@ -176,6 +189,49 @@ export default function useSupabaseSync() {
     return () => {
       unsub();
       if (debounce.current) clearTimeout(debounce.current);
+    };
+  }, []);
+
+  // ─── 3. Drain queued payloads when connectivity returns ─────────
+  // Background Sync API handles this for Chromium browsers; we run the
+  // same logic on a vanilla `online` event so iOS Safari and Firefox
+  // (which don't expose Background Sync) still recover queued writes.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const flush = async (payload: SyncPayload): Promise<boolean> => {
+      try {
+        const r = await fetch('/api/sync', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        return r.ok;
+      } catch {
+        return false;
+      }
+    };
+    const tryFlush = () => {
+      if (!navigator.onLine || !hasPendingSync()) return;
+      flushSyncQueue(flush).catch(() => {});
+    };
+    // Initial flush at mount handles the "tab reopened after offline use" case
+    tryFlush();
+    window.addEventListener('online', tryFlush);
+
+    // The Service Worker fires Background Sync; it can't read our queue
+    // (localStorage isn't accessible from SW context) so it asks any live
+    // client to flush. We listen and trigger the same drain.
+    const onSwMessage = (e: MessageEvent) => {
+      if (e.data?.type === 'SYNC_PROGRESS_FLUSH') tryFlush();
+    };
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.addEventListener('message', onSwMessage);
+    }
+    return () => {
+      window.removeEventListener('online', tryFlush);
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.removeEventListener('message', onSwMessage);
+      }
     };
   }, []);
 }

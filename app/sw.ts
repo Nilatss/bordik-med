@@ -37,6 +37,42 @@ const serwist = new Serwist({
 
   // Extra runtime-caching rules (on top of the Serwist defaults)
   runtimeCaching: [
+    // ── Catalog metadata + search index. NetworkFirst with a fast cache
+    // fallback so users get fresh content online and instant offline reads.
+    // The build script regenerates these on every deploy, so the network
+    // copy always carries the latest revision.
+    {
+      matcher: ({ url }) => (
+        url.pathname === '/catalog.meta.json' ||
+        url.pathname === '/content-manifest.json' ||
+        /^\/search-[a-z]{2}\.json$/.test(url.pathname)
+      ),
+      handler: new StaleWhileRevalidate({
+        cacheName: 'bordik-catalog',
+        plugins: [
+          new ExpirationPlugin({
+            maxEntries: 30,
+            maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
+            purgeOnQuotaError: true,
+          }),
+        ],
+      }),
+    },
+    // ── Per-tool detail JSON. CacheFirst so opening a tool offline is
+    // instant. New revisions land via deploy + new content-manifest.json.
+    {
+      matcher: ({ url }) => url.pathname.startsWith('/tools-data/'),
+      handler: new CacheFirst({
+        cacheName: 'bordik-tool-detail',
+        plugins: [
+          new ExpirationPlugin({
+            maxEntries: 1000,
+            maxAgeSeconds: 90 * 24 * 60 * 60, // 90 days
+            purgeOnQuotaError: true,
+          }),
+        ],
+      }),
+    },
     // Per-runner lazy chunks (heavy SWR cache so tools load instantly once opened)
     {
       matcher: /\/_next\/static\/chunks\/.*\.(js|css)$/i,
@@ -118,3 +154,28 @@ self.addEventListener('message', (event) => {
     self.skipWaiting();
   }
 });
+
+/* ── Background Sync drain (Chrome/Edge/Samsung; falls through on iOS) ──
+   When the page registers `sync.register('sync-progress')` while offline,
+   the browser fires this event as soon as connectivity returns - even if
+   the page tab has been closed in the meantime. We post each queued
+   payload back through /api/sync; whatever the page-side `online` listener
+   couldn't handle (because the tab was gone), this picks up.
+
+   The queue itself lives in `localStorage` on the page side. We can't read
+   localStorage from a SW, so we instead message all clients and ask one of
+   them to do the flush. If no clients are alive, the page's next `online`
+   listener flush will do it. Net-net: at-most-once delivery, idempotent on
+   the server, no work duplicated. */
+interface BgSyncEvent extends ExtendableEvent {
+  tag: string;
+}
+self.addEventListener('sync', ((event: BgSyncEvent) => {
+  if (event.tag !== 'sync-progress') return;
+  event.waitUntil((async () => {
+    const clients = await self.clients.matchAll({ includeUncontrolled: true, type: 'window' });
+    for (const c of clients) {
+      c.postMessage({ type: 'SYNC_PROGRESS_FLUSH' });
+    }
+  })());
+}) as EventListener);

@@ -1,9 +1,49 @@
 import type { NextConfig } from 'next';
+import fs from 'fs';
 import path from 'path';
 import withSerwistInit from '@serwist/next';
 import withBundleAnalyzer from '@next/bundle-analyzer';
 
 const isDev = process.env.NODE_ENV === 'development';
+
+/* ── Build extra precache entries from the content manifest ─────────
+   `npm run build:content` writes data/manifest.json with per-file SHA
+   revisions. We hand them to Serwist as `additionalPrecacheEntries` so
+   the Service Worker downloads catalog.meta.json + content-manifest.json
+   + a critical handful of tool detail JSONs at install time. Subsequent
+   tool opens are then instant offline. */
+const CRITICAL_TOOL_IDS = [
+  'bmi', 'bsa-mosteller', 'cockcroft', 'ckd-epi', 'mdrd', 'gcs', 'apgar',
+  'wells-pe', 'wells-dvt', 'curb65', 'qsofa', 'news2', 'chads-vasc',
+  'has-bled', 'heart', 'meld', 'parkland', 'holliday-segar', 'aa-gradient',
+  'anion-gap',
+] as const;
+
+function buildAdditionalPrecacheEntries(): { url: string; revision: string }[] {
+  const manifestPath = path.resolve(__dirname, 'data', 'manifest.json');
+  if (!fs.existsSync(manifestPath)) return [];
+  try {
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8')) as {
+      catalogRev: string;
+      searchRev: Record<string, string>;
+      toolRevs: Record<string, string>;
+    };
+    const entries: { url: string; revision: string }[] = [
+      { url: '/catalog.meta.json', revision: manifest.catalogRev },
+      { url: '/content-manifest.json', revision: manifest.catalogRev },
+    ];
+    for (const [locale, rev] of Object.entries(manifest.searchRev ?? {})) {
+      entries.push({ url: `/search-${locale}.json`, revision: rev });
+    }
+    for (const id of CRITICAL_TOOL_IDS) {
+      const rev = manifest.toolRevs?.[id];
+      if (rev) entries.push({ url: `/tools-data/${id}.json`, revision: rev });
+    }
+    return entries;
+  } catch {
+    return [];
+  }
+}
 
 const withSerwist = withSerwistInit({
   swSrc: 'app/sw.ts',
@@ -13,6 +53,7 @@ const withSerwist = withSerwistInit({
   // Reload the page when a new SW takes over so users pick up fresh content
   reloadOnOnline: true,
   cacheOnNavigation: true,
+  additionalPrecacheEntries: buildAdditionalPrecacheEntries(),
 });
 
 const nextConfig: NextConfig = {

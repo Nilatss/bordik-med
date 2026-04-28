@@ -20,6 +20,7 @@ export type ToolKind = v.InferOutput<typeof ToolKindSchema>;
 export const CatalogMetaItemSchema = v.object({
   id: v.pipe(v.string(), v.minLength(1)),
   title: v.pipe(v.string(), v.minLength(1)),
+  description: v.string(),
   category: v.string(),
   subcategory: v.string(),
   hasRunner: v.boolean(),
