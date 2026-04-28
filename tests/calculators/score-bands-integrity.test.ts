@@ -52,6 +52,11 @@ import ecog     from '@/lib/runners/ecog';
 import charlson from '@/lib/runners/charlson';
 // Substance use
 import cage     from '@/lib/runners/cage';
+// Mental health screeners
+import gad7     from '@/lib/runners/gad7';
+import phq9     from '@/lib/runners/phq9';
+// Stroke / TIA / vascular
+import abcd2    from '@/lib/runners/abcd2';
 
 interface ScoreRunner { bands: ScoreBand[]; maxScore: number }
 
@@ -88,6 +93,11 @@ const SCORE_TOOLS: Array<[string, ScoreRunner]> = [
   ['charlson',   charlson  as unknown as ScoreRunner],
   // Substance use
   ['cage',       cage      as unknown as ScoreRunner],
+  // Mental health
+  ['gad7',       gad7      as unknown as ScoreRunner],
+  ['phq9',       phq9      as unknown as ScoreRunner],
+  // Stroke / TIA
+  ['abcd2',      abcd2     as unknown as ScoreRunner],
 ];
 
 describe('score-band integrity', () => {
