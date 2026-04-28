@@ -1,23 +1,22 @@
 /**
- * In-memory token-bucket rate limiter.
+ * Rate limiter — Upstash-backed when configured, in-memory fallback
+ * otherwise.
  *
- * For Vercel: each isolate has its own memory, so this is *best-effort*.
- * It is enough to defeat abusive single-user loops, scripted scrapers,
- * and accidental client retry storms. For a hard, multi-instance limit
- * use Upstash Ratelimit + KV; this module is the cheap fallback until
- * we provision that.
+ * The audit's P0-SEC-3 finding: an in-memory token bucket on Vercel is
+ * effectively `30/min × N isolates ≈ 150-300/min` because each cold
+ * start gets a fresh empty store. For a Gemini-backed endpoint where
+ * each call burns real Google Cloud Billing dollars, that's a financial
+ * risk, not just a UX risk.
  *
- * Usage:
- *   const rl = makeRateLimiter({ capacity: 30, refillPerSec: 30 / 60 });
- *   const allowed = rl(`user:${userId}`);
- *   if (!allowed.ok) return new Response('rate-limited', {
- *     status: 429,
- *     headers: { 'Retry-After': String(allowed.retryAfter) },
- *   });
+ * Solution: when `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN`
+ * are set, we use `@upstash/ratelimit` sliding window over Redis —
+ * truly shared across all isolates. When they are not set (local dev,
+ * preview without secrets), we silently fall back to the legacy
+ * in-memory token bucket so the endpoint still works in development.
  *
- * Identity: prefer authenticated user id. Fall back to a hash of
- * x-forwarded-for so a single shared NAT cannot trivially exhaust an
- * IP-only bucket on behalf of an attacker behind it.
+ * `makeRateLimiter()` keeps the original sync API for callers that
+ * don't want to refactor. `identifyAndLimit()` is the new async API
+ * that prefers the Upstash path when available.
  */
 
 interface Bucket {
@@ -71,21 +70,126 @@ export function makeRateLimiter(opts: LimiterOptions) {
 
 /**
  * Best-effort identity for a request: authenticated user id if present,
- * otherwise a sha-256 hex of the first IP in x-forwarded-for. We only
- * use the hash inside the limiter store - it never leaves the process.
+ * otherwise a sha-256 hex of the trusted client IP. We hash so the
+ * bucket key is fixed length and the raw IP never leaves the process.
+ *
+ * P1-SEC-Е fix: we now prefer `x-vercel-forwarded-for` (server-set on
+ * Vercel, untamperable) and fall back to the LAST hop of
+ * `x-forwarded-for` rather than the first. Taking the first hop lets a
+ * client that controls a proxy-of-its-own write whatever it wants into
+ * the limiter key; the last hop is the most-trusted entry.
  */
 export async function identifyRequest(
   req: Request,
   userId: string | null | undefined,
 ): Promise<string> {
   if (userId) return `u:${userId}`;
-  const xff = req.headers.get('x-forwarded-for') ?? '';
-  const ip = xff.split(',')[0]?.trim() || 'unknown';
-  // Hash so the bucket key is a fixed length and IP doesn't sit in memory.
+  const xvff = req.headers.get('x-vercel-forwarded-for');
+  const xff  = req.headers.get('x-forwarded-for');
+  const raw  = xvff ?? xff ?? '';
+  // Last comma-separated hop is the closest trusted edge.
+  const ip = raw.split(',').map((s) => s.trim()).filter(Boolean).pop() ?? 'unknown';
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(ip));
   const hex = Array.from(new Uint8Array(buf))
     .slice(0, 8)
     .map((b) => b.toString(16).padStart(2, '0'))
     .join('');
   return `ip:${hex}`;
+}
+
+/**
+ * Async limiter that uses Upstash sliding-window when configured, and
+ * the in-memory token bucket otherwise. Recommended for new code.
+ *
+ * Returns `{ ok, retryAfter, headers }`. `headers` includes the
+ * standard `X-RateLimit-*` triplet so callers can pass them straight
+ * back to the client.
+ */
+interface UpstashLimiterShape {
+  limit(key: string): Promise<{
+    success: boolean;
+    limit: number;
+    remaining: number;
+    reset: number;
+  }>;
+}
+
+let upstashIp: UpstashLimiterShape | null = null;
+let upstashUser: UpstashLimiterShape | null = null;
+let upstashChecked = false;
+
+async function loadUpstashLimiters(): Promise<{ ip: UpstashLimiterShape; user: UpstashLimiterShape } | null> {
+  if (upstashChecked) {
+    return upstashIp && upstashUser ? { ip: upstashIp, user: upstashUser } : null;
+  }
+  upstashChecked = true;
+  const url = process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+  if (!url || !token) return null;
+  try {
+    const [{ Ratelimit }, { Redis }] = await Promise.all([
+      import('@upstash/ratelimit'),
+      import('@upstash/redis'),
+    ]);
+    const redis = new Redis({ url, token });
+    const ephemeral = new Map();
+    upstashIp = new Ratelimit({
+      redis,
+      limiter: Ratelimit.slidingWindow(30, '1 m'),
+      prefix: 'rl:ip',
+      ephemeralCache: ephemeral,
+      analytics: true,
+    }) as unknown as UpstashLimiterShape;
+    upstashUser = new Ratelimit({
+      redis,
+      limiter: Ratelimit.slidingWindow(60, '1 m'),
+      prefix: 'rl:user',
+      ephemeralCache: ephemeral,
+      analytics: true,
+    }) as unknown as UpstashLimiterShape;
+    return { ip: upstashIp, user: upstashUser };
+  } catch (err) {
+    console.warn('[rate-limit] Upstash init failed, falling back to in-memory', err);
+    return null;
+  }
+}
+
+// In-memory fallbacks (kept warm across calls).
+const fallbackIp   = makeRateLimiter({ capacity: 30, refillPerSec: 30 / 60 });
+const fallbackUser = makeRateLimiter({ capacity: 60, refillPerSec: 60 / 60 });
+
+export interface LimitDecision {
+  ok: boolean;
+  retryAfter: number;
+  headers: Record<string, string>;
+}
+
+export async function identifyAndLimit(
+  req: Request,
+  userId: string | null | undefined,
+): Promise<LimitDecision> {
+  const ident = await identifyRequest(req, userId);
+  const upstash = await loadUpstashLimiters();
+  if (upstash) {
+    const limiter = userId ? upstash.user : upstash.ip;
+    const r = await limiter.limit(ident);
+    const retryAfter = Math.max(0, Math.ceil((r.reset - Date.now()) / 1000));
+    return {
+      ok: r.success,
+      retryAfter,
+      headers: {
+        'X-RateLimit-Limit':     String(r.limit),
+        'X-RateLimit-Remaining': String(r.remaining),
+        'X-RateLimit-Reset':     String(Math.floor(r.reset / 1000)),
+        ...(r.success ? {} : { 'Retry-After': String(retryAfter) }),
+      },
+    };
+  }
+  const limiter = userId ? fallbackUser : fallbackIp;
+  const d = limiter(ident);
+  return {
+    ok: d.ok,
+    retryAfter: d.retryAfter,
+    headers: d.ok ? {} : { 'Retry-After': String(d.retryAfter) },
+  };
 }

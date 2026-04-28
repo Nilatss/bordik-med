@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server';
 import * as v from 'valibot';
-import { makeRateLimiter, identifyRequest } from '@/lib/rate-limit';
+import { identifyAndLimit } from '@/lib/rate-limit';
 import { getSupabaseServerClient } from '@/lib/supabase/server';
 import { isOutputSafe as isOutputSafeStrict } from '@/lib/output-guard';
 
-// 30 calls / minute / identity. One full diagnostic test ≈ 16 calls,
-// so a normal user sits comfortably under the limit. Anything above
-// is abusive and should retry after Retry-After seconds.
-const diagnosticLimiter = makeRateLimiter({ capacity: 30, refillPerSec: 30 / 60 });
+// Rate limits are enforced via lib/rate-limit.identifyAndLimit, which
+// uses Upstash sliding-window when UPSTASH_REDIS_REST_URL is set and
+// falls back to in-memory token bucket otherwise. Per-IP: 30/min,
+// per-user: 60/min. One diagnostic test ≈ 16 calls.
 
 /**
  * Adaptive diagnostic test backed by Google Gemini.
@@ -279,12 +279,11 @@ export async function POST(req: Request) {
     }
   } catch {/* anon usage allowed; identifyRequest will hash the IP */}
 
-  const ident = await identifyRequest(req, userId);
-  const decision = diagnosticLimiter(ident);
+  const decision = await identifyAndLimit(req, userId);
   if (!decision.ok) {
     return NextResponse.json(
       { ok: false, error: 'rate-limited', retryAfter: decision.retryAfter },
-      { status: 429, headers: { 'Retry-After': String(decision.retryAfter) } },
+      { status: 429, headers: decision.headers },
     );
   }
 
