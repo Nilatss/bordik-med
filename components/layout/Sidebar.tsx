@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore } from '@/lib/store';
 import { useT, useLang } from '@/lib/i18n';
@@ -727,11 +727,12 @@ export default function Sidebar() {
             can send a short message; submission opens a mailto: with the
             text prefilled so we get the email in our inbox. */}
         <FeedbackBlock t={t} />
-        {/* App version - small muted text under the feedback section. */}
+        {/* App version - small muted text centered under the feedback section. */}
         <p style={{
-          margin: '0 16px 8px',
+          margin: '0 0 8px',
           fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 500,
           color: '#9CA3AF', letterSpacing: '0.04em',
+          textAlign: 'center',
         }}>
           {t('sidebar.version', { version: '0.1.0' })}
         </p>
@@ -744,36 +745,91 @@ export default function Sidebar() {
 
 /* ──────────────────────────────────────────────────────────────────
    Feedback block — sits at the bottom of the sidebar between the nav
-   and the UserMenu. Click "Написать" → modal with textarea → submit
-   opens user's mail client with the message body pre-filled.
-   The dest email is stored in NEXT_PUBLIC_FEEDBACK_EMAIL with a sane
-   fallback so the feature works out of the box.
+   and the UserMenu. Click → modal with textarea + file attachments →
+   POST /api/feedback → server forwards to Telegram via Bot API.
+   File limits enforced both client-side (UX) and server-side (safety):
+   5 files, 5 MB each.
    ────────────────────────────────────────────────────────────────── */
-const FEEDBACK_EMAIL =
-  (process.env.NEXT_PUBLIC_FEEDBACK_EMAIL as string | undefined) || 'feedback@bordik.app';
+const FEEDBACK_MAX_FILES      = 5;
+const FEEDBACK_MAX_FILE_BYTES = 5 * 1024 * 1024;
+
+function formatBytes(b: number): string {
+  if (b < 1024) return `${b} B`;
+  if (b < 1024 * 1024) return `${(b / 1024).toFixed(0)} KB`;
+  return `${(b / (1024 * 1024)).toFixed(1)} MB`;
+}
 
 function FeedbackBlock({ t }: { t: (k: string, vars?: Record<string, string | number>) => string }) {
   const [open, setOpen] = useState(false);
   const [text, setText] = useState('');
+  const [files, setFiles] = useState<File[]>([]);
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const submit = () => {
+  const addFiles = (incoming: FileList | null) => {
+    if (!incoming) return;
+    setError(null);
+    const next = [...files];
+    for (let i = 0; i < incoming.length; i++) {
+      const f = incoming.item(i);
+      if (!f) continue;
+      if (f.size > FEEDBACK_MAX_FILE_BYTES) {
+        setError(t('sidebar.feedback.errFileTooLarge', { name: f.name }));
+        continue;
+      }
+      if (next.length >= FEEDBACK_MAX_FILES) {
+        setError(t('sidebar.feedback.errTooManyFiles'));
+        break;
+      }
+      next.push(f);
+    }
+    setFiles(next);
+  };
+
+  const removeFile = (idx: number) => {
+    setFiles((prev) => prev.filter((_, i) => i !== idx));
+  };
+
+  const reset = () => {
+    setOpen(false);
+    setText('');
+    setFiles([]);
+    setSent(false);
+    setSending(false);
+    setError(null);
+  };
+
+  const submit = async () => {
     const body = text.trim();
     if (!body) return;
     setSending(true);
+    setError(null);
     try {
-      const subject = encodeURIComponent('Bordik — обратная связь');
-      const mailto = `mailto:${FEEDBACK_EMAIL}?subject=${subject}&body=${encodeURIComponent(body)}`;
-      window.location.href = mailto;
-      setSent(true);
-      setTimeout(() => {
-        setOpen(false);
-        setText('');
-        setSent(false);
+      const fd = new FormData();
+      fd.append('text', body);
+      for (const f of files) fd.append('file', f, f.name);
+      const r = await fetch('/api/feedback', { method: 'POST', body: fd });
+      const json = await r.json().catch(() => ({}));
+      if (!r.ok || !json.ok) {
+        const code = (json && json.error) || `http-${r.status}`;
+        if (code === 'feedback-not-configured') {
+          setError(t('sidebar.feedback.errNotConfigured'));
+        } else if (code === 'too-many-files') {
+          setError(t('sidebar.feedback.errTooManyFiles'));
+        } else if (code === 'file-too-large') {
+          setError(t('sidebar.feedback.errFileTooLarge', { name: json.name ?? '' }));
+        } else {
+          setError(t('sidebar.feedback.errSendFailed'));
+        }
         setSending(false);
-      }, 1200);
+        return;
+      }
+      setSent(true);
+      setTimeout(reset, 1500);
     } catch {
+      setError(t('sidebar.feedback.errNetwork'));
       setSending(false);
     }
   };
@@ -904,13 +960,144 @@ function FeedbackBlock({ t }: { t: (k: string, vars?: Record<string, string | nu
                   e.currentTarget.style.background = '#F5F6F8';
                 }}
               />
+
+              {/* Hidden file input + visible "Прикрепить" trigger.
+                  Multiple selection allowed. Limited client-side to keep
+                  the UI honest about what server will accept. */}
+              <input
+                ref={fileInputRef}
+                type="file"
+                multiple
+                accept="image/*,application/pdf,.txt,.log,.json,.csv"
+                onChange={(e) => {
+                  addFiles(e.target.files);
+                  e.target.value = '';
+                }}
+                style={{ display: 'none' }}
+              />
+              <div style={{
+                marginTop: 12,
+                display: 'flex', flexWrap: 'wrap', gap: 8, alignItems: 'center',
+              }}>
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={sending || files.length >= FEEDBACK_MAX_FILES}
+                  style={{
+                    display: 'inline-flex', alignItems: 'center', gap: 6,
+                    padding: '7px 12px', borderRadius: 10,
+                    background: '#F5F6F8',
+                    color: files.length >= FEEDBACK_MAX_FILES ? '#9CA3AF' : '#1A1A1A',
+                    border: 'none',
+                    cursor: sending || files.length >= FEEDBACK_MAX_FILES ? 'not-allowed' : 'pointer',
+                    fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 600,
+                    transition: 'background 150ms',
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!sending && files.length < FEEDBACK_MAX_FILES) {
+                      e.currentTarget.style.background = '#E8E9ED';
+                    }
+                  }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = '#F5F6F8'; }}
+                >
+                  <svg width={13} height={13} viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48" />
+                  </svg>
+                  {t('sidebar.feedback.attach')}
+                </button>
+                <span style={{
+                  fontFamily: 'var(--font-mono)', fontSize: 10.5, color: '#9CA3AF',
+                }}>
+                  {t('sidebar.feedback.attachHint', {
+                    count: files.length,
+                    max: FEEDBACK_MAX_FILES,
+                  })}
+                </span>
+              </div>
+
+              {/* File chips */}
+              {files.length > 0 && (
+                <ul style={{
+                  margin: '10px 0 0', padding: 0, listStyle: 'none',
+                  display: 'flex', flexDirection: 'column', gap: 6,
+                }}>
+                  {files.map((f, i) => (
+                    <li key={`${f.name}-${i}`} style={{
+                      display: 'flex', alignItems: 'center', gap: 10,
+                      padding: '8px 10px',
+                      background: '#F5F6F8',
+                      borderRadius: 8,
+                    }}>
+                      <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
+                        stroke="#6B7280" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
+                        style={{ flexShrink: 0 }}>
+                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                      </svg>
+                      <span style={{
+                        flex: 1, minWidth: 0,
+                        overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                        fontFamily: 'var(--font-body)', fontSize: 12.5, color: '#1A1A1A',
+                      }}>
+                        {f.name}
+                      </span>
+                      <span style={{
+                        fontFamily: 'var(--font-mono)', fontSize: 10.5, color: '#9CA3AF',
+                        flexShrink: 0,
+                      }}>
+                        {formatBytes(f.size)}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => removeFile(i)}
+                        disabled={sending}
+                        aria-label={t('sidebar.feedback.removeFile')}
+                        style={{
+                          padding: 4, borderRadius: 6,
+                          background: 'transparent', border: 'none',
+                          color: '#6B7280',
+                          cursor: sending ? 'not-allowed' : 'pointer',
+                          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                          flexShrink: 0,
+                          transition: 'background 150ms, color 150ms',
+                        }}
+                        onMouseEnter={(e) => { e.currentTarget.style.background = '#E8E9ED'; e.currentTarget.style.color = '#1A1A1A'; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#6B7280'; }}
+                      >
+                        <svg width={12} height={12} viewBox="0 0 24 24" fill="none"
+                          stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round">
+                          <line x1="18" y1="6" x2="6" y2="18" />
+                          <line x1="6" y1="6" x2="18" y2="18" />
+                        </svg>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              {/* Error message */}
+              {error && (
+                <p style={{
+                  margin: '10px 0 0',
+                  padding: '8px 10px',
+                  background: '#FEF2F2',
+                  border: '1px solid #FECACA',
+                  borderRadius: 8,
+                  fontFamily: 'var(--font-body)', fontSize: 12, color: '#991B1B',
+                  lineHeight: 1.5,
+                }}>
+                  {error}
+                </p>
+              )}
+
               <div style={{
                 display: 'flex', justifyContent: 'flex-end', gap: 8,
                 marginTop: 14,
               }}>
                 <button
                   type="button"
-                  onClick={() => !sending && setOpen(false)}
+                  onClick={() => !sending && reset()}
                   disabled={sending}
                   style={{
                     padding: '9px 16px', borderRadius: 10,
