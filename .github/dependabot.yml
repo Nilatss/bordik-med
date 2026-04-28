@@ -1,0 +1,54 @@
+# Automated dependency updates. Bumps run weekly; security advisories
+# are picked up immediately via GitHub Dependabot security updates
+# (enable in Settings → Code security).
+#
+# Reference: https://docs.github.com/en/code-security/dependabot
+
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Europe/Moscow
+    open-pull-requests-limit: 8
+    labels:
+      - dependencies
+    commit-message:
+      prefix: deps
+      include: scope
+    groups:
+      # Group minor/patch updates for the React + Next stack so we don't
+      # get 5 PRs at once for related packages.
+      next-react:
+        patterns:
+          - "next*"
+          - "react*"
+          - "react-dom*"
+        update-types:
+          - minor
+          - patch
+      supabase:
+        patterns:
+          - "@supabase/*"
+        update-types:
+          - minor
+          - patch
+      types:
+        patterns:
+          - "@types/*"
+        update-types:
+          - minor
+          - patch
+
+  # GitHub Actions versions (when we add workflows)
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - github-actions

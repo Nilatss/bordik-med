@@ -56,13 +56,62 @@ const withSerwist = withSerwistInit({
   additionalPrecacheEntries: buildAdditionalPrecacheEntries(),
 });
 
+/* ─────────────────────────────────────────────────────────────────
+ * Baseline security headers applied to every response. CSP is set in
+ * middleware.ts (per-request nonce); everything else is static and lives
+ * here.
+ *
+ * Notes:
+ *   - HSTS preload requires holding `max-age >= 63072000` for 6 months
+ *     and submission to hstspreload.org. Until then the directive is
+ *     advisory but does not lock subdomains.
+ *   - Permissions-Policy disables every powerful API by default. Camera
+ *     stays at `self` because the proctoring flow needs it.
+ *   - COEP `credentialless` enables SharedArrayBuffer (MediaPipe WASM
+ *     threads) without breaking cross-origin <img>/OAuth popups the way
+ *     `require-corp` does.
+ * ───────────────────────────────────────────────────────────────── */
+const securityHeaders = [
+  { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
+  { key: 'X-Content-Type-Options',    value: 'nosniff' },
+  { key: 'X-Frame-Options',           value: 'DENY' },
+  { key: 'Referrer-Policy',           value: 'strict-origin-when-cross-origin' },
+  {
+    key: 'Permissions-Policy',
+    value: [
+      'camera=(self)',
+      'microphone=(self)',
+      'geolocation=()',
+      'interest-cohort=()',
+      'browsing-topics=()',
+      'usb=()',
+      'payment=()',
+      'magnetometer=()',
+      'gyroscope=()',
+      'accelerometer=()',
+      'serial=()',
+      'bluetooth=()',
+    ].join(', '),
+  },
+  { key: 'Cross-Origin-Opener-Policy',   value: 'same-origin' },
+  { key: 'Cross-Origin-Embedder-Policy', value: 'credentialless' },
+  { key: 'Cross-Origin-Resource-Policy', value: 'same-site' },
+  { key: 'X-DNS-Prefetch-Control',       value: 'off' },
+];
+
 const nextConfig: NextConfig = {
   turbopack: {
     root: path.resolve(__dirname),
   },
-  // PWA / caching headers
+  // Hide server framework signature from response headers - small but free win
+  poweredByHeader: false,
+  productionBrowserSourceMaps: false,
+  // PWA / caching headers + global security baseline
   async headers() {
     return [
+      // Apply security baseline to every route
+      { source: '/:path*', headers: securityHeaders },
+      // Service worker: extra CSP scoped to the worker file itself
       {
         source: '/sw.js',
         headers: [
@@ -76,6 +125,14 @@ const nextConfig: NextConfig = {
         headers: [
           { key: 'Content-Type', value: 'application/manifest+json' },
           { key: 'Cache-Control', value: 'public, max-age=3600' },
+        ],
+      },
+      // security.txt should be served as text/plain per RFC 9116
+      {
+        source: '/.well-known/security.txt',
+        headers: [
+          { key: 'Content-Type', value: 'text/plain; charset=utf-8' },
+          { key: 'Cache-Control', value: 'public, max-age=86400' },
         ],
       },
     ];

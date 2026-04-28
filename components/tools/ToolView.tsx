@@ -13,6 +13,7 @@ import { useT } from '@/lib/i18n';
 import { ArrowLeft } from '@/components/icons';
 import EmojiOrFlag from '@/components/ui/EmojiOrFlag';
 import { OfflineBadge } from './OfflineBadge';
+import { safeUrlTransform } from '@/lib/safe-markdown';
 
 /** Slugify heading text for tab id */
 function slugify(s: string): string {
@@ -514,7 +515,7 @@ const CALLOUT_EMOJI_RE = /^(ℹ|⚠️|⚠|📷|✓|✅|🎯|💡)\s*/;
 const MemoisedMarkdown = React.memo(function MemoisedMarkdown({ body }: { body: string }) {
   const processed = useMemo(() => preprocessToolContent(body), [body]);
   return (
-    <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
+    <ReactMarkdown remarkPlugins={[remarkGfm]} urlTransform={safeUrlTransform} components={mdComponents}>
       {processed}
     </ReactMarkdown>
   );

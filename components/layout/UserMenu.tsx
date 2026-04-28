@@ -62,9 +62,12 @@ export default function UserMenu() {
   }
 
   const signOut = async () => {
-    const sb = getSupabaseBrowserClient();
-    if (!sb) return;
-    await sb.auth.signOut();
+    // Use the project-wide fullLogout helper so signing out also clears
+    // localStorage / IndexedDB / Cache Storage / Service Worker. Critical
+    // for shared/clinical devices where the next user must not see prior
+    // session data. See lib/full-logout.ts for the full sequence.
+    const { fullLogout } = await import('@/lib/full-logout');
+    await fullLogout();
   };
 
   return (

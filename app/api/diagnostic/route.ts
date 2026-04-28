@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import * as v from 'valibot';
 
 /**
  * Adaptive diagnostic test backed by Google Gemini.
@@ -190,16 +191,52 @@ ${moduleList}
 Верни строго JSON-объект.`;
 }
 
+/* ── Strict input schemas. Reject anything we wouldn't act on, including
+   prompt-injection attempts that try to smuggle "system" instructions via
+   extra fields or oversized history. */
+const TurnSchema = v.object({
+  question: v.pipe(v.string(), v.minLength(1), v.maxLength(2000)),
+  options: v.pipe(v.array(v.pipe(v.string(), v.maxLength(500))), v.length(4)),
+  correctIndex: v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(3)),
+  selectedIndex: v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(3)),
+  topic: v.pipe(v.string(), v.maxLength(50)),
+});
+const ModuleSummarySchema = v.object({
+  id: v.number(),
+  sectionId: v.pipe(v.string(), v.maxLength(40)),
+  title: v.pipe(v.string(), v.maxLength(200)),
+  description: v.pipe(v.string(), v.maxLength(500)),
+});
+const PostBodySchema = v.object({
+  action: v.picklist(['next', 'finalize']),
+  history: v.pipe(v.array(TurnSchema), v.maxLength(TOTAL_QUESTIONS)),
+  modules: v.optional(v.pipe(v.array(ModuleSummarySchema), v.maxLength(200))),
+});
+
+/* ── Output guard. Strip Gemini responses that contain forbidden
+   protocols / HTML so a prompt injection can't smuggle a clickable
+   javascript: payload through us into the user's browser. */
+const FORBIDDEN_OUTPUT = /<\s*script|<\s*iframe|javascript:|vbscript:|data:text\/html/i;
+function isOutputSafe(s: string): boolean {
+  return !FORBIDDEN_OUTPUT.test(s);
+}
+
 export async function POST(req: Request) {
-  let body: unknown;
+  let raw: unknown;
   try {
-    body = await req.json();
+    raw = await req.json();
   } catch {
     return NextResponse.json({ ok: false, error: 'bad-json' }, { status: 400 });
   }
-  const b = body as { action?: string; history?: Turn[]; modules?: ModuleSummary[] };
-  const action = b.action;
-  const history = Array.isArray(b.history) ? b.history : [];
+  const parsed = v.safeParse(PostBodySchema, raw);
+  if (!parsed.success) {
+    return NextResponse.json(
+      { ok: false, error: 'invalid-input', issues: parsed.issues.slice(0, 3).map((i) => i.message) },
+      { status: 400 },
+    );
+  }
+  const action = parsed.output.action;
+  const history = parsed.output.history;
 
   if (action === 'next') {
     if (history.length >= TOTAL_QUESTIONS) {
@@ -222,6 +259,11 @@ export async function POST(req: Request) {
       ) {
         return NextResponse.json({ ok: false, error: 'gemini-invalid-shape' }, { status: 502 });
       }
+      // Output guard - reject AI responses that contain HTML / JS / dangerous URIs
+      const allText = q.question + ' ' + q.options.join(' ') + ' ' + (q.explanation ?? '');
+      if (!isOutputSafe(allText)) {
+        return NextResponse.json({ ok: false, error: 'gemini-output-unsafe' }, { status: 502 });
+      }
       return NextResponse.json({
         ok: true,
         question: q.question,
@@ -241,7 +283,7 @@ export async function POST(req: Request) {
   }
 
   if (action === 'finalize') {
-    const modules = Array.isArray(b.modules) ? b.modules : [];
+    const modules = parsed.output.modules ?? [];
     if (history.length === 0 || modules.length === 0) {
       return NextResponse.json({ ok: false, error: 'empty-input' }, { status: 400 });
     }

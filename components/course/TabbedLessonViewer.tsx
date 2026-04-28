@@ -7,6 +7,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useT } from '@/lib/i18n';
+import { safeUrlTransform } from '@/lib/safe-markdown';
 import { BookOpen } from '@/components/icons';
 import TestPanel from './TestPanel';
 import { CourseIllustration } from './CourseIllustrations';
@@ -472,7 +473,7 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
     return (
       <div style={{ flex: 1, overflowY: 'auto' }}>
         <div className="lesson-content" style={{ maxWidth: 'var(--content-max)' }}>
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+          <ReactMarkdown remarkPlugins={[remarkGfm]} urlTransform={safeUrlTransform}>{content}</ReactMarkdown>
         </div>
       </div>
     );
@@ -536,6 +537,7 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
           <div className="lesson-content">
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
+              urlTransform={safeUrlTransform}
               components={{
                 table: ({ children, node }) => {
                   const theadNode = (node as any)?.children?.find?.((c: any) => c.tagName === 'thead');

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import CopyProtection from '@/components/CopyProtection';
 import PwaRegistrar from '@/components/PwaRegistrar';
+import { BFCacheGuard } from '@/components/BFCacheGuard';
 
 const APP_NAME = 'Bordik';
 const APP_TITLE = 'Bordik - Платформа медицинского обучения';
@@ -148,6 +149,7 @@ export default function RootLayout({
         </div>
         <PwaRegistrar />
         <CopyProtection />
+        <BFCacheGuard />
         {children}
       </body>
     </html>

@@ -1,0 +1,16 @@
+Contact: mailto:security@bordik.app
+Expires: 2027-04-28T00:00:00.000Z
+Preferred-Languages: ru, en
+Canonical: https://ironmed-academy.vercel.app/.well-known/security.txt
+Policy: https://ironmed-academy.vercel.app/security
+Acknowledgments: https://ironmed-academy.vercel.app/security#acknowledgments
+
+# Reporting guidelines
+# - Use the email above for vulnerability reports. PGP key on request.
+# - Please include: affected URL, reproduction steps, impact, and your
+#   willingness to be credited (we acknowledge responsible disclosures).
+# - Do NOT run automated active scans. Passive observations + targeted
+#   manual probing are welcome; rate-limited probing of /api endpoints
+#   is acceptable as long as it does not affect availability for others.
+# - We aim to respond within 5 business days and ship a fix or status
+#   update within 30 days for High/Critical findings.
