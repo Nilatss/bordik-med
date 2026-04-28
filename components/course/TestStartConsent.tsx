@@ -1615,6 +1615,25 @@ export default function TestStartConsent({
         </span>
       </label>
 
+      {/* P1-A11Y-2 — Accessibility fallback link.
+          Some users physically cannot use a webcam (motor disability,
+          prosthetic, wheelchair-bound with restricted line of sight).
+          We don't lock them out; instead we surface a mailto link to
+          arrange examiner-supervised testing (proctor-code mode reuses
+          the existing 4-eye editorial inviting flow). */}
+      <p style={{
+        marginTop: 12, fontSize: 12, color: '#6B7280', textAlign: 'center',
+        lineHeight: 1.55,
+      }}>
+        Не можете использовать камеру (нарушения подвижности, протез, технические причины)?{' '}
+        <a
+          href="mailto:hello@bordik.app?subject=Accessibility%3A%20alternative%20proctoring"
+          style={{ color: '#3B82F6', textDecoration: 'underline' }}
+        >
+          Запросить тест без камеры
+        </a>
+      </p>
+
       {/* Actions */}
       <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
         <button
