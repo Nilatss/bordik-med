@@ -52,11 +52,31 @@ import ecog     from '@/lib/runners/ecog';
 import charlson from '@/lib/runners/charlson';
 // Substance use
 import cage     from '@/lib/runners/cage';
+import auditC   from '@/lib/runners/audit-c';
 // Mental health screeners
 import gad7     from '@/lib/runners/gad7';
 import phq9     from '@/lib/runners/phq9';
+import epworth  from '@/lib/runners/epworth';
 // Stroke / TIA / vascular
 import abcd2    from '@/lib/runners/abcd2';
+import nihss    from '@/lib/runners/nihss';
+import duke     from '@/lib/runners/duke';
+// VTE / pre-op
+import padua    from '@/lib/runners/padua';
+import rcri     from '@/lib/runners/rcri';
+import bova     from '@/lib/runners/bova';
+// Pulmonology
+import bode     from '@/lib/runners/bode';
+// Triage
+import esi      from '@/lib/runners/esi';
+import ats      from '@/lib/runners/ats';
+// Pain / neuro
+import flacc    from '@/lib/runners/flacc';
+import dn4      from '@/lib/runners/dn4';
+// Cardio rhythm symptoms
+import ehra     from '@/lib/runners/ehra';
+// Strep throat
+import feverpain from '@/lib/runners/feverpain';
 
 interface ScoreRunner { bands: ScoreBand[]; maxScore: number }
 
@@ -93,11 +113,31 @@ const SCORE_TOOLS: Array<[string, ScoreRunner]> = [
   ['charlson',   charlson  as unknown as ScoreRunner],
   // Substance use
   ['cage',       cage      as unknown as ScoreRunner],
+  ['audit-c',    auditC    as unknown as ScoreRunner],
   // Mental health
   ['gad7',       gad7      as unknown as ScoreRunner],
   ['phq9',       phq9      as unknown as ScoreRunner],
-  // Stroke / TIA
+  ['epworth',    epworth   as unknown as ScoreRunner],
+  // Stroke / TIA / vascular
   ['abcd2',      abcd2     as unknown as ScoreRunner],
+  ['nihss',      nihss     as unknown as ScoreRunner],
+  ['duke',       duke      as unknown as ScoreRunner],
+  // VTE / pre-op risk
+  ['padua',      padua     as unknown as ScoreRunner],
+  ['rcri',       rcri      as unknown as ScoreRunner],
+  ['bova',       bova      as unknown as ScoreRunner],
+  // Pulmonology
+  ['bode',       bode      as unknown as ScoreRunner],
+  // Triage
+  ['esi',        esi       as unknown as ScoreRunner],
+  ['ats',        ats       as unknown as ScoreRunner],
+  // Pain / neuro
+  ['flacc',      flacc     as unknown as ScoreRunner],
+  ['dn4',        dn4       as unknown as ScoreRunner],
+  // Cardio rhythm symptoms
+  ['ehra',       ehra      as unknown as ScoreRunner],
+  // Strep throat
+  ['feverpain',  feverpain as unknown as ScoreRunner],
 ];
 
 describe('score-band integrity', () => {
