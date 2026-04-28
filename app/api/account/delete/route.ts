@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getSupabaseServerClient } from '@/lib/supabase/server';
 import { assertSameOrigin } from '@/lib/origin-check';
+import { log } from '@/lib/log';
 
 /**
  * GDPR Art. 17 / 152-ФЗ ст. 14 — right to erasure.
@@ -81,8 +82,8 @@ export async function DELETE(req: Request) {
     target_user_id: userId,
   });
   if (rpcErr) {
-    // Hash-only error log — never echo userId / email.
-    console.error('[account.delete] cascade rpc failed', {
+    log.error({
+      event: 'cascade_rpc_failed',
       code: rpcErr.code,
       hint: rpcErr.hint,
       message: rpcErr.message?.slice(0, 200),

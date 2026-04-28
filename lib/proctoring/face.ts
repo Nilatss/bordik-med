@@ -15,7 +15,10 @@ import {
   type FaceLandmarkerResult,
 } from '@mediapipe/tasks-vision';
 
-const WASM_BASE = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.34/wasm';
+// P1-SEC-2 — self-hosted under public/mediapipe/wasm. Files copied from
+// node_modules by scripts/sync-mediapipe.mjs on every prebuild. Drops
+// our reliance on third-party cdn.jsdelivr.net for WASM supply chain.
+const WASM_BASE = '/mediapipe/wasm';
 const MODEL_URL = 'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/latest/face_landmarker.task';
 
 /**

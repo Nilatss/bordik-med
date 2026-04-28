@@ -26,26 +26,27 @@ export function middleware(req: NextRequest) {
   const nonce = generateNonce();
 
   // Origins we know we hit:
-  //   - cdn.jsdelivr.net      MediaPipe WASM
-  //   - storage.googleapis.com MediaPipe model files
+  //   - storage.googleapis.com MediaPipe model files (.task / .tflite)
   //   - generativelanguage.googleapis.com  Gemini API (server-side, but
   //     we add it for SW fetches too)
   //   - api.telegram.org      Feedback forwarding (server-only fetch but
   //     SW could intercept; whitelist for safety)
   //   - *.supabase.co         Auth + database (HTTPS + WSS)
+  // P1-SEC-2: cdn.jsdelivr.net dropped from script-src / connect-src
+  // after MediaPipe WASM moved to self-hosted /mediapipe/wasm.
   const cspParts = [
     `default-src 'self'`,
     // strict-dynamic + nonce: scripts loaded by trusted scripts inherit trust.
     // We keep 'unsafe-inline' as a fallback for older browsers - it is
     // ignored when nonce/strict-dynamic is supported.
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'unsafe-inline' https://cdn.jsdelivr.net https://storage.googleapis.com`,
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'unsafe-inline' https://storage.googleapis.com`,
     // Tailwind 4 ships utility classes via inline <style>; cannot drop
     // 'unsafe-inline' for style-src without breaking the design system.
     `style-src 'self' 'nonce-${nonce}' 'unsafe-inline'`,
     `img-src 'self' blob: data: https:`,
     `font-src 'self' data:`,
     `media-src 'self' blob:`,
-    `connect-src 'self' https://*.supabase.co wss://*.supabase.co https://generativelanguage.googleapis.com https://storage.googleapis.com https://cdn.jsdelivr.net https://api.telegram.org`,
+    `connect-src 'self' https://*.supabase.co wss://*.supabase.co https://generativelanguage.googleapis.com https://storage.googleapis.com https://api.telegram.org https://*.upstash.io`,
     `worker-src 'self' blob:`,
     `frame-ancestors 'none'`,
     `form-action 'self'`,

@@ -4,6 +4,7 @@ import { identifyAndLimit } from '@/lib/rate-limit';
 import { getSupabaseServerClient } from '@/lib/supabase/server';
 import { isOutputSafe as isOutputSafeStrict } from '@/lib/output-guard';
 import { assertSameOrigin } from '@/lib/origin-check';
+import { log } from '@/lib/log';
 
 // Rate limits are enforced via lib/rate-limit.identifyAndLimit, which
 // uses Upstash sliding-window when UPSTASH_REDIS_REST_URL is set and
@@ -167,7 +168,7 @@ async function geminiCall(prompt: string, expectArray = false): Promise<unknown>
       clearTimeout(timer);
       const aborted = (err as Error)?.name === 'AbortError';
       lastErr = new Error(`gemini-${aborted ? 'timeout' : 'fetch-failed'} (${model}): ${(err as Error).message}`);
-      console.warn(`[diagnostic] ${model} ${aborted ? 'aborted (per-model budget)' : 'fetch failed'}, trying next`);
+      log.warn({ event: 'gemini_per_model_fail', model, aborted });
       continue;
     }
     clearTimeout(timer);
@@ -194,7 +195,7 @@ async function geminiCall(prompt: string, expectArray = false): Promise<unknown>
     if (r.status === 401 || r.status === 403 || r.status === 400) {
       throw lastErr;
     }
-    console.warn(`[diagnostic] ${model} returned ${r.status}, trying next model`);
+    log.warn({ event: 'gemini_status_retry', model, status: r.status });
   }
   throw lastErr ?? new Error('gemini-all-models-failed');
 }
@@ -342,7 +343,7 @@ export async function POST(req: Request) {
       })) {
         const verdict = checkOutput(val);
         if (!verdict.safe) {
-          console.warn('[diagnostic] output guard tripped', { field: name, reason: verdict.reason });
+          log.warn({ event: 'output_guard_block', field: name, reason: verdict.reason });
           return NextResponse.json({ ok: false, error: 'gemini-output-unsafe', field: name }, { status: 502 });
         }
       }
@@ -358,7 +359,7 @@ export async function POST(req: Request) {
       });
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
-      console.error('[diagnostic.next] failed', msg);
+      log.error({ event: 'diagnostic_next_failed', message: msg.slice(0, 200) });
       const status = msg === 'gemini-not-configured' ? 503 : 502;
       return NextResponse.json({ ok: false, error: msg }, { status });
     }

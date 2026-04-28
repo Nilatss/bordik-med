@@ -66,4 +66,9 @@ next-env.d.ts
 /public/snapshot.json
 /data/snapshot.json
 
+# MediaPipe WASM is regenerated from node_modules by
+# scripts/sync-mediapipe.mjs on every prebuild. Don't commit the
+# 34 MB of binaries — they live in node_modules already.
+/public/mediapipe/
+
 .vercel

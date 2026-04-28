@@ -100,6 +100,21 @@ const serwist = new Serwist({
         ],
       }),
     },
+    // ── Self-hosted MediaPipe WASM. CacheFirst forever (versioned via
+    // package + sha-pinned by /mediapipe/wasm/integrity.json).
+    {
+      matcher: ({ url, sameOrigin }) => sameOrigin && url.pathname.startsWith('/mediapipe/'),
+      handler: new CacheFirst({
+        cacheName: 'bordik-mediapipe',
+        plugins: [
+          new ExpirationPlugin({
+            maxEntries: 20,
+            maxAgeSeconds: 365 * 24 * 60 * 60, // 1 year
+            purgeOnQuotaError: true,
+          }),
+        ],
+      }),
+    },
     // ── Per-tool detail JSON. CacheFirst so opening a tool offline is
     // instant. New revisions land via deploy + new content-manifest.json.
     {

@@ -88,7 +88,7 @@ export default function RootLayout({
             handshake. Saves ~100-300 ms each on cold navigations. */}
         <link rel="preconnect" href="https://generativelanguage.googleapis.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://storage.googleapis.com" />
-        <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
+        {/* cdn.jsdelivr.net retired — MediaPipe WASM is self-hosted. */}
         {/* Supabase host comes from env; fall back to a sensible default
             string just so the browser sees a hint at HTML parse time. */}
         {process.env.NEXT_PUBLIC_SUPABASE_URL ? (

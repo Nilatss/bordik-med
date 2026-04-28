@@ -127,6 +127,17 @@ const nextConfig: NextConfig = {
           { key: 'Cache-Control', value: 'public, max-age=3600' },
         ],
       },
+      // P1-SEC-2 — MediaPipe WASM self-hosted under /mediapipe/wasm.
+      // Files are versioned by the package version we bake into the
+      // build artifact, so they're effectively immutable and can be
+      // cached aggressively. Hashes in /mediapipe/wasm/integrity.json
+      // give us a verifiable supply-chain pin.
+      {
+        source: '/mediapipe/:path*',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+        ],
+      },
       // security.txt should be served as text/plain per RFC 9116
       {
         source: '/.well-known/security.txt',
