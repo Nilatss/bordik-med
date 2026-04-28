@@ -9,10 +9,11 @@
     "analyze": "cross-env ANALYZE=true next build --webpack",
     "start": "next start",
     "build:tool-meta": "node scripts/build-tool-meta.mjs",
+    "build:content": "node scripts/build-content.mjs",
     "ai:questions": "node scripts/ai-generate-questions.mjs",
     "validate:scales": "npx tsx scripts/validate-scales.mjs",
     "validate:runners": "npx tsx scripts/smoke-runners.mjs",
-    "prebuild": "node scripts/build-tool-meta.mjs"
+    "prebuild": "node scripts/build-tool-meta.mjs && node scripts/build-content.mjs"
   },
   "dependencies": {
     "@fontsource-variable/jetbrains-mono": "^5.2.8",
@@ -25,6 +26,7 @@
     "html2canvas": "^1.4.1",
     "jspdf": "^4.2.1",
     "jspdf-autotable": "^5.0.7",
+    "minisearch": "^7.2.0",
     "next": "16.2.3",
     "react": "19.2.4",
     "react-dom": "19.2.4",
@@ -32,6 +34,7 @@
     "react-virtuoso": "^4.18.5",
     "rehype-highlight": "^7.0.2",
     "remark-gfm": "^4.0.1",
+    "valibot": "^1.3.1",
     "zustand": "^5.0.12"
   },
   "devDependencies": {
