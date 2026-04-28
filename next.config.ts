@@ -1,6 +1,7 @@
 import type { NextConfig } from 'next';
 import path from 'path';
 import withSerwistInit from '@serwist/next';
+import withBundleAnalyzer from '@next/bundle-analyzer';
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -40,4 +41,12 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default withSerwist(nextConfig);
+// Bundle analyzer - opt-in via `ANALYZE=true npm run build`. Outputs HTML
+// reports to .next/analyze/{client,server,edge}.html so we can see exactly
+// which files end up in each route's chunk.
+const analyzer = withBundleAnalyzer({
+  enabled: process.env.ANALYZE === 'true',
+  openAnalyzer: false,
+});
+
+export default analyzer(withSerwist(nextConfig));

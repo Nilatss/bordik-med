@@ -680,7 +680,9 @@ function buildRows(
    Row renderer for Virtuoso.
    ════════════════════════════════════════════════════════════════ */
 
-function RenderedRow({ row, cols }: { row: Row; cols: number }) {
+// Memoised so identical rows aren't reconciled on every parent re-render.
+// Custom equality: same row reference + same cols = no work.
+const RenderedRow = React.memo(function RenderedRow({ row, cols }: { row: Row; cols: number }) {
   if (row.kind === 'empty') return null;
 
   if (row.kind === 'category') {
@@ -730,30 +732,29 @@ function RenderedRow({ row, cols }: { row: Row; cols: number }) {
     }}>
       {padded.map((tool, idx) =>
         tool ? (
-          <motion.div
+          // Plain <div> with a CSS cascade keyframe instead of motion.div.
+          // Virtuoso recycles rows on scroll - per-card framer-motion was
+          // running 4-5 cards × per-row × per-scroll-step. CSS animation
+          // runs on the compositor and is GC'd by the browser.
+          <div
             key={tool.id}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              // Stagger across cards in the same row so they cascade in.
-              delay: idx * 0.04,
-              duration: 0.3,
-              ease: [0.05, 0.7, 0.1, 1],
+            className="tools-card-cascade"
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              minWidth: 0,
+              animationDelay: `${idx * 40}ms`,
             }}
-            // Flex column so the inner <button> (default inline-block)
-            // stretches to full width via cross-axis stretch — otherwise
-            // cards collapse to intrinsic size and rows look broken.
-            style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}
           >
             <ToolCard tool={tool} />
-          </motion.div>
+          </div>
         ) : (
           <div key={`ph-${idx}`} />
         )
       )}
     </div>
   );
-}
+});
 
 /* ════════════════════════════════════════════════════════════════
    Main page
@@ -966,6 +967,16 @@ export default function ToolsPage() {
       setQuery('');
     });
   }, []);
+
+  // Stable Virtuoso callbacks. Without these, every parent re-render handed
+  // Virtuoso a new arrow-function for itemContent, which forced it to remount
+  // every visible row. With useCallback bound to [cols] only, Virtuoso reuses
+  // its row instances across hover, filter typing, scroll updates etc.
+  const virtuosoComputeKey = useCallback((_: number, row: Row) => row.key, []);
+  const virtuosoItemContent = useCallback(
+    (_: number, row: Row) => <RenderedRow row={row} cols={cols} />,
+    [cols],
+  );
 
   return (
     <ToolCardContext.Provider value={cardContextValue}>
@@ -1203,10 +1214,10 @@ export default function ToolsPage() {
             ? { index: savedScrollIndex, offset: savedScrollOffset, align: 'start' }
             : 0}
           rangeChanged={rangeChangedThrottled}
-          // Keys are precomputed in buildRows so computeItemKey is O(1) —
+          // Keys are precomputed in buildRows so computeItemKey is O(1) -
           // no per-render string.join() across 500+ tool ids.
-          computeItemKey={(_, row) => row.key}
-          itemContent={(_, row) => <RenderedRow row={row} cols={cols} />}
+          computeItemKey={virtuosoComputeKey}
+          itemContent={virtuosoItemContent}
         />
       )}
     </div>

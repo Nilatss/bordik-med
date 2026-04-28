@@ -6,6 +6,7 @@
     "dev": "next dev",
     "dev:https": "next dev --experimental-https",
     "build": "next build --webpack",
+    "analyze": "cross-env ANALYZE=true next build --webpack",
     "start": "next start",
     "build:tool-meta": "node scripts/build-tool-meta.mjs",
     "ai:questions": "node scripts/ai-generate-questions.mjs",
@@ -34,11 +35,13 @@
     "zustand": "^5.0.12"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^16.2.4",
     "@serwist/next": "^9.5.7",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "cross-env": "^10.1.0",
     "serwist": "^9.5.7",
     "tailwindcss": "^4",
     "typescript": "^5"
