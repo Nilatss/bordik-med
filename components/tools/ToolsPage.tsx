@@ -11,17 +11,20 @@ import { Virtuoso } from 'react-virtuoso';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight } from '@/components/icons';
 import { useT } from '@/lib/i18n';
-import { CATALOG_TOOLS, TOOL_CATEGORIES, type CatalogTool } from '@/lib/tools-catalog';
+import { useCatalog, type CatalogMetaItem } from '@/lib/catalog-client';
 import {
-  TOOL_META,
-  CATEGORY_COUNTS,
-  SUBCATEGORY_COUNTS,
-  COUNTRY_COUNTS,
+  buildCategoryCounts,
+  buildSubcategoryCounts,
+  buildCountryCounts,
   countryMatches,
   primaryCountriesFor,
-} from '@/lib/tool-meta';
+} from '@/lib/tool-meta-helpers';
+
 import { useAppStore } from '@/lib/store';
 import EmojiOrFlag from '@/components/ui/EmojiOrFlag';
+
+/** Drop-in alias - was imported from lib/tools-catalog. New shape served via JSON. */
+type CatalogTool = CatalogMetaItem;
 
 /* ════════════════════════════════════════════════════════════════
    Types
@@ -29,25 +32,11 @@ import EmojiOrFlag from '@/components/ui/EmojiOrFlag';
 
 type FilterKey = 'cat' | 'sub' | 'cou' | null;
 
-// ─── Precomputed sort keys (module-scope, runs once on first import) ───
-// `localeCompare('ru')` is ~100× slower than `<` on strings, so we bake
-// lowercase (with numeric prefix stripped for categories) here and sort
-// by plain string comparison in the filter pipeline.
-const CATEGORY_SORT_KEY: Record<string, string> = Object.create(null);
-for (const t of CATALOG_TOOLS) {
-  if (!(t.category in CATEGORY_SORT_KEY)) {
-    CATEGORY_SORT_KEY[t.category] = t.category.replace(/^\d+\.\s*/, '').toLowerCase();
-  }
-}
-const TOOL_SORT_KEY: Record<string, string> = Object.create(null);
-for (const t of CATALOG_TOOLS) {
-  TOOL_SORT_KEY[t.id] = (t.subcategory + '\u0000' + t.title).toLowerCase();
-}
-// Module-scope constant for the header pill — previous inline
-// `CATALOG_TOOLS.filter(...).length` ran on every ToolsPage render.
-const READY_COUNT = CATALOG_TOOLS.filter(
-  (t) => t.available || (TOOL_META[t.id]?.hasRunner ?? false)
-).length;
+// Module-scope precomputes (CATEGORY_SORT_KEY, TOOL_SORT_KEY, READY_COUNT)
+// used to live here. They're now derived inside the component via useMemo
+// because the catalog is fetched async via useCatalog() - no module-scope
+// access to the data is possible.
+const EMPTY_CATALOG: readonly CatalogMetaItem[] = Object.freeze([]);
 
 interface FilterOption {
   value: string;
@@ -318,15 +307,14 @@ interface ToolCardContextValue {
 }
 const ToolCardContext = React.createContext<ToolCardContextValue | null>(null);
 
-// Cache per-tool country tags — parsed once per catalogue entry, reused
+// Cache per-tool country tags - parsed once per catalogue entry, reused
 // on every ToolCard re-render. The raw countries string is immutable
 // metadata; no need to re-parse on every render.
 const toolCountriesCache: Record<string, { name: string; flag: string }[]> = Object.create(null);
-function getToolCountries(toolId: string): { name: string; flag: string }[] {
-  if (toolId in toolCountriesCache) return toolCountriesCache[toolId];
-  const meta = TOOL_META[toolId];
-  const result = primaryCountriesFor(meta?.countries);
-  toolCountriesCache[toolId] = result;
+function getToolCountries(tool: CatalogTool): { name: string; flag: string }[] {
+  if (tool.id in toolCountriesCache) return toolCountriesCache[tool.id];
+  const result = primaryCountriesFor(tool.countries);
+  toolCountriesCache[tool.id] = result;
   return result;
 }
 
@@ -430,9 +418,8 @@ const ToolCard = React.memo(function ToolCard({ tool }: { tool: CatalogTool }) {
   const ctx = React.useContext(ToolCardContext)!;
   const { openTool, toggleFav, favouriteSet } = ctx;
   const isFavourite = favouriteSet.has(tool.id);
-  const meta = TOOL_META[tool.id];
-  const available = tool.available || (meta?.hasRunner ?? false);
-  const countries = getToolCountries(tool.id);
+  const available = tool.available || tool.hasRunner;
+  const countries = getToolCountries(tool);
 
   const handleClick = useCallback(() => {
     if (available) openTool(tool.id);
@@ -886,9 +873,27 @@ export default function ToolsPage() {
     startFilterTransition(() => setOnlyAvailable(v));
   }, []);
 
+  // Catalog arrives async via fetch /catalog.meta.json. Until it loads we
+  // render skeleton placeholders below; treat as empty array for filter
+  // pipeline so all hooks stay mounted in stable order.
+  const tools = useCatalog() ?? EMPTY_CATALOG;
+
+  // Sort keys are derived from the live catalog (used to be module-scope).
+  const sortKeys = useMemo(() => {
+    const cat: Record<string, string> = Object.create(null);
+    const tool: Record<string, string> = Object.create(null);
+    for (const t of tools) {
+      if (!(t.category in cat)) {
+        cat[t.category] = t.category.replace(/^\d+\.\s*/, '').toLowerCase();
+      }
+      tool[t.id] = (t.subcategory + '|' + t.title).toLowerCase();
+    }
+    return { cat, tool };
+  }, [tools]);
+
   // Apply filters (deferred so typing stays smooth).
   const filtered = useMemo(() => {
-    let result: readonly CatalogTool[] = CATALOG_TOOLS;
+    let result: readonly CatalogTool[] = tools;
 
     if (deferredQuery.trim()) {
       const q = deferredQuery.trim().toLowerCase();
@@ -912,24 +917,22 @@ export default function ToolsPage() {
       // not raw labels. Match each tool's full country string against every
       // selected primary key via the prefix-aware helper.
       result = result.filter((t) => {
-        const c = TOOL_META[t.id]?.countries;
-        if (!c) return false;
-        return selectedCountries.some((sel) => countryMatches(c, sel));
+        if (!t.countries) return false;
+        return selectedCountries.some((sel) => countryMatches(t.countries, sel));
       });
     }
     if (onlyAvailable) {
-      result = result.filter((t) => t.available || (TOOL_META[t.id]?.hasRunner ?? false));
+      result = result.filter((t) => t.available || t.hasRunner);
     }
     if (onlyFavourites && favouriteSet.size > 0) {
       result = result.filter((t) => favouriteSet.has(t.id));
     }
     return result;
-  }, [deferredQuery, selectedCategories, selectedSubcategories, selectedCountries, onlyAvailable, onlyFavourites, favouriteSet]);
+  }, [tools, deferredQuery, selectedCategories, selectedSubcategories, selectedCountries, onlyAvailable, onlyFavourites, favouriteSet]);
 
   // Group by category. Categories are sorted alphabetically (ignoring the
   // leading "N. " numeric prefix). `localeCompare('ru')` is ~100× slower
-  // than plain `<` — we precomputed lowercased sort keys ONCE at module
-  // load (CATEGORY_SORT_KEY, TOOL_SORT_KEY) and compare those instead.
+  // than plain `<`, so we use lowercased sort keys derived above.
   const byCategory = useMemo(() => {
     const map = new Map<string, CatalogTool[]>();
     for (const t of filtered) {
@@ -938,8 +941,8 @@ export default function ToolsPage() {
       else map.set(t.category, [t]);
     }
     const cats = [...map.keys()].sort((a, b) => {
-      const ka = CATEGORY_SORT_KEY[a] ?? a;
-      const kb = CATEGORY_SORT_KEY[b] ?? b;
+      const ka = sortKeys.cat[a] ?? a;
+      const kb = sortKeys.cat[b] ?? b;
       return ka < kb ? -1 : ka > kb ? 1 : 0;
     });
     const out: { category: string; tools: CatalogTool[] }[] = [];
@@ -948,15 +951,25 @@ export default function ToolsPage() {
       if (arr) {
         // Sort tools within each category by precomputed key.
         const sorted = [...arr].sort((x, y) => {
-          const kx = TOOL_SORT_KEY[x.id];
-          const ky = TOOL_SORT_KEY[y.id];
+          const kx = sortKeys.tool[x.id] ?? '';
+          const ky = sortKeys.tool[y.id] ?? '';
           return kx < ky ? -1 : kx > ky ? 1 : 0;
         });
         out.push({ category: c, tools: sorted });
       }
     }
     return out;
-  }, [filtered]);
+  }, [filtered, sortKeys]);
+
+  // Filter dropdown option lists - derived from tools.
+  const categoryCounts = useMemo(() => buildCategoryCounts(tools), [tools]);
+  const subcategoryCounts = useMemo(() => buildSubcategoryCounts(tools), [tools]);
+  const countryCounts = useMemo(() => buildCountryCounts(tools), [tools]);
+  // Header pill count
+  const readyCount = useMemo(
+    () => tools.filter((t) => t.available || t.hasRunner).length,
+    [tools],
+  );
 
   // Responsive columns (3 ≥1400 / 2 ≥620 / 1 mobile) — rebuilds rows when
   // viewport width crosses a breakpoint so cards reflow naturally.
@@ -1004,9 +1017,9 @@ export default function ToolsPage() {
           fontFamily: 'var(--font-body)', fontSize: 14, color: '#6B7280', lineHeight: 1.5,
         }}>
           {t('tools.subtitle', {
-            ready: READY_COUNT,
-            total: CATALOG_TOOLS.length,
-            sections: TOOL_CATEGORIES.length,
+            ready: readyCount,
+            total: tools.length,
+            sections: categoryCounts.length,
           })}
         </p>
       </motion.div>
@@ -1076,7 +1089,7 @@ export default function ToolsPage() {
         <FilterDropdown
           label={t('tools.filter.sections')}
           icon={<svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>}
-          options={CATEGORY_COUNTS.map((o) => ({ ...o, label: stripCategoryNumber(o.value) }))}
+          options={categoryCounts.map((o) => ({ ...o, label: stripCategoryNumber(o.value) }))}
           selected={selectedCategories}
           onChange={setCats}
           open={openFilter === 'cat'}
@@ -1086,7 +1099,7 @@ export default function ToolsPage() {
         <FilterDropdown
           label={t('tools.filter.specialties')}
           icon={<svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M21 8V7a2 2 0 00-2-2h-5l-2-2H5a2 2 0 00-2 2v11a2 2 0 002 2h14a2 2 0 002-2v-4"/><circle cx="17" cy="14" r="3"/></svg>}
-          options={SUBCATEGORY_COUNTS}
+          options={subcategoryCounts}
           selected={selectedSubcategories}
           onChange={setSubs}
           open={openFilter === 'sub'}
@@ -1096,7 +1109,7 @@ export default function ToolsPage() {
         <FilterDropdown
           label={t('tools.filter.countries')}
           icon={<svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><circle cx={12} cy={12} r={10}/><line x1={2} y1={12} x2={22} y2={12}/><path d="M12 2a15 15 0 014 10 15 15 0 01-4 10 15 15 0 01-4-10 15 15 0 014-10z"/></svg>}
-          options={COUNTRY_COUNTS}
+          options={countryCounts}
           selected={selectedCountries}
           onChange={setCous}
           open={openFilter === 'cou'}
