@@ -26,7 +26,7 @@ export const dynamic = 'force-dynamic';
 // Order is intentional: best-quality first, lighter fallbacks after.
 const GEMINI_MODELS = (process.env.GEMINI_MODEL
   ? [process.env.GEMINI_MODEL]
-  : ['gemini-2.0-flash-lite', 'gemini-2.0-flash', 'gemini-1.5-flash-8b', 'gemini-1.5-flash']
+  : ['gemini-2.0-flash-lite', 'gemini-2.0-flash', 'gemini-1.5-flash-latest', 'gemini-1.5-flash', 'gemini-1.5-pro-latest']
 );
 const TOTAL_QUESTIONS = 15;   // bounded - longer feels like a chore
 
@@ -135,9 +135,11 @@ async function geminiCall(prompt: string, expectArray = false): Promise<unknown>
     }
     const txt = await r.text().catch(() => '');
     lastErr = new Error(`gemini-${r.status} (${model}): ${txt.slice(0, 200)}`);
-    // Only fall back on quota / rate limits / temporary errors. Hard 4xx
-    // (auth, malformed request) won't be fixed by trying another model.
-    if (r.status !== 429 && r.status !== 503 && r.status !== 502 && r.status !== 500) {
+    // Fall back on quota (429), temporary errors (5xx), AND model-not-found
+    // (404) - any of these mean THIS model can't help right now, but a
+    // different model might. Auth (401/403) and malformed request (400)
+    // won't be fixed by retry, so bail.
+    if (r.status === 401 || r.status === 403 || r.status === 400) {
       throw lastErr;
     }
     console.warn(`[diagnostic] ${model} returned ${r.status}, trying next model`);
