@@ -4,6 +4,7 @@ import React, { useState, useMemo, useEffect, Children, isValidElement, cloneEle
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import rehypeSanitize from 'rehype-sanitize';
 import { useCatalog, type CatalogMetaItem } from '@/lib/catalog-client';
 import { findBand, type ToolInput, type Preset, type CalculatorResult, type ResultScaleSegment, type ToolRunner } from '@/lib/tools-runners';
 import { loadRunner } from '@/lib/runners';
@@ -13,7 +14,7 @@ import { useT } from '@/lib/i18n';
 import { ArrowLeft } from '@/components/icons';
 import EmojiOrFlag from '@/components/ui/EmojiOrFlag';
 import { OfflineBadge } from './OfflineBadge';
-import { safeUrlTransform } from '@/lib/safe-markdown';
+import { safeUrlTransform, sanitizeSchema } from '@/lib/safe-markdown';
 
 /** Slugify heading text for tab id */
 function slugify(s: string): string {
@@ -515,7 +516,7 @@ const CALLOUT_EMOJI_RE = /^(ℹ|⚠️|⚠|📷|✓|✅|🎯|💡)\s*/;
 const MemoisedMarkdown = React.memo(function MemoisedMarkdown({ body }: { body: string }) {
   const processed = useMemo(() => preprocessToolContent(body), [body]);
   return (
-    <ReactMarkdown remarkPlugins={[remarkGfm]} urlTransform={safeUrlTransform} components={mdComponents}>
+    <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[[rehypeSanitize, sanitizeSchema]]} urlTransform={safeUrlTransform} components={mdComponents}>
       {processed}
     </ReactMarkdown>
   );

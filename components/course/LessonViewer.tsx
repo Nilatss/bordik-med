@@ -2,8 +2,9 @@
 
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import rehypeSanitize from 'rehype-sanitize';
 import { BookOpen } from '@/components/icons';
-import { safeUrlTransform } from '@/lib/safe-markdown';
+import { safeUrlTransform, sanitizeSchema } from '@/lib/safe-markdown';
 
 interface LessonViewerProps {
   content: string | null;
@@ -42,7 +43,11 @@ export default function LessonViewer({ content }: LessonViewerProps) {
   return (
     <div style={{ flex: 1, overflowY: 'auto' }}>
       <div className="lesson-content" style={{ maxWidth: 'var(--content-max)' }}>
-        <ReactMarkdown remarkPlugins={[remarkGfm]} urlTransform={safeUrlTransform}>
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          rehypePlugins={[[rehypeSanitize, sanitizeSchema]]}
+          urlTransform={safeUrlTransform}
+        >
           {content}
         </ReactMarkdown>
       </div>

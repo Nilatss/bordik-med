@@ -5,9 +5,10 @@ import type { ReactNode } from 'react';
 import { Children, cloneElement, isValidElement } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import rehypeSanitize from 'rehype-sanitize';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useT } from '@/lib/i18n';
-import { safeUrlTransform } from '@/lib/safe-markdown';
+import { safeUrlTransform, sanitizeSchema } from '@/lib/safe-markdown';
 import { BookOpen } from '@/components/icons';
 import TestPanel from './TestPanel';
 import { CourseIllustration } from './CourseIllustrations';
@@ -473,7 +474,7 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
     return (
       <div style={{ flex: 1, overflowY: 'auto' }}>
         <div className="lesson-content" style={{ maxWidth: 'var(--content-max)' }}>
-          <ReactMarkdown remarkPlugins={[remarkGfm]} urlTransform={safeUrlTransform}>{content}</ReactMarkdown>
+          <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[[rehypeSanitize, sanitizeSchema]]} urlTransform={safeUrlTransform}>{content}</ReactMarkdown>
         </div>
       </div>
     );
@@ -537,6 +538,7 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
           <div className="lesson-content">
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
+              rehypePlugins={[[rehypeSanitize, sanitizeSchema]]}
               urlTransform={safeUrlTransform}
               components={{
                 table: ({ children, node }) => {
