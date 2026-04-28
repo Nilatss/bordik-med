@@ -3,6 +3,7 @@ import * as v from 'valibot';
 import { identifyAndLimit } from '@/lib/rate-limit';
 import { getSupabaseServerClient } from '@/lib/supabase/server';
 import { isOutputSafe as isOutputSafeStrict } from '@/lib/output-guard';
+import { assertSameOrigin } from '@/lib/origin-check';
 
 // Rate limits are enforced via lib/rate-limit.identifyAndLimit, which
 // uses Upstash sliding-window when UPSTASH_REDIS_REST_URL is set and
@@ -268,6 +269,11 @@ function checkOutput(s: string): { safe: boolean; reason?: string } {
 }
 
 export async function POST(req: Request) {
+  // P2-SEC-4 — Origin allowlist; defends against extension-context
+  // and cross-subdomain CSRF where SameSite=Lax wouldn't help.
+  const blocked = assertSameOrigin(req);
+  if (blocked) return blocked;
+
   // Per-user rate limit: prefer authenticated id, fall back to hashed IP.
   // Failure to read auth is non-fatal; we still rate-limit by IP hash.
   let userId: string | null = null;

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getSupabaseServerClient } from '@/lib/supabase/server';
+import { assertSameOrigin } from '@/lib/origin-check';
 
 /**
  * GDPR Art. 17 / 152-ФЗ ст. 14 — right to erasure.
@@ -22,7 +23,9 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 /* Step 1 — request a deletion confirmation email. */
-export async function POST() {
+export async function POST(req: Request) {
+  const blocked = assertSameOrigin(req);
+  if (blocked) return blocked;
   const sb = await getSupabaseServerClient();
   if (!sb) return NextResponse.json({ ok: false, error: 'backend-not-configured' }, { status: 503 });
 
@@ -49,6 +52,8 @@ export async function POST() {
 /* Step 2 — execute the deletion after the user clicks the email link
    and lands back on /account/delete-confirm which posts here. */
 export async function DELETE(req: Request) {
+  const blocked = assertSameOrigin(req);
+  if (blocked) return blocked;
   const sb = await getSupabaseServerClient();
   if (!sb) return NextResponse.json({ ok: false, error: 'backend-not-configured' }, { status: 503 });
 
