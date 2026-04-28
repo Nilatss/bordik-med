@@ -24,9 +24,17 @@ export const dynamic = 'force-dynamic';
 // Free-tier daily quotas are PER-MODEL on Gemini. We try the primary model
 // first and silently fall back to lighter models when 429 hits (quota out).
 // Order is intentional: best-quality first, lighter fallbacks after.
+// Gemini free-tier daily quotas are PER-MODEL. Try newest/cheapest first
+// because they have the freshest, most generous quotas. The 1.5 series was
+// deprecated in April 2025 and removed from v1beta - excluded here.
 const GEMINI_MODELS = (process.env.GEMINI_MODEL
   ? [process.env.GEMINI_MODEL]
-  : ['gemini-2.0-flash-lite', 'gemini-2.0-flash', 'gemini-1.5-flash-latest', 'gemini-1.5-flash', 'gemini-1.5-pro-latest']
+  : [
+      'gemini-2.5-flash-lite',  // newest, lightest, biggest free quota
+      'gemini-2.5-flash',
+      'gemini-2.0-flash-lite',
+      'gemini-2.0-flash',
+    ]
 );
 const TOTAL_QUESTIONS = 15;   // bounded - longer feels like a chore
 
