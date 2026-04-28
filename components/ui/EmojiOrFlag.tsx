@@ -54,7 +54,9 @@ function flagToIso(str: string): string | null {
     if (cp !== undefined) cps.push(cp);
   }
   if (cps.length !== 2) return null;
-  const [a, b] = cps;
+  const a = cps[0];
+  const b = cps[1];
+  if (a === undefined || b === undefined) return null;
   const BASE = 0x1F1E6; // regional indicator A
   if (a < BASE || a > 0x1F1FF || b < BASE || b > 0x1F1FF) return null;
   // U+1F1E6 = A, so offset + 0x41 gives ASCII upper-case letter.

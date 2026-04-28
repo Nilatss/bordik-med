@@ -11,14 +11,18 @@ interface ToolRow {
   updated_at: string;
 }
 
-const STATUS_COLORS: Record<string, { bg: string; fg: string }> = {
+// P1-CQ-1 — typed as a closed object literal so STATUS_COLORS[knownKey]
+// is no longer `… | undefined` under noUncheckedIndexedAccess. Lookups
+// with arbitrary strings (line 147) explicitly fall back via `??`.
+const STATUS_COLORS = {
   draft:     { bg: '#F3F4F6', fg: '#4B5563' },
   review:    { bg: '#FEF3C7', fg: '#92400E' },
   published: { bg: '#ECFDF5', fg: '#065F46' },
   archived:  { bg: '#FEE2E2', fg: '#991B1B' },
-};
+} as const;
+type StatusKey = keyof typeof STATUS_COLORS;
 
-const STATUS_LABEL: Record<string, string> = {
+const STATUS_LABEL: Record<StatusKey, string> = {
   draft: 'Черновик',
   review: 'На проверке',
   published: 'Опубликован',
@@ -144,7 +148,7 @@ export default async function AdminToolsPage() {
             </thead>
             <tbody>
               {rows.map((r) => {
-                const palette = STATUS_COLORS[r.status] ?? STATUS_COLORS.draft;
+                const palette = (STATUS_COLORS as Record<string, { bg: string; fg: string }>)[r.status] ?? STATUS_COLORS.draft;
                 const title = r.name?.ru ?? r.name?.en ?? r.id;
                 return (
                   <tr key={r.id} style={{ borderTop: '1px solid #F3F4F6' }}>

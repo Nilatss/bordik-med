@@ -130,9 +130,16 @@
 **Где**: `docs/SECURITY_SETUP.md` уже описывает scenarios, но не пошаговые команды.
 **Фикс**: добавить секцию «Recovery commands» с конкретным `gh`/`vercel`/`supabase` CLI инструкциями для: vercel-down, supabase-down, gh-compromised, gemini-quota-exhausted.
 
-### P1-CQ-1 ❌ — Strict TypeScript flags
+### P1-CQ-1 🟡 — Strict TypeScript flags (in progress)
 **Где**: `tsconfig.json` имеет только `strict: true`.
-**Фикс**: добавить `noUncheckedIndexedAccess: true`, `exactOptionalPropertyTypes: true`. Может породить N ошибок — фикс инкрементально.
+**Прогресс**: создан `tsconfig.strict.json` с `noUncheckedIndexedAccess: true`. Запуск: `npx tsc --noEmit -p tsconfig.strict.json`.
+
+| Snapshot | Errors |
+|---|---|
+| Initial (2026-04-28) | 270 |
+| After admin/page.tsx + EmojiOrFlag.tsx + lib/quiz.ts | 255 |
+
+**Migration plan**: модули по одному; когда strict вернёт 0 — promote `noUncheckedIndexedAccess` в основной `tsconfig.json` и удалить strict-конфиг.
 
 ### P1-CQ-2 ❌ — Pino structured logging + PII redact
 **Где**: голый `console.log` / `console.error` повсюду.

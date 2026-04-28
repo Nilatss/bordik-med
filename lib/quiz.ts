@@ -68,7 +68,8 @@ export function gradeTest(
 ): { score: number; total: number; passed: boolean } {
   let score = 0;
   for (let i = 0; i < questions.length; i++) {
-    if (answers[i] === questions[i].correctIndex) score++;
+    const q = questions[i];
+    if (q && answers[i] === q.correctIndex) score++;
   }
   const total = questions.length;
   return { score, total, passed: score >= PASS_THRESHOLD_TEST };
@@ -80,7 +81,8 @@ export function gradeModuleTest(
 ): { score: number; total: number; passed: boolean } {
   let score = 0;
   for (let i = 0; i < questions.length; i++) {
-    if (answers[i] === questions[i].correctIndex) score++;
+    const q = questions[i];
+    if (q && answers[i] === q.correctIndex) score++;
   }
   const total = questions.length;
   return { score, total, passed: score >= PASS_THRESHOLD_MODULE };
@@ -96,7 +98,7 @@ export function gradeModuleTest(
 export function getCooldownRemaining(attempts: TestAttempt[] | ModuleTestAttempt[]): number {
   if (attempts.length === 0) return 0;
   const last = attempts[attempts.length - 1];
-  if (last.passed) return 0;
+  if (!last || last.passed) return 0;
   const window = last.aborted ? ABORT_COOLDOWN_MS : COOLDOWN_MS;
   const elapsed = Date.now() - last.timestamp;
   return Math.max(0, window - elapsed);
