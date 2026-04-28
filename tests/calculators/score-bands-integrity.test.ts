@@ -152,6 +152,61 @@ import pecarn   from '@/lib/runners/pecarn-cspine';
 import cdai     from '@/lib/runners/cdai';
 // Smoking dependence
 import fagerstrom from '@/lib/runners/fagerstrom';
+// Paediatric appendicitis / asthma / croup
+import alvaradoPas from '@/lib/runners/alvarado-pas';
+import pas        from '@/lib/runners/pas';
+import pram       from '@/lib/runners/pram';
+import westley    from '@/lib/runners/westley';
+// Triage (START is a category classifier, not a monotonic score —
+// its band ranges intentionally overlap; skip integrity test)
+import ctas       from '@/lib/runners/ctas';
+import mts        from '@/lib/runners/mts';
+// Headache / dyspnoea / angina
+import snoop      from '@/lib/runners/snoop';
+import mmrc       from '@/lib/runners/mmrc';
+import ccs        from '@/lib/runners/ccs';
+// Nutrition
+import mna        from '@/lib/runners/mna';
+import glim       from '@/lib/runners/glim';
+import nutric     from '@/lib/runners/nutric';
+import sga        from '@/lib/runners/sga';
+import strongkids from '@/lib/runners/strongkids';
+// Coma / LOC
+import four       from '@/lib/runners/four';
+import avpu       from '@/lib/runners/avpu';
+import acdu       from '@/lib/runners/acdu';
+import pgcs       from '@/lib/runners/pgcs';
+// Stroke etiology / vascular
+import toast      from '@/lib/runners/toast';
+import fast       from '@/lib/runners/fast';
+import hachinski  from '@/lib/runners/hachinski';
+// Cognitive
+import mace2      from '@/lib/runners/mace2';
+import slums      from '@/lib/runners/slums';
+import mchat      from '@/lib/runners/mchat';
+// Epilepsy / neuro
+import ilae       from '@/lib/runners/ilae';
+import engel      from '@/lib/runners/engel';
+import hughesGbs  from '@/lib/runners/hughes-gbs';
+import mgfa       from '@/lib/runners/mgfa';
+// Bleeding / VTE prophylaxis
+import improveBl  from '@/lib/runners/improve-bleed';
+import rcogVte    from '@/lib/runners/rcog-vte';
+// Pain (paediatric)
+import nips       from '@/lib/runners/nips';
+import fpsR       from '@/lib/runners/fps-r';
+import wongBaker  from '@/lib/runners/wong-baker';
+// Prostate / urology
+import ipss       from '@/lib/runners/ipss';
+// Dehydration
+import whoDehydr  from '@/lib/runners/who-dehydr';
+// Vascular
+import ceap       from '@/lib/runners/ceap';
+import villalta   from '@/lib/runners/villalta';
+// QT / drug-induced
+import tisdale    from '@/lib/runners/tisdale';
+// Hypertension target organ
+import htnTod     from '@/lib/runners/htn-tod';
 
 interface ScoreRunner { bands: ScoreBand[]; maxScore: number }
 
@@ -286,6 +341,60 @@ const SCORE_TOOLS: Array<[string, ScoreRunner]> = [
   ['pecarn-cspine', pecarn as unknown as ScoreRunner],
   // Smoking
   ['fagerstrom', fagerstrom as unknown as ScoreRunner],
+  // Paediatric appendicitis / asthma / croup
+  ['alvarado-pas', alvaradoPas as unknown as ScoreRunner],
+  ['pas',        pas       as unknown as ScoreRunner],
+  ['pram',       pram      as unknown as ScoreRunner],
+  ['westley',    westley   as unknown as ScoreRunner],
+  // Triage
+  ['ctas',       ctas      as unknown as ScoreRunner],
+  ['mts',        mts       as unknown as ScoreRunner],
+  // Headache / dyspnoea / angina
+  ['snoop',      snoop     as unknown as ScoreRunner],
+  ['mmrc',       mmrc      as unknown as ScoreRunner],
+  ['ccs',        ccs       as unknown as ScoreRunner],
+  // Nutrition
+  ['mna',        mna       as unknown as ScoreRunner],
+  ['glim',       glim      as unknown as ScoreRunner],
+  ['nutric',     nutric    as unknown as ScoreRunner],
+  ['sga',        sga       as unknown as ScoreRunner],
+  ['strongkids', strongkids as unknown as ScoreRunner],
+  // Coma / LOC
+  ['four',       four      as unknown as ScoreRunner],
+  ['avpu',       avpu      as unknown as ScoreRunner],
+  ['acdu',       acdu      as unknown as ScoreRunner],
+  ['pgcs',       pgcs      as unknown as ScoreRunner],
+  // Stroke etiology / vascular
+  ['toast',      toast     as unknown as ScoreRunner],
+  ['fast',       fast      as unknown as ScoreRunner],
+  ['hachinski',  hachinski as unknown as ScoreRunner],
+  // Cognitive
+  ['mace2',      mace2     as unknown as ScoreRunner],
+  ['slums',      slums     as unknown as ScoreRunner],
+  ['mchat',      mchat     as unknown as ScoreRunner],
+  // Epilepsy / neuro
+  ['ilae',       ilae      as unknown as ScoreRunner],
+  ['engel',      engel     as unknown as ScoreRunner],
+  ['hughes-gbs', hughesGbs as unknown as ScoreRunner],
+  ['mgfa',       mgfa      as unknown as ScoreRunner],
+  // Bleeding / VTE prophylaxis
+  ['improve-bleed', improveBl as unknown as ScoreRunner],
+  ['rcog-vte',   rcogVte   as unknown as ScoreRunner],
+  // Paediatric pain
+  ['nips',       nips      as unknown as ScoreRunner],
+  ['fps-r',      fpsR      as unknown as ScoreRunner],
+  ['wong-baker', wongBaker as unknown as ScoreRunner],
+  // Urology
+  ['ipss',       ipss      as unknown as ScoreRunner],
+  // Dehydration
+  ['who-dehydr', whoDehydr as unknown as ScoreRunner],
+  // Vascular
+  ['ceap',       ceap      as unknown as ScoreRunner],
+  ['villalta',   villalta  as unknown as ScoreRunner],
+  // QT
+  ['tisdale',    tisdale   as unknown as ScoreRunner],
+  // HTN target organ
+  ['htn-tod',    htnTod    as unknown as ScoreRunner],
 ];
 
 describe('score-band integrity', () => {
