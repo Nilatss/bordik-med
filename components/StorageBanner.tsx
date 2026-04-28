@@ -38,6 +38,7 @@ export function StorageBanner() {
     <div
       role="region"
       aria-label="Уведомление о хранении данных"
+      aria-live="polite"
       style={{
         position: 'fixed', left: 12, right: 12, bottom: 12, zIndex: 9999,
         maxWidth: 720, margin: '0 auto',

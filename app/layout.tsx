@@ -175,6 +175,14 @@ export default function RootLayout({
         `}} />
       </head>
       <body>
+        {/* P2-A11Y-3 — Skip link. Hidden until focused via Tab; lets
+            screen-reader and keyboard users jump past the sidebar /
+            navigation directly to main content. The target #main-content
+            is rendered by the route segments that wrap their primary
+            <main> with id="main-content" (home, privacy, terms, etc.). */}
+        <a href="#main-content" className="skip-link">
+          Перейти к основному контенту
+        </a>
         {/* Pre-hydration skeleton — auto-hides as soon as the React tree
             paints. Inline script swaps display:none after the next paint
             tick (rAF) so users don't see any flash. */}

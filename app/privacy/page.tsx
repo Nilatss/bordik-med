@@ -26,10 +26,23 @@ const LAST_UPDATED = '2026-04-28';
  */
 export default function PrivacyPage() {
   return (
-    <main style={{
+    <main id="main-content" style={{
       maxWidth: 760, margin: '40px auto', padding: '0 24px',
       fontFamily: 'var(--font-body)', color: '#1A1A1A', lineHeight: 1.65,
     }}>
+      {/* P2-SEO-3 — BreadcrumbList helps Google render rich snippets
+          and improves "where am I" UX in SERP. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Главная', item: 'https://ironmed-academy.vercel.app/' },
+            { '@type': 'ListItem', position: 2, name: 'Политика конфиденциальности' },
+          ],
+        }) }}
+      />
       <a
         href="/"
         style={{

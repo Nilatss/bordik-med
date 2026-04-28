@@ -20,7 +20,7 @@ export const metadata: Metadata = {
  */
 export default function SwKillPage() {
   return (
-    <main style={{
+    <main id="main-content" style={{
       maxWidth: 720, margin: '40px auto', padding: '0 24px',
       fontFamily: 'var(--font-body)', color: '#1A1A1A', lineHeight: 1.6,
     }}>

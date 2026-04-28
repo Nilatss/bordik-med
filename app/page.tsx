@@ -372,7 +372,7 @@ export default function Home() {
             <img src="/logo-bordik.png" alt="Bordik" style={{ height: 22, width: 'auto' }} />
           </picture>
         </div>
-        <main style={{
+        <main id="main-content" style={{
           flex: 1, overflowY: 'auto', background: '#FFFFFF',
           display: 'flex', flexDirection: 'column',
         }}>
