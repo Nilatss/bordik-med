@@ -89,33 +89,41 @@ export interface ResultScaleSegment {
   color: string;
 }
 
+/**
+ * exactOptionalPropertyTypes note: this is a *return type* shape filled
+ * in by ~700 auto-generated runners. Many runners explicitly emit
+ * `details: undefined` etc. when a band has no extra prose. We allow
+ * `?: T | undefined` so eOPT doesn't force every runner template to
+ * conditionally spread fields. The strict eOPT semantics still apply
+ * to PARAMETER types of public APIs.
+ */
 export interface ResultExtras {
   /** Longer narrative shown under the headline */
-  details?: string;
+  details?: string | undefined;
   /** Bulleted next steps / clinical recommendations */
-  actions?: string[];
+  actions?: string[] | undefined;
   /** Free-form differential / mnemonic unpack (e.g. MUDPILES) */
-  differential?: { term: string; desc: string }[];
+  differential?: { term: string; desc: string }[] | undefined;
   /** Caveats, pitfalls, when the number is unreliable */
-  caveats?: string[];
+  caveats?: string[] | undefined;
   /** Horizontal band scale. `current` is the numeric position for the marker. */
   scale?: {
     segments: ResultScaleSegment[];
     current: number;
-    unit?: string;
-  };
+    unit?: string | undefined;
+  } | undefined;
   /** Related tools shown as small navigation chips */
-  related?: { id: string; title: string }[];
+  related?: { id: string; title: string }[] | undefined;
   /**
    * Related courses where this tool appears or is taught. Max 3.
    * Only populate when the connection is genuine — not as filler.
    */
-  relatedCourses?: { id: string; title: string }[];
+  relatedCourses?: { id: string; title: string }[] | undefined;
 }
 
 export interface CalculatorResult extends ResultExtras {
   value: string;
-  unit?: string;
+  unit?: string | undefined;
   interpretation: string;
   color: string;
 }

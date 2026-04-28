@@ -524,7 +524,7 @@ export default function InlineQuiz({
           expanded={expanded[q.id] ?? false}
           onPick={(letter) => pick(q.id, letter)}
           onToggle={() => toggleExpanded(q.id)}
-          onNavigateToTab={onNavigateToTab}
+          {...(onNavigateToTab && { onNavigateToTab })}
         />
       ))}
     </div>

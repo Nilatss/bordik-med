@@ -175,7 +175,7 @@ export default function TestPanel({ courseId }: TestPanelProps) {
     return (
       <TestActiveView
         questions={questions}
-        timeLimit={timeLimit}
+        {...(timeLimit !== undefined && { timeLimit })}
         onComplete={handleComplete}
         onCancel={handleCancel}
         testLabel={label}
@@ -393,9 +393,7 @@ export default function TestPanel({ courseId }: TestPanelProps) {
                 icon: bestScore !== null ? 'trophy' : 'history',
               },
             ]}
-            description={
-              isPassed || isCurrent ? undefined : statusDetail ?? undefined
-            }
+            {...(!isPassed && !isCurrent && statusDetail ? { description: statusDetail } : {})}
             actionLabel={isPassed ? t('test.action.repeat') : isCurrent ? t('test.action.startTest') : null}
             actionVariant={isPassed ? 'secondary' : 'primary'}
             onAction={() => startCourseTest(level)}
@@ -456,11 +454,11 @@ export default function TestPanel({ courseId }: TestPanelProps) {
               { label: t('test.row.detail.time'), value: t('test.detail.threeHours'), icon: 'clock' },
               { label: t('test.row.detail.threshold'), value: `${PASS_THRESHOLD_MODULE}%`, icon: 'target' },
             ]}
-            description={
-              modulePassed || (moduleUnlocked && !moduleLockedByViolation)
-                ? undefined
-                : moduleDetail
-            }
+            {...(
+              !(modulePassed || (moduleUnlocked && !moduleLockedByViolation)) && moduleDetail
+                ? { description: moduleDetail }
+                : {}
+            )}
             actionLabel={moduleUnlocked && !modulePassed && !moduleLockedByViolation ? t('test.action.startTest') : null}
             actionVariant="primary"
             onAction={startModuleTest}

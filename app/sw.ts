@@ -50,7 +50,7 @@ function networkTimeoutSeconds(): number {
 const NAV_TIMEOUT_S = networkTimeoutSeconds();
 
 const serwist = new Serwist({
-  precacheEntries: self.__SW_MANIFEST,
+  precacheEntries: self.__SW_MANIFEST ?? [],
   // CRITICAL: keep both false. With skipWaiting + clientsClaim true, every
   // background update auto-activates and silently RELOADS the page (via
   // controllerchange). Users see "the site refreshed for no reason while I

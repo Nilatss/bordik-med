@@ -1266,7 +1266,7 @@ export default function ToolsPage() {
           // listens to scroll events on the right element and renders more
           // rows as the user scrolls. Keeps the native outer scroll - no
           // inner scrollbar is introduced, visuals stay identical.
-          customScrollParent={scrollParent ?? undefined}
+          {...(scrollParent && { customScrollParent: scrollParent })}
           data={rows}
           increaseViewportBy={{ top: 800, bottom: 1600 }}
           // Restore scroll position when coming back from a tool / course.

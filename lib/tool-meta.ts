@@ -28,9 +28,10 @@ export const TOOL_META: Record<string, ToolMeta> = (() => {
   const meta: Record<string, ToolMeta> = Object.create(null);
   for (const t of CATALOG_TOOLS) {
     const has = RUNNER_SET.has(t.id);
+    const countries = has ? RUNNER_COUNTRIES[t.id] : undefined;
     meta[t.id] = {
       hasRunner: has,
-      countries: has ? RUNNER_COUNTRIES[t.id] : undefined,
+      ...(countries !== undefined && { countries }),
     };
   }
   return meta;

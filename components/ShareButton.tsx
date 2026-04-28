@@ -29,7 +29,10 @@ export function ShareButton({ title, text, url, className, children }: Props) {
 
   async function onClick() {
     const targetUrl = url ?? (typeof location !== 'undefined' ? location.href : '');
-    const data: ShareData = { title, text, url: targetUrl };
+    // exactOptionalPropertyTypes: avoid passing literal `undefined` to
+    // optional fields. ShareData.text is `?: string` (not `| undefined`),
+    // so we conditionally spread it instead.
+    const data: ShareData = { title, url: targetUrl, ...(text !== undefined && { text }) };
 
     // 1. Native share sheet — best UX, lets user pick any app.
     if (typeof navigator !== 'undefined' && typeof navigator.share === 'function') {

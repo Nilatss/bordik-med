@@ -148,7 +148,11 @@ export function buildCountryCounts(tools: ReadonlyArray<CatalogMetaItem>): Count
       if (b.count !== a.count) return b.count - a.count;
       return a.value.localeCompare(b.value);
     })
-    .map(({ value, count, flag }) => ({ value, count, flag }));
+    .map(({ value, count, flag }) => ({
+      value,
+      count,
+      ...(flag !== undefined && { flag }),
+    }));
 }
 
 /** Subcategory filter options sorted by ru-locale alphabetic order. */

@@ -349,7 +349,7 @@ export default function ToolView({ toolId }: { toolId: string }) {
               values={values}
               setValues={setValues}
               result={result}
-              presets={runner.presets}
+              {...(runner.presets && { presets: runner.presets })}
             />
           )}
 
@@ -948,7 +948,7 @@ function ResultSection({ title, icon, children }: {
 function ResultScale({ segments, current, unit }: {
   segments: ResultScaleSegment[];
   current: number;
-  unit?: string;
+  unit?: string | undefined;
 }) {
   if (!segments.length) return null;
 
@@ -1525,7 +1525,7 @@ function InlineHintIcon({ hint }: { hint: string }) {
   );
 }
 
-function LabelWithHint({ label, hint }: { label: React.ReactNode; hint?: string }) {
+function LabelWithHint({ label, hint }: { label: React.ReactNode; hint?: string | undefined }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
       <label style={{

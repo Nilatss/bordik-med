@@ -7,10 +7,12 @@
     "strict": true,
     // P1-CQ-1: every array/dict index access is treated as possibly
     // undefined. Promoted from tsconfig.strict.json after 270 errors
-    // were eliminated module-by-module. exactOptionalPropertyTypes
-    // remains deferred (separate P1-CQ-1 sub-task; very different
-    // failure profile, not yet started).
+    // were eliminated module-by-module.
     "noUncheckedIndexedAccess": true,
+    // P1-CQ-1 sub-task: distinguish between "missing prop" and "prop
+    // explicitly set to undefined". Promoted from tsconfig.eopt.json
+    // after 58 errors were eliminated (mostly conditional-spread fixes).
+    "exactOptionalPropertyTypes": true,
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",

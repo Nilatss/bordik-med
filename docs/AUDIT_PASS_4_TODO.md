@@ -148,7 +148,20 @@ Migration log:
 
 **Total**: 28 файлов мигрировано, ~270 индекс-несейф мест получили явные guards / fallbacks.
 
-`exactOptionalPropertyTypes` остаётся отдельной задачей — другой профиль ошибок, отложена.
+### `exactOptionalPropertyTypes` ✅ — также промоут
+
+`exactOptionalPropertyTypes: true` теперь в основном `tsconfig.json` рядом с `noUncheckedIndexedAccess`.
+
+Migration: 58 → 0 errors. Применённые паттерны:
+- Conditional spread на optional props: `{...(value !== undefined && { prop: value })}`
+- `?: T | undefined` на возвращаемых типах (CalculatorResult / ResultExtras)
+  для auto-generated runners
+- `?: T | undefined` на параметрах локальных хелперов
+
+Файлы: ShareButton, app/sw.ts, lib/tool-meta, lib/tool-meta-helpers, ToolsPage,
+TestPanel, InlineQuiz, ToolView, lib/tools-runners.
+
+**Both strict TS flags теперь активны. P1-CQ-1 закрыт полностью.**
 
 ### P1-CQ-2 ❌ — Pino structured logging + PII redact
 **Где**: голый `console.log` / `console.error` повсюду.
