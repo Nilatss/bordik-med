@@ -5,6 +5,7 @@ import PwaRegistrar from '@/components/PwaRegistrar';
 import { BFCacheGuard } from '@/components/BFCacheGuard';
 import { StorageBanner } from '@/components/StorageBanner';
 import { SkeletonHider } from '@/components/SkeletonHider';
+import { InstallPrompt } from '@/components/InstallPrompt';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Analytics } from '@vercel/analytics/react';
 
@@ -201,6 +202,7 @@ export default function RootLayout({
         <CopyProtection />
         <BFCacheGuard />
         <StorageBanner />
+        <InstallPrompt />
         {children}
         {/* Vercel RUM. Analytics is privacy-friendly (no IP store). */}
         <SpeedInsights />
