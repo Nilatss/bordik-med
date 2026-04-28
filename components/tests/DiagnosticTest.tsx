@@ -76,18 +76,20 @@ export default function DiagnosticTest({ onClose }: { onClose: () => void }) {
       const json = await r.json();
       if (!r.ok || !json.ok) {
         const code = json?.error || `http-${r.status}`;
-        setErrorMsg(
+        const friendly =
           code === 'gemini-not-configured'
             ? 'AI-сервис временно недоступен. Попробуйте позже.'
-            : 'Не удалось получить следующий вопрос. Попробуйте ещё раз.',
-        );
+            : `Не удалось получить следующий вопрос (${code}). Попробуйте ещё раз.`;
+        console.error('[diagnostic] /next failed:', code, json);
+        setErrorMsg(friendly);
         setPhase('error');
         return;
       }
       setCurrent(json as ServerQuestion);
       setPicked(null);
       setPhase('asking');
-    } catch {
+    } catch (err) {
+      console.error('[diagnostic] /next threw:', err);
       setErrorMsg('Нет связи с сервером. Проверьте интернет.');
       setPhase('error');
     }

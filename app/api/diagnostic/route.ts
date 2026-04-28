@@ -21,7 +21,13 @@ import { NextResponse } from 'next/server';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-2.0-flash';
+// Free-tier daily quotas are PER-MODEL on Gemini. We try the primary model
+// first and silently fall back to lighter models when 429 hits (quota out).
+// Order is intentional: best-quality first, lighter fallbacks after.
+const GEMINI_MODELS = (process.env.GEMINI_MODEL
+  ? [process.env.GEMINI_MODEL]
+  : ['gemini-2.0-flash-lite', 'gemini-2.0-flash', 'gemini-1.5-flash-8b', 'gemini-1.5-flash']
+);
 const TOTAL_QUESTIONS = 15;   // bounded - longer feels like a chore
 
 interface Turn {
@@ -93,7 +99,6 @@ interface GeminiResponse {
 async function geminiCall(prompt: string, expectArray = false): Promise<unknown> {
   const KEY = process.env.GEMINI_API_KEY;
   if (!KEY) throw new Error('gemini-not-configured');
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${KEY}`;
   const body = {
     contents: [{ role: 'user', parts: [{ text: prompt }] }],
     generationConfig: {
@@ -103,30 +108,41 @@ async function geminiCall(prompt: string, expectArray = false): Promise<unknown>
       responseMimeType: 'application/json',
     },
   };
-  const r = await fetch(url, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify(body),
-  });
-  if (!r.ok) {
+
+  let lastErr: Error | null = null;
+  for (const model of GEMINI_MODELS) {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${KEY}`;
+    const r = await fetch(url, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    if (r.ok) {
+      const data = (await r.json()) as GeminiResponse;
+      const text = data?.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
+      let parsed: unknown;
+      try {
+        parsed = JSON.parse(text);
+      } catch {
+        const m = text.match(/```(?:json)?\s*([\s\S]*?)```/);
+        if (m) parsed = JSON.parse(m[1]);
+        else throw new Error('gemini-bad-json');
+      }
+      if (expectArray && !Array.isArray(parsed)) {
+        throw new Error('gemini-expected-array');
+      }
+      return parsed;
+    }
     const txt = await r.text().catch(() => '');
-    throw new Error(`gemini-${r.status}: ${txt.slice(0, 200)}`);
+    lastErr = new Error(`gemini-${r.status} (${model}): ${txt.slice(0, 200)}`);
+    // Only fall back on quota / rate limits / temporary errors. Hard 4xx
+    // (auth, malformed request) won't be fixed by trying another model.
+    if (r.status !== 429 && r.status !== 503 && r.status !== 502 && r.status !== 500) {
+      throw lastErr;
+    }
+    console.warn(`[diagnostic] ${model} returned ${r.status}, trying next model`);
   }
-  const data = (await r.json()) as GeminiResponse;
-  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(text);
-  } catch {
-    // Sometimes Gemini wraps in a code fence even with responseMimeType set
-    const m = text.match(/```(?:json)?\s*([\s\S]*?)```/);
-    if (m) parsed = JSON.parse(m[1]);
-    else throw new Error('gemini-bad-json');
-  }
-  if (expectArray && !Array.isArray(parsed)) {
-    throw new Error('gemini-expected-array');
-  }
-  return parsed;
+  throw lastErr ?? new Error('gemini-all-models-failed');
 }
 
 function buildNextPrompt(history: Turn[]): string {
