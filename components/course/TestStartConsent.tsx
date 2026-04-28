@@ -1632,7 +1632,14 @@ export default function TestStartConsent({
           Отмена
         </button>
         <button
-          onClick={onAccept}
+          onClick={() => {
+            // Fire-and-forget: log the consent acceptance for legal evidence.
+            // Failure does not block the test start — see lib/consent.ts.
+            void import('@/lib/consent').then(({ recordConsent }) => {
+              recordConsent('proctoring_camera', true);
+            });
+            onAccept();
+          }}
           disabled={!canStart}
           title={
             !mediaReady       ? 'Дождитесь, пока камера и микрофон будут готовы'
