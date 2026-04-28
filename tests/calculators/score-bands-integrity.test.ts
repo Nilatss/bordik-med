@@ -107,6 +107,51 @@ import pews     from '@/lib/runners/pews';
 import kocher   from '@/lib/runners/kocher';
 // Frailty
 import cfs      from '@/lib/runners/cfs';
+import edmonton from '@/lib/runners/edmonton-frail';
+// Performance / function
+import barthel  from '@/lib/runners/barthel';
+import katzAdl  from '@/lib/runners/katz-adl';
+import kps      from '@/lib/runners/kps';
+import tinetti  from '@/lib/runners/tinetti';
+// Sepsis / organ failure
+import sofa     from '@/lib/runners/sofa';
+// Pre-surgery / risk
+import asaPs    from '@/lib/runners/asa-ps';
+// Pulmonary risk / triage
+import perc     from '@/lib/runners/perc';
+import geneva   from '@/lib/runners/geneva';
+// Brain / TIA / SAH / TBI
+import marshall from '@/lib/runners/marshall-ct';
+import canCt    from '@/lib/runners/can-ct-head';
+import ich      from '@/lib/runners/ich';
+import dragon   from '@/lib/runners/dragon';
+// Newborn / paediatric / obstetric
+import meows    from '@/lib/runners/meows';
+import silverman from '@/lib/runners/silverman';
+import downes   from '@/lib/runners/downes';
+import ballard  from '@/lib/runners/ballard';
+import finnegan from '@/lib/runners/finnegan';
+// Brugada (LQTS uses .5 increments — incompatible with integer integrity test)
+import brugada  from '@/lib/runners/brugada';
+// Pain
+import nrs2002Px from '@/lib/runners/painad';
+// Asthma / COPD
+import act      from '@/lib/runners/act';
+// Falls
+import morse    from '@/lib/runners/morse';
+// Migraine / headache
+import ichd3    from '@/lib/runners/ichd3';
+import mcgill   from '@/lib/runners/mcgill';
+// Glucose / diabetes
+import h2fpef   from '@/lib/runners/h2fpef';
+// Khorana cancer-VTE
+import khorana  from '@/lib/runners/khorana';
+// CSPINE / cervical spine clearance
+import pecarn   from '@/lib/runners/pecarn-cspine';
+// Crohn's / colitis activity
+import cdai     from '@/lib/runners/cdai';
+// Smoking dependence
+import fagerstrom from '@/lib/runners/fagerstrom';
 
 interface ScoreRunner { bands: ScoreBand[]; maxScore: number }
 
@@ -198,6 +243,49 @@ const SCORE_TOOLS: Array<[string, ScoreRunner]> = [
   ['kocher',     kocher    as unknown as ScoreRunner],
   // Frailty
   ['cfs',        cfs       as unknown as ScoreRunner],
+  ['edmonton',   edmonton  as unknown as ScoreRunner],
+  // Performance / function
+  ['barthel',    barthel   as unknown as ScoreRunner],
+  ['katz-adl',   katzAdl   as unknown as ScoreRunner],
+  ['kps',        kps       as unknown as ScoreRunner],
+  ['tinetti',    tinetti   as unknown as ScoreRunner],
+  // Sepsis / organ failure
+  ['sofa',       sofa      as unknown as ScoreRunner],
+  // Pre-surgery
+  ['asa-ps',     asaPs     as unknown as ScoreRunner],
+  // PE rule-out / risk
+  ['perc',       perc      as unknown as ScoreRunner],
+  ['geneva',     geneva    as unknown as ScoreRunner],
+  // Brain / TIA / TBI
+  ['marshall-ct', marshall as unknown as ScoreRunner],
+  ['can-ct-head', canCt    as unknown as ScoreRunner],
+  ['ich',        ich       as unknown as ScoreRunner],
+  ['dragon',     dragon    as unknown as ScoreRunner],
+  // Newborn / paediatric / obstetric
+  ['meows',      meows     as unknown as ScoreRunner],
+  ['silverman',  silverman as unknown as ScoreRunner],
+  ['downes',     downes    as unknown as ScoreRunner],
+  ['ballard',    ballard   as unknown as ScoreRunner],
+  ['finnegan',   finnegan  as unknown as ScoreRunner],
+  // Rhythm
+  ['brugada',    brugada   as unknown as ScoreRunner],
+  // Pain
+  ['painad',     nrs2002Px as unknown as ScoreRunner],
+  // Asthma
+  ['act',        act       as unknown as ScoreRunner],
+  // Falls
+  ['morse',      morse     as unknown as ScoreRunner],
+  // Headache classification
+  ['ichd3',      ichd3     as unknown as ScoreRunner],
+  ['mcgill',     mcgill    as unknown as ScoreRunner],
+  // Cardiac / metabolic
+  ['h2fpef',     h2fpef    as unknown as ScoreRunner],
+  // Cancer-associated VTE
+  ['khorana',    khorana   as unknown as ScoreRunner],
+  // C-spine clearance
+  ['pecarn-cspine', pecarn as unknown as ScoreRunner],
+  // Smoking
+  ['fagerstrom', fagerstrom as unknown as ScoreRunner],
 ];
 
 describe('score-band integrity', () => {
