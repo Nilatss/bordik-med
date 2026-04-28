@@ -1,8 +1,13 @@
 'use client';
 
+import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { ArrowRight } from '@/components/icons';
 import { motion } from 'framer-motion';
 import { useT } from '@/lib/i18n';
+
+// Heavy chunk - only loaded when the user actually starts the diagnostic.
+const DiagnosticTest = dynamic(() => import('./DiagnosticTest'), { ssr: false });
 
 interface StandaloneTest {
   id: string;
@@ -116,12 +121,19 @@ const TESTS: StandaloneTest[] = [
 
 export default function TestsPage() {
   const t = useT();
+  const [activeTest, setActiveTest] = useState<string | null>(null);
   // Group by category
   const grouped = TESTS.reduce<Record<string, StandaloneTest[]>>((acc, item) => {
     if (!acc[item.category]) acc[item.category] = [];
     acc[item.category].push(item);
     return acc;
   }, {});
+
+  // The diagnostic test takes over the whole TestsPage when active.
+  // Other unlocked tests can hook in here later.
+  if (activeTest === 'diagnostic') {
+    return <DiagnosticTest onClose={() => setActiveTest(null)} />;
+  }
 
   return (
     <div style={{ width: '100%' }}>
@@ -170,6 +182,7 @@ export default function TestsPage() {
                 animate={{ opacity: test.unlocked ? 1 : 0.48, y: 0 }}
                 transition={{ delay: i * 0.03, duration: 0.3, ease: [0.05, 0.7, 0.1, 1] }}
                 disabled={!test.unlocked}
+                onClick={() => { if (test.unlocked) setActiveTest(test.id); }}
                 style={{
                   background: '#F5F6F8',
                   borderRadius: 'var(--md-sys-shape-corner-extra-large)',
