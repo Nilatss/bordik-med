@@ -77,6 +77,36 @@ import dn4      from '@/lib/runners/dn4';
 import ehra     from '@/lib/runners/ehra';
 // Strep throat
 import feverpain from '@/lib/runners/feverpain';
+// UGI bleeding
+import aims65   from '@/lib/runners/aims65';
+import gbs      from '@/lib/runners/gbs';
+import rockall  from '@/lib/runners/rockall';
+// Cognition / delirium
+import fourAt   from '@/lib/runners/4at';
+import miniCog  from '@/lib/runners/mini-cog';
+import moca     from '@/lib/runners/moca';
+import mmse     from '@/lib/runners/mmse';
+// HIT (heparin-induced thrombocytopenia)
+import fourT    from '@/lib/runners/4t';
+// PE severity
+import pesi     from '@/lib/runners/pesi';
+// Heart failure
+import killip   from '@/lib/runners/killip';
+import nyha     from '@/lib/runners/nyha';
+// Sleep apnea screening
+import stopBang from '@/lib/runners/stop-bang';
+// SAH severity
+import huntHess from '@/lib/runners/hunt-hess';
+import wfns     from '@/lib/runners/wfns';
+// Nutrition risk
+import must     from '@/lib/runners/must';
+import nrs2002  from '@/lib/runners/nrs2002';
+// Paediatric early warning
+import pews     from '@/lib/runners/pews';
+// Septic arthritis (kids)
+import kocher   from '@/lib/runners/kocher';
+// Frailty
+import cfs      from '@/lib/runners/cfs';
 
 interface ScoreRunner { bands: ScoreBand[]; maxScore: number }
 
@@ -138,6 +168,36 @@ const SCORE_TOOLS: Array<[string, ScoreRunner]> = [
   ['ehra',       ehra      as unknown as ScoreRunner],
   // Strep throat
   ['feverpain',  feverpain as unknown as ScoreRunner],
+  // UGI bleeding
+  ['aims65',     aims65    as unknown as ScoreRunner],
+  ['gbs',        gbs       as unknown as ScoreRunner],
+  ['rockall',    rockall   as unknown as ScoreRunner],
+  // Cognition / delirium
+  ['4at',        fourAt    as unknown as ScoreRunner],
+  ['mini-cog',   miniCog   as unknown as ScoreRunner],
+  ['moca',       moca      as unknown as ScoreRunner],
+  ['mmse',       mmse      as unknown as ScoreRunner],
+  // HIT
+  ['4t',         fourT     as unknown as ScoreRunner],
+  // PE severity
+  ['pesi',       pesi      as unknown as ScoreRunner],
+  // Heart failure
+  ['killip',     killip    as unknown as ScoreRunner],
+  ['nyha',       nyha      as unknown as ScoreRunner],
+  // Sleep apnea
+  ['stop-bang',  stopBang  as unknown as ScoreRunner],
+  // SAH
+  ['hunt-hess',  huntHess  as unknown as ScoreRunner],
+  ['wfns',       wfns      as unknown as ScoreRunner],
+  // Nutrition
+  ['must',       must      as unknown as ScoreRunner],
+  ['nrs2002',    nrs2002   as unknown as ScoreRunner],
+  // Paediatric early warning
+  ['pews',       pews      as unknown as ScoreRunner],
+  // Septic arthritis
+  ['kocher',     kocher    as unknown as ScoreRunner],
+  // Frailty
+  ['cfs',        cfs       as unknown as ScoreRunner],
 ];
 
 describe('score-band integrity', () => {
