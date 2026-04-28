@@ -166,7 +166,14 @@ export function findBand(bands: ScoreBand[], score: number): ScoreBand {
   for (const b of bands) {
     if (score >= b.min && score <= b.max) return b;
   }
-  return bands[0];
+  // Fallback: first band. Caller is expected to pass a non-empty bands
+  // array; integrity tests in score-bands-integrity guarantee this for
+  // every shipped score-kind tool.
+  const first = bands[0];
+  if (!first) {
+    throw new Error('findBand: empty bands array');
+  }
+  return first;
 }
 
 /* ═══════════════════════════════════════════════

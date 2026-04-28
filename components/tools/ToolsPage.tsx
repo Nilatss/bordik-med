@@ -314,7 +314,8 @@ const ToolCardContext = React.createContext<ToolCardContextValue | null>(null);
 // metadata; no need to re-parse on every render.
 const toolCountriesCache: Record<string, { name: string; flag: string }[]> = Object.create(null);
 function getToolCountries(tool: CatalogTool): { name: string; flag: string }[] {
-  if (tool.id in toolCountriesCache) return toolCountriesCache[tool.id];
+  const cached = toolCountriesCache[tool.id];
+  if (cached) return cached;
   const result = primaryCountriesFor(tool.countries);
   toolCountriesCache[tool.id] = result;
   return result;

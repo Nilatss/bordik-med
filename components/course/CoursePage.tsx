@@ -43,7 +43,7 @@ export default function CoursePage({ courseId }: CoursePageProps) {
   // and progress bar on the intro screen so the layout doesn't shift when
   // the user clicks «Начать обучение».
   const NO_TEST_MODULES = [102];
-  const moduleId = parseInt(courseId.split('.')[0]);
+  const moduleId = parseInt(courseId.split('.')[0] ?? '0');
   const hasTests = !NO_TEST_MODULES.includes(moduleId);
   const tabs: Tab[] = (() => {
     const base = content ? splitIntoTabs(content) : [];

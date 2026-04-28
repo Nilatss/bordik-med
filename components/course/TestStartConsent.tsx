@@ -195,7 +195,7 @@ function MediaCheck({ onReady, onCalibrated }: {
           const lum = new Float32Array(w * h);
           let sum = 0;
           for (let i = 0, p = 0; i < data.length; i += 4, p++) {
-            const y = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+            const y = 0.299 * (data[i] ?? 0) + 0.587 * (data[i + 1] ?? 0) + 0.114 * (data[i + 2] ?? 0);
             lum[p] = y;
             sum += y;
           }
@@ -204,9 +204,9 @@ function MediaCheck({ onReady, onCalibrated }: {
           let edges = 0; let n = 0;
           for (let y = 1; y < h - 1; y++) {
             for (let x = 1; x < w - 1; x++) {
-              const c = lum[y * w + x];
-              const dx = Math.abs(c - lum[y * w + (x + 1)]);
-              const dy = Math.abs(c - lum[(y + 1) * w + x]);
+              const c = lum[y * w + x] ?? 0;
+              const dx = Math.abs(c - (lum[y * w + (x + 1)] ?? 0));
+              const dy = Math.abs(c - (lum[(y + 1) * w + x] ?? 0));
               edges += dx + dy;
               n++;
             }
@@ -419,7 +419,7 @@ function MediaCheck({ onReady, onCalibrated }: {
         ? `Не удалось загрузить AI-модель прокторинга. ${aiError}`
         : 'Не удалось загрузить AI-модель прокторинга. Проверьте интернет и попробуйте снова - без неё тест начать нельзя.';
       const idx = prev.findIndex((h) => h.id === 'ai-failed');
-      if (idx >= 0 && prev[idx].text === text) return prev;
+      if (idx >= 0 && prev[idx]?.text === text) return prev;
       const next = prev.filter((h) => h.id !== 'ai-failed');
       return [...next, { id: 'ai-failed', level: 'block', text }];
     });
@@ -512,7 +512,9 @@ function MediaCheck({ onReady, onCalibrated }: {
         let lumSum = 0, satSum = 0, redSum = 0;
         const n = data.length / 4;
         for (let i = 0; i < data.length; i += 4) {
-          const r = data[i], g = data[i + 1], b = data[i + 2];
+          const r = data[i] ?? 0;
+          const g = data[i + 1] ?? 0;
+          const b = data[i + 2] ?? 0;
           lumSum += 0.299 * r + 0.587 * g + 0.114 * b;
           const max = Math.max(r, g, b), min = Math.min(r, g, b);
           // HSV saturation, 0..1
@@ -761,7 +763,7 @@ function MediaCheck({ onReady, onCalibrated }: {
     const tick = () => {
       analyser.getByteFrequencyData(data);
       let sum = 0;
-      for (let i = 0; i < data.length; i++) sum += data[i];
+      for (let i = 0; i < data.length; i++) sum += data[i] ?? 0;
       const avg = sum / data.length;          // 0..255
       setAudioAmp(avg);
       if (avg > 8) setHasAudioSignal(true);

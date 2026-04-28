@@ -140,13 +140,12 @@
 | After admin/page.tsx + EmojiOrFlag.tsx + lib/quiz.ts | 255 |
 | After Roadmap + CourseIllustrations + proctoring/face + _dsl-runner + InlineQuiz + Proctoring | 192 |
 | After question-generator + tests + offline-cache + questions/index + tools-catalog + tool-meta + diagnostic + TestActiveView | 137 |
+| After TestStartConsent + StatisticsPage + 9 single-error files (curriculum, middleware, tools-runners, BodyMap, etc.) | 63 |
 
 **Top remaining files**:
 - `components/tools/ToolView.tsx` (29)
 - `components/course/TabbedLessonViewer.tsx` (25)
-- `components/stats/StatisticsPage.tsx` (22)
-- `components/course/TestStartConsent.tsx` (17)
-- Long tail of 1–3 errors in ~10 other files
+- (small tail mostly cleared)
 
 **Migration plan**: модули по одному; когда strict вернёт 0 — promote `noUncheckedIndexedAccess` в основной `tsconfig.json` и удалить strict-конфиг.
 

@@ -2431,7 +2431,7 @@ export function getModuleById(id: number): Module | undefined {
 }
 
 export function getModuleForCourse(courseId: string): Module | undefined {
-  const moduleId = parseInt(courseId.split('.')[0]);
+  const moduleId = parseInt(courseId.split('.')[0] ?? '0');
   return getModuleById(moduleId);
 }
 

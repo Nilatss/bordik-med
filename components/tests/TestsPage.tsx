@@ -124,8 +124,8 @@ export default function TestsPage() {
   const [activeTest, setActiveTest] = useState<string | null>(null);
   // Group by category
   const grouped = TESTS.reduce<Record<string, StandaloneTest[]>>((acc, item) => {
-    if (!acc[item.category]) acc[item.category] = [];
-    acc[item.category].push(item);
+    const bucket = acc[item.category] ?? (acc[item.category] = []);
+    bucket.push(item);
     return acc;
   }, {});
 

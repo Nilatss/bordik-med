@@ -57,6 +57,6 @@ describe('holliday-segar · compute', () => {
     const r = call(15);
     expect(hourly(r)).toBe(50);
     const m = r.unit.match(/(\d+)/);
-    expect(m && parseInt(m[1])).toBe(50 * 24);
+    expect(m && m[1] && parseInt(m[1])).toBe(50 * 24);
   });
 });

@@ -21,13 +21,14 @@ const ACCENT_DARK = '#2563EB';
 const ACCENT_BG = '#EFF4FF';
 const ACCENT_BORDER = '#DBE7FF';
 
-const HEATMAP_LEVELS = [
+const HEATMAP_LEVELS: readonly string[] = [
   '#F1F3F6',  // 0 — none
   '#DBE7FF',  // 1 — light
   '#A8C7FF',  // 2 — medium
   '#7AA5FA',  // 3 — strong
   ACCENT,     // 4 — peak
 ];
+const HEATMAP_FALLBACK = '#F1F3F6';
 
 /* ─── Period selector ─────────────────────────────────────────── */
 type Period = 'month' | 'week' | 'all';
@@ -240,7 +241,7 @@ export default function StatisticsPage() {
           delay={180}
           label="Время обучения"
           tip="Суммарное время, проведённое в курсах и инструментах. Считается, пока вкладка активна."
-          value={formatStudyTime(metrics.studyTime).split(' ')[0]}
+          value={formatStudyTime(metrics.studyTime).split(' ')[0] ?? ''}
           sub={formatStudyTime(metrics.studyTime).split(' ').slice(1).join(' ') || ''}
           delta={metrics.studyTime > 0 ? 'продолжайте в том же темпе' : 'начните учиться'}
           deltaPositive
@@ -531,8 +532,9 @@ function buildHeatmap(testAttempts: Record<string, { timestamp: number }[]>, per
         hour < 6 ? 0 :
         hour < 12 ? 1 :
         hour < 18 ? 2 : 3;
-      cells[col] += 1;
-      bands[col][band] += 1;
+      cells[col] = (cells[col] ?? 0) + 1;
+      const row = bands[col];
+      if (row) row[band] = (row[band] ?? 0) + 1;
       activeDays.add(col);
       totalSessions += 1;
     }
@@ -611,7 +613,7 @@ function Heatmap({ data, period }: { data: HeatmapData; period: Period }) {
             {Array.from({ length: totalCells }).map((_, idx) => {
               const dayIdx = idx - leadingPad;
               const inMonth = dayIdx >= 0 && dayIdx < data.cols;
-              const v = inMonth ? data.cells[dayIdx] : 0;
+              const v = inMonth ? (data.cells[dayIdx] ?? 0) : 0;
               const lvl = !inMonth ? -1
                 : v === 0 ? 0
                 : v >= max * 0.75 ? 4
@@ -706,7 +708,7 @@ function Heatmap({ data, period }: { data: HeatmapData; period: Period }) {
       {/* Custom hover tooltip — date + simple "сделано N тестов" line. */}
       {hovered !== null && (() => {
         const col = hovered;
-        const v = data.cells[col];
+        const v = data.cells[col] ?? 0;
         const date = fmtDate(dateForCol(col));
         const testWord = v === 1 ? 'тест' : v < 5 ? 'теста' : 'тестов';
         // Tooltip horizontal anchor:
@@ -962,7 +964,7 @@ function YearHeatmap({ testAttempts }: {
         </div>
 
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-          <YearArrow disabled={!availableYears.includes(year - 1) && year - 1 < availableYears[0]}
+          <YearArrow disabled={!availableYears.includes(year - 1) && (availableYears[0] !== undefined && year - 1 < availableYears[0])}
             onClick={() => setYear((y) => y - 1)} dir="prev" />
           {availableYears.map((y) => (
             <button
@@ -1062,7 +1064,8 @@ function buildSectionProgress(
       slot.total += 1;
       if (completedCourses.includes(c.id)) slot.done += 1;
       if (startedSet.has(c.id)) slot.started += 1;
-      if (courseContent[c.id] && Object.keys(courseContent[c.id]).length > 0) {
+      const cc = courseContent[c.id];
+      if (cc && Object.keys(cc).length > 0) {
         slot.withContent += 1;
       }
     }
@@ -1384,6 +1387,7 @@ function buildHexLayout(rows: SectionProgressRow[]): HexLayout {
   const maxCols = Math.max(...ROW_PATTERN);
   for (let r = 0; r < ROW_PATTERN.length; r++) {
     const cols = ROW_PATTERN[r];
+    if (cols === undefined) continue;
     const offset = (maxCols - cols) * (w / 2);
     for (let c = 0; c < cols; c++) {
       slots.push({
@@ -1403,11 +1407,12 @@ function buildHexLayout(rows: SectionProgressRow[]): HexLayout {
     .map((s, i) => ({ s, i, d: Math.hypot(s.cx - cx0, s.cy - cy0) }))
     .sort((a, b) => a.d - b.d);
 
-  const cells: HexCell[] = ordered.map((o, i) => ({
-    row: sorted[i],
-    cx: o.s.cx,
-    cy: o.s.cy,
-  }));
+  const cells: HexCell[] = [];
+  for (let i = 0; i < ordered.length; i++) {
+    const slot = ordered[i];
+    const row = sorted[i];
+    if (slot && row) cells.push({ row, cx: slot.s.cx, cy: slot.s.cy });
+  }
 
   return { cells, width: totalW, height: totalH, size };
 }
@@ -1426,11 +1431,12 @@ function hexColor(pct: number, started?: boolean): string {
   // 5-step blue gradient from light grey to peak accent.
   // Sections with 0% but already STARTED get a faint accent tint instead
   // of plain grey so they're visibly distinct from untouched modules.
-  if (pct <= 0)    return started ? HEATMAP_LEVELS[1] : HEATMAP_LEVELS[0];
-  if (pct < 25)    return HEATMAP_LEVELS[1];
-  if (pct < 50)    return HEATMAP_LEVELS[2];
-  if (pct < 75)    return HEATMAP_LEVELS[3];
-  return HEATMAP_LEVELS[4];
+  const get = (i: number) => HEATMAP_LEVELS[i] ?? HEATMAP_FALLBACK;
+  if (pct <= 0)    return started ? get(1) : get(0);
+  if (pct < 25)    return get(1);
+  if (pct < 50)    return get(2);
+  if (pct < 75)    return get(3);
+  return get(4);
 }
 
 function HexStat({ dotColor, value, label, border }: {
@@ -1486,6 +1492,7 @@ function buildToolKindStats(
   const totalByKind: Record<string, number> = Object.create(null);
   for (const id of Object.keys(RUNNER_KINDS)) {
     const k = RUNNER_KINDS[id];
+    if (!k) continue;
     totalByKind[k] = (totalByKind[k] ?? 0) + 1;
   }
 

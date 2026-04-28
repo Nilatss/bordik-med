@@ -76,7 +76,7 @@ export default function PediatricCalculator() {
       const isMax = drug.maxDose !== undefined && rawDose >= drug.maxDose;
       let volume = '';
       const concMatch = drug.concentration.match(/([\d.]+)\s*мг\/мл/);
-      if (concMatch) volume = `${(dose / parseFloat(concMatch[1])).toFixed(2)} мл`;
+      if (concMatch && concMatch[1]) volume = `${(dose / parseFloat(concMatch[1])).toFixed(2)} мл`;
       return { ...drug, calculatedDose: dose, isMaxed: isMax, volume };
     });
   }, [weight]);

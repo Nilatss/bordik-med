@@ -82,7 +82,7 @@ function generateNonce(): string {
   crypto.getRandomValues(bytes);
   // base64url, no padding (URL-safe)
   let str = '';
-  for (let i = 0; i < bytes.length; i++) str += String.fromCharCode(bytes[i]);
+  for (let i = 0; i < bytes.length; i++) str += String.fromCharCode(bytes[i] ?? 0);
   return btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 

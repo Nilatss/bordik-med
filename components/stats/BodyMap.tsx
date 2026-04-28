@@ -127,9 +127,12 @@ function buildBodyStats(completedCourses: string[]): BodySystemStats[] {
       ).toLowerCase();
       for (const s of SYSTEMS) {
         if (s.keywords.some((kw) => hay.includes(kw))) {
-          const slot = stats[indexById[s.id]];
-          slot.total += 1;
-          if (completedSet.has(c.id)) slot.done += 1;
+          const idx = indexById[s.id];
+          const slot = idx !== undefined ? stats[idx] : undefined;
+          if (slot) {
+            slot.total += 1;
+            if (completedSet.has(c.id)) slot.done += 1;
+          }
         }
       }
     }
