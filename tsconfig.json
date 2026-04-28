@@ -5,10 +5,12 @@
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
-    // P1-CQ-1 audit ask: enable noUncheckedIndexedAccess +
-    // exactOptionalPropertyTypes. Initial run produced 262 errors —
-    // tracked separately, will be addressed module-by-module so each
-    // PR stays reviewable. See docs/AUDIT_PASS_4_TODO.md.
+    // P1-CQ-1: every array/dict index access is treated as possibly
+    // undefined. Promoted from tsconfig.strict.json after 270 errors
+    // were eliminated module-by-module. exactOptionalPropertyTypes
+    // remains deferred (separate P1-CQ-1 sub-task; very different
+    // failure profile, not yet started).
+    "noUncheckedIndexedAccess": true,
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",

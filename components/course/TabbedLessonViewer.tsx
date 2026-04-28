@@ -29,7 +29,7 @@ function preprocessContent(md: string): string {
   const out: string[] = [];
 
   for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
+    const line = lines[i] ?? '';
     const next = lines[i + 1] ?? '';
 
     // Detect a table start: header row `| ... |` followed by separator `| --- | ... |`
@@ -42,8 +42,10 @@ function preprocessContent(md: string): string {
     // Read full table block
     const tableLines: string[] = [line, next];
     let j = i + 2;
-    while (j < lines.length && /^\|.+\|\s*$/.test(lines[j])) {
-      tableLines.push(lines[j]);
+    while (j < lines.length) {
+      const li = lines[j];
+      if (!li || !/^\|.+\|\s*$/.test(li)) break;
+      tableLines.push(li);
       j++;
     }
     // Column count from separator
@@ -56,8 +58,8 @@ function preprocessContent(md: string): string {
     if (colCount === 1 && emojiMatch) {
       // Split title from body via <br>
       const parts = headerText.split(/<br>/i).map((s) => s.trim()).filter(Boolean);
-      const firstEmoji = emojiMatch[1];
-      const title = parts[0].replace(/^(ℹ|⚠|📷|✓|✅|🎯|💡)\s*/, '').trim();
+      const firstEmoji = emojiMatch[1] ?? '';
+      const title = (parts[0] ?? '').replace(/^(ℹ|⚠|📷|✓|✅|🎯|💡)\s*/, '').trim();
       // Unescape \| (used in source to protect pipes inside table cells) → |
       const unescape = (s: string) => s.replace(/\\\|/g, '|');
       const body = parts.slice(1).map(unescape).map((p) => {
@@ -145,7 +147,7 @@ export function parseGlossary(body: string): { intro: string; terms: { term: str
     const line = raw.trim();
     if (!line) continue;
     const m = line.match(GLOSSARY_RE);
-    if (m) {
+    if (m && m[1] && m[2]) {
       foundFirstTerm = true;
       terms.push({ term: m[1].trim(), def: m[2].trim() });
     } else if (!foundFirstTerm) {
@@ -325,7 +327,7 @@ export function splitIntoTabs(md: string): Tab[] {
 
   for (const line of lines) {
     const h1 = line.match(/^#\s+(.+)$/);
-    if (h1) {
+    if (h1 && h1[1]) {
       flush();
       const title = h1[1].trim();
       // Skip "Что дальше?" / "Заключение" sections entirely
@@ -374,7 +376,8 @@ export function splitIntoTabs(md: string): Tab[] {
       } else {
         // Fallback: take text after "Тема N. " and before " - "
         const m = title.match(/^Тема\s+\d+\.?\s*(.+)$/i);
-        const rest = (m ? m[1] : title).split(/[--:]/)[0].trim();
+        const baseTxt = m && m[1] ? m[1] : title;
+        const rest = (baseTxt.split(/[--:]/)[0] ?? baseTxt).trim();
         short = rest.length > 22 ? rest.slice(0, 20) + '…' : rest;
       }
 
@@ -481,6 +484,10 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
   }
 
   const active = tabs.find((t) => t.id === activeId) ?? tabs[0];
+  // Defensive: tabs.length checked above means tabs[0] is defined, but
+  // TS doesn't narrow that through ??. The early-return below pacifies
+  // strict-index without changing runtime behaviour.
+  if (!active) return null;
   const activeIndex = tabs.indexOf(active);
   const prevTab = tabs[activeIndex - 1];
   const nextTab = tabs[activeIndex + 1];
@@ -593,7 +600,7 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
                     : '';
                   const contextTitle = active?.short && active.short !== 'Введение'
                     ? active.short
-                    : (active?.title || '').replace(/^Тема\s+\d+\.?\s*/, '').split(/[--]/)[0].trim();
+                    : ((active?.title || '').replace(/^Тема\s+\d+\.?\s*/, '').split(/[--]/)[0] ?? '').trim();
                   const title = [contextTitle, headerLabel].filter(Boolean).join(' - ')
                     || headerLabel
                     || 'Справочная таблица';

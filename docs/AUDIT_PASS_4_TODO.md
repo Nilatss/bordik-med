@@ -130,24 +130,25 @@
 **Где**: `docs/SECURITY_SETUP.md` уже описывает scenarios, но не пошаговые команды.
 **Фикс**: добавить секцию «Recovery commands» с конкретным `gh`/`vercel`/`supabase` CLI инструкциями для: vercel-down, supabase-down, gh-compromised, gemini-quota-exhausted.
 
-### P1-CQ-1 🟡 — Strict TypeScript flags (in progress)
-**Где**: `tsconfig.json` имеет только `strict: true`.
-**Прогресс**: создан `tsconfig.strict.json` с `noUncheckedIndexedAccess: true`. Запуск: `npx tsc --noEmit -p tsconfig.strict.json`.
+### P1-CQ-1 ✅ — `noUncheckedIndexedAccess` promoted to main config
+**Status**: 270 → 0 errors. `noUncheckedIndexedAccess: true` теперь в основном `tsconfig.json`. Опциональный `tsconfig.strict.json` удалён.
+
+Migration log:
 
 | Snapshot | Errors |
 |---|---|
 | Initial (2026-04-28) | 270 |
-| After admin/page.tsx + EmojiOrFlag.tsx + lib/quiz.ts | 255 |
-| After Roadmap + CourseIllustrations + proctoring/face + _dsl-runner + InlineQuiz + Proctoring | 192 |
-| After question-generator + tests + offline-cache + questions/index + tools-catalog + tool-meta + diagnostic + TestActiveView | 137 |
-| After TestStartConsent + StatisticsPage + 9 single-error files (curriculum, middleware, tools-runners, BodyMap, etc.) | 63 |
+| Wave 1 (3 files) | 255 |
+| Wave 2 (6 files) | 192 |
+| Wave 3 (10 files) | 137 |
+| Wave 4a TestStartConsent | 118 |
+| Wave 4b StatisticsPage + small-tail (9 files) | 63 |
+| Wave 4c TabbedLessonViewer | 32 |
+| Wave 4d ToolView | **0** |
 
-**Top remaining files**:
-- `components/tools/ToolView.tsx` (29)
-- `components/course/TabbedLessonViewer.tsx` (25)
-- (small tail mostly cleared)
+**Total**: 28 файлов мигрировано, ~270 индекс-несейф мест получили явные guards / fallbacks.
 
-**Migration plan**: модули по одному; когда strict вернёт 0 — promote `noUncheckedIndexedAccess` в основной `tsconfig.json` и удалить strict-конфиг.
+`exactOptionalPropertyTypes` остаётся отдельной задачей — другой профиль ошибок, отложена.
 
 ### P1-CQ-2 ❌ — Pino structured logging + PII redact
 **Где**: голый `console.log` / `console.error` повсюду.

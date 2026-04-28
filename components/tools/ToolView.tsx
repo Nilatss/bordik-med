@@ -77,7 +77,7 @@ function buildInfoTabs(md: string): Tab[] {
 
   for (const line of lines) {
     const m = line.match(/^###\s+(.+?)\s*$/);
-    if (m) {
+    if (m && m[1]) {
       push();
       currentTitle = m[1].trim();
       currentLines = [];
@@ -279,6 +279,9 @@ export default function ToolView({ toolId }: { toolId: string }) {
   }
 
   const active = tabs.find((t) => t.id === activeId) ?? tabs[0];
+  // Defensive: tabs.length >= 1 by construction; the explicit guard
+  // pacifies strict-index TS without changing behaviour.
+  if (!active) return null;
   const activeIndex = tabs.indexOf(active);
   const prevTab = tabs[activeIndex - 1];
   const nextTab = tabs[activeIndex + 1];
@@ -528,16 +531,18 @@ function preprocessToolContent(md: string): string {
   const out: string[] = [];
   let i = 0;
   while (i < lines.length) {
-    const line = lines[i];
+    const line = lines[i] ?? '';
     const m = line.match(/^([ℹ⚠✓✅🎯💡📷]|⚠️)\s*(.*)$/);
     // Only convert if this paragraph isn't already a blockquote / list / heading
     if (m && !line.startsWith('>') && !line.startsWith('#') && !line.startsWith('-')) {
       // Gather the paragraph (consecutive non-empty lines)
       const paraLines = [m[0]];
       i++;
-      while (i < lines.length && lines[i].trim() !== '' && !lines[i].startsWith('#')
-             && !lines[i].startsWith('|') && !lines[i].match(/^[ℹ⚠✓✅🎯💡📷]/) ) {
-        paraLines.push(lines[i]);
+      while (i < lines.length) {
+        const li = lines[i];
+        if (!li || li.trim() === '' || li.startsWith('#')
+            || li.startsWith('|') || li.match(/^[ℹ⚠✓✅🎯💡📷]/)) break;
+        paraLines.push(li);
         i++;
       }
       for (const p of paraLines) out.push('> ' + p);
@@ -965,6 +970,7 @@ function ResultScale({ segments, current, unit }: {
     if (i + 1 >= segments.length) return false;
     const cur = segments[i];
     const nxt = segments[i + 1];
+    if (!cur || !nxt) return false;
     if (!Number.isFinite(cur.max)) return false;
     if (cur.max !== nxt.min) return false;
     return Number.isInteger(cur.max) && Number.isInteger(nxt.min);
@@ -983,7 +989,7 @@ function ResultScale({ segments, current, unit }: {
     if (Number.isFinite(s.max)) return Math.max(acc, s.max);
     return acc;
   }, -Infinity);
-  const finiteMin = normalised[0].min;
+  const finiteMin = normalised[0]?.min ?? 0;
   const spanMax = Number.isFinite(finiteMax) ? finiteMax : finiteMin + 10;
 
   // Width helper. Integer bands get (max − min + 1); continuous bands get
@@ -1192,7 +1198,7 @@ function shortRef(ref: string): string {
   if (!ref) return '';
   // Split by sentence; the citation is usually the first sentence.
   // Keep only first sentence, then strip content after any of: colon, equals, formula chars.
-  let s = ref.split(/\.\s/)[0];
+  let s = ref.split(/\.\s/)[0] ?? ref;
 
   // Remove anything after formula/value markers
   s = s.replace(/[:=].*$/, '')           // "ВОЗ: <18.5 / 18.5..." → "ВОЗ"
@@ -1201,7 +1207,7 @@ function shortRef(ref: string): string {
 
   // If still contains formula characters, keep only up to first one
   const formulaMatch = s.match(/^(.+?)[×÷∑√=<>≤≥±][^.]*$/);
-  if (formulaMatch) s = formulaMatch[1].trim();
+  if (formulaMatch && formulaMatch[1]) s = formulaMatch[1].trim();
 
   // Drop trailing punctuation and collapse whitespace
   s = s.replace(/[,;:\s]+$/, '').trim();
