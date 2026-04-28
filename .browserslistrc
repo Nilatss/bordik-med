@@ -1,0 +1,31 @@
+# Polyfill / SWC compile-target list.
+#
+# Without this file Next.js falls back to a far broader list (≈ 5 % global
+# share dating back to mid-2018), which produced a ~113 KB raw / 40 KB gz
+# `polyfills-*.js` chunk on the home page (Lighthouse perf diagnostic
+# 2026-04-28). Most of those polyfills (regenerator-runtime fragments,
+# core-js for Promise/Map/Set, Object.assign shims, etc.) are dead weight
+# on every browser shipped after 2020.
+#
+# The project's actual user base is medical students / clinicians on
+# Android Chrome ≥ 100 and iPhones ≥ iOS 15 (per anonymous Vercel Web
+# Analytics). The list below covers ≥ 99.5 % of that audience while
+# letting SWC compile to native ES2022 (no polyfills needed for the
+# large stable APIs).
+#
+# Verify with: `npx browserslist`. Reset with: `npx browserslist --update-db`.
+
+# Modern evergreens — last 2 majors covers ~95 % of audience.
+last 2 chrome versions
+last 2 firefox versions
+last 2 safari versions
+last 2 edge versions
+
+# Chrome Android + iOS Safari — the mobile audience.
+last 2 ChromeAndroid versions
+last 2 iOS versions
+
+# Long-tail floor: anything older than these is < 0.5 % combined.
+not dead
+not op_mini all
+not ie 11

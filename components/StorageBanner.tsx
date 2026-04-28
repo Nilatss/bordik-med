@@ -19,18 +19,35 @@
  * Sentry session-replay, etc.), this becomes a real consent banner
  * with allow/deny + integration into the consent_records table.
  */
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 const KEY = 'bordik-storage-notice-dismissed';
 
-export function StorageBanner() {
-  const [show, setShow] = useState(false);
+/**
+ * Synchronous initial state. Reading localStorage during render means
+ * the banner mounts in the very first paint cycle (or doesn't mount
+ * at all if dismissed) — instead of paint-then-mount via useEffect.
+ *
+ * Why this matters: Lighthouse identified the previous useEffect-gated
+ * banner as the LCP candidate at +913 ms post-FCP — the late paint on
+ * a fixed-positioned dark block was the largest content event. By
+ * collapsing render delay to zero, LCP shifts back onto real content.
+ *
+ * Trade-off: we read localStorage on initial render. This is fine
+ * because the component is `'use client'` and only mounts after
+ * hydration; SSR returns `false` (window undefined → catch branch).
+ */
+function readInitialShow(): boolean {
+  if (typeof window === 'undefined') return false;
+  try {
+    return localStorage.getItem(KEY) !== '1';
+  } catch {
+    return false;
+  }
+}
 
-  useEffect(() => {
-    try {
-      if (localStorage.getItem(KEY) !== '1') setShow(true);
-    } catch {/* private mode / no storage — banner stays hidden */}
-  }, []);
+export function StorageBanner() {
+  const [show, setShow] = useState(readInitialShow);
 
   if (!show) return null;
 

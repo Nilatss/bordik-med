@@ -2,9 +2,17 @@
 
 import { useEffect } from 'react';
 import { useAppStore } from '@/lib/store';
-import useSupabaseSync from '@/lib/useSupabaseSync';
 import { sections, getSectionById, getModulesBySection, getModuleById, type SectionId } from '@/lib/curriculum';
 import dynamic from 'next/dynamic';
+
+// Supabase sync is lazy: the @supabase/* tree is heavy (50 KB gz) and
+// 92% unused on anonymous home (Lighthouse). The mounter loads after
+// hydration as its own async chunk — anonymous visitors skip it
+// entirely, signed-in users get it concurrently with other lazy code.
+const SupabaseSyncMounter = dynamic(
+  () => import('@/components/SupabaseSyncMounter'),
+  { ssr: false },
+);
 // ────────────────────────────────────────────────────────────────────
 // Lazy-loaded route components.
 // Only the home view (NewsFeed) and the always-visible chrome (Sidebar)
@@ -277,9 +285,10 @@ function SectionCards({ onSelect }: { onSelect: (id: SectionId) => void }) {
 
 /* ═══ Main ═══ */
 export default function Home() {
-  // Cross-device sync — pulls Supabase state on mount/sign-in, pushes
-  // debounced on local store changes. No-op for signed-out users.
-  useSupabaseSync();
+  // Cross-device sync via lazy <SupabaseSyncMounter /> below — see the
+  // top-of-file dynamic import. The mounter renders nothing visible;
+  // it just calls useSupabaseSync() once Supabase code finishes
+  // loading post-hydration.
 
   // Hide the pre-hydration skeleton (rendered in app/layout.tsx) as soon
   // as React's first effect runs. Two-phase fade:
@@ -336,6 +345,7 @@ export default function Home() {
   const toggleSidebar = useAppStore((s) => s.toggleSidebar);
   return (
     <div style={{ display: 'flex', height: '100dvh', overflow: 'hidden' }}>
+      <SupabaseSyncMounter />
       <Sidebar />
       <div
         className="app-main-wrap"
