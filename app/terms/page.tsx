@@ -13,6 +13,16 @@ export default function TermsPage() {
       maxWidth: 760, margin: '40px auto', padding: '0 24px',
       fontFamily: 'var(--font-body)', color: '#1A1A1A', lineHeight: 1.65,
     }}>
+      <a
+        href="/"
+        style={{
+          display: 'inline-flex', alignItems: 'center', gap: 6,
+          fontSize: 13, color: '#6B7280', textDecoration: 'none',
+          marginBottom: 18,
+        }}
+      >
+        <span aria-hidden="true">←</span> На главную
+      </a>
       <p style={{
         margin: 0, fontFamily: 'var(--font-mono)', fontSize: 11,
         color: '#9CA3AF', letterSpacing: '0.06em', textTransform: 'uppercase',
