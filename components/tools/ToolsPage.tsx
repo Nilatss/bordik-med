@@ -19,6 +19,8 @@ import {
   countryMatches,
   primaryCountriesFor,
 } from '@/lib/tool-meta-helpers';
+import { useToolSearch } from '@/lib/use-tool-search';
+import { BulkOfflineDownload } from './BulkOfflineDownload';
 
 import { useAppStore } from '@/lib/store';
 import EmojiOrFlag from '@/components/ui/EmojiOrFlag';
@@ -808,6 +810,7 @@ export default function ToolsPage() {
   const favourites = useAppStore((s) => s.toolsFavourites);
   const favouriteSet = useMemo(() => new Set(favourites), [favourites]);
   const [onlyFavourites, setOnlyFavourites] = useState(false);
+  const [bulkOpen, setBulkOpen] = useState(false);
   // Actions the cards need — single subscription each, distributed via
   // context to avoid 3 selectors per card × ~60 visible cards.
   const openToolAction = useAppStore((s) => s.openTool);
@@ -891,18 +894,30 @@ export default function ToolsPage() {
     return { cat, tool };
   }, [tools]);
 
+  // MiniSearch results (null = index not ready or query empty - fall back
+  // to substring match below). The index is fetched once on first keystroke
+  // and cached. Subsequent searches are O(log n) with proper relevance,
+  // typo tolerance and prefix matching.
+  const searchHits = useToolSearch(deferredQuery);
+
   // Apply filters (deferred so typing stays smooth).
   const filtered = useMemo(() => {
     let result: readonly CatalogTool[] = tools;
 
     if (deferredQuery.trim()) {
-      const q = deferredQuery.trim().toLowerCase();
-      result = result.filter((t) =>
-        t.title.toLowerCase().includes(q) ||
-        t.description.toLowerCase().includes(q) ||
-        t.subcategory.toLowerCase().includes(q) ||
-        t.category.toLowerCase().includes(q)
-      );
+      if (searchHits) {
+        // MiniSearch ready - use ranked match
+        result = result.filter((t) => searchHits.has(t.id));
+      } else {
+        // Index still loading or unavailable - fall back to substring scan
+        const q = deferredQuery.trim().toLowerCase();
+        result = result.filter((t) =>
+          t.title.toLowerCase().includes(q) ||
+          t.description.toLowerCase().includes(q) ||
+          t.subcategory.toLowerCase().includes(q) ||
+          t.category.toLowerCase().includes(q)
+        );
+      }
     }
     if (selectedCategories.length) {
       const set = new Set(selectedCategories);
@@ -928,7 +943,7 @@ export default function ToolsPage() {
       result = result.filter((t) => favouriteSet.has(t.id));
     }
     return result;
-  }, [tools, deferredQuery, selectedCategories, selectedSubcategories, selectedCountries, onlyAvailable, onlyFavourites, favouriteSet]);
+  }, [tools, deferredQuery, searchHits, selectedCategories, selectedSubcategories, selectedCountries, onlyAvailable, onlyFavourites, favouriteSet]);
 
   // Group by category. Categories are sorted alphabetically (ignoring the
   // leading "N. " numeric prefix). `localeCompare('ru')` is ~100× slower
@@ -1163,6 +1178,32 @@ export default function ToolsPage() {
           {t('tools.filter.favourites')}{favouriteSet.size > 0 ? ` · ${favouriteSet.size}` : ''}
         </button>
 
+        {/* Bulk-cache trigger - downloads all available tool JSONs into the
+            offline cache. Useful for medics about to enter a low-network area. */}
+        <button
+          onClick={() => setBulkOpen(true)}
+          title="Сохранить все доступные инструменты для офлайн"
+          style={{
+            display: 'inline-flex', alignItems: 'center', gap: 6,
+            padding: '7px 12px',
+            background: '#F5F6F8', color: '#374151',
+            border: 'none', borderRadius: 999,
+            cursor: 'pointer',
+            fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 600,
+            transition: 'background 180ms',
+          }}
+          onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = '#F5F6F8'; }}
+        >
+          <svg width={12} height={12} viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>
+          Офлайн-пакет
+        </button>
+
         {totalFilters > 0 && (
           <button
             onClick={resetAll}
@@ -1240,6 +1281,13 @@ export default function ToolsPage() {
           itemContent={virtuosoItemContent}
         />
       )}
+      {/* Bulk-cache modal mounted at the bottom; rendered via portal-like
+          fixed-position div by the component itself. */}
+      <BulkOfflineDownload
+        open={bulkOpen}
+        onClose={() => setBulkOpen(false)}
+        toolIds={tools.filter((t) => t.available || t.hasRunner).map((t) => t.id)}
+      />
     </div>
     </ToolCardContext.Provider>
   );

@@ -12,6 +12,7 @@ import { useAppStore } from '@/lib/store';
 import { useT } from '@/lib/i18n';
 import { ArrowLeft } from '@/components/icons';
 import EmojiOrFlag from '@/components/ui/EmojiOrFlag';
+import { OfflineBadge } from './OfflineBadge';
 
 /** Slugify heading text for tab id */
 function slugify(s: string): string {
@@ -1364,6 +1365,10 @@ function Header({ tool, kind }: {
             +{toolCountries.length - 3}
           </span>
         )}
+        {/* Offline cache pill - lets the user pre-cache this tool's JSON
+            for use without network. Sits next to favourite so both quick
+            actions are in the same row. */}
+        <OfflineBadge toolId={tool.id} />
         {/* Favourite toggle - amber/gold palette matches the module-final
             test pill on TestPanel. Pop animation on add, sparkle burst. */}
         <FavouriteButton

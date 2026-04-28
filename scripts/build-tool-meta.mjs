@@ -22,7 +22,9 @@ const RUNNERS_DIR = join(ROOT, 'lib', 'runners');
 const OUT = join(ROOT, 'lib', 'tool-meta-data.ts');
 
 const files = readdirSync(RUNNERS_DIR)
-  .filter((f) => f.endsWith('.ts') && f !== 'index.ts')
+  // Skip index.ts and any helper modules whose filename starts with _
+  // (convention: the leading underscore marks "not a runner", e.g. _dsl-runner.ts).
+  .filter((f) => f.endsWith('.ts') && f !== 'index.ts' && !f.startsWith('_'))
   .sort();
 
 const ids = [];
