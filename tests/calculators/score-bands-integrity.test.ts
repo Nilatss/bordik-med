@@ -207,6 +207,48 @@ import villalta   from '@/lib/runners/villalta';
 import tisdale    from '@/lib/runners/tisdale';
 // Hypertension target organ
 import htnTod     from '@/lib/runners/htn-tod';
+// Heart failure / chest pain
+import accAhaHf   from '@/lib/runners/acc-aha-hf';
+import framHf     from '@/lib/runners/framingham-hf';
+import edacs      from '@/lib/runners/edacs';
+import sgarbossa  from '@/lib/runners/sgarbossa';
+// Surgery / pre-op
+import clavien    from '@/lib/runners/clavien';
+import nsqip      from '@/lib/runners/nsqip';
+import possum     from '@/lib/runners/possum';
+import pts        from '@/lib/runners/pts';
+import simpson    from '@/lib/runners/simpson';
+// Pain / delirium / sedation
+import cpot       from '@/lib/runners/cpot';
+import cam        from '@/lib/runners/cam';
+import drs        from '@/lib/runners/drs';
+// Neuro / nerve / spine
+import asia       from '@/lib/runners/asia';
+import houseBrack from '@/lib/runners/house-brackmann';
+import slic       from '@/lib/runners/slic';
+import spetzler   from '@/lib/runners/spetzler';
+import rancho     from '@/lib/runners/rancho';
+import stess      from '@/lib/runners/stess';
+import ctcae      from '@/lib/runners/ctcae-neuro';
+import tcns       from '@/lib/runners/tcns';
+// Vascular / aortic
+import crawford   from '@/lib/runners/crawford';
+import stanford   from '@/lib/runners/stanford';
+import rutherford from '@/lib/runners/rutherford';
+import wilkins    from '@/lib/runners/wilkins';
+// Neonatal / paediatric
+import crib       from '@/lib/runners/crib';
+import dubowitz   from '@/lib/runners/dubowitz';
+import kramer     from '@/lib/runners/kramer';
+import thompson   from '@/lib/runners/thompson';
+import tanner     from '@/lib/runners/tanner';
+import tal        from '@/lib/runners/tal';
+// Obstetric / postnatal
+import epds       from '@/lib/runners/epds';
+// Ankle radiograph
+import ottawaAnk  from '@/lib/runners/ottawa-ankle';
+// ADHD
+import vanderbilt from '@/lib/runners/vanderbilt';
 
 interface ScoreRunner { bands: ScoreBand[]; maxScore: number }
 
@@ -395,6 +437,48 @@ const SCORE_TOOLS: Array<[string, ScoreRunner]> = [
   ['tisdale',    tisdale   as unknown as ScoreRunner],
   // HTN target organ
   ['htn-tod',    htnTod    as unknown as ScoreRunner],
+  // Heart failure / chest pain
+  ['acc-aha-hf', accAhaHf  as unknown as ScoreRunner],
+  ['framingham-hf', framHf as unknown as ScoreRunner],
+  ['edacs',      edacs     as unknown as ScoreRunner],
+  ['sgarbossa',  sgarbossa as unknown as ScoreRunner],
+  // Surgery / pre-op
+  ['clavien',    clavien   as unknown as ScoreRunner],
+  ['nsqip',      nsqip     as unknown as ScoreRunner],
+  ['possum',     possum    as unknown as ScoreRunner],
+  ['pts',        pts       as unknown as ScoreRunner],
+  ['simpson',    simpson   as unknown as ScoreRunner],
+  // Pain / delirium / sedation
+  ['cpot',       cpot      as unknown as ScoreRunner],
+  ['cam',        cam       as unknown as ScoreRunner],
+  ['drs',        drs       as unknown as ScoreRunner],
+  // Neuro / nerve / spine
+  ['asia',       asia      as unknown as ScoreRunner],
+  ['house-brackmann', houseBrack as unknown as ScoreRunner],
+  ['slic',       slic      as unknown as ScoreRunner],
+  ['spetzler',   spetzler  as unknown as ScoreRunner],
+  ['rancho',     rancho    as unknown as ScoreRunner],
+  ['stess',      stess     as unknown as ScoreRunner],
+  ['ctcae-neuro', ctcae    as unknown as ScoreRunner],
+  ['tcns',       tcns      as unknown as ScoreRunner],
+  // Vascular / aortic / mitral
+  ['crawford',   crawford  as unknown as ScoreRunner],
+  ['stanford',   stanford  as unknown as ScoreRunner],
+  ['rutherford', rutherford as unknown as ScoreRunner],
+  ['wilkins',    wilkins   as unknown as ScoreRunner],
+  // Neonatal / paediatric
+  ['crib',       crib      as unknown as ScoreRunner],
+  ['dubowitz',   dubowitz  as unknown as ScoreRunner],
+  ['kramer',     kramer    as unknown as ScoreRunner],
+  ['thompson',   thompson  as unknown as ScoreRunner],
+  ['tanner',     tanner    as unknown as ScoreRunner],
+  ['tal',        tal       as unknown as ScoreRunner],
+  // Postnatal depression
+  ['epds',       epds      as unknown as ScoreRunner],
+  // Ankle X-ray rule
+  ['ottawa-ankle', ottawaAnk as unknown as ScoreRunner],
+  // ADHD
+  ['vanderbilt', vanderbilt as unknown as ScoreRunner],
 ];
 
 describe('score-band integrity', () => {
