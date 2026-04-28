@@ -73,7 +73,7 @@ function LoginInner() {
 
   return (
     <div style={{
-      minHeight: '100vh',
+      minHeight: '100dvh',
       background: '#F0F1F5',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       padding: 24,

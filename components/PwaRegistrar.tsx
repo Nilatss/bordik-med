@@ -73,6 +73,17 @@ export default function PwaRegistrar() {
     };
     navigator.serviceWorker.addEventListener('controllerchange', onControllerChange);
 
+    // P1-SEC-8 — admin kill-switch echoes a RELOAD message to every
+    // controlled tab. Reload immediately, no toast, no UI.
+    const onMessage = (ev: MessageEvent) => {
+      if (ev.data?.type === 'RELOAD') {
+        if (didRefresh) return;
+        didRefresh = true;
+        window.location.reload();
+      }
+    };
+    navigator.serviceWorker.addEventListener('message', onMessage);
+
     // Wait for the page to finish loading before kicking off SW registration
     // — keeps the critical render path clean.
     if (document.readyState === 'complete') {
@@ -84,6 +95,7 @@ export default function PwaRegistrar() {
     return () => {
       if (checkInterval) clearInterval(checkInterval);
       navigator.serviceWorker.removeEventListener('controllerchange', onControllerChange);
+      navigator.serviceWorker.removeEventListener('message', onMessage);
     };
   }, []);
 

@@ -342,7 +342,7 @@ export default function Sidebar() {
         className="app-sidebar-aside fixed md:sticky top-0 z-50"
         style={{
           width: 280,
-          height: '100vh',
+          height: '100dvh',
           background: '#F0F1F5',
           borderRight: 'none',
           display: 'flex',

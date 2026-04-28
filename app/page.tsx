@@ -335,13 +335,13 @@ export default function Home() {
 
   const toggleSidebar = useAppStore((s) => s.toggleSidebar);
   return (
-    <div style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
+    <div style={{ display: 'flex', height: '100dvh', overflow: 'hidden' }}>
       <Sidebar />
       <div
         className="app-main-wrap"
         style={{
           flex: 1, display: 'flex', flexDirection: 'column',
-          minWidth: 0, height: '100vh',
+          minWidth: 0, height: '100dvh',
           // Visually lift the main content over the sidebar — creates a soft card feel.
           borderTopLeftRadius: 32,
           borderBottomLeftRadius: 32,

@@ -82,6 +82,41 @@ export default function RootLayout({
   return (
     <html lang="ru" data-theme="light">
       <head>
+        {/* Preconnect: warm up TLS + TCP for the two hottest paths so
+            the first auth check / first AI call doesn't pay for the
+            handshake. Saves ~100-300 ms each on cold navigations. */}
+        <link rel="preconnect" href="https://generativelanguage.googleapis.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://storage.googleapis.com" />
+        <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
+        {/* Supabase host comes from env; fall back to a sensible default
+            string just so the browser sees a hint at HTML parse time. */}
+        {process.env.NEXT_PUBLIC_SUPABASE_URL ? (
+          <link
+            rel="preconnect"
+            href={process.env.NEXT_PUBLIC_SUPABASE_URL}
+            crossOrigin="anonymous"
+          />
+        ) : null}
+        {/* JSON-LD: organisation-level schema. Drives Google Knowledge
+            Panel, LinkedIn rich previews, MedicalScale ranking signals.
+            P1-SEO-3 will add per-tool schema once /tools/[slug] routes
+            exist; this root-level entry is the high-value baseline. */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'EducationalOrganization',
+            name: APP_NAME,
+            alternateName: 'IronMed Academy',
+            url: process.env.NEXT_PUBLIC_APP_URL ?? 'https://ironmed-academy.vercel.app',
+            description: APP_DESCRIPTION,
+            sameAs: ['https://t.me/bordik_app'],
+            email: 'hello@bordik.app',
+            educationalCredentialAwarded: 'Continuing Medical Education',
+            // Primary audience — student / clinician medics.
+            audience: { '@type': 'EducationalAudience', educationalRole: 'medical professional' },
+          }) }}
+        />
         {/* Prevent FOUC — paint the page background before any CSS arrives. */}
         <style dangerouslySetInnerHTML={{ __html: `
           html, body { background: #F0F1F5; margin: 0; padding: 0; }
@@ -91,7 +126,7 @@ export default function RootLayout({
              client component tree mounts. */
           #__app_skeleton {
             position: fixed; inset: 0; z-index: 1;
-            display: flex; min-height: 100vh; pointer-events: none;
+            display: flex; min-height: 100dvh; pointer-events: none;
             background: #F0F1F5;
           }
           #__app_skeleton .sk-side {

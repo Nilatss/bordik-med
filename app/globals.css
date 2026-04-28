@@ -422,6 +422,18 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .tools-card-cascade { animation: none; opacity: 1; transform: none; }
+  /* P1-A11Y-1 (WCAG 2.1 SC 2.3.3) — global gate that kills decorative
+     animations and scroll smoothing for users opting out via OS-level
+     setting. framer-motion already respects this preference, but plain
+     CSS keyframes / transitions don't, hence the universal override. */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* ═══════════════════════════════════════════════

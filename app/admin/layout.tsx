@@ -53,7 +53,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
 
   return (
     <div style={{
-      minHeight: '100vh',
+      minHeight: '100dvh',
       background: '#F8FAFC',
       fontFamily: 'var(--font-body)',
     }}>

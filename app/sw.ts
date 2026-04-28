@@ -23,6 +23,32 @@ declare global {
 
 declare const self: ServiceWorkerGlobalScope;
 
+/**
+ * P1-PERF-1 — adaptive navigation timeout.
+ *
+ * Default 3s NetworkFirst trips early on slow-3G (UZ rural baseline:
+ * 600-1200ms typical, 5s+ during congestion). Read the connection
+ * effectiveType once at SW init and pick a saner timeout per network
+ * class. We don't make this dynamic per-request because Serwist's
+ * NetworkFirst constructor takes a static value.
+ */
+function networkTimeoutSeconds(): number {
+  // navigator.connection is non-standard but available in Chromium
+  // service workers. Safari returns undefined.
+  const conn = (
+    self as unknown as {
+      navigator?: { connection?: { effectiveType?: string; saveData?: boolean } };
+    }
+  ).navigator?.connection;
+  const eff = conn?.effectiveType;
+  if (conn?.saveData) return 12;       // user opt-in, be patient
+  if (eff === 'slow-2g' || eff === '2g') return 12;
+  if (eff === '3g') return 6;
+  return 3;                             // 4g / wifi / unknown
+}
+
+const NAV_TIMEOUT_S = networkTimeoutSeconds();
+
 const serwist = new Serwist({
   precacheEntries: self.__SW_MANIFEST,
   // CRITICAL: keep both false. With skipWaiting + clientsClaim true, every
@@ -135,7 +161,7 @@ const serwist = new Serwist({
       matcher: ({ request }) => request.mode === 'navigate',
       handler: new NetworkFirst({
         cacheName: 'bordik-pages',
-        networkTimeoutSeconds: 3,
+        networkTimeoutSeconds: NAV_TIMEOUT_S,
         plugins: [
           new ExpirationPlugin({
             maxEntries: 50,
@@ -166,8 +192,32 @@ serwist.addEventListeners();
 // which fires controllerchange in the page and triggers the user-initiated
 // reload. Without this listener the toast button does nothing.
 self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
+  if (!event.data || typeof event.data !== 'object') return;
+
+  if (event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
+    return;
+  }
+
+  // P1-SEC-8 — emergency SW kill-switch. Used when a buggy SW lands
+  // and users need to be forced off it. Triggered by /admin/sw-kill
+  // page (or any privileged surface). Steps:
+  //   1. skipWaiting so the new SW (or no-SW state) wins immediately.
+  //   2. clear all runtime caches so we don't serve stale content.
+  //   3. tell every live tab to reload.
+  if (event.data.type === 'FORCE_UPDATE_AND_RELOAD') {
+    void (async () => {
+      try { await self.skipWaiting(); } catch {/* */}
+      try {
+        const names = await caches.keys();
+        await Promise.all(names.map((n) => caches.delete(n)));
+      } catch {/* */}
+      const clients = await self.clients.matchAll({ includeUncontrolled: true, type: 'window' });
+      for (const c of clients) {
+        c.postMessage({ type: 'RELOAD' });
+      }
+    })();
+    return;
   }
 });
 

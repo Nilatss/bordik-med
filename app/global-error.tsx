@@ -26,7 +26,7 @@ export default function GlobalError({
       <body style={{
         margin: 0, fontFamily: 'system-ui, -apple-system, sans-serif',
         background: '#FAFAFA', color: '#1A1A1A',
-        minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
+        minHeight: '100dvh', display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}>
         <div style={{ maxWidth: 480, padding: 24, textAlign: 'center' }}>
           <h1 style={{ fontSize: 26, fontWeight: 700, marginBottom: 8 }}>
