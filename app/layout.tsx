@@ -4,6 +4,7 @@ import CopyProtection from '@/components/CopyProtection';
 import PwaRegistrar from '@/components/PwaRegistrar';
 import { BFCacheGuard } from '@/components/BFCacheGuard';
 import { StorageBanner } from '@/components/StorageBanner';
+import { SkeletonHider } from '@/components/SkeletonHider';
 
 const APP_NAME = 'Bordik';
 const APP_TITLE = 'Bordik - Платформа медицинского обучения';
@@ -148,6 +149,7 @@ export default function RootLayout({
             <div className="sk-block sk-card" />
           </div>
         </div>
+        <SkeletonHider />
         <PwaRegistrar />
         <CopyProtection />
         <BFCacheGuard />
