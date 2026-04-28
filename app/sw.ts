@@ -187,11 +187,26 @@ interface BgSyncEvent extends ExtendableEvent {
   tag: string;
 }
 self.addEventListener('sync', ((event: BgSyncEvent) => {
-  if (event.tag !== 'sync-progress') return;
-  event.waitUntil((async () => {
-    const clients = await self.clients.matchAll({ includeUncontrolled: true, type: 'window' });
-    for (const c of clients) {
-      c.postMessage({ type: 'SYNC_PROGRESS_FLUSH' });
-    }
-  })());
+  if (event.tag === 'sync-progress') {
+    event.waitUntil((async () => {
+      const clients = await self.clients.matchAll({ includeUncontrolled: true, type: 'window' });
+      for (const c of clients) {
+        c.postMessage({ type: 'SYNC_PROGRESS_FLUSH' });
+      }
+    })());
+    return;
+  }
+
+  // P1-UX-3 — fullLogout failed offline; retry the global signOut
+  // through any live client. We can't read the auth cookie/session from
+  // the SW directly, so we ping the page and let it call signOut again.
+  if (event.tag === 'logout-retry') {
+    event.waitUntil((async () => {
+      const clients = await self.clients.matchAll({ includeUncontrolled: true, type: 'window' });
+      for (const c of clients) {
+        c.postMessage({ type: 'LOGOUT_RETRY' });
+      }
+    })());
+    return;
+  }
 }) as EventListener);

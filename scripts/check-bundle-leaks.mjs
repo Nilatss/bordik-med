@@ -35,6 +35,22 @@ const PATTERNS = [
   // Generic OpenAI / Anthropic style keys (just in case)
   { name: 'OpenAI key (sk-)', re: /\bsk-[A-Za-z0-9_\-]{32,}\b/g, severity: 'high' },
   { name: 'Anthropic key (sk-ant-)', re: /\bsk-ant-[A-Za-z0-9_\-]{20,}\b/g, severity: 'critical' },
+
+  // P2-SEC-2 — extra patterns covering env names that shouldn't ever
+  // surface in client bundles. We grep on the variable NAME (not value)
+  // because most leaks happen when someone reads `process.env.X` from a
+  // client component and Next inlines the value at build time.
+  { name: 'Upstash Redis token (env name leak)', re: /UPSTASH_REDIS_REST_TOKEN/g, severity: 'high' },
+  { name: 'Sentry auth token (env name leak)',   re: /SENTRY_AUTH_TOKEN/g, severity: 'high' },
+  { name: 'Turnstile secret (env name leak)',    re: /TURNSTILE_SECRET/g, severity: 'critical' },
+  { name: 'Resend API key (env name leak)',      re: /RESEND_API_KEY/g, severity: 'high' },
+  { name: 'Postgres URL/password (env name leak)', re: /POSTGRES_(?:URL|PASSWORD|PRISMA_URL|URL_NON_POOLING)/g, severity: 'critical' },
+  { name: 'Supabase service-role env name leak', re: /SUPABASE_SERVICE_ROLE_KEY/g, severity: 'critical' },
+  { name: 'Supabase publishable key (sb_publishable_)', re: /sb_publishable_[A-Za-z0-9_-]{20,}/g, severity: 'high' },
+
+  // Hardcoded `process.env.SOMETHING = "literal"`. Narrower than a
+  // generic long-string scan to keep false positives low.
+  { name: 'process.env assignment with literal', re: /process\.env\.[A-Z_]+\s*=\s*['"][A-Za-z0-9_\-]{20,}['"]/g, severity: 'high' },
 ];
 
 // JWTs that we permit (Supabase ANON key is intended to be public).

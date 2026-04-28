@@ -29,15 +29,51 @@ const ZUSTAND_PERSIST_KEYS = [
   'castar-biometric-lock',
 ];
 
+// P1-UX-1 — Safari/iOS doesn't implement IDBFactory.databases() (returns
+// []); we still need to wipe IDBs we know about. Maintain this list as
+// the app evolves.
+const KNOWN_IDB_NAMES = [
+  'localforage',
+  'firebaseLocalStorageDb',
+  'serwist-precache-v1',
+  'serwist-runtime-v1',
+  'castar-biometric',
+  'ironmed-offline-queue',
+  'bordik-offline-queue',
+];
+
+async function deleteDb(name: string): Promise<void> {
+  return new Promise<void>((resolve) => {
+    const req = indexedDB.deleteDatabase(name);
+    // Resolve in all 3 cases — failure to delete one DB shouldn't block
+    // the rest of the logout flow.
+    req.onsuccess = () => resolve();
+    req.onerror = () => resolve();
+    req.onblocked = () => resolve();
+  });
+}
+
 export async function fullLogout(): Promise<void> {
-  // 1. Revoke session globally (kills all sessions on all devices for this user).
+  // 1. Revoke session globally (kills all sessions on all devices).
+  // P1-UX-3 — when offline, signOut fails silently and the server
+  // refresh-token outlives the local wipe. Register a Background Sync
+  // tag so the SW can retry the global signOut once we're back online.
   try {
     const sb = getSupabaseBrowserClient();
     if (sb) {
       await sb.auth.signOut({ scope: 'global' });
     }
   } catch (err) {
-    console.warn('[fullLogout] supabase signOut failed', err);
+    console.warn('[fullLogout] supabase signOut failed (likely offline)', err);
+    try {
+      if ('serviceWorker' in navigator && 'SyncManager' in window) {
+        const reg = await navigator.serviceWorker.ready;
+        const sync = (reg as ServiceWorkerRegistration & {
+          sync?: { register: (tag: string) => Promise<void> };
+        }).sync;
+        await sync?.register('logout-retry');
+      }
+    } catch {/* SyncManager unsupported (Safari) — best effort only */}
   }
 
   // 2. Drop our explicit Zustand persist keys + 3. clear all storage.
@@ -51,22 +87,21 @@ export async function fullLogout(): Promise<void> {
     console.warn('[fullLogout] storage clear failed', err);
   }
 
-  // 4. Wipe IndexedDB. databases() is supported in modern Chromium/Firefox/Safari.
+  // 4. Wipe IndexedDB. P1-UX-1: Safari/iOS doesn't implement
+  // databases() — fall back to KNOWN_IDB_NAMES so we still nuke the
+  // ones we created.
   try {
+    let names: string[] = [];
     if ('databases' in indexedDB) {
-      const dbs: { name?: string }[] = await indexedDB.databases();
-      await Promise.all(
-        dbs.map((d) => d.name
-          ? new Promise<void>((resolve) => {
-              const req = indexedDB.deleteDatabase(d.name!);
-              req.onsuccess = () => resolve();
-              req.onerror = () => resolve();
-              req.onblocked = () => resolve();    // proceed even if blocked
-            })
-          : Promise.resolve(),
-        ),
-      );
+      try {
+        const dbs = await indexedDB.databases();
+        names = dbs.map((d) => d.name).filter((n): n is string => Boolean(n));
+      } catch { names = []; }
     }
+    if (names.length === 0) {
+      names = KNOWN_IDB_NAMES;
+    }
+    await Promise.all(names.map((n) => deleteDb(n)));
   } catch (err) {
     console.warn('[fullLogout] indexedDB wipe failed', err);
   }
@@ -81,12 +116,27 @@ export async function fullLogout(): Promise<void> {
     console.warn('[fullLogout] cache clear failed', err);
   }
 
-  // 6. Unregister service worker registrations - next visit gets a fresh
-  // SW, no chance of cached auth-coupled responses leaking.
+  // 6. Unregister service worker registrations. P1-UX-2: wait for
+  // controllerchange so in-flight fetches the SW could reply to are
+  // flushed before we navigate away. 2s safety timeout caps the wait.
   try {
     if ('serviceWorker' in navigator) {
       const regs = await navigator.serviceWorker.getRegistrations();
       await Promise.all(regs.map((r) => r.unregister()));
+      if (navigator.serviceWorker.controller) {
+        await new Promise<void>((resolve) => {
+          const safetyTimer = setTimeout(resolve, 2000);
+          const onChange = () => {
+            clearTimeout(safetyTimer);
+            resolve();
+          };
+          navigator.serviceWorker.addEventListener(
+            'controllerchange',
+            onChange,
+            { once: true },
+          );
+        });
+      }
     }
   } catch (err) {
     console.warn('[fullLogout] SW unregister failed', err);
