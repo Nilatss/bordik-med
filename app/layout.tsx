@@ -5,6 +5,8 @@ import PwaRegistrar from '@/components/PwaRegistrar';
 import { BFCacheGuard } from '@/components/BFCacheGuard';
 import { StorageBanner } from '@/components/StorageBanner';
 import { SkeletonHider } from '@/components/SkeletonHider';
+import { SpeedInsights } from '@vercel/speed-insights/next';
+import { Analytics } from '@vercel/analytics/react';
 
 const APP_NAME = 'Bordik';
 const APP_TITLE = 'Bordik - Платформа медицинского обучения';
@@ -12,6 +14,9 @@ const APP_DESCRIPTION =
   'Платформа медицинского обучения: курсы, тесты, клинические калькуляторы и шкалы.';
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') ?? 'https://ironmed-academy.vercel.app',
+  ),
   applicationName: APP_NAME,
   title: {
     default: APP_TITLE,
@@ -19,6 +24,13 @@ export const metadata: Metadata = {
   },
   description: APP_DESCRIPTION,
   manifest: '/manifest.json',
+  // Default robots stance: index home + content. Auth-gated routes set
+  // `robots: { index: false }` per-route below.
+  robots: {
+    index: true,
+    follow: true,
+    nocache: false,
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
@@ -155,6 +167,9 @@ export default function RootLayout({
         <BFCacheGuard />
         <StorageBanner />
         {children}
+        {/* Vercel RUM. Analytics is privacy-friendly (no IP store). */}
+        <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   );

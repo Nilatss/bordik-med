@@ -52,6 +52,10 @@ export function middleware(req: NextRequest) {
     `base-uri 'self'`,
     `object-src 'none'`,
     `upgrade-insecure-requests`,
+    // Violations are POSTed to /api/csp-report (legacy) and the
+    // Reporting API endpoint of the same name (modern browsers).
+    `report-uri /api/csp-report`,
+    `report-to csp-endpoint`,
   ];
 
   // Forward the nonce to the rendering layer via header. Server Components
@@ -64,6 +68,11 @@ export function middleware(req: NextRequest) {
   // Same header on the response so the browser actually sees it
   res.headers.set('Content-Security-Policy-Report-Only', cspParts.join('; '));
   res.headers.set('x-nonce', nonce);
+  // Reporting API: declares the named endpoint referenced in `report-to`.
+  res.headers.set(
+    'Reporting-Endpoints',
+    'csp-endpoint="/api/csp-report"',
+  );
   return res;
 }
 
