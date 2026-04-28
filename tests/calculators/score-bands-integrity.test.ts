@@ -21,22 +21,73 @@
 import { describe, it, expect } from 'vitest';
 import { findBand, type ScoreBand } from '@/lib/tools-runners';
 
+// Cardio / VTE
 import chadsVasc from '@/lib/runners/chads-vasc';
 import hasBled  from '@/lib/runners/has-bled';
+import wellsPe  from '@/lib/runners/wells-pe';
+import wellsDvt from '@/lib/runners/wells-dvt';
+import caprini  from '@/lib/runners/caprini';
+import heart    from '@/lib/runners/heart';
+import timi     from '@/lib/runners/timi';
+// Sepsis / EWS / ICU
 import qsofa    from '@/lib/runners/qsofa';
-import curb65   from '@/lib/runners/curb65';
-import gcs      from '@/lib/runners/gcs';
 import news2    from '@/lib/runners/news2';
+import mews     from '@/lib/runners/mews';
+// (cam-icu / ranson / forrest are calculator-kind, not score-kind —
+// inline compute() instead of bands[]; covered by their own tests.)
+// Respiratory / Infection
+import curb65   from '@/lib/runners/curb65';
+import centor   from '@/lib/runners/centor';
+// GI
+import bisap    from '@/lib/runners/bisap';
+import childMeld from '@/lib/runners/child-meld';
+// Surgery / Acute abdomen
+import alvarado from '@/lib/runners/alvarado';
+import bishop   from '@/lib/runners/bishop';
+// Neuro / Pain / Function / Comorbidity
+import gcs      from '@/lib/runners/gcs';
+import apgar    from '@/lib/runners/apgar';
+import braden   from '@/lib/runners/braden';
+import ecog     from '@/lib/runners/ecog';
+import charlson from '@/lib/runners/charlson';
+// Substance use
+import cage     from '@/lib/runners/cage';
 
 interface ScoreRunner { bands: ScoreBand[]; maxScore: number }
 
+// Priority list: highest clinical impact first. Each entry adds 5
+// invariant assertions — adding a new tool here is the cheapest way
+// to expand band-data coverage.
 const SCORE_TOOLS: Array<[string, ScoreRunner]> = [
+  // Cardio / VTE
   ['chads-vasc', chadsVasc as unknown as ScoreRunner],
   ['has-bled',   hasBled   as unknown as ScoreRunner],
+  ['wells-pe',   wellsPe   as unknown as ScoreRunner],
+  ['wells-dvt',  wellsDvt  as unknown as ScoreRunner],
+  ['caprini',    caprini   as unknown as ScoreRunner],
+  ['heart',      heart     as unknown as ScoreRunner],
+  ['timi',       timi      as unknown as ScoreRunner],
+  // Sepsis / EWS / ICU
   ['qsofa',      qsofa     as unknown as ScoreRunner],
-  ['curb65',     curb65    as unknown as ScoreRunner],
-  ['gcs',        gcs       as unknown as ScoreRunner],
   ['news2',      news2     as unknown as ScoreRunner],
+  ['mews',       mews      as unknown as ScoreRunner],
+  // Respiratory / Infection
+  ['curb65',     curb65    as unknown as ScoreRunner],
+  ['centor',     centor    as unknown as ScoreRunner],
+  // GI
+  ['bisap',      bisap     as unknown as ScoreRunner],
+  ['child-meld', childMeld as unknown as ScoreRunner],
+  // Surgery
+  ['alvarado',   alvarado  as unknown as ScoreRunner],
+  ['bishop',     bishop    as unknown as ScoreRunner],
+  // Neuro / Pain / Function / Comorbidity
+  ['gcs',        gcs       as unknown as ScoreRunner],
+  ['apgar',      apgar     as unknown as ScoreRunner],
+  ['braden',     braden    as unknown as ScoreRunner],
+  ['ecog',       ecog      as unknown as ScoreRunner],
+  ['charlson',   charlson  as unknown as ScoreRunner],
+  // Substance use
+  ['cage',       cage      as unknown as ScoreRunner],
 ];
 
 describe('score-band integrity', () => {
