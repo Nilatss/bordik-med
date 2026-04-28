@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import * as v from 'valibot';
 import { makeRateLimiter, identifyRequest } from '@/lib/rate-limit';
 import { getSupabaseServerClient } from '@/lib/supabase/server';
+import { isOutputSafe as isOutputSafeStrict } from '@/lib/output-guard';
 
 // 30 calls / minute / identity. One full diagnostic test ≈ 16 calls,
 // so a normal user sits comfortably under the limit. Anything above
@@ -112,6 +113,11 @@ interface GeminiResponse {
   }>;
 }
 
+// Vercel Hobby function timeout = 10s. Leave 1.5s headroom for input
+// parsing, validation, JSON shape checks and serialization.
+const GEMINI_TOTAL_BUDGET_MS = 8_500;
+const GEMINI_PER_MODEL_BUDGET_MS = 2_500;
+
 async function geminiCall(prompt: string, expectArray = false): Promise<unknown> {
   const KEY = process.env.GEMINI_API_KEY;
   if (!KEY) throw new Error('gemini-not-configured');
@@ -124,15 +130,47 @@ async function geminiCall(prompt: string, expectArray = false): Promise<unknown>
       responseMimeType: 'application/json',
     },
   };
+  const bodyStr = JSON.stringify(body);
 
+  const start = Date.now();
   let lastErr: Error | null = null;
   for (const model of GEMINI_MODELS) {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${KEY}`;
-    const r = await fetch(url, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify(body),
-    });
+    // Hard total-budget gate: if the next call would push us past the
+    // budget, bail with a synthetic 503 instead of risking a 504.
+    const elapsed = Date.now() - start;
+    if (elapsed >= GEMINI_TOTAL_BUDGET_MS - 500) {
+      throw lastErr ?? new Error('gemini-total-budget-exhausted');
+    }
+    const remaining = GEMINI_TOTAL_BUDGET_MS - elapsed;
+    const perModelBudget = Math.min(GEMINI_PER_MODEL_BUDGET_MS, remaining);
+
+    // P0-SEC-1: API key in `x-goog-api-key` header instead of query
+    // string. The key never touches access logs, request URLs, traces.
+    // P0-SEC-2: per-model AbortController so a slow upstream cannot
+    // burn the whole 10s function budget.
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
+    const ac = new AbortController();
+    const timer = setTimeout(() => ac.abort(), perModelBudget);
+    let r: Response;
+    try {
+      r = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'x-goog-api-key': KEY,
+        },
+        body: bodyStr,
+        signal: ac.signal,
+      });
+    } catch (err) {
+      clearTimeout(timer);
+      const aborted = (err as Error)?.name === 'AbortError';
+      lastErr = new Error(`gemini-${aborted ? 'timeout' : 'fetch-failed'} (${model}): ${(err as Error).message}`);
+      console.warn(`[diagnostic] ${model} ${aborted ? 'aborted (per-model budget)' : 'fetch failed'}, trying next`);
+      continue;
+    }
+    clearTimeout(timer);
+
     if (r.ok) {
       const data = (await r.json()) as GeminiResponse;
       const text = data?.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
@@ -151,10 +189,7 @@ async function geminiCall(prompt: string, expectArray = false): Promise<unknown>
     }
     const txt = await r.text().catch(() => '');
     lastErr = new Error(`gemini-${r.status} (${model}): ${txt.slice(0, 200)}`);
-    // Fall back on quota (429), temporary errors (5xx), AND model-not-found
-    // (404) - any of these mean THIS model can't help right now, but a
-    // different model might. Auth (401/403) and malformed request (400)
-    // won't be fixed by retry, so bail.
+    // Auth (401/403) and malformed request (400) won't be fixed by retry, bail.
     if (r.status === 401 || r.status === 403 || r.status === 400) {
       throw lastErr;
     }
@@ -220,12 +255,16 @@ const PostBodySchema = v.object({
   modules: v.optional(v.pipe(v.array(ModuleSummarySchema), v.maxLength(200))),
 });
 
-/* ── Output guard. Strip Gemini responses that contain forbidden
-   protocols / HTML so a prompt injection can't smuggle a clickable
-   javascript: payload through us into the user's browser. */
-const FORBIDDEN_OUTPUT = /<\s*script|<\s*iframe|javascript:|vbscript:|data:text\/html/i;
-function isOutputSafe(s: string): boolean {
-  return !FORBIDDEN_OUTPUT.test(s);
+/* ── Output guard. Defence-in-depth: lib/output-guard.ts uses parse5
+   plus multi-pass entity decode so HTML-entity smuggling
+   (`&#x6A;avascript:`), SVG `onload`, MathML, and tab-injected
+   protocols (`jav&#x09;ascript:`) cannot survive into the response
+   payload. The previous one-shot regex (kept here as a soft pre-check)
+   stays for fast-path rejection of obvious cases. */
+const FAST_FORBIDDEN = /<\s*script|<\s*iframe|javascript:|vbscript:|data:text\/html/i;
+function checkOutput(s: string): { safe: boolean; reason?: string } {
+  if (FAST_FORBIDDEN.test(s)) return { safe: false, reason: 'fast-regex' };
+  return isOutputSafeStrict(s);
 }
 
 export async function POST(req: Request) {
@@ -281,15 +320,26 @@ export async function POST(req: Request) {
       if (
         !q.question ||
         !Array.isArray(q.options) || q.options.length !== 4 ||
-        typeof q.correctIndex !== 'number' || q.correctIndex < 0 || q.correctIndex > 3 ||
+        typeof q.correctIndex !== 'number' ||
+        !Number.isInteger(q.correctIndex) ||
+        q.correctIndex < 0 ||
+        q.correctIndex >= q.options.length ||
         !q.topic
       ) {
         return NextResponse.json({ ok: false, error: 'gemini-invalid-shape' }, { status: 502 });
       }
-      // Output guard - reject AI responses that contain HTML / JS / dangerous URIs
-      const allText = q.question + ' ' + q.options.join(' ') + ' ' + (q.explanation ?? '');
-      if (!isOutputSafe(allText)) {
-        return NextResponse.json({ ok: false, error: 'gemini-output-unsafe' }, { status: 502 });
+      // Output guard - reject AI responses that contain HTML / JS / dangerous URIs.
+      // Check each text field individually so a guard hit names the field.
+      for (const [name, val] of Object.entries({
+        question: q.question,
+        explanation: q.explanation ?? '',
+        ...Object.fromEntries(q.options.map((o, i) => [`option${i}`, o])),
+      })) {
+        const verdict = checkOutput(val);
+        if (!verdict.safe) {
+          console.warn('[diagnostic] output guard tripped', { field: name, reason: verdict.reason });
+          return NextResponse.json({ ok: false, error: 'gemini-output-unsafe', field: name }, { status: 502 });
+        }
       }
       return NextResponse.json({
         ok: true,
