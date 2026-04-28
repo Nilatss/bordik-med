@@ -10,6 +10,7 @@
     "start": "next start",
     "build:tool-meta": "node scripts/build-tool-meta.mjs",
     "build:content": "node scripts/build-content.mjs",
+    "snapshot:content": "node scripts/snapshot-content.mjs",
     "ai:questions": "node scripts/ai-generate-questions.mjs",
     "validate:scales": "npx tsx scripts/validate-scales.mjs",
     "validate:runners": "npx tsx scripts/smoke-runners.mjs",

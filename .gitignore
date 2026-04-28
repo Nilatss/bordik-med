@@ -63,5 +63,7 @@ next-env.d.ts
 /public/content-manifest.json
 /public/search-*.json
 /public/tools-data/
+/public/snapshot.json
+/data/snapshot.json
 
 .vercel
