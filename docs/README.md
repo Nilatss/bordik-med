@@ -10,3 +10,4 @@ convention (`/CLAUDE.md`, `/README.md`) are NOT here.
 | [STRESS_TEST_TODO.md](./STRESS_TEST_TODO.md) | Стресс-тест 1-го прохода — все 14 пунктов закрыты |
 | [TODO_PASS_2.md](./TODO_PASS_2.md) | UX-проход 2 |
 | [AUDIT_PASS_4_TODO.md](./AUDIT_PASS_4_TODO.md) | Аудит-итерация 4: 29 находок (P0/P1/P2), статус каждой vs реальный код |
+| [BACKLOG.md](./BACKLOG.md) | Открытые задачи post-audit: расширение тест-coverage, manual setup, Vercel deploy queue, wishlist |
