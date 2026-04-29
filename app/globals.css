@@ -444,6 +444,66 @@
   outline-offset: 2px;
 }
 
+/* ════════════════════════════════════════════════════════════
+   Sidebar / drawer / feedback modal — replaces framer-motion in
+   components/layout/Sidebar.tsx (2026-04-28 perf pass).
+
+   Why CSS: framer-motion was 80+ KB raw on the home critical path
+   for what amounts to two transitions and two enter/exit fades.
+   Plain CSS gets the same visual outcome at zero JS cost.
+
+   Pattern: every animated element renders unconditionally with
+   `data-open="false"` initially. When state flips to "true", CSS
+   transitions opacity / transform / pointer-events. The two modals
+   gate visibility via parent conditional render (no CSS exit anim
+   on those because they unmount cleanly anyway).
+   ════════════════════════════════════════════════════════════ */
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--md-sys-color-scrim, #000);
+  z-index: 40;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms cubic-bezier(0.2, 0, 0, 1);
+}
+.sidebar-overlay[data-open='true'] {
+  opacity: 0.32;
+  pointer-events: auto;
+}
+
+.sidebar-drawer {
+  transform: translateX(-300px);
+  transition: transform 300ms cubic-bezier(0.2, 0, 0, 1);
+}
+.sidebar-drawer[data-open='true'] {
+  transform: translateX(0);
+}
+
+@media (min-width: 768px) {
+  /* Desktop: drawer is always visible (md:sticky), no off-screen state. */
+  .sidebar-drawer {
+    transform: none !important;
+    transition: none;
+  }
+  .sidebar-overlay { display: none; }
+}
+
+.feedback-modal-overlay {
+  animation: fb-overlay-in 180ms ease both;
+}
+.feedback-modal-card {
+  animation: fb-card-in 220ms cubic-bezier(0.05, 0.7, 0.1, 1) both;
+}
+@keyframes fb-overlay-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes fb-card-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .tools-card-cascade { animation: none; opacity: 1; transform: none; }
   /* P1-A11Y-1 (WCAG 2.1 SC 2.3.3) — global gate that kills decorative

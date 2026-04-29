@@ -1,7 +1,10 @@
 'use client';
 
 import { useState, useMemo, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+// framer-motion removed in 2026-04-28 perf pass — replaced with pure
+// CSS transitions in app/globals.css (.sidebar-overlay, .sidebar-drawer,
+// .feedback-modal-overlay, .feedback-modal-card). Saves ~80 kB raw / 30
+// kB gz from the home critical path bundle.
 import { useAppStore } from '@/lib/store';
 import { useT, useLang } from '@/lib/i18n';
 import { searchCourses } from '@/lib/curriculum';
@@ -321,31 +324,19 @@ export default function Sidebar() {
   return (
     <>
       {/* Mobile overlay — dimming backdrop behind the drawer.
-          NOTE: framer-motion's `animate` overrides the inline style, so the
-          opacity MUST be set via animate — otherwise the backdrop renders
-          as pure black (scrim #000000 at opacity: 1) and hides main content. */}
-      <AnimatePresence>
-        {sidebarOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.32 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2, ease: [0.2, 0, 0, 1] }}
-            style={{
-              position: 'fixed', inset: 0,
-              background: 'var(--md-sys-color-scrim)', zIndex: 40,
-            }}
-            className="md:hidden"
-            onClick={toggleSidebar}
-          />
-        )}
-      </AnimatePresence>
+          Pure CSS opacity transition (was framer-motion). The wrapper is
+          always rendered; `pointer-events: none` plus `opacity: 0` keeps
+          it from intercepting clicks when the drawer is closed. */}
+      <div
+        className="sidebar-overlay md:hidden"
+        data-open={sidebarOpen ? 'true' : 'false'}
+        onClick={toggleSidebar}
+        aria-hidden={!sidebarOpen}
+      />
 
-      <motion.aside
-        initial={false}
-        animate={{ x: sidebarOpen ? 0 : -300 }}
-        transition={{ duration: 0.3, ease: [0.2, 0, 0, 1] }}
-        className="app-sidebar-aside fixed md:sticky top-0 z-50"
+      <aside
+        className="app-sidebar-aside sidebar-drawer fixed md:sticky top-0 z-50"
+        data-open={sidebarOpen ? 'true' : 'false'}
         style={{
           width: 280,
           height: '100dvh',
@@ -744,7 +735,7 @@ export default function Sidebar() {
         </p>
         {/* User menu — login state at the bottom of the sidebar */}
         <UserMenu />
-      </motion.aside>
+      </aside>
     </>
   );
 }
@@ -884,35 +875,28 @@ function FeedbackBlock({ t }: { t: (k: string, vars?: Record<string, string | nu
         </button>
       </div>
 
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.18 }}
-            onClick={() => !sending && setOpen(false)}
+      {open && (
+        <div
+          className="feedback-modal-overlay"
+          onClick={() => !sending && setOpen(false)}
+          style={{
+            position: 'fixed', inset: 0, zIndex: 9999,
+            background: 'rgba(15,23,42,0.45)',
+            backdropFilter: 'blur(2px)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            padding: 20,
+          }}
+        >
+          <div
+            className="feedback-modal-card"
+            onClick={(e) => e.stopPropagation()}
             style={{
-              position: 'fixed', inset: 0, zIndex: 9999,
-              background: 'rgba(15,23,42,0.45)',
-              backdropFilter: 'blur(2px)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              padding: 20,
+              width: '100%', maxWidth: 460,
+              background: '#FFFFFF', borderRadius: 16,
+              padding: '24px 24px 20px',
+              boxShadow: '0 24px 48px rgba(15,23,42,0.24)',
             }}
           >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.96, y: 8 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.96, y: 8 }}
-              transition={{ duration: 0.22, ease: [0.05, 0.7, 0.1, 1] }}
-              onClick={(e) => e.stopPropagation()}
-              style={{
-                width: '100%', maxWidth: 460,
-                background: '#FFFFFF', borderRadius: 16,
-                padding: '24px 24px 20px',
-                boxShadow: '0 24px 48px rgba(15,23,42,0.24)',
-              }}
-            >
               <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
                 <span style={{
                   width: 36, height: 36, borderRadius: 10,
@@ -1138,10 +1122,9 @@ function FeedbackBlock({ t }: { t: (k: string, vars?: Record<string, string | nu
                   {sent ? t('sidebar.feedback.sent') : sending ? t('sidebar.feedback.sending') : t('sidebar.feedback.send')}
                 </button>
               </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          </div>
+        </div>
+      )}
     </>
   );
 }
