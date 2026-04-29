@@ -71,4 +71,9 @@ next-env.d.ts
 # 34 MB of binaries — they live in node_modules already.
 /public/mediapipe/
 
+# Curriculum stats are pre-computed from lib/curriculum.ts at every
+# prebuild by scripts/build-curriculum-stats.mjs. Generated artifact;
+# committing it would create noisy diffs and merge conflicts.
+/lib/curriculum-stats.ts
+
 .vercel

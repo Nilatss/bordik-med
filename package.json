@@ -15,10 +15,11 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "sync:mediapipe": "node scripts/sync-mediapipe.mjs",
+    "build:curriculum-stats": "node scripts/build-curriculum-stats.mjs",
     "ai:questions": "node scripts/ai-generate-questions.mjs",
     "validate:scales": "npx tsx scripts/validate-scales.mjs",
     "validate:runners": "npx tsx scripts/smoke-runners.mjs",
-    "prebuild": "node scripts/sync-mediapipe.mjs && node scripts/build-tool-meta.mjs && node scripts/build-content.mjs"
+    "prebuild": "node scripts/sync-mediapipe.mjs && node scripts/build-curriculum-stats.mjs && node scripts/build-tool-meta.mjs && node scripts/build-content.mjs"
   },
   "dependencies": {
     "@fontsource-variable/jetbrains-mono": "^5.2.8",

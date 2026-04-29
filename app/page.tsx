@@ -2,7 +2,23 @@
 
 import { useEffect } from 'react';
 import { useAppStore } from '@/lib/store';
-import { sections, getSectionById, getModulesBySection, getModuleById, type SectionId } from '@/lib/curriculum';
+// Heavy module/course data lives in lib/curriculum.ts (~230 KB raw).
+// Home doesn't need it — every value it actually consumes is
+// precomputed at build time and lives in lib/curriculum-stats.ts:
+//   - SECTIONS              12 sections meta (~3.6 KB)
+//   - SECTION_TOTAL_COURSES drives "X / Y completed" without iterating modules
+//   - SECTION_COURSE_IDS    Set-based per-section completed-count lookup
+//   - MODULE_META           title + description + color for the module header
+// Importing only `curriculum-stats.ts` keeps webpack from dragging
+// `lib/curriculum.ts` (and the full course objects) into the home chunk.
+import type { SectionId } from '@/lib/curriculum-types';
+import {
+  SECTIONS as sections,
+  getSectionByIdFast as getSectionById,
+  SECTION_TOTAL_COURSES,
+  SECTION_COURSE_IDS,
+  MODULE_META,
+} from '@/lib/curriculum-stats';
 import dynamic from 'next/dynamic';
 
 // Supabase sync is lazy: the @supabase/* tree is heavy (50 KB gz) and
@@ -95,8 +111,12 @@ const CoursePage = dynamic(() => import('@/components/course/CoursePage'), { ssr
 // browser which is the hot path after the home feed.
 import NewsFeed from '@/components/feed/NewsFeed';
 import Sidebar from '@/components/layout/Sidebar';
-import ModuleGrid from '@/components/home/ModuleGrid';
-import CourseGrid from '@/components/home/CourseGrid';
+// ModuleGrid + CourseGrid pull `getModulesBySection`/`getModuleById`
+// from lib/curriculum.ts (~230 KB). They're only rendered when the
+// user navigates into a section / module, never on initial home paint.
+// Lazy-loading them keeps the curriculum data out of the home bundle.
+const ModuleGrid = dynamic(() => import('@/components/home/ModuleGrid'), { ssr: false, loading: ViewLoading });
+const CourseGrid = dynamic(() => import('@/components/home/CourseGrid'), { ssr: false, loading: ViewLoading });
 import { ArrowLeft, ArrowRight } from '@/components/icons';
 import { motion } from 'framer-motion';
 
@@ -168,12 +188,22 @@ const SECTION_CATEGORIES: { title: string; ids: SectionId[] }[] = [
 function SectionCards({ onSelect }: { onSelect: (id: SectionId) => void }) {
   const { completedCourses } = useAppStore();
 
+  // Set lookup is O(1) per check; ~700 completedCourses × 12 sections
+  // would be O(n*m) without it. Memoise once per render.
+  const completedSet = new Set(completedCourses);
+
   const renderSection = (secId: SectionId, i: number) => {
     const sec = sections.find((s) => s.id === secId);
     if (!sec) return null;
-    const mods = getModulesBySection(sec.id);
-    const totalCourses = mods.reduce((s, m) => s + m.courses.length, 0);
-    const completedCount = mods.reduce((s, m) => s + m.courses.filter((c) => completedCourses.includes(c.id)).length, 0);
+    // Precomputed lookups (build-time) keep us from importing the full
+    // modules array on home — drops ~200 KB raw / ~50 KB gz from the
+    // initial chunk.
+    const totalCourses = SECTION_TOTAL_COURSES[sec.id] ?? 0;
+    const courseIdsInSection = SECTION_COURSE_IDS[sec.id] ?? [];
+    let completedCount = 0;
+    for (const cid of courseIdsInSection) {
+      if (completedSet.has(cid)) completedCount++;
+    }
     const pct = totalCourses > 0 ? Math.round((completedCount / totalCourses) * 100) : 0;
     const isUnlocked = UNLOCKED_SECTIONS.includes(sec.id);
 
@@ -239,7 +269,7 @@ function SectionCards({ onSelect }: { onSelect: (id: SectionId) => void }) {
                 fontSize: '0.625rem', fontWeight: completedCount > 0 ? 600 : 500,
                 color: completedCount > 0 ? 'var(--md-sys-color-primary)' : 'var(--md-sys-color-on-surface-variant)',
               }}>
-                {completedCount > 0 ? `${pct}% пройдено` : `${mods.length} модулей`}
+                {completedCount > 0 ? `${pct}% пройдено` : `${totalCourses} курсов`}
               </span>
             </div>
             <div style={{ position: 'relative', zIndex: 1, flex: 1 }}>
@@ -328,7 +358,15 @@ export default function Home() {
   const toggleProfile = useAppStore((s) => s.toggleProfile);
 
   const section = activeSection ? getSectionById(activeSection) : null;
-  const mod = activeModuleId ? getModuleById(activeModuleId) : null;
+  // Module *header* metadata is precomputed in MODULE_META — title +
+  // description + color. The full course list is rendered by the
+  // already-lazy <CourseGrid> component, which can pull whatever
+  // curriculum data it needs without affecting the home bundle.
+  const mod = activeModuleId
+    ? (MODULE_META[activeModuleId]
+      ? { id: activeModuleId, ...MODULE_META[activeModuleId]! }
+      : null)
+    : null;
 
   // views: profile | stats | tests | tool | tools | home | learning (sections) → section (modules) → module (courses) → course
   const view = showProfile ? 'profile'

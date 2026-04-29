@@ -1,43 +1,16 @@
-export type Difficulty = 'basic' | 'intermediate' | 'advanced';
-export type LessonType = 'main' | 'physiology' | 'pathophysiology' | 'clinic' | 'protocol' | 'errors';
-export type SectionId =
-  | 'fundamentals'
-  | 'biomedical'
-  | 'clinical'
-  | 'allied'
-  | 'skills'
-  | 'hss'
-  | 'threads'
-  | 'frontier'
-  | 'business'
-  | 'regulatory'
-  | 'career'
-  | 'tech';
-
-export interface Course {
-  id: string;
-  moduleId: number;
-  title: string;
-  description: string;
-  tags: string[];
-  difficulty: Difficulty;
-}
-
-export interface Module {
-  id: number;
-  sectionId: SectionId;
-  title: string;
-  description: string;
-  color: string;
-  courses: Course[];
-}
-
-export interface Section {
-  id: SectionId;
-  title: string;
-  description: string;
-  icon: string;
-}
+// Types live in a separate tiny file (lib/curriculum-types.ts) so that
+// callers needing only the type shape (e.g. lib/curriculum-stats.ts —
+// auto-generated, ~37 KB) can import them without dragging in the full
+// 230 KB curriculum data via webpack's module-graph.
+export type {
+  Difficulty,
+  LessonType,
+  SectionId,
+  Course,
+  Module,
+  Section,
+} from './curriculum-types';
+import type { Difficulty, LessonType, Module, Section, SectionId, Course } from './curriculum-types';
 
 export const LESSON_TYPE_LABELS: Record<LessonType, { label: string; icon: string; description: string }> = {
   main: { label: 'Основная лекция', icon: '📖', description: 'Полная академическая лекция' },

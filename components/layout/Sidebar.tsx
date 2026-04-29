@@ -7,7 +7,12 @@ import { useState, useMemo, useEffect, useRef } from 'react';
 // kB gz from the home critical path bundle.
 import { useAppStore } from '@/lib/store';
 import { useT, useLang } from '@/lib/i18n';
-import { searchCourses } from '@/lib/curriculum';
+// `searchCourses` references the full 230 KB modules array from
+// lib/curriculum.ts. Importing it eagerly forces Sidebar (which mounts
+// on every route) to drag the curriculum data into the home bundle.
+// Instead we dynamically import on first non-empty query — UX cost is
+// a ~50-200 ms one-time chunk download on the user's first search.
+import type { SearchableCourse } from '@/lib/curriculum';
 // CATALOG_TOOLS (172 kB) is dynamically imported below — lazy until the
 // user actually starts searching while on the Tools view.
 import type { CatalogTool } from '@/lib/tools-catalog';
@@ -247,16 +252,38 @@ export default function Sidebar() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [q, lang]);
 
-  // Course search results - all, grouped by availability
+  // Course search results — async-loaded curriculum module on first
+  // non-empty query. State holds the latest result; first input has a
+  // ~50-200 ms download delay, subsequent inputs are instant.
   const UNLOCKED_SECTIONS = ['fundamentals'];
-  const courseResults = useMemo(() => {
-    if (!q || q.length < 2) return { available: [], locked: [] };
-    // Context-aware: if user is browsing a specific section, boost hits
-    // from that section so the most relevant ones surface to the top.
-    const all = searchCourses(q, 30, activeSection ?? undefined);
-    const available = all.filter((r) => UNLOCKED_SECTIONS.includes(r.module.sectionId));
-    const locked = all.filter((r) => !UNLOCKED_SECTIONS.includes(r.module.sectionId));
-    return { available, locked };
+  const searchModuleRef = useRef<{
+    searchCourses: (q: string, limit?: number, preferSection?: string) => SearchableCourse[];
+  } | null>(null);
+  const [courseResults, setCourseResults] = useState<{
+    available: SearchableCourse[];
+    locked: SearchableCourse[];
+  }>({ available: [], locked: [] });
+
+  useEffect(() => {
+    if (!q || q.length < 2) {
+      setCourseResults({ available: [], locked: [] });
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      if (!searchModuleRef.current) {
+        // Dynamic import — first call costs a chunk fetch, after that
+        // the function reference is cached on the ref.
+        const mod = await import('@/lib/curriculum');
+        searchModuleRef.current = { searchCourses: mod.searchCourses };
+      }
+      if (cancelled) return;
+      const all = searchModuleRef.current.searchCourses(q, 30, activeSection ?? undefined);
+      const available = all.filter((r) => UNLOCKED_SECTIONS.includes(r.module.sectionId));
+      const locked = all.filter((r) => !UNLOCKED_SECTIONS.includes(r.module.sectionId));
+      if (!cancelled) setCourseResults({ available, locked });
+    })();
+    return () => { cancelled = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [q, activeSection]);
 

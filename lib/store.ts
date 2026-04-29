@@ -2,8 +2,12 @@
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { SectionId } from './curriculum';
-import { getModuleById } from './curriculum';
+import type { SectionId } from './curriculum-types';
+// Use the build-time precomputed module → course IDs map instead of
+// importing the full module objects. This keeps lib/store.ts (eager
+// in every consumer) from dragging the 230 KB curriculum.ts module
+// data into the home bundle.
+import { MODULE_COURSE_IDS } from './curriculum-stats';
 import {
   type TestLevel, type TestAttempt, type ModuleTestAttempt, type TestQuestion,
   gradeTest, gradeModuleTest, MAX_TEST_LEVELS,
@@ -458,7 +462,7 @@ export function getHighestPassedLevel(state: AppState, courseId: string): number
 
 /** Check if module final test is unlocked (all courses have level 5 passed) */
 export function isModuleTestUnlocked(state: AppState, moduleId: number): boolean {
-  const mod = getModuleById(moduleId);
-  if (!mod) return false;
-  return mod.courses.every((c) => (state.courseTestProgress[c.id] || 0) >= MAX_TEST_LEVELS);
+  const courseIds = MODULE_COURSE_IDS[moduleId];
+  if (!courseIds || courseIds.length === 0) return false;
+  return courseIds.every((cid) => (state.courseTestProgress[cid] || 0) >= MAX_TEST_LEVELS);
 }
