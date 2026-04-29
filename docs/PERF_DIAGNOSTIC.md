@@ -111,3 +111,55 @@ Main thread breakdown: 423 ms script eval + 379 ms "other" + 312 ms style/layout
 7. Replace `@vercel/analytics` package with raw `web-vitals` beacon (-5-10 KB)
 8. React 19 server components migration where possible (current setup
    has `'use client'` on root page.tsx)
+
+---
+
+## After optimization (2026-04-29, deploy ea4e145+dfd2ff5)
+
+| Metric | Before (87) | After (89) | Δ |
+|---|---|---|---|
+| Performance score | 87 | **89** | +2 |
+| FCP | 1.2 s | 1.3 s | ~same |
+| LCP | 3.3 s | 3.4 s | ~same |
+| **TBT** | **250 ms** | **120 ms** | **-130 ms** ✅ |
+| Speed Index | 2.5 s | 3.9 s | ⚠️ regressed |
+| TTI | 3.3 s | 3.5 s | ~same |
+| CLS | 0 | 0.001 | ~same |
+| Total bytes | 527 KB | 487 KB | -40 KB |
+| Unused JS savings | 130 KB | 90 KB | -40 KB |
+
+### Initial JS critical path
+
+| | Before | After |
+|---|---|---|
+| Total raw | 1.23 MB | 826 KB |
+| Home page-*.js | 270 KB | **109 KB** |
+| Curriculum data | shipped eager | **lazy chunk** |
+| Supabase | shipped eager | **lazy chunk** |
+| framer-motion in Sidebar | shipped + runs | replaced with CSS |
+
+### Wins
+- **TBT dropped 130 ms** — hits the ≤200 ms target. On slow devices (4× CPU
+  throttle) this is the single biggest UX-perceptible improvement.
+- Home page chunk down by 60% (270 → 109 KB raw).
+- Curriculum module data (~200 KB) and Supabase (~50 KB gz) both moved to
+  lazy chunks — anonymous home loads neither.
+
+### Remaining issues
+- **LCP 3.4 s** — still above 2.5 s target. Lighthouse identifies the
+  `app-main-wrap` div with 1990 ms element-render-delay. Root cause: home
+  shell (sidebar + section cards) is hydrated client-side. SSR-rendering
+  the section cards is the next P0 target.
+- **Speed Index regressed 2.5 → 3.9 s**. Counter-intuitive but explained
+  by the lazy-chunk strategy: total bytes fell, but the visual paint now
+  happens across multiple async chunk arrivals → SI waits for everything
+  to land. Expected to recover when section cards are SSR'd (point above).
+
+### Next P0 target
+
+Server-render the SectionCards. They're driven entirely by precomputed
+data (SECTIONS + SECTION_TOTAL_COURSES + SECTION_COURSE_IDS) so SSR is
+straightforward; the only client-only piece is the per-user
+`completedCount` from Zustand, which can hydrate progressively.
+
+Expected impact: LCP 3.4 → ≤ 2.0 s, Speed Index 3.9 → ≤ 2.0 s.
