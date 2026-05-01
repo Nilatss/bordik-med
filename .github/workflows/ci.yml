@@ -35,9 +35,12 @@ jobs:
         # Use ci instead of install so the lock-file is honoured exactly.
         run: npm ci --no-audit --no-fund
 
-      - name: Sync MediaPipe (self-hosted WASM)
-        # Mirrors prebuild step — gives leak-scan something to scan.
-        run: npm run sync:mediapipe
+      - name: Run prebuild codegen
+        # Generates lib/curriculum-stats.ts, public/tool-meta.json, content
+        # manifests, and syncs MediaPipe WASM. tsc + tests reference some of
+        # these files, so we must run prebuild before the type-check step.
+        # Without this, tsc fails with TS2307 on @/lib/curriculum-stats.
+        run: npm run prebuild
 
       - name: TypeScript type-check
         run: npx tsc --noEmit -p tsconfig.json

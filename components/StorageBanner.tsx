@@ -19,35 +19,30 @@
  * Sentry session-replay, etc.), this becomes a real consent banner
  * with allow/deny + integration into the consent_records table.
  */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const KEY = 'bordik-storage-notice-dismissed';
 
 /**
- * Synchronous initial state. Reading localStorage during render means
- * the banner mounts in the very first paint cycle (or doesn't mount
- * at all if dismissed) — instead of paint-then-mount via useEffect.
+ * SSR-safe two-phase mount:
+ *   - First render (server + client first paint): show=false → return null.
+ *     Both sides agree, no hydration mismatch.
+ *   - useEffect after mount: read localStorage and flip show=true if not
+ *     yet dismissed.
  *
- * Why this matters: Lighthouse identified the previous useEffect-gated
- * banner as the LCP candidate at +913 ms post-FCP — the late paint on
- * a fixed-positioned dark block was the largest content event. By
- * collapsing render delay to zero, LCP shifts back onto real content.
- *
- * Trade-off: we read localStorage on initial render. This is fine
- * because the component is `'use client'` and only mounts after
- * hydration; SSR returns `false` (window undefined → catch branch).
+ * The previous synchronous-init pattern broke hydration in production
+ * (Next 16 + Turbopack flagged the role/aria-label drift as a
+ * Recoverable Error). The LCP cost we were trying to avoid is moot —
+ * StorageBanner is bottom-right and never the LCP element anyway.
  */
-function readInitialShow(): boolean {
-  if (typeof window === 'undefined') return false;
-  try {
-    return localStorage.getItem(KEY) !== '1';
-  } catch {
-    return false;
-  }
-}
-
 export function StorageBanner() {
-  const [show, setShow] = useState(readInitialShow);
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    try {
+      if (localStorage.getItem(KEY) !== '1') setShow(true);
+    } catch { /* localStorage may be blocked */ }
+  }, []);
 
   if (!show) return null;
 
@@ -56,9 +51,10 @@ export function StorageBanner() {
       role="region"
       aria-label="Уведомление о хранении данных"
       aria-live="polite"
+      data-banner="storage"
       style={{
-        position: 'fixed', left: 12, right: 12, bottom: 12, zIndex: 9999,
-        maxWidth: 720, margin: '0 auto',
+        position: 'fixed', right: 16, bottom: 16, zIndex: 9999,
+        maxWidth: 380,
         padding: '14px 16px',
         background: '#1A1A1A', color: '#FFFFFF',
         borderRadius: 14, border: '1px solid rgba(255,255,255,0.12)',

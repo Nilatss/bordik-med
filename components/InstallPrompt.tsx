@@ -104,8 +104,9 @@ export function InstallPrompt() {
       role="dialog"
       aria-label="Установить Bordik"
       style={{
-        position: 'fixed', left: 12, right: 12, bottom: 78, zIndex: 9998,
-        maxWidth: 720, margin: '0 auto',
+        // Stacks above StorageBanner (bottom: 16, height ~ 90 + gap 8 → 114)
+        position: 'fixed', right: 16, bottom: 130, zIndex: 9998,
+        maxWidth: 380,
         padding: '14px 16px',
         background: '#1A1A1A', color: '#FFFFFF',
         borderRadius: 14, border: '1px solid rgba(255,255,255,0.12)',
