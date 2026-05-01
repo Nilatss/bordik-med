@@ -32,9 +32,16 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+# ...except the template, which is committed deliberately so contributors
+# know which keys are required.
+!.env.local.example
 
 # vercel
 .vercel
+
+# sentry — build plugin auth token (covered by .env* but listed explicitly)
+.env.sentry-build-plugin
+.sentryclirc
 
 # typescript
 *.tsbuildinfo
