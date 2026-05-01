@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import withSerwistInit from '@serwist/next';
 import withBundleAnalyzer from '@next/bundle-analyzer';
+import { withSentryConfig } from '@sentry/nextjs';
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -158,4 +159,40 @@ const analyzer = withBundleAnalyzer({
   openAnalyzer: false,
 });
 
-export default analyzer(withSerwist(nextConfig));
+/**
+ * Sentry config wrapper. Must be the OUTERMOST wrapper so that Sentry's
+ * webpack plugin runs after Serwist + bundle analyzer have decided what
+ * to ship. The plugin uploads source maps at build time when
+ * SENTRY_AUTH_TOKEN is present (Vercel prod / preview); on local dev
+ * builds the upload step is silently skipped.
+ */
+export default withSentryConfig(analyzer(withSerwist(nextConfig)), {
+  // Only forward env vars that are actually defined — exactOptionalPropertyTypes
+  // refuses to pass `undefined` where the SDK expects a string.
+  ...(process.env.SENTRY_ORG ? { org: process.env.SENTRY_ORG } : {}),
+  ...(process.env.SENTRY_PROJECT ? { project: process.env.SENTRY_PROJECT } : {}),
+  ...(process.env.SENTRY_AUTH_TOKEN ? { authToken: process.env.SENTRY_AUTH_TOKEN } : {}),
+
+  // Suppress build-time logs unless on CI (keeps `npm run dev` quiet)
+  silent: !process.env.CI,
+
+  // Tunnel /monitoring -> Sentry ingest endpoint to bypass ad-blockers
+  // that block the bare ingest hostname. Adds one Vercel function but
+  // reliable error reporting is worth the small cost.
+  tunnelRoute: '/monitoring',
+
+  // Delete the source maps from the public bundle after Sentry has them.
+  // Stack traces in Sentry UI stay readable; users hitting view-source
+  // see minified code only.
+  sourcemaps: {
+    deleteSourcemapsAfterUpload: true,
+  },
+
+  // Strip Sentry's internal `console.log` statements from production
+  // bundles. Saves a kilobyte and avoids leaking SDK internals.
+  disableLogger: true,
+
+  // Skip the SDK's automatic generation of "Vercel monitor" cron tasks
+  // — we don't use Vercel cron jobs.
+  automaticVercelMonitors: false,
+});
