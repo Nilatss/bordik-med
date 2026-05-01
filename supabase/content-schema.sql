@@ -1,5 +1,5 @@
 -- ════════════════════════════════════════════════════════════════
--- Bordik / IronMed Academy — Content schema (Stage 3.1 of the audit plan)
+-- Bordik Med — Content schema (Stage 3.1 of the audit plan)
 --
 -- This is a SEPARATE migration from supabase/schema.sql (which carries the
 -- per-user state). Run once in the Supabase SQL editor or push via

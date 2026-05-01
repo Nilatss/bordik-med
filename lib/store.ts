@@ -347,7 +347,7 @@ export const useAppStore = create<AppState>()(
       },
     }),
     {
-      name: 'ironmed-progress',
+      name: 'bordik-progress',
       version: 3,
       // Hardened migrate: tolerant of corrupt or attacker-tampered
       // localStorage. We never trust persisted JSON blindly - every

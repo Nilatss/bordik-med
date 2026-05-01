@@ -16,7 +16,7 @@ const APP_DESCRIPTION =
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') ?? 'https://ironmed-academy.vercel.app',
+    process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') ?? 'https://bordik-med.vercel.app',
   ),
   applicationName: APP_NAME,
   title: {
@@ -117,8 +117,8 @@ export default function RootLayout({
             '@context': 'https://schema.org',
             '@type': 'EducationalOrganization',
             name: APP_NAME,
-            alternateName: 'IronMed Academy',
-            url: process.env.NEXT_PUBLIC_APP_URL ?? 'https://ironmed-academy.vercel.app',
+            alternateName: 'Bordik Med',
+            url: process.env.NEXT_PUBLIC_APP_URL ?? 'https://bordik-med.vercel.app',
             description: APP_DESCRIPTION,
             sameAs: ['https://t.me/bordik_app'],
             email: 'hello@bordik.app',

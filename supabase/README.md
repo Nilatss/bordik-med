@@ -1,6 +1,6 @@
 # Supabase setup
 
-This folder holds the SQL migrations for the IronMed Academy backend.
+This folder holds the SQL migrations for the Bordik Med backend.
 
 ## Files
 

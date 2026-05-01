@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Условия использования',
-  description: 'Условия использования платформы Bordik / IronMed Academy.',
+  description: 'Условия использования платформы Bordik Med.',
   alternates: {
     canonical: '/terms',
     languages: {
@@ -26,7 +26,7 @@ export default function TermsPage() {
           '@context': 'https://schema.org',
           '@type': 'BreadcrumbList',
           itemListElement: [
-            { '@type': 'ListItem', position: 1, name: 'Главная', item: 'https://ironmed-academy.vercel.app/' },
+            { '@type': 'ListItem', position: 1, name: 'Главная', item: 'https://bordik-med.vercel.app/' },
             { '@type': 'ListItem', position: 2, name: 'Условия использования' },
           ],
         }) }}
@@ -159,7 +159,7 @@ export default function TermsPage() {
           образовательные продукты — только с письменного разрешения.
         </p>
         <p>
-          Цитирование с указанием источника (<em>«Bordik / IronMed Academy»</em>{' '}
+          Цитирование с указанием источника (<em>«Bordik Med»</em>{' '}
           + ссылка на страницу) допустимо в академических работах.
         </p>
       </Section>

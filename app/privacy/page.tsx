@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Политика конфиденциальности',
-  description: 'Как Bordik / IronMed Academy обрабатывает персональные данные.',
+  description: 'Как Bordik Med обрабатывает персональные данные.',
   alternates: {
     canonical: '/privacy',
     languages: {
@@ -48,7 +48,7 @@ export default function PrivacyPage() {
           '@context': 'https://schema.org',
           '@type': 'BreadcrumbList',
           itemListElement: [
-            { '@type': 'ListItem', position: 1, name: 'Главная', item: 'https://ironmed-academy.vercel.app/' },
+            { '@type': 'ListItem', position: 1, name: 'Главная', item: 'https://bordik-med.vercel.app/' },
             { '@type': 'ListItem', position: 2, name: 'Политика конфиденциальности' },
           ],
         }) }}
@@ -81,7 +81,7 @@ export default function PrivacyPage() {
 
       <Section h="1. Кто мы">
         <p>
-          IronMed Academy («Bordik», «мы», «нам», «нас») — образовательная
+          Bordik Med («Bordik», «мы», «нам», «нас») — образовательная
           платформа для медиков и студентов. Если у вас есть вопросы об обработке
           ваших данных, права субъекта или жалоба — пишите на{' '}
           <a href="mailto:privacy@bordik.app">privacy@bordik.app</a>.

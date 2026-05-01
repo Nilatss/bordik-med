@@ -1,6 +1,6 @@
 # Performance diagnostic — baseline (2026-04-28)
 
-> Снимок производительности `https://ironmed-academy.vercel.app/`
+> Снимок производительности `https://bordik-med.vercel.app/`
 > на момент **до оптимизации**. См. PR'ы после этой даты для применённых
 > правок и финальных метрик.
 

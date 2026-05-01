@@ -1,4 +1,4 @@
-# Security setup & IR runbook — IronMed Academy / Bordik
+# Security setup & IR runbook — Bordik Med
 
 > Living document. Owner: security@bordik.app. Review every quarter.
 > Last reviewed: 2026-04-28.
@@ -25,7 +25,7 @@ endpoints, etc.) lives in the repo and is enforced by CI.
 
 ## 1. Supabase — manual checklist
 
-Done from the Supabase dashboard, project: `ironmed-academy` (or whatever
+Done from the Supabase dashboard, project: `bordik-med` (or whatever
 the production project is named). All changes are logged in the project's
 audit log.
 
@@ -286,7 +286,7 @@ Subject: Уведомление о возможном инциденте без�
 Уважаемый пользователь,
 
 <DATE> мы обнаружили инцидент, который мог затронуть данные вашей
-учётной записи на платформе Bordik / IronMed Academy. Затронутые
+учётной записи на платформе Bordik Med. Затронутые
 данные: <CATEGORIES>. Доказательства фактического использования:
 <YES / NO>.
 

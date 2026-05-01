@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next';
 
-const BASE = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') ?? 'https://ironmed-academy.vercel.app';
+const BASE = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') ?? 'https://bordik-med.vercel.app';
 
 /**
  * Static sitemap — listing only the routes that actually exist as pages

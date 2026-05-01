@@ -1,9 +1,9 @@
 Contact: mailto:security@bordik.app
 Expires: 2027-04-28T00:00:00.000Z
 Preferred-Languages: ru, en
-Canonical: https://ironmed-academy.vercel.app/.well-known/security.txt
-Policy: https://ironmed-academy.vercel.app/security
-Acknowledgments: https://ironmed-academy.vercel.app/security#acknowledgments
+Canonical: https://bordik-med.vercel.app/.well-known/security.txt
+Policy: https://bordik-med.vercel.app/security
+Acknowledgments: https://bordik-med.vercel.app/security#acknowledgments
 
 # Reporting guidelines
 # - Use the email above for vulnerability reports. PGP key on request.
