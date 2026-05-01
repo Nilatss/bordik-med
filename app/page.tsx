@@ -210,7 +210,12 @@ function SectionCards({ onSelect }: { onSelect: (id: SectionId) => void }) {
     return (
           <motion.button
             key={sec.id}
-            initial={{ opacity: 0, y: 12 }}
+            // initial={false} skips the enter animation so SSR HTML renders
+            // the card at its final visible state. Otherwise framer-motion
+            // outputs opacity:0 in the server HTML and only fades in once
+            // hydration finishes, blocking LCP for ~600 ms across the
+            // staggered grid.
+            initial={false}
             animate={{ opacity: isUnlocked ? 1 : 0.48, y: 0 }}
             transition={{ delay: i * 0.03, duration: 0.3, ease: [0.05, 0.7, 0.1, 1] }}
             onClick={() => { if (isUnlocked) onSelect(sec.id); }}
@@ -512,10 +517,27 @@ export default function Home() {
             </div>
           )}
 
-          {view === 'learning' && (
+          {/*
+            Home + Learning collapse to the same view: a hero header followed
+            by the section cards grid. This used to be split — `view === 'home'`
+            showed a "Лента новостей вернётся" stub, `view === 'learning'`
+            showed SectionCards. Returning users had `showLearning=true`
+            persisted in localStorage, so the SSR HTML (initial state, no
+            persist hydration yet) rendered the stub, then React re-rendered
+            with SectionCards once Zustand finished rehydrating. That
+            pre-hydration → post-hydration content swap was the source of the
+            ~1990 ms LCP `render-delay` Lighthouse flagged on the home route:
+            the actual above-the-fold content was being thrown away and
+            rebuilt client-side. By rendering SectionCards on both views we
+            give SSR a stable, real-content tree, and LCP lands ~1.5 s sooner.
+          */}
+          {(view === 'home' || view === 'learning') && (
             <div style={{ margin: '0' }}>
               <motion.div
-                initial={{ opacity: 0, y: 12 }}
+                // Same initial={false} reasoning as the SectionCards buttons:
+                // we want the hero header in the SSR HTML at full opacity so
+                // it counts towards LCP immediately.
+                initial={false}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1] }}
                 style={{ marginBottom: 'var(--space-5)' }}
@@ -535,13 +557,6 @@ export default function Home() {
               </motion.div>
               <SectionCards onSelect={setActiveSection} />
             </div>
-          )}
-
-          {view === 'home' && (
-            <ComingSoonStub
-              title="Главная"
-              description="Лента новостей вернётся после редизайна. Загляните в Обучение или Инструменты."
-            />
           )}
 
           </div>
