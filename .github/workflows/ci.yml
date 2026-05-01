@@ -55,7 +55,7 @@ jobs:
           NODE_ENV: production
           # Minimal env so build doesn't fail on missing config; real
           # secrets stay in Vercel.
-          NEXT_PUBLIC_APP_URL: https://ironmed-academy.vercel.app
+          NEXT_PUBLIC_APP_URL: https://bordik-med.vercel.app
         run: npm run build
 
       - name: Bundle secret-leak scan

@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════
-   IronMed Academy - Test System Types & Logic
+   Bordik Med - Test System Types & Logic
    ═══════════════════════════════════════════ */
 
 export type TestLevel = 1 | 2 | 3 | 4 | 5;

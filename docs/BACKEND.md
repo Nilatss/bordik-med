@@ -34,9 +34,9 @@ For local dev: copy `.env.local.example` → `.env.local` and fill in the same t
 
 In **Supabase → Authentication → URL Configuration**:
 
-- **Site URL**: `https://ironmed-academy.vercel.app` (prod) or `http://localhost:3000` (dev)
+- **Site URL**: `https://bordik-med.vercel.app` (prod) or `http://localhost:3000` (dev)
 - **Redirect URLs** — add **both**:
-  - `https://ironmed-academy.vercel.app/auth/callback`
+  - `https://bordik-med.vercel.app/auth/callback`
   - `http://localhost:3000/auth/callback`
 
 In **Supabase → Authentication → Providers**:

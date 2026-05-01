@@ -18,7 +18,7 @@
 
 const PROD_ALLOWLIST = [
   process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, ''),
-  'https://ironmed-academy.vercel.app',
+  'https://bordik-med.vercel.app',
   'https://bordik.app',
   'https://www.bordik.app',
 ].filter((s): s is string => Boolean(s));

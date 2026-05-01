@@ -11,7 +11,7 @@
 import { ImageResponse } from 'next/og';
 
 // Image metadata
-export const alt = 'Bordik / IronMed Academy — медицинское обучение';
+export const alt = 'Bordik Med — медицинское обучение';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -88,7 +88,7 @@ export default async function OG() {
           color: 'rgba(255,255,255,0.55)',
           fontFamily: 'ui-monospace, monospace',
         }}>
-          <span>ironmed-academy.vercel.app</span>
+          <span>bordik-med.vercel.app</span>
         </div>
       </div>
     ),

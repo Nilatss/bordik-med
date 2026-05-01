@@ -1,5 +1,5 @@
 -- ════════════════════════════════════════════════════════════════
--- Bordik / IronMed Academy — Supabase schema
+-- Bordik Med — Supabase schema
 -- Run once in the Supabase SQL editor (or via `supabase db push`).
 -- All tables are user-scoped via Row-Level Security (RLS) so each
 -- authenticated user only ever sees their own rows.
