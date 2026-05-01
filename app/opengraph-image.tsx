@@ -2,8 +2,15 @@
  * P2-SEO-1 — Default Open Graph image, generated at build time.
  *
  * Used when a page doesn't define its own og:image. Driven by Next.js's
- * built-in `next/og` ImageResponse — server-rendered SVG-to-PNG at edge
- * runtime, ~10 KB output, no asset pipeline needed.
+ * built-in `next/og` ImageResponse — server-rendered SVG-to-PNG, ~10 KB
+ * output, no asset pipeline needed.
+ *
+ * Runs at build time (default Node runtime, no `edge` export). The
+ * generated PNG is cached as a static asset, so social media bots
+ * never trigger a runtime render. The previous `runtime = 'edge'` was
+ * leftover from when next/og only supported edge — Next 14+ supports
+ * Node runtime for ImageResponse, which unlocks static generation and
+ * removes the "edge runtime disables static generation" warning.
  *
  * For per-tool / per-course images, drop an `opengraph-image.tsx` in
  * the matching route segment — Next will pick that up automatically.
@@ -14,8 +21,6 @@ import { ImageResponse } from 'next/og';
 export const alt = 'Bordik Med — медицинское обучение';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
-
-export const runtime = 'edge';
 
 export default async function OG() {
   return new ImageResponse(

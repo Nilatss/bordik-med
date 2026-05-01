@@ -58,7 +58,8 @@ const withSerwist = withSerwistInit({
 
 /* ─────────────────────────────────────────────────────────────────
  * Baseline security headers applied to every response. CSP is set in
- * middleware.ts (per-request nonce); everything else is static and lives
+ * proxy.ts (per-request nonce; previously middleware.ts before Next 16
+ * deprecation); everything else is static and lives
  * here.
  *
  * Notes:
