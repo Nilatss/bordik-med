@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect } from 'react';
 import { useAppStore } from '@/lib/store';
 // Heavy module/course data lives in lib/curriculum.ts (~230 KB raw).
 // Home doesn't need it — every value it actually consumes is
@@ -325,18 +324,10 @@ export default function Home() {
   // it just calls useSupabaseSync() once Supabase code finishes
   // loading post-hydration.
 
-  // Hide the pre-hydration skeleton (rendered in app/layout.tsx) as soon
-  // as React's first effect runs. Two-phase fade:
-  //   data-ready="1" → CSS opacity transition kicks in
-  //   data-ready="2" → display:none after the fade so the skeleton stops
-  //                    consuming layers / paint cycles.
-  useEffect(() => {
-    document.documentElement.dataset.ready = '1';
-    const t = setTimeout(() => {
-      document.documentElement.dataset.ready = '2';
-    }, 250);
-    return () => clearTimeout(t);
-  }, []);
+  // (The pre-hydration skeleton useEffect that lived here was removed
+  // along with the skeleton itself — see app/layout.tsx. With the home
+  // route's SectionCards now in the SSR HTML, the skeleton was just a
+  // 470 ms LCP-blocking overlay rather than a useful loading hint.)
 
   // Narrow selectors — the previous destructure `useAppStore()` subscribed
   // this component (and its whole subtree) to every store update, so
