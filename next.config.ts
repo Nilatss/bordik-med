@@ -106,7 +106,11 @@ const nextConfig: NextConfig = {
   },
   // Hide server framework signature from response headers - small but free win
   poweredByHeader: false,
-  productionBrowserSourceMaps: false,
+  // Source maps must be generated so Sentry's build plugin can upload them.
+  // The Sentry wrapper (`sourcemaps.deleteSourcemapsAfterUpload: true`) wipes
+  // them from the public bundle right after upload, so view-source on prod
+  // still shows minified code only — but Sentry stack traces stay readable.
+  productionBrowserSourceMaps: true,
   // PWA / caching headers + global security baseline
   async headers() {
     return [
@@ -187,6 +191,12 @@ export default withSentryConfig(analyzer(withSerwist(nextConfig)), {
   sourcemaps: {
     deleteSourcemapsAfterUpload: true,
   },
+
+  // Upload sourcemaps for ALL client-side chunks, not just the ones
+  // Sentry's heuristics consider relevant. Without this we got 21 build
+  // warnings about "could not determine a source map reference" which
+  // (combined with `deleteSourcemapsAfterUpload`) failed the Vercel build.
+  widenClientFileUpload: true,
 
   // Strip Sentry's internal `console.log` statements from production
   // bundles. Saves a kilobyte and avoids leaking SDK internals.
