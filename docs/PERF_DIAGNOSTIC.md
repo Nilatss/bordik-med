@@ -163,3 +163,73 @@ straightforward; the only client-only piece is the per-user
 `completedCount` from Zustand, which can hydrate progressively.
 
 Expected impact: LCP 3.4 → ≤ 2.0 s, Speed Index 3.9 → ≤ 2.0 s.
+
+---
+
+## After SSR fix (2026-05-01, deploys dc18533 + 2436247)
+
+Two PRs landed back-to-back:
+- **#16** — collapsed `view === 'home'` and `view === 'learning'` into the
+  same SectionCards render. Eliminated the SSR/hydration content swap
+  caused by Zustand `persist` flipping `showLearning` from `false` (server
+  default) to `true` (returning user) after mount.
+- **#17** — removed the full-screen `#__app_skeleton` overlay from
+  `app/layout.tsx`. With SectionCards now in the SSR HTML payload, the
+  skeleton was an opaque `position: fixed; z-index: 1` cover-up delaying
+  visibility of real content for ~470 ms (250 ms timeout + 220 ms fade).
+
+### Lighthouse mobile (slow-4G + 4× CPU throttle, headless)
+
+Two sets of numbers — the **simulated** values Lighthouse reports and
+the **observed** values it measured during the actual trace. The
+simulated track inflates real numbers by 3–4× to model a budget device
+on rural 3G; the observed track is what the test machine actually saw.
+
+| Metric            | Before | After | Δ |
+|---|---|---|---|
+| Performance score | 87 | **88** | +1 |
+| **Observed LCP**  | ~3000 ms | **1025 ms** | **-66 %** |
+| **Observed FCP**  | ~1500 ms | **692 ms**  | -54 % |
+| **Observed SI**   | ~2500 ms | **790 ms**  | -68 % |
+| Reported LCP      | 3.4 s | 3.4 s | unchanged |
+| Reported FCP      | 1.2 s | **1.0 s** | -0.2 s |
+| Reported TBT      | 250 ms | **232 ms** | -7 % |
+| Reported SI       | 2.5 s (3.9 s post-curriculum-split) | **1.9 s** | recovered + improved |
+
+The **Reported LCP staying at 3.4 s while Observed LCP dropped to 1.0 s**
+is a Lighthouse simulation artifact. The throttling profile assumes a
+budget device that's roughly 3.3× slower than the test runner; LCP gets
+multiplied accordingly. Real users on a current mid-range phone see
+something close to the observed numbers.
+
+### Lighthouse desktop
+
+| Metric | Before | After |
+|---|---|---|
+| Performance score | 97 | **99** |
+| LCP | 1.0 s | **0.8 s** |
+| FCP | 0.5 s | **0.4 s** |
+| Speed Index | 1.4 s | **0.8 s** |
+| TBT | 20 ms | 30 ms |
+| TTI | 1.0 s | **0.8 s** |
+
+### LCP element
+
+`body > div > div` — one of the section card buttons (`width: 246`,
+`height: 121`, `top: 671`). The element is now in SSR HTML and paints
+at FCP. The previous LCP element `app-main-wrap` had a 1990 ms render-
+delay because its content was the dropped ComingSoonStub being
+swapped for SectionCards mid-hydration.
+
+### What's left
+
+- TBT 232 ms still above the 200 ms green threshold. Largest scripting
+  block is the framer-motion + Sidebar mount (~200 ms). Could be
+  reduced by lazy-loading framer-motion on the home route (motion
+  components there only fade in once, never animate again) or replacing
+  with CSS `@starting-style`.
+- Mobile reported LCP 3.4 s is unlikely to improve further without
+  trimming the >300 KB of JS the home route still ships. Real users see
+  ~1 s; the synthetic number is a known overestimate. Tracking
+  Lighthouse insight numbers in Sentry once we move to CrUX-based field
+  metrics will give us the real picture.
