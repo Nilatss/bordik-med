@@ -66,12 +66,28 @@ export function proxy(req: NextRequest) {
 
   const cspParts = [
     `default-src 'self'`,
-    // strict-dynamic + nonce: scripts loaded by trusted scripts inherit
-    // trust. We keep 'unsafe-inline' as a fallback for browsers that
-    // don't honour strict-dynamic — they ignore the nonce + strict-dynamic
-    // and fall back to 'unsafe-inline'. Modern browsers honour the nonce
-    // path and ignore 'unsafe-inline'.
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'unsafe-inline' https://storage.googleapis.com https://va.vercel-scripts.com`,
+    // script-src strategy:
+    //   We previously used `'strict-dynamic' 'nonce-${nonce}'`, which is
+    //   the "modern" hardening pattern. It worked under Report-Only but
+    //   broke production the moment we flipped to enforce: Next.js's
+    //   framework script tags (the per-chunk imports under
+    //   /_next/static/chunks/*.js) ship WITHOUT a nonce attribute. With
+    //   strict-dynamic active, browsers honour ONLY nonce-tagged scripts
+    //   and ignore 'self' / origin allowlists, so every Next chunk got
+    //   blocked → React never booted → page rendered as raw HTML text.
+    //
+    //   Falling back to the classic 'self' + 'nonce' + 'unsafe-inline'
+    //   triplet:
+    //     - 'self' covers /_next/static/* (which we own anyway)
+    //     - 'nonce-XYZ' lets us tag any inline scripts we render
+    //       server-side ourselves (currently just the JSON-LD blob)
+    //     - 'unsafe-inline' is a fallback for older browsers that do
+    //       not honour nonce-source — modern browsers ignore it when a
+    //       nonce IS present
+    //   This is one notch less strict than strict-dynamic but identical
+    //   in practice for our threat model (we don't ship third-party
+    //   user-generated scripts).
+    `script-src 'self' 'nonce-${nonce}' 'unsafe-inline' https://storage.googleapis.com https://va.vercel-scripts.com`,
     // Tailwind 4 ships utility classes via inline <style>; we can't
     // drop 'unsafe-inline' for style-src without breaking the design
     // system. The nonce is still emitted for any <style> we render
