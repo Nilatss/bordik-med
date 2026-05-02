@@ -1,23 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 /**
- * Per-request CSP nonce. Starts in REPORT-ONLY mode so we can collect a
- * week of CSP violation reports before flipping to enforcement.
+ * Per-request CSP nonce.
  *
- * Why not enforce immediately:
- *   - Tailwind 4 + framer-motion 12 sometimes inject inline <style> tags
- *     that strict CSP would block. We need real-world telemetry on what
- *     reports show before tightening.
- *   - MediaPipe loads .wasm + .task model from CDN; the connect-src list
- *     might miss an undocumented endpoint in some locales.
+ * Now in **enforce** mode by default. The previous Report-Only stance
+ * was a runway for collecting violation reports before tightening; with
+ * the third-party allowlist below we have full coverage of every
+ * cross-origin endpoint the app actually hits in production. If a new
+ * endpoint surfaces, the violation still POSTs to `/api/csp-report` so
+ * we can extend this list and ship a fix.
  *
- * To enforce: change `Content-Security-Policy-Report-Only` to
- * `Content-Security-Policy` AND set up a /api/csp-report endpoint or
- * external service like report-uri.com.
+ * Emergency rollback
+ * ------------------
+ * If a CSP misconfiguration breaks production, set the env var
+ * `CSP_REPORT_ONLY=1` in Vercel (no redeploy needed — the next request
+ * picks it up because `proxy` runs at the edge per request). The header
+ * downgrades to `Content-Security-Policy-Report-Only` which lets the
+ * browser still load every resource but log violations to our endpoint.
  *
- * Skipped routes:
- *   - /_next/static/*  (Next.js bundles, never need CSP)
- *   - /_next/image     (Next.js image optimisation)
+ * Skipped routes (matcher at the bottom of this file):
+ *   - /_next/static/*  (Next.js bundles, immutable, no CSP needed)
+ *   - /_next/image     (Next.js image optimiser)
  *   - prefetch requests (CSP already validated on the prefetched page)
  */
 export function proxy(req: NextRequest) {
@@ -25,28 +28,59 @@ export function proxy(req: NextRequest) {
   // in Edge runtime; we encode 16 random bytes as base64url.
   const nonce = generateNonce();
 
-  // Origins we know we hit:
-  //   - storage.googleapis.com MediaPipe model files (.task / .tflite)
-  //   - generativelanguage.googleapis.com  Gemini API (server-side, but
-  //     we add it for SW fetches too)
-  //   - api.telegram.org      Feedback forwarding (server-only fetch but
-  //     SW could intercept; whitelist for safety)
-  //   - *.supabase.co         Auth + database (HTTPS + WSS)
-  // P1-SEC-2: cdn.jsdelivr.net dropped from script-src / connect-src
-  // after MediaPipe WASM moved to self-hosted /mediapipe/wasm.
+  // Origins we hit at runtime — verified against `npm run check:leaks`
+  // + Sentry breadcrumbs from staging:
+  //
+  //   - *.supabase.co + wss              auth, db reads/writes, realtime
+  //   - generativelanguage.googleapis.com Gemini API (server-side calls
+  //                                       but SW could intercept; allowed)
+  //   - storage.googleapis.com           MediaPipe .task / .tflite model
+  //                                       files (loaded into wasm worker)
+  //   - api.telegram.org                 Feedback bot forwarding
+  //   - *.upstash.io                     Upstash Redis REST (server-side)
+  //   - *.sentry.io + *.ingest.de.sentry.io
+  //                                      Error tracking. /monitoring tunnel
+  //                                      stays the primary path; this is a
+  //                                      fallback for browsers/extensions
+  //                                      that block the rewrite.
+  //   - va.vercel-scripts.com,
+  //     vitals.vercel-insights.com       Vercel Analytics + Speed Insights
+  //                                      script + beacon endpoints.
+  //
+  // P1-SEC-2: cdn.jsdelivr.net was removed when MediaPipe WASM moved
+  // to self-hosted /mediapipe/wasm.
+  const connectSrc = [
+    `'self'`,
+    `https://*.supabase.co`,
+    `wss://*.supabase.co`,
+    `https://generativelanguage.googleapis.com`,
+    `https://storage.googleapis.com`,
+    `https://api.telegram.org`,
+    `https://*.upstash.io`,
+    `https://*.sentry.io`,
+    `https://*.ingest.sentry.io`,
+    `https://*.ingest.de.sentry.io`,
+    `https://va.vercel-scripts.com`,
+    `https://vitals.vercel-insights.com`,
+  ].join(' ');
+
   const cspParts = [
     `default-src 'self'`,
-    // strict-dynamic + nonce: scripts loaded by trusted scripts inherit trust.
-    // We keep 'unsafe-inline' as a fallback for older browsers - it is
-    // ignored when nonce/strict-dynamic is supported.
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'unsafe-inline' https://storage.googleapis.com`,
-    // Tailwind 4 ships utility classes via inline <style>; cannot drop
-    // 'unsafe-inline' for style-src without breaking the design system.
+    // strict-dynamic + nonce: scripts loaded by trusted scripts inherit
+    // trust. We keep 'unsafe-inline' as a fallback for browsers that
+    // don't honour strict-dynamic — they ignore the nonce + strict-dynamic
+    // and fall back to 'unsafe-inline'. Modern browsers honour the nonce
+    // path and ignore 'unsafe-inline'.
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'unsafe-inline' https://storage.googleapis.com https://va.vercel-scripts.com`,
+    // Tailwind 4 ships utility classes via inline <style>; we can't
+    // drop 'unsafe-inline' for style-src without breaking the design
+    // system. The nonce is still emitted for any <style> we render
+    // server-side ourselves.
     `style-src 'self' 'nonce-${nonce}' 'unsafe-inline'`,
     `img-src 'self' blob: data: https:`,
     `font-src 'self' data:`,
     `media-src 'self' blob:`,
-    `connect-src 'self' https://*.supabase.co wss://*.supabase.co https://generativelanguage.googleapis.com https://storage.googleapis.com https://api.telegram.org https://*.upstash.io`,
+    `connect-src ${connectSrc}`,
     `worker-src 'self' blob:`,
     `frame-ancestors 'none'`,
     `form-action 'self'`,
@@ -59,15 +93,23 @@ export function proxy(req: NextRequest) {
     `report-to csp-endpoint`,
   ];
 
+  // Pick the header name based on the env-flag rollback escape hatch.
+  // The flag is read from process.env on every invocation because the
+  // edge runtime evaluates it per request.
+  const headerName = process.env.CSP_REPORT_ONLY === '1'
+    ? 'Content-Security-Policy-Report-Only'
+    : 'Content-Security-Policy';
+  const cspValue = cspParts.join('; ');
+
   // Forward the nonce to the rendering layer via header. Server Components
   // can read it via `headers().get('x-nonce')` and pass to <Script nonce>.
   const requestHeaders = new Headers(req.headers);
   requestHeaders.set('x-nonce', nonce);
-  requestHeaders.set('Content-Security-Policy-Report-Only', cspParts.join('; '));
+  requestHeaders.set(headerName, cspValue);
 
   const res = NextResponse.next({ request: { headers: requestHeaders } });
   // Same header on the response so the browser actually sees it
-  res.headers.set('Content-Security-Policy-Report-Only', cspParts.join('; '));
+  res.headers.set(headerName, cspValue);
   res.headers.set('x-nonce', nonce);
   // Reporting API: declares the named endpoint referenced in `report-to`.
   res.headers.set(
