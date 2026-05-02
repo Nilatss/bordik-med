@@ -20,7 +20,7 @@ import { NextRequest, NextResponse } from 'next/server';
  *   - /_next/image     (Next.js image optimisation)
  *   - prefetch requests (CSP already validated on the prefetched page)
  */
-export function middleware(req: NextRequest) {
+export function proxy(req: NextRequest) {
   // Generate a fresh nonce per request. crypto.getRandomValues is available
   // in Edge runtime; we encode 16 random bytes as base64url.
   const nonce = generateNonce();

@@ -59,7 +59,8 @@ const withSerwist = withSerwistInit({
 
 /* ─────────────────────────────────────────────────────────────────
  * Baseline security headers applied to every response. CSP is set in
- * middleware.ts (per-request nonce); everything else is static and lives
+ * proxy.ts (per-request nonce; renamed from middleware.ts in Next 16);
+ * everything else is static and lives
  * here.
  *
  * Notes:
@@ -198,11 +199,19 @@ export default withSentryConfig(analyzer(withSerwist(nextConfig)), {
   // (combined with `deleteSourcemapsAfterUpload`) failed the Vercel build.
   widenClientFileUpload: true,
 
-  // Strip Sentry's internal `console.log` statements from production
-  // bundles. Saves a kilobyte and avoids leaking SDK internals.
-  disableLogger: true,
-
-  // Skip the SDK's automatic generation of "Vercel monitor" cron tasks
-  // — we don't use Vercel cron jobs.
-  automaticVercelMonitors: false,
+  // Webpack-specific Sentry options. The flat-level `disableLogger`
+  // and `automaticVercelMonitors` options that lived here previously
+  // were deprecated in @sentry/nextjs 10 — they were moved into a
+  // nested `webpack` object so the same SentryBuildOptions surface can
+  // configure both webpack and turbopack builds independently.
+  webpack: {
+    // Strip Sentry's internal `console.log` statements from production
+    // bundles. Saves a kilobyte and avoids leaking SDK internals.
+    treeshake: {
+      removeDebugLogging: true,
+    },
+    // Skip the SDK's automatic generation of "Vercel monitor" cron
+    // tasks — we don't use Vercel cron jobs.
+    automaticVercelMonitors: false,
+  },
 });
