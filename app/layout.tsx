@@ -4,7 +4,6 @@ import CopyProtection from '@/components/CopyProtection';
 import PwaRegistrar from '@/components/PwaRegistrar';
 import { BFCacheGuard } from '@/components/BFCacheGuard';
 import { StorageBanner } from '@/components/StorageBanner';
-import { SkeletonHider } from '@/components/SkeletonHider';
 import { InstallPrompt } from '@/components/InstallPrompt';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Analytics } from '@vercel/analytics/react';
@@ -149,11 +148,8 @@ export default function RootLayout({
           real content already in the initial HTML, the skeleton was
           actively delaying LCP — Lighthouse mobile measured the LCP
           element (a section card below the fold) at 3.4 s purely because
-          of the skeleton fade. SkeletonHider component still mounts (now
-          a no-op for the home route) so we can re-introduce a per-route
-          skeleton later if a heavy client-only route needs one.
+          of the skeleton fade.
         */}
-        <SkeletonHider />
         <PwaRegistrar />
         <CopyProtection />
         <BFCacheGuard />

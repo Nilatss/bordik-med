@@ -108,7 +108,11 @@ const TestsPage = dynamic(() => import('@/components/tests/TestsPage'), { ssr: f
 const CoursePage = dynamic(() => import('@/components/course/CoursePage'), { ssr: false, loading: ViewLoading });
 // Module / course grids stay eager — they render alongside the section
 // browser which is the hot path after the home feed.
-import NewsFeed from '@/components/feed/NewsFeed';
+//
+// `NewsFeed` was imported here when the home view rendered a news feed.
+// After #16 collapsed home into the SectionCards view, the import was
+// dead. Removing it lets webpack tree-shake the entire NewsFeed module
+// out of the home route's bundle.
 import Sidebar from '@/components/layout/Sidebar';
 // ModuleGrid + CourseGrid pull `getModulesBySection`/`getModuleById`
 // from lib/curriculum.ts (~230 KB). They're only rendered when the
