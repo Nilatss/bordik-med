@@ -28,6 +28,14 @@ const SupabaseSyncMounter = dynamic(
   () => import('@/components/SupabaseSyncMounter'),
   { ssr: false },
 );
+// Tool deep-link handler — reads /?tool=<id> from URL and routes the SPA
+// to the right tool view. Lazy + ssr:false so it doesn't pull
+// `useSearchParams` into the SSR'd payload (which would force the home
+// page into dynamic rendering and lose static generation).
+const ToolDeepLinkHandler = dynamic(
+  () => import('@/components/ToolDeepLinkHandler').then((m) => ({ default: m.ToolDeepLinkHandler })),
+  { ssr: false },
+);
 // ────────────────────────────────────────────────────────────────────
 // Lazy-loaded route components.
 // Only the home view (NewsFeed) and the always-visible chrome (Sidebar)
@@ -387,6 +395,7 @@ export default function Home() {
   return (
     <div style={{ display: 'flex', height: '100dvh', overflow: 'hidden' }}>
       <SupabaseSyncMounter />
+      <ToolDeepLinkHandler />
       <Sidebar />
       <div
         className="app-main-wrap"
