@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import dynamic from 'next/dynamic';
 import './globals.css';
 import CopyProtection from '@/components/CopyProtection';
 import PwaRegistrar from '@/components/PwaRegistrar';
@@ -7,6 +8,14 @@ import { StorageBanner } from '@/components/StorageBanner';
 import { InstallPrompt } from '@/components/InstallPrompt';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Analytics } from '@vercel/analytics/react';
+
+// Real-user web-vitals reporter → Sentry. Lazy + ssr:false because the
+// `web-vitals` package only runs in the browser and we don't want it
+// in the SSR payload.
+const WebVitalsReporter = dynamic(
+  () => import('@/components/WebVitalsReporter'),
+  { ssr: false },
+);
 
 const APP_NAME = 'Bordik';
 const APP_TITLE = 'Bordik - Платформа медицинского обучения';
@@ -159,6 +168,10 @@ export default function RootLayout({
         {/* Vercel RUM. Analytics is privacy-friendly (no IP store). */}
         <SpeedInsights />
         <Analytics />
+        {/* Sentry RUM — Core Web Vitals → Sentry events with route /
+            device / connection tags. Mounts after `children` so it
+            doesn't compete with critical render path. */}
+        <WebVitalsReporter />
       </body>
     </html>
   );
