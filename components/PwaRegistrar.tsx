@@ -5,22 +5,82 @@ import { useEffect, useState, useCallback } from 'react';
 /**
  * Registers the Serwist-generated service worker and manages its lifecycle.
  *
- * Flow:
- *  1. On mount → register /sw.js (only in production, only on https or localhost).
- *  2. Periodically (every hour) check for a new SW version.
- *  3. When a waiting SW is detected → show a non-intrusive toast offering
- *     "Обновить". Clicking it sends SKIP_WAITING to activate the new SW and
- *     reloads the page so users pick up the freshest build.
- *  4. Listens for `controllerchange` — fires when a new SW takes over.
+ * Update notification flow
+ * ------------------------
+ * Showing an "Update available" toast on every Service Worker swap is
+ * noisy: every deploy generates a new SW hash, even cosmetic ones, so
+ * users learned to ignore the prompt. We now gate the toast on a real
+ * release-notes file (`public/release-notes.json`):
+ *
+ *   1. SW reports a waiting worker → we know there IS a code update.
+ *   2. Fetch /release-notes.json (cache-busted), pick the topmost entry.
+ *   3. Read `bordik-last-seen-release` from localStorage.
+ *   4. If the entry's version is newer than the last-seen version, show
+ *      the toast with the release headline + a "Что нового" link to the
+ *      /releases page. Otherwise silently skip the toast and let the new
+ *      SW activate on the next natural reload (closing the tab, etc.).
+ *
+ * Cosmetic deploys / hotfixes / infra-only changes should NOT add an
+ * entry to release-notes.json — that's the whole point. Users only get
+ * pinged when there's something for them to actually look at.
  */
+
+interface ReleaseEntry {
+  version: string;
+  date: string;
+  title: string;
+  summary: string;
+  changes: string[];
+}
+
+const LAST_SEEN_KEY = 'bordik-last-seen-release';
+
+async function fetchLatestRelease(): Promise<ReleaseEntry | null> {
+  try {
+    // Cache-bust so the SW can't return a stale JSON: this fetch is
+    // explicitly meant to discover NEW versions, not honour caches.
+    const r = await fetch(`/release-notes.json?ts=${Date.now()}`, {
+      cache: 'no-store',
+    });
+    if (!r.ok) return null;
+    const data = (await r.json()) as { releases?: ReleaseEntry[] };
+    return data.releases?.[0] ?? null;
+  } catch {
+    return null;
+  }
+}
+
+function readLastSeen(): string | null {
+  try { return localStorage.getItem(LAST_SEEN_KEY); }
+  catch { return null; }
+}
+
+function setLastSeen(version: string) {
+  try { localStorage.setItem(LAST_SEEN_KEY, version); }
+  catch { /* private mode etc. */ }
+}
+
 export default function PwaRegistrar() {
   const [waitingSW, setWaitingSW] = useState<ServiceWorker | null>(null);
+  const [release, setRelease] = useState<ReleaseEntry | null>(null);
 
   const applyUpdate = useCallback(() => {
     if (!waitingSW) return;
+    // Mark the release as seen BEFORE we activate — otherwise the
+    // post-reload PwaRegistrar mount would re-show the toast for a
+    // version the user just confirmed.
+    if (release) setLastSeen(release.version);
     waitingSW.postMessage({ type: 'SKIP_WAITING' });
     setWaitingSW(null);
-  }, [waitingSW]);
+  }, [waitingSW, release]);
+
+  const dismiss = useCallback(() => {
+    // Dismissing also marks as seen — user explicitly chose to ignore
+    // this release, no need to re-prompt on next page load.
+    if (release) setLastSeen(release.version);
+    setWaitingSW(null);
+    setRelease(null);
+  }, [release]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -31,6 +91,25 @@ export default function PwaRegistrar() {
 
     let checkInterval: ReturnType<typeof setInterval> | null = null;
 
+    const onWaiting = async (sw: ServiceWorker) => {
+      // Decide whether we should actually show the toast based on
+      // release-notes content vs last-seen version.
+      const latest = await fetchLatestRelease();
+      if (!latest) {
+        // No release file or fetch failed → fall back to silent update.
+        // Don't pester users with a noisy toast, but still let the new
+        // SW take over on the next natural reload by leaving it waiting.
+        return;
+      }
+      const lastSeen = readLastSeen();
+      if (lastSeen === latest.version) {
+        // User has already seen this release — skip the toast.
+        return;
+      }
+      setRelease(latest);
+      setWaitingSW(sw);
+    };
+
     const onReady = async () => {
       try {
         const reg = await navigator.serviceWorker.register('/sw.js', {
@@ -39,7 +118,7 @@ export default function PwaRegistrar() {
         });
 
         // If there's a waiting worker right now (page reload while new SW is ready)
-        if (reg.waiting) setWaitingSW(reg.waiting);
+        if (reg.waiting) onWaiting(reg.waiting);
 
         // Listen for new SWs being installed
         reg.addEventListener('updatefound', () => {
@@ -50,8 +129,7 @@ export default function PwaRegistrar() {
               installing.state === 'installed' &&
               navigator.serviceWorker.controller
             ) {
-              // A new SW is waiting
-              setWaitingSW(installing);
+              onWaiting(installing);
             }
           });
         });
@@ -99,9 +177,9 @@ export default function PwaRegistrar() {
     };
   }, []);
 
-  if (!waitingSW) return null;
+  if (!waitingSW || !release) return null;
 
-  // Non-intrusive update prompt — bottom-right toast
+  // Non-intrusive update prompt — bottom-right toast with release headline
   return (
     <div
       style={{
@@ -116,7 +194,7 @@ export default function PwaRegistrar() {
         display: 'flex',
         alignItems: 'center',
         gap: 12,
-        maxWidth: 360,
+        maxWidth: 380,
         fontFamily: 'var(--font-body, system-ui, -apple-system, sans-serif)',
       }}
       role="status"
@@ -139,13 +217,20 @@ export default function PwaRegistrar() {
           fontSize: 13, fontWeight: 600, color: '#1A1A1A',
           margin: 0, lineHeight: 1.3,
         }}>
-          Доступно обновление
+          {release.title}
         </p>
         <p style={{
           fontSize: 12, color: '#6B7280',
           margin: '2px 0 0 0', lineHeight: 1.3,
         }}>
-          Перезагрузите страницу для применения
+          <a
+            href="/releases"
+            style={{ color: '#2563EB', textDecoration: 'underline' }}
+          >
+            Что нового
+          </a>
+          {' · '}
+          v{release.version}
         </p>
       </div>
       <button
@@ -167,6 +252,18 @@ export default function PwaRegistrar() {
         onMouseLeave={(e) => { e.currentTarget.style.background = '#1A1A1A'; }}
       >
         Обновить
+      </button>
+      <button
+        type="button"
+        onClick={dismiss}
+        aria-label="Закрыть"
+        style={{
+          background: 'transparent', border: 'none', cursor: 'pointer',
+          padding: 4, marginLeft: -4, color: '#9CA3AF', lineHeight: 1,
+          fontSize: 16, fontFamily: 'inherit',
+        }}
+      >
+        ×
       </button>
     </div>
   );
