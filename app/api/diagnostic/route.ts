@@ -98,6 +98,30 @@ function loadBank(): BankQuestion[] {
 }
 
 /**
+ * Fisher-Yates shuffle of the four options so the correct answer
+ * doesn't always land in the same slot. Without this, the runtime
+ * inherits Gemini's distribution bias from generation time — measured
+ * on the current bank, A appears as the correct answer 35 % of the
+ * time, D only 4 %. Users notice the pattern after a handful of
+ * questions and can game the test by always clicking A.
+ *
+ * After shuffle, the distribution averages to 25 % per slot across
+ * many sessions. Per-question randomness is a side benefit — the same
+ * question on a re-take shows the options in a different order, so
+ * the user can't memorise "B was right" verbatim.
+ */
+function shuffleOptions(q: BankQuestion): BankQuestion {
+  const idx = [0, 1, 2, 3];
+  for (let i = idx.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [idx[i], idx[j]] = [idx[j]!, idx[i]!];
+  }
+  const newOptions = idx.map((i) => q.options[i]!);
+  const newCorrect = idx.indexOf(q.correctIndex);
+  return { ...q, options: newOptions, correctIndex: newCorrect };
+}
+
+/**
  * Pick the next question from the bank with adaptive selection:
  *   1. Skip anything already shown in this session (history).
  *   2. Prefer topics the user has been asked LEAST so far — keeps the
@@ -109,6 +133,9 @@ function loadBank(): BankQuestion[] {
  *          rate > 70 %  → hard
  *      If the matching tier is empty for that topic, fall back to any
  *      tier so we never starve the user of a question.
+ *   4. Shuffle the option order before returning — the bank's source
+ *      data is biased toward early positions (LLM artefact); the
+ *      runtime evens the distribution out.
  */
 function pickNextQuestion(history: Turn[]): BankQuestion | null {
   const bank = loadBank();
@@ -143,7 +170,8 @@ function pickNextQuestion(history: Turn[]): BankQuestion | null {
   const inTopic = remaining.filter((q) => q.topic === targetTopic);
   const matched = inTopic.filter((q) => q.difficulty === targetDiff);
   const pool = matched.length > 0 ? matched : inTopic;
-  return pool[Math.floor(Math.random() * pool.length)] ?? null;
+  const chosen = pool[Math.floor(Math.random() * pool.length)];
+  return chosen ? shuffleOptions(chosen) : null;
 }
 
 interface Turn {
