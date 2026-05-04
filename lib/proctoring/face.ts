@@ -19,7 +19,13 @@ import {
 // node_modules by scripts/sync-mediapipe.mjs on every prebuild. Drops
 // our reliance on third-party cdn.jsdelivr.net for WASM supply chain.
 const WASM_BASE = '/mediapipe/wasm';
-const MODEL_URL = 'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/latest/face_landmarker.task';
+// Self-hosted face landmarker weights. Downloaded into
+// public/mediapipe/models/ by scripts/sync-mediapipe-models.mjs at
+// build time. Avoids the previous reliance on
+// storage.googleapis.com, which Russian ISPs sporadically block /
+// throttle — that surfaced as "Failed to fetch" inside the proctoring
+// AI loader before the camera/mic check would unlock the test.
+const MODEL_URL = '/mediapipe/models/face_landmarker.task';
 
 /**
  * MediaPipe writes "INFO: Created TensorFlow Lite XNNPACK delegate for CPU."

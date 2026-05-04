@@ -14,7 +14,8 @@ import {
 
 // P1-SEC-2 — self-hosted; see lib/proctoring/face.ts for rationale.
 const WASM_BASE  = '/mediapipe/wasm';
-const MODEL_URL  = 'https://storage.googleapis.com/mediapipe-models/object_detector/efficientdet_lite0/float16/latest/efficientdet_lite0.tflite';
+// Self-hosted; see lib/proctoring/face.ts for rationale.
+const MODEL_URL  = '/mediapipe/models/efficientdet_lite0.tflite';
 
 /* COCO classes we care about (others are silently ignored). */
 export const FORBIDDEN_OBJECTS: Record<string, string> = {

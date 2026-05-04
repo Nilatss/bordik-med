@@ -19,7 +19,7 @@
     "ai:questions": "node scripts/ai-generate-questions.mjs",
     "validate:scales": "npx tsx scripts/validate-scales.mjs",
     "validate:runners": "npx tsx scripts/smoke-runners.mjs",
-    "prebuild": "node scripts/sync-mediapipe.mjs && node scripts/build-curriculum-stats.mjs && node scripts/build-tool-meta.mjs && node scripts/build-content.mjs"
+    "prebuild": "node scripts/sync-mediapipe.mjs && node scripts/sync-mediapipe-models.mjs && node scripts/build-curriculum-stats.mjs && node scripts/build-tool-meta.mjs && node scripts/build-content.mjs"
   },
   "dependencies": {
     "@fontsource-variable/jetbrains-mono": "^5.2.8",
