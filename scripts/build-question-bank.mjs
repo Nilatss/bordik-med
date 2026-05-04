@@ -61,7 +61,7 @@ const TOPICS = [
   'public-health', 'ethics', 'clinical-skills', 'lab-diagnostics', 'imaging',
 ];
 
-const PER_TOPIC = 5;
+const PER_TOPIC = 10;
 const PROMPT_FOR_TOPIC = (topic) => `Сгенерируй ${PER_TOPIC} вопросов для адаптивного диагностического теста медицинской платформы Bordik по теме "${topic}".
 
 Уровни сложности — равномерно распределены: 1 базовый, 2 средних, 2 продвинутых.
