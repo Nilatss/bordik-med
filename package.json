@@ -16,6 +16,7 @@
     "test:watch": "vitest",
     "sync:mediapipe": "node scripts/sync-mediapipe.mjs",
     "build:curriculum-stats": "node scripts/build-curriculum-stats.mjs",
+    "build:question-bank": "node scripts/build-question-bank.mjs",
     "ai:questions": "node scripts/ai-generate-questions.mjs",
     "validate:scales": "npx tsx scripts/validate-scales.mjs",
     "validate:runners": "npx tsx scripts/smoke-runners.mjs",

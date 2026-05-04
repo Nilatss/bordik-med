@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import * as v from 'valibot';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { identifyAndLimit } from '@/lib/rate-limit';
 import { getSupabaseServerClient } from '@/lib/supabase/server';
 import { isOutputSafe as isOutputSafeStrict } from '@/lib/output-guard';
@@ -54,6 +56,95 @@ const GEMINI_MODELS = (process.env.GEMINI_MODEL
 // finalize), still inside the per-day free-tier quota for the
 // fallback chain (gemini-2.5-flash-lite has 1500 RPD on its own).
 const TOTAL_QUESTIONS = 30;
+
+// ────────────────────────────────────────────────────────────────────
+// Static question bank (data/diagnostic-question-bank.json).
+//
+// The bank is generated offline by `npm run build:question-bank` (one
+// Gemini call per topic, all run from a developer machine) so the
+// runtime route can pick a question without ever talking to an LLM.
+// This eliminates the 429 / quota-exhausted failure mode that the
+// per-question Gemini path introduced.
+//
+// Loaded lazily on first request and cached for the lifetime of the
+// Lambda. The file ships in the deployed bundle (server-side only;
+// not exposed under /public, since we don't want users grabbing the
+// whole question pool with answers from a static URL).
+// ────────────────────────────────────────────────────────────────────
+interface BankQuestion {
+  id: string;
+  topic: string;
+  difficulty: 'easy' | 'medium' | 'hard';
+  question: string;
+  options: string[];
+  correctIndex: number;
+  explanation?: string;
+}
+
+let bankCache: BankQuestion[] | null = null;
+
+function loadBank(): BankQuestion[] {
+  if (bankCache) return bankCache;
+  try {
+    const filePath = join(process.cwd(), 'data', 'diagnostic-question-bank.json');
+    const raw = readFileSync(filePath, 'utf8');
+    const parsed = JSON.parse(raw) as { questions?: BankQuestion[] };
+    bankCache = Array.isArray(parsed.questions) ? parsed.questions : [];
+  } catch (err) {
+    log.error({ event: 'bank_load_failed', message: String(err).slice(0, 200) });
+    bankCache = [];
+  }
+  return bankCache;
+}
+
+/**
+ * Pick the next question from the bank with adaptive selection:
+ *   1. Skip anything already shown in this session (history).
+ *   2. Prefer topics the user has been asked LEAST so far — keeps the
+ *      30-question test broad across the 15 topics in the bank.
+ *   3. Within the chosen topic, prefer a difficulty tier matched to
+ *      the user's running correctness rate:
+ *          rate < 40 %  → easy
+ *          rate 40-70 % → medium
+ *          rate > 70 %  → hard
+ *      If the matching tier is empty for that topic, fall back to any
+ *      tier so we never starve the user of a question.
+ */
+function pickNextQuestion(history: Turn[]): BankQuestion | null {
+  const bank = loadBank();
+  if (bank.length === 0) return null;
+
+  const seen = new Set(history.map((t) => `${t.topic}::${t.question}`));
+  const remaining = bank.filter((q) => !seen.has(`${q.topic}::${q.question}`));
+  if (remaining.length === 0) return null;
+
+  // Topic balance: count how many times each topic has been used.
+  const topicCount: Record<string, number> = {};
+  for (const t of history) topicCount[t.topic] = (topicCount[t.topic] ?? 0) + 1;
+
+  // Pick the topic(s) with the lowest usage count, restricted to topics
+  // we still have questions for.
+  const availableTopics = [...new Set(remaining.map((q) => q.topic))];
+  let minUsage = Infinity;
+  for (const t of availableTopics) {
+    const u = topicCount[t] ?? 0;
+    if (u < minUsage) minUsage = u;
+  }
+  const candidateTopics = availableTopics.filter((t) => (topicCount[t] ?? 0) === minUsage);
+  const targetTopic = candidateTopics[Math.floor(Math.random() * candidateTopics.length)] ?? candidateTopics[0];
+  if (!targetTopic) return null;
+
+  // Difficulty tier from running correctness rate.
+  const correct = history.filter((t) => t.selectedIndex === t.correctIndex).length;
+  const rate = history.length > 0 ? correct / history.length : 0.5;
+  const targetDiff: 'easy' | 'medium' | 'hard' =
+    rate < 0.4 ? 'easy' : rate > 0.7 ? 'hard' : 'medium';
+
+  const inTopic = remaining.filter((q) => q.topic === targetTopic);
+  const matched = inTopic.filter((q) => q.difficulty === targetDiff);
+  const pool = matched.length > 0 ? matched : inTopic;
+  return pool[Math.floor(Math.random() * pool.length)] ?? null;
+}
 
 interface Turn {
   question: string;
@@ -320,55 +411,28 @@ export async function POST(req: Request) {
     if (history.length >= TOTAL_QUESTIONS) {
       return NextResponse.json({ ok: false, error: 'test-complete' }, { status: 400 });
     }
-    try {
-      const result = await geminiCall(buildNextPrompt(history));
-      const q = result as {
-        question?: string;
-        options?: string[];
-        correctIndex?: number;
-        topic?: string;
-        explanation?: string;
-      };
-      if (
-        !q.question ||
-        !Array.isArray(q.options) || q.options.length !== 4 ||
-        typeof q.correctIndex !== 'number' ||
-        !Number.isInteger(q.correctIndex) ||
-        q.correctIndex < 0 ||
-        q.correctIndex >= q.options.length ||
-        !q.topic
-      ) {
-        return NextResponse.json({ ok: false, error: 'gemini-invalid-shape' }, { status: 502 });
-      }
-      // Output guard - reject AI responses that contain HTML / JS / dangerous URIs.
-      // Check each text field individually so a guard hit names the field.
-      for (const [name, val] of Object.entries({
-        question: q.question,
-        explanation: q.explanation ?? '',
-        ...Object.fromEntries(q.options.map((o, i) => [`option${i}`, o])),
-      })) {
-        const verdict = checkOutput(val);
-        if (!verdict.safe) {
-          log.warn({ event: 'output_guard_block', field: name, reason: verdict.reason });
-          return NextResponse.json({ ok: false, error: 'gemini-output-unsafe', field: name }, { status: 502 });
-        }
-      }
-      return NextResponse.json({
-        ok: true,
-        question: q.question,
-        options: q.options,
-        correctIndex: q.correctIndex,
-        topic: q.topic,
-        explanation: q.explanation ?? '',
-        index: history.length,
-        total: TOTAL_QUESTIONS,
-      });
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
-      log.error({ event: 'diagnostic_next_failed', message: msg.slice(0, 200) });
-      const status = msg === 'gemini-not-configured' ? 503 : 502;
-      return NextResponse.json({ ok: false, error: msg }, { status });
+    // Pick from the pre-generated question bank instead of calling
+    // Gemini per question. Eliminates the runtime API dependency that
+    // used to surface as "AI временно перегружен" toasts whenever
+    // multiple users took the test in the same minute.
+    const picked = pickNextQuestion(history);
+    if (!picked) {
+      // Bank is empty / corrupt. Falling back to AI here would
+      // re-introduce the rate-limit failure mode we're trying to
+      // eliminate, so we return an honest error instead.
+      log.error({ event: 'question_bank_empty' });
+      return NextResponse.json({ ok: false, error: 'bank-unavailable' }, { status: 503 });
     }
+    return NextResponse.json({
+      ok: true,
+      question: picked.question,
+      options: picked.options,
+      correctIndex: picked.correctIndex,
+      topic: picked.topic,
+      explanation: picked.explanation ?? '',
+      index: history.length,
+      total: TOTAL_QUESTIONS,
+    });
   }
 
   if (action === 'finalize') {
