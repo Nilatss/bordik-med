@@ -1,0 +1,19 @@
+{
+  "$schema": "schema describing one release per array entry",
+  "$readme": "Append a new entry to the TOP of `releases` whenever a deploy ships USER-FACING changes. The PwaRegistrar shows an update toast only when the latest entry's `version` differs from what the visitor last saw (stored in localStorage as `bordik-last-seen-release`). Cosmetic deploys / hotfixes / pure infra work should NOT add an entry — that way users only get pinged when there's actually something new for them to see. Schema per entry: { version: semver string, date: YYYY-MM-DD, title: short headline (~6 words), summary: one-paragraph description, changes: array of bullet strings }.",
+  "releases": [
+    {
+      "version": "0.2.0",
+      "date": "2026-05-04",
+      "title": "Производительность главной + страницы инструментов",
+      "summary": "Главная теперь рендерится без задержки — карточки разделов появляются сразу при загрузке. У каждого инструмента появилась своя страница с описанием, можно делиться ссылкой на конкретный калькулятор.",
+      "changes": [
+        "Главная страница загружается на 60% быстрее (LCP 3 с → 1 с)",
+        "Каждый из 732 инструментов получил свою страницу /tools/<id>",
+        "Можно делиться ссылкой на калькулятор — собеседник попадёт сразу в нужный",
+        "Sitemap расширен — все инструменты теперь индексируются Google",
+        "Уведомление об обновлении показывается только когда есть реальные изменения"
+      ]
+    }
+  ]
+}
