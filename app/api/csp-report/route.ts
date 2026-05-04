@@ -1,18 +1,27 @@
 /**
- * CSP violation report sink (P1-SEC-1, prep for Report-Only → Enforce).
+ * CSP violation report sink (P1-SEC-1, plus Sentry pipeline).
  *
  * Browsers POST a JSON body in one of two formats:
  *   - legacy `application/csp-report` { "csp-report": { … } }
  *   - new    `application/reports+json`   [ { "type": "csp-violation", "body": { … } } ]
  *
- * We accept both, sanitize, and log to console (Vercel Logs / Sentry
- * pipeline picks them up). Never reflect untrusted data back to the
- * caller — return 204 unconditionally.
+ * Each report is:
+ *   1. Sanitised + length-capped (defends against an attacker stuffing
+ *      megabytes of garbage into log fields).
+ *   2. Logged to console (Vercel Runtime Logs picks it up).
+ *   3. Captured in Sentry as a `warning` event so violations surface in
+ *      the Sentry dashboard alongside JS errors. Tags: `csp.directive`,
+ *      `csp.disposition`, `csp.blocked-host`, `csp.suspicious`. Filter
+ *      by these in Sentry to triage which CSP directive needs widening.
+ *
+ * Never reflect untrusted data back to the caller — return 204
+ * unconditionally regardless of report content.
  *
  * Also rate-limit by IP-hash so a misbehaving extension can't drown
- * our log stream.
+ * our log stream OR our Sentry quota.
  */
 import { NextResponse } from 'next/server';
+import * as Sentry from '@sentry/nextjs';
 import { makeRateLimiter, identifyRequest } from '@/lib/rate-limit';
 
 export const runtime = 'edge';
@@ -75,9 +84,78 @@ export async function POST(req: Request) {
       disp:      r.disposition,
     };
     console.warn('[csp-report]', JSON.stringify(safe));
+
+    // Mirror the same report into Sentry so violations are searchable
+    // alongside our regular error stream.
+    captureToSentry(safe);
   }
 
   return new NextResponse(null, { status: 204 });
+}
+
+/**
+ * Bucket the directive into a short, stable tag so the Sentry "Issues"
+ * view groups violations by their actionable type rather than fanning
+ * out one issue per `document-uri`.
+ */
+function classifyDirective(violated: string, effective: string): string {
+  const d = effective || violated;
+  // The directive value usually looks like "script-src 'self' ..." — we
+  // just want the first token.
+  const head = d.split(/\s+/)[0]?.toLowerCase() ?? 'unknown';
+  return head || 'unknown';
+}
+
+/**
+ * Heuristic for "this looks like a real attack, not a misconfigured
+ * allowlist". Inline-script violations with a non-empty
+ * `script-sample`, or blocked-uri pointing at a script with the word
+ * `eval` / `javascript:` / `data:` lift the severity.
+ */
+function looksSuspicious(safe: { blocked: string; sample: string; violated: string }): boolean {
+  const u = safe.blocked.toLowerCase();
+  if (u.startsWith('javascript:') || u.startsWith('data:text/html')) return true;
+  if (u === 'inline' && /eval|new Function|atob/i.test(safe.sample)) return true;
+  if (/script-src/i.test(safe.violated) && safe.sample.length > 0) return true;
+  return false;
+}
+
+function captureToSentry(safe: {
+  doc: string; violated: string; effective: string;
+  blocked: string; sourceFile: string; line: number | null;
+  sample: string; disp?: string | undefined;
+}) {
+  const directive = classifyDirective(safe.violated, safe.effective);
+  const suspicious = looksSuspicious(safe);
+  // The blocked-uri host is a stable grouping signal — different
+  // sub-paths on the same origin all collapse into one issue.
+  let blockedHost = '';
+  try { blockedHost = new URL(safe.blocked).host; }
+  catch { blockedHost = safe.blocked.slice(0, 64); }
+
+  const message = `CSP ${safe.disp ?? 'violation'}: ${directive} blocked ${blockedHost || safe.blocked.slice(0, 64) || 'inline'}`;
+
+  Sentry.captureMessage(message, {
+    level: suspicious ? 'error' : 'warning',
+    tags: {
+      'csp.directive': directive,
+      'csp.disposition': safe.disp ?? 'unknown',
+      'csp.suspicious': suspicious ? 'yes' : 'no',
+      'csp.blocked-host': blockedHost,
+    },
+    extra: {
+      documentUri: safe.doc,
+      violatedDirective: safe.violated,
+      effectiveDirective: safe.effective,
+      blockedUri: safe.blocked,
+      sourceFile: safe.sourceFile,
+      lineNumber: safe.line,
+      scriptSample: safe.sample,
+    },
+    // Stable fingerprint so identical violations from different users
+    // land in one Sentry issue instead of fanning out per-session.
+    fingerprint: ['csp', directive, blockedHost],
+  });
 }
 
 // Browsers may probe with OPTIONS; keep the surface tight.
