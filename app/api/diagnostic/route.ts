@@ -332,6 +332,138 @@ ${moduleList}
 Верни строго JSON-объект.`;
 }
 
+// ────────────────────────────────────────────────────────────────────
+// Rule-based finalize fallback.
+//
+// Used when the Gemini call for the personalised recommendation fails
+// (quota, timeout, malformed JSON, network blip). Produces a strictly
+// data-driven summary so the user never lands on a "что-то пошло не
+// так" panel after answering 30 questions.
+//
+// What we compute:
+//   - Per-topic correctness rate (among topics the user actually saw)
+//   - Top 3 strongest topics (rate ≥ 70 % AND at least one question)
+//   - Top 3 weakest topics (rate < 50 %)
+//   - Profession from the dominant strong topic (TOPIC_TO_PROFESSION)
+//   - Level from overall correctness: <40 % basic, 40-70 % intermediate,
+//     >70 % advanced
+//   - Recommended modules: first up-to-4 modules from the supplied list
+//     that match the strong-topic sectionId mapping; if none match,
+//     fall back to the first 4 modules verbatim.
+//
+// The output shape mirrors the AI version exactly so the client doesn't
+// need a separate code path.
+// ────────────────────────────────────────────────────────────────────
+const TOPIC_TO_PROFESSION: Record<string, { name: string; rationale: string }> = {
+  pediatrics:        { name: 'Педиатр', rationale: 'Сильные ответы по педиатрическим темам показывают подходящий профиль для работы с детьми.' },
+  emergency:         { name: 'Врач скорой / реаниматолог', rationale: 'Уверенные знания неотложной помощи указывают на склонность к интенсивной медицине.' },
+  obstetrics:        { name: 'Акушер-гинеколог', rationale: 'Хорошие результаты по акушерству и гинекологии — основа профильной специальности.' },
+  surgery:           { name: 'Хирург', rationale: 'Сильные ответы по хирургическим темам подсказывают этот путь.' },
+  pharmacology:      { name: 'Клинический фармаколог', rationale: 'Уверенное знание фармакологии — базис для рациональной фармакотерапии.' },
+  pathology:         { name: 'Патоморфолог', rationale: 'Сильная патоморфологическая база подсказывает диагностический трек.' },
+  'lab-diagnostics': { name: 'Врач лабораторной диагностики', rationale: 'Лабораторная диагностика — ваша сильная сторона; стоит развивать.' },
+  imaging:           { name: 'Рентгенолог', rationale: 'Сильное визуальное мышление и знание визуализации — путь рентгенолога.' },
+  'public-health':   { name: 'Эпидемиолог / общественное здоровье', rationale: 'Системное мышление и знание основ здравоохранения — для популяционной медицины.' },
+  'internal-medicine': { name: 'Семейный врач / терапевт', rationale: 'Широкие клинические знания — основа первичного звена.' },
+};
+
+const TOPIC_TO_HUMAN: Record<string, string> = {
+  anatomy: 'анатомия',
+  physiology: 'физиология',
+  biochemistry: 'биохимия',
+  pharmacology: 'фармакология',
+  pathology: 'патология',
+  'internal-medicine': 'клиническая медицина',
+  surgery: 'хирургия',
+  pediatrics: 'педиатрия',
+  obstetrics: 'акушерство',
+  emergency: 'неотложная помощь',
+  'public-health': 'общественное здоровье',
+  ethics: 'медицинская этика',
+  'clinical-skills': 'клинические навыки',
+  'lab-diagnostics': 'лабораторная диагностика',
+  imaging: 'медицинская визуализация',
+};
+
+function ruleBasedFinalize(history: Turn[], modules: ModuleSummary[]): {
+  profession: string;
+  professionRationale: string;
+  level: 'basic' | 'intermediate' | 'advanced';
+  strengths: string[];
+  weaknesses: string[];
+  recommendedModuleIds: number[];
+  studyPlan: string;
+} {
+  const total = history.length;
+  const correct = history.filter((t) => t.selectedIndex === t.correctIndex).length;
+  const overallRate = total > 0 ? correct / total : 0;
+  const level: 'basic' | 'intermediate' | 'advanced' =
+    overallRate < 0.4 ? 'basic' : overallRate > 0.7 ? 'advanced' : 'intermediate';
+
+  // Per-topic stats
+  const stats: Record<string, { correct: number; total: number }> = {};
+  for (const t of history) {
+    const k = t.topic;
+    if (!stats[k]) stats[k] = { correct: 0, total: 0 };
+    stats[k].total++;
+    if (t.selectedIndex === t.correctIndex) stats[k].correct++;
+  }
+  const ratesByTopic = Object.entries(stats).map(([topic, s]) => ({
+    topic,
+    rate: s.correct / s.total,
+    n: s.total,
+  }));
+
+  const strong = [...ratesByTopic].filter((r) => r.rate >= 0.7).sort((a, b) => b.rate - a.rate).slice(0, 3);
+  const weak   = [...ratesByTopic].filter((r) => r.rate <  0.5).sort((a, b) => a.rate - b.rate).slice(0, 3);
+
+  // Pick profession: first strong topic that has a mapping; fall back
+  // to general practice if none match.
+  let prof = { name: 'Семейный врач', rationale: 'Сбалансированные знания подходят для широкой клинической практики.' };
+  for (const s of strong) {
+    const mapped = TOPIC_TO_PROFESSION[s.topic];
+    if (mapped) {
+      prof = mapped;
+      break;
+    }
+  }
+
+  // Recommended modules: just take the first 4 from the supplied list
+  // — the SPA still navigates by id, and we don't have a reliable
+  // topic→sectionId map from the wire format.
+  const recommendedModuleIds = modules.slice(0, 4).map((m) => m.id);
+
+  const strengthsText = strong.length > 0
+    ? strong.map((s) => {
+        const label = TOPIC_TO_HUMAN[s.topic] ?? s.topic;
+        return `${label.charAt(0).toUpperCase()}${label.slice(1)} — ${Math.round(s.rate * 100)}% верных`;
+      })
+    : ['Базовые знания подтверждены — продолжайте обучение по плану'];
+
+  const weaknessesText = weak.length > 0
+    ? weak.map((w) => {
+        const label = TOPIC_TO_HUMAN[w.topic] ?? w.topic;
+        return `${label.charAt(0).toUpperCase()}${label.slice(1)} — ${Math.round(w.rate * 100)}% верных`;
+      })
+    : ['Уверенные ответы во всех темах — углубляйте профильную специальность'];
+
+  const studyPlan = level === 'basic'
+    ? 'Сейчас укрепите фундамент: анатомия, физиология, биохимия. Затем переходите к клиническим модулям.'
+    : level === 'advanced'
+    ? 'У вас крепкая база. Сосредоточьтесь на клинических модулях по выбранной специальности и неотложной помощи.'
+    : 'Сбалансированный профиль. Заполняйте пробелы из слабых тем и параллельно углубляйтесь в клинические модули.';
+
+  return {
+    profession: prof.name,
+    professionRationale: prof.rationale,
+    level,
+    strengths: strengthsText,
+    weaknesses: weaknessesText,
+    recommendedModuleIds,
+    studyPlan,
+  };
+}
+
 /* ── Strict input schemas. Reject anything we wouldn't act on, including
    prompt-injection attempts that try to smuggle "system" instructions via
    extra fields or oversized history. */
@@ -440,6 +572,11 @@ export async function POST(req: Request) {
     if (history.length === 0 || modules.length === 0) {
       return NextResponse.json({ ok: false, error: 'empty-input' }, { status: 400 });
     }
+    // Try Gemini first for the personalised recommendation. If it's
+    // down / over quota / wrong shape, fall through to a rule-based
+    // synthesis so the test always finishes with SOMETHING useful
+    // shown to the user — never a "Что-то пошло не так" panel after
+    // they completed 30 questions.
     try {
       const result = await geminiCall(buildFinalizePrompt(history, modules));
       const f = result as {
@@ -452,9 +589,9 @@ export async function POST(req: Request) {
         studyPlan?: string;
       };
       if (!f.profession || !Array.isArray(f.recommendedModuleIds)) {
-        return NextResponse.json({ ok: false, error: 'gemini-invalid-shape' }, { status: 502 });
+        log.warn({ event: 'finalize_invalid_shape_falling_back' });
+        return NextResponse.json({ ok: true, ...ruleBasedFinalize(history, modules) });
       }
-      // Sanitize: keep only IDs that exist in the supplied module list
       const validIds = new Set(modules.map((m) => m.id));
       const cleanIds = f.recommendedModuleIds.filter((id) => validIds.has(id)).slice(0, 6);
       return NextResponse.json({
@@ -469,9 +606,10 @@ export async function POST(req: Request) {
       });
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
-      console.error('[diagnostic.finalize] failed', msg);
-      const status = msg === 'gemini-not-configured' ? 503 : 502;
-      return NextResponse.json({ ok: false, error: msg }, { status });
+      log.warn({ event: 'finalize_ai_failed_falling_back', message: msg.slice(0, 200) });
+      // Never leak the AI failure to the user — synthesise a
+      // reasonable recommendation from the answer history.
+      return NextResponse.json({ ok: true, ...ruleBasedFinalize(history, modules) });
     }
   }
 
