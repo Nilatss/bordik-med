@@ -47,7 +47,13 @@ const GEMINI_MODELS = (process.env.GEMINI_MODEL
       'gemini-2.0-flash',
     ]
 );
-const TOTAL_QUESTIONS = 15;   // bounded - longer feels like a chore
+// 30 questions covers more topics so the recommendation has real
+// signal across anatomy / physiology / pharmacology / clinical etc.
+// 15 was too short to differentiate specialties confidently. Each
+// question is one Gemini call → ~31 calls total per test (30 + 1
+// finalize), still inside the per-day free-tier quota for the
+// fallback chain (gemini-2.5-flash-lite has 1500 RPD on its own).
+const TOTAL_QUESTIONS = 30;
 
 interface Turn {
   question: string;
@@ -71,7 +77,7 @@ const SYSTEM_PROMPT_NEXT = `Ты - адаптивный диагностичес
    - Если пользователь уверенно отвечает в одной области - переключись на другую
    - Если ошибается - попробуй чуть проще или копни в смежную тему, чтобы понять глубину пробела
    - Покрой за весь тест базовые разделы: анатомия, физиология, биохимия, фармакология, патология, клинические дисциплины, неотложка, общественное здоровье
-2. Уровень сложности подстраивай под уже виденные ответы. Не делай 15 одинаково лёгких или одинаково сложных подряд.
+2. Уровень сложности подстраивай под уже виденные ответы. Не делай 30 одинаково лёгких или одинаково сложных подряд.
 3. Вопросы пиши на русском языке, чёткие формулировки, без двусмысленностей.
 4. ВСЕГДА 4 варианта ответа, ровно один правильный.
 5. ОБЯЗАТЕЛЬНО возвращай поле "topic" одним из: anatomy, physiology, biochemistry, pharmacology, pathology, internal-medicine, surgery, pediatrics, obstetrics, emergency, public-health, ethics, clinical-skills, lab-diagnostics, imaging.

@@ -64,57 +64,115 @@ export default function DiagnosticTest({ onClose }: { onClose: () => void }) {
     }));
   }, []);
 
+  /**
+   * Translate a backend error code into something the user can act on,
+   * instead of dumping the raw "gemini-429: You exceeded your current
+   * quota..." string from Google's API. The codes are emitted by the
+   * /api/diagnostic route — see that file for the canonical list.
+   */
+  const friendlyError = (code: string): { msg: string; retryable: boolean } => {
+    if (code.includes('429') || /quota|rate.?limit/i.test(code)) {
+      return { msg: 'AI временно перегружен. Подождите минутку и попробуйте снова.', retryable: true };
+    }
+    if (code.includes('timeout') || code.includes('budget')) {
+      return { msg: 'AI отвечает дольше обычного. Попробуйте снова.', retryable: true };
+    }
+    if (code === 'gemini-not-configured') {
+      return { msg: 'AI-сервис временно недоступен. Попробуйте позже.', retryable: false };
+    }
+    return { msg: 'Не удалось получить следующий вопрос. Попробуйте ещё раз.', retryable: true };
+  };
+
   const fetchNext = useCallback(async (h: Turn[]) => {
     setPhase('loading');
     setErrorMsg(null);
-    try {
-      const r = await fetch('/api/diagnostic', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ action: 'next', history: h }),
-      });
-      const json = await r.json();
-      if (!r.ok || !json.ok) {
+
+    // One automatic retry-with-backoff on transient errors. The diagnostic
+    // depends on a chain of API calls; a single 429 from Google's free
+    // quota during a rolling wave of users would otherwise force the user
+    // to manually click "Попробовать снова" repeatedly. We do exactly one
+    // silent retry after a 2.5s wait so the user never sees the toast for
+    // brief upstream blips.
+    let attempt = 0;
+    while (attempt < 2) {
+      try {
+        const r = await fetch('/api/diagnostic', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ action: 'next', history: h }),
+        });
+        const json = await r.json();
+        if (r.ok && json.ok) {
+          setCurrent(json as ServerQuestion);
+          setPicked(null);
+          setPhase('asking');
+          return;
+        }
         const code = json?.error || `http-${r.status}`;
-        const friendly =
-          code === 'gemini-not-configured'
-            ? 'AI-сервис временно недоступен. Попробуйте позже.'
-            : `Не удалось получить следующий вопрос (${code}). Попробуйте ещё раз.`;
+        const f = friendlyError(code);
+        if (attempt === 0 && f.retryable) {
+          attempt++;
+          await new Promise((res) => setTimeout(res, 2500));
+          continue;
+        }
         console.error('[diagnostic] /next failed:', code, json);
-        setErrorMsg(friendly);
+        setErrorMsg(f.msg);
+        setPhase('error');
+        return;
+      } catch (err) {
+        if (attempt === 0) {
+          attempt++;
+          await new Promise((res) => setTimeout(res, 2500));
+          continue;
+        }
+        console.error('[diagnostic] /next threw:', err);
+        setErrorMsg('Нет связи с сервером. Проверьте интернет.');
         setPhase('error');
         return;
       }
-      setCurrent(json as ServerQuestion);
-      setPicked(null);
-      setPhase('asking');
-    } catch (err) {
-      console.error('[diagnostic] /next threw:', err);
-      setErrorMsg('Нет связи с сервером. Проверьте интернет.');
-      setPhase('error');
     }
   }, []);
 
   const finalize = useCallback(async (h: Turn[]) => {
     setPhase('finalizing');
     setErrorMsg(null);
-    try {
-      const r = await fetch('/api/diagnostic', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ action: 'finalize', history: h, modules: moduleSummaries }),
-      });
-      const json = await r.json();
-      if (!r.ok || !json.ok) {
-        setErrorMsg('Не удалось получить рекомендацию. Попробуйте перезапустить тест.');
+    // Same one-shot retry pattern as fetchNext — finalize is a single
+    // expensive call that summarises all 30 turns; we'd rather wait 2.5s
+    // and retry than burn the whole completed test on a transient 429.
+    let attempt = 0;
+    while (attempt < 2) {
+      try {
+        const r = await fetch('/api/diagnostic', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ action: 'finalize', history: h, modules: moduleSummaries }),
+        });
+        const json = await r.json();
+        if (r.ok && json.ok) {
+          setFinal(json as FinalResult);
+          setPhase('done');
+          return;
+        }
+        const code = json?.error || `http-${r.status}`;
+        const f = friendlyError(code);
+        if (attempt === 0 && f.retryable) {
+          attempt++;
+          await new Promise((res) => setTimeout(res, 2500));
+          continue;
+        }
+        setErrorMsg(f.msg);
+        setPhase('error');
+        return;
+      } catch {
+        if (attempt === 0) {
+          attempt++;
+          await new Promise((res) => setTimeout(res, 2500));
+          continue;
+        }
+        setErrorMsg('Нет связи с сервером. Проверьте интернет.');
         setPhase('error');
         return;
       }
-      setFinal(json as FinalResult);
-      setPhase('done');
-    } catch {
-      setErrorMsg('Нет связи с сервером. Проверьте интернет.');
-      setPhase('error');
     }
   }, [moduleSummaries]);
 
@@ -157,7 +215,7 @@ export default function DiagnosticTest({ onClose }: { onClose: () => void }) {
     fetchNext([]);
   };
 
-  const total = current?.total ?? 15;
+  const total = current?.total ?? 30;
   const indexNow = current?.index ?? history.length;
   const progressPct = Math.round((indexNow / total) * 100);
   const correctSoFar = history.filter((t) => t.selectedIndex === t.correctIndex).length;
@@ -283,16 +341,21 @@ export default function DiagnosticTest({ onClose }: { onClose: () => void }) {
 
         {phase === 'error' && (
           <motion.div key="error" {...fadeProps} style={{
-            ...panelStyle, background: '#FEF2F2', border: '1px solid #FCA5A5',
+            ...panelStyle, background: '#F5F6F8',
           }}>
             <p style={{
               fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: 600,
-              color: '#991B1B', marginBottom: 6,
+              color: '#1A1A1A', marginBottom: 6,
+              display: 'inline-flex', alignItems: 'center', gap: 8,
             }}>
+              <span style={{
+                width: 8, height: 8, borderRadius: 999,
+                background: '#F87171', display: 'inline-block',
+              }} />
               Что-то пошло не так
             </p>
             <p style={{
-              fontFamily: 'var(--font-body)', fontSize: 13, color: '#991B1B',
+              fontFamily: 'var(--font-body)', fontSize: 13, color: '#4B5563',
               lineHeight: 1.5, marginBottom: 14,
             }}>
               {errorMsg ?? 'Неизвестная ошибка.'}
@@ -401,17 +464,18 @@ export default function DiagnosticTest({ onClose }: { onClose: () => void }) {
 
         {phase === 'done' && final && (
           <motion.div key="done" {...fadeProps} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
-            {/* Hero card with profession */}
+            {/* Hero card with profession — Bordik monochrome (no blue gradient).
+                Same #F5F6F8 surface as section/module cards so the result
+                page reads as part of the platform, not a foreign branded view. */}
             <div style={{
               padding: 'clamp(20px, 4vw, 32px)',
-              background: 'linear-gradient(135deg, #EFF6FF 0%, #F8FAFC 100%)',
-              border: '1px solid #BFDBFE',
+              background: '#F5F6F8',
               borderRadius: 18,
             }}>
               <p style={{
                 margin: 0,
                 fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700,
-                color: '#1E40AF', textTransform: 'uppercase', letterSpacing: '0.08em',
+                color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.08em',
               }}>
                 Рекомендуемое направление
               </p>
@@ -499,22 +563,20 @@ export default function DiagnosticTest({ onClose }: { onClose: () => void }) {
                           textAlign: 'left',
                           display: 'flex', alignItems: 'center', gap: 14,
                           padding: '14px 16px',
-                          background: '#FFFFFF', border: '1px solid #E5E7EB',
+                          background: '#F5F6F8', border: 'none',
                           borderRadius: 12, cursor: 'pointer',
-                          transition: 'background 150ms, border-color 150ms, transform 150ms',
+                          transition: 'background 150ms',
                         }}
                         onMouseEnter={(e) => {
-                          e.currentTarget.style.background = '#F8FAFC';
-                          e.currentTarget.style.borderColor = '#CBD5E1';
+                          e.currentTarget.style.background = '#F0F2F5';
                         }}
                         onMouseLeave={(e) => {
-                          e.currentTarget.style.background = '#FFFFFF';
-                          e.currentTarget.style.borderColor = '#E5E7EB';
+                          e.currentTarget.style.background = '#F5F6F8';
                         }}
                       >
                         <span style={{
                           width: 32, height: 32, borderRadius: 10,
-                          background: '#EFF6FF', color: '#1E40AF',
+                          background: '#1A1A1A', color: '#FFFFFF',
                           display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
                           fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 700,
                           flexShrink: 0,
@@ -588,7 +650,7 @@ const loadingTextStyle = {
 
 const primaryBtn: React.CSSProperties = {
   padding: '10px 20px', borderRadius: 10,
-  background: '#3B82F6', color: '#FFFFFF',
+  background: '#1A1A1A', color: '#FFFFFF',
   border: 'none', cursor: 'pointer',
   fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
   transition: 'background 180ms',
@@ -604,17 +666,17 @@ const secondaryBtn: React.CSSProperties = {
 const pillStyle: React.CSSProperties = {
   display: 'inline-flex', alignItems: 'center',
   padding: '4px 10px', borderRadius: 999,
-  background: '#FFFFFF', color: '#1E40AF',
+  background: '#FFFFFF', color: '#1A1A1A',
   fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
   letterSpacing: '0.06em', textTransform: 'uppercase',
-  border: '1px solid #BFDBFE',
+  border: '1px solid #E5E7EB',
 };
 
 function Spinner() {
   return (
     <div style={{
       width: 36, height: 36, margin: '0 auto',
-      border: '3px solid #E2E4EA', borderTopColor: '#3B82F6',
+      border: '3px solid #E2E4EA', borderTopColor: '#1A1A1A',
       borderRadius: '50%',
       animation: 'diagnostic-spin 0.9s linear infinite',
     }}>
@@ -628,19 +690,21 @@ function Spinner() {
 function ListPanel({ title, tone, items }: {
   title: string; tone: 'green' | 'amber'; items: string[];
 }) {
-  const palette = tone === 'green'
-    ? { bg: '#ECFDF5', border: '#A7F3D0', label: '#065F46', dot: '#10B981' }
-    : { bg: '#FFFBEB', border: '#FCD34D', label: '#92400E', dot: '#F59E0B' };
+  // Bordik palette: same #F5F6F8 surface for every card. The semantic
+  // colour (green for strengths, amber for weaknesses) survives only as
+  // the bullet-point dot — enough signal without the pastel block style
+  // that clashed with the rest of the platform.
+  const dotColor = tone === 'green' ? '#22C55E' : '#F59E0B';
   return (
     <div style={{
       padding: '14px 16px',
-      background: palette.bg, border: `1px solid ${palette.border}`,
+      background: '#F5F6F8',
       borderRadius: 14,
     }}>
       <p style={{
         margin: '0 0 10px',
         fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-        color: palette.label, textTransform: 'uppercase', letterSpacing: '0.08em',
+        color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.08em',
       }}>
         {title}
       </p>
@@ -653,7 +717,7 @@ function ListPanel({ title, tone, items }: {
           }}>
             <span style={{
               flexShrink: 0, marginTop: 6,
-              width: 6, height: 6, borderRadius: '50%', background: palette.dot,
+              width: 6, height: 6, borderRadius: '50%', background: dotColor,
             }} />
             <span>{s}</span>
           </li>
