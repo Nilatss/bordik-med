@@ -88,11 +88,25 @@ export function proxy(req: NextRequest) {
     //   in practice for our threat model (we don't ship third-party
     //   user-generated scripts).
     `script-src 'self' 'nonce-${nonce}' 'unsafe-inline' https://storage.googleapis.com https://va.vercel-scripts.com`,
-    // Tailwind 4 ships utility classes via inline <style>; we can't
-    // drop 'unsafe-inline' for style-src without breaking the design
-    // system. The nonce is still emitted for any <style> we render
-    // server-side ourselves.
-    `style-src 'self' 'nonce-${nonce}' 'unsafe-inline'`,
+    // style-src does NOT include the per-request nonce.
+    //
+    // CSP3 rule: when BOTH a nonce AND 'unsafe-inline' appear in the
+    // same source list, browsers ignore 'unsafe-inline' entirely and
+    // require nonces on every <style> + every \`style="..."\` attribute.
+    // React's `style={{...}}` JSX prop produces unnonced inline styles
+    // and there's no API to add a nonce attribute to them — so the
+    // moment you ship both keywords together, every inline style on
+    // the page gets blocked. The visible result is a page rendered
+    // with class names but zero inline geometry — exactly what we hit
+    // in production after #19.
+    //
+    // We rely on 'unsafe-inline' because the codebase has hundreds of
+    // `style={{...}}` JSX usages plus Tailwind 4's runtime <style>
+    // blocks. The threat model here is XSS via injected style content
+    // (low-impact compared to script injection), and the rest of the
+    // CSP layer (nonce on script-src, 'self' default-src, frame-
+    // ancestors 'none', etc.) already mitigates the realistic vectors.
+    `style-src 'self' 'unsafe-inline'`,
     `img-src 'self' blob: data: https:`,
     `font-src 'self' data:`,
     `media-src 'self' blob:`,
