@@ -40,7 +40,9 @@
 ## P1 — рост (4–6 месяцев)
 
 ### Killer-фичи для практики
-- [ ] **K1.** Drug Interaction Checker (T2) — см. `docs/CONTENT_ROADMAP.md` #1, MVP топ-50 препаратов / 250 пар
+- [x] **K1.** Drug Interaction Checker Phase 1 — выкачено в `c91b433` (62 препарата, 83 пары, BETA-режим)
+- [ ] **K1-Verify.** 🚨 **Аудит всех 83 пар клин-фармакологом** — `docs/specs/drug-interactions-verification.md`. До коммерческого запуска ОБЯЗАТЕЛЬНО. Контент Phase 1 составлен AI на базе открытых источников и не прошёл peer review. Бюджет: 40-60 ч × 1500-3000 ₽/ч = 60-180 тыс ₽. Кандидаты: клин-фармаколог из стационара (ИКБ № 1, НМИЦ), преподаватель кафедры клин-фармакологии (Сеченовский, РНИМУ, ПМГМУ), член АКФР/РОТЭХ
+- [ ] **K1-P2.** Drug Interaction Checker Phase 2 — расширение до 200+ препаратов / 300+ пар. Делать **после** K1-Verify
 - [ ] **K2.** Dose adjustment ХБП/ХПБ для топ-50 препаратов (T3) — см. roadmap #2
 - [ ] **K3.** Pediatric dose calc (T7) — см. roadmap #4
 - [ ] **K4.** Guidelines catalog MVP — ~30 карточек по кардио/неотложке/СД2/КР Минздрав, см. `docs/specs/guidelines-catalog.md`

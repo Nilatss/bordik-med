@@ -129,6 +129,27 @@ export default function DrugChecker() {
         transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1] }}
         style={{ marginBottom: 20 }}
       >
+        <div style={{
+          display: 'inline-flex', alignItems: 'center', gap: 6,
+          marginBottom: 10,
+          padding: '4px 10px',
+          background: '#FEF3C7',
+          color: '#92400E',
+          border: '1px solid #FDE68A',
+          borderRadius: 999,
+          fontFamily: 'var(--font-mono, ui-monospace)',
+          fontSize: 11, fontWeight: 700,
+          letterSpacing: '0.04em',
+          textTransform: 'uppercase',
+        }}>
+          <svg width={11} height={11} viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+            <line x1="12" y1="9" x2="12" y2="13" />
+            <line x1="12" y1="17" x2="12.01" y2="17" />
+          </svg>
+          BETA · требует верификации клин-фармакологом
+        </div>
         <h2 style={{
           fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 700,
           color: '#1A1A1A', marginBottom: 6, letterSpacing: '-0.02em',
@@ -584,21 +605,29 @@ export default function DrugChecker() {
           </dd>
         </dl>
 
-        <p role="note" style={{
+        <div role="note" style={{
           marginTop: 18, paddingTop: 16,
           borderTop: '1px solid #E5E7EB',
-          fontSize: 12, color: '#6B7280', lineHeight: 1.5,
+          fontSize: 12, color: '#6B7280', lineHeight: 1.55,
         }}>
-          <strong style={{ color: '#1A1A1A' }}>Не заменяет фарм-консультацию.</strong>{' '}
-          Чекер показывает известные парные взаимодействия по выверенным
-          источникам, но полнота базы ограничена {data.drugs.length} препаратами
-          Phase 1. Решение по конкретному пациенту принимает врач/клин-фармаколог,
-          опираясь на полный клинический контекст, инструкции производителей
-          (ГРЛС Минздрава) и индивидуальные особенности пациента (ХБП, печёночная
-          функция, генетический полиморфизм CYP, возраст, сопутствующие болезни).
-          Заметили ошибку или нужное взаимодействие отсутствует — напишите через
-          «Обратную связь».
-        </p>
+          <p style={{ margin: '0 0 12px' }}>
+            <strong style={{ color: '#92400E' }}>⚠ Phase 1 BETA · контент составлен AI и не верифицирован клин-фармакологом.</strong>{' '}
+            База {data.drugs.length} препаратов и {data.interactions.length} пар собрана автоматически
+            из открытых источников (UpToDate Lexidrug, Stockley&apos;s, ESC/AHA, FDA, EMA). До коммерческого
+            запуска каждая пара требует ручного аудита. План верификации — в{' '}
+            <code style={{ background: '#F3F4F6', padding: '1px 4px', borderRadius: 4 }}>
+              docs/specs/drug-interactions-verification.md
+            </code>.
+          </p>
+          <p style={{ margin: 0 }}>
+            <strong style={{ color: '#1A1A1A' }}>Не заменяет фарм-консультацию.</strong>{' '}
+            Решение по конкретному пациенту принимает врач/клин-фармаколог, опираясь
+            на полный клинический контекст, инструкции производителей (ГРЛС Минздрава)
+            и индивидуальные особенности пациента (ХБП, печёночная функция,
+            генетический полиморфизм CYP, возраст, сопутствующие болезни). Заметили
+            ошибку или нужное взаимодействие отсутствует — напишите через «Обратную связь».
+          </p>
+        </div>
       </motion.section>
     </main>
   );

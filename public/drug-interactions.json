@@ -1,5 +1,6 @@
 {
-  "$readme": "Phase 1 чекер лекарственных взаимодействий. Каждая пара (interactions[]) ВРУЧНУЮ выверена по UpToDate Lexidrug, Stockley's 12th, ESC/AHA guidelines, FDA black box warnings, DrugBank. Каждое поле management — клинически применимое (не общая фраза). Phase 2: расширение до 200+ препаратов через парсер ГРЛС.",
+  "$readme": "Phase 1 BETA. Контент составлен AI на основе открытых медицинских источников (UpToDate Lexidrug, Stockley's 12th, ESC/AHA, FDA, EMA SmPC, DrugBank). КАЖДАЯ ПАРА ТРЕБУЕТ ВЕРИФИКАЦИИ КЛИН-ФАРМАКОЛОГОМ перед коммерческим запуском. См. docs/specs/drug-interactions-verification.md. После верификации в каждой паре заполняется поле verified_by + verified_at.",
+  "$verification_status": "BETA — все 83 пары имеют verified_by: null (требуют ручного аудита клин-фармакологом)",
   "version": "0.1.0",
   "lastUpdated": "2026-05-05",
   "sources": [

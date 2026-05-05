@@ -33,6 +33,12 @@ export interface Interaction {
   effect: string;
   management: string;
   sources: string[];
+  /** Кто верифицировал пару клинически. null = AI-синтез, требует
+   *  ручного аудита клин-фармакологом перед коммерческим использованием.
+   *  См. docs/specs/drug-interactions-verification.md */
+  verified_by?: 'clinical_pharmacologist' | 'pharmacology_committee' | null;
+  /** Дата последней верификации в формате YYYY-MM-DD. */
+  verified_at?: string | null;
 }
 
 export interface DrugInteractionData {
