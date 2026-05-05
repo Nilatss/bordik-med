@@ -47,12 +47,30 @@ type Phase = 'loading' | 'asking' | 'reviewing' | 'finalizing' | 'done' | 'error
  */
 export default function DiagnosticTest({ onClose }: { onClose: () => void }) {
   const openCourse = useAppStore((s) => s.openCourse);
-  const [phase, setPhase] = useState<Phase>('loading');
+  const setLastDiagnosticResult = useAppStore((s) => s.setLastDiagnosticResult);
+  const cachedResult = useAppStore((s) => s.lastDiagnosticResult);
+  // Если у пользователя есть сохранённый результат — стартуем сразу с
+  // экрана 'done'. Это даёт возможность вернуться к рекомендациям без
+  // повторного прохождения 30 вопросов. Кнопка «Пройти заново»
+  // обнуляет кеш и начинает с loading.
+  const [phase, setPhase] = useState<Phase>(cachedResult ? 'done' : 'loading');
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [history, setHistory] = useState<Turn[]>([]);
   const [current, setCurrent] = useState<ServerQuestion | null>(null);
   const [picked, setPicked] = useState<number | null>(null);
-  const [final, setFinal] = useState<FinalResult | null>(null);
+  const [final, setFinal] = useState<FinalResult | null>(
+    cachedResult
+      ? {
+          profession: cachedResult.profession,
+          professionRationale: cachedResult.professionRationale,
+          level: cachedResult.level,
+          strengths: cachedResult.strengths,
+          weaknesses: cachedResult.weaknesses,
+          recommendedModuleIds: cachedResult.recommendedModuleIds,
+          studyPlan: cachedResult.studyPlan,
+        }
+      : null,
+  );
 
   /** Compact module summaries for the finalize prompt (id + title + desc). */
   const moduleSummaries = useMemo(() => {
@@ -149,8 +167,19 @@ export default function DiagnosticTest({ onClose }: { onClose: () => void }) {
         });
         const json = await r.json();
         if (r.ok && json.ok) {
-          setFinal(json as FinalResult);
+          const result = json as FinalResult;
+          setFinal(result);
           setPhase('done');
+          // Persist в стор: пользователь может закрыть и вернуться,
+          // или открыть на другом устройстве (через Supabase-sync).
+          // correctSoFar/history.length считаются ниже в render —
+          // здесь читаем актуальные значения из state через get().
+          setLastDiagnosticResult({
+            ...result,
+            correct: h.filter((t) => t.selectedIndex === t.correctIndex).length,
+            total: h.length,
+            completedAt: new Date().toISOString(),
+          });
           return;
         }
         const code = json?.error || `http-${r.status}`;
@@ -176,8 +205,11 @@ export default function DiagnosticTest({ onClose }: { onClose: () => void }) {
     }
   }, [moduleSummaries]);
 
-  // Kick off the first question on mount
+  // Kick off the first question on mount, но только если нет
+  // cached-результата. С cached — сразу показываем 'done' (см. setPhase
+  // в useState инициализаторе выше) и не дёргаем API.
   useEffect(() => {
+    if (cachedResult) return;
     fetchNext([]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -212,6 +244,10 @@ export default function DiagnosticTest({ onClose }: { onClose: () => void }) {
     setCurrent(null);
     setPicked(null);
     setFinal(null);
+    // Очищаем сохранённый результат — пользователь явно сказал
+    // «Пройти заново», старые рекомендации больше не актуальны.
+    setLastDiagnosticResult(null);
+    setPhase('loading');
     fetchNext([]);
   };
 
@@ -288,7 +324,7 @@ export default function DiagnosticTest({ onClose }: { onClose: () => void }) {
             <motion.div
               animate={{ width: `${progressPct}%` }}
               transition={{ duration: 0.4, ease: [0.05, 0.7, 0.1, 1] }}
-              style={{ height: '100%', background: '#1A1A1A', borderRadius: 999 }}
+              style={{ height: '100%', background: '#2563EB', borderRadius: 999 }}
             />
           </div>
         </div>
@@ -547,7 +583,7 @@ export default function DiagnosticTest({ onClose }: { onClose: () => void }) {
                       >
                         <span style={{
                           width: 32, height: 32, borderRadius: 10,
-                          background: '#1A1A1A', color: '#FFFFFF',
+                          background: '#2563EB', color: '#FFFFFF',
                           display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
                           fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 700,
                           flexShrink: 0,
@@ -621,7 +657,7 @@ const loadingTextStyle = {
 
 const primaryBtn: React.CSSProperties = {
   padding: '10px 20px', borderRadius: 10,
-  background: '#1A1A1A', color: '#FFFFFF',
+  background: '#2563EB', color: '#FFFFFF',
   border: 'none', cursor: 'pointer',
   fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
   transition: 'background 180ms',

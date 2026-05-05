@@ -58,6 +58,21 @@ interface AppState {
    *  чтобы пользователь возвращался к привычным инструментам мгновенно
    *  через дежурство / разные устройства одной сессии. */
   recentToolIds: string[];
+  /** Последний результат адаптивного диагностического теста.
+   *  Сохраняется при завершении теста, доступ через TestsPage —
+   *  пользователь может вернуться и пересмотреть рекомендации. */
+  lastDiagnosticResult: {
+    profession: string;
+    professionRationale: string;
+    level: 'basic' | 'intermediate' | 'advanced';
+    strengths: string[];
+    weaknesses: string[];
+    recommendedModuleIds: number[];
+    studyPlan: string;
+    correct: number;
+    total: number;
+    completedAt: string; // ISO 8601
+  } | null;
   setToolsQuery: (q: string) => void;
   setToolsCategories: (c: string[]) => void;
   setToolsSubcategories: (s: string[]) => void;
@@ -93,6 +108,7 @@ interface AppState {
   setShowStats: (show: boolean) => void;
   setShowTests: (show: boolean) => void;
   setShowIcd10: (show: boolean) => void;
+  setLastDiagnosticResult: (r: AppState['lastDiagnosticResult']) => void;
   toggleProfile: () => void;
   addStudyTime: (courseId: string, seconds: number) => void;
   openTool: (id: string) => void;
@@ -177,6 +193,7 @@ export const useAppStore = create<AppState>()(
       toolsFavourites: [],
       toolUsage: {},
       recentToolIds: [],
+      lastDiagnosticResult: null,
 
       setToolsQuery: (q) => set({ toolsQuery: q }),
       setToolsCategories: (c) => set({ toolsCategories: c }),
@@ -338,6 +355,8 @@ export const useAppStore = create<AppState>()(
 
       setShowIcd10: (show) => set({ showIcd10: show, showProfile: false, showLearning: false, showTools: false, showStats: false, showTests: false, activeSection: null, activeModuleId: null, currentCourseId: null, activeToolId: null }),
 
+      setLastDiagnosticResult: (r) => set({ lastDiagnosticResult: r }),
+
       toggleProfile: () => set({ showProfile: true, showLearning: false, showTools: false, showStats: false, showTests: false, activeSection: null, activeModuleId: null, currentCourseId: null, activeToolId: null }),
 
       // Open a specific tool — also flip into the Tools view + clear other
@@ -463,6 +482,7 @@ export const useAppStore = create<AppState>()(
         toolsFavourites: state.toolsFavourites,
         toolUsage: state.toolUsage,
         recentToolIds: state.recentToolIds,
+        lastDiagnosticResult: state.lastDiagnosticResult,
       }),
     }
   )
