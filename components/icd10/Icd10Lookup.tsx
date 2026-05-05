@@ -238,8 +238,8 @@ export default function Icd10Lookup({ chapters, codes, version, lastUpdated, sou
         style={{
           marginTop: 32,
           padding: '20px 22px',
-          background: '#FFFFFF',
-          border: '1px solid #F0F1F5',
+          background: '#F5F6F8',
+          border: 'none',
           borderRadius: 14,
           fontSize: 13,
           color: '#4B5563',
@@ -277,7 +277,7 @@ export default function Icd10Lookup({ chapters, codes, version, lastUpdated, sou
           role="note"
           style={{
             marginTop: 18, paddingTop: 16,
-            borderTop: '1px solid #F0F1F5',
+            borderTop: '1px solid #E5E7EB',
             fontSize: 12, color: '#6B7280', lineHeight: 1.5,
           }}
         >
@@ -308,8 +308,8 @@ function ChapterAccordion({
 }) {
   return (
     <div style={{
-      background: '#FFFFFF',
-      border: '1px solid #F0F1F5',
+      background: '#F5F6F8',
+      border: 'none',
       borderRadius: 14,
       overflow: 'hidden',
     }}>
@@ -327,7 +327,7 @@ function ChapterAccordion({
           fontFamily: 'inherit',
           transition: 'background 150ms',
         }}
-        onMouseEnter={(e) => { e.currentTarget.style.background = '#FAFAFB'; }}
+        onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
         onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
       >
         <span style={{
@@ -336,10 +336,10 @@ function ChapterAccordion({
           fontSize: 11, fontWeight: 700,
           padding: '4px 12px',
           borderRadius: 999,
-          // Soft-blue badge: лёгкий fill + цветной текст вместо
-          // агрессивного чёрного. Палитра синонимична info-блокам
-          // в /tools (#EFF6FF / #2563EB).
-          background: '#EFF6FF',
+          // Soft-blue badge на сером (#F5F6F8) фоне карточки —
+          // белый fill держит бейдж читаемым, синий текст соотносится
+          // с активной фильтр-пиллой и подсветкой кодов.
+          background: '#FFFFFF',
           color: '#2563EB',
           border: '1px solid #DBEAFE',
           letterSpacing: '0.04em',
@@ -390,7 +390,7 @@ function ChapterAccordion({
             style={{ overflow: 'hidden' }}
           >
             <div style={{
-              borderTop: '1px solid #F0F1F5',
+              borderTop: '1px solid #E5E7EB',
               padding: '8px 0',
             }}>
               {visible.map((c) => (
