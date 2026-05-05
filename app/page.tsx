@@ -140,6 +140,11 @@ const ToolView = dynamic(() => import('@/components/tools/ToolView'), { ssr: fal
 // этот компонент внутри shell-а — иначе пользователь «вылетает» из
 // приложения (теряет сайдбар, навигацию, dark-mode и т.д.).
 const Icd10View = dynamic(() => import('@/components/icd10/Icd10View'), { ssr: false, loading: ViewLoading });
+// Главная теперь — лента релизов («что нового»). Раньше view==='home'
+// рендерил ту же сетку разделов курсов что и view==='learning' — после
+// фидбека main view стал news feed-ом, разделы переехали только под
+// «Обучение». Lazy + ssr:false: компонент сам делает client-fetch.
+const NewsFeed = dynamic(() => import('@/components/home/NewsFeed'), { ssr: false, loading: ViewLoading });
 const ProfilePage = dynamic(() => import('@/components/profile/ProfilePage'), { ssr: false, loading: ViewLoading });
 const StatisticsPage = dynamic(() => import('@/components/stats/StatisticsPage'), { ssr: false, loading: ViewLoading });
 const TestsPage = dynamic(() => import('@/components/tests/TestsPage'), { ssr: false, loading: ViewLoading });
@@ -609,7 +614,15 @@ export default function Home() {
             rebuilt client-side. By rendering SectionCards on both views we
             give SSR a stable, real-content tree, and LCP lands ~1.5 s sooner.
           */}
-          {(view === 'home' || view === 'learning') && (
+          {/* view === 'home' → новостной фид «Что нового» (релизы Bordik).
+              view === 'learning' → разделы обучения (старый паттерн main).
+              Если делать оба одинаково — пропадает смысл иметь два пункта
+              в сайдбаре, поэтому развели контент по семантике пункта. */}
+          {view === 'home' && (
+            <NewsFeed />
+          )}
+
+          {view === 'learning' && (
             <div style={{ margin: '0' }}>
               {/* Регуляторный дисклеймер (ФЗ № 28-ФЗ от 28.02.2025).
                   Bordik не лицензированный провайдер ДПО, не выдаёт ЗЕТ

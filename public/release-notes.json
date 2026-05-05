@@ -3,6 +3,21 @@
   "$readme": "Append a new entry to the TOP of `releases` whenever a deploy ships USER-FACING changes. The PwaRegistrar shows an update toast only when the latest entry's `version` differs from what the visitor last saw (stored in localStorage as `bordik-last-seen-release`). Cosmetic deploys / hotfixes / pure infra work should NOT add an entry — that way users only get pinged when there's actually something new for them to see. Schema per entry: { version: semver string, date: YYYY-MM-DD, title: short headline (~6 words), summary: one-paragraph description, changes: array of bullet strings }.",
   "releases": [
     {
+      "version": "0.3.0",
+      "date": "2026-05-05",
+      "title": "Cmd+K, МКБ-10, новости на главной",
+      "summary": "Большое весеннее обновление: глобальный поиск через Cmd+K с поддержкой синонимов, справочник МКБ-10 в сайдбаре, главная превратилась в ленту обновлений. Плюс +6 новых калькуляторов и юр-баннер про ЗЕТ.",
+      "changes": [
+        "Cmd+K (или /) — глобальный поиск по 738 калькуляторам, МКБ-10 и разделам с синонимами рус/латынь/англ. Например, ввод «ТЭЛА» находит Wells, PESI, Geneva",
+        "Сайдбар: появился пункт МКБ-10 в группе «Сервисы». Поиск по коду или диагнозу, 22 главы, 90+ кодов",
+        "Главная теперь — лента «Что нового». Разделы обучения переехали на пункт «Обучение»",
+        "+6 новых калькуляторов: Ottawa Knee, GUCI, Vernakalant (Brinavess), BAC/Widmark, San Francisco Syncope Rule, время работы O₂-баллона. Всего теперь 738",
+        "На карточках калькуляторов появилась кнопка «Скачать» (для офлайн-доступа) рядом со звездой избранного. Чипы «Сохранить офлайн» и «В избранное» в одном стиле",
+        "На лендинге и в условиях использования: явный дисклеймер про ФЗ № 28-ФЗ — Bordik не выдаёт ЗЕТ для аккредитации в РФ, мы образовательный справочный сервис",
+        "Разделы «Скоро» теперь показывают квартал готовности (Q3 2026, Q4 2026 и т.д.) вместо чёрного замочка"
+      ]
+    },
+    {
       "version": "0.2.0",
       "date": "2026-05-04",
       "title": "Производительность главной + страницы инструментов",
