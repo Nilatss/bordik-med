@@ -14,6 +14,10 @@ import { Analytics } from '@vercel/analytics/react';
 // Server renders <WebVitalsReporter /> as null and the client picks
 // it up after hydration. Same effective lazy behaviour, no SSR cost.
 import WebVitalsReporter from '@/components/WebVitalsReporter';
+// Глобальный Cmd-K поиск (A4 из P0-аудита). Mount-ится в layout, чтобы
+// быть доступным с любой страницы. Сам компонент `'use client'`,
+// возвращает null до открытия — нет вклада в SSR-payload.
+import { CommandPalette } from '@/components/search/CommandPalette';
 
 const APP_NAME = 'Bordik';
 const APP_TITLE = 'Bordik - Платформа медицинского обучения';
@@ -163,6 +167,7 @@ export default function RootLayout({
         <StorageBanner />
         <InstallPrompt />
         {children}
+        <CommandPalette />
         {/* Vercel RUM. Analytics is privacy-friendly (no IP store). */}
         <SpeedInsights />
         <Analytics />
