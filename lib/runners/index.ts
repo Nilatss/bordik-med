@@ -744,6 +744,15 @@ export const RUNNER_LOADERS: Record<string, RunnerLoader> = {
   "gell-coombs": () => import('./gell-coombs'),
   "niaid": () => import('./niaid'),
   "mathews": () => import('./mathews'),
+  // Audit table (5 мая 2026): 6 калькуляторов, добавленных по таблице
+  // «Чего не хватает на Bordik». Регистрация в registry — ручная (см.
+  // header файла: split-runners.mjs deprecated).
+  "ottawa-knee":      () => import('./ottawa-knee'),
+  "guci":             () => import('./guci'),
+  "vernakalant-dose": () => import('./vernakalant-dose'),
+  "bac-widmark":      () => import('./bac-widmark'),
+  "sf-syncope":       () => import('./sf-syncope'),
+  "o2-cylinder":      () => import('./o2-cylinder'),
 };
 
 const runnerCache = new Map<string, ToolRunner>();
