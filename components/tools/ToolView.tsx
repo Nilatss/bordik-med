@@ -1260,7 +1260,8 @@ function FavouriteButton({ isFavourite, onToggle }: {
       whileTap={{ scale: 0.94 }}
       transition={{ type: 'spring', stiffness: 480, damping: 22 }}
       style={{
-        marginLeft: 'auto',
+        // marginLeft:auto убран — теперь FavouriteButton стоит сразу
+        // справа от OfflineBadge как сиблинг-чип, в одном комплекте.
         position: 'relative',
         display: 'inline-flex', alignItems: 'center', gap: 6,
         padding: '5px 10px 5px 8px', borderRadius: 999,

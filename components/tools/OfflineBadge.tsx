@@ -30,17 +30,23 @@ export function OfflineBadge({ toolId, label }: { toolId: string; label?: string
 
   if (state === 'unknown') return null;
 
+  // Cached state: зелёный pill в едином стиле с FavouriteButton (body-font,
+  // не uppercase, чуть крупнее) — чтобы кнопки в шапке /tools/[id]
+  // выглядели как один комплект, а не как «два разных артефакта».
   if (state === 'cached') {
     return (
       <span style={{
         display: 'inline-flex', alignItems: 'center', gap: 6,
-        padding: '3px 10px',
+        padding: '5px 10px 5px 8px',
         background: '#ECFDF5', border: '1px solid #A7F3D0',
         borderRadius: 999,
-        fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-        color: '#065F46', letterSpacing: '0.04em', textTransform: 'uppercase',
+        fontFamily: 'var(--font-body)', fontSize: 11, fontWeight: 600,
+        color: '#065F46',
       }}>
-        <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#10B981' }} />
+        <svg width={11} height={11} viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
         {label ?? 'Доступно офлайн'}
       </span>
     );
@@ -51,17 +57,18 @@ export function OfflineBadge({ toolId, label }: { toolId: string; label?: string
       type="button"
       onClick={handleSave}
       disabled={state === 'saving'}
+      aria-label={state === 'saving' ? 'Сохраняем для офлайн-доступа' : 'Скачать для офлайн-доступа'}
       style={{
         display: 'inline-flex', alignItems: 'center', gap: 6,
-        padding: '3px 10px',
-        background: '#F5F6F8', border: '1px solid #E5E7EB',
+        padding: '5px 10px 5px 8px',
+        background: '#F0F1F5', border: '1px solid transparent',
         borderRadius: 999, cursor: state === 'saving' ? 'wait' : 'pointer',
-        fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-        color: '#4B5563', letterSpacing: '0.04em', textTransform: 'uppercase',
-        transition: 'background 150ms, color 150ms',
+        fontFamily: 'var(--font-body)', fontSize: 11, fontWeight: 600,
+        color: '#6B7280',
+        transition: 'background 160ms, color 160ms, border-color 160ms',
       }}
-      onMouseEnter={(e) => { if (state !== 'saving') { e.currentTarget.style.background = '#E8E9ED'; e.currentTarget.style.color = '#1A1A1A'; } }}
-      onMouseLeave={(e) => { if (state !== 'saving') { e.currentTarget.style.background = '#F5F6F8'; e.currentTarget.style.color = '#4B5563'; } }}
+      onMouseEnter={(e) => { if (state !== 'saving') { e.currentTarget.style.background = '#E2E4EA'; e.currentTarget.style.color = '#1A1A1A'; } }}
+      onMouseLeave={(e) => { if (state !== 'saving') { e.currentTarget.style.background = '#F0F1F5'; e.currentTarget.style.color = '#6B7280'; } }}
     >
       <svg width={11} height={11} viewBox="0 0 24 24" fill="none"
         stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round">
@@ -69,7 +76,7 @@ export function OfflineBadge({ toolId, label }: { toolId: string; label?: string
         <polyline points="7 10 12 15 17 10" />
         <line x1="12" y1="15" x2="12" y2="3" />
       </svg>
-      {state === 'saving' ? 'Сохраняем…' : 'Сохранить офлайн'}
+      {state === 'saving' ? 'Сохраняем…' : 'Скачать'}
     </button>
   );
 }

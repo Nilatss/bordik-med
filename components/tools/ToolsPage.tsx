@@ -21,6 +21,7 @@ import {
 } from '@/lib/tool-meta-helpers';
 import { useToolSearch } from '@/lib/use-tool-search';
 import { BulkOfflineDownload } from './BulkOfflineDownload';
+import { CardOfflineButton } from './CardOfflineButton';
 
 import { useAppStore } from '@/lib/store';
 import EmojiOrFlag from '@/components/ui/EmojiOrFlag';
@@ -563,16 +564,19 @@ const ToolCard = React.memo(function ToolCard({ tool }: { tool: CatalogTool }) {
             );
           })()}
         </div>
-        {/* Favourite star — sits on the same row as the subcategory tag so
-            it reads as a sibling UI element, not a floating overlay.
-            Hidden on unavailable tools so it doesn't collide with the
-            absolutely-positioned «Скоро» badge. */}
+        {/* Favourite star + Download — два action-чипа карточки в одном
+            размере (26×26). Сидят на той же строке, что и subcategory-тег,
+            читаются как комплект. Скрываем оба на недоступных инструментах
+            чтобы не пересекаться с абсолютно-позиционированным «Скоро»-бейджем. */}
         {available && (
-        <CardFavButton
-          isFavourite={isFavourite}
-          onClick={handleFavClick}
-          ariaLabel={isFavourite ? t('tool.favorite.removeAria') : t('tool.favorite.addAria')}
-        />
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
+            <CardOfflineButton toolId={tool.id} />
+            <CardFavButton
+              isFavourite={isFavourite}
+              onClick={handleFavClick}
+              ariaLabel={isFavourite ? t('tool.favorite.removeAria') : t('tool.favorite.addAria')}
+            />
+          </span>
         )}
       </div>
 
@@ -873,9 +877,7 @@ export default function ToolsPage() {
   const setCous = useCallback((v: string[]) => {
     startFilterTransition(() => setSelectedCountries(v));
   }, []);
-  const setOnly = useCallback((v: boolean) => {
-    startFilterTransition(() => setOnlyAvailable(v));
-  }, []);
+  // setOnly callback удалён вместе с UI-кнопкой «Только готовые» (см. ниже).
 
   // Catalog arrives async via fetch /catalog.meta.json. Until it loads we
   // render skeleton placeholders below; treat as empty array for filter
@@ -1133,26 +1135,10 @@ export default function ToolsPage() {
           searchable
         />
 
-        <button
-          onClick={() => setOnly(!onlyAvailable)}
-          style={{
-            display: 'inline-flex', alignItems: 'center', gap: 6,
-            padding: '7px 12px',
-            background: onlyAvailable ? '#1A1A1A' : '#F5F6F8',
-            color: onlyAvailable ? '#FFFFFF' : '#374151',
-            border: 'none', borderRadius: 999,
-            cursor: 'pointer',
-            fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 600,
-            transition: 'background 180ms, color 180ms',
-          }}
-          onMouseEnter={(e) => { if (!onlyAvailable) e.currentTarget.style.background = '#EFF1F4'; }}
-          onMouseLeave={(e) => { if (!onlyAvailable) e.currentTarget.style.background = '#F5F6F8'; }}
-        >
-          <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="20 6 9 17 4 12"/>
-          </svg>
-          {t('tools.filter.onlyReady')}
-        </button>
+        {/* Фильтр «Только готовые» убран в коммите май-2026: в каталоге
+            738/738 готовых, фильтр стал избыточным. setOnly+onlyAvailable
+            оставлены в стейте/условиях фильтра — переиспользуем для
+            возможных будущих неготовых записей; UI просто не показываем. */}
 
         <button
           onClick={() => setOnlyFavourites((v) => !v)}
@@ -1247,7 +1233,10 @@ export default function ToolsPage() {
               onRemove={() => setCous(selectedCountries.filter((x) => x !== c))} />
           ))}
           {onlyAvailable && (
-            <FilterChip label={t('tools.filter.onlyReady')} onRemove={() => setOnly(false)} />
+            <FilterChip
+              label={t('tools.filter.onlyReady')}
+              onRemove={() => startFilterTransition(() => setOnlyAvailable(false))}
+            />
           )}
         </div>
       )}
