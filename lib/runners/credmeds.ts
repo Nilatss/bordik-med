@@ -94,13 +94,16 @@ const runner: CalculatorTool = {
         { id: '308.1', title: 'Клиническая фармакология' },
         { id: '303.2', title: 'Нарушения ритма' },
       ],
-      scale: [
-        { from: 0, to: 1, label: 'Conditional', color: '#FBBF24' },
-        { from: 1, to: 2, label: 'Possible', color: '#F59E0B' },
-        { from: 2, to: 3, label: 'Known', color: '#EF4444' },
-        { from: 3, to: 4, label: 'Congenital avoid', color: '#991B1B' },
-      ] as ResultScaleSegment[],
-      scaleValue: score,
+      scale: {
+        segments: [
+          { min: 0, max: 1, label: 'Conditional',      color: '#FBBF24' },
+          { min: 1, max: 2, label: 'Possible',         color: '#F59E0B' },
+          { min: 2, max: 3, label: 'Known',            color: '#EF4444' },
+          { min: 3, max: 4, label: 'Congenital avoid', color: '#991B1B' },
+        ],
+        current: score,
+        unit: 'Категория',
+      },
     };
   },
   reference: 'Woosley RL, Heise CW, Gallo T, Tate J, Woosley D, Romero KA. www.CredibleMeds.org, AZCERT, Oro Valley, AZ.',
