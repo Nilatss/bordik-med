@@ -57,18 +57,41 @@ export default function Icd10Lookup({ chapters, codes, version, lastUpdated, sou
     return map;
   }, [codes]);
 
-  // Flat filter для search-режима
+  // Flat filter + scoring для search-режима. Логика как в Cmd+K и
+  // сайдбар-поиске: точные совпадения вверх, префиксы выше, includes
+  // ниже. ё→е normalize чтобы «гипер» и «гипёр» были одним.
   const filtered = useMemo(() => {
-    const query = q.trim().toLowerCase();
+    const query = q.trim().toLowerCase().replace(/ё/g, 'е');
     let pool = codes;
     if (activeChapter) pool = pool.filter((c) => c.chapter === activeChapter);
     if (!query) return pool;
-    return pool.filter((c) => {
-      return (
-        c.code.toLowerCase().startsWith(query) ||
-        c.title.toLowerCase().includes(query)
-      );
+
+    type Scored = { c: CodeEntry; score: number };
+    const scored: Scored[] = [];
+    for (const c of pool) {
+      const code = c.code.toLowerCase();
+      const title = c.title.toLowerCase().replace(/ё/g, 'е');
+      let score = 0;
+      // 100 — точное совпадение кода (I10 → I10)
+      if (code === query) score = 100;
+      // 80 — код начинается с query (I → I10, I20, I21...)
+      else if (code.startsWith(query)) score = 80;
+      // 60 — название начинается с query (гипер → гипертензия)
+      else if (title.startsWith(query)) score = 60;
+      // 40 — слово в названии начинается с query (после пробела)
+      else if (title.includes(' ' + query)) score = 40;
+      // 20 — substring (гипер → эссенциальная гипертензия)
+      else if (title.includes(query)) score = 20;
+      // 10 — substring в коде (редко: I.0 → I20.0, I21.0)
+      else if (code.includes(query)) score = 10;
+      else continue;
+      scored.push({ c, score });
+    }
+    scored.sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      return a.c.code.localeCompare(b.c.code);
     });
+    return scored.map((s) => s.c);
   }, [q, activeChapter, codes]);
 
   const chapterById = useMemo(
@@ -251,6 +274,7 @@ export default function Icd10Lookup({ chapters, codes, version, lastUpdated, sou
           filtered={filtered}
           activeChapter={activeChapter}
           chapterById={chapterById}
+          query={q.trim()}
         />
       )}
 
@@ -455,12 +479,33 @@ function ChapterAccordion({
   );
 }
 
+/** Подсветка совпадений — синий жирный фрагмент. Тот же тон #2563EB,
+ *  что и в сайдбар-поиске и Cmd+K. ё/е нормализация в матчере, чтобы
+ *  «гипер» подсвечивал «гипертензия» и «гипёртензия». */
+function Highlight({ text, query }: { text: string; query: string }) {
+  const trimmed = query.trim();
+  if (!trimmed) return <>{text}</>;
+  const escaped = trimmed.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const splitter = new RegExp(`(${escaped})`, 'gi');
+  const parts = text.split(splitter);
+  return (
+    <>
+      {parts.map((p, i) =>
+        p.toLowerCase().replace(/ё/g, 'е') === trimmed.toLowerCase().replace(/ё/g, 'е')
+          ? <strong key={i} style={{ fontWeight: 700, color: '#2563EB' }}>{p}</strong>
+          : <span key={i}>{p}</span>
+      )}
+    </>
+  );
+}
+
 function FlatList({
-  filtered, activeChapter, chapterById,
+  filtered, activeChapter, chapterById, query,
 }: {
   filtered: CodeEntry[];
   activeChapter: string | null;
   chapterById: Record<string, Chapter>;
+  query: string;
 }) {
   return (
     <>
@@ -512,10 +557,10 @@ function FlatList({
                 fontWeight: 700, fontSize: 13, color: '#2563EB',
                 letterSpacing: '0.02em',
               }}>
-                {c.code}
+                <Highlight text={c.code} query={query} />
               </span>
               <span style={{ flex: 1, fontSize: 14, color: '#1A1A1A', lineHeight: 1.45 }}>
-                {c.title}
+                <Highlight text={c.title} query={query} />
               </span>
               <span style={{
                 flex: '0 0 auto',
