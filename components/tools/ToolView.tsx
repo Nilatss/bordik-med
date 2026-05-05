@@ -10,6 +10,7 @@ import { findBand, type ToolInput, type Preset, type CalculatorResult, type Resu
 import { loadRunner } from '@/lib/runners';
 import { primaryCountriesFor } from '@/lib/tool-meta-helpers';
 import { useAppStore } from '@/lib/store';
+import { reportToolTimeToResult } from '@/lib/analytics/tool-time-to-result';
 import { useT } from '@/lib/i18n';
 import { ArrowLeft } from '@/components/icons';
 import EmojiOrFlag from '@/components/ui/EmojiOrFlag';
@@ -245,6 +246,16 @@ export default function ToolView({ toolId }: { toolId: string }) {
       relatedCourses: runner.relatedCourses,
     };
   }, [runner, values]);
+
+  // P0-A8 «время до результата»: при первом успешном compute для
+  // данного tool.id отчитываемся в Sentry (миллисекунды от openTool).
+  // Reporter сам идемпотентен — повторный вызов на ре-комптуте при
+  // изменении input'а ничего не делает (он сбрасывает window-маркер
+  // после первого отчёта).
+  useEffect(() => {
+    if (!result || !tool) return;
+    reportToolTimeToResult(tool.id, runner?.kind);
+  }, [result, tool, runner?.kind]);
 
   if (!tool) {
     return (

@@ -348,6 +348,16 @@ export const useAppStore = create<AppState>()(
         // обрезаем до 10 элементов. Это даёт ленту «последние 5–10 инструментов»
         // под виджет на странице /tools без отдельного timestamp-словаря.
         const nextRecent = [id, ...recentToolIds.filter((x) => x !== id)].slice(0, 10);
+        // P0-A8 «время до результата»: запоминаем момент открытия инструмента
+        // в window.* (не в store, чтобы не триггерить лишние ре-рендеры).
+        // ToolView читает этот timestamp при первом успешном compute и шлёт
+        // в Sentry метрику tool_time_to_result.
+        if (typeof window !== 'undefined') {
+          (window as unknown as { __bordikToolOpenedAt?: { id: string; t: number } }).__bordikToolOpenedAt = {
+            id,
+            t: performance.now(),
+          };
+        }
         set({
           activeToolId: id,
           showTools: true,
