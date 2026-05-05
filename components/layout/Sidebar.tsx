@@ -46,7 +46,7 @@ function Highlight({ text, query }: { text: string; query: string }) {
     <>
       {parts.map((p, i) =>
         p && matcher.test(p)
-          ? <strong key={i} style={{ fontWeight: 700, color: '#1A1A1A' }}>{p}</strong>
+          ? <strong key={i} style={{ fontWeight: 700, color: '#2563EB' }}>{p}</strong>
           : <span key={i}>{p}</span>
       )}
     </>
