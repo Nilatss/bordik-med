@@ -24,7 +24,7 @@ import nextDynamic from 'next/dynamic';
 // is just the existing avatar circle from the static SVG below.
 const UserMenu = nextDynamic(() => import('./UserMenu'), { ssr: false });
 
-type NavItem = 'home' | 'learning' | 'tests' | 'tools' | 'stats' | 'profile';
+type NavItem = 'home' | 'learning' | 'tests' | 'tools' | 'icd10' | 'stats' | 'profile';
 
 /** Render `text` with all case-insensitive occurrences of `query` wrapped in
  *  <strong> for bold highlight. Used in search results. */
@@ -76,11 +76,13 @@ export default function Sidebar() {
     showTools,
     showStats,
     showTests,
+    showIcd10,
     goHome,
     setShowLearning,
     setShowTools,
     setShowStats,
     setShowTests,
+    setShowIcd10,
     toggleProfile,
     sidebarOpen,
     toggleSidebar,
@@ -119,9 +121,11 @@ export default function Sidebar() {
         ? 'tests'
         : showTools
           ? 'tools'
-          : (activeSection || showLearning)
-            ? 'learning'
-            : 'home';
+          : showIcd10
+            ? 'icd10'
+            : (activeSection || showLearning)
+              ? 'learning'
+              : 'home';
 
   const handleNav = (item: NavItem) => {
     if (item === 'home') goHome();
@@ -129,6 +133,7 @@ export default function Sidebar() {
     else if (item === 'learning') setShowLearning(true);
     else if (item === 'tests') setShowTests(true);
     else if (item === 'tools') setShowTools(true);
+    else if (item === 'icd10') setShowIcd10(true);
     else if (item === 'stats') setShowStats(true);
     // Auto-close drawer on mobile so the user actually sees the destination.
     // Profile is a modal panel that overlays the sidebar - closing the
@@ -153,6 +158,7 @@ export default function Sidebar() {
       case 'tests':    void import('@/components/tests/TestsPage'); break;
       case 'stats':    void import('@/components/stats/StatisticsPage'); break;
       case 'profile':  void import('@/components/profile/ProfilePage'); break;
+      case 'icd10':    void import('@/components/icd10/Icd10Lookup'); break;
       case 'learning': /* no chunk — sections render in app/page.tsx */ break;
       case 'home':     /* eager */ break;
     }
@@ -198,10 +204,21 @@ export default function Sidebar() {
     tools: {
       id: 'tools',
       label: t('nav.tools'),
-      keywords: ['инструменты', 'калькулятор', 'tools', 'calculator', 'бми', 'bmi', 'справочник', 'мкб'],
+      keywords: ['инструменты', 'калькулятор', 'tools', 'calculator', 'бми', 'bmi'],
       icon: (
         <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
           <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z" />
+        </svg>
+      ),
+    },
+    icd10: {
+      id: 'icd10',
+      label: 'МКБ-10',
+      keywords: ['мкб', 'мкб-10', 'icd', 'icd10', 'icd-10', 'диагноз', 'код', 'справочник', 'classification', 'международная классификация'],
+      icon: (
+        <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+          <path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z" />
+          <path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z" />
         </svg>
       ),
     },
@@ -233,7 +250,7 @@ export default function Sidebar() {
   const groups: NavGroup[] = [
     { id: 'main',     title: t('nav.group.main'),     items: ['home', 'profile'] },
     { id: 'study',    title: t('nav.group.study'),    items: ['learning', 'tests', 'stats'] },
-    { id: 'services', title: t('nav.group.services'), items: ['tools'] },
+    { id: 'services', title: t('nav.group.services'), items: ['tools', 'icd10'] },
   ];
 
   // Filter by search

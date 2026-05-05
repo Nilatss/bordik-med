@@ -135,6 +135,11 @@ function ComingSoonStub({
 }
 const ToolsPage = dynamic(() => import('@/components/tools/ToolsPage'), { ssr: false, loading: ViewLoading });
 const ToolView = dynamic(() => import('@/components/tools/ToolView'), { ssr: false, loading: ViewLoading });
+// МКБ-10 lookup как embedded SPA-вью. SSG-страница /icd10 остаётся
+// для SEO и прямых ссылок из поиска, но переход из сайдбара открывает
+// этот компонент внутри shell-а — иначе пользователь «вылетает» из
+// приложения (теряет сайдбар, навигацию, dark-mode и т.д.).
+const Icd10View = dynamic(() => import('@/components/icd10/Icd10View'), { ssr: false, loading: ViewLoading });
 const ProfilePage = dynamic(() => import('@/components/profile/ProfilePage'), { ssr: false, loading: ViewLoading });
 const StatisticsPage = dynamic(() => import('@/components/stats/StatisticsPage'), { ssr: false, loading: ViewLoading });
 const TestsPage = dynamic(() => import('@/components/tests/TestsPage'), { ssr: false, loading: ViewLoading });
@@ -416,6 +421,7 @@ export default function Home() {
   const showTools = useAppStore((s) => s.showTools);
   const showStats = useAppStore((s) => s.showStats);
   const showTests = useAppStore((s) => s.showTests);
+  const showIcd10 = useAppStore((s) => s.showIcd10);
   const activeToolId = useAppStore((s) => s.activeToolId);
   // Action refs — stable across the component's lifetime (Zustand returns
   // the same function reference), so picking them via `getState` once is
@@ -438,12 +444,13 @@ export default function Home() {
       : null)
     : null;
 
-  // views: profile | stats | tests | tool | tools | home | learning (sections) → section (modules) → module (courses) → course
+  // views: profile | stats | tests | tool | tools | icd10 | home | learning (sections) → section (modules) → module (courses) → course
   const view = showProfile ? 'profile'
     : showStats ? 'stats'
     : showTests ? 'tests'
     : (showTools && activeToolId) ? 'tool'
     : showTools ? 'tools'
+    : showIcd10 ? 'icd10'
     : currentCourseId ? 'course'
     : activeModuleId ? 'module'
     : activeSection ? 'section'
@@ -532,6 +539,10 @@ export default function Home() {
 
           {view === 'tests' && (
             <TestsPage />
+          )}
+
+          {view === 'icd10' && (
+            <Icd10View />
           )}
 
           {view === 'course' && (
