@@ -121,18 +121,52 @@ export default async function ToolLandingPage({ params }: PageProps) {
   const t = readToolMeta(id);
   if (!t) notFound();
 
-  // schema.org type selection. `MedicalScale` covers scoring instruments
-  // (CHA2DS2-VASc, Glasgow Coma Scale, etc.) which is the dominant
-  // pattern in our catalog. Pure formulas (BMI, BSA) get
-  // `MedicalCalculator` (a Bordik-internal type — schema.org doesn't
-  // have a dedicated calculator class, so we fall back to MedicalScale
-  // which Google understands and which matches the medical-context
-  // crawlers care about).
-  const schemaType = t.kind === 'score' ? 'MedicalScale' : 'MedicalScale';
+  // schema.org type selection (P0-A7 из аудита):
+  //
+  //   - score-инструменты (TIMI, GRACE, CHA2DS2-VASc, Wells, qSOFA, GCS) →
+  //     MedicalRiskCalculator — точно описывает «scoring instrument для
+  //     оценки клинического риска». Подкласс MedicalRiskEstimator.
+  //   - calculator-инструменты (BMI, BSA, eGFR, anion gap) → MedicalScale,
+  //     который Google понимает как «medical scale producing a value».
+  //     Schema.org не имеет отдельного MedicalFormula, MedicalScale —
+  //     ближайший корректный тип для расчётных инструментов.
+  //
+  // Двойной типизация (additionalType="MedicalCalculator") даёт
+  // дополнительный сигнал AI-агрегаторам (ChatGPT Search, Perplexity,
+  // MDCalc-аналоги): это калькулятор, не текстовая статья.
+  const schemaType = t.kind === 'score' ? 'MedicalRiskCalculator' : 'MedicalScale';
+
+  // medicalSpecialty по schema.org должен быть из enum значений
+  // (Cardiovascular, Endocrine, Pulmonary, ...). Маппим из категории
+  // нашего каталога. Для категорий без точного совпадения отдаём
+  // generic «Medical» — Google это принимает.
+  const specialtyMap: Record<string, string> = {
+    '1. Клинические калькуляторы':            'PrimaryCare',
+    '2. Диагностические шкалы':                'PrimaryCare',
+    '3. Педиатрические инструменты':           'Pediatric',
+    '4. Кардиология и сосуды':                 'Cardiovascular',
+    '5. Неврология и нейрохирургия':            'Neurologic',
+    '6. Анестезиология и ICU':                  'Anesthesia',
+    '7. Травматология и военная медицина':      'Emergency',
+    '8. Акушерство и гинекология':             'Obstetric',
+    '9. Психиатрия и психология':              'Psychiatric',
+    '10. Онкология':                          'Oncologic',
+    '11. Инфекционные болезни':                'Infectious',
+    '12. Нефрология и урология':                'Nephrologic',
+    '13. Пульмонология':                      'Pulmonary',
+    '14. Фармакология и лекарства':             'PharmacySpecialty',
+    '15. Лабораторная медицина':              'Pathology',
+    '17. Протоколы экстренной помощи':         'Emergency',
+  };
+  const specialty = specialtyMap[t.category];
 
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': schemaType,
+    // additionalType — кастомный сигнал для AI-парсеров и Google
+    // Knowledge Graph: «это калькулятор, не текстовая статья»
+    additionalType: 'https://schema.org/MedicalCalculator',
+    '@id': `${BASE_URL}/tools/${id}#tool`,
     name: t.title,
     description: t.description,
     url: `${BASE_URL}/tools/${id}`,
@@ -147,10 +181,53 @@ export default async function ToolLandingPage({ params }: PageProps) {
       '@type': 'MedicalCondition',
       name: t.subcategory,
     },
-    medicalSpecialty: t.category,
-    ...(t.lastUpdated ? { dateModified: t.lastUpdated } : {}),
-    ...(t.reference ? { citation: t.reference } : {}),
-    ...(t.countries ? { audience: { '@type': 'MedicalAudience', audienceType: t.countries } } : {}),
+    // medicalSpecialty — schema.org enum (Cardiovascular, Pulmonary, ...).
+    // Если нашли соответствие — отдаём enum; иначе fallback на текстовое
+    // имя категории (Google примет string).
+    medicalSpecialty: specialty ?? t.category,
+    // keywords помогают Google и поисковым агрегаторам сопоставить
+    // запрос с тулом (особенно когда юзер ищет аббревиатуру).
+    keywords: [t.subcategory, t.category, t.kind].filter(Boolean).join(', '),
+    ...(t.lastUpdated
+      ? {
+          dateModified: t.lastUpdated,
+          // lastReviewed — schema.org-предпочитаемое поле для медицинской
+          // достоверности; Google использует его в knowledge graph.
+          lastReviewed: t.lastUpdated,
+        }
+      : {}),
+    ...(t.reference
+      ? {
+          citation: t.reference,
+          // subjectOf — связывает калькулятор с гайдлайном-источником
+          // как сущностью. Google строит граф «калькулятор ↔ guideline».
+          subjectOf: {
+            '@type': 'MedicalGuideline',
+            name: t.reference.split('.').slice(0, 1).join('.') + '.',
+            guidelineDate: t.lastUpdated ?? undefined,
+          },
+        }
+      : {}),
+    ...(t.countries
+      ? {
+          audience: { '@type': 'MedicalAudience', audienceType: t.countries },
+          // recognizingAuthority — позволяет указать организацию
+          // (ВОЗ, ESC, AHA), которая признаёт инструмент. Если мы храним
+          // только country-string, оборачиваем в Organization.
+          recognizingAuthority: {
+            '@type': 'Organization',
+            name: t.countries,
+          },
+        }
+      : {}),
+    // potentialAction — для voice-ассистентов и AI: «здесь можно
+    // вычислить значение». Yandex Алиса, Google Assistant используют
+    // ActionType, чтобы понять что страница интерактивная.
+    potentialAction: {
+      '@type': 'CalculateAction',
+      target: `${BASE_URL}/tools/${id}`,
+      name: t.kind === 'score' ? 'Рассчитать балл' : 'Рассчитать значение',
+    },
   };
 
   return (
