@@ -31,6 +31,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
   const root: MetadataRoute.Sitemap = [
     { url: `${BASE}/`,         changeFrequency: 'weekly',  priority: 1.0, lastModified: now },
+    { url: `${BASE}/icd10`,    changeFrequency: 'monthly', priority: 0.7, lastModified: now },
     { url: `${BASE}/releases`, changeFrequency: 'monthly', priority: 0.4, lastModified: now },
     { url: `${BASE}/privacy`,  changeFrequency: 'yearly',  priority: 0.3, lastModified: now },
     { url: `${BASE}/terms`,    changeFrequency: 'yearly',  priority: 0.3, lastModified: now },
