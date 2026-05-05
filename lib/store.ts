@@ -40,6 +40,8 @@ interface AppState {
   /** Справочник МКБ-10. Параллельно живёт SSG-страница /icd10 для SEO,
    *  но при переходе из сайдбара открываем embedded-вью внутри shell-а. */
   showIcd10: boolean;
+  /** Drug Interaction Checker. Параллельно живёт SSG /drugs для SEO. */
+  showDrugs: boolean;
   activeToolId: string | null;
 
   /** Tools page persistent state — filters, scroll, favourites */
@@ -108,6 +110,7 @@ interface AppState {
   setShowStats: (show: boolean) => void;
   setShowTests: (show: boolean) => void;
   setShowIcd10: (show: boolean) => void;
+  setShowDrugs: (show: boolean) => void;
   setLastDiagnosticResult: (r: AppState['lastDiagnosticResult']) => void;
   toggleProfile: () => void;
   addStudyTime: (courseId: string, seconds: number) => void;
@@ -175,6 +178,7 @@ export const useAppStore = create<AppState>()(
       showStats: false,
       showTests: false,
       showIcd10: false,
+      showDrugs: false,
       activeToolId: null,
 
       testAttempts: {},
@@ -326,7 +330,7 @@ export const useAppStore = create<AppState>()(
 
       setActiveSection: (id) => set({ activeSection: id, activeModuleId: null, currentCourseId: null }),
 
-      goHome: () => set({ activeSection: null, activeModuleId: null, currentCourseId: null, showProfile: false, showLearning: false, showTools: false, showStats: false, showTests: false, showIcd10: false, activeToolId: null }),
+      goHome: () => set({ activeSection: null, activeModuleId: null, currentCourseId: null, showProfile: false, showLearning: false, showTools: false, showStats: false, showTests: false, showIcd10: false, showDrugs: false, activeToolId: null }),
 
       toggleModule: (id) => {
         const { openModules } = get();
@@ -345,15 +349,17 @@ export const useAppStore = create<AppState>()(
 
       setUserProfile: (data) => set((s) => ({ ...s, ...data })),
 
-      setShowLearning: (show) => set({ showLearning: show, showProfile: false, showTools: false, showStats: false, showTests: false, showIcd10: false, activeSection: null, activeModuleId: null, currentCourseId: null, activeToolId: null }),
+      setShowLearning: (show) => set({ showLearning: show, showProfile: false, showTools: false, showStats: false, showTests: false, showIcd10: false, showDrugs: false, activeSection: null, activeModuleId: null, currentCourseId: null, activeToolId: null }),
 
-      setShowTools: (show) => set({ showTools: show, showProfile: false, showLearning: false, showStats: false, showTests: false, showIcd10: false, activeSection: null, activeModuleId: null, currentCourseId: null, activeToolId: null }),
+      setShowTools: (show) => set({ showTools: show, showProfile: false, showLearning: false, showStats: false, showTests: false, showIcd10: false, showDrugs: false, activeSection: null, activeModuleId: null, currentCourseId: null, activeToolId: null }),
 
-      setShowStats: (show) => set({ showStats: show, showProfile: false, showLearning: false, showTools: false, showTests: false, showIcd10: false, activeSection: null, activeModuleId: null, currentCourseId: null, activeToolId: null }),
+      setShowStats: (show) => set({ showStats: show, showProfile: false, showLearning: false, showTools: false, showTests: false, showIcd10: false, showDrugs: false, activeSection: null, activeModuleId: null, currentCourseId: null, activeToolId: null }),
 
-      setShowTests: (show) => set({ showTests: show, showProfile: false, showLearning: false, showTools: false, showStats: false, showIcd10: false, activeSection: null, activeModuleId: null, currentCourseId: null, activeToolId: null }),
+      setShowTests: (show) => set({ showTests: show, showProfile: false, showLearning: false, showTools: false, showStats: false, showIcd10: false, showDrugs: false, activeSection: null, activeModuleId: null, currentCourseId: null, activeToolId: null }),
 
-      setShowIcd10: (show) => set({ showIcd10: show, showProfile: false, showLearning: false, showTools: false, showStats: false, showTests: false, activeSection: null, activeModuleId: null, currentCourseId: null, activeToolId: null }),
+      setShowIcd10: (show) => set({ showIcd10: show, showProfile: false, showLearning: false, showTools: false, showStats: false, showTests: false, showDrugs: false, activeSection: null, activeModuleId: null, currentCourseId: null, activeToolId: null }),
+
+      setShowDrugs: (show) => set({ showDrugs: show, showProfile: false, showLearning: false, showTools: false, showStats: false, showTests: false, showIcd10: false, activeSection: null, activeModuleId: null, currentCourseId: null, activeToolId: null }),
 
       setLastDiagnosticResult: (r) => set({ lastDiagnosticResult: r }),
 

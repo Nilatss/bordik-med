@@ -24,7 +24,7 @@ import nextDynamic from 'next/dynamic';
 // is just the existing avatar circle from the static SVG below.
 const UserMenu = nextDynamic(() => import('./UserMenu'), { ssr: false });
 
-type NavItem = 'home' | 'learning' | 'tests' | 'tools' | 'icd10' | 'stats' | 'profile';
+type NavItem = 'home' | 'learning' | 'tests' | 'tools' | 'icd10' | 'drugs' | 'stats' | 'profile';
 
 /** Render `text` with all case-insensitive occurrences of `query` wrapped in
  *  <strong> for bold highlight. Used in search results. */
@@ -77,12 +77,14 @@ export default function Sidebar() {
     showStats,
     showTests,
     showIcd10,
+    showDrugs,
     goHome,
     setShowLearning,
     setShowTools,
     setShowStats,
     setShowTests,
     setShowIcd10,
+    setShowDrugs,
     toggleProfile,
     sidebarOpen,
     toggleSidebar,
@@ -123,9 +125,11 @@ export default function Sidebar() {
           ? 'tools'
           : showIcd10
             ? 'icd10'
-            : (activeSection || showLearning)
-              ? 'learning'
-              : 'home';
+            : showDrugs
+              ? 'drugs'
+              : (activeSection || showLearning)
+                ? 'learning'
+                : 'home';
 
   const handleNav = (item: NavItem) => {
     if (item === 'home') goHome();
@@ -134,6 +138,7 @@ export default function Sidebar() {
     else if (item === 'tests') setShowTests(true);
     else if (item === 'tools') setShowTools(true);
     else if (item === 'icd10') setShowIcd10(true);
+    else if (item === 'drugs') setShowDrugs(true);
     else if (item === 'stats') setShowStats(true);
     // Auto-close drawer on mobile so the user actually sees the destination.
     // Profile is a modal panel that overlays the sidebar - closing the
@@ -159,6 +164,7 @@ export default function Sidebar() {
       case 'stats':    void import('@/components/stats/StatisticsPage'); break;
       case 'profile':  void import('@/components/profile/ProfilePage'); break;
       case 'icd10':    void import('@/components/icd10/Icd10Lookup'); break;
+      case 'drugs':    void import('@/components/drugs/DrugChecker'); break;
       case 'learning': /* no chunk — sections render in app/page.tsx */ break;
       case 'home':     /* eager */ break;
     }
@@ -222,6 +228,17 @@ export default function Sidebar() {
         </svg>
       ),
     },
+    drugs: {
+      id: 'drugs',
+      label: 'Взаимодействия',
+      keywords: ['взаимодействия', 'лекарства', 'препараты', 'drug', 'interaction', 'interactions', 'фарма', 'фармакология', 'совместимость', 'варфарин', 'амиодарон', 'клопидогрел'],
+      icon: (
+        <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+          <path d="M10.5 20.5L20 11a4.95 4.95 0 00-7-7L3.5 13.5a4.95 4.95 0 007 7z" />
+          <path d="M8.5 8.5l7 7" />
+        </svg>
+      ),
+    },
     stats: {
       id: 'stats',
       label: t('nav.stats'),
@@ -250,7 +267,7 @@ export default function Sidebar() {
   const groups: NavGroup[] = [
     { id: 'main',     title: t('nav.group.main'),     items: ['home', 'profile'] },
     { id: 'study',    title: t('nav.group.study'),    items: ['learning', 'tests', 'stats'] },
-    { id: 'services', title: t('nav.group.services'), items: ['tools', 'icd10'] },
+    { id: 'services', title: t('nav.group.services'), items: ['tools', 'icd10', 'drugs'] },
   ];
 
   // Filter by search

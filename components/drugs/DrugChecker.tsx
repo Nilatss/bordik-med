@@ -1,0 +1,629 @@
+'use client';
+
+/**
+ * Drug Interaction Checker — главная UI.
+ *
+ * UX:
+ *   - Поиск-инпут с автокомплитом препаратов
+ *   - Селектед-чипы (можно удалять)
+ *   - Поддерживается 2-30 препаратов одновременно
+ *   - Результаты: список взаимодействий с цветовой кодировкой
+ *     severity, расширяемые карточки с механизмом / эффектом /
+ *     тактикой / источниками
+ *   - Дисклеймер «не заменяет фарм-консультацию»
+ *
+ * Источники: UpToDate Lexidrug, Stockley's 12th, ESC/AHA guidelines,
+ * FDA black box warnings, DrugBank Open Data.
+ */
+
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  type Drug,
+  type DrugInteractionData,
+  findInteractions,
+  searchDrugs,
+  SEVERITY_META,
+} from '@/lib/drug-interactions';
+
+const MAX_DRUGS = 30;
+const MIN_DRUGS = 2;
+
+export default function DrugChecker() {
+  const [data, setData] = useState<DrugInteractionData | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [selected, setSelected] = useState<string[]>([]);
+  const [query, setQuery] = useState('');
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  // Грузим базу с ?v= cache-bust для обхода SW precache.
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      try {
+        const r = await fetch('/drug-interactions.json?v=0.1.0', { cache: 'no-cache' });
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const json = await r.json();
+        if (!cancelled) setData(json as DrugInteractionData);
+      } catch (e) {
+        if (!cancelled) setLoadError((e as Error).message ?? 'load failed');
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  const drugById = useMemo(
+    () => (data ? new Map(data.drugs.map((d) => [d.id, d])) : new Map<string, Drug>()),
+    [data],
+  );
+
+  const suggestions = useMemo(() => {
+    if (!data || !query.trim()) return [];
+    return searchDrugs(query, data.drugs, 8).filter((d) => !selected.includes(d.id));
+  }, [data, query, selected]);
+
+  const interactions = useMemo(() => {
+    if (!data || selected.length < 2) return [];
+    return findInteractions(selected, data);
+  }, [data, selected]);
+
+  const summary = useMemo(() => {
+    const s = { contraindicated: 0, major: 0, moderate: 0, minor: 0 };
+    for (const i of interactions) s[i.severity]++;
+    return s;
+  }, [interactions]);
+
+  const addDrug = (id: string) => {
+    if (selected.includes(id) || selected.length >= MAX_DRUGS) return;
+    setSelected([...selected, id]);
+    setQuery('');
+    setShowSuggestions(false);
+    inputRef.current?.focus();
+  };
+
+  const removeDrug = (id: string) => {
+    setSelected(selected.filter((x) => x !== id));
+  };
+
+  const clearAll = () => {
+    setSelected([]);
+    setQuery('');
+  };
+
+  if (loadError) {
+    return (
+      <main id="main-content" style={{ padding: '40px 16px' }}>
+        <p style={{ color: '#991B1B' }}>
+          Не удалось загрузить базу взаимодействий: {loadError}
+        </p>
+      </main>
+    );
+  }
+
+  if (!data) {
+    return (
+      <main id="main-content" style={{ padding: '40px 16px' }}>
+        <div className="lc-shimmer" style={{ height: 28, width: 320, borderRadius: 8, marginBottom: 14 }} />
+        <div className="lc-shimmer" style={{ height: 16, width: '60%', borderRadius: 6, marginBottom: 24 }} />
+        <div className="lc-shimmer" style={{ height: 56, width: '100%', maxWidth: 480, borderRadius: 12, marginBottom: 12 }} />
+        <div className="lc-shimmer" style={{ height: 120, width: '100%', borderRadius: 14 }} />
+      </main>
+    );
+  }
+
+  return (
+    <main
+      id="main-content"
+      style={{
+        width: '100%',
+        fontFamily: 'var(--font-body, system-ui)',
+        color: 'var(--md-sys-color-on-surface, #1A1A1A)',
+      }}
+    >
+      {/* Header */}
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1] }}
+        style={{ marginBottom: 20 }}
+      >
+        <h2 style={{
+          fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 700,
+          color: '#1A1A1A', marginBottom: 6, letterSpacing: '-0.02em',
+        }}>
+          Чекер взаимодействий
+        </h2>
+        <p style={{
+          fontFamily: 'var(--font-body)', fontSize: 14, color: '#6B7280', lineHeight: 1.5,
+        }}>
+          Проверка совместимости лекарств. Введите 2–{MAX_DRUGS} препарата —
+          получите список парных взаимодействий с механизмом, клиническим
+          следствием и тактикой. База: {data.drugs.length} препаратов,{' '}
+          {data.interactions.length} ручкой выверенных пар.
+        </p>
+      </motion.div>
+
+      {/* Search input + selected pills */}
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1], delay: 0.06 }}
+        style={{ marginBottom: 20 }}
+      >
+        <div style={{
+          padding: '12px 14px',
+          background: '#F5F6F8',
+          borderRadius: 14,
+          display: 'flex', flexWrap: 'wrap', gap: 8, alignItems: 'center',
+        }}>
+          <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
+            stroke="#9CA3AF" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+
+          {selected.map((id) => {
+            const d = drugById.get(id);
+            if (!d) return null;
+            return (
+              <span
+                key={id}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 6,
+                  padding: '4px 6px 4px 10px',
+                  background: '#FFFFFF',
+                  border: '1px solid #DBEAFE',
+                  borderRadius: 999,
+                  fontSize: 13, color: '#1A1A1A',
+                }}
+              >
+                {d.name_ru}
+                <button
+                  type="button"
+                  onClick={() => removeDrug(id)}
+                  aria-label={`Убрать ${d.name_ru}`}
+                  style={{
+                    width: 20, height: 20, borderRadius: '50%',
+                    background: '#F3F4F6', border: 'none',
+                    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                    cursor: 'pointer', color: '#6B7280',
+                  }}
+                >
+                  <svg width={10} height={10} viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" strokeWidth={2.5} strokeLinecap="round">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                </button>
+              </span>
+            );
+          })}
+
+          <input
+            ref={inputRef}
+            type="text"
+            inputMode="search"
+            value={query}
+            onChange={(e) => { setQuery(e.target.value); setShowSuggestions(true); }}
+            onFocus={() => setShowSuggestions(true)}
+            placeholder={selected.length === 0
+              ? 'Например: «Варфарин», «Амиодарон», «Клопидогрел»'
+              : selected.length < MAX_DRUGS ? 'Добавить ещё препарат…' : 'Достигнут максимум'}
+            disabled={selected.length >= MAX_DRUGS}
+            style={{
+              flex: 1, minWidth: 200,
+              border: 'none', outline: 'none',
+              background: 'transparent',
+              fontFamily: 'var(--font-body)', fontSize: 14,
+              color: '#1A1A1A',
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && suggestions[0]) {
+                e.preventDefault();
+                addDrug(suggestions[0].id);
+              }
+              if (e.key === 'Escape') {
+                setShowSuggestions(false);
+                setQuery('');
+              }
+            }}
+          />
+
+          {selected.length > 0 && (
+            <button
+              type="button"
+              onClick={clearAll}
+              style={{
+                padding: '4px 10px',
+                background: 'transparent', border: 'none',
+                cursor: 'pointer',
+                fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 600,
+                color: '#6B7280',
+              }}
+            >
+              Очистить
+            </button>
+          )}
+        </div>
+
+        {/* Suggestions dropdown */}
+        <AnimatePresence>
+          {showSuggestions && suggestions.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.15 }}
+              style={{
+                marginTop: 6,
+                background: '#FFFFFF',
+                border: '1px solid #E5E7EB',
+                borderRadius: 12,
+                boxShadow: '0 4px 16px rgba(0,0,0,0.08)',
+                maxWidth: 600,
+                overflow: 'hidden',
+              }}
+            >
+              {suggestions.map((d) => (
+                <button
+                  key={d.id}
+                  type="button"
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => addDrug(d.id)}
+                  style={{
+                    width: '100%',
+                    display: 'flex', alignItems: 'center', gap: 10,
+                    padding: '10px 14px',
+                    background: 'transparent', border: 'none',
+                    cursor: 'pointer', textAlign: 'left',
+                    fontFamily: 'inherit',
+                    transition: 'background 120ms',
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF6FF'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+                >
+                  <span style={{ flex: 1, minWidth: 0 }}>
+                    <span style={{
+                      display: 'block',
+                      fontSize: 14, fontWeight: 600, color: '#1A1A1A',
+                    }}>
+                      {d.name_ru}
+                    </span>
+                    <span style={{
+                      display: 'block', marginTop: 2,
+                      fontSize: 12, color: '#6B7280',
+                    }}>
+                      {d.class_ru}
+                      {d.aliases.length > 0 && ` · ${d.aliases.slice(0, 3).join(', ')}`}
+                    </span>
+                  </span>
+                  <span style={{ flexShrink: 0, color: '#9CA3AF' }}>
+                    <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="12" y1="5" x2="12" y2="19" />
+                      <line x1="5" y1="12" x2="19" y2="12" />
+                    </svg>
+                  </span>
+                </button>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
+
+      {/* Empty state */}
+      {selected.length < MIN_DRUGS && (
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1], delay: 0.12 }}
+          style={{
+            padding: '40px 24px',
+            background: '#F5F6F8',
+            borderRadius: 14,
+            textAlign: 'center',
+            color: '#6B7280',
+            fontSize: 14,
+            lineHeight: 1.55,
+          }}
+        >
+          <svg width={32} height={32} viewBox="0 0 24 24" fill="none"
+            stroke="#9CA3AF" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round"
+            style={{ marginBottom: 10 }}>
+            <rect x="3" y="3" width="7" height="7" rx="1" />
+            <rect x="14" y="3" width="7" height="7" rx="1" />
+            <rect x="3" y="14" width="7" height="7" rx="1" />
+            <rect x="14" y="14" width="7" height="7" rx="1" />
+          </svg>
+          <p style={{ margin: 0 }}>
+            Добавьте минимум 2 препарата, чтобы проверить взаимодействия.
+          </p>
+        </motion.div>
+      )}
+
+      {/* Summary + interactions list */}
+      {selected.length >= MIN_DRUGS && (
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1], delay: 0.12 }}
+        >
+          {/* Summary card */}
+          <div style={{
+            padding: '16px 20px',
+            background: interactions.length === 0 ? '#ECFDF5' : '#F5F6F8',
+            border: `1px solid ${interactions.length === 0 ? '#A7F3D0' : '#E5E7EB'}`,
+            borderRadius: 14,
+            marginBottom: 16,
+            display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap',
+          }}>
+            {interactions.length === 0 ? (
+              <>
+                <span style={{
+                  width: 36, height: 36, borderRadius: 10,
+                  background: '#10B981', color: '#FFFFFF',
+                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                  flexShrink: 0,
+                }}>
+                  <svg width={18} height={18} viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                </span>
+                <span style={{ flex: 1, minWidth: 200 }}>
+                  <strong style={{ display: 'block', fontSize: 15, color: '#065F46' }}>
+                    Значимых взаимодействий не найдено
+                  </strong>
+                  <span style={{ fontSize: 12, color: '#047857', marginTop: 2, display: 'block' }}>
+                    Это не означает полную безопасность — база ограничена {data.drugs.length} препаратами.
+                    Сверьтесь с фарм-справочником у конкретного пациента.
+                  </span>
+                </span>
+              </>
+            ) : (
+              <>
+                <span style={{ flex: 1, minWidth: 200 }}>
+                  <strong style={{ display: 'block', fontSize: 15, color: '#1A1A1A' }}>
+                    Найдено взаимодействий: {interactions.length}
+                  </strong>
+                  <span style={{ fontSize: 12, color: '#6B7280', marginTop: 4, display: 'block' }}>
+                    Препаратов: {selected.length} · пар проверено: {(selected.length * (selected.length - 1)) / 2}
+                  </span>
+                </span>
+                <span style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                  {(['contraindicated', 'major', 'moderate', 'minor'] as const).map((s) => {
+                    if (summary[s] === 0) return null;
+                    const meta = SEVERITY_META[s];
+                    return (
+                      <span
+                        key={s}
+                        style={{
+                          padding: '4px 10px',
+                          background: meta.bg, color: meta.color,
+                          border: `1px solid ${meta.border}`,
+                          borderRadius: 999,
+                          fontFamily: 'var(--font-mono, ui-monospace)',
+                          fontSize: 11, fontWeight: 700,
+                          letterSpacing: '0.02em',
+                        }}
+                      >
+                        {meta.label}: {summary[s]}
+                      </span>
+                    );
+                  })}
+                </span>
+              </>
+            )}
+          </div>
+
+          {/* Interactions list */}
+          {interactions.length > 0 && (
+            <ul style={{
+              listStyle: 'none', padding: 0, margin: 0,
+              display: 'flex', flexDirection: 'column', gap: 10,
+            }}>
+              {interactions.map((i, idx) => {
+                const meta = SEVERITY_META[i.severity];
+                const id = `${i.drugA}__${i.drugB}`;
+                const isExpanded = expandedId === id;
+                return (
+                  <motion.li
+                    key={id}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, ease: [0.05, 0.7, 0.1, 1], delay: 0.04 * idx }}
+                    style={{
+                      background: '#FFFFFF',
+                      border: `1px solid ${meta.border}`,
+                      borderLeft: `4px solid ${meta.color}`,
+                      borderRadius: 14,
+                      overflow: 'hidden',
+                    }}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => setExpandedId(isExpanded ? null : id)}
+                      aria-expanded={isExpanded}
+                      style={{
+                        width: '100%',
+                        display: 'flex', alignItems: 'flex-start', gap: 14,
+                        padding: '14px 18px',
+                        background: 'transparent', border: 'none',
+                        cursor: 'pointer', textAlign: 'left',
+                        fontFamily: 'inherit',
+                      }}
+                    >
+                      <span style={{
+                        flexShrink: 0,
+                        padding: '3px 10px',
+                        background: meta.bg,
+                        color: meta.color,
+                        border: `1px solid ${meta.border}`,
+                        borderRadius: 999,
+                        fontFamily: 'var(--font-mono, ui-monospace)',
+                        fontSize: 10, fontWeight: 700,
+                        letterSpacing: '0.04em',
+                        textTransform: 'uppercase',
+                        whiteSpace: 'nowrap',
+                      }}>
+                        {meta.label}
+                      </span>
+                      <span style={{ flex: 1, minWidth: 0 }}>
+                        <span style={{
+                          display: 'block',
+                          fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 700,
+                          color: '#1A1A1A', letterSpacing: '-0.01em', lineHeight: 1.35,
+                        }}>
+                          {i.drugAName} + {i.drugBName}
+                        </span>
+                        <span style={{
+                          display: 'block', marginTop: 4,
+                          fontSize: 13, color: '#4B5563', lineHeight: 1.5,
+                        }}>
+                          {i.effect}
+                        </span>
+                      </span>
+                      <span style={{
+                        flexShrink: 0,
+                        color: '#6B7280',
+                        transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                        transition: 'transform 200ms',
+                      }}>
+                        <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
+                          stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="6 9 12 15 18 9" />
+                        </svg>
+                      </span>
+                    </button>
+
+                    <AnimatePresence initial={false}>
+                      {isExpanded && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{
+                            height: { duration: 0.25, ease: [0.05, 0.7, 0.1, 1] },
+                            opacity: { duration: 0.18 },
+                          }}
+                          style={{ overflow: 'hidden' }}
+                        >
+                          <div style={{
+                            padding: '4px 18px 18px 18px',
+                            borderTop: '1px solid #F0F1F5',
+                            display: 'grid',
+                            gridTemplateColumns: 'auto 1fr',
+                            columnGap: 16, rowGap: 12,
+                            fontSize: 13, color: '#374151', lineHeight: 1.55,
+                          }}>
+                            <DefField label="Механизм" value={i.mechanism} />
+                            <DefField label="Тактика" value={i.management} bold />
+                            <DefField label="Источники" value={i.sources.join(' · ')} mono />
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.li>
+                );
+              })}
+            </ul>
+          )}
+        </motion.div>
+      )}
+
+      {/* Provenance + disclaimer */}
+      <motion.section
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1], delay: 0.18 }}
+        aria-labelledby="dc-provenance"
+        style={{
+          marginTop: 32,
+          padding: '20px 22px',
+          background: '#F5F6F8',
+          borderRadius: 14,
+          fontSize: 13,
+          color: '#4B5563',
+          lineHeight: 1.55,
+        }}
+      >
+        <h3 id="dc-provenance" style={{
+          margin: '0 0 14px',
+          fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 700,
+          color: '#1A1A1A', letterSpacing: '-0.01em',
+        }}>
+          Источник и обновление
+        </h3>
+        <dl style={{
+          margin: 0, display: 'grid',
+          gridTemplateColumns: 'auto 1fr', columnGap: 18, rowGap: 10,
+        }}>
+          <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Версия базы</dt>
+          <dd style={{ margin: 0, color: '#1A1A1A', fontFamily: 'var(--font-mono, ui-monospace)', fontSize: 12 }}>
+            {data.version}
+          </dd>
+          <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Обновлено</dt>
+          <dd style={{ margin: 0, color: '#1A1A1A', fontFamily: 'var(--font-mono, ui-monospace)', fontSize: 12 }}>
+            {data.lastUpdated}
+          </dd>
+          <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Источники</dt>
+          <dd style={{ margin: 0, color: '#1A1A1A' }}>
+            <ul style={{ margin: 0, paddingLeft: 16 }}>
+              {data.sources.map((s, i) => (
+                <li key={i} style={{ marginBottom: 2 }}>{s}</li>
+              ))}
+            </ul>
+          </dd>
+          <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Покрытие</dt>
+          <dd style={{ margin: 0, color: '#1A1A1A' }}>
+            {data.drugs.length} препаратов · {data.interactions.length} ручкой
+            выверенных пар (только clinically significant). Расширение
+            до 200+ препаратов — Phase 2 (см. CONTENT_ROADMAP.md фича #1).
+          </dd>
+        </dl>
+
+        <p role="note" style={{
+          marginTop: 18, paddingTop: 16,
+          borderTop: '1px solid #E5E7EB',
+          fontSize: 12, color: '#6B7280', lineHeight: 1.5,
+        }}>
+          <strong style={{ color: '#1A1A1A' }}>Не заменяет фарм-консультацию.</strong>{' '}
+          Чекер показывает известные парные взаимодействия по выверенным
+          источникам, но полнота базы ограничена {data.drugs.length} препаратами
+          Phase 1. Решение по конкретному пациенту принимает врач/клин-фармаколог,
+          опираясь на полный клинический контекст, инструкции производителей
+          (ГРЛС Минздрава) и индивидуальные особенности пациента (ХБП, печёночная
+          функция, генетический полиморфизм CYP, возраст, сопутствующие болезни).
+          Заметили ошибку или нужное взаимодействие отсутствует — напишите через
+          «Обратную связь».
+        </p>
+      </motion.section>
+    </main>
+  );
+}
+
+function DefField({
+  label, value, bold, mono,
+}: { label: string; value: string; bold?: boolean; mono?: boolean }) {
+  return (
+    <>
+      <dt style={{ color: '#9CA3AF', fontSize: 11, fontWeight: 700,
+        textTransform: 'uppercase', letterSpacing: '0.06em',
+        fontFamily: 'var(--font-mono, ui-monospace)',
+        whiteSpace: 'nowrap', alignSelf: 'start',
+      }}>
+        {label}
+      </dt>
+      <dd style={{
+        margin: 0,
+        fontSize: 13, color: '#1A1A1A', lineHeight: 1.55,
+        fontWeight: bold ? 600 : 400,
+        fontFamily: mono ? 'var(--font-mono, ui-monospace)' : 'inherit',
+      }}>
+        {value}
+      </dd>
+    </>
+  );
+}

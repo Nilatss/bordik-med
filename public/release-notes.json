@@ -3,6 +3,20 @@
   "$readme": "Append a new entry to the TOP of `releases` whenever a deploy ships USER-FACING changes. The PwaRegistrar shows an update toast only when the latest entry's `version` differs from what the visitor last saw (stored in localStorage as `bordik-last-seen-release`). Cosmetic deploys / hotfixes / pure infra work should NOT add an entry — that way users only get pinged when there's actually something new for them to see. Schema per entry: { version: semver string, date: YYYY-MM-DD, title: short headline (~6 words), summary: one-paragraph description, changes: array of bullet strings }.",
   "releases": [
     {
+      "version": "0.4.0",
+      "date": "2026-05-05",
+      "title": "Чекер взаимодействий лекарств",
+      "summary": "Большая новая фича: проверка совместимости 2–30 препаратов одновременно. 62 препарата, 83 ручкой выверенных пары с механизмом, клиническим следствием и тактикой по каждой. Источники — UpToDate Lexidrug, Stockley's 12th, ESC/AHA, FDA.",
+      "changes": [
+        "Новый раздел «Взаимодействия» в сайдбаре (Сервисы → Взаимодействия)",
+        "Поиск препаратов с автокомплитом по русскому/английскому названиям и торговым (Эликвис, Прадакса, Плавикс и др.)",
+        "Цветовая кодировка severity: красный (противопоказано), оранжевый (высокий), жёлтый (умеренный), синий (незначительный)",
+        "Каждая пара: механизм (CYP2C9/CYP3A4/Pgp/QT), эффект, тактика (что делать), источники",
+        "Phase 1: антикоагулянты, антиагреганты, антиаритмики, статины, антибиотики, антимикотики, ИАПФ/БРА, диуретики, СИОЗС, диабет — самые частые комбинации в рутинной практике",
+        "Доступно по прямой ссылке /drugs (для SEO + Cmd+K находит)"
+      ]
+    },
+    {
       "version": "0.3.0",
       "date": "2026-05-05",
       "title": "Cmd+K, МКБ-10, новости на главной",
