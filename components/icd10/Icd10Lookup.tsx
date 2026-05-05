@@ -15,6 +15,7 @@
  * <1 мс, MiniSearch не нужен.
  */
 import { useMemo, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface Chapter {
   id: string;
@@ -97,7 +98,14 @@ export default function Icd10Lookup({ chapters, codes, version, lastUpdated, sou
     <main
       id="main-content"
       style={{
+        // Нормальные отступы и max-width, чтобы контент не «плавал»
+        // по ширине экрана и не упирался в правый край. На широких
+        // мониторах max 1040 px — лучше читается, заголовок не уезжает
+        // в бесконечность.
         width: '100%',
+        maxWidth: 1040,
+        margin: '0 auto',
+        padding: '8px 4px 32px',
         fontFamily: 'var(--font-body, system-ui)',
         color: 'var(--md-sys-color-on-surface, #1A1A1A)',
       }}
@@ -330,12 +338,16 @@ function ChapterAccordion({
           flex: '0 0 auto',
           fontFamily: 'var(--font-mono, ui-monospace)',
           fontSize: 11, fontWeight: 700,
-          padding: '3px 10px',
+          padding: '4px 12px',
           borderRadius: 999,
-          background: '#1A1A1A',
-          color: '#FFFFFF',
-          letterSpacing: '0.02em',
-          minWidth: 56, textAlign: 'center',
+          // Soft-blue badge: лёгкий fill + цветной текст вместо
+          // агрессивного чёрного. Палитра синонимична info-блокам
+          // в /tools (#EFF6FF / #2563EB).
+          background: '#EFF6FF',
+          color: '#2563EB',
+          border: '1px solid #DBEAFE',
+          letterSpacing: '0.04em',
+          minWidth: 60, textAlign: 'center',
         }}>
           {chapter.id}
         </span>
@@ -368,38 +380,59 @@ function ChapterAccordion({
         </span>
       </button>
 
-      {isOpen && (
-        <div style={{
-          borderTop: '1px solid #F0F1F5',
-          padding: '8px 0',
-        }}>
-          {visible.map((c) => (
-            <CodeRow key={c.code} code={c} />
-          ))}
-          {hasMore && (
-            <button
-              type="button"
-              onClick={onToggleShowAll}
-              style={{
-                margin: '8px 18px',
-                padding: '8px 14px',
-                background: '#F5F6F8',
-                border: 'none', borderRadius: 999,
-                cursor: 'pointer',
-                fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 600,
-                color: '#374151',
-                transition: 'background 150ms',
-              }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = '#F5F6F8'; }}
-            >
-              {showAll
-                ? `Свернуть до первых ${INITIAL_PER_CHAPTER}`
-                : `Показать все ${count} кодов главы`}
-            </button>
-          )}
-        </div>
-      )}
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.div
+            key="content"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{
+              height: { duration: 0.25, ease: [0.05, 0.7, 0.1, 1] },
+              opacity: { duration: 0.18 },
+            }}
+            style={{ overflow: 'hidden' }}
+          >
+            <div style={{
+              borderTop: '1px solid #F0F1F5',
+              padding: '8px 0',
+            }}>
+              {visible.map((c) => (
+                <CodeRow key={c.code} code={c} />
+              ))}
+              {hasMore && (
+                <button
+                  type="button"
+                  onClick={onToggleShowAll}
+                  style={{
+                    margin: '8px 18px',
+                    padding: '8px 14px',
+                    background: '#EFF6FF',
+                    border: '1px solid #DBEAFE',
+                    borderRadius: 999,
+                    cursor: 'pointer',
+                    fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 600,
+                    color: '#2563EB',
+                    transition: 'background 150ms, border-color 150ms',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = '#DBEAFE';
+                    e.currentTarget.style.borderColor = '#BFDBFE';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = '#EFF6FF';
+                    e.currentTarget.style.borderColor = '#DBEAFE';
+                  }}
+                >
+                  {showAll
+                    ? `Свернуть до первых ${INITIAL_PER_CHAPTER}`
+                    : `Показать все ${count} кодов главы`}
+                </button>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -440,15 +473,15 @@ function FlatList({
                 display: 'flex',
                 alignItems: 'center',
                 gap: 14,
-                padding: '14px 18px',
+                padding: '14px 20px',
                 background: '#FFFFFF',
                 border: '1px solid #F0F1F5',
                 borderRadius: 14,
                 transition: 'border-color 150ms, background 150ms',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = '#FAFAFB';
-                e.currentTarget.style.borderColor = '#E5E7EB';
+                e.currentTarget.style.background = '#EFF6FF';
+                e.currentTarget.style.borderColor = '#DBEAFE';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.background = '#FFFFFF';
@@ -458,7 +491,8 @@ function FlatList({
               <span style={{
                 flex: '0 0 80px',
                 fontFamily: 'var(--font-mono, ui-monospace)',
-                fontWeight: 700, fontSize: 13, color: '#1A1A1A',
+                fontWeight: 700, fontSize: 13, color: '#2563EB',
+                letterSpacing: '0.02em',
               }}>
                 {c.code}
               </span>
@@ -468,8 +502,13 @@ function FlatList({
               <span style={{
                 flex: '0 0 auto',
                 fontFamily: 'var(--font-mono, ui-monospace)',
-                fontSize: 11, color: '#9CA3AF',
+                fontSize: 11, fontWeight: 700,
+                color: '#2563EB',
+                background: '#EFF6FF',
+                border: '1px solid #DBEAFE',
+                padding: '2px 8px', borderRadius: 999,
                 whiteSpace: 'nowrap',
+                letterSpacing: '0.04em',
               }}>
                 {c.chapter}
               </span>
@@ -485,16 +524,17 @@ function CodeRow({ code }: { code: CodeEntry }) {
   return (
     <div style={{
       display: 'flex', alignItems: 'center', gap: 14,
-      padding: '8px 18px',
+      padding: '10px 20px',
       transition: 'background 120ms',
     }}
-      onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.background = '#F9FAFB'; }}
+      onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.background = '#EFF6FF'; }}
       onMouseLeave={(e) => { (e.currentTarget as HTMLDivElement).style.background = 'transparent'; }}
     >
       <span style={{
         flex: '0 0 80px',
         fontFamily: 'var(--font-mono, ui-monospace)',
-        fontWeight: 700, fontSize: 13, color: '#1A1A1A',
+        fontWeight: 700, fontSize: 13, color: '#2563EB',
+        letterSpacing: '0.02em',
       }}>
         {code.code}
       </span>
@@ -518,22 +558,33 @@ function ChapterPill({
         flexShrink: 0,
         display: 'inline-flex', alignItems: 'center', gap: 8,
         padding: '7px 12px',
-        background: active ? '#1A1A1A' : '#F5F6F8',
+        // Активная — синяя (тон совпадает с soft-blue badge номера
+        // главы), неактивная — стандартный серый F5F6F8 чип.
+        background: active ? '#2563EB' : '#F5F6F8',
         color: active ? '#FFFFFF' : '#374151',
-        border: 'none', borderRadius: 999,
+        border: '1px solid transparent',
+        borderColor: active ? '#2563EB' : 'transparent',
+        borderRadius: 999,
         cursor: 'pointer',
         fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 600,
         whiteSpace: 'nowrap',
-        transition: 'background 180ms, color 180ms',
+        transition: 'background 180ms, color 180ms, border-color 180ms',
+        boxShadow: active ? '0 1px 2px rgba(37,99,235,0.18)' : 'none',
       }}
-      onMouseEnter={(e) => { if (!active) e.currentTarget.style.background = '#EFF1F4'; }}
-      onMouseLeave={(e) => { if (!active) e.currentTarget.style.background = '#F5F6F8'; }}
+      onMouseEnter={(e) => {
+        if (active) e.currentTarget.style.background = '#1D4ED8';
+        else e.currentTarget.style.background = '#EFF1F4';
+      }}
+      onMouseLeave={(e) => {
+        if (active) e.currentTarget.style.background = '#2563EB';
+        else e.currentTarget.style.background = '#F5F6F8';
+      }}
     >
       <span>{label}</span>
       <span style={{
         fontFamily: 'var(--font-mono, ui-monospace)',
         fontSize: 10, fontWeight: 700,
-        color: active ? 'rgba(255,255,255,0.65)' : '#9CA3AF',
+        color: active ? 'rgba(255,255,255,0.78)' : '#9CA3AF',
         letterSpacing: '0.02em',
       }}>
         {count}

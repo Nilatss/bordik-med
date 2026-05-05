@@ -40,7 +40,11 @@ export default function Icd10View() {
     let cancelled = false;
     void (async () => {
       try {
-        const r = await fetch('/icd10-starter.json', { cache: 'force-cache' });
+        // ?v= bust для обхода Serwist precache: иначе после расширения
+        // базы (92→506 кодов) пользователи продолжают видеть старую
+        // версию пока SW не активирует новый бандл. v параметр
+        // увеличиваем при значимых изменениях содержимого JSON.
+        const r = await fetch('/icd10-starter.json?v=0.2.0', { cache: 'no-cache' });
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         const json = await r.json();
         if (!cancelled) setBank(json);
