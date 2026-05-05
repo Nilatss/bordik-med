@@ -655,13 +655,11 @@ export default function Home() {
                 .
               </aside>
 
-              <div style={{ marginBottom: 'var(--space-5)' }}>
-                {/* Plain <div> instead of motion.div: the previous version had
-                    initial={false} which disables the enter animation entirely,
-                    so framer-motion was carrying its runtime here for nothing.
-                    Stripping the motion wrapper drops the home chunk's eager
-                    framer-motion dependency.
-                */}
+              {/* Staggered fade-in для Learning-вью. CSS-only animation
+                  (.bordik-fade-up) — без framer-motion рантайма, чтобы
+                  не утяжелять home-chunk. Параллель с motion-паттерном
+                  из /tools / Icd10Lookup. */}
+              <div className="bordik-fade-up" style={{ marginBottom: 'var(--space-5)' }}>
                 <h2 style={{
                   fontFamily: 'var(--font-display)', fontSize: 'var(--text-xl)', fontWeight: 700,
                   color: 'var(--md-sys-color-on-surface)', marginBottom: 'var(--space-1)', letterSpacing: '-0.01em',
@@ -675,7 +673,9 @@ export default function Home() {
                   Выберите раздел для начала
                 </p>
               </div>
-              <SectionCards onSelect={setActiveSection} />
+              <div className="bordik-fade-up delay-1">
+                <SectionCards onSelect={setActiveSection} />
+              </div>
             </div>
           )}
 

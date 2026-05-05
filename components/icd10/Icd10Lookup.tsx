@@ -107,7 +107,14 @@ export default function Icd10Lookup({ chapters, codes, version, lastUpdated, sou
         color: 'var(--md-sys-color-on-surface, #1A1A1A)',
       }}
     >
-      <div style={{ marginBottom: 20 }}>
+      {/* Standard staggered fade-in: header → search → pills → list.
+          Тот же паттерн что и в /tools (см. ToolsPage.tsx). */}
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1] }}
+        style={{ marginBottom: 20 }}
+      >
         <h2 style={{
           fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 700,
           color: '#1A1A1A', marginBottom: 6, letterSpacing: '-0.02em',
@@ -120,10 +127,15 @@ export default function Icd10Lookup({ chapters, codes, version, lastUpdated, sou
           Справочник кодов: поиск по диагнозу или коду. Все 22 главы МКБ-10
           в редакции ВОЗ (русский перевод Минздрава).
         </p>
-      </div>
+      </motion.div>
 
       {/* Search — F5F6F8 пилл с иконкой и кнопкой очистки */}
-      <div style={{ marginBottom: 14 }}>
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1], delay: 0.06 }}
+        style={{ marginBottom: 14 }}
+      >
         <div style={{
           display: 'flex', alignItems: 'center', gap: 10,
           padding: '10px 16px',
@@ -170,13 +182,18 @@ export default function Icd10Lookup({ chapters, codes, version, lastUpdated, sou
             </button>
           )}
         </div>
-      </div>
+      </motion.div>
 
       {/* Главы — фильтр-пиллы */}
-      <div style={{
-        display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center',
-        marginBottom: 20,
-      }}>
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1], delay: 0.12 }}
+        style={{
+          display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center',
+          marginBottom: 20,
+        }}
+      >
         <ChapterPill
           label="Все главы"
           count={codes.length}
@@ -196,13 +213,18 @@ export default function Icd10Lookup({ chapters, codes, version, lastUpdated, sou
             />
           );
         })}
-      </div>
+      </motion.div>
 
       {/* Поведение зависит от режима:
           - Browse: accordion по главам (q='' и activeChapter=null)
           - Filtered: flat-список с активной главой или поиском */}
       {!isSearching ? (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1], delay: 0.18 }}
+          style={{ display: 'flex', flexDirection: 'column', gap: 8 }}
+        >
           {chapters.map((ch) => {
             const list = codesByChapter.get(ch.id) ?? [];
             if (list.length === 0) return null;
@@ -223,7 +245,7 @@ export default function Icd10Lookup({ chapters, codes, version, lastUpdated, sou
               />
             );
           })}
-        </div>
+        </motion.div>
       ) : (
         <FlatList
           filtered={filtered}
