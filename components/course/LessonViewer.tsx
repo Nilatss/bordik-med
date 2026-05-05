@@ -47,6 +47,16 @@ export default function LessonViewer({ content }: LessonViewerProps) {
           remarkPlugins={[remarkGfm]}
           rehypePlugins={[[rehypeSanitize, sanitizeSchema]]}
           urlTransform={safeUrlTransform}
+          components={{
+            // Все таблицы оборачиваем в scroll-wrapper, чтобы 4+
+            // колонок не обрезались справа на узких контентных
+            // колонках (рядом с TOC-сайдбаром).
+            table: ({ children }) => (
+              <div className="table-scroll">
+                <table>{children}</table>
+              </div>
+            ),
+          }}
         >
           {content}
         </ReactMarkdown>

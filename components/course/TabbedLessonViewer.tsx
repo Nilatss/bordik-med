@@ -589,7 +589,16 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
                   const isLarge = colCount >= 3 && rowCount >= 4;
                   const isUseful = hasKeyword || isLarge;
 
-                  if (!isUseful) return <table>{children}</table>;
+                  if (!isUseful) {
+                    // Простые таблицы тоже оборачиваем в scroll-wrapper —
+                    // на узких контентных колонках (когда рядом TOC-сайдбар)
+                    // 4+ колонки иначе обрезаются справа.
+                    return (
+                      <div className="table-scroll">
+                        <table>{children}</table>
+                      </div>
+                    );
+                  }
                   // Build a descriptive title: "<Tab> - Col1 / Col2 / Col3"
                   const headerLabel = headersRaw.length > 0
                     ? headersRaw

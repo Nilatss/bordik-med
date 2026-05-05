@@ -600,6 +600,13 @@ const mdComponents = {
   th: ({ children }: { children?: React.ReactNode }) => <th>{withSexBadges(children)}</th>,
   strong: ({ children }: { children?: React.ReactNode }) => <strong>{withSexBadges(children)}</strong>,
   em: ({ children }: { children?: React.ReactNode }) => <em>{withSexBadges(children)}</em>,
+  // Все таблицы оборачиваем в .table-scroll wrapper, чтобы 4+ колонки
+  // не обрезались справа на узких контентных колонках.
+  table: ({ children }: { children?: React.ReactNode }) => (
+    <div className="table-scroll">
+      <table>{children}</table>
+    </div>
+  ),
   blockquote: ({ children }: { children?: React.ReactNode }) => {
     const text = extractTextFromChildren(children).trim();
     let className = 'callout';

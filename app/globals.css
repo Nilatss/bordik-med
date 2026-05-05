@@ -279,10 +279,30 @@
 }
 
 /* Tables - clean card-like.
-   On desktop the table is a real `display: table` so its cells share the
-   available width via the proper table layout algorithm. On narrow
-   viewports we switch to `display: block` + horizontal scroll to avoid
-   forcing the page wider than the screen. */
+   Стратегия (после фидбека): таблица всегда живёт в scrollable-wrapper-е,
+   который добавляется через React-компонент-обёртку (см. table: override
+   в TabbedLessonViewer). На любой ширине, если суммарная min-width
+   ячеек > доступного места, появляется горизонтальный скролл вместо
+   обрезания текста. На узких экранах + 640 — давний фолбэк через
+   display:block остаётся для не-обёрнутых таблиц. */
+.lesson-content .table-scroll {
+  margin: 20px 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 12px;
+  /* Тонкая тень-индикатор скрытого справа контента — пользователь
+     понимает что таблица скроллится. */
+  background:
+    linear-gradient(to right, #FFFFFF 30%, rgba(255, 255, 255, 0)) left center / 32px 100% no-repeat,
+    linear-gradient(to left,  #FFFFFF 30%, rgba(255, 255, 255, 0)) right center / 32px 100% no-repeat,
+    linear-gradient(to right, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0)) left center / 16px 100% no-repeat,
+    linear-gradient(to left,  rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0)) right center / 16px 100% no-repeat,
+    #FFFFFF;
+  background-attachment: local, local, scroll, scroll, local;
+}
+.lesson-content .table-scroll table {
+  margin: 0;
+}
 .lesson-content table {
   width: 100%;
   max-width: 100%;
@@ -900,10 +920,11 @@ main:has(.stats-page) {
   }
 }
 
-/* On phones, switch tables to scrollable blocks so wide tables don't push
-   the whole page sideways. */
+/* На мобильном фолбэк для таблиц без .table-scroll-обёртки (например,
+   старого markdown без React-overrider). Современный путь — через
+   .table-scroll wrapper, см. выше. */
 @media (max-width: 640px) {
-  .lesson-content table {
+  .lesson-content table:not(.table-scroll table) {
     display: block;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
