@@ -471,8 +471,8 @@ export default function DrugChecker() {
                       transition: 'background 160ms, border-color 160ms, transform 160ms',
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.background = '#EFF6FF';
-                      e.currentTarget.style.borderColor = '#DBEAFE';
+                      e.currentTarget.style.background = '#F5F6F8';
+                      e.currentTarget.style.borderColor = '#E5E7EB';
                       e.currentTarget.style.transform = 'translateY(-1px)';
                     }}
                     onMouseLeave={(e) => {
