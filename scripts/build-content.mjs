@@ -92,7 +92,14 @@ function todayIso() {
  * pipeline. Returns `null` when no reference field is present in the
  * source.
  */
-const REFERENCE_RE = /^\s*reference:\s*"((?:\\"|[^"])*)"/m;
+// Поддерживаем double-, single- и template-литералы — так как часть
+// раннеров написана через одинарные кавычки (исторически — TypeScript
+// stylistic preference варьировался между ревизиями), а часть — через
+// бэктики для multi-line. Без этого `loadReferenceFor` молча возвращал
+// null и страница /tools/[id] показывала «Не аннотирован».
+const REFERENCE_RE_DBL  = /^\s*reference:\s*"((?:\\"|[^"])*)"/m;
+const REFERENCE_RE_SGL  = /^\s*reference:\s*'((?:\\'|[^'])*)'/m;
+const REFERENCE_RE_TPL  = /^\s*reference:\s*`((?:\\`|[^`])*)`/m;
 const referenceCache = new Map();
 function loadReferenceFor(id) {
   if (referenceCache.has(id)) return referenceCache.get(id);
@@ -102,9 +109,11 @@ function loadReferenceFor(id) {
     return null;
   }
   const src = readFileSync(filePath, 'utf8');
-  const m = REFERENCE_RE.exec(src);
+  const m = REFERENCE_RE_DBL.exec(src) || REFERENCE_RE_SGL.exec(src) || REFERENCE_RE_TPL.exec(src);
   // Unescape the few sequences that might appear inside a TS string literal.
-  const value = m && m[1] ? m[1].replace(/\\"/g, '"').replace(/\\\\/g, '\\') : null;
+  const value = m && m[1]
+    ? m[1].replace(/\\"/g, '"').replace(/\\'/g, "'").replace(/\\`/g, '`').replace(/\\\\/g, '\\')
+    : null;
   referenceCache.set(id, value);
   return value;
 }
