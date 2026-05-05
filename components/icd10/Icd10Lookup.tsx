@@ -1,21 +1,18 @@
 'use client';
 
 /**
- * МКБ-10 lookup — поиск кода по названию диагноза или по самому коду.
+ * МКБ-10 lookup — поиск + просмотр кодов МКБ-10 по главам.
  *
- * Стартовая база — ~80–90 наиболее частых кодов из data/icd10-starter.json,
- * охватывает все 22 главы. Расширение до полных ~14 000 кодов планируется
- * через scripts/build-icd10.mjs (см. docs/CONTENT_ROADMAP.md, фича #3).
+ * UX (после фидбека май-2026):
+ *   - Когда пользователь ничего не ищет (q === '') и нет активной главы —
+ *     показываем accordion-список из 22 глав. Каждая глава схлопнута;
+ *     клик раскрывает первые 50 кодов главы + кнопка «Показать ещё».
+ *     Так база из 500+ кодов не вываливается простыней.
+ *   - Когда пользователь начинает печатать или выбирает главу-пилл —
+ *     переключаемся на flat-режим со всеми подходящими результатами.
  *
- * Поиск
- * -----
- * - Без AI, без сетевых вызовов. Линейный fuzzy-фильтр на клиенте: при
- *   текущем размере (~100 entries) этого хватает с запасом, ms-уровень
- *   ответ. После расширения до 14 000 — переключим на MiniSearch index
- *   (мы уже используем MiniSearch для каталога tools).
- * - Совпадение по `code.toLowerCase().startsWith()` И по
- *   `title.toLowerCase().includes()` — даёт одинаково удобный поиск
- *   как по «I10» так и по «гипертензия».
+ * Поиск — линейный fuzzy на клиенте; при размере 500 кодов это занимает
+ * <1 мс, MiniSearch не нужен.
  */
 import { useMemo, useState } from 'react';
 
@@ -34,16 +31,32 @@ interface CodeEntry {
 interface Props {
   chapters: Chapter[];
   codes: CodeEntry[];
-  /** Версия и дата стартовой базы — пробрасываются из server-страницы. */
   version: string;
   lastUpdated: string;
   source: string;
 }
 
+const INITIAL_PER_CHAPTER = 50;
+
 export default function Icd10Lookup({ chapters, codes, version, lastUpdated, source }: Props) {
   const [q, setQ] = useState('');
   const [activeChapter, setActiveChapter] = useState<string | null>(null);
+  const [expandedChapters, setExpandedChapters] = useState<Set<string>>(new Set());
+  const [chapterShowAll, setChapterShowAll] = useState<Set<string>>(new Set());
 
+  const isSearching = q.trim().length > 0 || activeChapter !== null;
+
+  // Группировка для accordion-режима
+  const codesByChapter = useMemo(() => {
+    const map = new Map<string, CodeEntry[]>();
+    for (const c of codes) {
+      if (!map.has(c.chapter)) map.set(c.chapter, []);
+      map.get(c.chapter)!.push(c);
+    }
+    return map;
+  }, [codes]);
+
+  // Flat filter для search-режима
   const filtered = useMemo(() => {
     const query = q.trim().toLowerCase();
     let pool = codes;
@@ -62,6 +75,24 @@ export default function Icd10Lookup({ chapters, codes, version, lastUpdated, sou
     [chapters],
   );
 
+  const toggleChapter = (id: string) => {
+    setExpandedChapters((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleShowAll = (id: string) => {
+    setChapterShowAll((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
   return (
     <main
       id="main-content"
@@ -71,8 +102,6 @@ export default function Icd10Lookup({ chapters, codes, version, lastUpdated, sou
         color: 'var(--md-sys-color-on-surface, #1A1A1A)',
       }}
     >
-      {/* Заголовок и подпись — повторяет паттерн ToolsPage:
-          display-font 28, body-font 14 muted, gap 6+20. */}
       <div style={{ marginBottom: 20 }}>
         <h2 style={{
           fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 700,
@@ -89,7 +118,7 @@ export default function Icd10Lookup({ chapters, codes, version, lastUpdated, sou
         </p>
       </div>
 
-      {/* Search — точно как в /tools: иконка слева, F5F6F8 пилл, max 480 */}
+      {/* Search — F5F6F8 пилл с иконкой и кнопкой очистки */}
       <div style={{ marginBottom: 14 }}>
         <div style={{
           display: 'flex', alignItems: 'center', gap: 10,
@@ -104,11 +133,12 @@ export default function Icd10Lookup({ chapters, codes, version, lastUpdated, sou
             <line x1="21" y1="21" x2="16.65" y2="16.65" />
           </svg>
           <input
-            type="search"
+            type="text"
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder='Например: "I10", "гипертензия", "пневмония"…'
             aria-label="Поиск кода или диагноза"
+            inputMode="search"
             style={{
               flex: 1,
               border: 'none', outline: 'none',
@@ -138,7 +168,7 @@ export default function Icd10Lookup({ chapters, codes, version, lastUpdated, sou
         </div>
       </div>
 
-      {/* Главы — фильтр-пиллы в стиле filter bar /tools */}
+      {/* Главы — фильтр-пиллы */}
       <div style={{
         display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center',
         marginBottom: 20,
@@ -146,11 +176,11 @@ export default function Icd10Lookup({ chapters, codes, version, lastUpdated, sou
         <ChapterPill
           label="Все главы"
           count={codes.length}
-          active={activeChapter === null}
-          onClick={() => setActiveChapter(null)}
+          active={activeChapter === null && !q}
+          onClick={() => { setActiveChapter(null); setQ(''); }}
         />
         {chapters.map((ch) => {
-          const count = codes.filter((c) => c.chapter === ch.id).length;
+          const count = codesByChapter.get(ch.id)?.length ?? 0;
           if (count === 0) return null;
           return (
             <ChapterPill
@@ -164,12 +194,229 @@ export default function Icd10Lookup({ chapters, codes, version, lastUpdated, sou
         })}
       </div>
 
-      {/* Результаты */}
+      {/* Поведение зависит от режима:
+          - Browse: accordion по главам (q='' и activeChapter=null)
+          - Filtered: flat-список с активной главой или поиском */}
+      {!isSearching ? (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {chapters.map((ch) => {
+            const list = codesByChapter.get(ch.id) ?? [];
+            if (list.length === 0) return null;
+            const isOpen = expandedChapters.has(ch.id);
+            const showAll = chapterShowAll.has(ch.id);
+            const visible = showAll ? list : list.slice(0, INITIAL_PER_CHAPTER);
+            return (
+              <ChapterAccordion
+                key={ch.id}
+                chapter={ch}
+                count={list.length}
+                isOpen={isOpen}
+                onToggle={() => toggleChapter(ch.id)}
+                visible={visible}
+                hasMore={list.length > INITIAL_PER_CHAPTER}
+                showAll={showAll}
+                onToggleShowAll={() => toggleShowAll(ch.id)}
+              />
+            );
+          })}
+        </div>
+      ) : (
+        <FlatList
+          filtered={filtered}
+          activeChapter={activeChapter}
+          chapterById={chapterById}
+        />
+      )}
+
+      {/* Provenance */}
+      <section
+        aria-labelledby="icd10-provenance"
+        style={{
+          marginTop: 32,
+          padding: '20px 22px',
+          background: '#FFFFFF',
+          border: '1px solid #F0F1F5',
+          borderRadius: 14,
+          fontSize: 13,
+          color: '#4B5563',
+          lineHeight: 1.55,
+        }}
+      >
+        <h3
+          id="icd10-provenance"
+          style={{
+            margin: '0 0 14px',
+            fontFamily: 'var(--font-display)',
+            fontSize: 15, fontWeight: 700, color: '#1A1A1A',
+            letterSpacing: '-0.01em',
+          }}
+        >
+          Источник и обновление
+        </h3>
+        <dl style={{
+          margin: 0, display: 'grid',
+          gridTemplateColumns: 'auto 1fr', columnGap: 18, rowGap: 10,
+        }}>
+          <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Версия базы</dt>
+          <dd style={{ margin: 0, color: '#1A1A1A', fontFamily: 'var(--font-mono, ui-monospace)', fontSize: 12 }}>{version}</dd>
+          <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Обновлено</dt>
+          <dd style={{ margin: 0, color: '#1A1A1A', fontFamily: 'var(--font-mono, ui-monospace)', fontSize: 12 }}>{lastUpdated}</dd>
+          <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Источник</dt>
+          <dd style={{ margin: 0, color: '#1A1A1A' }}>{source}</dd>
+          <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Покрытие</dt>
+          <dd style={{ margin: 0, color: '#1A1A1A' }}>
+            Все 22 главы + {codes.length} наиболее частых кодов. Полная база
+            (~14 000 кодов) — <a href="/docs/CONTENT_ROADMAP.md" style={{ color: '#1A1A1A', textDecoration: 'underline', textUnderlineOffset: 2 }}>в дорожной карте</a>.
+          </dd>
+        </dl>
+        <p
+          role="note"
+          style={{
+            marginTop: 18, paddingTop: 16,
+            borderTop: '1px solid #F0F1F5',
+            fontSize: 12, color: '#6B7280', lineHeight: 1.5,
+          }}
+        >
+          <strong style={{ color: '#1A1A1A' }}>Не заменяет клиническое суждение.</strong>{' '}
+          Кодирование диагноза должно опираться на полный клинический контекст
+          и официальные методические рекомендации Минздрава. Заметили ошибку
+          или нужный код отсутствует — напишите через «Обратную связь».
+        </p>
+      </section>
+    </main>
+  );
+}
+
+/* ── Inner components ────────────────────────────────────────────── */
+
+function ChapterAccordion({
+  chapter, count, isOpen, onToggle,
+  visible, hasMore, showAll, onToggleShowAll,
+}: {
+  chapter: Chapter;
+  count: number;
+  isOpen: boolean;
+  onToggle: () => void;
+  visible: CodeEntry[];
+  hasMore: boolean;
+  showAll: boolean;
+  onToggleShowAll: () => void;
+}) {
+  return (
+    <div style={{
+      background: '#FFFFFF',
+      border: '1px solid #F0F1F5',
+      borderRadius: 14,
+      overflow: 'hidden',
+    }}>
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={isOpen}
+        style={{
+          width: '100%',
+          display: 'flex', alignItems: 'center', gap: 14,
+          padding: '14px 18px',
+          background: 'transparent',
+          border: 'none', cursor: 'pointer',
+          textAlign: 'left',
+          fontFamily: 'inherit',
+          transition: 'background 150ms',
+        }}
+        onMouseEnter={(e) => { e.currentTarget.style.background = '#FAFAFB'; }}
+        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+      >
+        <span style={{
+          flex: '0 0 auto',
+          fontFamily: 'var(--font-mono, ui-monospace)',
+          fontSize: 11, fontWeight: 700,
+          padding: '3px 10px',
+          borderRadius: 999,
+          background: '#1A1A1A',
+          color: '#FFFFFF',
+          letterSpacing: '0.02em',
+          minWidth: 56, textAlign: 'center',
+        }}>
+          {chapter.id}
+        </span>
+        <span style={{ flex: 1, minWidth: 0 }}>
+          <span style={{
+            display: 'block',
+            fontSize: 14, fontWeight: 600, color: '#1A1A1A',
+            lineHeight: 1.35,
+          }}>
+            {chapter.title}
+          </span>
+          <span style={{
+            display: 'block', marginTop: 2,
+            fontSize: 12, color: '#9CA3AF',
+            fontFamily: 'var(--font-mono, ui-monospace)',
+          }}>
+            {chapter.range} · {count} {pluralCodes(count)}
+          </span>
+        </span>
+        <span style={{
+          flex: '0 0 auto',
+          color: '#6B7280',
+          transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+          transition: 'transform 200ms',
+        }}>
+          <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </span>
+      </button>
+
+      {isOpen && (
+        <div style={{
+          borderTop: '1px solid #F0F1F5',
+          padding: '8px 0',
+        }}>
+          {visible.map((c) => (
+            <CodeRow key={c.code} code={c} />
+          ))}
+          {hasMore && (
+            <button
+              type="button"
+              onClick={onToggleShowAll}
+              style={{
+                margin: '8px 18px',
+                padding: '8px 14px',
+                background: '#F5F6F8',
+                border: 'none', borderRadius: 999,
+                cursor: 'pointer',
+                fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 600,
+                color: '#374151',
+                transition: 'background 150ms',
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = '#F5F6F8'; }}
+            >
+              {showAll
+                ? `Свернуть до первых ${INITIAL_PER_CHAPTER}`
+                : `Показать все ${count} кодов главы`}
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function FlatList({
+  filtered, activeChapter, chapterById,
+}: {
+  filtered: CodeEntry[];
+  activeChapter: string | null;
+  chapterById: Record<string, Chapter>;
+}) {
+  return (
+    <>
       <p style={{ margin: '0 0 12px', fontSize: 13, color: '#6B7280' }}>
         Найдено: <strong style={{ color: '#1A1A1A' }}>{filtered.length}</strong>
         {activeChapter ? <> · Глава {activeChapter}: {chapterById[activeChapter]?.title}</> : null}
       </p>
-
       {filtered.length === 0 ? (
         <div style={{
           padding: '32px 16px',
@@ -211,9 +458,7 @@ export default function Icd10Lookup({ chapters, codes, version, lastUpdated, sou
               <span style={{
                 flex: '0 0 80px',
                 fontFamily: 'var(--font-mono, ui-monospace)',
-                fontWeight: 700,
-                fontSize: 13,
-                color: '#1A1A1A',
+                fontWeight: 700, fontSize: 13, color: '#1A1A1A',
               }}>
                 {c.code}
               </span>
@@ -223,8 +468,7 @@ export default function Icd10Lookup({ chapters, codes, version, lastUpdated, sou
               <span style={{
                 flex: '0 0 auto',
                 fontFamily: 'var(--font-mono, ui-monospace)',
-                fontSize: 11,
-                color: '#9CA3AF',
+                fontSize: 11, color: '#9CA3AF',
                 whiteSpace: 'nowrap',
               }}>
                 {c.chapter}
@@ -233,80 +477,34 @@ export default function Icd10Lookup({ chapters, codes, version, lastUpdated, sou
           ))}
         </ul>
       )}
-
-      {/* Provenance + disclaimer — компактный info-блок в стиле /tools/[id]
-          provenance-карточек: белый фон, 1px серая рамка, 14px радиус. */}
-      <section
-        aria-labelledby="icd10-provenance"
-        style={{
-          marginTop: 32,
-          padding: '20px 22px',
-          background: '#FFFFFF',
-          border: '1px solid #F0F1F5',
-          borderRadius: 14,
-          fontSize: 13,
-          color: '#4B5563',
-          lineHeight: 1.55,
-        }}
-      >
-        <h3
-          id="icd10-provenance"
-          style={{
-            margin: '0 0 14px',
-            fontFamily: 'var(--font-display)',
-            fontSize: 15,
-            fontWeight: 700,
-            color: '#1A1A1A',
-            letterSpacing: '-0.01em',
-          }}
-        >
-          Источник и обновление
-        </h3>
-        <dl style={{
-          margin: 0, display: 'grid',
-          gridTemplateColumns: 'auto 1fr', columnGap: 18, rowGap: 10,
-        }}>
-          <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Версия базы</dt>
-          <dd style={{ margin: 0, color: '#1A1A1A', fontFamily: 'var(--font-mono, ui-monospace)', fontSize: 12 }}>
-            {version}
-          </dd>
-          <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Обновлено</dt>
-          <dd style={{ margin: 0, color: '#1A1A1A', fontFamily: 'var(--font-mono, ui-monospace)', fontSize: 12 }}>
-            {lastUpdated}
-          </dd>
-          <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Источник</dt>
-          <dd style={{ margin: 0, color: '#1A1A1A' }}>{source}</dd>
-          <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Покрытие</dt>
-          <dd style={{ margin: 0, color: '#1A1A1A' }}>
-            Все 22 главы + {codes.length} наиболее частых кодов. Полная база
-            (~14 000 кодов) — <a href="/docs/CONTENT_ROADMAP.md" style={{ color: '#1A1A1A', textDecoration: 'underline', textUnderlineOffset: 2 }}>в дорожной карте</a>.
-          </dd>
-        </dl>
-
-        <p
-          role="note"
-          style={{
-            marginTop: 18,
-            paddingTop: 16,
-            borderTop: '1px solid #F0F1F5',
-            fontSize: 12,
-            color: '#6B7280',
-            lineHeight: 1.5,
-          }}
-        >
-          <strong style={{ color: '#1A1A1A' }}>Не заменяет клиническое суждение.</strong>{' '}
-          Кодирование диагноза должно опираться на полный клинический контекст
-          и официальные методические рекомендации Минздрава. Заметили ошибку
-          или нужный код отсутствует — напишите через «Обратную связь».
-        </p>
-      </section>
-    </main>
+    </>
   );
 }
 
-/** Pill-фильтр главы в едином стиле с filter-bar / tag-pills из /tools.
-    Активная — чёрная (#1A1A1A bg + white text), неактивная — серая
-    (#F5F6F8 bg + #374151 text). Внутри — лейбл + count в monospace. */
+function CodeRow({ code }: { code: CodeEntry }) {
+  return (
+    <div style={{
+      display: 'flex', alignItems: 'center', gap: 14,
+      padding: '8px 18px',
+      transition: 'background 120ms',
+    }}
+      onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.background = '#F9FAFB'; }}
+      onMouseLeave={(e) => { (e.currentTarget as HTMLDivElement).style.background = 'transparent'; }}
+    >
+      <span style={{
+        flex: '0 0 80px',
+        fontFamily: 'var(--font-mono, ui-monospace)',
+        fontWeight: 700, fontSize: 13, color: '#1A1A1A',
+      }}>
+        {code.code}
+      </span>
+      <span style={{ flex: 1, fontSize: 13.5, color: '#1A1A1A', lineHeight: 1.45 }}>
+        {code.title}
+      </span>
+    </div>
+  );
+}
+
 function ChapterPill({
   label, count, active, onClick,
 }: {
@@ -342,4 +540,13 @@ function ChapterPill({
       </span>
     </button>
   );
+}
+
+function pluralCodes(n: number): string {
+  const m100 = n % 100;
+  const m10 = n % 10;
+  if (m100 >= 11 && m100 <= 14) return 'кодов';
+  if (m10 === 1) return 'код';
+  if (m10 >= 2 && m10 <= 4) return 'кода';
+  return 'кодов';
 }
