@@ -130,6 +130,7 @@ const Icd10View = dynamic(() => import('@/components/icd10/Icd10View'), { ssr: f
 // фидбека main view стал news feed-ом, разделы переехали только под
 // «Обучение». Lazy + ssr:false: компонент сам делает client-fetch.
 const NewsFeed = dynamic(() => import('@/components/home/NewsFeed'), { ssr: false, loading: ViewLoading });
+import ZetDisclaimer from '@/components/layout/ZetDisclaimer';
 const ProfilePage = dynamic(() => import('@/components/profile/ProfilePage'), { ssr: false, loading: ViewLoading });
 const StatisticsPage = dynamic(() => import('@/components/stats/StatisticsPage'), { ssr: false, loading: ViewLoading });
 const TestsPage = dynamic(() => import('@/components/tests/TestsPage'), { ssr: false, loading: ViewLoading });
@@ -604,56 +605,15 @@ export default function Home() {
               Если делать оба одинаково — пропадает смысл иметь два пункта
               в сайдбаре, поэтому развели контент по семантике пункта. */}
           {view === 'home' && (
-            <NewsFeed />
+            <>
+              <ZetDisclaimer />
+              <NewsFeed />
+            </>
           )}
 
           {view === 'learning' && (
             <div style={{ margin: '0' }}>
-              {/* Регуляторный дисклеймер (ФЗ № 28-ФЗ от 28.02.2025).
-                  Bordik не лицензированный провайдер ДПО, не выдаёт ЗЕТ
-                  для периодической аккредитации в РФ. Раскрытие должно
-                  быть видно сразу при первом визите — без него любое
-                  упоминание «обучения медиков» создаёт юридический риск
-                  введения в заблуждение. Полные условия — в /terms §11.
-
-                  TODO(legal, P3, low): текст составлен внутри команды
-                  без участия профильного юриста. До коммерческого
-                  запуска прогнать через юрконсультацию по медобразованию
-                  (S2 в docs/AUDIT_TODO_2026-05.md) — формулировки
-                  по 28-ФЗ, 709н, ФИС ФРДО, и аналогам в УЗ/КЗ. */}
-              <aside
-                role="note"
-                aria-label="Юридическое уведомление: образовательный сервис, не выдаёт ЗЕТ"
-                style={{
-                  marginBottom: 'var(--space-5)',
-                  padding: '12px 16px',
-                  background: '#F5F6F8',
-                  border: '1px solid #E5E7EB',
-                  borderRadius: 12,
-                  fontSize: 13,
-                  lineHeight: 1.55,
-                  color: '#4B5563',
-                  fontFamily: 'var(--font-body)',
-                }}
-              >
-                <strong style={{ color: '#1A1A1A' }}>
-                  Bordik — образовательный справочный сервис.
-                </strong>{' '}
-                Мы не выдаём ЗЕТ для периодической аккредитации в РФ, не заменяем
-                программы ДПО и не используются при оказании медицинской помощи
-                пациентам.{' '}
-                <a
-                  href="/terms#zet"
-                  style={{
-                    color: '#1A1A1A',
-                    textDecoration: 'underline',
-                    textUnderlineOffset: 2,
-                  }}
-                >
-                  Подробнее
-                </a>
-                .
-              </aside>
+              <ZetDisclaimer />
 
               {/* Staggered fade-in для Learning-вью. CSS-only animation
                   (.bordik-fade-up) — без framer-motion рантайма, чтобы
