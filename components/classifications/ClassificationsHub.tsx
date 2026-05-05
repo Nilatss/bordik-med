@@ -166,7 +166,7 @@ export default function ClassificationsHub({ defaultTab = 'icd10' }: Props) {
     let cancelled = false;
     void (async () => {
       try {
-        const r = await fetch('/icd10-starter.json?v=0.6.0', { cache: 'no-cache' });
+        const r = await fetch('/icd10-starter.json?v=0.7.0', { cache: 'no-cache' });
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         const json = await r.json();
         if (!cancelled) setBank(json);
