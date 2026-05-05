@@ -84,3 +84,8 @@ next-env.d.ts
 /lib/curriculum-stats.ts
 
 .vercel
+
+# Graphify (claude-code-memory-setup) — AST-кэш. Только cache/ исключаем
+# (локальный бинарь). graph.json и GRAPH_REPORT.md можно коммитить —
+# они полезны команде для агрегированных запросов о структуре кода.
+graphify-out/cache/
