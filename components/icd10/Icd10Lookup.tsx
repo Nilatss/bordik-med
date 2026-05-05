@@ -66,61 +66,86 @@ export default function Icd10Lookup({ chapters, codes, version, lastUpdated, sou
     <main
       id="main-content"
       style={{
-        maxWidth: 960,
-        margin: '0 auto',
-        padding: '32px 24px 80px',
+        width: '100%',
         fontFamily: 'var(--font-body, system-ui)',
         color: 'var(--md-sys-color-on-surface, #1A1A1A)',
       }}
     >
-      <header style={{ marginBottom: 28 }}>
+      {/* Заголовок и подпись — повторяет паттерн ToolsPage:
+          display-font 28, body-font 14 muted, gap 6+20. */}
+      <div style={{ marginBottom: 20 }}>
+        <h2 style={{
+          fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 700,
+          color: '#1A1A1A', marginBottom: 6, letterSpacing: '-0.02em',
+        }}>
+          МКБ-10
+        </h2>
         <p style={{
-          margin: 0, fontSize: 11, fontWeight: 700, letterSpacing: '0.08em',
-          textTransform: 'uppercase', color: '#9CA3AF',
-          fontFamily: 'var(--font-mono, ui-monospace)',
+          fontFamily: 'var(--font-body)', fontSize: 14, color: '#6B7280', lineHeight: 1.5,
         }}>
-          Справочник
+          Справочник кодов: поиск по диагнозу или коду. Все 22 главы МКБ-10
+          в редакции ВОЗ (русский перевод Минздрава) — {codes.length} наиболее
+          частых кодов.
         </p>
-        <h1 style={{
-          margin: '4px 0 8px',
-          fontFamily: 'var(--font-display, system-ui)',
-          fontSize: 28, fontWeight: 700, lineHeight: 1.2, letterSpacing: '-0.02em',
-        }}>
-          МКБ-10 lookup
-        </h1>
-        <p style={{ margin: 0, fontSize: 14, color: '#6B7280', lineHeight: 1.55 }}>
-          Поиск по коду или по названию диагноза. Все 22 главы МКБ-10 в
-          редакции ВОЗ (русский перевод Минздрава).
-        </p>
-      </header>
+      </div>
 
-      <input
-        type="search"
-        value={q}
-        onChange={(e) => setQ(e.target.value)}
-        placeholder='Например: "I10", "гипертензия", "пневмония"…'
-        aria-label="Поиск кода или диагноза"
-        style={{
-          width: '100%',
-          padding: '12px 16px',
-          fontSize: 15,
-          fontFamily: 'inherit',
+      {/* Search — точно как в /tools: иконка слева, F5F6F8 пилл, max 480 */}
+      <div style={{ marginBottom: 14 }}>
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: 10,
+          padding: '10px 16px',
           background: '#F5F6F8',
-          border: 'none',
           borderRadius: 12,
-          outline: 'none',
-          color: '#1A1A1A',
-        }}
-      />
+          maxWidth: 480,
+        }}>
+          <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
+            stroke="#9CA3AF" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <input
+            type="search"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder='Например: "I10", "гипертензия", "пневмония"…'
+            aria-label="Поиск кода или диагноза"
+            style={{
+              flex: 1,
+              border: 'none', outline: 'none',
+              background: 'transparent',
+              fontFamily: 'var(--font-body)', fontSize: 14,
+              color: '#1A1A1A',
+            }}
+          />
+          {q && (
+            <button
+              onClick={() => setQ('')}
+              style={{
+                background: 'transparent', border: 'none', padding: 0,
+                cursor: 'pointer', color: '#9CA3AF',
+                display: 'flex',
+              }}
+              aria-label="Очистить поиск"
+            >
+              <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="15" y1="9" x2="9" y2="15" />
+                <line x1="9" y1="9" x2="15" y2="15" />
+              </svg>
+            </button>
+          )}
+        </div>
+      </div>
 
-      {/* Главы — фильтр-скроллер */}
+      {/* Главы — фильтр-пиллы в стиле filter bar /tools */}
       <div style={{
-        display: 'flex', gap: 8, overflowX: 'auto', padding: '16px 0',
-        margin: '0 -4px',
+        display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center',
+        marginBottom: 20,
       }}>
         <ChapterPill
           label="Все главы"
-          subtitle={`${codes.length} кодов`}
+          count={codes.length}
           active={activeChapter === null}
           onClick={() => setActiveChapter(null)}
         />
@@ -131,7 +156,7 @@ export default function Icd10Lookup({ chapters, codes, version, lastUpdated, sou
             <ChapterPill
               key={ch.id}
               label={`${ch.id} · ${ch.range}`}
-              subtitle={`${count}`}
+              count={count}
               active={activeChapter === ch.id}
               onClick={() => setActiveChapter(activeChapter === ch.id ? null : ch.id)}
             />
@@ -140,7 +165,7 @@ export default function Icd10Lookup({ chapters, codes, version, lastUpdated, sou
       </div>
 
       {/* Результаты */}
-      <p style={{ margin: '8px 0 12px', fontSize: 13, color: '#6B7280' }}>
+      <p style={{ margin: '0 0 12px', fontSize: 13, color: '#6B7280' }}>
         Найдено: <strong style={{ color: '#1A1A1A' }}>{filtered.length}</strong>
         {activeChapter ? <> · Глава {activeChapter}: {chapterById[activeChapter]?.title}</> : null}
       </p>
@@ -159,7 +184,7 @@ export default function Icd10Lookup({ chapters, codes, version, lastUpdated, sou
       ) : (
         <ul style={{
           listStyle: 'none', padding: 0, margin: 0,
-          display: 'flex', flexDirection: 'column', gap: 6,
+          display: 'flex', flexDirection: 'column', gap: 8,
         }}>
           {filtered.map((c) => (
             <li
@@ -168,9 +193,19 @@ export default function Icd10Lookup({ chapters, codes, version, lastUpdated, sou
                 display: 'flex',
                 alignItems: 'center',
                 gap: 14,
-                padding: '12px 16px',
-                background: '#F5F6F8',
-                borderRadius: 10,
+                padding: '14px 18px',
+                background: '#FFFFFF',
+                border: '1px solid #F0F1F5',
+                borderRadius: 14,
+                transition: 'border-color 150ms, background 150ms',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = '#FAFAFB';
+                e.currentTarget.style.borderColor = '#E5E7EB';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = '#FFFFFF';
+                e.currentTarget.style.borderColor = '#F0F1F5';
               }}
             >
               <span style={{
@@ -199,51 +234,52 @@ export default function Icd10Lookup({ chapters, codes, version, lastUpdated, sou
         </ul>
       )}
 
-      {/* Provenance + disclaimer (как у /tools/[id]) */}
+      {/* Provenance + disclaimer — компактный info-блок в стиле /tools/[id]
+          provenance-карточек: белый фон, 1px серая рамка, 14px радиус. */}
       <section
         aria-labelledby="icd10-provenance"
         style={{
           marginTop: 32,
           padding: '20px 22px',
-          background: '#F5F6F8',
+          background: '#FFFFFF',
+          border: '1px solid #F0F1F5',
           borderRadius: 14,
           fontSize: 13,
           color: '#4B5563',
           lineHeight: 1.55,
         }}
       >
-        <h2
+        <h3
           id="icd10-provenance"
           style={{
-            margin: '0 0 12px',
-            fontFamily: 'var(--font-mono, ui-monospace)',
-            fontSize: 11,
+            margin: '0 0 14px',
+            fontFamily: 'var(--font-display)',
+            fontSize: 15,
             fontWeight: 700,
-            color: '#6B7280',
-            textTransform: 'uppercase',
-            letterSpacing: '0.08em',
+            color: '#1A1A1A',
+            letterSpacing: '-0.01em',
           }}
         >
           Источник и обновление
-        </h2>
+        </h3>
         <dl style={{
           margin: 0, display: 'grid',
-          gridTemplateColumns: 'auto 1fr', columnGap: 16, rowGap: 8,
+          gridTemplateColumns: 'auto 1fr', columnGap: 18, rowGap: 10,
         }}>
-          <dt style={{ color: '#6B7280' }}>Версия базы</dt>
-          <dd style={{ margin: 0, color: '#1A1A1A', fontFamily: 'var(--font-mono, ui-monospace)' }}>
+          <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Версия базы</dt>
+          <dd style={{ margin: 0, color: '#1A1A1A', fontFamily: 'var(--font-mono, ui-monospace)', fontSize: 12 }}>
             {version}
           </dd>
-          <dt style={{ color: '#6B7280' }}>Обновлено</dt>
-          <dd style={{ margin: 0, color: '#1A1A1A', fontFamily: 'var(--font-mono, ui-monospace)' }}>
+          <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Обновлено</dt>
+          <dd style={{ margin: 0, color: '#1A1A1A', fontFamily: 'var(--font-mono, ui-monospace)', fontSize: 12 }}>
             {lastUpdated}
           </dd>
-          <dt style={{ color: '#6B7280' }}>Источник</dt>
+          <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Источник</dt>
           <dd style={{ margin: 0, color: '#1A1A1A' }}>{source}</dd>
-          <dt style={{ color: '#6B7280' }}>Покрытие</dt>
+          <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Покрытие</dt>
           <dd style={{ margin: 0, color: '#1A1A1A' }}>
             Все 22 главы + {codes.length} наиболее частых кодов. Полная база
-            (~14 000 кодов) — <a href="/docs/CONTENT_ROADMAP.md" style={{ color: '#1A1A1A' }}>в дорожной карте</a>.
+            (~14 000 кодов) — <a href="/docs/CONTENT_ROADMAP.md" style={{ color: '#1A1A1A', textDecoration: 'underline', textUnderlineOffset: 2 }}>в дорожной карте</a>.
           </dd>
         </dl>
 
@@ -252,7 +288,7 @@ export default function Icd10Lookup({ chapters, codes, version, lastUpdated, sou
           style={{
             marginTop: 18,
             paddingTop: 16,
-            borderTop: '1px solid #E5E7EB',
+            borderTop: '1px solid #F0F1F5',
             fontSize: 12,
             color: '#6B7280',
             lineHeight: 1.5,
@@ -268,10 +304,13 @@ export default function Icd10Lookup({ chapters, codes, version, lastUpdated, sou
   );
 }
 
+/** Pill-фильтр главы в едином стиле с filter-bar / tag-pills из /tools.
+    Активная — чёрная (#1A1A1A bg + white text), неактивная — серая
+    (#F5F6F8 bg + #374151 text). Внутри — лейбл + count в monospace. */
 function ChapterPill({
-  label, subtitle, active, onClick,
+  label, count, active, onClick,
 }: {
-  label: string; subtitle: string; active: boolean; onClick: () => void;
+  label: string; count: number; active: boolean; onClick: () => void;
 }) {
   return (
     <button
@@ -279,29 +318,27 @@ function ChapterPill({
       onClick={onClick}
       style={{
         flexShrink: 0,
-        padding: '8px 14px',
+        display: 'inline-flex', alignItems: 'center', gap: 8,
+        padding: '7px 12px',
         background: active ? '#1A1A1A' : '#F5F6F8',
-        color: active ? '#FFFFFF' : '#1A1A1A',
-        border: 'none',
-        borderRadius: 999,
+        color: active ? '#FFFFFF' : '#374151',
+        border: 'none', borderRadius: 999,
         cursor: 'pointer',
-        fontFamily: 'inherit',
-        fontSize: 12,
-        fontWeight: 600,
+        fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 600,
         whiteSpace: 'nowrap',
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: 8,
-        transition: 'background 150ms',
+        transition: 'background 180ms, color 180ms',
       }}
+      onMouseEnter={(e) => { if (!active) e.currentTarget.style.background = '#EFF1F4'; }}
+      onMouseLeave={(e) => { if (!active) e.currentTarget.style.background = '#F5F6F8'; }}
     >
       <span>{label}</span>
       <span style={{
         fontFamily: 'var(--font-mono, ui-monospace)',
-        fontSize: 10,
-        opacity: 0.7,
+        fontSize: 10, fontWeight: 700,
+        color: active ? 'rgba(255,255,255,0.65)' : '#9CA3AF',
+        letterSpacing: '0.02em',
       }}>
-        {subtitle}
+        {count}
       </span>
     </button>
   );
