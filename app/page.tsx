@@ -59,12 +59,17 @@ function ViewLoading() {
 }
 
 /**
- * Lightweight placeholder used for views that are temporarily parked in the
- * backlog (Profile, Home/NewsFeed). Renders a centred card with title +
- * description so the navigation remains functional but the actual feature
- * is hidden until we ship its update.
+ * Friendly roadmap placeholder. Renders for views that are temporarily
+ * parked in the backlog (Profile, Home/NewsFeed) — keeps the route
+ * mounted and navigable but signals "we know it's missing, here's when".
+ *
+ * `eta` is a free-text quarter ("Q3 2026") shown in the badge. Pick from
+ * the `SECTION_ETA` map for sections, or pass an explicit one for ad-hoc
+ * stubs.
  */
-function ComingSoonStub({ title, description }: { title: string; description: string }) {
+function ComingSoonStub({
+  title, description, eta = 'скоро',
+}: { title: string; description: string; eta?: string }) {
   return (
     <div style={{
       minHeight: '50vh',
@@ -81,15 +86,20 @@ function ComingSoonStub({ title, description }: { title: string; description: st
       }}>
         <div style={{
           display: 'inline-flex', alignItems: 'center', gap: 6,
-          padding: '4px 10px',
+          padding: '4px 12px',
           borderRadius: 999,
-          background: '#EFF4FF',
-          color: '#2563EB',
-          fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700,
-          letterSpacing: '0.06em', textTransform: 'uppercase',
+          background: '#F5F6F8',
+          color: '#4B5563',
+          fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 600,
+          letterSpacing: '0.04em',
           marginBottom: 14,
         }}>
-          Скоро
+          <svg width={11} height={11} viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M12 6v6l4 2" />
+          </svg>
+          В разработке · {eta}
         </div>
         <h2 style={{
           fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 700,
@@ -103,6 +113,21 @@ function ComingSoonStub({ title, description }: { title: string; description: st
           lineHeight: 1.6,
         }}>
           {description}
+        </p>
+        <p style={{
+          marginTop: 18, paddingTop: 14, borderTop: '1px solid #F0F1F5',
+          fontFamily: 'var(--font-body)', fontSize: 12, color: '#9CA3AF',
+          lineHeight: 1.55,
+        }}>
+          Пока этот раздел дозревает — пользуйтесь{' '}
+          <a href="/?view=tools" style={{ color: '#1A1A1A', textDecoration: 'underline', textUnderlineOffset: 2 }}>
+            калькуляторами
+          </a>{' '}
+          и{' '}
+          <a href="/icd10" style={{ color: '#1A1A1A', textDecoration: 'underline', textUnderlineOffset: 2 }}>
+            справочником МКБ-10
+          </a>
+          .
         </p>
       </div>
     </div>
@@ -171,6 +196,29 @@ function BackButton({ onClick, label }: { onClick: () => void; label: string }) 
 /* Section cards */
 const UNLOCKED_SECTIONS: SectionId[] = ['fundamentals'];
 
+/**
+ * Ориентировочные сроки готовности разделов. Не обещание, а
+ * roadmap-ETA — показываем пользователю «когда ждать», чтобы пустые
+ * карточки не выглядели мёртвыми. Обновлять по мере поставки контента.
+ *
+ * Принцип: ничего не скрываем — каждый раздел виден, у каждого есть
+ * квартал. Если опаздываем — двигаем дату и пушим в /releases.
+ */
+const SECTION_ETA: Record<SectionId, string> = {
+  fundamentals: 'доступно',
+  career:       'Q3 2026',
+  biomedical:   'Q3 2026',
+  clinical:     'Q4 2026',
+  skills:       'Q4 2026',
+  allied:       'Q1 2027',
+  threads:      'Q1 2027',
+  hss:          'Q2 2027',
+  regulatory:   'Q2 2027',
+  frontier:     'Q3 2027',
+  business:     'Q3 2027',
+  tech:         'Q4 2027',
+};
+
 /** Grouping of sections into logical categories (order matters) */
 const SECTION_CATEGORIES: { title: string; ids: SectionId[] }[] = [
   {
@@ -216,6 +264,7 @@ function SectionCards({ onSelect }: { onSelect: (id: SectionId) => void }) {
     }
     const pct = totalCourses > 0 ? Math.round((completedCount / totalCourses) * 100) : 0;
     const isUnlocked = UNLOCKED_SECTIONS.includes(sec.id);
+    const eta = SECTION_ETA[sec.id] ?? 'скоро';
 
     // Suppress unused-var lint when `i` is no longer needed for stagger.
     void i;
@@ -234,13 +283,19 @@ function SectionCards({ onSelect }: { onSelect: (id: SectionId) => void }) {
             // synthetic mobile profile.
             onClick={() => { if (isUnlocked) onSelect(sec.id); }}
             disabled={!isUnlocked}
+            aria-label={isUnlocked
+              ? `Открыть раздел: ${sec.title}`
+              : `Раздел «${sec.title}» в разработке, откроется ${eta}`}
             style={{
               background: SECTION_BG[sec.id],
               borderRadius: 'var(--md-sys-shape-corner-extra-large)',
               border: 'none',
               padding: 'var(--space-5)', textAlign: 'left',
-              cursor: isUnlocked ? 'pointer' : 'not-allowed',
-              opacity: isUnlocked ? 1 : 0.48,
+              cursor: isUnlocked ? 'pointer' : 'default',
+              // Заблокированные карточки больше не выглядят мёртвыми:
+              // оставляем читаемый opacity + soft визуальный сигнал,
+              // что это roadmap-карточка, а не битая ссылка.
+              opacity: isUnlocked ? 1 : 0.78,
               position: 'relative', overflow: 'hidden', minHeight: 160,
               display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
               transition: 'background 400ms cubic-bezier(0.22,1,0.36,1), transform 400ms cubic-bezier(0.22,1,0.36,1)',
@@ -256,25 +311,27 @@ function SectionCards({ onSelect }: { onSelect: (id: SectionId) => void }) {
               e.currentTarget.style.transform = 'translateY(0)';
             }}
           >
-            {/* "Скоро" lock badge */}
+            {/* Roadmap-бейдж: заменили чёрный padlock на дружелюбную
+                soft-pill «В разработке · Q3 2026». Показывает, что
+                раздел жив и движется, а не «навсегда закрыт». */}
             {!isUnlocked && (
               <div style={{
                 position: 'absolute', top: 12, right: 12, zIndex: 2,
                 display: 'inline-flex', alignItems: 'center', gap: 6,
                 padding: '4px 10px',
                 borderRadius: 999,
-                background: '#1A1A1A',
-                color: '#FFFFFF',
-                fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-                letterSpacing: '0.06em', textTransform: 'uppercase',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
+                background: '#FFFFFF',
+                color: '#4B5563',
+                fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 600,
+                letterSpacing: '0.04em',
+                boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
               }}>
                 <svg width={10} height={10} viewBox="0 0 24 24" fill="none"
                   stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="3" y="11" width="18" height="11" rx="2" />
-                  <path d="M7 11V7a5 5 0 0110 0v4" />
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M12 6v6l4 2" />
                 </svg>
-                Скоро
+                {eta}
               </div>
             )}
 
@@ -302,9 +359,11 @@ function SectionCards({ onSelect }: { onSelect: (id: SectionId) => void }) {
             <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-1)', marginTop: 'var(--space-3)', position: 'relative', zIndex: 1 }}>
               <span style={{
                 fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', fontWeight: 500,
-                color: isUnlocked ? 'var(--md-sys-color-on-surface)' : '#9CA3AF',
+                color: isUnlocked ? 'var(--md-sys-color-on-surface)' : '#6B7280',
               }}>
-                {isUnlocked ? 'Начать обучение' : 'Раздел в разработке'}
+                {isUnlocked
+                  ? 'Начать обучение'
+                  : `Готовим контент · откроется ${eta}`}
               </span>
               {isUnlocked && <ArrowRight size={14} color="var(--md-sys-color-on-surface)" />}
             </div>
@@ -445,7 +504,8 @@ export default function Home() {
           {view === 'profile' && (
             <ComingSoonStub
               title="Профиль"
-              description="Раздел временно отключён — мы доработаем его и вернём позже."
+              eta="Q3 2026"
+              description="Возвращаем личный профиль с прогрессом, избранным и сертификатами. Сейчас прогресс по курсам и тестам сохраняется локально и подтянется в новый профиль автоматически."
             />
           )}
 
