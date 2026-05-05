@@ -16,8 +16,9 @@
 |---|---|---|---|---|
 | 1 | Drug Interaction Checker | 🔴 не начато | XL (контент) | 2–4 недели |
 | 2 | Dose adjustment (renal/hepatic) | 🔴 не начато | M (контент) | 1 неделя |
-| 3 | МКБ-10 lookup | 🟢 **в реализации** | S (данные публичные) | сегодня |
+| 3 | МКБ-10 lookup | ✅ выкачен (starter ~90 кодов) | S | done |
 | 4 | Педиатрические дозы | 🔴 не начато | M (контент + UI) | 1 неделя |
+| 5 | Guidelines (каталог клин. рекомендаций) | 🔴 не начато | XL (контент + UX) | 3–6 недель |
 
 ---
 
@@ -192,3 +193,125 @@ auto-обновления + UI multi-select до 30 препаратов одн�
 - Никаких AI-генерированных дозировок — только выверенные данные
 - Версионирование: `lastUpdated` для каждой entry, чтобы видеть когда
   данные пересматривались
+
+---
+
+## #5. Guidelines (каталог клинических рекомендаций)
+
+**Что делать:** структурированный справочник международных + национальных
+КР (ESC, ACC/AHA, NICE, KDIGO, WHO, NCCN, ESMO, EASL, EAU, EULAR, ECCO,
+ADA, GINA, GOLD, ATS/IDSA, ACOG, AAP, EAN, КР МЗ РФ и др.) — около
+**~250 ключевых документов** в стартовом наполнении и до **~900** при
+полной интеграции с Рубрикатором cr.minzdrav.gov.ru.
+
+**Эталон:** Medscape Guidelines, BMJ Best Practice, MDCalc Guidelines.
+
+**Полная спецификация:** `docs/specs/guidelines-catalog.md` (25 разделов,
+системы классификации COR/LOE, GRADE, NICE, SIGN, USPSTF, NCCN, УУР/УДД).
+
+### Почему это XL
+
+- Сотни документов, у каждого: издатель, год, заменяемые версии,
+  ключевые рекомендации с COR/LOE, изменения vs предыдущей версии,
+  связанные калькуляторы из нашего раздела Tools.
+- Юридический режим разный: NICE/WHO Open Access, ESC/ACC-AHA — личное
+  + образовательное, NCCN/UpToDate/BMJ BP — закрытые.
+- Living guidelines (ADA, AASLD/IDSA HCV, GINA, GOLD, NCCN, WHO COVID/
+  HIV/Malaria) требуют квартальной автопроверки версий.
+- Локализация: где есть русский (КР МЗ РФ, переводы РКО, GINA/GOLD на
+  русском) — указывать.
+
+### Прагматичный подход
+
+**MVP (Phase 1, ~1 неделя):** скелет UX + ~30 карточек по самым
+востребованным разделам — кардиология (ОКС, АГ, ХСН, ФП, дислипидемии),
+эндокринология (СД2), пульмонология (астма, ХОБЛ), неотложка (АНА CPR
+2025, SSC 2026), нефрология (KDIGO 2024 CKD). Двухуровневое дерево
+«Специальность → Нозология → Список гайдлайнов».
+
+**Phase 2 (~2 недели):** расширение до 100 карточек, таблицы сравнения
+расходящихся рекомендаций (ACC/AHA vs ESC vs МЗ РФ vs NICE) для топ-нозологий
+(АГ, ОКС, ФП, дислипидемии). Связь many-to-many с разделом Tools — у
+каждой шкалы (TIMI, GRACE, HEART, CHA₂DS₂-VA, HAS-BLED, Wells, PESI и
+т.д.) обратный список «Используется в гайдлайнах».
+
+**Phase 3 (~2–3 недели):** парсер cr.minzdrav.gov.ru → автодобавление
+карточек КР МЗ РФ; cron-проверка living guidelines по DOI/URL раз в
+квартал; локализация.
+
+### Схема карточки гайдлайна (из спецификации)
+
+```ts
+interface GuidelineCard {
+  id: string;
+  title_orig: string;
+  title_ru: string;
+  organization: string;        // ESC, ACC/AHA, NICE, KDIGO, NCCN...
+  country: string;             // US, EU, UK, RU, Global
+  region: 'US' | 'EU' | 'UK' | 'RU' | 'Asia' | 'LATAM' | 'Global';
+  specialty: string;           // cardiology, endocrinology...
+  subtopic: string;            // ACS, AF, dyslipidaemia...
+  year_active: number;
+  year_previous: number | null;
+  status: 'ACTIVE' | 'SUPERSEDED' | 'DRAFT';
+  classification_system: 'ACC-AHA' | 'GRADE' | 'NICE' | 'SIGN'
+                       | 'USPSTF' | 'NCCN' | 'MZ-RF';
+  key_recommendations: Array<{
+    text: string;
+    cor?: string;              // I, IIa, IIb, III
+    loe?: string;              // A, B-R, B-NR, C-LD, C-EO
+    grade?: string;            // strong/conditional + High/Moderate/Low
+  }>;
+  algorithms: string[];
+  related_calculators_ids: string[];
+  related_guidelines_ids: string[];
+  doi: string | null;
+  url_pdf: string | null;
+  url_html: string;
+  last_updated: string;        // YYYY-MM-DD
+  mkb10_codes: string[];       // связь с /icd10
+  language_versions: string[]; // ru, en
+  who_endorsed: boolean;
+  license: 'open-access' | 'educational' | 'subscription';
+}
+```
+
+### UX
+
+- Двухуровневое дерево: Специальность → Нозология → Список гайдлайнов.
+- Фильтры: регион, год, организация, класс рекомендаций.
+- На странице нозологии: таблица сравнения ACC/AHA vs ESC vs МЗ РФ vs
+  NICE (для АГ, ОКС, ФП, дислипидемий — где они расходятся).
+- Связь с разделом Tools (калькуляторы): у каждой шкалы — обратная
+  ссылка «Используется в гайдлайнах».
+
+### Юридический режим
+
+- Все резюме — собственные, со ссылкой на первоисточник.
+- Полные тексты NCCN/UpToDate/BMJ BP **не воспроизводятся**.
+- NICE и WHO — Open Access (атрибуция).
+- ESC и ACC/AHA — личное и образовательное использование разрешено,
+  коммерческое требует разрешения.
+- КР МЗ РФ — открытый доступ через cr.minzdrav.gov.ru.
+
+### Acceptance criteria для MVP
+
+- [ ] Маршрут `/guidelines` с двухуровневой навигацией.
+- [ ] ~30 карточек в стартовом наполнении (кардио + неотложка + СД2 +
+      ХОБЛ/астма + KDIGO 2024 CKD).
+- [ ] Provenance + дисклеймер на каждой карточке (как в `/tools/[id]`).
+- [ ] Связь с калькуляторами Tools (двусторонняя).
+- [ ] Связь с МКБ-10 (mkb10_codes → ссылки на /icd10).
+- [ ] JSON-LD `MedicalGuideline` / `MedicalScholarlyArticle`.
+- [ ] sitemap entries для всех карточек.
+- [ ] 11 ключевых сравнительных таблиц (ACC/AHA vs ESC vs МЗ РФ vs NICE).
+
+### Источники данных
+
+См. `docs/specs/guidelines-catalog.md` — там перечислены все 25
+разделов, агрегаторы (MDCalc, BMJ BP, UpToDate, DynaMed, Manual MSD,
+ECRI Guidelines Trust) и первоисточники по каждой организации.
+
+**Реализация откладывается** — спецификация сохранена в репо,
+имплементация начнётся после согласования приоритета относительно фич
+#1, #2, #4.
