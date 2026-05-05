@@ -141,7 +141,7 @@ export default function Sidebar() {
       case 'tests':    void import('@/components/tests/TestsPage'); break;
       case 'stats':    void import('@/components/stats/StatisticsPage'); break;
       case 'profile':  void import('@/components/profile/ProfilePage'); break;
-      case 'icd10':    void import('@/components/icd10/Icd10Lookup'); break;
+      case 'icd10':    void import('@/components/classifications/ClassificationsHub'); break;
       case 'drugs':    void import('@/components/drugs/DrugChecker'); break;
       case 'learning': /* no chunk — sections render in app/page.tsx */ break;
       case 'home':     /* eager */ break;
@@ -197,8 +197,8 @@ export default function Sidebar() {
     },
     icd10: {
       id: 'icd10',
-      label: 'МКБ-10',
-      keywords: ['мкб', 'мкб-10', 'icd', 'icd10', 'icd-10', 'диагноз', 'код', 'справочник', 'classification', 'международная классификация'],
+      label: 'Классификации',
+      keywords: ['классификации', 'classifications', 'мкб', 'мкб-10', 'мкб-11', 'icd', 'icd10', 'icd-10', 'icd-11', 'icd-10-cm', 'icd-10-pcs', 'icd-10-ca', 'icd-10-gm', 'icd-10-am', 'диагноз', 'код', 'справочник', 'classification', 'международная классификация'],
       icon: (
         <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
           <path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z" />

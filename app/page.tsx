@@ -124,7 +124,7 @@ const ToolView = dynamic(() => import('@/components/tools/ToolView'), { ssr: fal
 // для SEO и прямых ссылок из поиска, но переход из сайдбара открывает
 // этот компонент внутри shell-а — иначе пользователь «вылетает» из
 // приложения (теряет сайдбар, навигацию, dark-mode и т.д.).
-const Icd10View = dynamic(() => import('@/components/icd10/Icd10View'), { ssr: false, loading: ViewLoading });
+const ClassificationsHub = dynamic(() => import('@/components/classifications/ClassificationsHub'), { ssr: false, loading: ViewLoading });
 const DrugChecker = dynamic(() => import('@/components/drugs/DrugChecker'), { ssr: false, loading: ViewLoading });
 // Главная теперь — лента релизов («что нового»). Раньше view==='home'
 // рендерил ту же сетку разделов курсов что и view==='learning' — после
@@ -536,7 +536,7 @@ export default function Home() {
           )}
 
           {view === 'icd10' && (
-            <Icd10View />
+            <ClassificationsHub />
           )}
 
           {view === 'drugs' && (
