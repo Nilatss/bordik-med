@@ -98,14 +98,11 @@ export default function Icd10Lookup({ chapters, codes, version, lastUpdated, sou
     <main
       id="main-content"
       style={{
-        // Нормальные отступы и max-width, чтобы контент не «плавал»
-        // по ширине экрана и не упирался в правый край. На широких
-        // мониторах max 1040 px — лучше читается, заголовок не уезжает
-        // в бесконечность.
+        // width: 100% без max-width — точно так же, как у /tools.
+        // Внешний app-main-inner уже даёт правильные отступы,
+        // дополнительный max ограничивал контент и оставлял пустые
+        // полосы по краям на широких экранах.
         width: '100%',
-        maxWidth: 1040,
-        margin: '0 auto',
-        padding: '8px 4px 32px',
         fontFamily: 'var(--font-body, system-ui)',
         color: 'var(--md-sys-color-on-surface, #1A1A1A)',
       }}
