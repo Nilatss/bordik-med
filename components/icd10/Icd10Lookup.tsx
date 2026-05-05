@@ -118,8 +118,7 @@ export default function Icd10Lookup({ chapters, codes, version, lastUpdated, sou
           fontFamily: 'var(--font-body)', fontSize: 14, color: '#6B7280', lineHeight: 1.5,
         }}>
           Справочник кодов: поиск по диагнозу или коду. Все 22 главы МКБ-10
-          в редакции ВОЗ (русский перевод Минздрава) — {codes.length} наиболее
-          частых кодов.
+          в редакции ВОЗ (русский перевод Минздрава).
         </p>
       </div>
 
