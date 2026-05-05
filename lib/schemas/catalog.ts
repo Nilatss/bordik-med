@@ -44,6 +44,19 @@ export const ToolDetailSchema = v.object({
   kind: v.nullable(ToolKindSchema),
   /** Semver. Bumped when bands / thresholds / formula change. */
   version: v.pipe(v.string(), v.regex(/^\d+\.\d+\.\d+(-[\w.]+)?$/)),
+  /**
+   * ISO date (YYYY-MM-DD) of the last meaningful content update for
+   * this tool. Generated at build time so users can see how fresh the
+   * data is — required by FDA's Cures Act CDS Guidance pattern that
+   * MDCalc, UpToDate and other clinical calculators follow.
+   */
+  lastUpdated: v.pipe(v.string(), v.regex(/^\d{4}-\d{2}-\d{2}$/)),
+  /**
+   * Cited primary source for the formula / bands. Extracted from the
+   * `reference` field in the matching `lib/runners/<id>.ts` runner.
+   * `null` for tools whose runner doesn't yet declare a citation.
+   */
+  reference: v.nullable(v.string()),
 });
 export type ToolDetail = v.InferOutput<typeof ToolDetailSchema>;
 

@@ -54,11 +54,60 @@ const ToolDetailSchema = v.object({
   countries: v.nullable(v.string()),
   kind: v.nullable(ToolKindSchema),
   version: v.pipe(v.string(), v.regex(/^\d+\.\d+\.\d+(-[\w.]+)?$/)),
+  lastUpdated: v.pipe(v.string(), v.regex(/^\d{4}-\d{2}-\d{2}$/)),
+  reference: v.nullable(v.string()),
 });
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const CATALOG_TS = join(ROOT, 'lib', 'tools-catalog.ts');
 const META_DATA_TS = join(ROOT, 'lib', 'tool-meta-data.ts');
+const RUNNERS_DIR = join(ROOT, 'lib', 'runners');
+
+/**
+ * Build today's date as ISO YYYY-MM-DD. Stamped on every tool detail
+ * file so the /tools/[id] landing page can show "обновлено DD.MM.YYYY"
+ * (FDA Cures Act CDS Guidance pattern that MDCalc / UpToDate follow).
+ *
+ * Using build-time `now()` rather than git log mtime keeps the output
+ * deterministic per build and avoids a per-file `git log` shell-out
+ * (which would slow the prebuild step from <1 s to ~30 s for 730+
+ * runners).
+ */
+function todayIso() {
+  const d = new Date();
+  return [
+    d.getUTCFullYear(),
+    String(d.getUTCMonth() + 1).padStart(2, '0'),
+    String(d.getUTCDate()).padStart(2, '0'),
+  ].join('-');
+}
+
+/**
+ * Extract the `reference` field from `lib/runners/<id>.ts` if present.
+ * Most runners include a citation like:
+ *
+ *   reference: "Teasdale & Jennett 1974. Стандарт оценки ЧМТ.",
+ *
+ * Reading the file as text + regex avoids an evaluation/import
+ * pipeline. Returns `null` when no reference field is present in the
+ * source.
+ */
+const REFERENCE_RE = /^\s*reference:\s*"((?:\\"|[^"])*)"/m;
+const referenceCache = new Map();
+function loadReferenceFor(id) {
+  if (referenceCache.has(id)) return referenceCache.get(id);
+  const filePath = join(RUNNERS_DIR, `${id}.ts`);
+  if (!existsSync(filePath)) {
+    referenceCache.set(id, null);
+    return null;
+  }
+  const src = readFileSync(filePath, 'utf8');
+  const m = REFERENCE_RE.exec(src);
+  // Unescape the few sequences that might appear inside a TS string literal.
+  const value = m && m[1] ? m[1].replace(/\\"/g, '"').replace(/\\\\/g, '\\') : null;
+  referenceCache.set(id, value);
+  return value;
+}
 
 const OUT_DATA_DIR = join(ROOT, 'data');
 const OUT_DATA_TOOLS_DIR = join(OUT_DATA_DIR, 'tools');
@@ -203,6 +252,8 @@ function main() {
       countries: runnerCountries[t.id] ?? null,
       kind: runnerKinds[t.id] ?? null,
       version: '1.0.0',
+      lastUpdated: todayIso(),
+      reference: runnerIds.has(t.id) ? loadReferenceFor(t.id) : null,
     };
     const r = v.safeParse(ToolDetailSchema, detail);
     if (!r.success) {

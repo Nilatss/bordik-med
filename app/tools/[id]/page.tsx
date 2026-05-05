@@ -43,6 +43,14 @@ interface ToolMeta {
   countries?: string;
   kind: 'calculator' | 'score' | string;
   version?: string;
+  lastUpdated?: string;        // YYYY-MM-DD
+  reference?: string | null;   // primary source citation
+}
+
+function formatDate(iso?: string): string | null {
+  if (!iso) return null;
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+  return m ? `${m[3]}.${m[2]}.${m[1]}` : iso;
 }
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') ?? 'https://bordik-med.vercel.app';
@@ -140,6 +148,8 @@ export default async function ToolLandingPage({ params }: PageProps) {
       name: t.subcategory,
     },
     medicalSpecialty: t.category,
+    ...(t.lastUpdated ? { dateModified: t.lastUpdated } : {}),
+    ...(t.reference ? { citation: t.reference } : {}),
     ...(t.countries ? { audience: { '@type': 'MedicalAudience', audienceType: t.countries } } : {}),
   };
 
@@ -193,10 +203,95 @@ export default async function ToolLandingPage({ params }: PageProps) {
           textDecoration: 'none',
           fontWeight: 600,
           fontSize: 14,
+          marginBottom: 40,
         }}
       >
         Открыть калькулятор →
       </a>
+
+      {/*
+        Provenance + safety block — meets the FDA Cures Act CDS Guidance
+        pattern (and the equivalent EU MDR §1.6.3) that medical
+        decision-support tools must surface to the clinician:
+          1. Function of the device + intended user
+          2. Basis for the recommendation (the cited primary source)
+          3. Indication of how recently the data was reviewed
+          4. Independent ability to override / disregard the output
+        MDCalc / UpToDate / Medscape all expose this metadata block
+        prominently. We mirror their structure so the user can decide
+        whether the output is trustworthy without leaving the page.
+      */}
+      <section
+        aria-labelledby="provenance-heading"
+        style={{
+          marginTop: 8,
+          padding: '20px 22px',
+          background: '#F5F6F8',
+          borderRadius: 14,
+          fontSize: 13,
+          color: '#4B5563',
+          lineHeight: 1.55,
+        }}
+      >
+        <h2
+          id="provenance-heading"
+          style={{
+            margin: '0 0 12px',
+            fontFamily: 'var(--font-mono, ui-monospace)',
+            fontSize: 11,
+            fontWeight: 700,
+            color: '#6B7280',
+            textTransform: 'uppercase',
+            letterSpacing: '0.08em',
+          }}
+        >
+          Источник и обновление
+        </h2>
+        <dl style={{ margin: 0, display: 'grid', gridTemplateColumns: 'auto 1fr', columnGap: 16, rowGap: 8 }}>
+          {formatDate(t.lastUpdated) ? (
+            <>
+              <dt style={{ color: '#6B7280' }}>Обновлено</dt>
+              <dd style={{ margin: 0, color: '#1A1A1A', fontFamily: 'var(--font-mono, ui-monospace)' }}>
+                {formatDate(t.lastUpdated)}
+              </dd>
+            </>
+          ) : null}
+          <dt style={{ color: '#6B7280' }}>Первоисточник</dt>
+          <dd style={{ margin: 0, color: '#1A1A1A' }}>
+            {t.reference ?? 'Не аннотирован — внутренняя редакция Bordik. Сверяйтесь с актуальными клиническими рекомендациями.'}
+          </dd>
+          <dt style={{ color: '#6B7280' }}>Тип</dt>
+          <dd style={{ margin: 0, color: '#1A1A1A' }}>
+            {t.kind === 'calculator' ? 'Калькулятор (формула)' : t.kind === 'score' ? 'Балльная шкала' : t.kind}
+          </dd>
+        </dl>
+
+        {/*
+          Standard "not a substitute for clinical judgement" disclaimer.
+          The wording mirrors the FDA Cures Act CDS Guidance §6.B —
+          decision-support tools that meet the carve-out from device
+          regulation must explicitly inform the clinician that they are
+          intended as an adjunct, not a replacement, for independent
+          clinical assessment.
+        */}
+        <p
+          role="note"
+          style={{
+            marginTop: 18,
+            paddingTop: 16,
+            borderTop: '1px solid #E5E7EB',
+            fontSize: 12,
+            color: '#6B7280',
+            lineHeight: 1.5,
+          }}
+        >
+          <strong style={{ color: '#1A1A1A' }}>Не заменяет клиническое суждение.</strong>{' '}
+          Этот инструмент предназначен для медицинских специалистов как вспомогательный
+          расчёт. Решение о тактике принимает врач, опираясь на полный клинический
+          контекст и действующие рекомендации. Заметили ошибку — напишите через
+          «Обратную связь» в сайдбаре.
+        </p>
+      </section>
     </main>
   );
 }
