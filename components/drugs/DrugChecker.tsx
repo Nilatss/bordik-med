@@ -193,11 +193,12 @@ export default function DrugChecker() {
                 key={id}
                 style={{
                   display: 'inline-flex', alignItems: 'center', gap: 6,
-                  padding: '4px 6px 4px 10px',
+                  padding: '4px 6px 4px 12px',
                   background: '#FFFFFF',
-                  border: '1px solid #DBEAFE',
+                  border: '1px solid #E5E7EB',
                   borderRadius: 999,
-                  fontSize: 13, color: '#1A1A1A',
+                  fontSize: 13, fontWeight: 500,
+                  color: '#1A1A1A',
                 }}
               >
                 {d.name_ru}
@@ -375,7 +376,7 @@ export default function DrugChecker() {
           <div style={{
             padding: '16px 20px',
             background: interactions.length === 0 ? '#ECFDF5' : '#F5F6F8',
-            border: `1px solid ${interactions.length === 0 ? '#A7F3D0' : '#E5E7EB'}`,
+            border: 'none',
             borderRadius: 14,
             marginBottom: 16,
             display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap',
@@ -456,9 +457,9 @@ export default function DrugChecker() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3, ease: [0.05, 0.7, 0.1, 1], delay: 0.04 * idx }}
                     style={{
-                      background: '#FFFFFF',
-                      border: `1px solid ${meta.border}`,
-                      borderLeft: `4px solid ${meta.color}`,
+                      background: '#F5F6F8',
+                      border: 'none',
+                      borderLeft: `3px solid ${meta.accent}`,
                       borderRadius: 14,
                       overflow: 'hidden',
                     }}
@@ -474,7 +475,10 @@ export default function DrugChecker() {
                         background: 'transparent', border: 'none',
                         cursor: 'pointer', textAlign: 'left',
                         fontFamily: 'inherit',
+                        transition: 'background 150ms',
                       }}
+                      onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
                     >
                       <span style={{
                         flexShrink: 0,
@@ -532,12 +536,13 @@ export default function DrugChecker() {
                           style={{ overflow: 'hidden' }}
                         >
                           <div style={{
-                            padding: '4px 18px 18px 18px',
-                            borderTop: '1px solid #F0F1F5',
+                            padding: '14px 18px 18px',
+                            borderTop: '1px solid #E5E7EB',
                             display: 'grid',
                             gridTemplateColumns: 'auto 1fr',
-                            columnGap: 16, rowGap: 12,
+                            columnGap: 18, rowGap: 12,
                             fontSize: 13, color: '#374151', lineHeight: 1.55,
+                            background: '#FFFFFF',
                           }}>
                             <DefField label="Механизм" value={i.mechanism} />
                             <DefField label="Тактика" value={i.management} bold />

@@ -51,43 +51,59 @@ export interface DrugInteractionData {
 
 /* ── Severity metadata ─────────────────────────────────────────── */
 
+/**
+ * Severity-палитра — мягкие тона в общей Bordik-стилистике
+ * (info-tone от /icd10, /tools). Клинический ранжированный порядок
+ * сохранён через насыщенность акцента + цвет border-left, но badge
+ * и фон карточки выдержаны в нашей palette: серый F5F6F8 для карточки,
+ * цветной только border-left + badge.
+ */
 export const SEVERITY_META: Record<Severity, {
   label: string;
+  /** Текст в badge */
   color: string;
+  /** Фон badge */
   bg: string;
+  /** Border badge */
   border: string;
+  /** Цвет border-left на карточке (клинический ранжир) */
+  accent: string;
   description: string;
-  weight: number; // для сортировки (выше = опаснее)
+  weight: number;
 }> = {
   contraindicated: {
     label: 'Противопоказано',
-    color: '#991B1B',
-    bg: '#FEE2E2',
-    border: '#FCA5A5',
+    color: '#B91C1C',
+    bg: '#FEF2F2',
+    border: '#FECACA',
+    accent: '#DC2626',
     description: 'Не назначать совместно. Угроза жизни или необратимого вреда.',
     weight: 4,
   },
   major: {
     label: 'Высокий риск',
-    color: '#9A3412',
-    bg: '#FFEDD5',
-    border: '#FDBA74',
+    color: '#C2410C',
+    bg: '#FFF7ED',
+    border: '#FED7AA',
+    accent: '#EA580C',
     description: 'Серьёзное взаимодействие. Требует мониторинга, коррекции дозы или замены.',
     weight: 3,
   },
   moderate: {
     label: 'Умеренный',
-    color: '#92400E',
-    bg: '#FEF3C7',
+    color: '#A16207',
+    bg: '#FEFCE8',
     border: '#FDE68A',
+    accent: '#CA8A04',
     description: 'Может потребоваться коррекция дозы или контроль показателей.',
     weight: 2,
   },
   minor: {
     label: 'Незначительный',
-    color: '#1E40AF',
-    bg: '#DBEAFE',
-    border: '#BFDBFE',
+    color: '#2563EB',
+    bg: '#EFF6FF',
+    border: '#DBEAFE',
+    accent: '#2563EB',
     description: 'Клинически малозначимо при стандартном применении.',
     weight: 1,
   },
