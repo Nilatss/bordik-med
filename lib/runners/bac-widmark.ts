@@ -69,12 +69,12 @@ const runner: CalculatorTool = {
       unit: '‰',
       interpretation,
       color,
-      details: `Расчёт по Widmark: \`BAC = (A × 0.806) / (W × r) − β × t\`
-**Этанол в напитке:** ${alcoholGrams.toFixed(1)} г (${volume} мл × ${abv} %об × 0.789 г/мл).
-**r (фактор Видмарка):** ${r} (${sex === 'female' ? 'женский' : 'мужской'} пол).
-**Пиковый BAC:** ${bacInitial.toFixed(2)} ‰ (через ~30–90 мин после приёма).
-**Текущий BAC через ${hours} ч:** ${bac.toFixed(2)} ‰.
-**Время до полной элиминации:** ~${hoursToZero.toFixed(1)} ч от пика.`,
+      details: `Формула Widmark: BAC = (A × 0.806) / (W × r) − β × t.
+Этанол в напитке: ${alcoholGrams.toFixed(1)} г (${volume} мл × ${abv} %об × 0.789 г/мл).
+r (фактор Видмарка): ${r} (${sex === 'female' ? 'женский' : 'мужской'} пол).
+Пиковый BAC: ${bacInitial.toFixed(2)} ‰ (через ~30–90 мин после приёма).
+Текущий BAC через ${hours} ч: ${bac.toFixed(2)} ‰.
+Время до полной элиминации: ~${hoursToZero.toFixed(1)} ч от пика.`,
       actions: [
         bac >= 0.36 ? 'РФ: уголовный порог 0.16 мг/л в выдыхаемом воздухе ≈ 0.36 ‰ в крови. Управление ТС запрещено.' : null,
         bac >= 0.5  ? 'EU: для большинства стран порог 0.5 ‰ — управление ТС запрещено.' : null,

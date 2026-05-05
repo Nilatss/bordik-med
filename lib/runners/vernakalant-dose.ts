@@ -47,9 +47,9 @@ const runner: CalculatorTool = {
       unit: 'дозы 1 / 2',
       interpretation: `Суммарно до ${totalMg} мг за 24 ч`,
       color: '#1A1A1A',
-      details: `**Доза 1:** ${firstMg} мг (${firstMl} мл готового р-ра 4 мг/мл) за ${FIRST_INFUSION_MIN} мин — скорость ${firstRate} мл/ч.
-**Доза 2** (если ритм не восстановлен через 15 мин после окончания дозы 1): ${secondMg} мг (${secondMl} мл) за ${SECOND_INFUSION_MIN} мин — скорость ${secondRate} мл/ч.
-**Расчётный вес:** ${dosingWeight} кг ${capped ? `(реальный вес ${realWeight} кг capped до ${CAP_KG} кг по SmPC)` : ''}.`,
+      details: `Доза 1: ${firstMg} мг (${firstMl} мл готового р-ра 4 мг/мл) за ${FIRST_INFUSION_MIN} мин — скорость ${firstRate} мл/ч.
+Доза 2 (если ритм не восстановлен через 15 мин после первой): ${secondMg} мг (${secondMl} мл) за ${SECOND_INFUSION_MIN} мин — скорость ${secondRate} мл/ч.
+Расчётный вес: ${dosingWeight} кг${capped ? ` (реальный ${realWeight} кг capped до ${CAP_KG} кг по SmPC)` : ''}.`,
       actions: [
         'Мониторинг: 12-канальная ЭКГ непрерывно, АД каждые 5 мин в течение всей инфузии и ≥ 15 мин после.',
         'Готовность к дефибрилляции и атропину; иметь в доступе.',

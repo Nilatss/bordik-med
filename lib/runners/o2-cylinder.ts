@@ -65,7 +65,7 @@ const runner: CalculatorTool = {
       const cyl = US_CYLINDERS[cylKey];
       const psi = Math.max(0, (Number(v.pressure_psi) || 0) - (safety ? 200 : 0));
       totalLiters = psi * (cyl?.factor ?? US_CYLINDERS.e.factor);
-      detailLine = `**Баллон:** ${cyl?.label}. **Доступное давление:** ${psi} psi (резерв ${safety ? '200 psi учтён' : 'не учтён'}).
+      detailLine = `Баллон: ${cyl?.label}. Доступное давление: ${psi} psi (резерв ${safety ? '200 psi учтён' : 'не учтён'}).
 Cylinder factor = ${cyl?.factor} л/psi → ${totalLiters.toFixed(0)} л газа доступно.`;
     } else {
       const volL    = Number(v.volume_l)     || 0;
@@ -75,8 +75,8 @@ Cylinder factor = ${cyl?.factor} л/psi → ${totalLiters.toFixed(0)} л газ�
       totalLiters = barNom > 0 ? volL * (barCur / barNom) * (barNom / 1.0) : 0;
       // Упрощённо: газ = объём × давление (бар≈атм отношение)
       totalLiters = volL * barCur;
-      detailLine = `**Баллон:** ${volL} л @ ${barNom} bar (полный — ${(volL * barNom).toFixed(0)} л газа).
-**Доступное давление:** ${barCur} bar (резерв ${safety ? '20 bar учтён' : 'не учтён'}).
+      detailLine = `Баллон: ${volL} л @ ${barNom} bar (полный — ${(volL * barNom).toFixed(0)} л газа).
+Доступное давление: ${barCur} bar (резерв ${safety ? '20 bar учтён' : 'не учтён'}).
 Доступно газа: ${totalLiters.toFixed(0)} л.`;
     }
 
@@ -96,7 +96,7 @@ Cylinder factor = ${cyl?.factor} л/psi → ${totalLiters.toFixed(0)} л газ�
       interpretation,
       color,
       details: `${detailLine}
-**Поток:** ${flow} л/мин → расчётное время **${minutes.toFixed(0)} мин** (≈ ${human}).`,
+Поток: ${flow} л/мин → расчётное время ${minutes.toFixed(0)} мин (≈ ${human}).`,
       actions: [
         minutes < 30 ? 'Подготовьте резервный баллон или подключение к стационарной системе.' : null,
         minutes < 15 ? 'Замените баллон ПРЯМО СЕЙЧАС. Не транспортируйте на остатке < 200 psi / 20 bar.' : null,
