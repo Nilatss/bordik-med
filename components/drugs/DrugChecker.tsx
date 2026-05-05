@@ -630,22 +630,25 @@ export default function DrugChecker() {
                       onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
                       onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
                     >
-                      <span style={{
-                        flexShrink: 0,
-                        padding: '3px 10px',
-                        background: meta.bg,
-                        color: meta.color,
-                        border: `1px solid ${meta.border}`,
-                        borderRadius: 999,
-                        fontFamily: 'var(--font-mono, ui-monospace)',
-                        fontSize: 10, fontWeight: 700,
-                        letterSpacing: '0.04em',
-                        textTransform: 'uppercase',
-                        whiteSpace: 'nowrap',
-                      }}>
-                        {meta.label}
-                      </span>
                       <span style={{ flex: 1, minWidth: 0 }}>
+                        {/* Severity-бейдж сверху */}
+                        <span style={{
+                          display: 'inline-flex', alignItems: 'center',
+                          padding: '3px 10px',
+                          marginBottom: 8,
+                          background: meta.bg,
+                          color: meta.color,
+                          border: `1px solid ${meta.border}`,
+                          borderRadius: 999,
+                          fontFamily: 'var(--font-mono, ui-monospace)',
+                          fontSize: 10, fontWeight: 700,
+                          letterSpacing: '0.04em',
+                          textTransform: 'uppercase',
+                          whiteSpace: 'nowrap',
+                        }}>
+                          {meta.label}
+                        </span>
+                        {/* Названия препаратов */}
                         <span style={{
                           display: 'block',
                           fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 700,
@@ -653,6 +656,7 @@ export default function DrugChecker() {
                         }}>
                           {i.drugAName} + {i.drugBName}
                         </span>
+                        {/* Краткий клинический эффект */}
                         <span style={{
                           display: 'block', marginTop: 4,
                           fontSize: 13, color: '#4B5563', lineHeight: 1.5,
@@ -665,6 +669,7 @@ export default function DrugChecker() {
                         color: '#6B7280',
                         transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
                         transition: 'transform 200ms',
+                        marginTop: 4,
                       }}>
                         <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
                           stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
@@ -686,17 +691,24 @@ export default function DrugChecker() {
                           style={{ overflow: 'hidden' }}
                         >
                           <div style={{
-                            padding: '14px 18px 18px',
+                            padding: '0 0 0 0',
                             borderTop: '1px solid #E5E7EB',
-                            display: 'grid',
-                            gridTemplateColumns: 'auto 1fr',
-                            columnGap: 18, rowGap: 12,
-                            fontSize: 13, color: '#374151', lineHeight: 1.55,
                             background: '#FFFFFF',
                           }}>
-                            <DefField label="Механизм" value={i.mechanism} />
-                            <DefField label="Тактика" value={i.management} bold />
-                            <DefField label="Источники" value={i.sources.join(' · ')} mono />
+                            {/* Реальная HTML-таблица: парсеры/скринридеры
+                                видят семантику, копируется через Ctrl+C
+                                в Excel/Word как таблица. */}
+                            <table style={{
+                              width: '100%',
+                              borderCollapse: 'collapse',
+                              fontSize: 13, color: '#374151', lineHeight: 1.55,
+                            }}>
+                              <tbody>
+                                <DetailRow label="Механизм"  value={i.mechanism} />
+                                <DetailRow label="Тактика"   value={i.management} bold />
+                                <DetailRow label="Источники" value={i.sources.join(' · ')} mono last />
+                              </tbody>
+                            </table>
                           </div>
                         </motion.div>
                       )}
@@ -784,26 +796,49 @@ export default function DrugChecker() {
   );
 }
 
-function DefField({
-  label, value, bold, mono,
-}: { label: string; value: string; bold?: boolean; mono?: boolean }) {
+/**
+ * Строка таблицы деталей взаимодействия (Механизм / Тактика / Источники).
+ * Реальная семантика <tr><th><td> — для скринридеров и copy-в-Excel.
+ * Last row не имеет нижней рамки.
+ */
+function DetailRow({
+  label, value, bold, mono, last,
+}: { label: string; value: string; bold?: boolean; mono?: boolean; last?: boolean }) {
+  const cellStyle: React.CSSProperties = {
+    padding: '12px 18px',
+    borderBottom: last ? 'none' : '1px solid #F0F1F5',
+    verticalAlign: 'top',
+    background: '#FFFFFF',
+  };
   return (
-    <>
-      <dt style={{ color: '#9CA3AF', fontSize: 11, fontWeight: 700,
-        textTransform: 'uppercase', letterSpacing: '0.06em',
-        fontFamily: 'var(--font-mono, ui-monospace)',
-        whiteSpace: 'nowrap', alignSelf: 'start',
-      }}>
+    <tr>
+      <th
+        scope="row"
+        style={{
+          ...cellStyle,
+          width: 1,
+          whiteSpace: 'nowrap',
+          textAlign: 'left',
+          fontFamily: 'var(--font-mono, ui-monospace)',
+          fontSize: 11, fontWeight: 700,
+          color: '#9CA3AF',
+          textTransform: 'uppercase',
+          letterSpacing: '0.06em',
+          background: '#F9FAFB',
+        }}
+      >
         {label}
-      </dt>
-      <dd style={{
-        margin: 0,
-        fontSize: 13, color: '#1A1A1A', lineHeight: 1.55,
-        fontWeight: bold ? 600 : 400,
-        fontFamily: mono ? 'var(--font-mono, ui-monospace)' : 'inherit',
-      }}>
+      </th>
+      <td
+        style={{
+          ...cellStyle,
+          fontSize: 13, color: '#1A1A1A', lineHeight: 1.55,
+          fontWeight: bold ? 600 : 400,
+          fontFamily: mono ? 'var(--font-mono, ui-monospace)' : 'inherit',
+        }}
+      >
         {value}
-      </dd>
-    </>
+      </td>
+    </tr>
   );
 }
