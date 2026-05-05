@@ -709,7 +709,7 @@ export default function DrugChecker() {
         </motion.div>
       )}
 
-      {/* Provenance + disclaimer */}
+      {/* Provenance + disclaimer — единый стиль с /icd10 и /tools */}
       <motion.section
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
@@ -719,6 +719,7 @@ export default function DrugChecker() {
           marginTop: 32,
           padding: '20px 22px',
           background: '#F5F6F8',
+          border: 'none',
           borderRadius: 14,
           fontSize: 13,
           color: '#4B5563',
@@ -727,8 +728,10 @@ export default function DrugChecker() {
       >
         <h3 id="dc-provenance" style={{
           margin: '0 0 14px',
-          fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 700,
-          color: '#1A1A1A', letterSpacing: '-0.01em',
+          fontFamily: 'var(--font-display)',
+          fontSize: 15, fontWeight: 700,
+          color: '#1A1A1A',
+          letterSpacing: '-0.01em',
         }}>
           Источник и обновление
         </h3>
@@ -746,43 +749,36 @@ export default function DrugChecker() {
           </dd>
           <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Источники</dt>
           <dd style={{ margin: 0, color: '#1A1A1A' }}>
-            <ul style={{ margin: 0, paddingLeft: 16 }}>
-              {data.sources.map((s, i) => (
-                <li key={i} style={{ marginBottom: 2 }}>{s}</li>
-              ))}
-            </ul>
+            {data.sources.join(' · ')}
           </dd>
           <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Покрытие</dt>
           <dd style={{ margin: 0, color: '#1A1A1A' }}>
-            {data.drugs.length} препаратов · {data.interactions.length} ручкой
-            выверенных пар (только clinically significant). Расширение
-            до 200+ препаратов — Phase 2 (см. CONTENT_ROADMAP.md фича #1).
+            {data.drugs.length} препаратов · {data.interactions.length} пар
+            (только clinically significant). Расширение до 200+ препаратов —
+            Phase 2, см. <a href="/docs/CONTENT_ROADMAP.md" style={{ color: '#1A1A1A', textDecoration: 'underline', textUnderlineOffset: 2 }}>дорожную карту</a>.
+          </dd>
+          <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Статус</dt>
+          <dd style={{ margin: 0, color: '#92400E' }}>
+            <strong>Phase 1 BETA</strong> — все 83 пары имеют{' '}
+            <code style={{ background: '#FFFFFF', padding: '1px 6px', borderRadius: 4, fontSize: 11 }}>verified_by: null</code>;
+            требуют аудита клин-фармакологом перед коммерческим запуском.
           </dd>
         </dl>
 
-        <div role="note" style={{
+        <p role="note" style={{
           marginTop: 18, paddingTop: 16,
           borderTop: '1px solid #E5E7EB',
           fontSize: 12, color: '#6B7280', lineHeight: 1.55,
+          margin: '18px 0 0',
         }}>
-          <p style={{ margin: '0 0 12px' }}>
-            <strong style={{ color: '#92400E' }}>⚠ Phase 1 BETA · контент составлен AI и не верифицирован клин-фармакологом.</strong>{' '}
-            База {data.drugs.length} препаратов и {data.interactions.length} пар собрана автоматически
-            из открытых источников (UpToDate Lexidrug, Stockley&apos;s, ESC/AHA, FDA, EMA). До коммерческого
-            запуска каждая пара требует ручного аудита. План верификации — в{' '}
-            <code style={{ background: '#F3F4F6', padding: '1px 4px', borderRadius: 4 }}>
-              docs/specs/drug-interactions-verification.md
-            </code>.
-          </p>
-          <p style={{ margin: 0 }}>
-            <strong style={{ color: '#1A1A1A' }}>Не заменяет фарм-консультацию.</strong>{' '}
-            Решение по конкретному пациенту принимает врач/клин-фармаколог, опираясь
-            на полный клинический контекст, инструкции производителей (ГРЛС Минздрава)
-            и индивидуальные особенности пациента (ХБП, печёночная функция,
-            генетический полиморфизм CYP, возраст, сопутствующие болезни). Заметили
-            ошибку или нужное взаимодействие отсутствует — напишите через «Обратную связь».
-          </p>
-        </div>
+          <strong style={{ color: '#1A1A1A' }}>Не заменяет фарм-консультацию.</strong>{' '}
+          Решение по конкретному пациенту принимает врач/клин-фармаколог, опираясь
+          на полный клинический контекст, инструкции производителей (ГРЛС Минздрава)
+          и индивидуальные особенности пациента (ХБП, печёночная функция,
+          генетический полиморфизм CYP, возраст, сопутствующие болезни). Заметили
+          ошибку или нужное взаимодействие отсутствует — напишите через
+          «Обратную связь».
+        </p>
       </motion.section>
     </main>
   );
