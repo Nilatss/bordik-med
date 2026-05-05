@@ -114,21 +114,6 @@ function ComingSoonStub({
         }}>
           {description}
         </p>
-        <p style={{
-          marginTop: 18, paddingTop: 14, borderTop: '1px solid #F0F1F5',
-          fontFamily: 'var(--font-body)', fontSize: 12, color: '#9CA3AF',
-          lineHeight: 1.55,
-        }}>
-          Пока этот раздел дозревает — пользуйтесь{' '}
-          <a href="/?view=tools" style={{ color: '#1A1A1A', textDecoration: 'underline', textUnderlineOffset: 2 }}>
-            калькуляторами
-          </a>{' '}
-          и{' '}
-          <a href="/icd10" style={{ color: '#1A1A1A', textDecoration: 'underline', textUnderlineOffset: 2 }}>
-            справочником МКБ-10
-          </a>
-          .
-        </p>
       </div>
     </div>
   );
