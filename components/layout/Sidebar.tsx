@@ -17,6 +17,7 @@ import type { SearchableCourse } from '@/lib/curriculum';
 // user actually starts searching while on the Tools view.
 import type { CatalogTool } from '@/lib/tools-catalog';
 import nextDynamic from 'next/dynamic';
+import Highlight from '@/components/ui/Highlight';
 
 // UserMenu pulls @supabase (~50 kB gz). Lazy-loading it stops Sidebar
 // (which is eager on every route) from dragging Supabase into the
@@ -26,32 +27,9 @@ const UserMenu = nextDynamic(() => import('./UserMenu'), { ssr: false });
 
 type NavItem = 'home' | 'learning' | 'tests' | 'tools' | 'icd10' | 'drugs' | 'stats' | 'profile';
 
-/** Render `text` with all case-insensitive occurrences of `query` wrapped in
- *  <strong> for bold highlight. Used in search results. */
-function Highlight({ text, query }: { text: string; query: string }) {
-  const trimmed = query.trim();
-  if (!trimmed) return <>{text}</>;
-  const tokens = trimmed.split(/\s+/).filter(Boolean);
-  if (tokens.length === 0) return <>{text}</>;
-  const escaped = tokens
-    .map((t) => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
-    .join('|');
-  // Splitter regex (capturing) — produces alternating non-match / match parts
-  const splitter = new RegExp(`(${escaped})`, 'gi');
-  // Stateless matcher — used to decide which slot is a match (avoids the
-  // .test() lastIndex pitfall when /g is set).
-  const matcher = new RegExp(`^(?:${escaped})$`, 'i');
-  const parts = text.split(splitter);
-  return (
-    <>
-      {parts.map((p, i) =>
-        p && matcher.test(p)
-          ? <strong key={i} style={{ fontWeight: 700, color: '#2563EB' }}>{p}</strong>
-          : <span key={i}>{p}</span>
-      )}
-    </>
-  );
-}
+// Highlight вынесен в `components/ui/Highlight.tsx` — единый паттерн
+// для всех мест поиска (sidebar, Cmd+K, фильтры, /icd10).
+// Если нужна подсветка в новом месте — используем тот же компонент.
 
 interface NavDef {
   id: NavItem;

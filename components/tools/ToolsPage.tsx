@@ -23,6 +23,7 @@ import { useToolSearch } from '@/lib/use-tool-search';
 import { BulkOfflineDownload } from './BulkOfflineDownload';
 import { CardOfflineButton } from './CardOfflineButton';
 import RecentToolsWidget from './RecentToolsWidget';
+import Highlight from '@/components/ui/Highlight';
 
 import { useAppStore } from '@/lib/store';
 import EmojiOrFlag from '@/components/ui/EmojiOrFlag';
@@ -247,7 +248,7 @@ const FilterDropdown = React.memo(function FilterDropdown({
                   }}>
                     {opt.flag && <EmojiOrFlag emoji={opt.flag} size={16} />}
                     <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                      {opt.label ?? opt.value}
+                      <Highlight text={opt.label ?? opt.value} query={deferredQ} />
                     </span>
                   </span>
                   <span style={{

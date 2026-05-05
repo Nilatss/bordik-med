@@ -16,6 +16,7 @@
  */
 import { useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Highlight from '@/components/ui/Highlight';
 
 interface Chapter {
   id: string;
@@ -479,25 +480,9 @@ function ChapterAccordion({
   );
 }
 
-/** Подсветка совпадений — синий жирный фрагмент. Тот же тон #2563EB,
- *  что и в сайдбар-поиске и Cmd+K. ё/е нормализация в матчере, чтобы
- *  «гипер» подсвечивал «гипертензия» и «гипёртензия». */
-function Highlight({ text, query }: { text: string; query: string }) {
-  const trimmed = query.trim();
-  if (!trimmed) return <>{text}</>;
-  const escaped = trimmed.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const splitter = new RegExp(`(${escaped})`, 'gi');
-  const parts = text.split(splitter);
-  return (
-    <>
-      {parts.map((p, i) =>
-        p.toLowerCase().replace(/ё/g, 'е') === trimmed.toLowerCase().replace(/ё/g, 'е')
-          ? <strong key={i} style={{ fontWeight: 700, color: '#2563EB' }}>{p}</strong>
-          : <span key={i}>{p}</span>
-      )}
-    </>
-  );
-}
+// Highlight вынесен в @/components/ui/Highlight (импорт сверху файла).
+// Используем общий компонент чтобы стиль/логика подсветки были
+// одинаковыми во всех местах поиска платформы.
 
 function FlatList({
   filtered, activeChapter, chapterById, query,
