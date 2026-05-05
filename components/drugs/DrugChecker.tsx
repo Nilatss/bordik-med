@@ -29,6 +29,58 @@ import {
 const MAX_DRUGS = 30;
 const MIN_DRUGS = 2;
 
+/**
+ * Пресеты для empty-state — классические клинически-значимые
+ * комбинации, которые врач может встретить в рутинной практике.
+ * Клик по пресету — заполняет селект, мгновенно показывает результат.
+ *
+ * Подобраны так, чтобы покрыть весь диапазон severity и
+ * продемонстрировать все 4 уровня клинического риска.
+ */
+const EMPTY_PRESETS: Array<{
+  label: string;
+  hint: string;
+  severity: 'contraindicated' | 'major' | 'moderate' | 'minor';
+  drugs: string[];
+}> = [
+  {
+    label: 'Варфарин + Амиодарон',
+    hint: 'Классика: МНО ↑1.5-2 раза, риск кровотечения',
+    severity: 'major',
+    drugs: ['warfarin', 'amiodarone'],
+  },
+  {
+    label: 'Клопидогрел + Омепразол',
+    hint: 'Топ-проблема DAPT: эффект клопидогрела ↓47%',
+    severity: 'major',
+    drugs: ['clopidogrel', 'omeprazole'],
+  },
+  {
+    label: 'Симвастатин + Кларитромицин',
+    hint: 'Противопоказано: риск рабдомиолиза',
+    severity: 'contraindicated',
+    drugs: ['simvastatin', 'clarithromycin'],
+  },
+  {
+    label: 'Тройная антитромботическая',
+    hint: 'Варфарин + Аспирин + Клопидогрел — после ОКС с ФП',
+    severity: 'major',
+    drugs: ['warfarin', 'aspirin', 'clopidogrel'],
+  },
+  {
+    label: 'ИАПФ + Спиронолактон',
+    hint: 'HFrEF-комбинация: контроль K+ обязателен',
+    severity: 'moderate',
+    drugs: ['enalapril', 'spironolactone'],
+  },
+  {
+    label: 'Клопидогрел + Пантопразол',
+    hint: 'Безопасный ИПП: minor (preferred выбор)',
+    severity: 'minor',
+    drugs: ['clopidogrel', 'pantoprazole'],
+  },
+];
+
 export default function DrugChecker() {
   const [data, setData] = useState<DrugInteractionData | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -335,33 +387,131 @@ export default function DrugChecker() {
         </AnimatePresence>
       </motion.div>
 
-      {/* Empty state */}
+      {/* Empty state — пресеты + статистика */}
       {selected.length < MIN_DRUGS && (
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1], delay: 0.12 }}
-          style={{
-            padding: '40px 24px',
+        >
+          {/* Hero CTA */}
+          <div style={{
+            padding: '28px 28px 24px',
             background: '#F5F6F8',
             borderRadius: 14,
-            textAlign: 'center',
-            color: '#6B7280',
-            fontSize: 14,
-            lineHeight: 1.55,
-          }}
-        >
-          <svg width={32} height={32} viewBox="0 0 24 24" fill="none"
-            stroke="#9CA3AF" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round"
-            style={{ marginBottom: 10 }}>
-            <rect x="3" y="3" width="7" height="7" rx="1" />
-            <rect x="14" y="3" width="7" height="7" rx="1" />
-            <rect x="3" y="14" width="7" height="7" rx="1" />
-            <rect x="14" y="14" width="7" height="7" rx="1" />
-          </svg>
-          <p style={{ margin: 0 }}>
-            Добавьте минимум 2 препарата, чтобы проверить взаимодействия.
-          </p>
+            marginBottom: 14,
+            display: 'grid',
+            gridTemplateColumns: 'auto 1fr',
+            gap: 20,
+            alignItems: 'center',
+          }}>
+            <div style={{
+              width: 56, height: 56, borderRadius: 14,
+              background: '#FFFFFF',
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+              color: '#2563EB',
+              flexShrink: 0,
+            }}>
+              <svg width={26} height={26} viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+                <path d="M10.5 20.5L20 11a4.95 4.95 0 00-7-7L3.5 13.5a4.95 4.95 0 007 7z" />
+                <path d="M8.5 8.5l7 7" />
+              </svg>
+            </div>
+            <div>
+              <h3 style={{
+                margin: 0,
+                fontFamily: 'var(--font-display)', fontSize: 17, fontWeight: 700,
+                color: '#1A1A1A', letterSpacing: '-0.01em',
+              }}>
+                Добавьте 2+ препарата для проверки
+              </h3>
+              <p style={{
+                margin: '6px 0 0',
+                fontSize: 13, color: '#6B7280', lineHeight: 1.55,
+              }}>
+                Введите названия в строке поиска выше — на русском, латинице или
+                торговом названии (Эликвис, Плавикс, Кордарон). База —{' '}
+                <strong style={{ color: '#1A1A1A' }}>{data.drugs.length} препаратов</strong>{' '}
+                и <strong style={{ color: '#1A1A1A' }}>{data.interactions.length} взаимодействий</strong>.
+              </p>
+            </div>
+          </div>
+
+          {/* Готовые пресеты */}
+          <div>
+            <h3 style={{
+              margin: '0 0 10px',
+              fontFamily: 'var(--font-mono, ui-monospace)', fontSize: 11, fontWeight: 700,
+              color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
+            }}>
+              Попробуйте классические комбинации
+            </h3>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+              gap: 10,
+            }}>
+              {EMPTY_PRESETS.map((preset) => {
+                const allExist = preset.drugs.every((id) => drugById.has(id));
+                if (!allExist) return null;
+                return (
+                  <button
+                    key={preset.label}
+                    type="button"
+                    onClick={() => setSelected(preset.drugs)}
+                    style={{
+                      display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 6,
+                      padding: '14px 16px',
+                      background: '#FFFFFF',
+                      border: '1px solid #F0F1F5',
+                      borderRadius: 12,
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      fontFamily: 'inherit',
+                      transition: 'background 160ms, border-color 160ms, transform 160ms',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = '#EFF6FF';
+                      e.currentTarget.style.borderColor = '#DBEAFE';
+                      e.currentTarget.style.transform = 'translateY(-1px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = '#FFFFFF';
+                      e.currentTarget.style.borderColor = '#F0F1F5';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                    }}
+                  >
+                    <span style={{
+                      display: 'inline-flex', alignItems: 'center', gap: 6,
+                      padding: '2px 8px',
+                      background: SEVERITY_META[preset.severity].bg,
+                      color: SEVERITY_META[preset.severity].color,
+                      border: `1px solid ${SEVERITY_META[preset.severity].border}`,
+                      borderRadius: 999,
+                      fontFamily: 'var(--font-mono, ui-monospace)',
+                      fontSize: 10, fontWeight: 700,
+                      letterSpacing: '0.04em',
+                      textTransform: 'uppercase',
+                    }}>
+                      {SEVERITY_META[preset.severity].label}
+                    </span>
+                    <span style={{
+                      fontFamily: 'var(--font-display)', fontSize: 14, fontWeight: 600,
+                      color: '#1A1A1A', lineHeight: 1.35,
+                    }}>
+                      {preset.label}
+                    </span>
+                    <span style={{
+                      fontSize: 12, color: '#6B7280', lineHeight: 1.5,
+                    }}>
+                      {preset.hint}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </motion.div>
       )}
 
