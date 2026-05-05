@@ -52,23 +52,13 @@ export default function RecentToolsWidget({ catalog, onOpen }: Props) {
       aria-label="Недавно использованные инструменты"
       style={{ marginBottom: 18 }}
     >
-      <div style={{
-        display: 'flex', alignItems: 'center', gap: 8,
-        marginBottom: 10,
+      <h3 style={{
+        margin: '0 0 10px',
+        fontFamily: 'var(--font-mono, ui-monospace)', fontSize: 11, fontWeight: 700,
+        color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
       }}>
-        <svg width={13} height={13} viewBox="0 0 24 24" fill="none"
-          stroke="#9CA3AF" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="12" cy="12" r="10" />
-          <path d="M12 6v6l4 2" />
-        </svg>
-        <h3 style={{
-          margin: 0,
-          fontFamily: 'var(--font-mono, ui-monospace)', fontSize: 11, fontWeight: 700,
-          color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
-        }}>
-          Недавние
-        </h3>
-      </div>
+        Недавние
+      </h3>
 
       <div style={{
         display: 'flex', gap: 8, flexWrap: 'wrap',

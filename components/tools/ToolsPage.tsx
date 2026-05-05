@@ -1043,10 +1043,6 @@ export default function ToolsPage() {
         </p>
       </motion.div>
 
-      {/* Виджет «Недавние» — показывает top-5 последних использованных
-          инструментов. Невидим до первого open. P0-A6 из аудита. */}
-      <RecentToolsWidget catalog={tools} onOpen={openToolAction} />
-
       {/* Search */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
@@ -1245,6 +1241,11 @@ export default function ToolsPage() {
           )}
         </div>
       )}
+
+      {/* Виджет «Недавние» — top-5 последних использованных инструментов.
+          Стоит после поиска и фильтр-бара (по фидбеку), невидим до
+          первого open. P0-A6 из аудита. */}
+      <RecentToolsWidget catalog={tools} onOpen={openToolAction} />
 
       {rows.length === 0 ? (
         <div style={{
