@@ -1,7 +1,7 @@
 {
   "$readme": "Phase 1 BETA. Контент составлен AI на основе открытых медицинских источников (UpToDate Lexidrug, Stockley's 12th, ESC/AHA, FDA, EMA SmPC, DrugBank). КАЖДАЯ ПАРА ТРЕБУЕТ ВЕРИФИКАЦИИ КЛИН-ФАРМАКОЛОГОМ перед коммерческим запуском. См. docs/specs/drug-interactions-verification.md. После верификации в каждой паре заполняется поле verified_by + verified_at.",
   "$verification_status": "BETA — все пары имеют verified_by: null (требуют ручного аудита клин-фармакологом)",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "lastUpdated": "2026-05-05",
   "sources": [
     "UpToDate Lexidrug (Wolters Kluwer, доступ через подписку)",
@@ -5116,6 +5116,814 @@
       "mechanism": "Лёгкое влияние на МНО.",
       "effect": "Незначительное колебание МНО.",
       "management": "Контроль МНО через 1-2 нед при старте.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "dabigatran",
+      "drugB": "diltiazem",
+      "severity": "moderate",
+      "mechanism": "P-gp ингибиция.",
+      "effect": "Повышение AUC дабигатрана на ~20%.",
+      "management": "Допустимо при стандартной функции почек. ХБП — осторожность.",
+      "sources": [
+        "EHRA 2021"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "amlodipine",
+      "drugB": "simvastatin",
+      "severity": "moderate",
+      "mechanism": "Амлодипин — слабый ингибитор CYP3A4.",
+      "effect": "AUC симвастатина ↑70%.",
+      "management": "Симвастатин ≤20 мг/сут (FDA labeling).",
+      "sources": [
+        "FDA labeling"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "digoxin",
+      "drugB": "hctz",
+      "severity": "moderate",
+      "mechanism": "Гипокалиемия от тиазида повышает чувствительность миокарда к дигиталису.",
+      "effect": "Аритмии.",
+      "management": "Контроль электролитов.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "lithium",
+      "drugB": "naproxen",
+      "severity": "major",
+      "mechanism": "НПВС-эффект на почечную экскрецию лития.",
+      "effect": "Литиевая токсичность.",
+      "management": "Избегать.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "lithium",
+      "drugB": "celecoxib",
+      "severity": "moderate",
+      "mechanism": "Селективная ингибиция ЦОГ-2 — меньше влияния, но эффект есть.",
+      "effect": "Повышение уровня лития на 15-25%.",
+      "management": "TDM лития при добавлении.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "lithium",
+      "drugB": "haloperidol",
+      "severity": "moderate",
+      "mechanism": "Аддитивные неврологические эффекты (редкий синдром нейротоксичности).",
+      "effect": "Энцефалопатия с тремором, ригидностью; описан синдром.",
+      "management": "Допустимо при низких дозах обоих и тщательном наблюдении.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "lisinopril",
+      "drugB": "naproxen",
+      "severity": "moderate",
+      "mechanism": "Тот же механизм.",
+      "effect": "Снижение гипотензивного эффекта.",
+      "management": "Краткие курсы при необходимости.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "hctz",
+      "drugB": "ibuprofen",
+      "severity": "moderate",
+      "mechanism": "Тот же механизм.",
+      "effect": "Снижение диуретического эффекта тиазида.",
+      "management": "Краткие курсы НПВС.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "azithromycin",
+      "drugB": "simvastatin",
+      "severity": "moderate",
+      "mechanism": "Слабая ингибиция CYP3A4 (минимальная для азитромицина).",
+      "effect": "Лёгкое повышение AUC симвастатина.",
+      "management": "Допустимо. Альтернатива кларитромицину (имеет выраженную ингибицию).",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "voriconazole",
+      "drugB": "apixaban",
+      "severity": "major",
+      "mechanism": "Сильная ингибиция CYP3A4.",
+      "effect": "Резкое повышение AUC апиксабана.",
+      "management": "Избегать. Перейти на варфарин с TDM.",
+      "sources": [
+        "EHRA 2021"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "voriconazole",
+      "drugB": "rivaroxaban",
+      "severity": "major",
+      "mechanism": "Сильная ингибиция CYP3A4.",
+      "effect": "Резкое повышение AUC ривароксабана.",
+      "management": "Избегать.",
+      "sources": [
+        "EHRA 2021"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "methotrexate",
+      "drugB": "omeprazole",
+      "severity": "moderate",
+      "mechanism": "ИПП могут снижать почечный клиренс высокодозного метотрексата.",
+      "effect": "Повышение уровней МТХ при онкодозах.",
+      "management": "При высокодозовой химиотерапии — отменить ИПП за 1-2 дня. При низких дозах (РА) — допустимо.",
+      "sources": [
+        "Lexidrug",
+        "FDA Safety"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "methotrexate",
+      "drugB": "pantoprazole",
+      "severity": "moderate",
+      "mechanism": "Тот же механизм (класс-эффект ИПП).",
+      "effect": "Повышение уровней МТХ.",
+      "management": "При онкодозах — отмена ИПП.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "methotrexate",
+      "drugB": "esomeprazole",
+      "severity": "moderate",
+      "mechanism": "ИПП класс-эффект.",
+      "effect": "Повышение уровней МТХ.",
+      "management": "При онкодозах — отмена ИПП.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "methotrexate",
+      "drugB": "amoxicillin",
+      "severity": "moderate",
+      "mechanism": "Конкуренция за почечную секрецию.",
+      "effect": "Повышение уровней МТХ.",
+      "management": "При высокодозовой терапии — мониторинг.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "cyclosporine",
+      "drugB": "colchicine",
+      "severity": "major",
+      "mechanism": "Циклоспорин ингибирует CYP3A4 + P-gp колхицина.",
+      "effect": "Тяжёлая колхициновая токсичность (миопатия, нефротоксичность, миелосупрессия).",
+      "management": "У пациентов с нормальной функцией почек — снизить дозу колхицина на 50%. При ХБП — избегать.",
+      "sources": [
+        "Lexidrug",
+        "FDA black box"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "cyclosporine",
+      "drugB": "digoxin",
+      "severity": "moderate",
+      "mechanism": "Циклоспорин — ингибитор P-gp.",
+      "effect": "Повышение уровней дигоксина на 50%.",
+      "management": "TDM дигоксина.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "cyclosporine",
+      "drugB": "verapamil",
+      "severity": "moderate",
+      "mechanism": "Двойная ингибиция CYP3A4 + P-gp.",
+      "effect": "Повышение уровней циклоспорина на 30%.",
+      "management": "TDM при добавлении/отмене.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "cyclosporine",
+      "drugB": "diltiazem",
+      "severity": "moderate",
+      "mechanism": "CYP3A4 ингибиция.",
+      "effect": "Повышение уровней циклоспорина на 30-40%.",
+      "management": "TDM; снижение дозы циклоспорина.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "tacrolimus",
+      "drugB": "verapamil",
+      "severity": "major",
+      "mechanism": "Ингибиция CYP3A4/P-gp.",
+      "effect": "Повышение уровней такролимуса на 50%.",
+      "management": "Снизить дозу такролимуса; TDM.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "tacrolimus",
+      "drugB": "diltiazem",
+      "severity": "major",
+      "mechanism": "Ингибиция CYP3A4.",
+      "effect": "Повышение уровней такролимуса.",
+      "management": "TDM; снижение дозы.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "tacrolimus",
+      "drugB": "amiodarone",
+      "severity": "moderate",
+      "mechanism": "Слабая ингибиция CYP3A4 + P-gp + аддитивный QT-эффект.",
+      "effect": "Повышение уровней такролимуса; риск удлинения QT.",
+      "management": "TDM; ЭКГ-мониторинг.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "theophylline",
+      "drugB": "levofloxacin",
+      "severity": "moderate",
+      "mechanism": "Слабая ингибиция CYP1A2 (значительно меньше, чем ципрофлоксацин).",
+      "effect": "Незначительное повышение уровней теофиллина.",
+      "management": "Стандартные дозы; TDM при пожилых.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "theophylline",
+      "drugB": "azithromycin",
+      "severity": "minor",
+      "mechanism": "Минимальное влияние на CYP.",
+      "effect": "Клинически незначимо.",
+      "management": "Стандартная терапия.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "theophylline",
+      "drugB": "furosemide",
+      "severity": "moderate",
+      "mechanism": "Аддитивная гипокалиемия + аритмогенный эффект теофиллина.",
+      "effect": "Аритмии при K+ <3.5.",
+      "management": "Контроль K+; коррекция при необходимости.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "theophylline",
+      "drugB": "phenytoin",
+      "severity": "major",
+      "mechanism": "Двусторонняя индукция метаболизма.",
+      "effect": "Снижение уровней обоих препаратов.",
+      "management": "TDM обоих; повышение доз.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "escitalopram",
+      "drugB": "warfarin",
+      "severity": "moderate",
+      "mechanism": "Влияние на тромбоциты + слабая CYP2C9 ингибиция.",
+      "effect": "Лёгкое повышение МНО + риск кровотечения.",
+      "management": "Контроль МНО.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "citalopram",
+      "drugB": "warfarin",
+      "severity": "moderate",
+      "mechanism": "Тот же класс-эффект СИОЗС.",
+      "effect": "Возможное повышение МНО.",
+      "management": "Контроль МНО.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "escitalopram",
+      "drugB": "aspirin",
+      "severity": "moderate",
+      "mechanism": "СИОЗС + антиагрегант — аддитивное снижение функции тромбоцитов.",
+      "effect": "Повышение риска кровотечения.",
+      "management": "Гастропротекция; обсудить риски.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "sertraline",
+      "drugB": "aspirin",
+      "severity": "moderate",
+      "mechanism": "Тот же механизм.",
+      "effect": "Повышение риска ЖКТ-кровотечения.",
+      "management": "Гастропротекция при длительной терапии.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "carbamazepine",
+      "drugB": "haloperidol",
+      "severity": "moderate",
+      "mechanism": "Карбамазепин индуцирует CYP3A4 — снижает уровень галоперидола.",
+      "effect": "Снижение антипсихотического эффекта.",
+      "management": "Повышение дозы галоперидола или переход на нейролептик не CYP3A4.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "carbamazepine",
+      "drugB": "quetiapine",
+      "severity": "major",
+      "mechanism": "Индукция CYP3A4 — резкое снижение AUC кветиапина.",
+      "effect": "Падение уровней кветиапина в 5-7 раз → потеря эффекта.",
+      "management": "Избегать; альтернативный антиконвульсант (леветирацетам/ламотриджин).",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "carbamazepine",
+      "drugB": "methadone",
+      "severity": "major",
+      "mechanism": "Индукция CYP3A4 + 2B6.",
+      "effect": "Снижение уровней метадона → синдром отмены, потеря анальгезии.",
+      "management": "Повышение дозы метадона или альтернативный опиоид.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "phenytoin",
+      "drugB": "haloperidol",
+      "severity": "moderate",
+      "mechanism": "Индукция CYP3A4.",
+      "effect": "Снижение уровней галоперидола.",
+      "management": "Контроль клинического эффекта; повышение дозы.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "phenytoin",
+      "drugB": "quetiapine",
+      "severity": "major",
+      "mechanism": "Сильная индукция CYP3A4.",
+      "effect": "AUC кветиапина ↓ в 5 раз.",
+      "management": "Избегать; альтернативный антиконвульсант.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "phenytoin",
+      "drugB": "methadone",
+      "severity": "major",
+      "mechanism": "Индукция CYP.",
+      "effect": "Снижение уровней метадона.",
+      "management": "Альтернативный антиконвульсант или повышение дозы метадона.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "phenytoin",
+      "drugB": "cyclosporine",
+      "severity": "major",
+      "mechanism": "Индукция CYP3A4.",
+      "effect": "Резкое снижение уровней циклоспорина → отторжение.",
+      "management": "Избегать; перейти на леветирацетам.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "rifampicin",
+      "drugB": "amlodipine",
+      "severity": "major",
+      "mechanism": "Индукция CYP3A4.",
+      "effect": "Снижение AUC амлодипина на 50-70%.",
+      "management": "Повысить дозу амлодипина; контроль АД.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "rifampicin",
+      "drugB": "verapamil",
+      "severity": "major",
+      "mechanism": "Индукция CYP3A4 + P-gp.",
+      "effect": "AUC верапамила ↓90%.",
+      "management": "Избегать; альтернативный β-блокатор.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "rifampicin",
+      "drugB": "diltiazem",
+      "severity": "major",
+      "mechanism": "Индукция CYP3A4.",
+      "effect": "Резкое снижение уровней дилтиазема.",
+      "management": "Альтернативный класс антигипертензивных.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "rifampicin",
+      "drugB": "rivaroxaban",
+      "severity": "major",
+      "mechanism": "Индукция CYP3A4 + P-gp.",
+      "effect": "AUC ривароксабана ↓50%.",
+      "management": "Избегать.",
+      "sources": [
+        "EHRA 2021"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "rifampicin",
+      "drugB": "haloperidol",
+      "severity": "major",
+      "mechanism": "Индукция CYP3A4.",
+      "effect": "Снижение уровней галоперидола.",
+      "management": "Повышение дозы или альтернатива.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "colchicine",
+      "drugB": "azithromycin",
+      "severity": "moderate",
+      "mechanism": "Слабая ингибиция P-gp.",
+      "effect": "Незначительное повышение уровней колхицина.",
+      "management": "Допустимо; предпочтительнее кларитромицину.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "allopurinol",
+      "drugB": "amoxicillin",
+      "severity": "moderate",
+      "mechanism": "Аддитивный риск кожной сыпи (механизм неясен, но статистически достоверный).",
+      "effect": "Учащение макулопапулёзной сыпи в 2-3 раза.",
+      "management": "Информирование пациента; при появлении сыпи — отмена.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "levothyroxine",
+      "drugB": "famotidine",
+      "severity": "moderate",
+      "mechanism": "H2-блокаторы повышают pH (меньше, чем ИПП).",
+      "effect": "Лёгкое снижение абсорбции левотироксина.",
+      "management": "Раздельный приём ≥1 ч.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "ondansetron",
+      "drugB": "tramadol",
+      "severity": "moderate",
+      "mechanism": "Аддитивный серотонинергический эффект + антагонизм 5-HT3 ондансетроном может снижать анальгетический эффект трамадола.",
+      "effect": "Сниженная анальгезия + риск серотонин-синдрома.",
+      "management": "Альтернатива: метоклопрамид при необходимости антиэметика.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "ondansetron",
+      "drugB": "sertraline",
+      "severity": "moderate",
+      "mechanism": "Аддитивный серотонинергический эффект.",
+      "effect": "Риск серотонинового синдрома (низкий).",
+      "management": "Допустимо; наблюдение.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "ondansetron",
+      "drugB": "fluoxetine",
+      "severity": "moderate",
+      "mechanism": "Тот же механизм.",
+      "effect": "Риск серотонин-синдрома.",
+      "management": "Допустимо; наблюдение.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "tramadol",
+      "drugB": "warfarin",
+      "severity": "moderate",
+      "mechanism": "Механизм неясен (возможно ингибиция CYP2D6 + влияние на серотонин).",
+      "effect": "Возможное повышение МНО.",
+      "management": "Контроль МНО при старте трамадола.",
+      "sources": [
+        "Stockley's 12th"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "vancomycin",
+      "drugB": "iodinated_contrast",
+      "severity": "moderate",
+      "mechanism": "Аддитивная нефротоксичность.",
+      "effect": "ОПН.",
+      "management": "Гидратация; разнести по времени.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "vancomycin",
+      "drugB": "cyclosporine",
+      "severity": "moderate",
+      "mechanism": "Аддитивная нефротоксичность.",
+      "effect": "ОПН.",
+      "management": "Контроль креатинина; TDM ванкомицина.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "metronidazole",
+      "drugB": "lithium",
+      "severity": "major",
+      "mechanism": "Метронидазол снижает почечный клиренс лития.",
+      "effect": "Литиевая токсичность.",
+      "management": "TDM лития; снижение дозы.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "aspirin",
+      "drugB": "ramipril",
+      "severity": "minor",
+      "mechanism": "Высокие дозы аспирина (>300 мг) могут снижать гипотензивный эффект иАПФ через простагландины. Низкие дозы (75-100 мг) клинически незначимы.",
+      "effect": "При низких дозах — нет; при высоких — снижение АД-эффекта.",
+      "management": "Низкие дозы аспирина (≤100 мг) безопасны.",
+      "sources": [
+        "ESC 2024 ACS"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "prednisolone",
+      "drugB": "insulin",
+      "severity": "moderate",
+      "mechanism": "ГКС вызывают инсулинорезистентность.",
+      "effect": "Гипергликемия.",
+      "management": "Повышение дозы инсулина при старте ГКС; самоконтроль глюкозы 4 раза в день.",
+      "sources": [
+        "ADA 2024"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "prednisolone",
+      "drugB": "metformin",
+      "severity": "moderate",
+      "mechanism": "Гипергликемический эффект ГКС нивелирует эффект сахароснижающих.",
+      "effect": "Декомпенсация диабета.",
+      "management": "Усиление терапии (добавить инсулин при необходимости).",
+      "sources": [
+        "ADA 2024"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "methylprednisolone",
+      "drugB": "insulin",
+      "severity": "moderate",
+      "mechanism": "ГКС-индуцированная инсулинорезистентность.",
+      "effect": "Гипергликемия.",
+      "management": "Усиление инсулинотерапии.",
+      "sources": [
+        "ADA 2024"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "dexamethasone",
+      "drugB": "insulin",
+      "severity": "moderate",
+      "mechanism": "ГКС-индуцированная инсулинорезистентность.",
+      "effect": "Гипергликемия.",
+      "management": "Самоконтроль глюкозы 4-6 раз в день при старте.",
+      "sources": [
+        "ADA 2024"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "prednisolone",
+      "drugB": "warfarin",
+      "severity": "moderate",
+      "mechanism": "ГКС могут потенцировать антикоагулянтный эффект.",
+      "effect": "Возможное повышение МНО + риск ЖКТ-кровотечения.",
+      "management": "Контроль МНО; гастропротекция.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "omeprazole",
+      "drugB": "apixaban",
+      "severity": "minor",
+      "mechanism": "Слабая ингибиция P-gp ИПП.",
+      "effect": "Клинически незначимое повышение AUC.",
+      "management": "Стандартная терапия.",
+      "sources": [
+        "EHRA 2021"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "risperidone",
+      "drugB": "fluoxetine",
+      "severity": "moderate",
+      "mechanism": "Флуоксетин — ингибитор CYP2D6 → повышение уровней рисперидона.",
+      "effect": "Усиление антипсихотического эффекта и побочных (ЭПС).",
+      "management": "Снижение дозы рисперидона при сочетании.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "olanzapine",
+      "drugB": "fluoxetine",
+      "severity": "moderate",
+      "mechanism": "Слабое влияние; в основном аддитивная седация.",
+      "effect": "Седация, антихолинергические эффекты.",
+      "management": "Допустимо при наблюдении.",
+      "sources": [
+        "Lexidrug"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "haloperidol",
+      "drugB": "quetiapine",
+      "severity": "moderate",
+      "mechanism": "Аддитивная D2-блокада + QT-эффект.",
+      "effect": "ЭПС, удлинение QT.",
+      "management": "Избегать политерапии нейролептиками без строгих показаний.",
       "sources": [
         "Lexidrug"
       ],
