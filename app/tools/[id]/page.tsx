@@ -32,6 +32,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import RelatedLinks from '@/components/tools/RelatedLinks';
 
 interface ToolMeta {
   id: string;
@@ -369,6 +370,13 @@ export default async function ToolLandingPage({ params }: PageProps) {
           «Обратную связь» в сайдбаре.
         </p>
       </section>
+
+      {/* P0-A9: блок «Связанные ресурсы» — МКБ-10 коды + поиск
+          в Рубрикаторе Минздрава по соответствующим кодам.
+          Компонент сам решает рендерить ли блок (null если нет
+          связанных кодов — для tools-«ресурсов» Справочники, Россия,
+          Конверсии единиц и т.д. блок не отображается). */}
+      <RelatedLinks toolId={t.id} subcategory={t.subcategory} />
     </main>
   );
 }
