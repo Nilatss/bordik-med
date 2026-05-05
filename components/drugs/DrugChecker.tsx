@@ -174,7 +174,7 @@ export default function DrugChecker() {
         color: 'var(--md-sys-color-on-surface, #1A1A1A)',
       }}
     >
-      {/* Header */}
+      {/* Header — единый ритм с /tools (h2 28 + body 14 + 20 margin) */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
@@ -184,31 +184,33 @@ export default function DrugChecker() {
         <div style={{
           display: 'inline-flex', alignItems: 'center', gap: 6,
           marginBottom: 10,
-          padding: '4px 10px',
+          padding: '3px 10px',
           background: '#FEF3C7',
           color: '#92400E',
           border: '1px solid #FDE68A',
           borderRadius: 999,
           fontFamily: 'var(--font-mono, ui-monospace)',
-          fontSize: 11, fontWeight: 700,
+          fontSize: 10, fontWeight: 700,
           letterSpacing: '0.04em',
           textTransform: 'uppercase',
         }}>
-          <svg width={11} height={11} viewBox="0 0 24 24" fill="none"
+          <svg width={10} height={10} viewBox="0 0 24 24" fill="none"
             stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round">
             <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
             <line x1="12" y1="9" x2="12" y2="13" />
             <line x1="12" y1="17" x2="12.01" y2="17" />
           </svg>
-          BETA · требует верификации клин-фармакологом
+          BETA · требует верификации
         </div>
         <h2 style={{
           fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 700,
           color: '#1A1A1A', marginBottom: 6, letterSpacing: '-0.02em',
+          margin: '0 0 6px',
         }}>
           Чекер взаимодействий
         </h2>
         <p style={{
+          margin: 0,
           fontFamily: 'var(--font-body)', fontSize: 14, color: '#6B7280', lineHeight: 1.5,
         }}>
           Проверка совместимости лекарств. Введите 2–{MAX_DRUGS} препарата —
@@ -217,18 +219,19 @@ export default function DrugChecker() {
         </p>
       </motion.div>
 
-      {/* Search input + selected pills */}
+      {/* Search input + selected pills — единый pill-pattern с /tools */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1], delay: 0.06 }}
-        style={{ marginBottom: 20 }}
+        style={{ marginBottom: 24 }}
       >
         <div style={{
-          padding: '12px 14px',
+          padding: '10px 16px',
           background: '#F5F6F8',
-          borderRadius: 14,
+          borderRadius: 12,
           display: 'flex', flexWrap: 'wrap', gap: 8, alignItems: 'center',
+          minHeight: 44,
         }}>
           <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
             stroke="#9CA3AF" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
@@ -393,46 +396,45 @@ export default function DrugChecker() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1], delay: 0.12 }}
         >
-          {/* Hero CTA */}
+          {/* Hero CTA — компактная подсказка над пресетами */}
           <div style={{
-            padding: '28px 28px 24px',
+            padding: '20px 22px',
             background: '#F5F6F8',
             borderRadius: 14,
-            marginBottom: 14,
-            display: 'grid',
-            gridTemplateColumns: 'auto 1fr',
-            gap: 20,
+            marginBottom: 24,
+            display: 'flex',
             alignItems: 'center',
+            gap: 16,
           }}>
             <div style={{
-              width: 56, height: 56, borderRadius: 14,
+              width: 44, height: 44, borderRadius: 12,
               background: '#FFFFFF',
               display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
               color: '#2563EB',
               flexShrink: 0,
             }}>
-              <svg width={26} height={26} viewBox="0 0 24 24" fill="none"
+              <svg width={20} height={20} viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
                 <path d="M10.5 20.5L20 11a4.95 4.95 0 00-7-7L3.5 13.5a4.95 4.95 0 007 7z" />
                 <path d="M8.5 8.5l7 7" />
               </svg>
             </div>
-            <div>
+            <div style={{ flex: 1, minWidth: 0 }}>
               <h3 style={{
                 margin: 0,
-                fontFamily: 'var(--font-display)', fontSize: 17, fontWeight: 700,
+                fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 700,
                 color: '#1A1A1A', letterSpacing: '-0.01em',
+                lineHeight: 1.35,
               }}>
                 Добавьте 2+ препарата для проверки
               </h3>
               <p style={{
-                margin: '6px 0 0',
+                margin: '4px 0 0',
                 fontSize: 13, color: '#6B7280', lineHeight: 1.55,
               }}>
-                Введите названия в строке поиска выше — на русском, латинице или
-                торговом названии (Эликвис, Плавикс, Кордарон). База —{' '}
-                <strong style={{ color: '#1A1A1A' }}>{data.drugs.length} препаратов</strong>{' '}
-                и <strong style={{ color: '#1A1A1A' }}>{data.interactions.length} взаимодействий</strong>.
+                Введите названия в строке поиска выше. База —{' '}
+                <strong style={{ color: '#1A1A1A' }}>{data.drugs.length}</strong> препаратов и{' '}
+                <strong style={{ color: '#1A1A1A' }}>{data.interactions.length}</strong> взаимодействий.
               </p>
             </div>
           </div>
@@ -440,7 +442,7 @@ export default function DrugChecker() {
           {/* Готовые пресеты */}
           <div>
             <h3 style={{
-              margin: '0 0 10px',
+              margin: '0 0 12px',
               fontFamily: 'var(--font-mono, ui-monospace)', fontSize: 11, fontWeight: 700,
               color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
             }}>
@@ -448,20 +450,21 @@ export default function DrugChecker() {
             </h3>
             <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
               gap: 10,
             }}>
               {EMPTY_PRESETS.map((preset) => {
                 const allExist = preset.drugs.every((id) => drugById.has(id));
                 if (!allExist) return null;
+                const sevMeta = SEVERITY_META[preset.severity];
                 return (
                   <button
                     key={preset.label}
                     type="button"
                     onClick={() => setSelected(preset.drugs)}
                     style={{
-                      display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 6,
-                      padding: '14px 16px',
+                      display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 8,
+                      padding: '14px 16px 16px',
                       background: '#FFFFFF',
                       border: '1px solid #F0F1F5',
                       borderRadius: 12,
@@ -482,27 +485,30 @@ export default function DrugChecker() {
                     }}
                   >
                     <span style={{
-                      display: 'inline-flex', alignItems: 'center', gap: 6,
-                      padding: '2px 8px',
-                      background: SEVERITY_META[preset.severity].bg,
-                      color: SEVERITY_META[preset.severity].color,
-                      border: `1px solid ${SEVERITY_META[preset.severity].border}`,
+                      display: 'inline-flex', alignItems: 'center',
+                      padding: '2px 9px',
+                      background: sevMeta.bg,
+                      color: sevMeta.color,
+                      border: `1px solid ${sevMeta.border}`,
                       borderRadius: 999,
                       fontFamily: 'var(--font-mono, ui-monospace)',
                       fontSize: 10, fontWeight: 700,
                       letterSpacing: '0.04em',
                       textTransform: 'uppercase',
+                      whiteSpace: 'nowrap',
                     }}>
-                      {SEVERITY_META[preset.severity].label}
+                      {sevMeta.label}
                     </span>
                     <span style={{
-                      fontFamily: 'var(--font-display)', fontSize: 14, fontWeight: 600,
-                      color: '#1A1A1A', lineHeight: 1.35,
+                      display: 'block',
+                      fontFamily: 'var(--font-display)', fontSize: 14, fontWeight: 700,
+                      color: '#1A1A1A', letterSpacing: '-0.01em', lineHeight: 1.35,
                     }}>
                       {preset.label}
                     </span>
                     <span style={{
-                      fontSize: 12, color: '#6B7280', lineHeight: 1.5,
+                      display: 'block',
+                      fontSize: 12, color: '#6B7280', lineHeight: 1.55,
                     }}>
                       {preset.hint}
                     </span>
