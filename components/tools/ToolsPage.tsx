@@ -22,6 +22,7 @@ import {
 import { useToolSearch } from '@/lib/use-tool-search';
 import { BulkOfflineDownload } from './BulkOfflineDownload';
 import { CardOfflineButton } from './CardOfflineButton';
+import RecentToolsWidget from './RecentToolsWidget';
 
 import { useAppStore } from '@/lib/store';
 import EmojiOrFlag from '@/components/ui/EmojiOrFlag';
@@ -1041,6 +1042,10 @@ export default function ToolsPage() {
           })}
         </p>
       </motion.div>
+
+      {/* Виджет «Недавние» — показывает top-5 последних использованных
+          инструментов. Невидим до первого open. P0-A6 из аудита. */}
+      <RecentToolsWidget catalog={tools} onOpen={openToolAction} />
 
       {/* Search */}
       <motion.div

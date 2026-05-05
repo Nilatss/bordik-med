@@ -53,6 +53,11 @@ interface AppState {
   toolsFavourites: string[];  // list of tool ids
   /** Per-tool open count — used by stats page to surface kind breakdown */
   toolUsage: Record<string, number>;
+  /** Recent tool IDs in MRU order (most recently used first), capped to 10.
+   *  Powers the "Недавние" widget на /tools. Persisted в localStorage,
+   *  чтобы пользователь возвращался к привычным инструментам мгновенно
+   *  через дежурство / разные устройства одной сессии. */
+  recentToolIds: string[];
   setToolsQuery: (q: string) => void;
   setToolsCategories: (c: string[]) => void;
   setToolsSubcategories: (s: string[]) => void;
@@ -171,6 +176,7 @@ export const useAppStore = create<AppState>()(
       toolsScrollOffset: 0,
       toolsFavourites: [],
       toolUsage: {},
+      recentToolIds: [],
 
       setToolsQuery: (q) => set({ toolsQuery: q }),
       setToolsCategories: (c) => set({ toolsCategories: c }),
@@ -337,13 +343,18 @@ export const useAppStore = create<AppState>()(
       // Open a specific tool — also flip into the Tools view + clear other
        // top-level flags so navigation from search works from anywhere.
       openTool: (id) => {
-        const { toolUsage } = get();
+        const { toolUsage, recentToolIds } = get();
+        // MRU обновление: убираем id из текущей позиции, ставим в начало,
+        // обрезаем до 10 элементов. Это даёт ленту «последние 5–10 инструментов»
+        // под виджет на странице /tools без отдельного timestamp-словаря.
+        const nextRecent = [id, ...recentToolIds.filter((x) => x !== id)].slice(0, 10);
         set({
           activeToolId: id,
           showTools: true,
           showProfile: false, showStats: false, showTests: false, showLearning: false,
           activeSection: null, activeModuleId: null, currentCourseId: null,
           toolUsage: { ...toolUsage, [id]: (toolUsage[id] ?? 0) + 1 },
+          recentToolIds: nextRecent,
         });
       },
       closeTool: () => set({ activeToolId: null }),
@@ -411,6 +422,7 @@ export const useAppStore = create<AppState>()(
         if (typeof raw.toolsOnlyAvailable === 'boolean') safe.toolsOnlyAvailable = raw.toolsOnlyAvailable;
         if (isStrArr(raw.toolsFavourites))  safe.toolsFavourites = raw.toolsFavourites;
         if (isObj(raw.toolUsage))           safe.toolUsage = raw.toolUsage;
+        if (isStrArr(raw.recentToolIds))    safe.recentToolIds = raw.recentToolIds.slice(0, 10);
 
         return safe as unknown as AppState;
       },
@@ -440,6 +452,7 @@ export const useAppStore = create<AppState>()(
         toolsOnlyAvailable: state.toolsOnlyAvailable,
         toolsFavourites: state.toolsFavourites,
         toolUsage: state.toolUsage,
+        recentToolIds: state.recentToolIds,
       }),
     }
   )
