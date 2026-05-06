@@ -1,0 +1,402 @@
+{
+  "$readme": "Педиатрические дозы препаратов. Дозы по mg/kg с capping на максимальную взрослую дозу. Возрастные группы: новорождённый (0-1 мес), младенец (1-12 мес), ребёнок (1-12 лет), подросток (13-17 лет). Многие препараты имеют разные дозы по показаниям — выбор в UI.",
+  "$verification_status": "🚨 BETA — Phase 1, требует верификации педиатром / клин-фармакологом перед коммерческим использованием. Каждая запись имеет verified_by:null. Не использовать для прямого назначения без сверки с актуальными протоколами.",
+  "version": "0.1.0",
+  "lastUpdated": "2026-05-06",
+  "sources": [
+    "WHO Pocket Book of Hospital Care for Children, 2nd ed (2013)",
+    "BNF for Children (BNFc) 2024-2025",
+    "AAP Red Book 2024",
+    "APLS Australia & UK guidelines",
+    "Lexicomp Pediatric & Neonatal Drug Information",
+    "Российские клинические рекомендации по педиатрии (Минздрав РФ)",
+    "Союз педиатров России — клин. рекомендации"
+  ],
+  "drugs": [
+    {
+      "id": "paracetamol",
+      "name_ru": "Парацетамол",
+      "name_en": "Paracetamol (Acetaminophen)",
+      "atc": "N02BE01",
+      "class_ru": "Анальгетик-антипиретик",
+      "indications": [
+        { "label": "Жаропонижающее / лёгкая боль (п/о)", "age_min_months": 3, "mg_per_kg": 15, "frequency_hours": 6, "max_per_dose_mg": 1000, "max_per_day_mg_per_kg": 60, "max_per_day_mg": 4000, "route": "п/о/ректально", "comment": "У новорождённых <3 мес — только под наблюдением врача. Не превышать 4 г/сут (взрослая макс)." },
+        { "label": "В/в (после операций)", "age_min_months": 0, "mg_per_kg": 15, "frequency_hours": 6, "max_per_dose_mg": 1000, "max_per_day_mg_per_kg": 60, "max_per_day_mg": 4000, "route": "в/в", "comment": "У детей <10 кг макс 30 мг/кг/сут. У недоношенных — 7.5 мг/кг каждые 8 ч." }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "id": "ibuprofen",
+      "name_ru": "Ибупрофен",
+      "name_en": "Ibuprofen",
+      "atc": "M01AE01",
+      "class_ru": "НПВС",
+      "indications": [
+        { "label": "Жаропонижающее / боль", "age_min_months": 3, "mg_per_kg": 10, "frequency_hours": 8, "max_per_dose_mg": 400, "max_per_day_mg_per_kg": 40, "max_per_day_mg": 2400, "route": "п/о", "comment": "Не давать <3 мес. С едой для снижения ЖКТ-побочных. Не сочетать с другими НПВС." }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "id": "morphine",
+      "name_ru": "Морфин",
+      "name_en": "Morphine",
+      "atc": "N02AA01",
+      "class_ru": "Опиоидный анальгетик",
+      "indications": [
+        { "label": "Острая боль (в/в)", "age_min_months": 1, "mg_per_kg": 0.1, "frequency_hours": 4, "max_per_dose_mg": 10, "route": "в/в", "comment": "Болюс 0.05-0.1 мг/кг медленно (>5 мин). Постоянное наблюдение SpO2, ЧДД, сознание. Готовность к налоксону." },
+        { "label": "Острая боль (п/о)", "age_min_months": 12, "mg_per_kg": 0.3, "frequency_hours": 4, "max_per_dose_mg": 15, "route": "п/о", "comment": "Раствор морфина 2 мг/мл. С едой для снижения тошноты." },
+        { "label": "Новорождённые в/в (специализированно)", "age_min_months": 0, "age_max_months": 1, "mg_per_kg": 0.05, "frequency_hours": 6, "max_per_dose_mg": 0.2, "route": "в/в", "comment": "ТОЛЬКО в условиях ОРИТН с мониторингом. Высокий риск апноэ." }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "id": "amoxicillin",
+      "name_ru": "Амоксициллин",
+      "name_en": "Amoxicillin",
+      "atc": "J01CA04",
+      "class_ru": "Аминопенициллин",
+      "indications": [
+        { "label": "Острый средний отит (высокая доза AAP 2013)", "age_min_months": 1, "mg_per_kg": 40, "frequency_hours": 12, "max_per_dose_mg": 1500, "max_per_day_mg_per_kg": 90, "max_per_day_mg": 3000, "route": "п/о", "duration": "10 дней <2 лет, 5-7 дней ≥2 лет", "comment": "Стандартная доза при ОСО. При неудаче перейти на амоксициллин/клавуланат." },
+        { "label": "Стрептококковый тонзиллит", "age_min_months": 12, "mg_per_kg": 25, "frequency_hours": 12, "max_per_dose_mg": 500, "max_per_day_mg_per_kg": 50, "max_per_day_mg": 1000, "route": "п/о", "duration": "10 дней", "comment": "Альтернатива пенициллину V." },
+        { "label": "Пневмония внебольничная", "age_min_months": 3, "mg_per_kg": 30, "frequency_hours": 8, "max_per_dose_mg": 1000, "max_per_day_mg_per_kg": 90, "max_per_day_mg": 3000, "route": "п/о", "duration": "5-7 дней", "comment": "При тяжёлой пневмонии — в/в ампициллин 100 мг/кг/сут q6." }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "id": "amoxicillin-clavulanate",
+      "name_ru": "Амоксициллин/клавуланат",
+      "name_en": "Amoxicillin/Clavulanate",
+      "atc": "J01CR02",
+      "class_ru": "Защищённый пенициллин",
+      "indications": [
+        { "label": "ОСО / синусит резистентные / укусы", "age_min_months": 3, "mg_per_kg": 45, "frequency_hours": 12, "max_per_dose_mg": 875, "max_per_day_mg_per_kg": 90, "max_per_day_mg": 1750, "route": "п/о", "duration": "7-10 дней", "comment": "ES-формула (90/6.4 мг/кг/сут) при резистентности или у детей до 24 мес." }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "id": "ceftriaxone",
+      "name_ru": "Цефтриаксон",
+      "name_en": "Ceftriaxone",
+      "atc": "J01DD04",
+      "class_ru": "Цефалоспорин III поколения",
+      "indications": [
+        { "label": "Тяжёлые инфекции (пиелонефрит, сепсис)", "age_min_months": 1, "mg_per_kg": 50, "frequency_hours": 24, "max_per_dose_mg": 2000, "route": "в/в / в/м", "duration": "по показанию", "comment": "1 раз в день. Не сочетать с кальций-содержащими растворами у новорождённых (риск преципитата)." },
+        { "label": "Менингит", "age_min_months": 1, "mg_per_kg": 50, "frequency_hours": 12, "max_per_dose_mg": 2000, "max_per_day_mg": 4000, "route": "в/в", "duration": "7-21 день", "comment": "100 мг/кг/сут в 2 дозы. Дексаметазон до или одновременно с первой дозой при H.influenzae/пневмококковом менингите (≥6 нед)." }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "id": "azithromycin",
+      "name_ru": "Азитромицин",
+      "name_en": "Azithromycin",
+      "atc": "J01FA10",
+      "class_ru": "Макролид",
+      "indications": [
+        { "label": "Атипичная пневмония / коклюш", "age_min_months": 6, "mg_per_kg": 10, "frequency_hours": 24, "max_per_dose_mg": 500, "route": "п/о", "duration": "5 дней (день 1: 10 мг/кг; дни 2-5: 5 мг/кг)", "comment": "Mycoplasma, Chlamydia, Bordetella pertussis. Не первая линия при ОСО (резистентность пневмококка)." },
+        { "label": "Стрептококковый тонзиллит (при аллергии на пенициллины)", "age_min_months": 12, "mg_per_kg": 12, "frequency_hours": 24, "max_per_dose_mg": 500, "route": "п/о", "duration": "5 дней", "comment": "Альтернатива при IgE-аллергии на β-лактамы. Резистентность ~5-10%." }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "id": "cefuroxime",
+      "name_ru": "Цефуроксим",
+      "name_en": "Cefuroxime",
+      "atc": "J01DC02",
+      "class_ru": "Цефалоспорин II поколения",
+      "indications": [
+        { "label": "ОСО / синусит / ВДП", "age_min_months": 3, "mg_per_kg": 15, "frequency_hours": 12, "max_per_dose_mg": 500, "route": "п/о", "duration": "7-10 дней", "comment": "Cefuroxime axetil. Альтернатива амоксициллин/клавуланату." }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "id": "vancomycin",
+      "name_ru": "Ванкомицин",
+      "name_en": "Vancomycin",
+      "atc": "J01XA01",
+      "class_ru": "Гликопептид",
+      "indications": [
+        { "label": "Сепсис / эндокардит / MRSA", "age_min_months": 1, "mg_per_kg": 15, "frequency_hours": 6, "max_per_dose_mg": 1000, "max_per_day_mg": 4000, "route": "в/в", "comment": "TDM обязателен: AUC/MIC 400-600 (предпочтительнее) или Cmin 10-20 мг/л. Инфузия ≥60 мин (риск 'red man syndrome')." },
+        { "label": "Менингит / тяжёлая ЦНС-инфекция", "age_min_months": 1, "mg_per_kg": 15, "frequency_hours": 6, "max_per_dose_mg": 1000, "route": "в/в", "comment": "Целевой Cmin 15-20 мг/л. Часто в комбинации с цефтриаксоном." }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "id": "gentamicin",
+      "name_ru": "Гентамицин",
+      "name_en": "Gentamicin",
+      "atc": "J01GB03",
+      "class_ru": "Аминогликозид",
+      "indications": [
+        { "label": "Сепсис / тяжёлые грам-отрицательные инфекции", "age_min_months": 1, "mg_per_kg": 7, "frequency_hours": 24, "max_per_dose_mg": 480, "route": "в/в", "comment": "Once-daily предпочтительнее. TDM: пиковое 16-24 мг/л, Cmin <1 мг/л. Контроль слуха и креатинина." },
+        { "label": "Новорождённые", "age_min_months": 0, "age_max_months": 1, "mg_per_kg": 5, "frequency_hours": 24, "max_per_dose_mg": 60, "route": "в/в", "comment": "Доношенные: 5 мг/кг q24. Недоношенные <30 нед: 4 мг/кг q36-48. Мониторинг как у взрослых." }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "id": "metronidazole",
+      "name_ru": "Метронидазол",
+      "name_en": "Metronidazole",
+      "atc": "J01XD01",
+      "class_ru": "Нитроимидазол",
+      "indications": [
+        { "label": "Анаэробные инфекции / лямблиоз / ЦДИ", "age_min_months": 1, "mg_per_kg": 10, "frequency_hours": 8, "max_per_dose_mg": 500, "max_per_day_mg": 1500, "route": "п/о/в/в", "comment": "Лямблиоз: 5 мг/кг q8 × 5-7 дней. ЦДИ (лёгкая): 7.5 мг/кг q6 × 10 дней." }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "id": "cotrimoxazole",
+      "name_ru": "Ко-тримоксазол",
+      "name_en": "Trimethoprim/Sulfamethoxazole",
+      "atc": "J01EE01",
+      "class_ru": "Сульфаниламид + триметоприм",
+      "indications": [
+        { "label": "Pneumocystis jirovecii (профилактика)", "age_min_months": 1, "mg_per_kg": 4, "frequency_hours": 24, "max_per_dose_mg": 160, "route": "п/о", "comment": "TMP-компонент. 3 дня в неделю или ежедневно. У ВИЧ+ детей и реципиентов трансплантата." },
+        { "label": "Pneumocystis (лечение)", "age_min_months": 1, "mg_per_kg": 5, "frequency_hours": 6, "max_per_dose_mg": 320, "route": "в/в/п/о", "duration": "21 день", "comment": "TMP 15-20 мг/кг/сут в 4 приёма. Дексаметазон при PaO2 <70." },
+        { "label": "ИМП", "age_min_months": 2, "mg_per_kg": 4, "frequency_hours": 12, "max_per_dose_mg": 160, "route": "п/о", "duration": "3-7 дней", "comment": "TMP 8 мг/кг/сут в 2 дозы." }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "id": "fluconazole",
+      "name_ru": "Флуконазол",
+      "name_en": "Fluconazole",
+      "atc": "J02AC01",
+      "class_ru": "Триазольный антимикотик",
+      "indications": [
+        { "label": "Кандидозный стоматит / молочница", "age_min_months": 0, "mg_per_kg": 6, "frequency_hours": 24, "max_per_dose_mg": 200, "route": "п/о", "duration": "7-14 дней", "comment": "Нагрузочная доза день 1: 6 мг/кг; далее 3 мг/кг q24." },
+        { "label": "Системный кандидоз / кандидемия", "age_min_months": 0, "mg_per_kg": 12, "frequency_hours": 24, "max_per_dose_mg": 800, "route": "в/в/п/о", "comment": "Эхокандины (микафунгин) предпочтительнее у новорождённых при тяжёлой кандидемии." }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "id": "acyclovir",
+      "name_ru": "Ацикловир",
+      "name_en": "Acyclovir",
+      "atc": "J05AB01",
+      "class_ru": "Противовирусный",
+      "indications": [
+        { "label": "ВПГ-энцефалит / диссеминированный неонатальный ВПГ", "age_min_months": 0, "mg_per_kg": 20, "frequency_hours": 8, "max_per_dose_mg": 1000, "route": "в/в", "duration": "21 день (диссем.) / 14 дней (изолированный SEM)", "comment": "Высокая доза 60 мг/кг/сут. Контроль креатинина, гидратация." },
+        { "label": "Ветряная оспа / опоясывающий лишай (тяжёлая)", "age_min_months": 1, "mg_per_kg": 10, "frequency_hours": 8, "max_per_dose_mg": 800, "route": "в/в", "duration": "7 дней", "comment": "У иммунокомпрометированных. Здоровым детям с ветрянкой обычно не назначают." }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "id": "dexamethasone",
+      "name_ru": "Дексаметазон",
+      "name_en": "Dexamethasone",
+      "atc": "H02AB02",
+      "class_ru": "ГКС",
+      "indications": [
+        { "label": "Круп (стенозирующий ларинготрахеит)", "age_min_months": 1, "mg_per_kg": 0.6, "frequency_hours": 0, "max_per_dose_mg": 16, "route": "п/о/в/м", "duration": "1 доза", "comment": "Однократно. Альтернатива: будесонид небулайзер 2 мг." },
+        { "label": "Бактериальный менингит (как ад'ювант)", "age_min_months": 2, "mg_per_kg": 0.15, "frequency_hours": 6, "max_per_dose_mg": 10, "route": "в/в", "duration": "2-4 дня", "comment": "До или одновременно с первой дозой АБ. Польза при H.influenzae и пневмококке." },
+        { "label": "Антиэметик при ХТ", "age_min_months": 6, "mg_per_kg": 0.15, "frequency_hours": 6, "max_per_dose_mg": 8, "route": "в/в", "comment": "Часто в комбинации с ондансетроном." }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "id": "prednisolone",
+      "name_ru": "Преднизолон",
+      "name_en": "Prednisolone",
+      "atc": "H02AB06",
+      "class_ru": "ГКС",
+      "indications": [
+        { "label": "Обострение БА", "age_min_months": 12, "mg_per_kg": 1, "frequency_hours": 24, "max_per_dose_mg": 40, "route": "п/о", "duration": "3-5 дней", "comment": "Без необходимости постепенной отмены при курсе ≤1 нед." },
+        { "label": "Анафилаксия (после адреналина)", "age_min_months": 1, "mg_per_kg": 1, "frequency_hours": 24, "max_per_dose_mg": 50, "route": "п/о", "comment": "Не первая линия — адреналин. Снижает риск отсроченной фазы." },
+        { "label": "Нефротический синдром (стандарт)", "age_min_months": 12, "mg_per_kg": 2, "frequency_hours": 24, "max_per_dose_mg": 80, "route": "п/о", "duration": "4-6 нед, затем уменьшение", "comment": "По протоколу детской нефрологии. Высокая доза 60 мг/м²." }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "id": "salbutamol",
+      "name_ru": "Сальбутамол",
+      "name_en": "Salbutamol (Albuterol)",
+      "atc": "R03AC02",
+      "class_ru": "β2-агонист короткого действия",
+      "indications": [
+        { "label": "Обострение БА (небулайзер)", "age_min_months": 1, "mg_per_kg": 0.15, "frequency_hours": 1, "max_per_dose_mg": 5, "route": "ингаляционно (небулайзер)", "comment": "0.15 мг/кг/доза, мин 2.5 мг макс 5 мг. Каждые 20 мин в острый период (3 раза), затем по необходимости." },
+        { "label": "Дозированный аэрозоль (со спейсером)", "age_min_months": 12, "mg_per_kg": 0, "frequency_hours": 4, "max_per_dose_mg": 0, "route": "ингаляционно (МДИ + spacer)", "comment": "100 мкг × 4-10 вдохов через спейсер. Эквивалентно небулайзеру при не-критических обострениях. У детей <4 лет — спейсер с маской." }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "id": "budesonide",
+      "name_ru": "Будесонид",
+      "name_en": "Budesonide",
+      "atc": "R03BA02",
+      "class_ru": "Ингаляционный ГКС",
+      "indications": [
+        { "label": "Круп (тяжёлый/средний)", "age_min_months": 1, "mg_per_kg": 0, "frequency_hours": 0, "max_per_dose_mg": 2, "route": "ингаляционно (небулайзер)", "comment": "2 мг однократно через небулайзер. Альтернатива дексаметазону при не доступном ГКС п/о." },
+        { "label": "Базисная терапия БА (низкие дозы)", "age_min_months": 12, "mg_per_kg": 0, "frequency_hours": 12, "max_per_dose_mg": 0.4, "route": "ингаляционно", "comment": "Низкая доза 200-400 мкг/сут. Регулярно, не по требованию." }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "id": "epinephrine-im",
+      "name_ru": "Эпинефрин (в/м, анафилаксия)",
+      "name_en": "Epinephrine IM (anaphylaxis)",
+      "atc": "C01CA24",
+      "class_ru": "α/β-адреномиметик",
+      "indications": [
+        { "label": "Анафилаксия (в/м, передне-латеральная часть бедра)", "age_min_months": 0, "mg_per_kg": 0.01, "frequency_hours": 0.083, "max_per_dose_mg": 0.5, "route": "в/м", "comment": "0.01 мг/кг (макс 0.5 мг). Раствор 1 мг/мл (1:1000). Повторять каждые 5 мин при отсутствии эффекта. EpiPen Jr 0.15 мг (10-25 кг), EpiPen 0.3 мг (>25 кг)." }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "id": "epinephrine-cpr",
+      "name_ru": "Адреналин (в/в, СЛР)",
+      "name_en": "Epinephrine IV (CPR)",
+      "atc": "C01CA24",
+      "class_ru": "α/β-адреномиметик",
+      "indications": [
+        { "label": "СЛР (асистолия / PEA / VF без пульса)", "age_min_months": 0, "mg_per_kg": 0.01, "frequency_hours": 0.0833, "max_per_dose_mg": 1, "route": "в/в / в/к (intraosseous)", "comment": "0.01 мг/кг (0.1 мл/кг раствора 1:10000). Каждые 3-5 мин. Эндотрахеально 0.1 мг/кг (1:1000) если нет в/в доступа." }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "id": "atropine",
+      "name_ru": "Атропин",
+      "name_en": "Atropine",
+      "atc": "A03BA01",
+      "class_ru": "М-холиноблокатор",
+      "indications": [
+        { "label": "Брадикардия (< 60 уд/мин с гипоперфузией)", "age_min_months": 1, "mg_per_kg": 0.02, "frequency_hours": 0.0833, "max_per_dose_mg": 1, "route": "в/в / в/к", "comment": "Минимум 0.1 мг (риск парадоксальной брадикардии при <0.1 мг). Макс 1 мг ребёнок, 2 мг подросток. Можно повторить через 5 мин." },
+        { "label": "Премедикация перед интубацией", "age_min_months": 0, "mg_per_kg": 0.02, "frequency_hours": 0, "max_per_dose_mg": 0.5, "route": "в/в", "comment": "Только у новорождённых и младенцев <1 года. У старших — не рутинно (по показаниям)." }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "id": "naloxone",
+      "name_ru": "Налоксон",
+      "name_en": "Naloxone",
+      "atc": "V03AB15",
+      "class_ru": "Антагонист опиоидов",
+      "indications": [
+        { "label": "Передозировка опиоидов / неонатальная депрессия", "age_min_months": 0, "mg_per_kg": 0.1, "frequency_hours": 0.0333, "max_per_dose_mg": 2, "route": "в/в / в/м / интраназально", "comment": "0.1 мг/кг (макс 2 мг разовая). Интраназально 0.1 мг/кг через atomizer. Эффект 30-60 мин (короче многих опиоидов!) — повторять или инфузия." }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "id": "ondansetron",
+      "name_ru": "Ондансетрон",
+      "name_en": "Ondansetron",
+      "atc": "A04AA01",
+      "class_ru": "Антагонист 5-HT3",
+      "indications": [
+        { "label": "Тошнота/рвота (гастроэнтерит, ХТ)", "age_min_months": 6, "mg_per_kg": 0.15, "frequency_hours": 8, "max_per_dose_mg": 8, "route": "в/в / п/о", "comment": "При вирусном гастроэнтерите — однократно перед оральной регидратацией снижает риск госпитализации. ЭКГ перед в/в при риске удлинения QT." }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "id": "midazolam",
+      "name_ru": "Мидазолам",
+      "name_en": "Midazolam",
+      "atc": "N05CD08",
+      "class_ru": "Бензодиазепин",
+      "indications": [
+        { "label": "Эпилептический статус (буккально/интраназально)", "age_min_months": 6, "mg_per_kg": 0.3, "frequency_hours": 0.083, "max_per_dose_mg": 10, "route": "буккально / интраназально", "comment": "Препарат первой линии при отсутствии в/в доступа. Эффект 1-3 мин. Можно повторить через 5-10 мин." },
+        { "label": "Эпилептический статус (в/в)", "age_min_months": 1, "mg_per_kg": 0.1, "frequency_hours": 0.083, "max_per_dose_mg": 5, "route": "в/в", "comment": "Болюс 0.1 мг/кг (макс 5 мг). При неэффективности — повторить через 5 мин (макс 2 раза), затем перейти на леветирацетам/фенитоин." },
+        { "label": "Седация при процедурах", "age_min_months": 6, "mg_per_kg": 0.05, "frequency_hours": 0.083, "max_per_dose_mg": 2, "route": "в/в", "comment": "Малыми болюсами 0.025-0.05 мг/кг, тщательное наблюдение SpO2 и сознания." }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "id": "levetiracetam",
+      "name_ru": "Леветирацетам",
+      "name_en": "Levetiracetam",
+      "atc": "N03AX14",
+      "class_ru": "Противоэпилептический",
+      "indications": [
+        { "label": "Эпилептический статус (после бензодиазепинов)", "age_min_months": 1, "mg_per_kg": 60, "frequency_hours": 0, "max_per_dose_mg": 4500, "route": "в/в", "comment": "Нагрузочная доза 60 мг/кг (макс 4.5 г) в течение 5-15 мин. Препарат выбора 2-й линии (ESSET 2019/CONSCIOUS-Paeds)." },
+        { "label": "Поддерживающая терапия эпилепсии", "age_min_months": 1, "mg_per_kg": 10, "frequency_hours": 12, "max_per_dose_mg": 1500, "max_per_day_mg": 3000, "route": "п/о/в/в", "comment": "Старт 10 мг/кг 2 р/сут, повышать на 10 мг/кг каждые 2 нед до 30-60 мг/кг/сут." }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "id": "phenobarbital",
+      "name_ru": "Фенобарбитал",
+      "name_en": "Phenobarbital",
+      "atc": "N03AA02",
+      "class_ru": "Барбитурат (противоэпилептический)",
+      "indications": [
+        { "label": "Неонатальные судороги", "age_min_months": 0, "age_max_months": 1, "mg_per_kg": 20, "frequency_hours": 0, "max_per_dose_mg": 40, "route": "в/в", "comment": "Нагрузочная 20 мг/кг в/в медленно (>10 мин). При неэффективности — ещё 10 мг/кг (макс 40 мг/кг общая). Препарат 1-й линии у новорождённых." },
+        { "label": "Эпилептический статус (после леветирацетама)", "age_min_months": 1, "mg_per_kg": 20, "frequency_hours": 0, "max_per_dose_mg": 1000, "route": "в/в", "comment": "Только в условиях ОРИТ с готовностью к интубации (риск депрессии дыхания)." }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "id": "furosemide",
+      "name_ru": "Фуросемид",
+      "name_en": "Furosemide",
+      "atc": "C03CA01",
+      "class_ru": "Петлевой диуретик",
+      "indications": [
+        { "label": "Перегрузка жидкостью / отёк лёгких", "age_min_months": 1, "mg_per_kg": 1, "frequency_hours": 12, "max_per_dose_mg": 40, "route": "в/в / п/о", "comment": "Старт 1 мг/кг, можно повышать до 2-6 мг/кг/доза. Контроль K+, Mg, мочевины. У новорождённых — 1 мг/кг q12-24." }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "id": "dextrose-10",
+      "name_ru": "Декстроза 10% (гипогликемия)",
+      "name_en": "Dextrose 10%",
+      "atc": "B05BA03",
+      "class_ru": "Глюкоза",
+      "indications": [
+        { "label": "Гипогликемия (< 2.6 ммоль/л)", "age_min_months": 0, "mg_per_kg": 200, "frequency_hours": 0, "max_per_dose_mg": 5000, "route": "в/в (медленно)", "comment": "2 мл/кг 10% декстрозы (= 200 мг/кг глюкозы). Повторить через 5 мин если глюкоза остаётся <3.0. У новорождённых: 2 мл/кг 10%, не выше — риск гиперосмолярности." }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "id": "levothyroxine",
+      "name_ru": "Левотироксин",
+      "name_en": "Levothyroxine",
+      "atc": "H03AA01",
+      "class_ru": "Гормон щитовидной железы",
+      "indications": [
+        { "label": "Врождённый гипотиреоз (новорождённые)", "age_min_months": 0, "age_max_months": 6, "mg_per_kg": 0.01, "frequency_hours": 24, "max_per_dose_mg": 0.05, "route": "п/о", "comment": "Старт 10-15 мкг/кг/сут. Цель: TSH в норме за 4-6 нед. Контроль TSH+T4 каждые 1-3 мес в первый год." },
+        { "label": "Гипотиреоз (дети ≥6 мес)", "age_min_months": 6, "mg_per_kg": 0.005, "frequency_hours": 24, "max_per_dose_mg": 0.1, "route": "п/о", "comment": "Постепенное снижение mg/кг с возрастом: 1-5 лет 5-6 мкг/кг/сут; 6-12 лет 4-5 мкг/кг/сут; >12 лет 2-3 мкг/кг/сут." }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "id": "ranitidine-h2",
+      "name_ru": "Фамотидин (педиатрический H2-блокатор)",
+      "name_en": "Famotidine",
+      "atc": "A02BA03",
+      "class_ru": "H2-блокатор",
+      "indications": [
+        { "label": "ГЭРБ / эрозивный эзофагит", "age_min_months": 1, "mg_per_kg": 0.5, "frequency_hours": 12, "max_per_dose_mg": 20, "max_per_day_mg": 40, "route": "п/о/в/в", "comment": "ИПП эффективнее, но H2 при невозможности (новорождённые/грудные). Ранитидин выведен с рынка из-за NDMA-загрязнения — фамотидин-альтернатива." }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    }
+  ]
+}

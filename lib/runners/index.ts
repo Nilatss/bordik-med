@@ -22,6 +22,7 @@ export const RUNNER_LOADERS: Record<string, RunnerLoader> = {
   "ca-corrected": () => import('./ca-corrected'),
   "meld": () => import('./meld'),
   "renal-dose": () => import('./renal-dose'),
+  "pediatric-dose": () => import('./pediatric-dose'),
   "parkland": () => import('./parkland'),
   "holliday-segar": () => import('./holliday-segar'),
   "aa-gradient": () => import('./aa-gradient'),
