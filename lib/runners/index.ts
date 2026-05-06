@@ -21,6 +21,7 @@ export const RUNNER_LOADERS: Record<string, RunnerLoader> = {
   "anion-gap": () => import('./anion-gap'),
   "ca-corrected": () => import('./ca-corrected'),
   "meld": () => import('./meld'),
+  "renal-dose": () => import('./renal-dose'),
   "parkland": () => import('./parkland'),
   "holliday-segar": () => import('./holliday-segar'),
   "aa-gradient": () => import('./aa-gradient'),

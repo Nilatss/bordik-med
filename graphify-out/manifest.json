@@ -496,8 +496,8 @@
     "hash": "106241ba0355227ef87a6b2ebe96285f"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\lib\\tool-meta-data.ts": {
-    "mtime": 1777988120.1841404,
-    "hash": "a4bc7ccd513ae29cbbdc94afefe6b23d"
+    "mtime": 1778051053.8746488,
+    "hash": "9bcd62b4b0576b1e359393a2585cb160"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\lib\\tool-meta-helpers.ts": {
     "mtime": 1777392894.7850995,
@@ -512,8 +512,8 @@
     "hash": "16f37266d5be3913d3555b1cfc197f15"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\lib\\tools-catalog.ts": {
-    "mtime": 1777961939.4586184,
-    "hash": "38104424ddd918edbc2e68a336b0a1f4"
+    "mtime": 1778051101.5237963,
+    "hash": "ae68ce6d137422ba7f6740733acc65d4"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\lib\\tools-runners.ts": {
     "mtime": 1777393026.6679628,
@@ -598,10 +598,6 @@
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\lib\\runners\\9-line.ts": {
     "mtime": 1776659423.6856103,
     "hash": "c91bff8c54145a3c415a7652301ca4cf"
-  },
-  "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\lib\\runners\\aa-grad.ts": {
-    "mtime": 1777107674.0851898,
-    "hash": "5c8ade40050c3e70ded2926c8bf4c712"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\lib\\runners\\aa-gradient.ts": {
     "mtime": 1777107674.0863478,
@@ -2000,8 +1996,8 @@
     "hash": "642c233b4ba63f0253230cc1eb96209a"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\lib\\runners\\index.ts": {
-    "mtime": 1777962885.9867828,
-    "hash": "d53e5aa7918a0de29fab30942afd0965"
+    "mtime": 1778050999.3907225,
+    "hash": "fae3c8616380d5d49bd7d4c0c0f05d56"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\lib\\runners\\inr-coag.ts": {
     "mtime": 1777107674.1655223,
@@ -2504,8 +2500,8 @@
     "hash": "daf8ff078da7ebec826bc6e3af6ee767"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\lib\\runners\\o2-cylinder.ts": {
-    "mtime": 1777963238.4067552,
-    "hash": "6da8c8c9df5370f9279f60a22fa28736"
+    "mtime": 1778051087.6621165,
+    "hash": "2c279578dfdff620aacaa7af2ec4429c"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\lib\\runners\\oakland.ts": {
     "mtime": 1777107674.1922438,
@@ -3678,6 +3674,10 @@
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\scripts\\sync-mediapipe.mjs": {
     "mtime": 1777386592.6952546,
     "hash": "d9d8c1f73493703bb430ea0be5bff608"
+  },
+  "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\scripts\\sync-vault.ps1": {
+    "mtime": 1778051361.380907,
+    "hash": "c587b7a82f9a33edfa5acc8c97ec2392"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\scripts\\validate-scales.mjs": {
     "mtime": 1778046927.745355,
