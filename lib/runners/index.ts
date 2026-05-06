@@ -568,7 +568,6 @@ export const RUNNER_LOADERS: Record<string, RunnerLoader> = {
   "calcium-pth": () => import('./calcium-pth'),
   "martin-hopkins": () => import('./martin-hopkins'),
   "non-hdl": () => import('./non-hdl'),
-  "aa-grad": () => import('./aa-grad'),
   "henderson-lab": () => import('./henderson-lab'),
   "spot-urine": () => import('./spot-urine'),
   "hs-ctn": () => import('./hs-ctn'),

@@ -118,7 +118,7 @@ Cylinder factor = ${cyl?.factor} л/psi → ${totalLiters.toFixed(0)} л газ�
       ],
       related: [
         { id: 'gli',         title: 'Спирометрия GLI' },
-        { id: 'aa-grad',     title: 'A-a градиент' },
+        { id: 'aa-gradient', title: 'A-a градиент' },
         { id: 'pf-ratio',    title: 'P/F (PaO₂ / FiO₂)' },
       ],
     };
