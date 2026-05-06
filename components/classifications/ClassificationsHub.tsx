@@ -27,7 +27,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Icd10Lookup from '@/components/icd10/Icd10Lookup';
-import IcdLookupV2 from '@/components/icd10/IcdLookupV2';
 
 interface Chapter { id: string; range: string; title: string }
 interface CodeEntry { code: string; title: string; chapter: string }
@@ -379,49 +378,79 @@ function Icd10InfoCard({
 // ───────────────────────────────────────────────────────────────────
 
 function Icd11Panel() {
-  // V2 архитектура: data живёт в Web Worker + IndexedDB.
-  // Этот компонент только триггерит загрузку и показывает InfoCard.
-  // Сам поиск/browse делает IcdLookupV2 через worker.
-  const [meta, setMeta] = useState<{
-    version: string; lastUpdated: string; source: string;
-    chapters: number; codes: number;
-  } | null>(null);
+  // Используем проверенный Icd10Lookup (тот же что для МКБ-10) —
+  // визуал унифицирован, expand работает inline, нет lazy-fetch гонок.
+  // Загружаем slim (codes only) + details параллельно и мержим в bank.
+  const [bank, setBank] = useState<Bank | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     void (async () => {
       try {
-        // Лёгкий fetch только metadata-полей (slim JSON начинается с них —
-        // в Chrome/Firefox ответ всё равно scheduler-ом с приоритетом).
-        const r = await fetch('/icd11-slim.json?v=3.3.0', { cache: 'force-cache' });
-        if (!r.ok) return;
-        const bank = await r.json();
+        // Параллельно: slim (метаданные + коды) + details (definitions)
+        const [slimR, detailsR] = await Promise.all([
+          fetch('/icd11-slim.json?v=3.3.0', { cache: 'force-cache' }),
+          fetch('/icd11-details.json?v=3.3.0', { cache: 'force-cache' }),
+        ]);
+        if (!slimR.ok) throw new Error(`slim ${slimR.status}`);
+        const slim = await slimR.json();
+        const details = detailsR.ok ? await detailsR.json() : {};
         if (cancelled) return;
-        setMeta({
-          version: bank.version,
-          lastUpdated: bank.lastUpdated,
-          source: bank.source,
-          chapters: bank.chapters?.length ?? 0,
-          codes: bank.codes?.length ?? 0,
-        });
-      } catch { /* */ }
+
+        // Merge details в codes (inline формат для Icd10Lookup)
+        const merged: typeof slim & { codes: Bank['codes'] } = {
+          ...slim,
+          codes: slim.codes.map((c: { code: string; title: string; chapter: string }) => {
+            const d = details[c.code];
+            return d ? { ...c, ...d } : c;
+          }),
+        };
+        setBank(merged as Bank);
+      } catch (e) {
+        if (!cancelled) setError((e as Error).message ?? 'load failed');
+      }
     })();
     return () => { cancelled = true; };
   }, []);
 
+  if (error) {
+    return (
+      <div style={{
+        padding: 24, borderRadius: 12, background: '#FEF2F2',
+        border: '1px solid #FECACA', color: '#991B1B', fontSize: 14,
+      }}>
+        Не удалось загрузить справочник МКБ-11: {error}.
+      </div>
+    );
+  }
+
+  if (!bank) {
+    return (
+      <div style={{ padding: '8px 0' }}>
+        <div className="lc-shimmer" style={{ height: 28, width: 240, borderRadius: 8, marginBottom: 14 }} />
+        <div className="lc-shimmer" style={{ height: 16, width: '60%', borderRadius: 6, marginBottom: 24 }} />
+        <div className="lc-shimmer" style={{ height: 48, width: '100%', borderRadius: 12, marginBottom: 12 }} />
+        <div className="lc-shimmer" style={{ height: 64, width: '100%', borderRadius: 12 }} />
+      </div>
+    );
+  }
+
   return (
     <>
       <Icd11InfoCard
-        version={meta?.version ?? '3.2.0'}
-        lastUpdated={meta?.lastUpdated ?? '2026-05-06'}
-        source={meta?.source ?? 'WHO ICD-11 MMS — release 2024-01'}
-        codesCount={meta?.codes ?? 34663}
-        chaptersCount={meta?.chapters ?? 28}
+        version={bank.version}
+        lastUpdated={bank.lastUpdated}
+        source={bank.source}
+        codesCount={bank.codes.length}
+        chaptersCount={bank.chapters.length}
       />
-      <IcdLookupV2
-        slimUrl="/icd11-slim.json?v=3.3.0"
-        detailsUrl="/icd11-details.json?v=3.3.0"
-        idbKey="bordik-icd11-v3.3.0"
+      <Icd10Lookup
+        chapters={bank.chapters}
+        codes={bank.codes}
+        version={bank.version}
+        lastUpdated={bank.lastUpdated}
+        source={bank.source}
         hideHeading
       />
     </>
@@ -489,44 +518,63 @@ function Icd11InfoCard({
 // ───────────────────────────────────────────────────────────────────
 
 function Icd10cmPanel() {
-  const [meta, setMeta] = useState<{
-    version: string; lastUpdated: string; source: string;
-    chapters: number; codes: number;
-  } | null>(null);
+  const [bank, setBank] = useState<Bank | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     void (async () => {
       try {
         const r = await fetch('/icd10cm-slim.json?v=1.0.0', { cache: 'force-cache' });
-        if (!r.ok) return;
-        const bank = await r.json();
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const slim = await r.json();
         if (cancelled) return;
-        setMeta({
-          version: bank.version,
-          lastUpdated: bank.lastUpdated,
-          source: bank.source,
-          chapters: bank.chapters?.length ?? 0,
-          codes: bank.codes?.length ?? 0,
-        });
-      } catch { /* */ }
+        // ICD-10-CM не имеет definitions (платный AMA Tabular List) →
+        // details merge skip
+        setBank(slim as Bank);
+      } catch (e) {
+        if (!cancelled) setError((e as Error).message ?? 'load failed');
+      }
     })();
     return () => { cancelled = true; };
   }, []);
 
+  if (error) {
+    return (
+      <div style={{
+        padding: 24, borderRadius: 12, background: '#FEF2F2',
+        border: '1px solid #FECACA', color: '#991B1B', fontSize: 14,
+      }}>
+        Не удалось загрузить ICD-10-CM: {error}.
+      </div>
+    );
+  }
+  if (!bank) {
+    return (
+      <div style={{ padding: '8px 0' }}>
+        <div className="lc-shimmer" style={{ height: 28, width: 240, borderRadius: 8, marginBottom: 14 }} />
+        <div className="lc-shimmer" style={{ height: 16, width: '60%', borderRadius: 6, marginBottom: 24 }} />
+        <div className="lc-shimmer" style={{ height: 48, width: '100%', borderRadius: 12, marginBottom: 12 }} />
+        <div className="lc-shimmer" style={{ height: 64, width: '100%', borderRadius: 12 }} />
+      </div>
+    );
+  }
+
   return (
     <>
       <Icd10cmInfoCard
-        version={meta?.version ?? '1.0.0'}
-        lastUpdated={meta?.lastUpdated ?? '2025-10-01'}
-        source={meta?.source ?? 'CMS ICD-10-CM FY2026'}
-        codesCount={meta?.codes ?? 74719}
-        chaptersCount={meta?.chapters ?? 22}
+        version={bank.version}
+        lastUpdated={bank.lastUpdated}
+        source={bank.source}
+        codesCount={bank.codes.length}
+        chaptersCount={bank.chapters.length}
       />
-      <IcdLookupV2
-        slimUrl="/icd10cm-slim.json?v=1.0.0"
-        detailsUrl="/icd10cm-details.json?v=1.0.0"
-        idbKey="bordik-icd10cm-v1.0.0"
+      <Icd10Lookup
+        chapters={bank.chapters}
+        codes={bank.codes}
+        version={bank.version}
+        lastUpdated={bank.lastUpdated}
+        source={bank.source}
         hideHeading
       />
     </>

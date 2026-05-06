@@ -56,8 +56,8 @@
     "hash": "a154834035feb41bb2f1cea27b24cf2e"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\app\\sw.ts": {
-    "mtime": 1778094519.80929,
-    "hash": "c9f57205450beb1a148e4894bff8138b"
+    "mtime": 1778094922.2834775,
+    "hash": "6bd7a122e40e995246d3fd8c7a92501e"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\app\\admin\\layout.tsx": {
     "mtime": 1777385855.3402252,
@@ -192,8 +192,8 @@
     "hash": "b91c7196e09725ba7d7695bd1a9a5882"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\components\\classifications\\ClassificationsHub.tsx": {
-    "mtime": 1778094569.203624,
-    "hash": "06f07946ad7ebb0612d5c0b82c350ddd"
+    "mtime": 1778095002.2608626,
+    "hash": "eafedd32abf2f91c66e8fe138256c6df"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\components\\course\\CourseHeader.tsx": {
     "mtime": 1777106063.0656214,
@@ -3703,6 +3703,10 @@
     "mtime": 1778066250.165583,
     "hash": "57aa18a6e80b989dfbd87d4a2e298c15"
   },
+  "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\scripts\\import-icd10cm.mjs": {
+    "mtime": 1778094871.5581863,
+    "hash": "7e38a5e0215d96f90f9cbd61ebd6d30e"
+  },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\scripts\\import-icd11-mms.mjs": {
     "mtime": 1778066778.3585198,
     "hash": "a1bcc4f4f83366ab421397a0e77e65b1"
@@ -3975,6 +3979,22 @@
     "mtime": 1776317925.5716157,
     "hash": "f15aaa42d5d299d091b1171097ea56ad"
   },
+  "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\data\\raw\\icd10cm-2026\\icd10cm_codes_2026.txt": {
+    "mtime": 1749212949.0,
+    "hash": "7bcf0339f5a6d3fac1302ca46388f814"
+  },
+  "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\data\\raw\\icd10cm-2026\\icd10cm_codes_addenda_2026.txt": {
+    "mtime": 1749212951.0,
+    "hash": "58b6d13e77821284af34476c2d82f6c0"
+  },
+  "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\data\\raw\\icd10cm-2026\\icd10cm_order_2026.txt": {
+    "mtime": 1749212955.0,
+    "hash": "c9784a0c336a92d6d2ecd2080b8a3928"
+  },
+  "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\data\\raw\\icd10cm-2026\\icd10cm_order_addenda_2026.txt": {
+    "mtime": 1749212958.0,
+    "hash": "05ffce13fdcf84ab91d3899b505d2225"
+  },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\docs\\all-tools.md": {
     "mtime": 1777878184.7535827,
     "hash": "6be12b7ae75ec9ae1a0c1b29ea9d9da3"
@@ -4082,6 +4102,14 @@
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\tmp-pdf\\output.txt": {
     "mtime": 1776370952.9381995,
     "hash": "978b3e5faa1c25252297df1d7bcd18d9"
+  },
+  "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\data\\raw\\icd10cm-2026\\icd10cmCodesFile.pdf": {
+    "mtime": 1749212945.0,
+    "hash": "9e27d789b4b781909c086ed7b3336d49"
+  },
+  "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\data\\raw\\icd10cm-2026\\icd10OrderFiles.pdf": {
+    "mtime": 1749212943.0,
+    "hash": "1b023e42409776b46fddf227e78e3b6e"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\tmp-pdf\\input.pdf": {
     "mtime": 1776370897.204443,
