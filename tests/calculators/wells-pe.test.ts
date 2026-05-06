@@ -47,4 +47,24 @@ describe('wells-pe · bands', () => {
     expect(findBand(bands, 1.5)).toBeDefined();
     expect(findBand(bands, 4.5)).toBeDefined();
   });
+
+  // ─── P1-3 boundary tests (AUDIT_REPORT_2026-05-06) ───────────────────
+  // Старые bands [0-1.9] / [2-6.4] / [6.5-12.5] оставляли «дырки» 1.9-2
+  // и 6.4-6.5 — туда попадал findBand fallback (первый band = Low),
+  // что КЛИНИЧЕСКИ НЕВЕРНО. Новые [0-1.5] / [2-6] / [6.5-12.5]
+  // touching по 0.5-step.
+  describe('P1-3 boundary correctness (Wells PE half-step bands)', () => {
+    it('score = 1.5 (наибольшее «Low») → Low', () => {
+      expect(findBand(bands, 1.5).label).toMatch(/Низк/);
+    });
+    it('score = 2 (нижняя граница «Moderate») → Moderate', () => {
+      expect(findBand(bands, 2).label).toMatch(/Умеренн/);
+    });
+    it('score = 6 (верхняя граница «Moderate») → Moderate', () => {
+      expect(findBand(bands, 6).label).toMatch(/Умеренн/);
+    });
+    it('score = 6.5 (нижняя граница «High») → High', () => {
+      expect(findBand(bands, 6.5).label).toMatch(/Высок/);
+    });
+  });
 });

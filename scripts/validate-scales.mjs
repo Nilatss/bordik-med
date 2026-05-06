@@ -38,6 +38,33 @@ function pickDefault(inp) {
   }
 }
 
+// Tools whose bands intentionally overlap or are non-monotone — categorical
+// classifiers, not severity scales. Documented in docs/BACKLOG.md (раздел
+// «Сознательно пропущено»). Skipping prevents noise that masks real issues.
+const SKIP_GAP_CHECK = new Set([
+  'start',  // MCI triage: Black/Red/Yellow/Green — overlapping points by design
+  'lqts',   // Schwartz LQTS: half-step (.5) categorical risk thresholds
+]);
+
+/**
+ * Detect step size of a score tool: 1 (integer points) или 0.5 (half-step,
+ * когда хотя бы один critère награждается 1.5 / 0.5 points).
+ * Calculator-tools задают шкалу вручную — для них используем 1 по умолчанию.
+ */
+function detectStep(runner) {
+  if (runner?.kind !== 'score' || !Array.isArray(runner.inputs)) return 1;
+  const collect = (n) => (typeof n === 'number' && n !== 0 ? n : null);
+  const allPts = [];
+  for (const inp of runner.inputs) {
+    if (inp.type === 'checkbox') { const p = collect(inp.points); if (p !== null) allPts.push(p); }
+    if (inp.type === 'select' && Array.isArray(inp.options)) {
+      for (const o of inp.options) { const p = collect(o.points); if (p !== null) allPts.push(p); }
+    }
+  }
+  // Если хоть одно значение не целое — half-step scale.
+  return allPts.some((p) => !Number.isInteger(p)) ? 0.5 : 1;
+}
+
 const files = readdirSync(DIR).filter(f => f.endsWith('.ts') && f !== 'index.ts').sort();
 
 const issues = [];
@@ -83,12 +110,20 @@ for (const file of files) {
     issues.push({ id, kind: 'unsorted', msg: 'segments not sorted by min (author preference)' });
   }
 
-  // Gaps — evaluated on sorted copy
-  for (let i = 0; i < sortedSegs.length - 1; i++) {
-    const a = sortedSegs[i], b = sortedSegs[i + 1];
-    const touches = a.max === b.min || a.max + 1 === b.min;
-    if (!touches) {
-      issues.push({ id, kind: 'gap', msg: `gap between [${a.min}-${a.max}] and [${b.min}-${b.max}]` });
+  // Gaps — evaluated on sorted copy.
+  // Шкала может быть integer (step=1) или half-step (step=0.5).
+  // Touching: a.max == b.min, либо a.max + step == b.min (discrete).
+  // Tools в SKIP_GAP_CHECK — категориальные классификаторы с overlap by design.
+  if (!SKIP_GAP_CHECK.has(id)) {
+    const step = detectStep(runner);
+    for (let i = 0; i < sortedSegs.length - 1; i++) {
+      const a = sortedSegs[i], b = sortedSegs[i + 1];
+      // floating-point safe: |Δ| < 1e-9 эквивалентно равенству.
+      const eq = (x, y) => Math.abs(x - y) < 1e-9;
+      const touches = eq(a.max, b.min) || eq(a.max + step, b.min) || eq(a.max + 1, b.min);
+      if (!touches) {
+        issues.push({ id, kind: 'gap', msg: `gap between [${a.min}-${a.max}] and [${b.min}-${b.max}]` });
+      }
     }
   }
 
