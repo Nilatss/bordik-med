@@ -74,6 +74,16 @@ const runner: CalculatorTool = {
     compute: (v)=>{
             const scr = Number(v.scr);
             const age = Number(v.age);
+            // P0 guard: scr ≤ 0 → Math.log(scr/150) = -Infinity при scr=0;
+            //          age ≤ 0 → Math.log(age) = -Infinity.
+            if (!Number.isFinite(scr) || scr <= 0 || !Number.isFinite(age) || age <= 0) {
+                return {
+                    value: 'N/A',
+                    unit: 'мл/мин/1,73 м²',
+                    interpretation: 'Введите корректные значения (креатинин > 0, возраст > 0)',
+                    color: '#9CA3AF',
+                };
+            }
             const female = v.sex === 'f';
             // Revised Lund-Malmö (Björk 2011) - piecewise on creatinine (µmol/L)
             // Female thresholds: < 150 vs ≥ 150

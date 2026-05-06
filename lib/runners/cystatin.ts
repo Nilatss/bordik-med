@@ -73,6 +73,15 @@ const runner: CalculatorTool = {
     compute: (v)=>{
             const c = Number(v.cysc);
             const age = Number(v.age);
+            // P0 guard: cystatin C ≤ 0 → Math.pow(0, -0.499) = Infinity.
+            if (!Number.isFinite(c) || c <= 0 || !Number.isFinite(age) || age <= 0) {
+                return {
+                    value: 'N/A',
+                    unit: 'мл/мин/1,73 м²',
+                    interpretation: 'Введите корректные значения (Cys-C > 0, возраст > 0)',
+                    color: '#9CA3AF',
+                };
+            }
             const female = v.sex === 'f';
             const minTerm = Math.pow(Math.min(c / 0.8, 1), -0.499);
             const maxTerm = Math.pow(Math.max(c / 0.8, 1), -1.328);
