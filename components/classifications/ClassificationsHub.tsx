@@ -511,13 +511,22 @@ function Icd10cmPanel() {
     let cancelled = false;
     void (async () => {
       try {
-        const r = await fetch('/icd10cm-slim.json?v=1.0.0', { cache: 'force-cache' });
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        const slim = await r.json();
+        const [slimR, detailsR] = await Promise.all([
+          fetch('/icd10cm-slim.json?v=1.1.0', { cache: 'force-cache' }),
+          fetch('/icd10cm-details.json?v=1.1.0', { cache: 'force-cache' }),
+        ]);
+        if (!slimR.ok) throw new Error(`slim ${slimR.status}`);
+        const slim = await slimR.json();
+        const details = detailsR.ok ? await detailsR.json() : {};
         if (cancelled) return;
-        // ICD-10-CM не имеет definitions (платный AMA Tabular List) →
-        // details merge skip
-        setBank(slim as Bank);
+        const merged: typeof slim & { codes: Bank['codes'] } = {
+          ...slim,
+          codes: slim.codes.map((c: { code: string; title: string; chapter: string }) => {
+            const d = details[c.code];
+            return d ? { ...c, ...d } : c;
+          }),
+        };
+        setBank(merged as Bank);
       } catch (e) {
         if (!cancelled) setError((e as Error).message ?? 'load failed');
       }
