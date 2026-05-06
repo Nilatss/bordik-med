@@ -192,8 +192,8 @@
     "hash": "b91c7196e09725ba7d7695bd1a9a5882"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\components\\classifications\\ClassificationsHub.tsx": {
-    "mtime": 1778066048.0312176,
-    "hash": "9d4c44b694a4d741b1868fe47d0acb46"
+    "mtime": 1778066319.3704498,
+    "hash": "ba50e107a1a8c9b423c8549499166f39"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\components\\course\\CourseHeader.tsx": {
     "mtime": 1777106063.0656214,
@@ -3666,6 +3666,10 @@
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\scripts\\generate-pwa-icons.mjs": {
     "mtime": 1776663019.3242333,
     "hash": "b264e3f2a25b07d61ad7ac58223ac561"
+  },
+  "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\scripts\\import-icd10-full.mjs": {
+    "mtime": 1778066250.165583,
+    "hash": "57aa18a6e80b989dfbd87d4a2e298c15"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\scripts\\normalize-dashes.mjs": {
     "mtime": 1776659405.1456525,

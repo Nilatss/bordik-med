@@ -50,7 +50,7 @@ interface TabDef {
 
 const TABS: TabDef[] = [
   { id: 'icd10',    label: 'МКБ-10',      fullName: 'МКБ-10 (ВОЗ rev.10, РФ-адаптация)',     region: 'РФ / СНГ',                status: 'active' },
-  { id: 'icd11',    label: 'МКБ-11',      fullName: 'МКБ-11 (ВОЗ rev.11, MMS)',                region: 'Мир (с 2022)',           status: 'roadmap' },
+  { id: 'icd11',    label: 'МКБ-11',      fullName: 'МКБ-11 (ВОЗ rev.11, MMS)',                region: 'Мир (с 2022)',           status: 'active' },
   { id: 'icd10cm',  label: 'ICD-10-CM',   fullName: 'ICD-10-CM (Clinical Modification)',       region: 'США (диагнозы)',         status: 'roadmap' },
   { id: 'icd10pcs', label: 'ICD-10-PCS',  fullName: 'ICD-10-PCS (Procedure Coding System)',    region: 'США (процедуры)',        status: 'roadmap' },
   { id: 'icd10ca',  label: 'ICD-10-CA',   fullName: 'ICD-10-CA (Canadian Adaptation)',         region: 'Канада',                  status: 'roadmap' },
@@ -68,20 +68,7 @@ interface StubInfo {
   notes: string[];
 }
 
-const STUBS: Record<Exclude<TabId, 'icd10'>, StubInfo> = {
-  icd11: {
-    description: 'Международная классификация болезней 11-го пересмотра ВОЗ (2022). Принята как актуальный международный стандарт. В РФ — внедряется параллельно с МКБ-10; полный переход в публичной медицине ожидается к 2027-2028.',
-    coverage: '~17 000 категорий + extension codes (специфика, тяжесть, локализация)',
-    source: 'WHO ICD-11 Browser (icd.who.int)',
-    sourceUrl: 'https://icd.who.int/browse/2024-01/mms/ru',
-    license: 'CC BY-ND 3.0 IGO (некоммерческое использование с указанием авторства)',
-    eta: 'Q3 2026',
-    notes: [
-      'Постcoordination: один диагноз = базовый код + extension-коды (cluster).',
-      'Cross-walk МКБ-10 ↔ МКБ-11 от ВОЗ — частичный, ~80% покрытия 1:1.',
-      'Перевод на русский — официальный, доступен через icd.who.int.',
-    ],
-  },
+const STUBS: Record<Exclude<TabId, 'icd10' | 'icd11'>, StubInfo> = {
   icd10cm: {
     description: 'Clinical Modification ICD-10 для США. Используется для всех диагнозов в системе здравоохранения США (Medicare, Medicaid, частное страхование). Обновляется ежегодно (FY = October 1).',
     coverage: '~73 000 кодов (FY2025)',
@@ -158,6 +145,8 @@ export default function ClassificationsHub({ defaultTab = 'icd10' }: Props) {
   const [activeTab, setActiveTab] = useState<TabId>(defaultTab);
   const [bank, setBank] = useState<Bank | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [icd11Bank, setIcd11Bank] = useState<Bank | null>(null);
+  const [icd11Error, setIcd11Error] = useState<string | null>(null);
 
   // Грузим МКБ-10 starter JSON только когда открыт его таб (lazy).
   // ?v=2.0.0 — полная база Минздрава РФ (14 641 код).
@@ -177,6 +166,23 @@ export default function ClassificationsHub({ defaultTab = 'icd10' }: Props) {
     })();
     return () => { cancelled = true; };
   }, [activeTab, bank, error]);
+
+  // Грузим МКБ-11 MMS JSON (lazy). v=1.0.0 — WHO 2018-12 release, 31 632 кода.
+  useEffect(() => {
+    if (activeTab !== 'icd11' || icd11Bank || icd11Error) return;
+    let cancelled = false;
+    void (async () => {
+      try {
+        const r = await fetch('/icd11-mms.json?v=1.0.0', { cache: 'no-cache' });
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const json = await r.json();
+        if (!cancelled) setIcd11Bank(json);
+      } catch (e) {
+        if (!cancelled) setIcd11Error((e as Error).message ?? 'load failed');
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [activeTab, icd11Bank, icd11Error]);
 
   const formatDate = (iso: string): string => {
     const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
@@ -266,10 +272,13 @@ export default function ClassificationsHub({ defaultTab = 'icd10' }: Props) {
           {activeTab === 'icd10' && (
             <Icd10Panel bank={bank} error={error} formatDate={formatDate} />
           )}
-          {activeTab !== 'icd10' && (
+          {activeTab === 'icd11' && (
+            <Icd11Panel bank={icd11Bank} error={icd11Error} formatDate={formatDate} />
+          )}
+          {activeTab !== 'icd10' && activeTab !== 'icd11' && (
             <RoadmapPanel
               tab={TABS.find((t) => t.id === activeTab)!}
-              info={STUBS[activeTab]}
+              info={STUBS[activeTab as Exclude<TabId, 'icd10' | 'icd11'>]}
             />
           )}
         </motion.div>
@@ -382,6 +391,124 @@ function Icd10InfoCard({
         <Fact label="Лицензия" value="Public domain (ВОЗ) · перевод Минздрава РФ" />
         <Fact label="Версия базы" value={`${version} · обновлено ${lastUpdated}`} />
       </dl>
+    </div>
+  );
+}
+
+// ───────────────────────────────────────────────────────────────────
+// Панель МКБ-11 — рабочая (WHO MMS 2018-12)
+// ───────────────────────────────────────────────────────────────────
+
+function Icd11Panel({
+  bank, error, formatDate,
+}: { bank: Bank | null; error: string | null; formatDate: (iso: string) => string }) {
+  if (error) {
+    return (
+      <div style={{
+        padding: 24, borderRadius: 12, background: '#FEF2F2',
+        border: '1px solid #FECACA', color: '#991B1B', fontSize: 14,
+      }}>
+        Не удалось загрузить справочник МКБ-11: {error}.
+      </div>
+    );
+  }
+  if (!bank) {
+    return (
+      <div style={{ padding: '8px 0' }}>
+        <div className="lc-shimmer" style={{ height: 28, width: 240, borderRadius: 8, marginBottom: 14 }} />
+        <div className="lc-shimmer" style={{ height: 16, width: '60%', borderRadius: 6, marginBottom: 24 }} />
+        <div className="lc-shimmer" style={{ height: 48, width: '100%', borderRadius: 12, marginBottom: 12 }} />
+        <div className="lc-shimmer" style={{ height: 64, width: '100%', borderRadius: 12 }} />
+      </div>
+    );
+  }
+  return (
+    <>
+      <Icd11InfoCard
+        version={bank.version}
+        lastUpdated={formatDate(bank.lastUpdated)}
+        source={bank.source}
+        codesCount={bank.codes.length}
+        chaptersCount={bank.chapters.length}
+      />
+      <Icd10Lookup
+        chapters={bank.chapters}
+        codes={bank.codes}
+        version={bank.version}
+        lastUpdated={formatDate(bank.lastUpdated)}
+        source={bank.source}
+        hideHeading
+      />
+    </>
+  );
+}
+
+function Icd11InfoCard({
+  version, lastUpdated, source, codesCount, chaptersCount,
+}: { version: string; lastUpdated: string; source: string; codesCount: number; chaptersCount: number }) {
+  return (
+    <div style={{
+      maxWidth: 880,
+      background: '#FFFFFF',
+      borderRadius: 16,
+      border: '1px solid #E5E7EB',
+      padding: '32px 32px 28px',
+      marginBottom: 24,
+    }}>
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 20, flexWrap: 'wrap' }}>
+        <div style={{ flex: 1, minWidth: 240 }}>
+          <div style={{ fontSize: 11, color: '#9CA3AF', letterSpacing: '0.06em', textTransform: 'uppercase', fontWeight: 600, marginBottom: 6 }}>
+            Мир · ВОЗ rev.11 · MMS
+          </div>
+          <h2 style={{ fontSize: 22, fontWeight: 700, margin: '0 0 6px', color: '#101010' }}>
+            МКБ-11 (ICD-11 MMS, WHO 2018-12 release)
+          </h2>
+          <div style={{ fontSize: 14, color: '#6B7280', lineHeight: 1.55 }}>
+            Международная классификация болезней 11-го пересмотра ВОЗ — Mortality
+            and Morbidity Statistics linearization. Включает все терминальные категории,
+            extension-коды (XA-XY) для постcoordination и раздел традиционной медицины (SA-SJ).
+            Названия категорий — английские (официальные WHO); главы переведены на русский.
+          </div>
+        </div>
+        <span style={{
+          flexShrink: 0,
+          display: 'inline-flex', alignItems: 'center', gap: 6,
+          background: '#DCFCE7', color: '#166534',
+          fontSize: 11, fontWeight: 600, letterSpacing: '0.04em',
+          textTransform: 'uppercase',
+          padding: '6px 12px', borderRadius: 999,
+        }}>
+          <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#22C55E' }} />
+          Рабочая система
+        </span>
+      </div>
+
+      <dl style={{
+        display: 'grid', gridTemplateColumns: '160px 1fr', gap: '12px 16px',
+        margin: '0 0 16px', padding: '20px 20px',
+        background: '#F9FAFB', borderRadius: 12,
+        border: '1px solid #F3F4F6',
+      }}>
+        <Fact label="Покрытие" value={`${codesCount.toLocaleString('ru-RU')} кодов · ${chaptersCount} глав (включая X-extension и V-functioning)`} />
+        <Fact label="Источник" value={
+          <a href="https://icd.who.int/browse/2024-01/mms/en" target="_blank" rel="noopener noreferrer"
+             style={{ color: '#2563EB', textDecoration: 'none', borderBottom: '1px solid #BFDBFE' }}>
+            {source}
+          </a>
+        } />
+        <Fact label="Лицензия" value="CC BY-ND 3.0 IGO (WHO) — некоммерческое использование с указанием авторства" />
+        <Fact label="Версия базы" value={`${version} · обновлено ${lastUpdated}`} />
+      </dl>
+
+      <div style={{
+        padding: '14px 18px', background: '#FFFBEB', border: '1px solid #FDE68A',
+        borderRadius: 10, fontSize: 13, color: '#78350F', lineHeight: 1.5,
+      }}>
+        <strong>Phase 1:</strong> доступны коды, заголовки и иерархия по главам.
+        Полные определения (definitions / описания) ВОЗ предоставляет только через
+        авторизованное API icd.who.int — будут добавлены в Phase 2 после регистрации
+        OAuth-доступа. Для просмотра описания сейчас — кликните «Открыть в WHO Browser».
+      </div>
     </div>
   );
 }
