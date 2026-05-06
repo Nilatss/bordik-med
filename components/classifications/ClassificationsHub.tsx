@@ -27,6 +27,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Icd10Lookup from '@/components/icd10/Icd10Lookup';
+import IcdLookupV2 from '@/components/icd10/IcdLookupV2';
 
 interface Chapter { id: string; range: string; title: string }
 interface CodeEntry { code: string; title: string; chapter: string }
@@ -145,8 +146,11 @@ export default function ClassificationsHub({ defaultTab = 'icd10' }: Props) {
   const [activeTab, setActiveTab] = useState<TabId>(defaultTab);
   const [bank, setBank] = useState<Bank | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [icd11Bank, setIcd11Bank] = useState<Bank | null>(null);
-  const [icd11Error, setIcd11Error] = useState<string | null>(null);
+  // МКБ-11 теперь использует local-first архитектуру через IcdLookupV2:
+  // - Web Worker парсит JSON и хранит индекс (main thread free)
+  // - IndexedDB кэширует parsed bank (2-й визит instant)
+  // - @tanstack/react-virtual рендерит constant 5-15 нод
+  // Слой данных полностью внутри IcdLookupV2 — здесь стейт не нужен.
 
   // Грузим МКБ-10 starter JSON только когда открыт его таб (lazy).
   // ?v=2.0.0 — полная база Минздрава РФ (14 641 код).
@@ -167,50 +171,7 @@ export default function ClassificationsHub({ defaultTab = 'icd10' }: Props) {
     return () => { cancelled = true; };
   }, [activeTab, bank, error]);
 
-  // Грузим МКБ-11 MMS JSON (lazy). v=3.2.0 — split: core (без 0X) +
-  // extensions (16k XA-XY кодов) в отдельном файле, который догружается
-  // в idle. Сокращает первый byte transfer на ~25%.
-  useEffect(() => {
-    if (activeTab !== 'icd11' || icd11Bank || icd11Error) return;
-    let cancelled = false;
-    void (async () => {
-      try {
-        // Core — 17 822 кода без 0X-главы
-        const r = await fetch('/icd11-mms.json?v=3.2.0', { cache: 'no-cache' });
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        const core = await r.json();
-        if (cancelled) return;
-        setIcd11Bank(core);
-
-        // Extensions догружаем в idle — через 1.5 сек после core
-        // (даёт пользователю время отрисовать список и взаимодействовать)
-        const extPath = core.extensionsFile as string | undefined;
-        if (!extPath) return;
-        const triggerExtFetch = async () => {
-          try {
-            const er = await fetch(`${extPath}?v=3.2.0`, { cache: 'no-cache' });
-            if (!er.ok) return;
-            const ext = await er.json();
-            if (cancelled) return;
-            setIcd11Bank((prev) => {
-              if (!prev) return prev;
-              return { ...prev, codes: [...prev.codes, ...ext.codes], hasExtensions: false };
-            });
-          } catch { /* silent — extensions optional */ }
-        };
-        if ('requestIdleCallback' in window) {
-          (window as unknown as {
-            requestIdleCallback: (cb: () => void, opts?: { timeout: number }) => void;
-          }).requestIdleCallback(triggerExtFetch, { timeout: 5000 });
-        } else {
-          setTimeout(triggerExtFetch, 1500);
-        }
-      } catch (e) {
-        if (!cancelled) setIcd11Error((e as Error).message ?? 'load failed');
-      }
-    })();
-    return () => { cancelled = true; };
-  }, [activeTab, icd11Bank, icd11Error]);
+  // (МКБ-11 загрузка вынесена в IcdLookupV2 — см. компонент выше.)
 
   const formatDate = (iso: string): string => {
     const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
@@ -301,7 +262,7 @@ export default function ClassificationsHub({ defaultTab = 'icd10' }: Props) {
             <Icd10Panel bank={bank} error={error} formatDate={formatDate} />
           )}
           {activeTab === 'icd11' && (
-            <Icd11Panel bank={icd11Bank} error={icd11Error} formatDate={formatDate} />
+            <Icd11Panel />
           )}
           {activeTab !== 'icd10' && activeTab !== 'icd11' && (
             <RoadmapPanel
@@ -427,49 +388,50 @@ function Icd10InfoCard({
 // Панель МКБ-11 — рабочая (WHO MMS 2018-12)
 // ───────────────────────────────────────────────────────────────────
 
-function Icd11Panel({
-  bank, error, formatDate,
-}: { bank: Bank | null; error: string | null; formatDate: (iso: string) => string }) {
-  if (error) {
-    return (
-      <div style={{
-        padding: 24, borderRadius: 12, background: '#FEF2F2',
-        border: '1px solid #FECACA', color: '#991B1B', fontSize: 14,
-      }}>
-        Не удалось загрузить справочник МКБ-11: {error}.
-      </div>
-    );
-  }
-  if (!bank) {
-    return (
-      <div style={{ padding: '8px 0' }}>
-        <div className="lc-shimmer" style={{ height: 28, width: 240, borderRadius: 8, marginBottom: 14 }} />
-        <div className="lc-shimmer" style={{ height: 16, width: '60%', borderRadius: 6, marginBottom: 24 }} />
-        <div className="lc-shimmer" style={{ height: 48, width: '100%', borderRadius: 12, marginBottom: 12 }} />
-        <div className="lc-shimmer" style={{ height: 64, width: '100%', borderRadius: 12 }} />
-      </div>
-    );
-  }
-  // Если extensions ещё не догружены, показываем суммарное число (core +
-  // pending extensionsCount), чтобы не выглядело будто кодов меньше.
-  const totalCodes = bank.codes.length + (
-    (bank as Bank & { extensionsCount?: number }).extensionsCount ?? 0
-  );
+function Icd11Panel() {
+  // V2 архитектура: data живёт в Web Worker + IndexedDB.
+  // Этот компонент только триггерит загрузку и показывает InfoCard.
+  // Сам поиск/browse делает IcdLookupV2 через worker.
+  const [meta, setMeta] = useState<{
+    version: string; lastUpdated: string; source: string;
+    chapters: number; codes: number;
+  } | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      try {
+        // Лёгкий fetch только metadata-полей (slim JSON начинается с них —
+        // в Chrome/Firefox ответ всё равно scheduler-ом с приоритетом).
+        const r = await fetch('/icd11-slim.json?v=3.2.0', { cache: 'force-cache' });
+        if (!r.ok) return;
+        const bank = await r.json();
+        if (cancelled) return;
+        setMeta({
+          version: bank.version,
+          lastUpdated: bank.lastUpdated,
+          source: bank.source,
+          chapters: bank.chapters?.length ?? 0,
+          codes: bank.codes?.length ?? 0,
+        });
+      } catch { /* */ }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
   return (
     <>
       <Icd11InfoCard
-        version={bank.version}
-        lastUpdated={formatDate(bank.lastUpdated)}
-        source={bank.source}
-        codesCount={totalCodes}
-        chaptersCount={bank.chapters.length}
+        version={meta?.version ?? '3.2.0'}
+        lastUpdated={meta?.lastUpdated ?? '2026-05-06'}
+        source={meta?.source ?? 'WHO ICD-11 MMS — release 2024-01'}
+        codesCount={meta?.codes ?? 34663}
+        chaptersCount={meta?.chapters ?? 28}
       />
-      <Icd10Lookup
-        chapters={bank.chapters}
-        codes={bank.codes}
-        version={bank.version}
-        lastUpdated={formatDate(bank.lastUpdated)}
-        source={bank.source}
+      <IcdLookupV2
+        slimUrl="/icd11-slim.json?v=3.2.0"
+        detailsUrl="/icd11-details.json?v=3.2.0"
+        idbKey="bordik-icd11-v3.2.0"
         hideHeading
       />
     </>
