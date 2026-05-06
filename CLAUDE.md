@@ -193,10 +193,21 @@ graphify . --obsidian --obsidian-dir ~/vault/graphify/bordik-med
 
 При вопросе пользователя — искать в этом порядке:
 
-1. **`CLAUDE.md`** (этот файл) — общие правила
-2. **`docs/UI_GUIDELINES.md`** — UI/UX вопросы
-3. **`docs/sessions/`** — что было сделано раньше
-4. **`docs/specs/<feature>.md`** — детали конкретной фичи
-5. **`docs/AUDIT_TODO_2026-05.md`** — что в работе
-6. **`graphify-out/graph.json`** — структура кода (если установлен Graphify)
+1. **`graphify-out/graph.json`** — структура кода (~280 токенов вместо 20k от ре-чтения 80 файлов). Если файл существует — **читать первым**. Получишь карту: какие модули/компоненты есть, как связаны.
+2. **`CLAUDE.md`** (этот файл) — общие правила, дизайн-система, навигация
+3. **`docs/UI_GUIDELINES.md`** — UI/UX вопросы
+4. **Свежий `docs/sessions/<YYYY-MM-DD>-*.md`** — что было сделано в прошлой сессии (`ls docs/sessions/ | sort -r | head -3`, выбери не template)
+5. **`docs/TASKS_SNAPSHOT_2026-05-06.md`** — реестр задач с метриками (или самый свежий снимок)
+6. **`docs/specs/<feature>.md`** — детали конкретной фичи
+7. **`docs/AUDIT_TODO_2026-05.md`** + **`docs/CONTENT_ROADMAP.md`** + **`docs/BACKLOG.md`** — что открыто
+
+## Команды Claude Code (slash-команды)
+
+В этом репо настроены проектные команды в `.claude/commands/`:
+
+- **`/resume`** — загрузить memory-слои в начале новой сессии. Читает graph.json (если есть) → CLAUDE.md → последний session-лог → открытые задачи. Выдаёт краткое резюме (≤200 слов) с топ-3 P0/P1.
+
+- **`/save`** — создать session-лог в `docs/sessions/`. Использует frontmatter из `_template.md`, заполняет 5 секций, привязывает к коммитам сессии. Не коммитит автоматически — пользователь решает.
+
+`.claude/settings.json` содержит permission-allowlist для безопасных команд (git status/log/diff, tsc, vitest, tsx) — Claude не будет переспрашивать разрешение на каждый запуск.
 7. **Только потом** — `Read`/`Grep` по реальным файлам

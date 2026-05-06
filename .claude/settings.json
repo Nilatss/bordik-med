@@ -1,0 +1,19 @@
+{
+  "$schema": "https://schemas.anthropic.com/claude-code/settings.schema.json",
+  "_comment": "Проектные настройки Claude Code для Bordik Med. CLAUDE.md описывает продуктовые стандарты и memory-pattern. Slash-команды /resume и /save живут в .claude/commands/.",
+  "permissions": {
+    "allow": [
+      "Bash(git status*)",
+      "Bash(git log*)",
+      "Bash(git diff*)",
+      "Bash(git show*)",
+      "Bash(git branch*)",
+      "Bash(git rev-parse*)",
+      "Bash(npx tsc --noEmit*)",
+      "Bash(npx vitest run*)",
+      "Bash(npm test*)",
+      "Bash(npx tsx scripts/*)",
+      "Bash(npx tsx scripts/validate-scales.mjs*)"
+    ]
+  }
+}
