@@ -94,28 +94,39 @@ try {
         Write-Host "[WARN] graphify install returned an error, continuing without hook." -ForegroundColor Yellow
     }
 
-    # --- Step 4: first index ---
+    # --- Step 4: prepare Obsidian vault directory ---
+    # Graphify v0.7+ indexes via the Claude Code skill (/graphify .)
+    # rather than a direct CLI call. We just prepare the vault folder.
     Write-Host ""
-    Write-Host "[4/4] Indexing repository..." -ForegroundColor Yellow
-    $obsidianDir = Join-Path $env:USERPROFILE 'vault\bordik-med\graphify'
+    Write-Host "[4/4] Preparing Obsidian vault..." -ForegroundColor Yellow
+    $obsidianDir = Join-Path $env:USERPROFILE 'vault\bordik-med'
     if (-not (Test-Path $obsidianDir)) {
         New-Item -ItemType Directory -Path $obsidianDir -Force | Out-Null
     }
-    & graphify . --obsidian --obsidian-dir $obsidianDir
-    if ($LASTEXITCODE -ne 0) { throw "graphify index failed (exit $LASTEXITCODE)" }
+    Write-Host "      Vault folder: $obsidianDir" -ForegroundColor Green
 
     Write-Host ""
-    Write-Host "=== Done! ===" -ForegroundColor Green
+    Write-Host "=== Setup complete! ===" -ForegroundColor Green
     Write-Host ""
-    Write-Host "Created:" -ForegroundColor White
-    Write-Host "  - graphify-out/graph.json              (code structure for Claude)"
-    Write-Host "  - $obsidianDir   (for Obsidian)"
+    Write-Host "What was installed:" -ForegroundColor White
+    Write-Host "  - Python 3.13 + graphifyy package" -ForegroundColor White
+    Write-Host "  - Graphify Claude Code skill at ~/.claude/skills/graphify/" -ForegroundColor White
+    Write-Host "  - Empty Obsidian vault: $obsidianDir" -ForegroundColor White
     Write-Host ""
-    Write-Host "Next: open Obsidian -> Open folder as vault -> select" -ForegroundColor White
-    Write-Host "  $env:USERPROFILE\vault\bordik-med"
-    Write-Host "Press Ctrl+G in Obsidian to view the graph."
+    Write-Host "NEXT STEPS (manual):" -ForegroundColor Cyan
     Write-Host ""
-    Write-Host "On every git commit, graph.json rebuilds automatically." -ForegroundColor White
+    Write-Host "  1. Open Claude Code in this repo (you may already be in it)." -ForegroundColor White
+    Write-Host "     If you have a session open, restart it so the new skill loads." -ForegroundColor White
+    Write-Host ""
+    Write-Host "  2. Type in Claude Code:" -ForegroundColor White
+    Write-Host "       /graphify ." -ForegroundColor Yellow
+    Write-Host "     This indexes the repo and creates graphify-out/graph.json." -ForegroundColor White
+    Write-Host ""
+    Write-Host "  3. Open Obsidian -> 'Open folder as vault' -> select:" -ForegroundColor White
+    Write-Host "       $obsidianDir" -ForegroundColor Yellow
+    Write-Host "     Press Ctrl+G to see the code graph." -ForegroundColor White
+    Write-Host ""
+    Write-Host "On every git commit, graph.json rebuilds automatically (hook installed)." -ForegroundColor DarkGray
     Pause-And-Exit 0
 }
 catch {
