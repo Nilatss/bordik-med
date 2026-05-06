@@ -36,11 +36,17 @@ interface Props {
   version: string;
   lastUpdated: string;
   source: string;
+  /**
+   * Если true — встроенный заголовок "МКБ-10" + подзаголовок не рендерится
+   * (используется когда контейнер сам показывает rich-info-card, чтобы
+   * не дублировать h2).
+   */
+  hideHeading?: boolean;
 }
 
 const INITIAL_PER_CHAPTER = 50;
 
-export default function Icd10Lookup({ chapters, codes, version, lastUpdated, source }: Props) {
+export default function Icd10Lookup({ chapters, codes, version, lastUpdated, source, hideHeading = false }: Props) {
   const [q, setQ] = useState('');
   const [activeChapter, setActiveChapter] = useState<string | null>(null);
   const [expandedChapters, setExpandedChapters] = useState<Set<string>>(new Set());
@@ -133,25 +139,27 @@ export default function Icd10Lookup({ chapters, codes, version, lastUpdated, sou
     >
       {/* Standard staggered fade-in: header → search → pills → list.
           Тот же паттерн что и в /tools (см. ToolsPage.tsx). */}
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1] }}
-        style={{ marginBottom: 20 }}
-      >
-        <h2 style={{
-          fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 700,
-          color: '#1A1A1A', marginBottom: 6, letterSpacing: '-0.02em',
-        }}>
-          МКБ-10
-        </h2>
-        <p style={{
-          fontFamily: 'var(--font-body)', fontSize: 14, color: '#6B7280', lineHeight: 1.5,
-        }}>
-          Справочник кодов: поиск по диагнозу или коду. Все 22 главы МКБ-10
-          в редакции ВОЗ (русский перевод Минздрава).
-        </p>
-      </motion.div>
+      {!hideHeading && (
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1] }}
+          style={{ marginBottom: 20 }}
+        >
+          <h2 style={{
+            fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 700,
+            color: '#1A1A1A', marginBottom: 6, letterSpacing: '-0.02em',
+          }}>
+            МКБ-10
+          </h2>
+          <p style={{
+            fontFamily: 'var(--font-body)', fontSize: 14, color: '#6B7280', lineHeight: 1.5,
+          }}>
+            Справочник кодов: поиск по диагнозу или коду. Все 22 главы МКБ-10
+            в редакции ВОЗ (русский перевод Минздрава).
+          </p>
+        </motion.div>
+      )}
 
       {/* Search — F5F6F8 пилл с иконкой и кнопкой очистки */}
       <motion.div

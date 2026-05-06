@@ -185,25 +185,11 @@ export default function ClassificationsHub({ defaultTab = 'icd10' }: Props) {
 
   return (
     <main id="main-content" style={{
-      maxWidth: 1200, margin: '0 auto', padding: '24px',
+      padding: 0,
       fontFamily: 'var(--font-body, system-ui)',
     }}>
       {/* Шапка хаба */}
       <header style={{ marginBottom: 24 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 8 }}>
-          <span style={{
-            display: 'inline-flex', alignItems: 'center', gap: 6,
-            background: '#FEF3C7', color: '#92400E',
-            fontSize: 11, fontWeight: 600, letterSpacing: '0.04em',
-            textTransform: 'uppercase',
-            padding: '4px 10px', borderRadius: 999,
-          }}>
-            BETA
-          </span>
-          <span style={{ fontSize: 11, color: '#9CA3AF', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
-            {TABS.length} систем · 1 рабочая, 6 в разработке
-          </span>
-        </div>
         <h1 style={{ fontSize: 32, fontWeight: 700, margin: '0 0 8px', color: '#101010' }}>
           Классификации
         </h1>
@@ -319,13 +305,83 @@ function Icd10Panel({
     );
   }
   return (
-    <Icd10Lookup
-      chapters={bank.chapters}
-      codes={bank.codes}
-      version={bank.version}
-      lastUpdated={formatDate(bank.lastUpdated)}
-      source={bank.source}
-    />
+    <>
+      <Icd10InfoCard
+        version={bank.version}
+        lastUpdated={formatDate(bank.lastUpdated)}
+        source={bank.source}
+        codesCount={bank.codes.length}
+        chaptersCount={bank.chapters.length}
+      />
+      <Icd10Lookup
+        chapters={bank.chapters}
+        codes={bank.codes}
+        version={bank.version}
+        lastUpdated={formatDate(bank.lastUpdated)}
+        source={bank.source}
+        hideHeading
+      />
+    </>
+  );
+}
+
+// ───────────────────────────────────────────────────────────────────
+// Rich-info card для МКБ-10 (та же визуальная модель, что у RoadmapPanel,
+// но статус — "рабочая система", и нет CTA "открыть источник", потому что
+// поиск встроен прямо ниже).
+// ───────────────────────────────────────────────────────────────────
+
+function Icd10InfoCard({
+  version, lastUpdated, source, codesCount, chaptersCount,
+}: { version: string; lastUpdated: string; source: string; codesCount: number; chaptersCount: number }) {
+  return (
+    <div style={{
+      maxWidth: 880,
+      background: '#FFFFFF',
+      borderRadius: 16,
+      border: '1px solid #E5E7EB',
+      padding: '32px 32px 28px',
+      marginBottom: 24,
+    }}>
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 20, flexWrap: 'wrap' }}>
+        <div style={{ flex: 1, minWidth: 240 }}>
+          <div style={{ fontSize: 11, color: '#9CA3AF', letterSpacing: '0.06em', textTransform: 'uppercase', fontWeight: 600, marginBottom: 6 }}>
+            РФ / СНГ · ВОЗ rev.10
+          </div>
+          <h2 style={{ fontSize: 22, fontWeight: 700, margin: '0 0 6px', color: '#101010' }}>
+            МКБ-10 (ВОЗ rev.10, РФ-адаптация Минздрава)
+          </h2>
+          <div style={{ fontSize: 14, color: '#6B7280', lineHeight: 1.55 }}>
+            Российская редакция Международной классификации болезней 10-го пересмотра.
+            Используется в РФ для всей официальной диагностической отчётности — амбулаторной
+            и стационарной. Поиск работает в офлайн-режиме после первой загрузки.
+          </div>
+        </div>
+        <span style={{
+          flexShrink: 0,
+          display: 'inline-flex', alignItems: 'center', gap: 6,
+          background: '#DCFCE7', color: '#166534',
+          fontSize: 11, fontWeight: 600, letterSpacing: '0.04em',
+          textTransform: 'uppercase',
+          padding: '6px 12px', borderRadius: 999,
+        }}>
+          <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#22C55E' }} />
+          Рабочая система
+        </span>
+      </div>
+
+      <dl style={{
+        display: 'grid', gridTemplateColumns: '160px 1fr', gap: '12px 16px',
+        margin: '0 0 4px', padding: '20px 20px',
+        background: '#F9FAFB', borderRadius: 12,
+        border: '1px solid #F3F4F6',
+      }}>
+        <Fact label="Покрытие" value={`${codesCount.toLocaleString('ru-RU')} кодов · ${chaptersCount} глав`} />
+        <Fact label="Источник" value={source} />
+        <Fact label="Лицензия" value="Public domain (ВОЗ) · перевод Минздрава РФ" />
+        <Fact label="Версия базы" value={`${version} · обновлено ${lastUpdated}`} />
+      </dl>
+    </div>
   );
 }
 
