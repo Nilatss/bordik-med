@@ -167,17 +167,44 @@ export default function ClassificationsHub({ defaultTab = 'icd10' }: Props) {
     return () => { cancelled = true; };
   }, [activeTab, bank, error]);
 
-  // Грузим МКБ-11 MMS JSON (lazy). v=3.0.0 — Phase 3: полный обход дерева
-  // MMS 2024-01 через WHO API. 34 663 кодов, 100% RU titles.
+  // Грузим МКБ-11 MMS JSON (lazy). v=3.1.0 — split: core (без 0X) +
+  // extensions (16k XA-XY кодов) в отдельном файле, который догружается
+  // в idle. Сокращает первый byte transfer на ~25%.
   useEffect(() => {
     if (activeTab !== 'icd11' || icd11Bank || icd11Error) return;
     let cancelled = false;
     void (async () => {
       try {
-        const r = await fetch('/icd11-mms.json?v=3.0.0', { cache: 'no-cache' });
+        // Core — 17 822 кода без 0X-главы
+        const r = await fetch('/icd11-mms.json?v=3.1.0', { cache: 'no-cache' });
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        const json = await r.json();
-        if (!cancelled) setIcd11Bank(json);
+        const core = await r.json();
+        if (cancelled) return;
+        setIcd11Bank(core);
+
+        // Extensions догружаем в idle — через 1.5 сек после core
+        // (даёт пользователю время отрисовать список и взаимодействовать)
+        const extPath = core.extensionsFile as string | undefined;
+        if (!extPath) return;
+        const triggerExtFetch = async () => {
+          try {
+            const er = await fetch(`${extPath}?v=3.1.0`, { cache: 'no-cache' });
+            if (!er.ok) return;
+            const ext = await er.json();
+            if (cancelled) return;
+            setIcd11Bank((prev) => {
+              if (!prev) return prev;
+              return { ...prev, codes: [...prev.codes, ...ext.codes], hasExtensions: false };
+            });
+          } catch { /* silent — extensions optional */ }
+        };
+        if ('requestIdleCallback' in window) {
+          (window as unknown as {
+            requestIdleCallback: (cb: () => void, opts?: { timeout: number }) => void;
+          }).requestIdleCallback(triggerExtFetch, { timeout: 5000 });
+        } else {
+          setTimeout(triggerExtFetch, 1500);
+        }
       } catch (e) {
         if (!cancelled) setIcd11Error((e as Error).message ?? 'load failed');
       }

@@ -65,12 +65,21 @@ interface Props {
 }
 
 const INITIAL_PER_CHAPTER = 50;
+/** Размер chunk при подгрузке "Показать ещё". Не делаем больше чтобы DOM
+ * рендер был < 100ms даже на слабых устройствах. Особенно критично для
+ * МКБ-11 главы 0X (16 800 extension кодов). */
+const CHUNK_SIZE = 500;
 
 export default function Icd10Lookup({ chapters, codes, version, lastUpdated, source, hideHeading = false }: Props) {
   const [q, setQ] = useState('');
   const [activeChapter, setActiveChapter] = useState<string | null>(null);
   const [expandedChapters, setExpandedChapters] = useState<Set<string>>(new Set());
-  const [chapterShowAll, setChapterShowAll] = useState<Set<string>>(new Set());
+  /**
+   * Количество подгруженных chunk'ов сверх INITIAL_PER_CHAPTER для каждой
+   * главы. По умолчанию 0 (видно только INITIAL_PER_CHAPTER кодов).
+   * Каждый клик «Показать ещё» добавляет 1, что показывает +CHUNK_SIZE.
+   */
+  const [chapterChunks, setChapterChunks] = useState<Map<string, number>>(new Map());
   // Expand state раскрытых кодов хранится локально в каждом CodeRow
   // (useState внутри). Если в будущем понадобится "expand all" или
   // персистентность через URL — сюда вернём общий Set + контекст.
@@ -138,11 +147,18 @@ export default function Icd10Lookup({ chapters, codes, version, lastUpdated, sou
     });
   };
 
-  const toggleShowAll = (id: string) => {
-    setChapterShowAll((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
+  const loadMore = (id: string) => {
+    setChapterChunks((prev) => {
+      const next = new Map(prev);
+      next.set(id, (next.get(id) ?? 0) + 1);
+      return next;
+    });
+  };
+
+  const collapseChapter = (id: string) => {
+    setChapterChunks((prev) => {
+      const next = new Map(prev);
+      next.delete(id);
       return next;
     });
   };
@@ -284,8 +300,13 @@ export default function Icd10Lookup({ chapters, codes, version, lastUpdated, sou
             const list = codesByChapter.get(ch.id) ?? [];
             if (list.length === 0) return null;
             const isOpen = expandedChapters.has(ch.id);
-            const showAll = chapterShowAll.has(ch.id);
-            const visible = showAll ? list : list.slice(0, INITIAL_PER_CHAPTER);
+            const chunks = chapterChunks.get(ch.id) ?? 0;
+            const visibleCount = Math.min(
+              INITIAL_PER_CHAPTER + chunks * CHUNK_SIZE,
+              list.length,
+            );
+            const visible = list.slice(0, visibleCount);
+            const remaining = list.length - visibleCount;
             return (
               <ChapterAccordion
                 key={ch.id}
@@ -294,9 +315,11 @@ export default function Icd10Lookup({ chapters, codes, version, lastUpdated, sou
                 isOpen={isOpen}
                 onToggle={() => toggleChapter(ch.id)}
                 visible={visible}
-                hasMore={list.length > INITIAL_PER_CHAPTER}
-                showAll={showAll}
-                onToggleShowAll={() => toggleShowAll(ch.id)}
+                visibleCount={visibleCount}
+                remaining={remaining}
+                chunks={chunks}
+                onLoadMore={() => loadMore(ch.id)}
+                onCollapse={() => collapseChapter(ch.id)}
               />
             );
           })}
@@ -373,16 +396,18 @@ export default function Icd10Lookup({ chapters, codes, version, lastUpdated, sou
 
 function ChapterAccordion({
   chapter, count, isOpen, onToggle,
-  visible, hasMore, showAll, onToggleShowAll,
+  visible, visibleCount, remaining, chunks, onLoadMore, onCollapse,
 }: {
   chapter: Chapter;
   count: number;
   isOpen: boolean;
   onToggle: () => void;
   visible: CodeEntry[];
-  hasMore: boolean;
-  showAll: boolean;
-  onToggleShowAll: () => void;
+  visibleCount: number;
+  remaining: number;
+  chunks: number;
+  onLoadMore: () => void;
+  onCollapse: () => void;
 }) {
   return (
     <div style={{
@@ -474,34 +499,61 @@ function ChapterAccordion({
               {visible.map((c) => (
                 <CodeRow key={c.code} code={c} />
               ))}
-              {hasMore && (
-                <button
-                  type="button"
-                  onClick={onToggleShowAll}
-                  style={{
-                    margin: '8px 18px',
-                    padding: '8px 14px',
-                    background: '#EFF6FF',
-                    border: '1px solid #DBEAFE',
-                    borderRadius: 999,
-                    cursor: 'pointer',
-                    fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 600,
-                    color: '#2563EB',
-                    transition: 'background 150ms, border-color 150ms',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = '#DBEAFE';
-                    e.currentTarget.style.borderColor = '#BFDBFE';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = '#EFF6FF';
-                    e.currentTarget.style.borderColor = '#DBEAFE';
-                  }}
-                >
-                  {showAll
-                    ? `Свернуть до первых ${INITIAL_PER_CHAPTER}`
-                    : `Показать все ${count} кодов главы`}
-                </button>
+              {/* Pagination footer: подгружает по CHUNK_SIZE кодов за клик.
+                  Защищает от freeze при огромных главах (МКБ-11 0X = 16k). */}
+              {(remaining > 0 || chunks > 0) && (
+                <div style={{ display: 'flex', gap: 8, padding: '8px 18px 4px', flexWrap: 'wrap' }}>
+                  {remaining > 0 && (
+                    <button
+                      type="button"
+                      onClick={onLoadMore}
+                      style={{
+                        padding: '8px 14px',
+                        background: '#EFF6FF',
+                        border: '1px solid #DBEAFE',
+                        borderRadius: 999,
+                        cursor: 'pointer',
+                        fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 600,
+                        color: '#2563EB',
+                        transition: 'background 150ms, border-color 150ms',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = '#DBEAFE';
+                        e.currentTarget.style.borderColor = '#BFDBFE';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = '#EFF6FF';
+                        e.currentTarget.style.borderColor = '#DBEAFE';
+                      }}
+                    >
+                      {`Показать ещё ${Math.min(CHUNK_SIZE, remaining)} (показано ${visibleCount} из ${count})`}
+                    </button>
+                  )}
+                  {chunks > 0 && (
+                    <button
+                      type="button"
+                      onClick={onCollapse}
+                      style={{
+                        padding: '8px 14px',
+                        background: '#F5F6F8',
+                        border: '1px solid #E5E7EB',
+                        borderRadius: 999,
+                        cursor: 'pointer',
+                        fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 500,
+                        color: '#6B7280',
+                        transition: 'background 150ms',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = '#E5E7EB';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = '#F5F6F8';
+                      }}
+                    >
+                      Свернуть до {INITIAL_PER_CHAPTER}
+                    </button>
+                  )}
+                </div>
               )}
             </div>
           </motion.div>
