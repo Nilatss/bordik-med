@@ -167,14 +167,14 @@ export default function ClassificationsHub({ defaultTab = 'icd10' }: Props) {
     return () => { cancelled = true; };
   }, [activeTab, bank, error]);
 
-  // Грузим МКБ-11 MMS JSON (lazy). v=2.0.0 — WHO API enrichment Phase 2:
-  // 24 660 RU-переводов + 6527 definitions + inclusion/exclusion.
+  // Грузим МКБ-11 MMS JSON (lazy). v=3.0.0 — Phase 3: полный обход дерева
+  // MMS 2024-01 через WHO API. 34 663 кодов, 100% RU titles.
   useEffect(() => {
     if (activeTab !== 'icd11' || icd11Bank || icd11Error) return;
     let cancelled = false;
     void (async () => {
       try {
-        const r = await fetch('/icd11-mms.json?v=2.0.0', { cache: 'no-cache' });
+        const r = await fetch('/icd11-mms.json?v=3.0.0', { cache: 'no-cache' });
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         const json = await r.json();
         if (!cancelled) setIcd11Bank(json);
