@@ -1,7 +1,7 @@
 {
   "$readme": "Коррекция доз препаратов при ХБП/ХПБ. Стадии по KDIGO 2012/2024: G1 ≥90, G2 60-89, G3a 45-59, G3b 30-44, G4 15-29, G5 <15 мл/мин/1.73м². eGFR рассчитывается через CKD-EPI 2021 (race-free). Для DOAC и аминогликозидов FDA/EMA требуют CrCl по Cockcroft-Gault — учтено в поле 'use_crcl'.",
   "$verification_status": "🚨 BETA — Phase 1, требует верификации клин-фармакологом перед коммерческим использованием. Каждая запись имеет verified_by:null.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "lastUpdated": "2026-05-06",
   "sources": [
     "KDIGO 2024 CKD Evaluation and Management",
@@ -255,6 +255,249 @@
         { "egfr_min": 30, "egfr_max": 60, "label": "G3 (30-59)", "dose": "200-700 мг 2 р/сут", "comment": "Снижение дозы 50%.", "color": "#F59E0B" },
         { "egfr_min": 15, "egfr_max": 30, "label": "G4 (15-29)", "dose": "200-700 мг 1 р/сут", "comment": "Снижение дозы 75%. Контроль седации, миоклонуса.", "color": "#F59E0B" },
         { "egfr_min": 0, "egfr_max": 15, "label": "G5 / диализ (<15)", "dose": "100-300 мг 1 р/сут (после диализа на ГД)", "comment": "На гемодиализе: дополнительная доза 200-300 мг после диализа.", "color": "#EF4444" }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "id": "gentamicin",
+      "name_ru": "Гентамицин",
+      "name_en": "Gentamicin",
+      "atc": "J01GB03",
+      "class_ru": "Аминогликозид",
+      "renal_excretion_pct": 100,
+      "use_crcl": true,
+      "stages": [
+        { "egfr_min": 60, "egfr_max": 999, "label": "G1-G2 (≥60)", "dose": "Once-daily: 5-7 мг/кг каждые 24 ч; multiple-daily: 1.7 мг/кг каждые 8 ч", "comment": "Once-daily предпочтительнее (меньше нефротоксичности). TDM: пиковое 16-24 (q24) или 5-10 (q8); валины <1 мг/л (q24) или <2 (q8).", "color": "#22C55E" },
+        { "egfr_min": 40, "egfr_max": 60, "label": "G3a (40-59)", "dose": "5 мг/кг каждые 24 ч; либо удлинить интервал q12→q24", "comment": "TDM обязателен. Целевое: пиковое 6-10, валины <1 мг/л.", "color": "#F59E0B" },
+        { "egfr_min": 20, "egfr_max": 40, "label": "G3b-G4 (20-39)", "dose": "5 мг/кг каждые 36-48 ч (extended interval)", "comment": "Контролировать слух (ототоксичность). По возможности — альтернатива.", "color": "#EF4444" },
+        { "egfr_min": 0, "egfr_max": 20, "label": "G5 / диализ (<20)", "dose": "1.7 мг/кг — нагрузочно, далее по уровням (Cmin <1 мг/л)", "comment": "На ГД: после диализа доза 1-1.7 мг/кг. Постоянный TDM. Альтернатива при возможности.", "color": "#EF4444" }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "id": "amikacin",
+      "name_ru": "Амикацин",
+      "name_en": "Amikacin",
+      "atc": "J01GB06",
+      "class_ru": "Аминогликозид",
+      "renal_excretion_pct": 95,
+      "use_crcl": true,
+      "stages": [
+        { "egfr_min": 60, "egfr_max": 999, "label": "G1-G2 (≥60)", "dose": "Once-daily: 15 мг/кг каждые 24 ч; multiple-daily: 7.5 мг/кг каждые 12 ч", "comment": "TDM: пиковое 56-64 (q24) или 25-30 (q12); валины <5 мг/л.", "color": "#22C55E" },
+        { "egfr_min": 40, "egfr_max": 60, "label": "G3a (40-59)", "dose": "12 мг/кг каждые 24 ч", "comment": "TDM обязателен.", "color": "#F59E0B" },
+        { "egfr_min": 20, "egfr_max": 40, "label": "G3b-G4 (20-39)", "dose": "10-15 мг/кг каждые 36-48 ч", "comment": "Контроль слуха и креатинина 2-3 раза в неделю.", "color": "#EF4444" },
+        { "egfr_min": 0, "egfr_max": 20, "label": "G5 / диализ (<20)", "dose": "5-7.5 мг/кг после диализа, по уровням", "comment": "Постоянный TDM. Использовать только если нет альтернативы.", "color": "#EF4444" }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "id": "meropenem",
+      "name_ru": "Меропенем",
+      "name_en": "Meropenem",
+      "atc": "J01DH02",
+      "class_ru": "Карбапенем",
+      "renal_excretion_pct": 70,
+      "use_crcl": false,
+      "stages": [
+        { "egfr_min": 50, "egfr_max": 999, "label": "G1-G3a (≥50)", "dose": "1 г каждые 8 ч (в/в, инфузия 30 мин или продлённая 3 ч)", "comment": "Тяжёлые инфекции: 2 г каждые 8 ч.", "color": "#22C55E" },
+        { "egfr_min": 25, "egfr_max": 50, "label": "G3b-G4 (25-49)", "dose": "1 г каждые 12 ч", "comment": "Возможна продлённая инфузия 3 ч для повышения T>MIC.", "color": "#F59E0B" },
+        { "egfr_min": 10, "egfr_max": 25, "label": "G4-G5 (10-24)", "dose": "500 мг каждые 12 ч", "comment": "Контроль судорог (карбапенемы снижают порог).", "color": "#F59E0B" },
+        { "egfr_min": 0, "egfr_max": 10, "label": "Диализ (<10)", "dose": "500 мг каждые 24 ч; на ГД — после диализа", "comment": "Меропенем диализуется. Дополнительная доза не нужна.", "color": "#EF4444" }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "id": "cotrimoxazole",
+      "name_ru": "Ко-тримоксазол (бисептол)",
+      "name_en": "Trimethoprim/Sulfamethoxazole",
+      "atc": "J01EE01",
+      "class_ru": "Сульфаниламид + триметоприм",
+      "renal_excretion_pct": 65,
+      "use_crcl": false,
+      "stages": [
+        { "egfr_min": 30, "egfr_max": 999, "label": "G1-G3 (≥30)", "dose": "Стандарт: 960 мг (480/2) 2 р/сут. Pneumocystis: 5 мг/кг TMP каждые 6 ч.", "comment": "Стандарт.", "color": "#22C55E" },
+        { "egfr_min": 15, "egfr_max": 30, "label": "G4 (15-29)", "dose": "Снизить дозу на 50% или удлинить интервал до 12-24 ч", "comment": "Контроль K+ (триметоприм блокирует ENaC). Высокий риск гиперкалиемии у пожилых + иАПФ/спиронолактон.", "color": "#F59E0B" },
+        { "egfr_min": 0, "egfr_max": 15, "label": "G5 / диализ (<15)", "dose": "Не рекомендуется. Если необходимо — 25-50% дозы после диализа.", "comment": "Накопление триметоприма → гиперкалиемия. Альтернатива: цефтриаксон (ИМП), пентамидин (PCP).", "color": "#EF4444" }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "id": "nitrofurantoin",
+      "name_ru": "Нитрофурантоин",
+      "name_en": "Nitrofurantoin",
+      "atc": "J01XE01",
+      "class_ru": "Уросептик (нитрофуран)",
+      "renal_excretion_pct": 40,
+      "use_crcl": false,
+      "stages": [
+        { "egfr_min": 60, "egfr_max": 999, "label": "G1-G2 (≥60)", "dose": "100 мг (макрокристаллы) 4 р/сут × 5-7 дней (ИМП)", "comment": "Профилактика: 50-100 мг на ночь.", "color": "#22C55E" },
+        { "egfr_min": 30, "egfr_max": 60, "label": "G3 (30-59)", "dose": "Допустим краткий курс (≤7 дней) при остром цистите (KDIGO/AGS)", "comment": "Не использовать длительные курсы (профилактика) — недостаточная концентрация в моче, риск пневмонита.", "color": "#F59E0B" },
+        { "egfr_min": 0, "egfr_max": 30, "label": "G4-G5 (<30)", "dose": "Противопоказан", "comment": "Не достигает терапевтических концентраций в моче. Риск нейропатии и пневмонита. Альтернатива: фосфомицин, цефалексин.", "color": "#EF4444" }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "id": "bisoprolol",
+      "name_ru": "Бисопролол",
+      "name_en": "Bisoprolol",
+      "atc": "C07AB07",
+      "class_ru": "β1-блокатор (липофильный)",
+      "renal_excretion_pct": 50,
+      "use_crcl": false,
+      "stages": [
+        { "egfr_min": 40, "egfr_max": 999, "label": "G1-G3a (≥40)", "dose": "Старт 1.25-2.5 мг/сут, целевая 5-10 мг/сут", "comment": "Стандарт при ХСН и АГ. Без коррекции.", "color": "#22C55E" },
+        { "egfr_min": 0, "egfr_max": 40, "label": "G3b-G5 (<40)", "dose": "Макс 10 мг/сут (с осторожностью)", "comment": "В РФ-инструкции: при CrCl <20 макс 10 мг — но обычно дозы выше нет. Контроль ЧСС и АД.", "color": "#F59E0B" }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "id": "losartan",
+      "name_ru": "Лозартан",
+      "name_en": "Losartan",
+      "atc": "C09CA01",
+      "class_ru": "БРА (АРА II)",
+      "renal_excretion_pct": 35,
+      "use_crcl": false,
+      "stages": [
+        { "egfr_min": 30, "egfr_max": 999, "label": "G1-G3 (≥30)", "dose": "Старт 50 мг/сут, макс 100 мг/сут", "comment": "При диабетической нефропатии — стартовая доза 50 мг.", "color": "#22C55E" },
+        { "egfr_min": 15, "egfr_max": 30, "label": "G4 (15-29)", "dose": "Старт 25 мг/сут, осторожная титрация", "comment": "Контроль K+ и креатинина через 1-2 нед. Допустимо повышение креатинина до 30%.", "color": "#F59E0B" },
+        { "egfr_min": 0, "egfr_max": 15, "label": "G5 / диализ (<15)", "dose": "Использовать с осторожностью при гиперкалиемии", "comment": "У диализных — нет данных по дозированию. Альтернатива: альтернативный класс антигипертензивных.", "color": "#EF4444" }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "id": "spironolactone",
+      "name_ru": "Спиронолактон",
+      "name_en": "Spironolactone",
+      "atc": "C03DA01",
+      "class_ru": "K-сберегающий диуретик / антагонист альдостерона",
+      "renal_excretion_pct": 40,
+      "use_crcl": false,
+      "stages": [
+        { "egfr_min": 50, "egfr_max": 999, "label": "G1-G2 (≥50)", "dose": "Стандарт: 12.5-50 мг/сут (ХСН, цирроз)", "comment": "Контроль K+ через 1-2 нед, затем ежемесячно.", "color": "#22C55E" },
+        { "egfr_min": 30, "egfr_max": 50, "label": "G3 (30-49)", "dose": "12.5-25 мг/сут или через день", "comment": "Высокий риск гиперкалиемии. Контроль K+ еженедельно при старте.", "color": "#F59E0B" },
+        { "egfr_min": 0, "egfr_max": 30, "label": "G4-G5 (<30)", "dose": "Избегать", "comment": "Тяжёлый риск гиперкалиемии (особенно с иАПФ/БРА). Альтернатива: петлевые диуретики.", "color": "#EF4444" }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "id": "furosemide",
+      "name_ru": "Фуросемид",
+      "name_en": "Furosemide",
+      "atc": "C03CA01",
+      "class_ru": "Петлевой диуретик",
+      "renal_excretion_pct": 60,
+      "use_crcl": false,
+      "stages": [
+        { "egfr_min": 60, "egfr_max": 999, "label": "G1-G2 (≥60)", "dose": "20-80 мг п/о 1-2 р/сут; в/в 20-40 мг", "comment": "Стандарт при ХСН/отёках.", "color": "#22C55E" },
+        { "egfr_min": 30, "egfr_max": 60, "label": "G3 (30-59)", "dose": "40-160 мг п/о 1-2 р/сут; в/в 40-80 мг", "comment": "Для адекватного диуреза часто требуются повышенные дозы.", "color": "#F59E0B" },
+        { "egfr_min": 0, "egfr_max": 30, "label": "G4-G5 (<30)", "dose": "Высокие дозы (160-240 мг и более) или в/в инфузия", "comment": "Может потребоваться болюс + инфузия 5-20 мг/ч. Контроль K+, Mg, мочевины.", "color": "#F59E0B" }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "id": "oxycodone",
+      "name_ru": "Оксикодон",
+      "name_en": "Oxycodone",
+      "atc": "N02AA05",
+      "class_ru": "Опиоид",
+      "renal_excretion_pct": 20,
+      "use_crcl": false,
+      "stages": [
+        { "egfr_min": 60, "egfr_max": 999, "label": "G1-G2 (≥60)", "dose": "5-15 мг п/о каждые 4-6 ч (короткое действие); 10 мг каждые 12 ч (пролонг)", "comment": "Без коррекции.", "color": "#22C55E" },
+        { "egfr_min": 30, "egfr_max": 60, "label": "G3 (30-59)", "dose": "Снизить дозу на 25-50% или удлинить интервал", "comment": "Метаболиты накапливаются, но менее токсичны чем у морфина.", "color": "#F59E0B" },
+        { "egfr_min": 0, "egfr_max": 30, "label": "G4-G5 (<30)", "dose": "Снизить дозу на 50%, осторожная титрация", "comment": "Предпочтительнее морфина при ХБП. На ГД диализуется частично.", "color": "#F59E0B" }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "id": "tramadol",
+      "name_ru": "Трамадол",
+      "name_en": "Tramadol",
+      "atc": "N02AX02",
+      "class_ru": "Опиоид + СИОЗС-эффект",
+      "renal_excretion_pct": 30,
+      "use_crcl": true,
+      "stages": [
+        { "egfr_min": 30, "egfr_max": 999, "label": "G1-G3a (≥30)", "dose": "50-100 мг каждые 4-6 ч (макс 400 мг/сут)", "comment": "Стандарт.", "color": "#22C55E" },
+        { "egfr_min": 0, "egfr_max": 30, "label": "G3b-G5 (<30)", "dose": "50-100 мг каждые 12 ч (макс 200 мг/сут)", "comment": "Удлинение интервала. Учитывать риск судорог (метаболит O-DSMT накапливается). Избегать сочетания с СИОЗС/ТЦА (серотонин-синдром).", "color": "#EF4444" }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "id": "fentanyl",
+      "name_ru": "Фентанил",
+      "name_en": "Fentanyl",
+      "atc": "N02AB03",
+      "class_ru": "Опиоид (CYP3A4 субстрат)",
+      "renal_excretion_pct": 7,
+      "use_crcl": false,
+      "stages": [
+        { "egfr_min": 60, "egfr_max": 999, "label": "G1-G2 (≥60)", "dose": "Трансдермально: 12-100 мкг/ч каждые 72 ч; в/в: 25-100 мкг болюс", "comment": "Стандарт.", "color": "#22C55E" },
+        { "egfr_min": 10, "egfr_max": 60, "label": "G3-G4 (10-59)", "dose": "Снизить начальную дозу на 25-50%; титрация по эффекту", "comment": "Хороший выбор при ХБП — нет активных метаболитов с почечной экскрецией. Учитывать накопление при инфузии (липофилен).", "color": "#22C55E" },
+        { "egfr_min": 0, "egfr_max": 10, "label": "Диализ (<10)", "dose": "Снизить начальную дозу на 50-75%", "comment": "Не диализуется. Предпочтительный опиоид при терминальной ХБП (вместе с метадоном/бупренорфином).", "color": "#F59E0B" }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "id": "methotrexate",
+      "name_ru": "Метотрексат",
+      "name_en": "Methotrexate",
+      "atc": "L01BA01",
+      "class_ru": "Антиметаболит (антагонист фолата)",
+      "renal_excretion_pct": 90,
+      "use_crcl": false,
+      "stages": [
+        { "egfr_min": 60, "egfr_max": 999, "label": "G1-G2 (≥60)", "dose": "Низкие дозы (РА): 7.5-25 мг 1 р/нед п/о/п/к. Онко: высокие дозы 0.5-12 г/м²", "comment": "Низкие дозы относительно безопасны при нормальной функции почек.", "color": "#22C55E" },
+        { "egfr_min": 30, "egfr_max": 60, "label": "G3 (30-59)", "dose": "Низкие: 7.5-15 мг 1 р/нед (снизить на 25-50%). Высокие: противопоказаны.", "comment": "Контроль ОАК, креатинина, трансаминаз каждые 2-4 нед. Избегать НПВС, ко-тримоксазола.", "color": "#F59E0B" },
+        { "egfr_min": 0, "egfr_max": 30, "label": "G4-G5 (<30)", "dose": "Противопоказан", "comment": "Накопление → миелосупрессия, нефротоксичность, мукозит. Альтернатива: гидроксихлорохин, лефлуномид (с коррекцией дозы).", "color": "#EF4444" }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "id": "pregabalin",
+      "name_ru": "Прегабалин",
+      "name_en": "Pregabalin",
+      "atc": "N03AX16",
+      "class_ru": "Габапентиноид",
+      "renal_excretion_pct": 98,
+      "use_crcl": false,
+      "stages": [
+        { "egfr_min": 60, "egfr_max": 999, "label": "G1-G2 (≥60)", "dose": "75-300 мг 2 р/сут (макс 600 мг/сут)", "comment": "Стандарт при нейропатической боли, эпилепсии, ГТР.", "color": "#22C55E" },
+        { "egfr_min": 30, "egfr_max": 60, "label": "G3 (30-59)", "dose": "75-150 мг 2 р/сут (макс 300 мг/сут)", "comment": "Снижение дозы 50%.", "color": "#F59E0B" },
+        { "egfr_min": 15, "egfr_max": 30, "label": "G4 (15-29)", "dose": "25-75 мг 1 р/сут (макс 150 мг/сут)", "comment": "Снижение 75%. Контроль седации, головокружения.", "color": "#F59E0B" },
+        { "egfr_min": 0, "egfr_max": 15, "label": "G5 / диализ (<15)", "dose": "25-75 мг 1 р/сут; на ГД — дополнительно 25-50 мг после диализа", "comment": "На гемодиализе диализуется хорошо. Подбор по индивидуальной переносимости.", "color": "#EF4444" }
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "id": "acyclovir",
+      "name_ru": "Ацикловир",
+      "name_en": "Acyclovir",
+      "atc": "J05AB01",
+      "class_ru": "Противовирусный (ацикло-аналог)",
+      "renal_excretion_pct": 85,
+      "use_crcl": false,
+      "stages": [
+        { "egfr_min": 50, "egfr_max": 999, "label": "G1-G3a (≥50)", "dose": "Herpes zoster: 800 мг 5 р/сут × 7 дней. ВПГ-энцефалит: 10 мг/кг в/в каждые 8 ч.", "comment": "Стандарт. Хорошая гидратация для профилактики кристаллурии.", "color": "#22C55E" },
+        { "egfr_min": 25, "egfr_max": 50, "label": "G3b (25-49)", "dose": "Удлинить интервал в 1.5 раза (например, q8 → q12)", "comment": "При в/в применении — медленная инфузия (≥1 ч) и хорошая гидратация (риск кристаллурии).", "color": "#F59E0B" },
+        { "egfr_min": 10, "egfr_max": 25, "label": "G4 (10-24)", "dose": "Удлинить интервал до q12-q24", "comment": "Контроль креатинина и неврологических симптомов (тремор, миоклонус, психоз).", "color": "#F59E0B" },
+        { "egfr_min": 0, "egfr_max": 10, "label": "Диализ (<10)", "dose": "50% дозы каждые 24 ч; на ГД — после диализа", "comment": "Диализуется хорошо. Альтернатива: фоскарнет при резистентности.", "color": "#EF4444" }
       ],
       "verified_by": null,
       "verified_at": null

@@ -496,8 +496,8 @@
     "hash": "106241ba0355227ef87a6b2ebe96285f"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\lib\\tool-meta-data.ts": {
-    "mtime": 1778051053.8746488,
-    "hash": "9bcd62b4b0576b1e359393a2585cb160"
+    "mtime": 1778052156.442588,
+    "hash": "2f44d4de6780ed03b21c948d5b351b23"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\lib\\tool-meta-helpers.ts": {
     "mtime": 1777392894.7850995,
@@ -512,8 +512,8 @@
     "hash": "16f37266d5be3913d3555b1cfc197f15"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\lib\\tools-catalog.ts": {
-    "mtime": 1778051101.5237963,
-    "hash": "ae68ce6d137422ba7f6740733acc65d4"
+    "mtime": 1778052174.8600938,
+    "hash": "38df35c57fa6f51f6c8a687ec1582a20"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\lib\\tools-runners.ts": {
     "mtime": 1777393026.6679628,
@@ -1996,8 +1996,8 @@
     "hash": "642c233b4ba63f0253230cc1eb96209a"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\lib\\runners\\index.ts": {
-    "mtime": 1778050999.3907225,
-    "hash": "fae3c8616380d5d49bd7d4c0c0f05d56"
+    "mtime": 1778052061.5041263,
+    "hash": "9d78d3aa7f12fbc193073fb0f188ad07"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\lib\\runners\\inr-coag.ts": {
     "mtime": 1777107674.1655223,
@@ -2834,6 +2834,10 @@
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\lib\\runners\\red-blood.ts": {
     "mtime": 1777107445.617258,
     "hash": "d9d8c8c2b45f68b74e6f5f63ba8e817d"
+  },
+  "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\lib\\runners\\renal-dose.ts": {
+    "mtime": 1778052051.381295,
+    "hash": "6c45a9529f2b7fc08b890f680ca0bb5f"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\lib\\runners\\renal.ts": {
     "mtime": 1776680327.121341,
@@ -3830,6 +3834,10 @@
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\tests\\calculators\\ranson.test.ts": {
     "mtime": 1777393584.6600292,
     "hash": "7d9d24620f47ea472f91dc1bbefd0a22"
+  },
+  "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\tests\\calculators\\renal-dose.test.ts": {
+    "mtime": 1778052241.2123663,
+    "hash": "b927ced3ee3f7f94099c154964423921"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\tests\\calculators\\score-bands-integrity.test.ts": {
     "mtime": 1777394775.474323,
