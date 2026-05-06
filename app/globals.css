@@ -1328,9 +1328,13 @@ main:has(.stats-page) {
   }
 }
 
-/* Generic shimmer block — reused by the lazy-route loading fallback so
-   clicking a nav item gives instant visual feedback while the chunk
-   downloads instead of a blank flash. */
+/* Generic shimmer block — reused by lazy-route loading fallback и
+   плейсхолдером картинок (CourseIllustration). До этого keyframe
+   sk-shimmer не был определён в файле — анимация молча не запускалась. */
+@keyframes sk-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
 .lc-shimmer {
   background: linear-gradient(90deg, #F1F3F6 0%, #E8EAEE 50%, #F1F3F6 100%);
   background-size: 200% 100%;

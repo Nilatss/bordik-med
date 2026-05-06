@@ -6,7 +6,7 @@
  * Each illustration is minimalist, stylised, and fits the clean UI.
  */
 
-import type { ReactElement } from 'react';
+import { useState, type ReactElement } from 'react';
 
 const COLORS = {
   ink: '#1A1A1A',
@@ -390,6 +390,78 @@ const illustrationMap: Record<string, () => ReactElement> = {
   '1.1.11': EbbinghausCurve,
 };
 
+/**
+ * Изображение с состояниями загрузки и ошибки.
+ *
+ * До этого `<img>` рендерился сразу: на медленной сети / 404 пользователь
+ * видел пустой блок без обратной связи. Теперь:
+ *   - до load: skeleton-shimmer (lc-shimmer) с aspect-ratio 16:9.
+ *     Картинка скрыта через opacity:0, чтобы избежать FOUC-вспышки.
+ *   - load OK: opacity 0 → 1 за 200ms (мягкий fade-in).
+ *   - error: nice fallback-блок с иконкой и текстом (без сломанной
+ *     иконки браузера).
+ */
+function ImageWithSkeleton({ src, alt }: { src: string; alt: string }) {
+  const [loaded, setLoaded] = useState(false);
+  const [errored, setErrored] = useState(false);
+
+  if (errored) {
+    return (
+      <div style={{
+        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+        gap: 8,
+        padding: '32px 16px',
+        background: '#F5F6F8',
+        borderRadius: 8,
+        color: '#9CA3AF',
+        fontSize: 13,
+        textAlign: 'center',
+      }}>
+        <svg width={28} height={28} viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+          <rect x="3" y="3" width="18" height="18" rx="2" />
+          <circle cx="9" cy="9" r="2" />
+          <path d="M21 15l-5-5L5 21" />
+        </svg>
+        <span>{alt || 'Иллюстрация недоступна'}</span>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ position: 'relative', minHeight: 80 }}>
+      {!loaded && (
+        <div
+          className="lc-shimmer"
+          aria-hidden
+          style={{
+            position: 'absolute', inset: 0,
+            borderRadius: 8,
+            aspectRatio: '16 / 9',
+          }}
+        />
+      )}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <picture>
+        <source srcSet={src.replace(/\.png$/i, '.webp')} type="image/webp" />
+        <img
+          src={src}
+          alt={alt}
+          loading="lazy"
+          decoding="async"
+          onLoad={() => setLoaded(true)}
+          onError={() => setErrored(true)}
+          style={{
+            width: '100%', height: 'auto', display: 'block', borderRadius: 8,
+            opacity: loaded ? 1 : 0,
+            transition: 'opacity 200ms cubic-bezier(0.22,1,0.36,1)',
+          }}
+        />
+      </picture>
+    </div>
+  );
+}
+
 export function CourseIllustration({ id }: { id: string }) {
   const img = imageMap[id];
   const Cmp = illustrationMap[id];
@@ -404,20 +476,7 @@ export function CourseIllustration({ id }: { id: string }) {
       padding: 12,
     }}>
       {img ? (
-        // <picture>: modern browsers download the WebP (~50–150 kB),
-        // legacy browsers fall back to the optimised PNG. Native lazy-load
-        // + async decode keep the initial paint snappy on slow links.
-        // eslint-disable-next-line @next/next/no-img-element
-        <picture>
-          <source srcSet={img.src.replace(/\.png$/i, '.webp')} type="image/webp" />
-          <img
-            src={img.src}
-            alt={img.alt}
-            loading="lazy"
-            decoding="async"
-            style={{ width: '100%', height: 'auto', display: 'block', borderRadius: 8 }}
-          />
-        </picture>
+        <ImageWithSkeleton src={img.src} alt={img.alt} />
       ) : Cmp ? (
         <Cmp />
       ) : null}
