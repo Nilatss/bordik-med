@@ -52,7 +52,7 @@ interface TabDef {
 const TABS: TabDef[] = [
   { id: 'icd10',    label: 'МКБ-10',      fullName: 'МКБ-10 (ВОЗ rev.10, РФ-адаптация)',     region: 'РФ / СНГ',                status: 'active' },
   { id: 'icd11',    label: 'МКБ-11',      fullName: 'МКБ-11 (ВОЗ rev.11, MMS)',                region: 'Мир (с 2022)',           status: 'active' },
-  { id: 'icd10cm',  label: 'ICD-10-CM',   fullName: 'ICD-10-CM (Clinical Modification)',       region: 'США (диагнозы)',         status: 'roadmap' },
+  { id: 'icd10cm',  label: 'ICD-10-CM',   fullName: 'ICD-10-CM (Clinical Modification, FY2026)', region: 'США (диагнозы)',         status: 'active' },
   { id: 'icd10pcs', label: 'ICD-10-PCS',  fullName: 'ICD-10-PCS (Procedure Coding System)',    region: 'США (процедуры)',        status: 'roadmap' },
   { id: 'icd10ca',  label: 'ICD-10-CA',   fullName: 'ICD-10-CA (Canadian Adaptation)',         region: 'Канада',                  status: 'roadmap' },
   { id: 'icd10gm',  label: 'ICD-10-GM',   fullName: 'ICD-10-GM (German Modification)',         region: 'Германия',                status: 'roadmap' },
@@ -69,20 +69,7 @@ interface StubInfo {
   notes: string[];
 }
 
-const STUBS: Record<Exclude<TabId, 'icd10' | 'icd11'>, StubInfo> = {
-  icd10cm: {
-    description: 'Clinical Modification ICD-10 для США. Используется для всех диагнозов в системе здравоохранения США (Medicare, Medicaid, частное страхование). Обновляется ежегодно (FY = October 1).',
-    coverage: '~73 000 кодов (FY2025)',
-    source: 'CDC / NCHS — National Center for Health Statistics',
-    sourceUrl: 'https://www.cdc.gov/nchs/icd/icd-10-cm/index.html',
-    license: 'Public domain (US Federal)',
-    eta: 'Q3 2026',
-    notes: [
-      '7-значная детализация: этиология / локализация / сторона / визит (initial / subsequent / sequela).',
-      'Cross-walk через CMS GEMs (General Equivalence Mappings).',
-      'Применяется в международной телемедицине и для пациентов, обслуживающихся в США.',
-    ],
-  },
+const STUBS: Record<Exclude<TabId, 'icd10' | 'icd11' | 'icd10cm'>, StubInfo> = {
   icd10pcs: {
     description: 'Procedure Coding System — отдельная классификация хирургических и медицинских процедур в США (заменила Volume 3 МКБ-9-CM). Используется только в стационарных условиях для отчётности перед CMS.',
     coverage: '~78 000 кодов (FY2025)',
@@ -264,10 +251,13 @@ export default function ClassificationsHub({ defaultTab = 'icd10' }: Props) {
           {activeTab === 'icd11' && (
             <Icd11Panel />
           )}
-          {activeTab !== 'icd10' && activeTab !== 'icd11' && (
+          {activeTab === 'icd10cm' && (
+            <Icd10cmPanel />
+          )}
+          {activeTab !== 'icd10' && activeTab !== 'icd11' && activeTab !== 'icd10cm' && (
             <RoadmapPanel
               tab={TABS.find((t) => t.id === activeTab)!}
-              info={STUBS[activeTab as Exclude<TabId, 'icd10' | 'icd11'>]}
+              info={STUBS[activeTab as Exclude<TabId, 'icd10' | 'icd11' | 'icd10cm'>]}
             />
           )}
         </motion.div>
@@ -490,6 +480,112 @@ function Icd11InfoCard({
         <Fact label="Версия базы" value={`${version} · обновлено ${lastUpdated}`} />
       </dl>
 
+    </div>
+  );
+}
+
+// ───────────────────────────────────────────────────────────────────
+// Панель ICD-10-CM (FY2026, US Clinical Modification) — рабочая
+// ───────────────────────────────────────────────────────────────────
+
+function Icd10cmPanel() {
+  const [meta, setMeta] = useState<{
+    version: string; lastUpdated: string; source: string;
+    chapters: number; codes: number;
+  } | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      try {
+        const r = await fetch('/icd10cm-slim.json?v=1.0.0', { cache: 'force-cache' });
+        if (!r.ok) return;
+        const bank = await r.json();
+        if (cancelled) return;
+        setMeta({
+          version: bank.version,
+          lastUpdated: bank.lastUpdated,
+          source: bank.source,
+          chapters: bank.chapters?.length ?? 0,
+          codes: bank.codes?.length ?? 0,
+        });
+      } catch { /* */ }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  return (
+    <>
+      <Icd10cmInfoCard
+        version={meta?.version ?? '1.0.0'}
+        lastUpdated={meta?.lastUpdated ?? '2025-10-01'}
+        source={meta?.source ?? 'CMS ICD-10-CM FY2026'}
+        codesCount={meta?.codes ?? 74719}
+        chaptersCount={meta?.chapters ?? 22}
+      />
+      <IcdLookupV2
+        slimUrl="/icd10cm-slim.json?v=1.0.0"
+        detailsUrl="/icd10cm-details.json?v=1.0.0"
+        idbKey="bordik-icd10cm-v1.0.0"
+        hideHeading
+      />
+    </>
+  );
+}
+
+function Icd10cmInfoCard({
+  version, lastUpdated, source, codesCount, chaptersCount,
+}: { version: string; lastUpdated: string; source: string; codesCount: number; chaptersCount: number }) {
+  return (
+    <div style={{
+      maxWidth: 880,
+      background: '#FFFFFF',
+      borderRadius: 16,
+      border: '1px solid #E5E7EB',
+      padding: '32px 32px 28px',
+      marginBottom: 24,
+    }}>
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 20, flexWrap: 'wrap' }}>
+        <div style={{ flex: 1, minWidth: 240 }}>
+          <div style={{ fontSize: 11, color: '#9CA3AF', letterSpacing: '0.06em', textTransform: 'uppercase', fontWeight: 600, marginBottom: 6 }}>
+            США · Clinical Modification
+          </div>
+          <h2 style={{ fontSize: 22, fontWeight: 700, margin: '0 0 6px', color: '#101010' }}>
+            ICD-10-CM (FY2026)
+          </h2>
+          <div style={{ fontSize: 14, color: '#6B7280', lineHeight: 1.55 }}>
+            Clinical Modification ICD-10 для США (CDC / CMS). Используется для всей
+            диагностической отчётности в системе здравоохранения США (Medicare,
+            Medicaid, частное страхование). Семизначные коды с детализацией по
+            этиологии, локализации, стороне (left/right/bilateral) и типу визита
+            (initial/subsequent/sequela). Применима для пациентов в США и для
+            академического обмена.
+          </div>
+        </div>
+        <span style={{
+          flexShrink: 0,
+          display: 'inline-flex', alignItems: 'center', gap: 6,
+          background: '#DCFCE7', color: '#166534',
+          fontSize: 11, fontWeight: 600, letterSpacing: '0.04em',
+          textTransform: 'uppercase',
+          padding: '6px 12px', borderRadius: 999,
+        }}>
+          <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#22C55E' }} />
+          Рабочая система
+        </span>
+      </div>
+
+      <dl style={{
+        display: 'grid', gridTemplateColumns: '160px 1fr', gap: '12px 16px',
+        margin: '0 0 4px', padding: '20px 20px',
+        background: '#F9FAFB', borderRadius: 12,
+        border: '1px solid #F3F4F6',
+      }}>
+        <Fact label="Покрытие" value={`${codesCount.toLocaleString('ru-RU')} кодов · ${chaptersCount} глав`} />
+        <Fact label="Источник" value={source} />
+        <Fact label="Лицензия" value="Public domain (US Federal — CMS / NCHS)" />
+        <Fact label="Версия базы" value={`${version} · обновлено ${lastUpdated}`} />
+      </dl>
     </div>
   );
 }
