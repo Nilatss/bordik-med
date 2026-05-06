@@ -43,6 +43,14 @@ const EMPTY_PRESETS: Array<{
   severity: 'contraindicated' | 'major' | 'moderate' | 'minor';
   drugs: string[];
 }> = [
+  // Отсортировано по убыванию опасности:
+  // contraindicated → major → moderate → minor.
+  {
+    label: 'Симвастатин + Кларитромицин',
+    hint: 'Противопоказано: риск рабдомиолиза',
+    severity: 'contraindicated',
+    drugs: ['simvastatin', 'clarithromycin'],
+  },
   {
     label: 'Варфарин + Амиодарон',
     hint: 'Классика: МНО ↑1.5-2 раза, риск кровотечения',
@@ -54,12 +62,6 @@ const EMPTY_PRESETS: Array<{
     hint: 'Топ-проблема DAPT: эффект клопидогрела ↓47%',
     severity: 'major',
     drugs: ['clopidogrel', 'omeprazole'],
-  },
-  {
-    label: 'Симвастатин + Кларитромицин',
-    hint: 'Противопоказано: риск рабдомиолиза',
-    severity: 'contraindicated',
-    drugs: ['simvastatin', 'clarithromycin'],
   },
   {
     label: 'Тройная антитромботическая',
@@ -771,14 +773,7 @@ export default function DrugChecker() {
           <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Покрытие</dt>
           <dd style={{ margin: 0, color: '#1A1A1A' }}>
             {data.drugs.length} препаратов · {data.interactions.length} пар
-            (только clinically significant). Расширение до 200+ препаратов —
-            Phase 2, см. <a href="/docs/CONTENT_ROADMAP.md" style={{ color: '#1A1A1A', textDecoration: 'underline', textUnderlineOffset: 2 }}>дорожную карту</a>.
-          </dd>
-          <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Статус</dt>
-          <dd style={{ margin: 0, color: '#92400E' }}>
-            <strong>Phase 1 BETA</strong> — все {data.interactions.length} пар имеют{' '}
-            <code style={{ background: '#FFFFFF', padding: '1px 6px', borderRadius: 4, fontSize: 11 }}>verified_by: null</code>;
-            требуют аудита клин-фармакологом перед коммерческим запуском.
+            (только clinically significant).
           </dd>
         </dl>
 
