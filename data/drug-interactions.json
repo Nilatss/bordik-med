@@ -1,7 +1,7 @@
 {
   "$readme": "Phase 1 BETA. Контент составлен AI на основе открытых медицинских источников (UpToDate Lexidrug, Stockley's 12th, ESC/AHA, FDA, EMA SmPC, DrugBank). КАЖДАЯ ПАРА ТРЕБУЕТ ВЕРИФИКАЦИИ КЛИН-ФАРМАКОЛОГОМ перед коммерческим запуском. См. docs/specs/drug-interactions-verification.md. После верификации в каждой паре заполняется поле verified_by + verified_at.",
   "$verification_status": "BETA — все пары имеют verified_by: null (требуют ручного аудита клин-фармакологом)",
-  "version": "0.6.0",
+  "version": "0.7.1",
   "lastUpdated": "2026-05-06",
   "sources": [
     "UpToDate Lexidrug (Wolters Kluwer, доступ через подписку)",
@@ -2209,6 +2209,1004 @@
       "name_en": "Nicotine (NRT)",
       "atc": "N07BA01",
       "class_ru": "Никотиновый агонист (НЗТ)",
+      "aliases": []
+    },
+    {
+      "id": "ritonavir",
+      "name_ru": "Ритонавир",
+      "name_en": "Ritonavir",
+      "atc": "J05AE03",
+      "class_ru": "ВИЧ ИП / CYP3A4 booster",
+      "aliases": [
+        "норвир"
+      ]
+    },
+    {
+      "id": "cobicistat",
+      "name_ru": "Кобицистат",
+      "name_en": "Cobicistat",
+      "atc": "V03AX03",
+      "class_ru": "CYP3A4 booster",
+      "aliases": []
+    },
+    {
+      "id": "darunavir",
+      "name_ru": "Дарунавир",
+      "name_en": "Darunavir",
+      "atc": "J05AE10",
+      "class_ru": "ВИЧ ИП",
+      "aliases": [
+        "презиста"
+      ]
+    },
+    {
+      "id": "atazanavir",
+      "name_ru": "Атазанавир",
+      "name_en": "Atazanavir",
+      "atc": "J05AE08",
+      "class_ru": "ВИЧ ИП",
+      "aliases": [
+        "реатаз"
+      ]
+    },
+    {
+      "id": "dolutegravir",
+      "name_ru": "Долутегравир",
+      "name_en": "Dolutegravir",
+      "atc": "J05AJ03",
+      "class_ru": "ВИЧ ингибитор интегразы",
+      "aliases": [
+        "тивикей"
+      ]
+    },
+    {
+      "id": "bictegravir",
+      "name_ru": "Биктегравир",
+      "name_en": "Bictegravir",
+      "atc": "J05AJ04",
+      "class_ru": "ВИЧ ингибитор интегразы",
+      "aliases": []
+    },
+    {
+      "id": "efavirenz",
+      "name_ru": "Эфавиренз",
+      "name_en": "Efavirenz",
+      "atc": "J05AG03",
+      "class_ru": "ВИЧ ННИОТ (CYP3A4 индуктор)",
+      "aliases": [
+        "стокрин"
+      ]
+    },
+    {
+      "id": "tenofovir",
+      "name_ru": "Тенофовир",
+      "name_en": "Tenofovir",
+      "atc": "J05AF07",
+      "class_ru": "ВИЧ НИОТ",
+      "aliases": []
+    },
+    {
+      "id": "emtricitabine",
+      "name_ru": "Эмтрицитабин",
+      "name_en": "Emtricitabine",
+      "atc": "J05AF09",
+      "class_ru": "ВИЧ НИОТ",
+      "aliases": []
+    },
+    {
+      "id": "paxlovid",
+      "name_ru": "Нирматрелвир/ритонавир",
+      "name_en": "Nirmatrelvir/ritonavir",
+      "atc": "J05AE30",
+      "class_ru": "COVID-19 ИП (CYP3A4 ингибитор)",
+      "aliases": [
+        "паксловид"
+      ]
+    },
+    {
+      "id": "sofosbuvir",
+      "name_ru": "Софосбувир",
+      "name_en": "Sofosbuvir",
+      "atc": "J05AP08",
+      "class_ru": "ВГС NS5B",
+      "aliases": []
+    },
+    {
+      "id": "glecaprevir_pibrentasvir",
+      "name_ru": "Глекапревир/пибрентасвир",
+      "name_en": "Glecaprevir/pibrentasvir",
+      "atc": "J05AP57",
+      "class_ru": "ВГС NS3/4A+NS5A",
+      "aliases": [
+        "мавирет"
+      ]
+    },
+    {
+      "id": "rifabutin",
+      "name_ru": "Рифабутин",
+      "name_en": "Rifabutin",
+      "atc": "J04AB04",
+      "class_ru": "Противотуб. (рифамицин)",
+      "aliases": []
+    },
+    {
+      "id": "ethambutol",
+      "name_ru": "Этамбутол",
+      "name_en": "Ethambutol",
+      "atc": "J04AK02",
+      "class_ru": "Противотуб.",
+      "aliases": []
+    },
+    {
+      "id": "pyrazinamide",
+      "name_ru": "Пиразинамид",
+      "name_en": "Pyrazinamide",
+      "atc": "J04AK01",
+      "class_ru": "Противотуб.",
+      "aliases": []
+    },
+    {
+      "id": "fosfomycin",
+      "name_ru": "Фосфомицин",
+      "name_en": "Fosfomycin",
+      "atc": "J01XX01",
+      "class_ru": "Антибиотик (ИМП)",
+      "aliases": [
+        "монурал"
+      ]
+    },
+    {
+      "id": "daptomycin",
+      "name_ru": "Даптомицин",
+      "name_en": "Daptomycin",
+      "atc": "J01XX09",
+      "class_ru": "Липопептид",
+      "aliases": [
+        "кубицин"
+      ]
+    },
+    {
+      "id": "tigecycline",
+      "name_ru": "Тигециклин",
+      "name_en": "Tigecycline",
+      "atc": "J01AA12",
+      "class_ru": "Глицилциклин",
+      "aliases": [
+        "тигацил"
+      ]
+    },
+    {
+      "id": "colistin",
+      "name_ru": "Колистин",
+      "name_en": "Colistin",
+      "atc": "J01XB01",
+      "class_ru": "Полимиксин E",
+      "aliases": []
+    },
+    {
+      "id": "fidaxomicin",
+      "name_ru": "Фидаксомицин",
+      "name_en": "Fidaxomicin",
+      "atc": "A07AA12",
+      "class_ru": "Макроциклический АБ (C.diff)",
+      "aliases": [
+        "дификлир"
+      ]
+    },
+    {
+      "id": "isavuconazole",
+      "name_ru": "Изавуконазол",
+      "name_en": "Isavuconazole",
+      "atc": "J02AC05",
+      "class_ru": "Триазол",
+      "aliases": [
+        "кресемба"
+      ]
+    },
+    {
+      "id": "amphotericin_b",
+      "name_ru": "Амфотерицин B",
+      "name_en": "Amphotericin B",
+      "atc": "J02AA01",
+      "class_ru": "Полиен",
+      "aliases": []
+    },
+    {
+      "id": "micafungin",
+      "name_ru": "Микафунгин",
+      "name_en": "Micafungin",
+      "atc": "J02AX05",
+      "class_ru": "Эхинокандин",
+      "aliases": [
+        "микамин"
+      ]
+    },
+    {
+      "id": "hydroxychloroquine",
+      "name_ru": "Гидроксихлорохин",
+      "name_en": "Hydroxychloroquine",
+      "atc": "P01BA02",
+      "class_ru": "4-аминохинолин",
+      "aliases": [
+        "плаквенил"
+      ]
+    },
+    {
+      "id": "chloroquine",
+      "name_ru": "Хлорохин",
+      "name_en": "Chloroquine",
+      "atc": "P01BA01",
+      "class_ru": "4-аминохинолин",
+      "aliases": [
+        "делагил"
+      ]
+    },
+    {
+      "id": "imatinib",
+      "name_ru": "Иматиниб",
+      "name_en": "Imatinib",
+      "atc": "L01EA01",
+      "class_ru": "BCR-ABL/KIT TKI",
+      "aliases": [
+        "гливек"
+      ]
+    },
+    {
+      "id": "sunitinib",
+      "name_ru": "Сунитиниб",
+      "name_en": "Sunitinib",
+      "atc": "L01EX01",
+      "class_ru": "Мульти-TKI",
+      "aliases": [
+        "сутент"
+      ]
+    },
+    {
+      "id": "sorafenib",
+      "name_ru": "Сорафениб",
+      "name_en": "Sorafenib",
+      "atc": "L01EX02",
+      "class_ru": "Мульти-TKI",
+      "aliases": [
+        "нексавар"
+      ]
+    },
+    {
+      "id": "ibrutinib",
+      "name_ru": "Ибрутиниб",
+      "name_en": "Ibrutinib",
+      "atc": "L01EL01",
+      "class_ru": "BTK-ингибитор",
+      "aliases": [
+        "имбрувика"
+      ]
+    },
+    {
+      "id": "palbociclib",
+      "name_ru": "Палбоциклиб",
+      "name_en": "Palbociclib",
+      "atc": "L01EF01",
+      "class_ru": "CDK4/6-ингибитор",
+      "aliases": [
+        "ибранса"
+      ]
+    },
+    {
+      "id": "venetoclax",
+      "name_ru": "Венетоклакс",
+      "name_en": "Venetoclax",
+      "atc": "L01XX52",
+      "class_ru": "BCL-2 ингибитор",
+      "aliases": [
+        "венкликста"
+      ]
+    },
+    {
+      "id": "erlotinib",
+      "name_ru": "Эрлотиниб",
+      "name_en": "Erlotinib",
+      "atc": "L01EB02",
+      "class_ru": "EGFR TKI",
+      "aliases": [
+        "тарцева"
+      ]
+    },
+    {
+      "id": "fluorouracil",
+      "name_ru": "Фторурацил",
+      "name_en": "Fluorouracil",
+      "atc": "L01BC02",
+      "class_ru": "Антиметаболит (5-FU)",
+      "aliases": []
+    },
+    {
+      "id": "capecitabine",
+      "name_ru": "Капецитабин",
+      "name_en": "Capecitabine",
+      "atc": "L01BC06",
+      "class_ru": "5-FU пролекарство",
+      "aliases": [
+        "кселода"
+      ]
+    },
+    {
+      "id": "cisplatin",
+      "name_ru": "Цисплатин",
+      "name_en": "Cisplatin",
+      "atc": "L01XA01",
+      "class_ru": "Платина (нефро-/ототоксик)",
+      "aliases": []
+    },
+    {
+      "id": "mycophenolate",
+      "name_ru": "Микофенолата мофетил",
+      "name_en": "Mycophenolate mofetil",
+      "atc": "L04AA06",
+      "class_ru": "Иммуносупрессор",
+      "aliases": [
+        "селлсепт"
+      ]
+    },
+    {
+      "id": "azathioprine",
+      "name_ru": "Азатиоприн",
+      "name_en": "Azathioprine",
+      "atc": "L04AX01",
+      "class_ru": "Иммуносупрессор (тиопурин)",
+      "aliases": [
+        "имуран"
+      ]
+    },
+    {
+      "id": "sirolimus",
+      "name_ru": "Сиролимус",
+      "name_en": "Sirolimus",
+      "atc": "L04AA10",
+      "class_ru": "mTOR-ингибитор",
+      "aliases": [
+        "рапамун"
+      ]
+    },
+    {
+      "id": "everolimus",
+      "name_ru": "Эверолимус",
+      "name_en": "Everolimus",
+      "atc": "L04AA18",
+      "class_ru": "mTOR-ингибитор",
+      "aliases": [
+        "афинитор"
+      ]
+    },
+    {
+      "id": "leflunomide",
+      "name_ru": "Лефлуномид",
+      "name_en": "Leflunomide",
+      "atc": "L04AA13",
+      "class_ru": "БМАРП",
+      "aliases": [
+        "арава"
+      ]
+    },
+    {
+      "id": "adalimumab",
+      "name_ru": "Адалимумаб",
+      "name_en": "Adalimumab",
+      "atc": "L04AB04",
+      "class_ru": "Анти-TNFα",
+      "aliases": [
+        "хумира"
+      ]
+    },
+    {
+      "id": "infliximab",
+      "name_ru": "Инфликсимаб",
+      "name_en": "Infliximab",
+      "atc": "L04AB02",
+      "class_ru": "Анти-TNFα",
+      "aliases": [
+        "ремикейд"
+      ]
+    },
+    {
+      "id": "etanercept",
+      "name_ru": "Этанерцепт",
+      "name_en": "Etanercept",
+      "atc": "L04AB01",
+      "class_ru": "Анти-TNFα",
+      "aliases": [
+        "энбрел"
+      ]
+    },
+    {
+      "id": "rituximab",
+      "name_ru": "Ритуксимаб",
+      "name_en": "Rituximab",
+      "atc": "L01FA01",
+      "class_ru": "Анти-CD20 МАТ",
+      "aliases": [
+        "мабтера"
+      ]
+    },
+    {
+      "id": "tocilizumab",
+      "name_ru": "Тоцилизумаб",
+      "name_en": "Tocilizumab",
+      "atc": "L04AC07",
+      "class_ru": "Анти-IL6R МАТ",
+      "aliases": [
+        "актемра"
+      ]
+    },
+    {
+      "id": "lacosamide",
+      "name_ru": "Лакосамид",
+      "name_en": "Lacosamide",
+      "atc": "N03AX18",
+      "class_ru": "Противоэпилептик (Na-канал)",
+      "aliases": [
+        "вимпат"
+      ]
+    },
+    {
+      "id": "zonisamide",
+      "name_ru": "Зонисамид",
+      "name_en": "Zonisamide",
+      "atc": "N03AX15",
+      "class_ru": "Противоэпилептик",
+      "aliases": []
+    },
+    {
+      "id": "perampanel",
+      "name_ru": "Перампанел",
+      "name_en": "Perampanel",
+      "atc": "N03AX22",
+      "class_ru": "AMPA-антагонист",
+      "aliases": [
+        "файкомпа"
+      ]
+    },
+    {
+      "id": "phenobarbital",
+      "name_ru": "Фенобарбитал",
+      "name_en": "Phenobarbital",
+      "atc": "N03AA02",
+      "class_ru": "Барбитурат (CYP индуктор)",
+      "aliases": []
+    },
+    {
+      "id": "methylphenidate",
+      "name_ru": "Метилфенидат",
+      "name_en": "Methylphenidate",
+      "atc": "N06BA04",
+      "class_ru": "Психостимулятор",
+      "aliases": [
+        "риталин",
+        "концерта"
+      ]
+    },
+    {
+      "id": "atomoxetine",
+      "name_ru": "Атомоксетин",
+      "name_en": "Atomoxetine",
+      "atc": "N06BA09",
+      "class_ru": "СИОЗН (СДВГ)",
+      "aliases": [
+        "страттера"
+      ]
+    },
+    {
+      "id": "donepezil",
+      "name_ru": "Донепезил",
+      "name_en": "Donepezil",
+      "atc": "N06DA02",
+      "class_ru": "Ингибитор АХЭ",
+      "aliases": [
+        "арисепт"
+      ]
+    },
+    {
+      "id": "rivastigmine",
+      "name_ru": "Ривастигмин",
+      "name_en": "Rivastigmine",
+      "atc": "N06DA03",
+      "class_ru": "Ингибитор АХЭ",
+      "aliases": [
+        "экселон"
+      ]
+    },
+    {
+      "id": "galantamine",
+      "name_ru": "Галантамин",
+      "name_en": "Galantamine",
+      "atc": "N06DA04",
+      "class_ru": "Ингибитор АХЭ",
+      "aliases": [
+        "реминил"
+      ]
+    },
+    {
+      "id": "memantine",
+      "name_ru": "Мемантин",
+      "name_en": "Memantine",
+      "atc": "N06DX01",
+      "class_ru": "NMDA-антагонист",
+      "aliases": [
+        "акатинол"
+      ]
+    },
+    {
+      "id": "pramipexole",
+      "name_ru": "Прамипексол",
+      "name_en": "Pramipexole",
+      "atc": "N04BC05",
+      "class_ru": "Агонист D2/D3",
+      "aliases": [
+        "мирапекс"
+      ]
+    },
+    {
+      "id": "ropinirole",
+      "name_ru": "Ропинирол",
+      "name_en": "Ropinirole",
+      "atc": "N04BC04",
+      "class_ru": "Агонист D2/D3",
+      "aliases": []
+    },
+    {
+      "id": "rasagiline",
+      "name_ru": "Разагилин",
+      "name_en": "Rasagiline",
+      "atc": "N04BD02",
+      "class_ru": "ИМАО-B",
+      "aliases": [
+        "азилект"
+      ]
+    },
+    {
+      "id": "selegiline",
+      "name_ru": "Селегилин",
+      "name_en": "Selegiline",
+      "atc": "N04BD01",
+      "class_ru": "ИМАО-B",
+      "aliases": []
+    },
+    {
+      "id": "amantadine",
+      "name_ru": "Амантадин",
+      "name_en": "Amantadine",
+      "atc": "N04BB01",
+      "class_ru": "NMDA-антагонист (PD)",
+      "aliases": [
+        "пк-мерц"
+      ]
+    },
+    {
+      "id": "fingolimod",
+      "name_ru": "Финголимод",
+      "name_en": "Fingolimod",
+      "atc": "L04AA27",
+      "class_ru": "S1P-модулятор",
+      "aliases": [
+        "гилениа"
+      ]
+    },
+    {
+      "id": "natalizumab",
+      "name_ru": "Натализумаб",
+      "name_en": "Natalizumab",
+      "atc": "L04AA23",
+      "class_ru": "Анти-α4-интегрин",
+      "aliases": [
+        "тизабри"
+      ]
+    },
+    {
+      "id": "dimethyl_fumarate",
+      "name_ru": "Диметилфумарат",
+      "name_en": "Dimethyl fumarate",
+      "atc": "L04AX07",
+      "class_ru": "Иммуномодулятор (РС)",
+      "aliases": [
+        "текфидера"
+      ]
+    },
+    {
+      "id": "propofol",
+      "name_ru": "Пропофол",
+      "name_en": "Propofol",
+      "atc": "N01AX10",
+      "class_ru": "В/в анестетик",
+      "aliases": [
+        "диприван"
+      ]
+    },
+    {
+      "id": "ketamine",
+      "name_ru": "Кетамин",
+      "name_en": "Ketamine",
+      "atc": "N01AX03",
+      "class_ru": "NMDA-антагонист (анестетик)",
+      "aliases": []
+    },
+    {
+      "id": "dexmedetomidine",
+      "name_ru": "Дексмедетомидин",
+      "name_en": "Dexmedetomidine",
+      "atc": "N05CM18",
+      "class_ru": "α2-агонист (седация)",
+      "aliases": [
+        "дексдор"
+      ]
+    },
+    {
+      "id": "rocuronium",
+      "name_ru": "Рокуроний",
+      "name_en": "Rocuronium",
+      "atc": "M03AC09",
+      "class_ru": "Недеполяриз. миорелаксант",
+      "aliases": [
+        "эсмерон"
+      ]
+    },
+    {
+      "id": "sugammadex",
+      "name_ru": "Сугаммадекс",
+      "name_en": "Sugammadex",
+      "atc": "V03AB35",
+      "class_ru": "Реверсант миорелаксации",
+      "aliases": [
+        "брайдан"
+      ]
+    },
+    {
+      "id": "succinylcholine",
+      "name_ru": "Суксаметоний",
+      "name_en": "Succinylcholine",
+      "atc": "M03AB01",
+      "class_ru": "Деполяриз. миорелаксант",
+      "aliases": [
+        "листенон"
+      ]
+    },
+    {
+      "id": "aprepitant",
+      "name_ru": "Апрепитант",
+      "name_en": "Aprepitant",
+      "atc": "A04AD12",
+      "class_ru": "NK1-антагонист",
+      "aliases": [
+        "эменд"
+      ]
+    },
+    {
+      "id": "granisetron",
+      "name_ru": "Гранисетрон",
+      "name_en": "Granisetron",
+      "atc": "A04AA02",
+      "class_ru": "5-HT3-антагонист",
+      "aliases": []
+    },
+    {
+      "id": "prochlorperazine",
+      "name_ru": "Прохлорперазин",
+      "name_en": "Prochlorperazine",
+      "atc": "N05AB04",
+      "class_ru": "Фенотиазин (антиэметик)",
+      "aliases": []
+    },
+    {
+      "id": "zoledronate",
+      "name_ru": "Золедроновая к-та",
+      "name_en": "Zoledronic acid",
+      "atc": "M05BA08",
+      "class_ru": "Бисфосфонат IV",
+      "aliases": [
+        "акласта"
+      ]
+    },
+    {
+      "id": "denosumab",
+      "name_ru": "Деносумаб",
+      "name_en": "Denosumab",
+      "atc": "M05BX04",
+      "class_ru": "Анти-RANKL МАТ",
+      "aliases": [
+        "пролиа",
+        "эксджива"
+      ]
+    },
+    {
+      "id": "teriparatide",
+      "name_ru": "Терипаратид",
+      "name_en": "Teriparatide",
+      "atc": "H05AA02",
+      "class_ru": "Аналог ПТГ (анаболик)",
+      "aliases": [
+        "форстео"
+      ]
+    },
+    {
+      "id": "raloxifene",
+      "name_ru": "Ралоксифен",
+      "name_en": "Raloxifene",
+      "atc": "G03XC01",
+      "class_ru": "СЭРМ",
+      "aliases": [
+        "эвиста"
+      ]
+    },
+    {
+      "id": "bosentan",
+      "name_ru": "Бозентан",
+      "name_en": "Bosentan",
+      "atc": "C02KX01",
+      "class_ru": "Антагонист эндотелина (ЛАГ)",
+      "aliases": [
+        "траклир"
+      ]
+    },
+    {
+      "id": "macitentan",
+      "name_ru": "Мацитентан",
+      "name_en": "Macitentan",
+      "atc": "C02KX04",
+      "class_ru": "Антагонист эндотелина (ЛАГ)",
+      "aliases": [
+        "опсамит"
+      ]
+    },
+    {
+      "id": "riociguat",
+      "name_ru": "Риоцигуат",
+      "name_en": "Riociguat",
+      "atc": "C02KX05",
+      "class_ru": "Стимулятор гуанилатциклазы (ЛАГ)",
+      "aliases": [
+        "адемпас"
+      ]
+    },
+    {
+      "id": "milrinone",
+      "name_ru": "Милринон",
+      "name_en": "Milrinone",
+      "atc": "C01CE02",
+      "class_ru": "Ингибитор ФДЭ-3 (инотроп)",
+      "aliases": []
+    },
+    {
+      "id": "dobutamine",
+      "name_ru": "Добутамин",
+      "name_en": "Dobutamine",
+      "atc": "C01CA07",
+      "class_ru": "β1-агонист (инотроп)",
+      "aliases": []
+    },
+    {
+      "id": "dopamine",
+      "name_ru": "Допамин",
+      "name_en": "Dopamine",
+      "atc": "C01CA04",
+      "class_ru": "Симпатомиметик (вазопрессор)",
+      "aliases": []
+    },
+    {
+      "id": "vasopressin",
+      "name_ru": "Вазопрессин",
+      "name_en": "Vasopressin",
+      "atc": "H01BA01",
+      "class_ru": "АДГ (вазопрессор)",
+      "aliases": []
+    },
+    {
+      "id": "phenylephrine",
+      "name_ru": "Фенилэфрин",
+      "name_en": "Phenylephrine",
+      "atc": "C01CA06",
+      "class_ru": "α1-агонист",
+      "aliases": []
+    },
+    {
+      "id": "finasteride",
+      "name_ru": "Финастерид",
+      "name_en": "Finasteride",
+      "atc": "G04CB01",
+      "class_ru": "Ингибитор 5α-редуктазы",
+      "aliases": [
+        "проскар"
+      ]
+    },
+    {
+      "id": "dutasteride",
+      "name_ru": "Дутастерид",
+      "name_en": "Dutasteride",
+      "atc": "G04CB02",
+      "class_ru": "Ингибитор 5α-редуктазы",
+      "aliases": [
+        "аводарт"
+      ]
+    },
+    {
+      "id": "loperamide",
+      "name_ru": "Лоперамид",
+      "name_en": "Loperamide",
+      "atc": "A07DA03",
+      "class_ru": "Антидиарейный (μ-опиоид)",
+      "aliases": [
+        "имодиум"
+      ]
+    },
+    {
+      "id": "cholestyramine",
+      "name_ru": "Холестирамин",
+      "name_en": "Cholestyramine",
+      "atc": "C10AC01",
+      "class_ru": "Связывающий желчные к-ты",
+      "aliases": []
+    },
+    {
+      "id": "tolvaptan",
+      "name_ru": "Толваптан",
+      "name_en": "Tolvaptan",
+      "atc": "C03XA01",
+      "class_ru": "V2-антагонист",
+      "aliases": [
+        "самска"
+      ]
+    },
+    {
+      "id": "cinacalcet",
+      "name_ru": "Цинакальцет",
+      "name_en": "Cinacalcet",
+      "atc": "H05BX01",
+      "class_ru": "Кальцимиметик",
+      "aliases": [
+        "мимпара"
+      ]
+    },
+    {
+      "id": "sevelamer",
+      "name_ru": "Севеламер",
+      "name_en": "Sevelamer",
+      "atc": "V03AE02",
+      "class_ru": "Фосфат-связывающий",
+      "aliases": [
+        "ренагель"
+      ]
+    },
+    {
+      "id": "eltrombopag",
+      "name_ru": "Элтромбопаг",
+      "name_en": "Eltrombopag",
+      "atc": "B02BX05",
+      "class_ru": "Агонист рец. ТПО",
+      "aliases": [
+        "револейд"
+      ]
+    },
+    {
+      "id": "buspirone",
+      "name_ru": "Буспирон",
+      "name_en": "Buspirone",
+      "atc": "N05BE01",
+      "class_ru": "5-HT1A-агонист (анксиолитик)",
+      "aliases": []
+    },
+    {
+      "id": "lidocaine_systemic",
+      "name_ru": "Лидокаин (системно)",
+      "name_en": "Lidocaine (systemic)",
+      "atc": "C01BB01",
+      "class_ru": "Антиаритмик IB класса",
+      "aliases": []
+    },
+    {
+      "id": "mexiletine",
+      "name_ru": "Мексилетин",
+      "name_en": "Mexiletine",
+      "atc": "C01BB02",
+      "class_ru": "Антиаритмик IB класса",
+      "aliases": []
+    },
+    {
+      "id": "hydralazine",
+      "name_ru": "Гидралазин",
+      "name_en": "Hydralazine",
+      "atc": "C02DB02",
+      "class_ru": "Прямой вазодилататор",
+      "aliases": []
+    },
+    {
+      "id": "methyldopa",
+      "name_ru": "Метилдопа",
+      "name_en": "Methyldopa",
+      "atc": "C02AB01",
+      "class_ru": "Центральный α2-агонист",
+      "aliases": [
+        "допегит"
+      ]
+    },
+    {
+      "id": "esmolol",
+      "name_ru": "Эсмолол",
+      "name_en": "Esmolol",
+      "atc": "C07AB09",
+      "class_ru": "Ультракороткий β1-блокатор",
+      "aliases": []
+    },
+    {
+      "id": "nicardipine",
+      "name_ru": "Никардипин",
+      "name_en": "Nicardipine",
+      "atc": "C08CA04",
+      "class_ru": "БКК дигидропиридин (IV)",
+      "aliases": []
+    },
+    {
+      "id": "tranylcypromine",
+      "name_ru": "Транилципромин",
+      "name_en": "Tranylcypromine",
+      "atc": "N06AF04",
+      "class_ru": "ИМАО неселективный",
+      "aliases": [
+        "парнат"
+      ]
+    },
+    {
+      "id": "meperidine",
+      "name_ru": "Петидин (меперидин)",
+      "name_en": "Meperidine",
+      "atc": "N02AB02",
+      "class_ru": "Опиоидный анальгетик",
+      "aliases": [
+        "промедол",
+        "демерол"
+      ]
+    },
+    {
+      "id": "phenelzine",
+      "name_ru": "Фенелзин",
+      "name_en": "Phenelzine",
+      "atc": "N06AF03",
+      "class_ru": "ИМАО неселективный",
+      "aliases": [
+        "нардил"
+      ]
+    },
+    {
+      "id": "dexamphetamine",
+      "name_ru": "Декстроамфетамин",
+      "name_en": "Dextroamphetamine",
+      "atc": "N06BA02",
+      "class_ru": "Психостимулятор (СДВГ)",
+      "aliases": []
+    },
+    {
+      "id": "lisdexamfetamine",
+      "name_ru": "Лисдексамфетамин",
+      "name_en": "Lisdexamfetamine",
+      "atc": "N06BA12",
+      "class_ru": "Психостимулятор (СДВГ)",
+      "aliases": [
+        "элваncе"
+      ]
+    },
+    {
+      "id": "clozapine",
+      "name_ru": "Клозапин",
+      "name_en": "Clozapine",
+      "atc": "N05AH02",
+      "class_ru": "Атипичный антипсихотик",
+      "aliases": [
+        "азалептин",
+        "лепонекс"
+      ]
+    },
+    {
+      "id": "lurasidone_extra",
+      "name_ru": "",
+      "name_en": "",
+      "atc": "",
+      "class_ru": "",
       "aliases": []
     }
   ],
@@ -8925,6 +9923,3338 @@
       "management": "Контроль K+ через 1-2 нед, затем ежемесячно.",
       "sources": [
         "ESC 2024 HF"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "ritonavir",
+      "drugB": "simvastatin",
+      "severity": "contraindicated",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "Ритонавир блокирует CYP3A4-метаболизм симвастатина → ↑↑ концентрация → рабдомиолиз.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО. Заменить на правастатин/розувастатин в низкой дозе.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "ritonavir",
+      "drugB": "atorvastatin",
+      "severity": "major",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "↑ AUC аторвастатина → миопатия.",
+      "recommendation_ru": "Макс. 20 мг/сут или замена.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "ritonavir",
+      "drugB": "amiodarone",
+      "severity": "contraindicated",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "Ритонавир ↑↑ амиодарон → проаритмия (TdP).",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "ritonavir",
+      "drugB": "rivaroxaban",
+      "severity": "contraindicated",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "Ритонавир (ингибитор CYP3A4 + P-gp) → ↑↑ ривароксабан → кровотечение.",
+      "recommendation_ru": "Избегать; альтернатива — апиксабан (с осторожностью) или НМГ.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "ritonavir",
+      "drugB": "apixaban",
+      "severity": "major",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "↑ AUC апиксабана ~2x → кровотечение.",
+      "recommendation_ru": "Снизить дозу 50% или избегать.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "ritonavir",
+      "drugB": "ticagrelor",
+      "severity": "contraindicated",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "↑↑ тикагрелор → кровотечение.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО (FDA). Альтернатива — клопидогрел.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "ritonavir",
+      "drugB": "tacrolimus",
+      "severity": "major",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "↑↑ такролимус → нефро/нейротоксичность.",
+      "recommendation_ru": "Снизить дозу до 1/10–1/20, мониторинг уровня.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "ritonavir",
+      "drugB": "ergotamine",
+      "severity": "contraindicated",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "↑↑ эрготамин → эрготизм/ишемия.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "ritonavir",
+      "drugB": "midazolam",
+      "severity": "contraindicated",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "↑↑ мидазолам → длительная седация/угнетение дыхания.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО (peroral). IV — с осторожностью под мониторингом.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "ritonavir",
+      "drugB": "sildenafil",
+      "severity": "major",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "↑↑ силденафил → гипотензия.",
+      "recommendation_ru": "При ЭД — макс 25 мг/48ч; ЛАГ — противопоказан.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "ritonavir",
+      "drugB": "colchicine",
+      "severity": "contraindicated",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "↑↑ колхицин → летальная токсичность (миелосуппрессия).",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО при почечной/печёночной недост.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "paxlovid",
+      "drugB": "simvastatin",
+      "severity": "contraindicated",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "Ритонавир в составе → ↑↑ статин → рабдомиолиз.",
+      "recommendation_ru": "Прекратить статин на курс паксловида.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "paxlovid",
+      "drugB": "amiodarone",
+      "severity": "contraindicated",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "Угрожающая жизни проаритмия.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "paxlovid",
+      "drugB": "rivaroxaban",
+      "severity": "major",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "↑↑ ривароксабан → кровотечение.",
+      "recommendation_ru": "Прервать или сменить АК на курс.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "paxlovid",
+      "drugB": "apixaban",
+      "severity": "major",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "↑ AUC апиксабана.",
+      "recommendation_ru": "Снизить дозу 50%.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "cobicistat",
+      "drugB": "simvastatin",
+      "severity": "contraindicated",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "То же что ритонавир.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "cobicistat",
+      "drugB": "rivaroxaban",
+      "severity": "contraindicated",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "↑↑ ривароксабан.",
+      "recommendation_ru": "Избегать.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "atazanavir",
+      "drugB": "omeprazole",
+      "severity": "contraindicated",
+      "mechanism": "PK_ABSORPTION",
+      "summary_ru": "ИПП ↑pH → ↓↓ всасывание атазанавира → потеря эффекта.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО комбинировать с любыми ИПП у нативных пациентов.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "atazanavir",
+      "drugB": "esomeprazole",
+      "severity": "contraindicated",
+      "mechanism": "PK_ABSORPTION",
+      "summary_ru": "См. omeprazole.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "atazanavir",
+      "drugB": "famotidine",
+      "severity": "major",
+      "mechanism": "PK_ABSORPTION",
+      "summary_ru": "H2-блокатор → ↓ атазанавир.",
+      "recommendation_ru": "Разделить ≥10ч; следить за вирусной нагрузкой.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "efavirenz",
+      "drugB": "rivaroxaban",
+      "severity": "major",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "Эфавиренз индуцирует CYP3A4 → ↓ ривароксабан → тромбоз.",
+      "recommendation_ru": "Избегать.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "efavirenz",
+      "drugB": "warfarin",
+      "severity": "major",
+      "mechanism": "PK_CYP2C9",
+      "summary_ru": "Изменение МНО (вверх или вниз).",
+      "recommendation_ru": "Учащённый контроль МНО.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "efavirenz",
+      "drugB": "methadone",
+      "severity": "major",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "↓ метадон → синдром отмены.",
+      "recommendation_ru": "Повышение дозы метадона часто требуется.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "dolutegravir",
+      "drugB": "iron_oral",
+      "severity": "major",
+      "mechanism": "PK_CHELATION",
+      "summary_ru": "Двухвалентные катионы хелатируют долутегравир → ↓ концентрация.",
+      "recommendation_ru": "Долутегравир за 2ч до или 6ч после железа.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "dolutegravir",
+      "drugB": "calcium_carbonate",
+      "severity": "major",
+      "mechanism": "PK_CHELATION",
+      "summary_ru": "То же.",
+      "recommendation_ru": "Разделить ≥2ч.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "tenofovir",
+      "drugB": "gentamicin",
+      "severity": "major",
+      "mechanism": "NEPHROTOXICITY",
+      "summary_ru": "Аддитивная нефротоксичность.",
+      "recommendation_ru": "Избегать или мониторить креатинин.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "tenofovir",
+      "drugB": "amphotericin_b",
+      "severity": "major",
+      "mechanism": "NEPHROTOXICITY",
+      "summary_ru": "Аддитивный риск ОПП.",
+      "recommendation_ru": "Избегать.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "sofosbuvir",
+      "drugB": "amiodarone",
+      "severity": "contraindicated",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "Тяжёлая брадикардия (FDA black box).",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО. Если необходимо — мониторинг 48ч и более.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "glecaprevir_pibrentasvir",
+      "drugB": "atorvastatin",
+      "severity": "major",
+      "mechanism": "PK_PGP",
+      "summary_ru": "↑ статин → миопатия.",
+      "recommendation_ru": "Макс. 20 мг или временно отменить.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "glecaprevir_pibrentasvir",
+      "drugB": "rifampicin",
+      "severity": "contraindicated",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "Рифампицин ↓↓ концентрацию DAA → провал терапии.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "glecaprevir_pibrentasvir",
+      "drugB": "carbamazepine",
+      "severity": "contraindicated",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "См. рифампицин.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "rifabutin",
+      "drugB": "warfarin",
+      "severity": "major",
+      "mechanism": "PK_CYP2C9",
+      "summary_ru": "↓ МНО.",
+      "recommendation_ru": "Учащённый контроль.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "rifabutin",
+      "drugB": "cyclosporine",
+      "severity": "major",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "↓ циклоспорин → отторжение.",
+      "recommendation_ru": "↑ доза, ТDM.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "fosfomycin",
+      "drugB": "metoclopramide",
+      "severity": "moderate",
+      "mechanism": "PK_ABSORPTION",
+      "summary_ru": "Метоклопрамид ↓ AUC фосфомицина.",
+      "recommendation_ru": "Разделить приём.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "daptomycin",
+      "drugB": "simvastatin",
+      "severity": "major",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "Аддитивная миопатия (рост КФК).",
+      "recommendation_ru": "Временно отменить статин на курс даптомицина.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "daptomycin",
+      "drugB": "rosuvastatin",
+      "severity": "major",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "Миопатия.",
+      "recommendation_ru": "Отменить статин.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "colistin",
+      "drugB": "gentamicin",
+      "severity": "major",
+      "mechanism": "NEPHROTOXICITY",
+      "summary_ru": "Аддитивные нефро- и нейротоксичность.",
+      "recommendation_ru": "Избегать; если необходимо — мониторинг.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "colistin",
+      "drugB": "vancomycin",
+      "severity": "major",
+      "mechanism": "NEPHROTOXICITY",
+      "summary_ru": "Аддитивный риск ОПП.",
+      "recommendation_ru": "Мониторинг креатинина ежедневно.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "isavuconazole",
+      "drugB": "tacrolimus",
+      "severity": "major",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "↑ такролимус (умереннее, чем voriconazole).",
+      "recommendation_ru": "Снизить дозу ~50%, TDM.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "isavuconazole",
+      "drugB": "simvastatin",
+      "severity": "major",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "↑ статин → миопатия.",
+      "recommendation_ru": "Снизить дозу или замена.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "isavuconazole",
+      "drugB": "rifampicin",
+      "severity": "contraindicated",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "↓↓ изавуконазол.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "amphotericin_b",
+      "drugB": "cyclosporine",
+      "severity": "major",
+      "mechanism": "NEPHROTOXICITY",
+      "summary_ru": "Аддитивная нефротоксичность.",
+      "recommendation_ru": "Мониторинг креатинина.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "amphotericin_b",
+      "drugB": "gentamicin",
+      "severity": "major",
+      "mechanism": "NEPHROTOXICITY",
+      "summary_ru": "Аддитивный риск ОПП.",
+      "recommendation_ru": "Избегать.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "hydroxychloroquine",
+      "drugB": "azithromycin",
+      "severity": "major",
+      "mechanism": "QT",
+      "summary_ru": "Аддитивное удлинение QT.",
+      "recommendation_ru": "ЭКГ-мониторинг; избегать у пациентов с риском TdP.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "hydroxychloroquine",
+      "drugB": "amiodarone",
+      "severity": "major",
+      "mechanism": "QT",
+      "summary_ru": "QT-удлинение.",
+      "recommendation_ru": "Избегать или ЭКГ.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "hydroxychloroquine",
+      "drugB": "digoxin",
+      "severity": "moderate",
+      "mechanism": "PK_PGP",
+      "summary_ru": "↑ дигоксин ~30%.",
+      "recommendation_ru": "Контроль уровня.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "hydroxychloroquine",
+      "drugB": "metoprolol",
+      "severity": "moderate",
+      "mechanism": "PK_CYP2D6",
+      "summary_ru": "↑ метопролол.",
+      "recommendation_ru": "Учитывать при подборе дозы.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "chloroquine",
+      "drugB": "azithromycin",
+      "severity": "major",
+      "mechanism": "QT",
+      "summary_ru": "QT-удлинение.",
+      "recommendation_ru": "ЭКГ-мониторинг.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "imatinib",
+      "drugB": "warfarin",
+      "severity": "major",
+      "mechanism": "PK_CYP2C9",
+      "summary_ru": "↑ МНО.",
+      "recommendation_ru": "Замена на НМГ во время курса.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "imatinib",
+      "drugB": "clarithromycin",
+      "severity": "major",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "↑ иматиниб → токсичность.",
+      "recommendation_ru": "Альтернативный АБ.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "imatinib",
+      "drugB": "rifampicin",
+      "severity": "major",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "↓↓ иматиниб → провал терапии.",
+      "recommendation_ru": "Избегать.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "sunitinib",
+      "drugB": "clarithromycin",
+      "severity": "major",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "↑ сунитиниб → QT/гепатотоксичность.",
+      "recommendation_ru": "Снизить дозу до 37.5 мг или замена АБ.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "sunitinib",
+      "drugB": "amiodarone",
+      "severity": "major",
+      "mechanism": "QT",
+      "summary_ru": "Аддитивное QT.",
+      "recommendation_ru": "Избегать.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "sorafenib",
+      "drugB": "warfarin",
+      "severity": "major",
+      "mechanism": "PK_CYP2C9",
+      "summary_ru": "Изменение МНО.",
+      "recommendation_ru": "Замена на НМГ.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "ibrutinib",
+      "drugB": "clarithromycin",
+      "severity": "contraindicated",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "↑↑ ибрутиниб → кровотечение/AF.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО (или снизить ибрутиниб до 70 мг).",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "ibrutinib",
+      "drugB": "rivaroxaban",
+      "severity": "major",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "Аддитивный риск кровотечения.",
+      "recommendation_ru": "Избегать; рассмотреть НМГ.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "ibrutinib",
+      "drugB": "apixaban",
+      "severity": "major",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "Кровотечение.",
+      "recommendation_ru": "Избегать.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "ibrutinib",
+      "drugB": "aspirin",
+      "severity": "major",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "Аддитивный риск кровотечения.",
+      "recommendation_ru": "Избегать; если необходимо — низкая доза + мониторинг.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "palbociclib",
+      "drugB": "clarithromycin",
+      "severity": "major",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "↑ палбоциклиб → нейтропения.",
+      "recommendation_ru": "Снизить дозу до 75 мг.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "venetoclax",
+      "drugB": "clarithromycin",
+      "severity": "contraindicated",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "↑↑ венетоклакс → синдром лизиса опухоли.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО в фазе ramp-up.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "venetoclax",
+      "drugB": "posaconazole",
+      "severity": "contraindicated",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "↑↑ венетоклакс.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО в ramp-up; в стабильной — снизить дозу 75%.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "erlotinib",
+      "drugB": "omeprazole",
+      "severity": "major",
+      "mechanism": "PK_ABSORPTION",
+      "summary_ru": "↑pH → ↓ эрлотиниб.",
+      "recommendation_ru": "Избегать ИПП; H2-блокатор разделить ≥10ч.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "erlotinib",
+      "drugB": "warfarin",
+      "severity": "major",
+      "mechanism": "PK_CYP2C9",
+      "summary_ru": "↑ МНО.",
+      "recommendation_ru": "Замена на НМГ; усиленный контроль.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "fluorouracil",
+      "drugB": "warfarin",
+      "severity": "major",
+      "mechanism": "PK_CYP2C9",
+      "summary_ru": "↑↑ МНО → кровотечение.",
+      "recommendation_ru": "Замена на НМГ.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "capecitabine",
+      "drugB": "warfarin",
+      "severity": "major",
+      "mechanism": "PK_CYP2C9",
+      "summary_ru": "↑↑ МНО (FDA black box).",
+      "recommendation_ru": "Замена на НМГ.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "capecitabine",
+      "drugB": "phenytoin",
+      "severity": "major",
+      "mechanism": "PK_CYP2C9",
+      "summary_ru": "↑ фенитоин → токсичность.",
+      "recommendation_ru": "Мониторинг уровня фенитоина.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "cisplatin",
+      "drugB": "gentamicin",
+      "severity": "major",
+      "mechanism": "NEPHROTOXICITY",
+      "summary_ru": "Аддитивные нефро- и ототоксичность.",
+      "recommendation_ru": "Избегать одновременно.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "cisplatin",
+      "drugB": "vancomycin",
+      "severity": "major",
+      "mechanism": "NEPHROTOXICITY",
+      "summary_ru": "ОПП.",
+      "recommendation_ru": "Мониторинг.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "cisplatin",
+      "drugB": "furosemide",
+      "severity": "major",
+      "mechanism": "OTOTOXICITY",
+      "summary_ru": "Аддитивная ототоксичность.",
+      "recommendation_ru": "Избегать.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "mycophenolate",
+      "drugB": "iron_oral",
+      "severity": "major",
+      "mechanism": "PK_CHELATION",
+      "summary_ru": "Железо ↓↓ всасывание микофенолата.",
+      "recommendation_ru": "Разделить ≥4ч.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "mycophenolate",
+      "drugB": "cholestyramine",
+      "severity": "major",
+      "mechanism": "PK_ABSORPTION",
+      "summary_ru": "↓ микофенолат.",
+      "recommendation_ru": "Избегать.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "azathioprine",
+      "drugB": "allopurinol",
+      "severity": "contraindicated",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "Аллопуринол блокирует ксантиноксидазу → ↑↑ азатиоприн → панцитопения.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО или снизить азатиоприн на 75%.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "azathioprine",
+      "drugB": "febuxostat",
+      "severity": "contraindicated",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "См. allopurinol.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "azathioprine",
+      "drugB": "warfarin",
+      "severity": "major",
+      "mechanism": "PK_CYP2C9",
+      "summary_ru": "↓ МНО (механизм неясен).",
+      "recommendation_ru": "Контроль МНО.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "sirolimus",
+      "drugB": "clarithromycin",
+      "severity": "contraindicated",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "↑↑ сиролимус → токсичность.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "sirolimus",
+      "drugB": "cyclosporine",
+      "severity": "major",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "Циклоспорин ↑ сиролимус.",
+      "recommendation_ru": "Прием сиролимуса через 4ч после циклоспорина; TDM.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "everolimus",
+      "drugB": "clarithromycin",
+      "severity": "contraindicated",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "↑↑ эверолимус.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "everolimus",
+      "drugB": "rifampicin",
+      "severity": "major",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "↓ эверолимус.",
+      "recommendation_ru": "Дозу x2 или избегать.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "leflunomide",
+      "drugB": "methotrexate",
+      "severity": "major",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "Аддитивная гепато- и миелотоксичность.",
+      "recommendation_ru": "Только у опытных ревматологов; мониторинг АЛТ/ОАК.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "leflunomide",
+      "drugB": "warfarin",
+      "severity": "major",
+      "mechanism": "PK_CYP2C9",
+      "summary_ru": "↑ МНО.",
+      "recommendation_ru": "Контроль.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "adalimumab",
+      "drugB": "methotrexate",
+      "severity": "moderate",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "Стандартная комбинация при РА; ↑ риск инфекций.",
+      "recommendation_ru": "Допустимо под наблюдением; скрининг ТБ/HBV.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "rituximab",
+      "drugB": "methotrexate",
+      "severity": "moderate",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "Аддитивная иммуносупрессия.",
+      "recommendation_ru": "Стандартная схема; PCP-профилактика по показаниям.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "infliximab",
+      "drugB": "adalimumab",
+      "severity": "contraindicated",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "Двойная анти-TNFα → инфекции.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "tocilizumab",
+      "drugB": "simvastatin",
+      "severity": "moderate",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "↓ статин (восстановление CYP3A4 после блокады IL-6).",
+      "recommendation_ru": "Контроль ЛПНП после начала тоцилизумаба.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "phenobarbital",
+      "drugB": "warfarin",
+      "severity": "major",
+      "mechanism": "PK_CYP2C9",
+      "summary_ru": "Фенобарбитал — мощный CYP-индуктор → ↓ МНО.",
+      "recommendation_ru": "Учащённый контроль; возможно ↑ варфарина.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "phenobarbital",
+      "drugB": "rivaroxaban",
+      "severity": "major",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "↓ DOAC → тромбоз.",
+      "recommendation_ru": "Избегать; альтернатива — НМГ.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "phenobarbital",
+      "drugB": "apixaban",
+      "severity": "major",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "↓ апиксабан.",
+      "recommendation_ru": "Избегать.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "phenobarbital",
+      "drugB": "dolutegravir",
+      "severity": "major",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "↓ долутегравир.",
+      "recommendation_ru": "↑ долутегравир до 50 мг 2р/сут или замена.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "lacosamide",
+      "drugB": "amiodarone",
+      "severity": "major",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "Аддитивный AV-блок и удлинение PR.",
+      "recommendation_ru": "ЭКГ перед началом; избегать.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "lacosamide",
+      "drugB": "verapamil",
+      "severity": "moderate",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "Удлинение PR.",
+      "recommendation_ru": "ЭКГ.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "perampanel",
+      "drugB": "rifampicin",
+      "severity": "major",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "↓↓ перампанел → провал.",
+      "recommendation_ru": "Избегать.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "methylphenidate",
+      "drugB": "rasagiline",
+      "severity": "contraindicated",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "См. ИМАО.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "methylphenidate",
+      "drugB": "warfarin",
+      "severity": "moderate",
+      "mechanism": "PK_CYP2C9",
+      "summary_ru": "↑ МНО.",
+      "recommendation_ru": "Контроль.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "atomoxetine",
+      "drugB": "paroxetine",
+      "severity": "major",
+      "mechanism": "PK_CYP2D6",
+      "summary_ru": "↑↑ атомоксетин.",
+      "recommendation_ru": "Использовать стартовую дозу или замена антидепрессанта.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "atomoxetine",
+      "drugB": "fluoxetine",
+      "severity": "major",
+      "mechanism": "PK_CYP2D6",
+      "summary_ru": "↑↑ атомоксетин.",
+      "recommendation_ru": "Стартовая доза 0.5 мг/кг.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "donepezil",
+      "drugB": "metoprolol",
+      "severity": "moderate",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "Брадикардия / синкопе.",
+      "recommendation_ru": "ЭКГ; у предрасположенных — избегать.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "donepezil",
+      "drugB": "amiodarone",
+      "severity": "major",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "Брадикардия.",
+      "recommendation_ru": "Избегать или ЭКГ.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "donepezil",
+      "drugB": "diltiazem",
+      "severity": "moderate",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "Брадикардия.",
+      "recommendation_ru": "Контроль ЧСС.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "rivastigmine",
+      "drugB": "metoprolol",
+      "severity": "moderate",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "Брадикардия.",
+      "recommendation_ru": "ЭКГ.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "galantamine",
+      "drugB": "paroxetine",
+      "severity": "moderate",
+      "mechanism": "PK_CYP2D6",
+      "summary_ru": "↑ галантамин.",
+      "recommendation_ru": "Снизить дозу.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "rasagiline",
+      "drugB": "tramadol",
+      "severity": "contraindicated",
+      "mechanism": "SEROTONIN",
+      "summary_ru": "ИМАО + опиоид с серотонинергической активностью → серотониновый синдром.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "rasagiline",
+      "drugB": "sertraline",
+      "severity": "contraindicated",
+      "mechanism": "SEROTONIN",
+      "summary_ru": "Серотониновый синдром.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "rasagiline",
+      "drugB": "fluoxetine",
+      "severity": "contraindicated",
+      "mechanism": "SEROTONIN",
+      "summary_ru": "Серотониновый синдром (с учётом длинного t1/2 fluoxetine).",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО; интервал ≥5 нед.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "selegiline",
+      "drugB": "tramadol",
+      "severity": "contraindicated",
+      "mechanism": "SEROTONIN",
+      "summary_ru": "Серотониновый синдром.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "amantadine",
+      "drugB": "metoclopramide",
+      "severity": "major",
+      "mechanism": "PD_OPPOSITE",
+      "summary_ru": "Метоклопрамид блокирует D2 → ухудшение PD.",
+      "recommendation_ru": "Избегать; использовать домперидон/ондансетрон.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "propofol",
+      "drugB": "fentanyl",
+      "severity": "moderate",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "Аддитивная гипотензия и угнетение дыхания.",
+      "recommendation_ru": "Стандартная комбинация в анестезии — снижать дозы.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "propofol",
+      "drugB": "midazolam",
+      "severity": "moderate",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "Углубление седации.",
+      "recommendation_ru": "Снизить дозы; мониторинг.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "ketamine",
+      "drugB": "midazolam",
+      "severity": "minor",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "Мидазолам ослабляет психотомиметические эффекты.",
+      "recommendation_ru": "Стандартная комбинация.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "dexmedetomidine",
+      "drugB": "metoprolol",
+      "severity": "moderate",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "Брадикардия/гипотензия.",
+      "recommendation_ru": "Снизить дозу дексмедетомидина у пациентов на β-блокаторах.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "rocuronium",
+      "drugB": "gentamicin",
+      "severity": "major",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "Аминогликозиды потенциируют миорелаксацию → длительный паралич.",
+      "recommendation_ru": "Использовать TOF; готовность к ИВЛ; реверс sugammadex.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "succinylcholine",
+      "drugB": "donepezil",
+      "severity": "major",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "АХЭ-ингибитор → пролонгация суксаметония.",
+      "recommendation_ru": "Информировать анестезиолога; альтернативный миорелаксант.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "aprepitant",
+      "drugB": "warfarin",
+      "severity": "moderate",
+      "mechanism": "PK_CYP2C9",
+      "summary_ru": "↓ МНО.",
+      "recommendation_ru": "Контроль 7-10 дней после курса.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "aprepitant",
+      "drugB": "dexamethasone",
+      "severity": "moderate",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "↑ дексаметазон.",
+      "recommendation_ru": "Снизить дозу дексаметазона на 50%.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "granisetron",
+      "drugB": "amiodarone",
+      "severity": "major",
+      "mechanism": "QT",
+      "summary_ru": "Аддитивное QT.",
+      "recommendation_ru": "Избегать.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "prochlorperazine",
+      "drugB": "levodopa_carbidopa",
+      "severity": "major",
+      "mechanism": "PD_OPPOSITE",
+      "summary_ru": "Блокада D2 → ухудшение PD.",
+      "recommendation_ru": "Избегать у пациентов с PD.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "zoledronate",
+      "drugB": "furosemide",
+      "severity": "moderate",
+      "mechanism": "NEPHROTOXICITY",
+      "summary_ru": "Аддитивный риск гипокальциемии и нефротоксичности.",
+      "recommendation_ru": "Гидратация перед инфузией.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "denosumab",
+      "drugB": "zoledronate",
+      "severity": "major",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "Двойная антирезорбтивная — гипокальциемия, ОНЧ.",
+      "recommendation_ru": "Не комбинировать.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "raloxifene",
+      "drugB": "warfarin",
+      "severity": "moderate",
+      "mechanism": "PK_CYP2C9",
+      "summary_ru": "↓ МНО ~10%.",
+      "recommendation_ru": "Контроль.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "bosentan",
+      "drugB": "sildenafil",
+      "severity": "moderate",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "Бозентан ↓ силденафил.",
+      "recommendation_ru": "Допустимо в комбинации при ЛАГ — возможна корректировка доз.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "bosentan",
+      "drugB": "cyclosporine",
+      "severity": "contraindicated",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "Циклоспорин ↑↑ бозентан.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "bosentan",
+      "drugB": "warfarin",
+      "severity": "major",
+      "mechanism": "PK_CYP2C9",
+      "summary_ru": "↓ МНО.",
+      "recommendation_ru": "Контроль.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "macitentan",
+      "drugB": "clarithromycin",
+      "severity": "major",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "↑ мацитентан.",
+      "recommendation_ru": "Избегать.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "riociguat",
+      "drugB": "sildenafil",
+      "severity": "contraindicated",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "Двойной NO-путь → тяжёлая гипотензия.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "riociguat",
+      "drugB": "tadalafil",
+      "severity": "contraindicated",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "Тяжёлая гипотензия.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "riociguat",
+      "drugB": "isosorbide_mononitrate",
+      "severity": "contraindicated",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "Тяжёлая гипотензия.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "dopamine",
+      "drugB": "phenytoin",
+      "severity": "major",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "Резкая гипотензия и брадикардия.",
+      "recommendation_ru": "Избегать одновременного болюса фенитоина.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "norepinephrine",
+      "drugB": "amitriptyline",
+      "severity": "moderate",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "ТЦА потенциируют норадреналин → ↑↑ АД.",
+      "recommendation_ru": "Снизить дозу вазопрессора.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "finasteride",
+      "drugB": "tamsulosin",
+      "severity": "minor",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "Стандартная комбинация при ДГПЖ.",
+      "recommendation_ru": "Контроль АД.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "loperamide",
+      "drugB": "amiodarone",
+      "severity": "major",
+      "mechanism": "QT",
+      "summary_ru": "В высоких дозах QT.",
+      "recommendation_ru": "Избегать высоких доз; ЭКГ.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "cholestyramine",
+      "drugB": "levothyroxine",
+      "severity": "major",
+      "mechanism": "PK_ABSORPTION",
+      "summary_ru": "↓↓ всасывание левотироксина.",
+      "recommendation_ru": "Разделить ≥4ч.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "cholestyramine",
+      "drugB": "warfarin",
+      "severity": "major",
+      "mechanism": "PK_ABSORPTION",
+      "summary_ru": "↓ варфарин.",
+      "recommendation_ru": "Разделить ≥4ч; контроль МНО.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "cholestyramine",
+      "drugB": "digoxin",
+      "severity": "moderate",
+      "mechanism": "PK_ABSORPTION",
+      "summary_ru": "↓ дигоксин.",
+      "recommendation_ru": "Разделить ≥4ч.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "tolvaptan",
+      "drugB": "clarithromycin",
+      "severity": "contraindicated",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "↑↑ толваптан → гепатотоксичность.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "tolvaptan",
+      "drugB": "spironolactone",
+      "severity": "moderate",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "Гиперкалиемия.",
+      "recommendation_ru": "Контроль K+.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "cinacalcet",
+      "drugB": "metoprolol",
+      "severity": "moderate",
+      "mechanism": "PK_CYP2D6",
+      "summary_ru": "↑ метопролол.",
+      "recommendation_ru": "Снизить дозу.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "cinacalcet",
+      "drugB": "amitriptyline",
+      "severity": "moderate",
+      "mechanism": "PK_CYP2D6",
+      "summary_ru": "↑ амитриптилин.",
+      "recommendation_ru": "Контроль.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "sevelamer",
+      "drugB": "levothyroxine",
+      "severity": "major",
+      "mechanism": "PK_ABSORPTION",
+      "summary_ru": "↓ левотироксин.",
+      "recommendation_ru": "Разделить ≥4ч.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "sevelamer",
+      "drugB": "ciprofloxacin",
+      "severity": "major",
+      "mechanism": "PK_CHELATION",
+      "summary_ru": "↓ ципрофлоксацин.",
+      "recommendation_ru": "Разделить ≥2ч.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "eltrombopag",
+      "drugB": "calcium_carbonate",
+      "severity": "major",
+      "mechanism": "PK_CHELATION",
+      "summary_ru": "↓ элтромбопаг ~75%.",
+      "recommendation_ru": "Разделить ≥4ч.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "eltrombopag",
+      "drugB": "iron_oral",
+      "severity": "major",
+      "mechanism": "PK_CHELATION",
+      "summary_ru": "То же.",
+      "recommendation_ru": "Разделить ≥4ч.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "buspirone",
+      "drugB": "clarithromycin",
+      "severity": "major",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "↑↑ буспирон → седация.",
+      "recommendation_ru": "Снизить дозу до 2.5 мг.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "buspirone",
+      "drugB": "rifampicin",
+      "severity": "major",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "↓↓ буспирон.",
+      "recommendation_ru": "Замена.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "buspirone",
+      "drugB": "fluoxetine",
+      "severity": "moderate",
+      "mechanism": "SEROTONIN",
+      "summary_ru": "Серотонинергический эффект.",
+      "recommendation_ru": "Допустимо при мониторинге.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "lidocaine_systemic",
+      "drugB": "amiodarone",
+      "severity": "major",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "Аддитивная депрессия миокарда.",
+      "recommendation_ru": "Снизить дозы; мониторинг.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "lidocaine_systemic",
+      "drugB": "metoprolol",
+      "severity": "moderate",
+      "mechanism": "PK_CYP1A2",
+      "summary_ru": "↑ лидокаин.",
+      "recommendation_ru": "Снизить дозу.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "mexiletine",
+      "drugB": "ciprofloxacin",
+      "severity": "moderate",
+      "mechanism": "PK_CYP1A2",
+      "summary_ru": "↑ мексилетин.",
+      "recommendation_ru": "Контроль.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "methyldopa",
+      "drugB": "iron_oral",
+      "severity": "moderate",
+      "mechanism": "PK_CHELATION",
+      "summary_ru": "↓ метилдопа.",
+      "recommendation_ru": "Разделить ≥2ч.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "esmolol",
+      "drugB": "verapamil",
+      "severity": "major",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "Тяжёлая брадикардия/AV-блок (особенно IV).",
+      "recommendation_ru": "Избегать одновременной IV; использовать раздельно.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "hydralazine",
+      "drugB": "isosorbide_mononitrate",
+      "severity": "minor",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "Стандартная комбинация при ХСН (BiDil).",
+      "recommendation_ru": "Допустимо; контроль АД.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "fingolimod",
+      "drugB": "amiodarone",
+      "severity": "contraindicated",
+      "mechanism": "QT",
+      "summary_ru": "Аддитивная брадикардия и QT.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "fingolimod",
+      "drugB": "metoprolol",
+      "severity": "major",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "Брадикардия при первой дозе финголимода.",
+      "recommendation_ru": "Мониторинг 6ч; рассмотреть отмену β-блокатора.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "fingolimod",
+      "drugB": "verapamil",
+      "severity": "major",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "Брадикардия.",
+      "recommendation_ru": "Мониторинг.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "dimethyl_fumarate",
+      "drugB": "methotrexate",
+      "severity": "moderate",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "Аддитивная иммуносупрессия/лимфопения.",
+      "recommendation_ru": "Контроль ОАК.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "methylphenidate",
+      "drugB": "tranylcypromine",
+      "severity": "contraindicated",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "ИМАО + стимулятор → гипертонический криз.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО (включая 14 дней после ИМАО).",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "ketamine",
+      "drugB": "tranylcypromine",
+      "severity": "major",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "ИМАО ↑ симпатомиметический эффект кетамина.",
+      "recommendation_ru": "Избегать; мониторинг АД.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "selegiline",
+      "drugB": "meperidine",
+      "severity": "contraindicated",
+      "mechanism": "SEROTONIN",
+      "summary_ru": "Тяжёлый серотониновый синдром.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "methyldopa",
+      "drugB": "tranylcypromine",
+      "severity": "contraindicated",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "Гипертонический криз.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "tranylcypromine",
+      "drugB": "sertraline",
+      "severity": "contraindicated",
+      "mechanism": "SEROTONIN",
+      "summary_ru": "Серотониновый синдром.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО; интервал ≥2 нед.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "tranylcypromine",
+      "drugB": "fluoxetine",
+      "severity": "contraindicated",
+      "mechanism": "SEROTONIN",
+      "summary_ru": "Серотониновый синдром (длинный t1/2 fluoxetine).",
+      "recommendation_ru": "Интервал ≥5 нед.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "tranylcypromine",
+      "drugB": "tramadol",
+      "severity": "contraindicated",
+      "mechanism": "SEROTONIN",
+      "summary_ru": "Серотониновый синдром.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "tranylcypromine",
+      "drugB": "meperidine",
+      "severity": "contraindicated",
+      "mechanism": "SEROTONIN",
+      "summary_ru": "Тяжёлый серотониновый синдром (классическая летальная комбинация).",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "tranylcypromine",
+      "drugB": "venlafaxine",
+      "severity": "contraindicated",
+      "mechanism": "SEROTONIN",
+      "summary_ru": "Серотониновый синдром.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "tranylcypromine",
+      "drugB": "duloxetine",
+      "severity": "contraindicated",
+      "mechanism": "SEROTONIN",
+      "summary_ru": "Серотониновый синдром.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "tranylcypromine",
+      "drugB": "linezolid",
+      "severity": "contraindicated",
+      "mechanism": "SEROTONIN",
+      "summary_ru": "Линезолид — слабый ИМАО → серотониновый синдром.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "tranylcypromine",
+      "drugB": "epinephrine",
+      "severity": "major",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "↑↑ симпатомиметический эффект.",
+      "recommendation_ru": "Избегать; альтернатива.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "phenelzine",
+      "drugB": "sertraline",
+      "severity": "contraindicated",
+      "mechanism": "SEROTONIN",
+      "summary_ru": "Серотониновый синдром.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "phenelzine",
+      "drugB": "meperidine",
+      "severity": "contraindicated",
+      "mechanism": "SEROTONIN",
+      "summary_ru": "Серотониновый синдром.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "phenelzine",
+      "drugB": "tramadol",
+      "severity": "contraindicated",
+      "mechanism": "SEROTONIN",
+      "summary_ru": "Серотониновый синдром.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "meperidine",
+      "drugB": "sertraline",
+      "severity": "contraindicated",
+      "mechanism": "SEROTONIN",
+      "summary_ru": "Серотониновый синдром.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "meperidine",
+      "drugB": "fluoxetine",
+      "severity": "contraindicated",
+      "mechanism": "SEROTONIN",
+      "summary_ru": "Серотониновый синдром.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "meperidine",
+      "drugB": "linezolid",
+      "severity": "contraindicated",
+      "mechanism": "SEROTONIN",
+      "summary_ru": "Серотониновый синдром (FDA).",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "meperidine",
+      "drugB": "rasagiline",
+      "severity": "contraindicated",
+      "mechanism": "SEROTONIN",
+      "summary_ru": "Серотониновый синдром.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "clozapine",
+      "drugB": "carbamazepine",
+      "severity": "contraindicated",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "Двойной риск агранулоцитоза.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО (FDA).",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "clozapine",
+      "drugB": "cotrimoxazole",
+      "severity": "major",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "Аддитивный риск агранулоцитоза.",
+      "recommendation_ru": "Избегать; мониторинг ОАК.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "clozapine",
+      "drugB": "methotrexate",
+      "severity": "major",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "Миелосупрессия.",
+      "recommendation_ru": "Контроль ОАК.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "clozapine",
+      "drugB": "ciprofloxacin",
+      "severity": "major",
+      "mechanism": "PK_CYP1A2",
+      "summary_ru": "Ципро ↑↑ клозапин.",
+      "recommendation_ru": "Снизить дозу клозапина 50%.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "clozapine",
+      "drugB": "fluvoxamine",
+      "severity": "major",
+      "mechanism": "PK_CYP1A2",
+      "summary_ru": "↑↑ клозапин.",
+      "recommendation_ru": "Избегать или снизить клозапин ≥50%.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "clozapine",
+      "drugB": "amiodarone",
+      "severity": "major",
+      "mechanism": "QT",
+      "summary_ru": "Аддитивное QT.",
+      "recommendation_ru": "Избегать или ЭКГ.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "lisdexamfetamine",
+      "drugB": "tranylcypromine",
+      "severity": "contraindicated",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "Гипертонический криз.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "lisdexamfetamine",
+      "drugB": "rasagiline",
+      "severity": "contraindicated",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "Гипертонический криз.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "dexamphetamine",
+      "drugB": "tranylcypromine",
+      "severity": "contraindicated",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "Гипертонический криз.",
+      "recommendation_ru": "ПРОТИВОПОКАЗАНО.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "haloperidol",
+      "drugB": "azithromycin",
+      "severity": "major",
+      "mechanism": "QT",
+      "summary_ru": "Аддитивное QT.",
+      "recommendation_ru": "Избегать или ЭКГ.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "haloperidol",
+      "drugB": "clarithromycin",
+      "severity": "major",
+      "mechanism": "QT",
+      "summary_ru": "QT-удлинение + CYP3A4.",
+      "recommendation_ru": "Избегать.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "olanzapine",
+      "drugB": "fluvoxamine",
+      "severity": "major",
+      "mechanism": "PK_CYP1A2",
+      "summary_ru": "↑↑ оланзапин.",
+      "recommendation_ru": "Снизить дозу 50%.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "olanzapine",
+      "drugB": "ciprofloxacin",
+      "severity": "moderate",
+      "mechanism": "PK_CYP1A2",
+      "summary_ru": "↑ оланзапин.",
+      "recommendation_ru": "Контроль.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "risperidone",
+      "drugB": "paroxetine",
+      "severity": "moderate",
+      "mechanism": "PK_CYP2D6",
+      "summary_ru": "↑ рисперидон.",
+      "recommendation_ru": "Снизить дозу.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "risperidone",
+      "drugB": "amiodarone",
+      "severity": "major",
+      "mechanism": "QT",
+      "summary_ru": "QT-удлинение.",
+      "recommendation_ru": "Избегать.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "fluoxetine",
+      "drugB": "aspirin",
+      "severity": "moderate",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "↑ ЖКК.",
+      "recommendation_ru": "+ ИПП.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "escitalopram",
+      "drugB": "naproxen",
+      "severity": "moderate",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "↑↑ ЖКК.",
+      "recommendation_ru": "Избегать.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "warfarin",
+      "drugB": "tamoxifen",
+      "severity": "major",
+      "mechanism": "PK_CYP2C9",
+      "summary_ru": "↑↑ МНО.",
+      "recommendation_ru": "Замена на НМГ.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "digoxin",
+      "drugB": "erythromycin",
+      "severity": "major",
+      "mechanism": "PK_PGP",
+      "summary_ru": "↑↑ дигоксин.",
+      "recommendation_ru": "Снизить дозу 50%; мониторинг.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "methadone",
+      "drugB": "azithromycin",
+      "severity": "major",
+      "mechanism": "QT",
+      "summary_ru": "Аддитивное QT.",
+      "recommendation_ru": "ЭКГ; избегать высоких доз.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "methadone",
+      "drugB": "rifampicin",
+      "severity": "major",
+      "mechanism": "PK_CYP3A4",
+      "summary_ru": "↓↓ метадон → синдром отмены.",
+      "recommendation_ru": "↑ доза или замена.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "erythromycin",
+      "drugB": "rosuvastatin",
+      "severity": "moderate",
+      "mechanism": "PK_PGP",
+      "summary_ru": "↑ розувастатин.",
+      "recommendation_ru": "Снизить дозу или замена АБ.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "baclofen",
+      "drugB": "morphine",
+      "severity": "major",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "Аддитивное угнетение ЦНС.",
+      "recommendation_ru": "Снизить дозы; мониторинг дыхания.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
+      ],
+      "verified_by": null,
+      "verified_at": null
+    },
+    {
+      "drugA": "baclofen",
+      "drugB": "oxycodone",
+      "severity": "major",
+      "mechanism": "PD_ADDITIVE",
+      "summary_ru": "То же.",
+      "recommendation_ru": "Снизить дозы.",
+      "sources": [
+        "UpToDate Lexidrug",
+        "Stockley's 12th ed.",
+        "FDA",
+        "EMA SmPC",
+        "DrugBank"
       ],
       "verified_by": null,
       "verified_at": null
