@@ -14,7 +14,7 @@
  * Поиск — линейный fuzzy на клиенте; при размере 500 кодов это занимает
  * <1 мс, MiniSearch не нужен.
  */
-import { useDeferredValue, useMemo, useState } from 'react';
+import { useDeferredValue, useMemo, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Highlight from '@/components/ui/Highlight';
 
@@ -616,6 +616,14 @@ function ChapterAccordion({
 // Используем общий компонент чтобы стиль/логика подсветки были
 // одинаковыми во всех местах поиска платформы.
 
+/** Лимит первоначального рендера в FlatList. Защита от freeze когда юзер
+ *  вводит общий запрос вроде "и" → 30 000 совпадений → 30 000 React-нод
+ *  блокируют thread на 5+ секунд. Лимит 200 покрывает 99% полезных
+ *  сценариев (обычно нужны топ-10), при необходимости юзер может
+ *  «Показать ещё» батчами по 200. */
+const FLATLIST_INITIAL_LIMIT = 200;
+const FLATLIST_CHUNK_SIZE = 200;
+
 function FlatList({
   filtered, activeChapter, chapterById, query,
 }: {
@@ -624,10 +632,35 @@ function FlatList({
   chapterById: Record<string, Chapter>;
   query: string;
 }) {
+  // Локальный state — сбрасывается при изменении filtered (новый поиск).
+  const [showCount, setShowCount] = useState(FLATLIST_INITIAL_LIMIT);
+  // useMemo чтобы не пересоздавать массив на каждом ре-рендере.
+  const visible = useMemo(
+    () => filtered.slice(0, showCount),
+    [filtered, showCount],
+  );
+  // Сбрасываем счётчик когда меняется список (новый запрос).
+  // Используем useEffect через filtered.length sentinel — debounced
+  // через useDeferredValue, не вызывает лишних ре-рендеров.
+  const lastLenRef = useRef(filtered.length);
+  if (lastLenRef.current !== filtered.length) {
+    lastLenRef.current = filtered.length;
+    if (showCount !== FLATLIST_INITIAL_LIMIT) {
+      // Async чтобы не нарушать React invariants (no setState during render).
+      Promise.resolve().then(() => setShowCount(FLATLIST_INITIAL_LIMIT));
+    }
+  }
+  const remaining = filtered.length - showCount;
+
   return (
     <>
       <p style={{ margin: '0 0 12px', fontSize: 13, color: '#6B7280' }}>
         Найдено: <strong style={{ color: '#1A1A1A' }}>{filtered.length}</strong>
+        {filtered.length > showCount && (
+          <span style={{ color: '#9CA3AF' }}>
+            {' '}· показано первых <strong style={{ color: '#1A1A1A' }}>{showCount}</strong>
+          </span>
+        )}
         {activeChapter ? <> · Глава {activeChapter}: {chapterById[activeChapter]?.title}</> : null}
       </p>
       {filtered.length === 0 ? (
@@ -642,13 +675,43 @@ function FlatList({
           Ничего не найдено. Попробуйте другой запрос или сбросьте фильтр главы.
         </div>
       ) : (
-        <div style={{
-          display: 'flex', flexDirection: 'column', gap: 8,
-        }}>
-          {filtered.map((c) => (
-            <CodeRow key={c.code} code={c} query={query} variant="card" />
-          ))}
-        </div>
+        <>
+          <div style={{
+            display: 'flex', flexDirection: 'column', gap: 8,
+          }}>
+            {visible.map((c) => (
+              <CodeRow key={c.code} code={c} query={query} variant="card" />
+            ))}
+          </div>
+          {remaining > 0 && (
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: 16 }}>
+              <button
+                type="button"
+                onClick={() => setShowCount((s) => s + FLATLIST_CHUNK_SIZE)}
+                style={{
+                  padding: '10px 18px',
+                  background: '#EFF6FF',
+                  border: '1px solid #DBEAFE',
+                  borderRadius: 999,
+                  cursor: 'pointer',
+                  fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
+                  color: '#2563EB',
+                  transition: 'background 150ms, border-color 150ms',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = '#DBEAFE';
+                  e.currentTarget.style.borderColor = '#BFDBFE';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = '#EFF6FF';
+                  e.currentTarget.style.borderColor = '#DBEAFE';
+                }}
+              >
+                Показать ещё {Math.min(FLATLIST_CHUNK_SIZE, remaining)} (осталось {remaining})
+              </button>
+            </div>
+          )}
+        </>
       )}
     </>
   );

@@ -56,8 +56,8 @@
     "hash": "a154834035feb41bb2f1cea27b24cf2e"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\app\\sw.ts": {
-    "mtime": 1777392851.019801,
-    "hash": "1e180581ecc6d7678bbe493bd5bc7780"
+    "mtime": 1778092351.450811,
+    "hash": "6b436f2e9f623939f7f5bc3e40b51d22"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\app\\admin\\layout.tsx": {
     "mtime": 1777385855.3402252,
@@ -280,8 +280,8 @@
     "hash": "cb08c58344ec87d17f9f1204abe69f58"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\components\\icd10\\Icd10Lookup.tsx": {
-    "mtime": 1778091731.9934201,
-    "hash": "3c916636fe2581dcda54fafc002f50ea"
+    "mtime": 1778092622.584268,
+    "hash": "6dbcb3167fcafd6139b239b195340a94"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\components\\icons\\ArrowLeft.tsx": {
     "mtime": 1776317951.9500477,
@@ -4026,6 +4026,10 @@
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\docs\\UI_KIT.md": {
     "mtime": 1776681835.0696278,
     "hash": "ccffb0c00cc6d3cd8d6efe0c1c5c586c"
+  },
+  "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\docs\\architecture\\large-dataset-pattern.md": {
+    "mtime": 1778092684.313939,
+    "hash": "48b552b108338f449c2a523806a2eed4"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\docs\\sessions\\2026-05-05-memory-system-setup.md": {
     "mtime": 1777988472.2968557,
