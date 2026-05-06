@@ -450,13 +450,18 @@ function Icd11Panel({
       </div>
     );
   }
+  // Если extensions ещё не догружены, показываем суммарное число (core +
+  // pending extensionsCount), чтобы не выглядело будто кодов меньше.
+  const totalCodes = bank.codes.length + (
+    (bank as Bank & { extensionsCount?: number }).extensionsCount ?? 0
+  );
   return (
     <>
       <Icd11InfoCard
         version={bank.version}
         lastUpdated={formatDate(bank.lastUpdated)}
         source={bank.source}
-        codesCount={bank.codes.length}
+        codesCount={totalCodes}
         chaptersCount={bank.chapters.length}
       />
       <Icd10Lookup
