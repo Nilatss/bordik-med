@@ -64,4 +64,27 @@ describe('mdrd · compute', () => {
     expect(parseFloat(r.value)).toBeLessThan(15);
     expect(r.interpretation).toMatch(/G5/);
   });
+
+  // ─── P0 guard tests (AUDIT_REPORT_2026-05-06 P0-1) ────────────────────
+  describe('P0 guard: invalid creatinine returns N/A', () => {
+    it('creatinine = 0 → N/A (раньше Math.pow(0, -1.154) → Infinity)', () => {
+      const r = call(50, 0, false);
+      expect(r.value).toBe('N/A');
+      expect(r.interpretation).toMatch(/корректные/i);
+    });
+
+    it('creatinine < 0 → N/A', () => {
+      const r = call(50, -10, false);
+      expect(r.value).toBe('N/A');
+    });
+
+    it('age = 0 → N/A', () => {
+      const r = call(0, 90, false);
+      expect(r.value).toBe('N/A');
+    });
+
+    it('result is always finite for valid inputs', () => {
+      expect(Number.isFinite(parseFloat(call(50, 90, false).value))).toBe(true);
+    });
+  });
 });

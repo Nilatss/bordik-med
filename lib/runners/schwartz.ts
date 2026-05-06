@@ -58,8 +58,20 @@ const runner: CalculatorTool = {
       }
     ],
     compute: (v)=>{
-            const scr_mgdl = Number(v.creat) / 88.4;
-            const egfr = 0.413 * Number(v.height) / scr_mgdl;
+            const creat = Number(v.creat);
+            const height = Number(v.height);
+            // P0 guard: creat ≤ 0 → деление на 0 = Infinity.
+            // HTML min=10 — UI-валидация, обходится paste/preset/POST.
+            if (!Number.isFinite(creat) || creat <= 0 || !Number.isFinite(height) || height <= 0) {
+                return {
+                    value: 'N/A',
+                    unit: 'мл/мин/1,73 м²',
+                    interpretation: 'Введите корректные значения (креатинин > 0, рост > 0)',
+                    color: '#9CA3AF',
+                };
+            }
+            const scr_mgdl = creat / 88.4;
+            const egfr = 0.413 * height / scr_mgdl;
             let interpretation = '', color = '#1A1A1A';
             let details = '';
             let actions = [];

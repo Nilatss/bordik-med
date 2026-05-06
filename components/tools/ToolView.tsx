@@ -205,13 +205,33 @@ export default function ToolView({ toolId }: { toolId: string }) {
     const ready = runner.inputs.every((inp) => {
       if (inp.type === 'number') {
         const v = values[inp.id];
-        return typeof v === 'number' && !isNaN(v);
+        // Number.isFinite ловит и NaN, и ±Infinity — раннее ограждение
+        // от Number(""), Number("foo"), Number(Infinity).
+        return typeof v === 'number' && Number.isFinite(v);
       }
       return values[inp.id] !== undefined;
     });
     if (!ready) return null;
     if (runner.kind === 'calculator') {
-      try { return runner.compute(values); } catch { return null; }
+      try {
+        const r = runner.compute(values);
+        // Defense-in-depth: если compute() при «пограничных» входных вернул
+        // числовую строку, которая не finite (Infinity/-Infinity/NaN), —
+        // подменяем на N/A. Это страховка для раннеров, у которых ещё нет
+        // явного guard'а в compute() (см. AUDIT_REPORT P0-1, GFR-формулы).
+        if (r?.value && /^-?(?:\d|Infinity|NaN)/i.test(r.value)) {
+          const n = parseFloat(r.value);
+          if (!Number.isFinite(n)) {
+            return {
+              ...r,
+              value: 'N/A',
+              interpretation: 'Не удалось вычислить — проверьте корректность значений',
+              color: '#9CA3AF',
+            };
+          }
+        }
+        return r;
+      } catch { return null; }
     }
     let total = 0;
     for (const inp of runner.inputs) {

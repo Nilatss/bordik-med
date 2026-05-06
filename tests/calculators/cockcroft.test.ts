@@ -71,4 +71,33 @@ describe('cockcroft · compute', () => {
     const r = call(75, 60, 700, false);
     expect(parseFloat(r.value)).toBeLessThan(15);
   });
+
+  // ─── P0 guard tests (AUDIT_REPORT_2026-05-06 P0-1) ────────────────────
+  describe('P0 guard: invalid inputs return N/A, not Infinity', () => {
+    it('creatinine = 0 → N/A (раньше 1/0 → Infinity)', () => {
+      const r = call(50, 70, 0, false);
+      expect(r.value).toBe('N/A');
+      expect(r.interpretation).toMatch(/корректные/i);
+    });
+
+    it('creatinine < 0 → N/A', () => {
+      const r = call(50, 70, -5, false);
+      expect(r.value).toBe('N/A');
+    });
+
+    it('creatinine = NaN → N/A', () => {
+      const r = call(50, 70, Number.NaN, false);
+      expect(r.value).toBe('N/A');
+    });
+
+    it('weight = 0 → N/A', () => {
+      const r = call(50, 0, 90, false);
+      expect(r.value).toBe('N/A');
+    });
+
+    it('result is always finite when inputs are valid', () => {
+      const r = call(50, 70, 90, false);
+      expect(Number.isFinite(parseFloat(r.value))).toBe(true);
+    });
+  });
 });

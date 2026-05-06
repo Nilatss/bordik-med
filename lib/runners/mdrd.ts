@@ -63,7 +63,18 @@ const runner: CalculatorTool = {
     ],
     compute: (v)=>{
             const age = Number(v.age);
-            const scr_mgdl = Number(v.creatinine) / 88.4;
+            const creat = Number(v.creatinine);
+            // P0 guard: creatinine ≤ 0 → Math.pow(0, -1.154) = Infinity.
+            // HTML min=10 — UI-валидация, обходится paste/preset/POST.
+            if (!Number.isFinite(creat) || creat <= 0 || !Number.isFinite(age) || age <= 0) {
+                return {
+                    value: 'N/A',
+                    unit: 'мл/мин/1,73 м²',
+                    interpretation: 'Введите корректные значения (креатинин > 0, возраст > 0)',
+                    color: '#9CA3AF',
+                };
+            }
+            const scr_mgdl = creat / 88.4;
             const female = v.female === true;
             const egfr = 175 * Math.pow(scr_mgdl, -1.154) * Math.pow(age, -0.203) * (female ? 0.742 : 1);
             let interpretation = '', color = '#1A1A1A';

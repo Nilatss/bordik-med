@@ -83,7 +83,18 @@ const runner: CalculatorTool = {
     ],
     compute: (v)=>{
             const age = Number(v.age), w = Number(v.weight);
-            const scr_mgdl = Number(v.creatinine) / 88.4; // конверсия в mg/dL
+            const creat = Number(v.creatinine);
+            // P0 guard: creatinine ≤ 0 ломает математику (1/0 = Infinity).
+            // HTML min=10 — UI-валидация, обходится paste/preset/POST.
+            if (!Number.isFinite(creat) || creat <= 0 || !Number.isFinite(age) || !Number.isFinite(w) || w <= 0) {
+                return {
+                    value: 'N/A',
+                    unit: 'мл/мин',
+                    interpretation: 'Введите корректные значения (креатинин > 0, вес > 0)',
+                    color: '#9CA3AF',
+                };
+            }
+            const scr_mgdl = creat / 88.4; // конверсия в mg/dL
             const female = v.female === true;
             const crcl = (140 - age) * w * (female ? 0.85 : 1) / (72 * scr_mgdl);
             let interpretation = '', color = '#1A1A1A';

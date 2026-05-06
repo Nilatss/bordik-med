@@ -74,4 +74,27 @@ describe('ckd-epi · compute', () => {
     const old   = parseFloat(call(80, 100, false).value);
     expect(old).toBeLessThan(young);
   });
+
+  // ─── P0 guard tests (AUDIT_REPORT_2026-05-06 P0-1) ────────────────────
+  describe('P0 guard: Math.pow(0, neg) = Infinity blocked', () => {
+    it('creatinine = 0 → N/A (раньше Math.pow(0, -1.2) → Infinity)', () => {
+      const r = call(50, 0, false);
+      expect(r.value).toBe('N/A');
+      expect(r.interpretation).toMatch(/корректные/i);
+    });
+
+    it('creatinine < 0 → N/A', () => {
+      const r = call(50, -1, false);
+      expect(r.value).toBe('N/A');
+    });
+
+    it('age = 0 → N/A', () => {
+      const r = call(0, 90, false);
+      expect(r.value).toBe('N/A');
+    });
+
+    it('result is always finite for valid inputs', () => {
+      expect(Number.isFinite(parseFloat(call(50, 90, false).value))).toBe(true);
+    });
+  });
 });
