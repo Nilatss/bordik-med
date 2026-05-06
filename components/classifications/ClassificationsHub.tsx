@@ -167,7 +167,7 @@ export default function ClassificationsHub({ defaultTab = 'icd10' }: Props) {
     return () => { cancelled = true; };
   }, [activeTab, bank, error]);
 
-  // Грузим МКБ-11 MMS JSON (lazy). v=3.1.0 — split: core (без 0X) +
+  // Грузим МКБ-11 MMS JSON (lazy). v=3.2.0 — split: core (без 0X) +
   // extensions (16k XA-XY кодов) в отдельном файле, который догружается
   // в idle. Сокращает первый byte transfer на ~25%.
   useEffect(() => {
@@ -176,7 +176,7 @@ export default function ClassificationsHub({ defaultTab = 'icd10' }: Props) {
     void (async () => {
       try {
         // Core — 17 822 кода без 0X-главы
-        const r = await fetch('/icd11-mms.json?v=3.1.0', { cache: 'no-cache' });
+        const r = await fetch('/icd11-mms.json?v=3.2.0', { cache: 'no-cache' });
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         const core = await r.json();
         if (cancelled) return;
@@ -188,7 +188,7 @@ export default function ClassificationsHub({ defaultTab = 'icd10' }: Props) {
         if (!extPath) return;
         const triggerExtFetch = async () => {
           try {
-            const er = await fetch(`${extPath}?v=3.1.0`, { cache: 'no-cache' });
+            const er = await fetch(`${extPath}?v=3.2.0`, { cache: 'no-cache' });
             if (!er.ok) return;
             const ext = await er.json();
             if (cancelled) return;
@@ -535,6 +535,11 @@ function Icd11InfoCard({
         <strong>Описания доступны:</strong> русские названия (100%), определения,
         включения и исключения подгружены через официальный WHO ICD-11 API
         (полный обход дерева MMS 2024-01). Кликните на любой код, чтобы развернуть описание.
+        <div style={{ marginTop: 6, fontSize: 12, opacity: 0.85 }}>
+          Часть кодов вида <code>.Z</code> (неуточнённые) и <code>.Y</code> (другие
+          уточнённые) — residual категории; WHO не предоставляет для них отдельных
+          definitions. Где возможно, описание унаследовано от родительского кода.
+        </div>
       </div>
     </div>
   );

@@ -35,6 +35,12 @@ interface CodeEntry {
   codingNote?: string;
   inclusion?: string[];
   exclusion?: string[];
+  // Унаследованные от родителя (если у кода нет своих) — pre-computed
+  // в build-step для МКБ-11 residual подкодов.
+  inheritedDefinition?: string;
+  inheritedLongDefinition?: string;
+  inheritedInclusion?: string[];
+  inheritedFrom?: string;
 }
 
 /**
@@ -613,9 +619,13 @@ function CodeRow({
   variant?: 'compact' | 'card';
 }) {
   const [expanded, setExpanded] = useState(false);
-  const hasDetails = !!(code.definition || code.longDefinition || code.codingNote
+  const hasDetails = !!(
+    code.definition || code.longDefinition || code.codingNote
     || (code.inclusion && code.inclusion.length)
-    || (code.exclusion && code.exclusion.length));
+    || (code.exclusion && code.exclusion.length)
+    || code.inheritedDefinition || code.inheritedLongDefinition
+    || (code.inheritedInclusion && code.inheritedInclusion.length)
+  );
   const isCard = variant === 'card';
   const titleText = displayTitle(code);
 
@@ -748,6 +758,17 @@ function CodeRow({
                   {code.longDefinition}
                 </DetailBlock>
               )}
+              {/* Inherited (от родителя) — показываем только если своих нет */}
+              {!code.definition && code.inheritedDefinition && (
+                <DetailBlock label={`Определение (от родителя ${code.inheritedFrom ?? ''})`}>
+                  {code.inheritedDefinition}
+                </DetailBlock>
+              )}
+              {!code.longDefinition && code.inheritedLongDefinition && code.inheritedLongDefinition !== code.inheritedDefinition && (
+                <DetailBlock label={`Описание (от родителя ${code.inheritedFrom ?? ''})`}>
+                  {code.inheritedLongDefinition}
+                </DetailBlock>
+              )}
               {code.codingNote && (
                 <DetailBlock label="Заметка по кодированию" tone="warning">
                   {code.codingNote}
@@ -757,6 +778,13 @@ function CodeRow({
                 <DetailBlock label="Включает">
                   <ul style={{ margin: 0, paddingLeft: 18 }}>
                     {code.inclusion.map((x, i) => <li key={i}>{x}</li>)}
+                  </ul>
+                </DetailBlock>
+              )}
+              {!code.inclusion?.length && code.inheritedInclusion && code.inheritedInclusion.length > 0 && (
+                <DetailBlock label={`Включает (от родителя ${code.inheritedFrom ?? ''})`}>
+                  <ul style={{ margin: 0, paddingLeft: 18 }}>
+                    {code.inheritedInclusion.map((x, i) => <li key={i}>{x}</li>)}
                   </ul>
                 </DetailBlock>
               )}
