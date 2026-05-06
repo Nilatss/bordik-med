@@ -192,8 +192,8 @@
     "hash": "b91c7196e09725ba7d7695bd1a9a5882"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\components\\classifications\\ClassificationsHub.tsx": {
-    "mtime": 1778091372.2939446,
-    "hash": "2f42230d5997ed248166bec688fd22b7"
+    "mtime": 1778091751.6982186,
+    "hash": "923948318f22c119e0309d4b50db9d8e"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\components\\course\\CourseHeader.tsx": {
     "mtime": 1777106063.0656214,
@@ -280,8 +280,8 @@
     "hash": "cb08c58344ec87d17f9f1204abe69f58"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\components\\icd10\\Icd10Lookup.tsx": {
-    "mtime": 1778091494.7773967,
-    "hash": "c2d7a1928eda85c07382963ce7e7223d"
+    "mtime": 1778091731.9934201,
+    "hash": "3c916636fe2581dcda54fafc002f50ea"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\components\\icons\\ArrowLeft.tsx": {
     "mtime": 1776317951.9500477,
@@ -3642,6 +3642,10 @@
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\scripts\\dump-countries.mjs": {
     "mtime": 1776682251.0910654,
     "hash": "7fbe9313acd4a91bd30a1b2ba43037d2"
+  },
+  "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\scripts\\enrich-icd11-inherit.mjs": {
+    "mtime": 1778091687.8321478,
+    "hash": "90330e34aafd90c0c2fbbd70bcc266cf"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\scripts\\enrich-icd11-who-api.mjs": {
     "mtime": 1778091156.801448,

@@ -489,7 +489,7 @@ function Icd11InfoCard({
             Мир · ВОЗ rev.11 · MMS
           </div>
           <h2 style={{ fontSize: 22, fontWeight: 700, margin: '0 0 6px', color: '#101010' }}>
-            МКБ-11 (ICD-11 MMS, WHO 2018-12 release)
+            МКБ-11 (ICD-11 MMS, WHO 2024-01 release)
           </h2>
           <div style={{ fontSize: 14, color: '#6B7280', lineHeight: 1.55 }}>
             Международная классификация болезней 11-го пересмотра ВОЗ — Mortality
@@ -518,29 +518,11 @@ function Icd11InfoCard({
         border: '1px solid #F3F4F6',
       }}>
         <Fact label="Покрытие" value={`${codesCount.toLocaleString('ru-RU')} кодов · ${chaptersCount} глав (включая X-extension и V-functioning)`} />
-        <Fact label="Источник" value={
-          <a href="https://icd.who.int/browse/2024-01/mms/ru" target="_blank" rel="noopener noreferrer"
-             style={{ color: '#2563EB', textDecoration: 'none', borderBottom: '1px solid #BFDBFE' }}>
-            {source}
-          </a>
-        } />
+        <Fact label="Источник" value={source} />
         <Fact label="Лицензия" value="CC BY-ND 3.0 IGO (WHO) — некоммерческое использование с указанием авторства" />
         <Fact label="Версия базы" value={`${version} · обновлено ${lastUpdated}`} />
       </dl>
 
-      <div style={{
-        padding: '14px 18px', background: '#ECFDF5', border: '1px solid #A7F3D0',
-        borderRadius: 10, fontSize: 13, color: '#065F46', lineHeight: 1.5,
-      }}>
-        <strong>Описания доступны:</strong> русские названия (100%), определения,
-        включения и исключения подгружены через официальный WHO ICD-11 API
-        (полный обход дерева MMS 2024-01). Кликните на любой код, чтобы развернуть описание.
-        <div style={{ marginTop: 6, fontSize: 12, opacity: 0.85 }}>
-          Часть кодов вида <code>.Z</code> (неуточнённые) и <code>.Y</code> (другие
-          уточнённые) — residual категории; WHO не предоставляет для них отдельных
-          definitions. Где возможно, описание унаследовано от родительского кода.
-        </div>
-      </div>
     </div>
   );
 }
