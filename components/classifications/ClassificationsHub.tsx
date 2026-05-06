@@ -160,7 +160,8 @@ export default function ClassificationsHub({ defaultTab = 'icd10' }: Props) {
   const [error, setError] = useState<string | null>(null);
 
   // Грузим МКБ-10 starter JSON только когда открыт его таб (lazy).
-  // ?v=0.6.0 — bust для Serwist precache при росте базы (3742 кодов).
+  // ?v=1.0.0 — bust для Serwist precache при росте базы (6060 кодов).
+  // Версию увеличиваем при каждом обновлении data/icd10-starter.json.
   useEffect(() => {
     if (activeTab !== 'icd10' || bank || error) return;
     let cancelled = false;

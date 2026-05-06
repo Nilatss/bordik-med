@@ -776,7 +776,7 @@ export default function DrugChecker() {
           </dd>
           <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Статус</dt>
           <dd style={{ margin: 0, color: '#92400E' }}>
-            <strong>Phase 1 BETA</strong> — все 83 пары имеют{' '}
+            <strong>Phase 1 BETA</strong> — все {data.interactions.length} пар имеют{' '}
             <code style={{ background: '#FFFFFF', padding: '1px 6px', borderRadius: 4, fontSize: 11 }}>verified_by: null</code>;
             требуют аудита клин-фармакологом перед коммерческим запуском.
           </dd>
