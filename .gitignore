@@ -57,6 +57,10 @@ next-env.d.ts
 !/.claude/settings.json
 !/.claude/launch.json
 
+# Obsidian vault config — создаётся если открыть проект как vault.
+# Не нужен в репо (vault лежит в ~/vault/bordik-med/).
+/.obsidian/
+
 # Serwist / PWA generated artefacts (rebuilt on every `next build`)
 /public/sw.js
 /public/sw.js.map
