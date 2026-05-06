@@ -663,13 +663,29 @@ export default function DrugChecker() {
                         }}>
                           {i.drugAName} + {i.drugBName}
                         </span>
-                        {/* Краткий клинический эффект */}
+                        {/* Краткий клинический эффект (fallback для DDInter — только severity) */}
                         <span style={{
                           display: 'block', marginTop: 4,
                           fontSize: 13, color: '#4B5563', lineHeight: 1.5,
                         }}>
-                          {i.effect}
+                          {i.effect ?? `Уровень риска: ${meta.label.toLowerCase()}. Детали уточняйте у клин-фармаколога.`}
                         </span>
+                        {/* Source badge для DDInter записей */}
+                        {i.source === 'ddinter' && (
+                          <span style={{
+                            display: 'inline-block', marginTop: 6,
+                            padding: '2px 8px',
+                            background: '#F5F6F8',
+                            color: '#6B7280',
+                            border: '1px solid #E5E7EB',
+                            borderRadius: 999,
+                            fontFamily: 'var(--font-mono, ui-monospace)',
+                            fontSize: 10, fontWeight: 600,
+                            letterSpacing: '0.04em',
+                          }}>
+                            DDInter
+                          </span>
+                        )}
                       </span>
                       <span style={{
                         flexShrink: 0,
@@ -711,9 +727,19 @@ export default function DrugChecker() {
                               fontSize: 13, color: '#374151', lineHeight: 1.55,
                             }}>
                               <tbody>
-                                <DetailRow label="Механизм"  value={i.mechanism} />
-                                <DetailRow label="Тактика"   value={i.management} bold />
-                                <DetailRow label="Источники" value={i.sources.join(' · ')} mono last />
+                                {i.mechanism && <DetailRow label="Механизм"  value={i.mechanism} />}
+                                {i.management && <DetailRow label="Тактика"   value={i.management} bold />}
+                                <DetailRow
+                                  label="Источники"
+                                  value={(i.sources?.length ? i.sources : [i.source === 'ddinter' ? 'DDInter (academic DB)' : 'Manual review']).join(' · ')}
+                                  mono last
+                                />
+                                {i.source === 'ddinter' && (
+                                  <DetailRow
+                                    label="Заметка"
+                                    value="Запись из базы DDInter содержит только уровень риска. Полный механизм и тактику см. в инструкциях производителей и UpToDate/Stockley's."
+                                  />
+                                )}
                               </tbody>
                             </table>
                           </div>

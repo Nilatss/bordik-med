@@ -29,16 +29,21 @@ export interface Interaction {
   drugA: string;
   drugB: string;
   severity: Severity;
-  mechanism: string;
-  effect: string;
-  management: string;
-  sources: string[];
-  /** Кто верифицировал пару клинически. null = AI-синтез, требует
-   *  ручного аудита клин-фармакологом перед коммерческим использованием.
-   *  См. docs/specs/drug-interactions-verification.md */
+  /** Описание механизма (PK/PD причина). Опционально для DDInter pairs. */
+  mechanism?: string;
+  /** Краткий клинический эффект. Опционально для DDInter pairs. */
+  effect?: string;
+  /** Тактика ведения. Опционально для DDInter pairs. */
+  management?: string;
+  /** Источники литературы. */
+  sources?: string[];
+  /** Кто верифицировал пару клинически. null = AI-синтез/база DDInter. */
   verified_by?: 'clinical_pharmacologist' | 'pharmacology_committee' | null;
   /** Дата последней верификации в формате YYYY-MM-DD. */
   verified_at?: string | null;
+  /** Происхождение записи: 'manual' = ручная проверка, 'ddinter' = из DDInter
+   *  database. DDInter pairs имеют только severity. */
+  source?: 'manual' | 'ddinter';
 }
 
 export interface DrugInteractionData {
