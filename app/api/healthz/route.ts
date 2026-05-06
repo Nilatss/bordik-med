@@ -7,8 +7,9 @@
  * (every monitoring hit eats Supabase quota) and fire false positives
  * during routine upstream maintenance.
  *
- * If we need a deep check later, expose it under /api/readyz (well-
- * known kubernetes convention) with a separate auth gate.
+ * Для deep-проверки (Upstash, Supabase и т.п.) используется отдельный
+ * /api/readyz (kubernetes convention) с auth-gate'ом и таймаутом.
+ * См. AUDIT_REPORT_2026-05-06 P2-3.
  */
 import { NextResponse } from 'next/server';
 

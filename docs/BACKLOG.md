@@ -57,7 +57,8 @@
 | **Upstash Redis** | Provision free tier на console.upstash.com → env vars `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN` в Vercel **Production + Preview** (НЕ Dev) |
 | **GitHub Secrets** для backup workflow | `SUPABASE_DB_URL`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_ACCOUNT_ID`, `R2_BUCKET` |
 | **Sentry** | `npx @sentry/wizard@latest -i nextjs` + DSN из Sentry free tier |
-| **UptimeRobot** | 3 monitors на `/`, `/api/healthz`, `/sw.js`, 5-min interval |
+| **UptimeRobot** | 3 monitors на `/`, `/api/healthz`, `/sw.js`, 5-min interval. Опционально `/api/readyz` (deep-check Upstash) с custom-header `x-readyz-token: $READYZ_TOKEN`, alert при HTTP ≥ 500 — закрыто в P2-3 |
+| **`READYZ_TOKEN` env var** | Vercel **Production**: сгенерировать `openssl rand -hex 32`, прописать в Vercel и в UptimeRobot custom header. Без токена /api/readyz публично доступен — это нормально в preview/dev, но в проде он жжёт Upstash-кредиты на каждый probe |
 | **CSP enforcement** | После 14 дней Report-Only с 0 violations — флипнуть header в `middleware.ts` `Content-Security-Policy-Report-Only` → `Content-Security-Policy` |
 
 ---
