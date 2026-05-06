@@ -492,7 +492,7 @@ function Icd11InfoCard({
       }}>
         <Fact label="Покрытие" value={`${codesCount.toLocaleString('ru-RU')} кодов · ${chaptersCount} глав (включая X-extension и V-functioning)`} />
         <Fact label="Источник" value={
-          <a href="https://icd.who.int/browse/2024-01/mms/en" target="_blank" rel="noopener noreferrer"
+          <a href="https://icd.who.int/browse/2024-01/mms/ru" target="_blank" rel="noopener noreferrer"
              style={{ color: '#2563EB', textDecoration: 'none', borderBottom: '1px solid #BFDBFE' }}>
             {source}
           </a>
@@ -505,9 +505,9 @@ function Icd11InfoCard({
         padding: '14px 18px', background: '#ECFDF5', border: '1px solid #A7F3D0',
         borderRadius: 10, fontSize: 13, color: '#065F46', lineHeight: 1.5,
       }}>
-        <strong>Phase 2 готов:</strong> русские переводы названий + определения,
-        включения и исключения подгружены через официальный WHO ICD-11 API.
-        Кликните на любой код, чтобы развернуть описание.
+        <strong>Описания доступны:</strong> русские названия (100%), определения,
+        включения и исключения подгружены через официальный WHO ICD-11 API
+        (полный обход дерева MMS 2024-01). Кликните на любой код, чтобы развернуть описание.
       </div>
     </div>
   );

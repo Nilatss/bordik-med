@@ -56,7 +56,6 @@ async function fetchEntity(uri, lang = 'ru') {
           'API-Version': 'v2',
         },
       });
-      if (attempt === 0 && Math.random() < 0.05) console.error(`  [debug] ${uri.slice(-12)} → ${r.status}`);
       if (r.status === 401) { token = null; await new Promise(s => setTimeout(s, 200)); continue; }
       if (r.status === 429) { await new Promise(s => setTimeout(s, 2000 * (attempt + 1))); continue; }
       if (r.status >= 500) { await new Promise(s => setTimeout(s, 1000)); continue; }

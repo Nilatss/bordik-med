@@ -39,12 +39,15 @@ interface CodeEntry {
 
 /**
  * Возвращает отображаемое название кода. Приоритет: title_ru > title.
- * Заодно убирает hierarchical markers ("- ", "- - ") из simpleTabulation
- * экспорта МКБ-11.
+ * Заодно убирает hierarchical markers вида "- " и "- - " из старого
+ * simpleTabulation МКБ-11 экспорта (block-уровни приходят с префиксом).
+ *
+ * Важно: НЕ стрипаем `-α`, `-β` и т.п. — только последовательность
+ * `(- )+` (дефис+пробел повторённое 1-3 раза) в самом начале.
  */
 function displayTitle(c: CodeEntry): string {
   const t = c.title_ru || c.title;
-  return t.replace(/^[-–—\s]+/, '').trim();
+  return t.replace(/^(?:[-–—] ){1,3}/, '').trim();
 }
 
 interface Props {
@@ -68,16 +71,9 @@ export default function Icd10Lookup({ chapters, codes, version, lastUpdated, sou
   const [activeChapter, setActiveChapter] = useState<string | null>(null);
   const [expandedChapters, setExpandedChapters] = useState<Set<string>>(new Set());
   const [chapterShowAll, setChapterShowAll] = useState<Set<string>>(new Set());
-  /** Раскрытые коды — показывают definition / inclusion / exclusion панель. */
-  const [expandedCodes, setExpandedCodes] = useState<Set<string>>(new Set());
-
-  const toggleCode = (code: string) => {
-    setExpandedCodes((prev) => {
-      const next = new Set(prev);
-      if (next.has(code)) next.delete(code); else next.add(code);
-      return next;
-    });
-  };
+  // Expand state раскрытых кодов хранится локально в каждом CodeRow
+  // (useState внутри). Если в будущем понадобится "expand all" или
+  // персистентность через URL — сюда вернём общий Set + контекст.
 
   const isSearching = q.trim().length > 0 || activeChapter !== null;
 
@@ -630,7 +626,7 @@ function CodeRow({
         <span style={{
           flex: '0 0 80px',
           fontFamily: 'var(--font-mono, ui-monospace)',
-          fontWeight: 700, fontSize: isCard ? 13 : 13, color: '#2563EB',
+          fontWeight: 700, fontSize: isCard ? 13 : 12.5, color: '#2563EB',
           letterSpacing: '0.02em',
         }}>
           {query ? <Highlight text={code.code} query={query} /> : code.code}

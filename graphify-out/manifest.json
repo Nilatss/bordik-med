@@ -192,8 +192,8 @@
     "hash": "b91c7196e09725ba7d7695bd1a9a5882"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\components\\classifications\\ClassificationsHub.tsx": {
-    "mtime": 1778081046.3101678,
-    "hash": "097dac5a23088e2b005ed4886e52d8cb"
+    "mtime": 1778090823.835261,
+    "hash": "b4033ae568678af8e320c2f5f31bb969"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\components\\course\\CourseHeader.tsx": {
     "mtime": 1777106063.0656214,
@@ -3623,6 +3623,10 @@
     "mtime": 1777959330.416824,
     "hash": "e491de219e33d6ff8b6b2b258d9c3336"
   },
+  "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\scripts\\build-icd11-from-tree.mjs": {
+    "mtime": 1778090636.0320091,
+    "hash": "6bca75216871fd00401aed6009c5d207"
+  },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\scripts\\build-question-bank.mjs": {
     "mtime": 1777893845.1655614,
     "hash": "36add493a553a6c49bf0fad534d8df79"
@@ -3654,6 +3658,10 @@
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\scripts\\export-tools.mjs": {
     "mtime": 1777878151.5104094,
     "hash": "4518b898b890cb33c7b483404ec0584a"
+  },
+  "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\scripts\\fetch-icd11-full-tree.mjs": {
+    "mtime": 1778089884.228042,
+    "hash": "f06d9b1177a0e5d3bc5b12a46975f870"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\scripts\\fix-formula-bold-to-code.mjs": {
     "mtime": 1777096584.1241553,
