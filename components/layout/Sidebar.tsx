@@ -252,12 +252,24 @@ export default function Sidebar() {
   const q = searchQuery.trim().toLowerCase();
   const visibleGroups = useMemo(() => {
     if (!q) return groups;
+    // Word-prefix match: разбиваем label/keyword по пробелам и дефисам
+    // и проверяем, что хотя бы одно слово начинается с query. Раньше
+    // использовался .includes(q) — для 'ка' он ловил подстроки в
+    // 'аккаунт', 'проверка', 'статистика', 'фармакология' и т.д.,
+    // поэтому в сайдбаре висели ВСЕ nav-разделы.
+    const wordPrefixMatch = (text: string): boolean => {
+      const t = text.toLowerCase();
+      if (t.startsWith(q)) return true;
+      // Слова разделяются пробелами, дефисами и слэшами — учитываем все три,
+      // чтобы 'classifications' и 'мкб-10' матчились по 'мкб', 'icd' и т.п.
+      return t.split(/[\s\-/]+/).some((w) => w.startsWith(q));
+    };
     return groups
       .map((g) => ({
         ...g,
         items: g.items.filter((id) =>
-          navItems[id].label.toLowerCase().includes(q) ||
-          navItems[id].keywords.some((k) => k.toLowerCase().includes(q))
+          wordPrefixMatch(navItems[id].label) ||
+          navItems[id].keywords.some((k) => wordPrefixMatch(k))
         ),
       }))
       .filter((g) => g.items.length > 0);
