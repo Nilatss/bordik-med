@@ -199,6 +199,92 @@ describe('renal-dose · MVP-15 drugs', () => {
     });
   });
 
+  // ─── v0.3.0 expansion (30 → 50) ──────────────────────────────────────
+  describe('v0.3.0 expansion — full MVP-50', () => {
+    it('imipenem — seizure risk in advanced CKD', () => {
+      const r = call('imipenem', 75, 60, 600, true);
+      // CrCl ~7 → G4-G5 stage
+      expect(r.value).toMatch(/250-500 мг каждые 12/);
+    });
+    it('ceftriaxone — single stage (dual excretion)', () => {
+      const r = call('ceftriaxone', 80, 60, 600, true);
+      expect(r.value).toMatch(/1-2 г 1 р\/сут/);
+      // Even at very low eGFR, no major dose adjustment
+    });
+    it('cefepime — neurotoxicity in G4', () => {
+      const r = call('cefepime', 70, 65, 250, true);
+      expect(r.value).toMatch(/0\.5-1 г каждые 24/);
+    });
+    it('piperacillin-tazobactam — interval extends with CKD', () => {
+      const r = call('piperacillin-tazobactam', 40, 70, 80, false);
+      expect(r.value).toMatch(/4\.5 г|6-8/);
+    });
+    it('fluconazole — 50% loading dose at G3b-G5', () => {
+      const r = call('fluconazole', 70, 65, 250, true);
+      expect(r.value).toMatch(/50%|нагрузочной/);
+    });
+    it('valacyclovir — interval extension at G4', () => {
+      const r = call('valacyclovir', 70, 60, 350, true);
+      expect(r.value).toMatch(/1 г 1 р\/сут|500 мг 1 р\/сут/);
+    });
+    it('oseltamivir — q24 dosing on dialysis', () => {
+      const r = call('oseltamivir', 75, 60, 700, true);
+      expect(r.value).toMatch(/30 мг|после/);
+    });
+    it('sotalol — avoid CrCl <40 (TdP risk)', () => {
+      const r = call('sotalol', 70, 65, 200, true);
+      expect(r.value).toMatch(/Избегать|альтернатива/i);
+    });
+    it('metoprolol — single stage (hepatic metabolism)', () => {
+      const r = call('metoprolol', 80, 65, 600, true);
+      expect(r.value).toMatch(/Тартрат|сукцинат/);
+    });
+    it('amlodipine — single stage (hepatic CYP3A4)', () => {
+      const r = call('amlodipine', 80, 70, 600, false);
+      expect(r.value).toMatch(/2\.5-5 мг|5-10/);
+    });
+    it('valsartan — caution in G4', () => {
+      const r = call('valsartan', 75, 65, 300, true);
+      expect(r.value).toMatch(/40-80|осторожн/i);
+    });
+    it('hctz — ineffective at G4-G5', () => {
+      const r = call('hctz', 75, 60, 350, true);
+      expect(r.value).toMatch(/Малоэффективен|петлевые/i);
+    });
+    it('cyclosporine — TDM-only dosing', () => {
+      const r = call('cyclosporine', 50, 70, 100, false);
+      expect(r.value).toMatch(/TDM|Cmin/);
+    });
+    it('tacrolimus — TDM-only dosing', () => {
+      const r = call('tacrolimus', 50, 70, 100, false);
+      expect(r.value).toMatch(/TDM|Cmin/);
+    });
+    it('amitriptyline — caution at G4-G5 (anticholinergic, QT)', () => {
+      const r = call('amitriptyline', 75, 65, 400, true);
+      expect(r.value).toMatch(/10-25 мг|осторожн/i);
+    });
+    it('risperidone — significant reduction in G4-G5', () => {
+      const r = call('risperidone', 75, 65, 400, true);
+      expect(r.value).toMatch(/0\.25-0\.5/);
+    });
+    it('quetiapine — single stage (hepatic CYP3A4)', () => {
+      const r = call('quetiapine', 80, 70, 600, false);
+      expect(r.value).toMatch(/Шизофрения|БАР/);
+    });
+    it('methadone — preferred opioid in CKD (low renal)', () => {
+      const r = call('methadone', 75, 60, 600, true);
+      expect(r.value).toMatch(/75%|тщательное/i);
+    });
+    it('colchicine — avoid acute attack in G4-G5', () => {
+      const r = call('colchicine', 75, 60, 400, true);
+      expect(r.value).toMatch(/Профилактика|Острая подагра: избегать/i);
+    });
+    it('zolpidem — single stage (hepatic CYP3A4)', () => {
+      const r = call('zolpidem', 80, 65, 500, true);
+      expect(r.value).toMatch(/5-10 мг|на ночь/);
+    });
+  });
+
   // ─── Result structure ──────────────────────────────────────────────
   describe('result includes details, scale, sources', () => {
     it('details mention both eGFR and CrCl', () => {
