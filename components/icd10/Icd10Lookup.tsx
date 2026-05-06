@@ -528,8 +528,8 @@ function FlatList({
                 transition: 'border-color 150ms, background 150ms',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = '#EFF6FF';
-                e.currentTarget.style.borderColor = '#DBEAFE';
+                e.currentTarget.style.background = '#F5F6F8';
+                e.currentTarget.style.borderColor = '#E2E4EA';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.background = '#FFFFFF';
@@ -575,7 +575,7 @@ function CodeRow({ code }: { code: CodeEntry }) {
       padding: '10px 20px',
       transition: 'background 120ms',
     }}
-      onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.background = '#EFF6FF'; }}
+      onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.background = '#F5F6F8'; }}
       onMouseLeave={(e) => { (e.currentTarget as HTMLDivElement).style.background = 'transparent'; }}
     >
       <span style={{
