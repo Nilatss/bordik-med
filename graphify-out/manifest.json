@@ -192,8 +192,8 @@
     "hash": "b91c7196e09725ba7d7695bd1a9a5882"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\components\\classifications\\ClassificationsHub.tsx": {
-    "mtime": 1778095799.0913496,
-    "hash": "a4c131a82c6795d0a62e649813a709e1"
+    "mtime": 1778096477.215332,
+    "hash": "c4bc659bb6eb294eae2beb0c3594ce71"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\components\\course\\CourseHeader.tsx": {
     "mtime": 1777106063.0656214,
@@ -3699,6 +3699,10 @@
     "mtime": 1778066250.165583,
     "hash": "57aa18a6e80b989dfbd87d4a2e298c15"
   },
+  "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\scripts\\import-icd10cm-tabular.mjs": {
+    "mtime": 1778096452.2351937,
+    "hash": "d32988e23b2b2a356e02c0b6d7edce2f"
+  },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\scripts\\import-icd10cm.mjs": {
     "mtime": 1778094871.5581863,
     "hash": "7e38a5e0215d96f90f9cbd61ebd6d30e"
@@ -4118,6 +4122,26 @@
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\data\\raw\\icd10cm-2026\\icd10OrderFiles.pdf": {
     "mtime": 1749212943.0,
     "hash": "1b023e42409776b46fddf227e78e3b6e"
+  },
+  "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\data\\raw\\icd10cm-tabular\\Table and Index\\icd10cm_drug_2026.pdf": {
+    "mtime": 1749592504.0,
+    "hash": "eea67a94b31e861834d87ad44c6821d8"
+  },
+  "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\data\\raw\\icd10cm-tabular\\Table and Index\\icd10cm_eindex_2026.pdf": {
+    "mtime": 1749592504.0,
+    "hash": "18801326e76e2b819607aed4d0d39468"
+  },
+  "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\data\\raw\\icd10cm-tabular\\Table and Index\\icd10cm_index_2026.pdf": {
+    "mtime": 1749592504.0,
+    "hash": "42f29764a9acbe7d88d11366318448d9"
+  },
+  "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\data\\raw\\icd10cm-tabular\\Table and Index\\icd10cm_neoplasm_2026.pdf": {
+    "mtime": 1749592504.0,
+    "hash": "022d586be7868703b35ea8b9dd5c0062"
+  },
+  "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\data\\raw\\icd10cm-tabular\\Table and Index\\icd10cm_tabular_2026.pdf": {
+    "mtime": 1749592504.0,
+    "hash": "b487087fe79ec1de9713f71e1c98d902"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\data\\raw\\icd10pcs-2026\\icd10pcsCodesFile.pdf": {
     "mtime": 1590045220.0,

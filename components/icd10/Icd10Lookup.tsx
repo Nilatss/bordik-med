@@ -59,15 +59,17 @@ function displayTitle(c: CodeEntry): string {
 interface Props {
   chapters: Chapter[];
   codes: CodeEntry[];
-  version: string;
-  lastUpdated: string;
-  source: string;
   /**
    * Если true — встроенный заголовок "МКБ-10" + подзаголовок не рендерится
    * (используется когда контейнер сам показывает rich-info-card, чтобы
    * не дублировать h2).
    */
   hideHeading?: boolean;
+  /** Поля метаданных принимаются для совместимости со старыми callers,
+   *  но больше не отображаются (provenance-блок убран по запросу). */
+  version?: string;
+  lastUpdated?: string;
+  source?: string;
 }
 
 const INITIAL_PER_CHAPTER = 50;
@@ -83,7 +85,7 @@ interface IndexedCode extends CodeEntry {
   _titleLc: string;    // lowercased displayTitle (с ё→е normalization)
 }
 
-export default function Icd10Lookup({ chapters, codes, version, lastUpdated, source, hideHeading = false }: Props) {
+export default function Icd10Lookup({ chapters, codes, hideHeading = false }: Props) {
   const [q, setQ] = useState('');
   /**
    * useDeferredValue: React помечает фильтрацию как low-priority work.
@@ -382,61 +384,6 @@ export default function Icd10Lookup({ chapters, codes, version, lastUpdated, sou
         </div>
       )}
 
-      {/* Provenance */}
-      <section
-        aria-labelledby="icd10-provenance"
-        style={{
-          marginTop: 32,
-          padding: '20px 22px',
-          background: '#F5F6F8',
-          border: 'none',
-          borderRadius: 14,
-          fontSize: 13,
-          color: '#4B5563',
-          lineHeight: 1.55,
-        }}
-      >
-        <h3
-          id="icd10-provenance"
-          style={{
-            margin: '0 0 14px',
-            fontFamily: 'var(--font-display)',
-            fontSize: 15, fontWeight: 700, color: '#1A1A1A',
-            letterSpacing: '-0.01em',
-          }}
-        >
-          Источник и обновление
-        </h3>
-        <dl style={{
-          margin: 0, display: 'grid',
-          gridTemplateColumns: 'auto 1fr', columnGap: 18, rowGap: 10,
-        }}>
-          <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Версия базы</dt>
-          <dd style={{ margin: 0, color: '#1A1A1A', fontFamily: 'var(--font-mono, ui-monospace)', fontSize: 12 }}>{version}</dd>
-          <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Обновлено</dt>
-          <dd style={{ margin: 0, color: '#1A1A1A', fontFamily: 'var(--font-mono, ui-monospace)', fontSize: 12 }}>{lastUpdated}</dd>
-          <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Источник</dt>
-          <dd style={{ margin: 0, color: '#1A1A1A' }}>{source}</dd>
-          <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Покрытие</dt>
-          <dd style={{ margin: 0, color: '#1A1A1A' }}>
-            Все 22 главы + {codes.length} наиболее частых кодов. Полная база
-            (~14 000 кодов) — <a href="/docs/CONTENT_ROADMAP.md" style={{ color: '#1A1A1A', textDecoration: 'underline', textUnderlineOffset: 2 }}>в дорожной карте</a>.
-          </dd>
-        </dl>
-        <p
-          role="note"
-          style={{
-            marginTop: 18, paddingTop: 16,
-            borderTop: '1px solid #E5E7EB',
-            fontSize: 12, color: '#6B7280', lineHeight: 1.5,
-          }}
-        >
-          <strong style={{ color: '#1A1A1A' }}>Не заменяет клиническое суждение.</strong>{' '}
-          Кодирование диагноза должно опираться на полный клинический контекст
-          и официальные методические рекомендации Минздрава. Заметили ошибку
-          или нужный код отсутствует — напишите через «Обратную связь».
-        </p>
-      </section>
     </main>
   );
 }
