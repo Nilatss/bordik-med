@@ -680,18 +680,11 @@ const pillStyle: React.CSSProperties = {
 };
 
 function Spinner() {
-  return (
-    <div style={{
-      width: 36, height: 36, margin: '0 auto',
-      border: '3px solid #E2E4EA', borderTopColor: '#1A1A1A',
-      borderRadius: '50%',
-      animation: 'diagnostic-spin 0.9s linear infinite',
-    }}>
-      <style jsx global>{`
-        @keyframes diagnostic-spin { to { transform: rotate(360deg); } }
-      `}</style>
-    </div>
-  );
+  // Глобальный keyframe + цвет в app/globals.css (.bordik-spinner).
+  // Раньше использовался <style jsx global> с локальным @keyframes,
+  // но на десктопе под Next 16/Turbopack стиль не успевал инъектиться
+  // до старта анимации в AnimatePresence-обёртке — спиннер не крутился.
+  return <div className="bordik-spinner" aria-label="Загрузка…" role="status" />;
 }
 
 function ListPanel({ title, tone, items }: {

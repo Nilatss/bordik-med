@@ -1336,3 +1336,22 @@ main:has(.stats-page) {
   background-size: 200% 100%;
   animation: sk-shimmer 1.4s ease-in-out infinite;
 }
+
+/* Bordik spinner — глобальный keyframe, чтобы анимация работала
+ * везде, не завися от styled-jsx scoping (была проблема в DiagnosticTest:
+ * на десктопе spinner не вращался, т.к. <style jsx global> внутри
+ * AnimatePresence-mount'ящегося компонента инъектировался не вовремя).
+ * Цвет — фирменный синий #2563EB вместо чёрного. */
+@keyframes bordik-spin { to { transform: rotate(360deg); } }
+.bordik-spinner {
+  width: 36px;
+  height: 36px;
+  margin: 0 auto;
+  border: 3px solid #E2E4EA;
+  border-top-color: #2563EB;
+  border-radius: 50%;
+  animation: bordik-spin 0.9s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .bordik-spinner { animation-duration: 2.5s; }
+}
