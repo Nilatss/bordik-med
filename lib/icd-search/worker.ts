@@ -26,6 +26,7 @@ interface SlimCode {
 
 interface SlimBank {
   version: string;
+  lastUpdated?: string;
   chapters: { id: string; range: string; title: string }[];
   codes: SlimCode[];
 }
@@ -54,47 +55,57 @@ interface CodeDetails {
   inheritedFrom?: string;
 }
 
-const CACHE_VERSION = '1.0.0';
+/** Сигнатура bank — меняется при rebuild data файла → invalidate IDB. */
+function bankSignature(bank: SlimBank): string {
+  return `${bank.version || 'v?'}-${bank.lastUpdated || '?'}-${bank.codes.length}`;
+}
 
 class IcdSearchEngine {
   private indexed: IndexedCode[] = [];
   private chapters: SlimBank['chapters'] = [];
-  private bankVersion = '';
+  private bankSig = '';
   private detailsMap: Record<string, CodeDetails> | null = null;
   private detailsLoading: Promise<void> | null = null;
 
   /**
-   * Загружает slim bank — пытается из IDB cache, fallback на network.
-   * @returns total codes count после загрузки.
+   * Загружает slim bank. Алгоритм:
+   *   1. Fetch slim (через SW CacheFirst — обычно <50ms)
+   *   2. Compute signature {version}-{lastUpdated}-{codeCount}
+   *   3. Check IDB: если cached.sig === sig → use cached parsed index
+   *   4. Иначе re-parse + index + cache
+   *
+   * Auto-invalidation: signature меняется автоматически при rebuild
+   * slim файла → не нужно вручную bump версии.
    */
   async loadSlim(slimUrl: string, idbKey: string): Promise<{
     codes: number; chapters: number; fromCache: boolean
   }> {
-    // 1. Try IDB cache
+    // 1. Fetch slim (small file, SW cached)
+    const r = await fetch(slimUrl);
+    if (!r.ok) throw new Error(`Failed to fetch slim: ${r.status}`);
+    const bank = (await r.json()) as SlimBank;
+    const sig = bankSignature(bank);
+
+    // 2. Check IDB by signature
     try {
       const cached = await get<{
-        version: string;
+        sig: string;
         chapters: SlimBank['chapters'];
         indexed: IndexedCode[];
       }>(idbKey);
-      if (cached && cached.version === CACHE_VERSION) {
+      if (cached && cached.sig === sig) {
         this.indexed = cached.indexed;
         this.chapters = cached.chapters;
-        this.bankVersion = cached.version;
+        this.bankSig = cached.sig;
         return {
           codes: this.indexed.length,
           chapters: this.chapters.length,
           fromCache: true,
         };
       }
-    } catch {/* IDB unavailable, fallback to network */}
+    } catch {/* IDB unavailable, continue */}
 
-    // 2. Network fetch
-    const r = await fetch(slimUrl);
-    if (!r.ok) throw new Error(`Failed to fetch slim: ${r.status}`);
-    const bank = (await r.json()) as SlimBank;
-
-    // 3. Pre-build index (toLowerCase + ё→е normalization)
+    // 3. Build fresh index
     this.chapters = bank.chapters;
     this.indexed = new Array(bank.codes.length);
     for (let i = 0; i < bank.codes.length; i++) {
@@ -108,11 +119,11 @@ class IcdSearchEngine {
         _titleLc: cleanTitle.toLowerCase().replace(/ё/g, 'е'),
       };
     }
-    this.bankVersion = CACHE_VERSION;
+    this.bankSig = sig;
 
-    // 4. Persist to IDB (fire-and-forget)
+    // 4. Persist (fire-and-forget)
     void set(idbKey, {
-      version: CACHE_VERSION,
+      sig,
       chapters: this.chapters,
       indexed: this.indexed,
     });

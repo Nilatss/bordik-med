@@ -192,8 +192,8 @@
     "hash": "b91c7196e09725ba7d7695bd1a9a5882"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\components\\classifications\\ClassificationsHub.tsx": {
-    "mtime": 1778092021.7055507,
-    "hash": "0f3b87318f26334908ba0347812cbbdf"
+    "mtime": 1778094087.2484899,
+    "hash": "a908286605558c8ee5c1cf1c7588a12c"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\components\\course\\CourseHeader.tsx": {
     "mtime": 1777106063.0656214,
@@ -282,6 +282,10 @@
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\components\\icd10\\Icd10Lookup.tsx": {
     "mtime": 1778093358.8457158,
     "hash": "52169ff5f0e623fdace2d68398ea6349"
+  },
+  "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\components\\icd10\\IcdLookupV2.tsx": {
+    "mtime": 1778093875.8326278,
+    "hash": "48f9918e861ea5918263229c6e68d29a"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\components\\icons\\ArrowLeft.tsx": {
     "mtime": 1776317951.9500477,
@@ -554,6 +558,14 @@
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\lib\\i18n\\uz.ts": {
     "mtime": 1777359515.3662734,
     "hash": "319794c253ac50adef862b5b80277bfc"
+  },
+  "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\lib\\icd-search\\client.ts": {
+    "mtime": 1778093732.813742,
+    "hash": "38cab7b7ebad8b0dbdace1972e83c11f"
+  },
+  "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\lib\\icd-search\\worker.ts": {
+    "mtime": 1778093720.6472628,
+    "hash": "feb8413552dae31d13117a3eb713fe43"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\lib\\proctoring\\face.ts": {
     "mtime": 1777875605.518998,
@@ -3618,6 +3630,10 @@
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\scripts\\build-curriculum-stats.mjs": {
     "mtime": 1777442112.8665414,
     "hash": "3b1b70e35c5a3a167872abfcf944a4db"
+  },
+  "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\scripts\\build-icd-slim.mjs": {
+    "mtime": 1778093964.1886723,
+    "hash": "7932bc421a6591608f448aecd93ebaa4"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\scripts\\build-icd10.mjs": {
     "mtime": 1777959330.416824,

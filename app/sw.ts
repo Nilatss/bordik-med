@@ -130,17 +130,17 @@ const serwist = new Serwist({
         ],
       }),
     },
-    // ── ICD classifications (МКБ-10, МКБ-11) — большие справочные файлы
-    // (~10 МБ полные данные + ~600 КБ pre-built MiniSearch индексы).
-    // CacheFirst после первой загрузки = instant + offline. Cache bust
-    // через query string ?v=X.Y.Z в коде клиента.
+    // ── ICD classifications (МКБ-10, МКБ-11). Покрывает все варианты:
+    // -mms, -mms-ext, -starter, -slim, -details, -search.
+    // CacheFirst после первой загрузки = instant + offline.
+    // Cache bust через query string ?v=X.Y.Z в коде клиента.
     {
-      matcher: ({ url }) => /^\/icd1[01](-mms(-ext)?|-starter|-search)?\.json$/.test(url.pathname),
+      matcher: ({ url }) => /^\/icd1[01](-(?:mms(?:-ext)?|starter|slim|details|search))?\.json$/.test(url.pathname),
       handler: new CacheFirst({
         cacheName: 'bordik-icd',
         plugins: [
           new ExpirationPlugin({
-            maxEntries: 20,
+            maxEntries: 30,
             maxAgeSeconds: 180 * 24 * 60 * 60, // 180 days
             purgeOnQuotaError: true,
           }),

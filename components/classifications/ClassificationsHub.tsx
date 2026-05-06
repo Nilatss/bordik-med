@@ -403,7 +403,7 @@ function Icd11Panel() {
       try {
         // Лёгкий fetch только metadata-полей (slim JSON начинается с них —
         // в Chrome/Firefox ответ всё равно scheduler-ом с приоритетом).
-        const r = await fetch('/icd11-slim.json?v=3.2.0', { cache: 'force-cache' });
+        const r = await fetch('/icd11-slim.json?v=3.3.0', { cache: 'force-cache' });
         if (!r.ok) return;
         const bank = await r.json();
         if (cancelled) return;
@@ -429,9 +429,9 @@ function Icd11Panel() {
         chaptersCount={meta?.chapters ?? 28}
       />
       <IcdLookupV2
-        slimUrl="/icd11-slim.json?v=3.2.0"
-        detailsUrl="/icd11-details.json?v=3.2.0"
-        idbKey="bordik-icd11-v3.2.0"
+        slimUrl="/icd11-slim.json?v=3.3.0"
+        detailsUrl="/icd11-details.json?v=3.3.0"
+        idbKey="bordik-icd11-v3.3.0"
         hideHeading
       />
     </>
