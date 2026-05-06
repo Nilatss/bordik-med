@@ -200,11 +200,12 @@ export default function ClassificationsHub({ defaultTab = 'icd10' }: Props) {
         </p>
       </header>
 
-      {/* Табы */}
+      {/* Табы — left-flush с заголовком (компенсируем padding кнопок через marginLeft) */}
       <div role="tablist" aria-label="Классификации" style={{
         display: 'flex', gap: 4, flexWrap: 'wrap',
         borderBottom: '1px solid #E5E7EB',
         marginBottom: 24, paddingBottom: 0,
+        marginLeft: -14, marginRight: -14,
       }}>
         {TABS.map((tab) => {
           const isActive = activeTab === tab.id;

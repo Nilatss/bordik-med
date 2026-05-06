@@ -192,8 +192,8 @@
     "hash": "b91c7196e09725ba7d7695bd1a9a5882"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\components\\classifications\\ClassificationsHub.tsx": {
-    "mtime": 1778064701.6517134,
-    "hash": "de270c45afb153ca8f9a98b2b70caf24"
+    "mtime": 1778065618.6481824,
+    "hash": "192797d6926e7c4951b59e5e9bdc0b21"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\components\\course\\CourseHeader.tsx": {
     "mtime": 1777106063.0656214,
@@ -3638,6 +3638,10 @@
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\scripts\\dump-countries.mjs": {
     "mtime": 1776682251.0910654,
     "hash": "7fbe9313acd4a91bd30a1b2ba43037d2"
+  },
+  "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\scripts\\expand-icd10-batch1.mjs": {
+    "mtime": 1778065598.8065891,
+    "hash": "7d10fdf2a65cd2395eada885e5b66969"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\scripts\\export-tools.mjs": {
     "mtime": 1777878151.5104094,
