@@ -52,7 +52,7 @@ const TABS: TabDef[] = [
   { id: 'icd10',    label: 'МКБ-10',      fullName: 'МКБ-10 (ВОЗ rev.10, РФ-адаптация)',     region: 'РФ / СНГ',                status: 'active' },
   { id: 'icd11',    label: 'МКБ-11',      fullName: 'МКБ-11 (ВОЗ rev.11, MMS)',                region: 'Мир (с 2022)',           status: 'active' },
   { id: 'icd10cm',  label: 'ICD-10-CM',   fullName: 'ICD-10-CM (Clinical Modification, FY2026)', region: 'США (диагнозы)',         status: 'active' },
-  { id: 'icd10pcs', label: 'ICD-10-PCS',  fullName: 'ICD-10-PCS (Procedure Coding System)',    region: 'США (процедуры)',        status: 'roadmap' },
+  { id: 'icd10pcs', label: 'ICD-10-PCS',  fullName: 'ICD-10-PCS (Procedure Coding System, FY2026)', region: 'США (процедуры)',        status: 'active' },
   { id: 'icd10ca',  label: 'ICD-10-CA',   fullName: 'ICD-10-CA (Canadian Adaptation)',         region: 'Канада',                  status: 'roadmap' },
   { id: 'icd10gm',  label: 'ICD-10-GM',   fullName: 'ICD-10-GM (German Modification)',         region: 'Германия',                status: 'roadmap' },
   { id: 'icd10am',  label: 'ICD-10-AM',   fullName: 'ICD-10-AM (Australian Modification)',     region: 'Австралия / NZ / Ирландия', status: 'roadmap' },
@@ -68,20 +68,7 @@ interface StubInfo {
   notes: string[];
 }
 
-const STUBS: Record<Exclude<TabId, 'icd10' | 'icd11' | 'icd10cm'>, StubInfo> = {
-  icd10pcs: {
-    description: 'Procedure Coding System — отдельная классификация хирургических и медицинских процедур в США (заменила Volume 3 МКБ-9-CM). Используется только в стационарных условиях для отчётности перед CMS.',
-    coverage: '~78 000 кодов (FY2025)',
-    source: 'CMS — Centers for Medicare & Medicaid Services',
-    sourceUrl: 'https://www.cms.gov/medicare/icd-10/2025-icd-10-pcs',
-    license: 'Public domain (US Federal)',
-    eta: 'Q4 2026',
-    notes: [
-      '7-значный код: section / body system / root operation / body part / approach / device / qualifier.',
-      'Не диагнозы, а процедуры — отдельная UX-модель (селектор по разделам).',
-      'Альтернатива в РФ: МКБ-9-CM Volume 3 (применяется для статистики операций).',
-    ],
-  },
+const STUBS: Record<Exclude<TabId, 'icd10' | 'icd11' | 'icd10cm' | 'icd10pcs'>, StubInfo> = {
   icd10ca: {
     description: 'Canadian Adaptation ICD-10. Используется во всей Канаде в стационарной отчётности. Параллельно работает классификация процедур CCI (Canadian Classification of Health Interventions).',
     coverage: '~17 100 кодов',
@@ -249,10 +236,13 @@ export default function ClassificationsHub({ defaultTab = 'icd10' }: Props) {
           {activeTab === 'icd10cm' && (
             <Icd10cmPanel />
           )}
-          {activeTab !== 'icd10' && activeTab !== 'icd11' && activeTab !== 'icd10cm' && (
+          {activeTab === 'icd10pcs' && (
+            <Icd10pcsPanel />
+          )}
+          {activeTab !== 'icd10' && activeTab !== 'icd11' && activeTab !== 'icd10cm' && activeTab !== 'icd10pcs' && (
             <RoadmapPanel
               tab={TABS.find((t) => t.id === activeTab)!}
-              info={STUBS[activeTab as Exclude<TabId, 'icd10' | 'icd11' | 'icd10cm'>]}
+              info={STUBS[activeTab as Exclude<TabId, 'icd10' | 'icd11' | 'icd10cm' | 'icd10pcs'>]}
             />
           )}
         </motion.div>
@@ -628,6 +618,127 @@ function Icd10cmInfoCard({
         <Fact label="Покрытие" value={`${codesCount.toLocaleString('ru-RU')} кодов · ${chaptersCount} глав`} />
         <Fact label="Источник" value={source} />
         <Fact label="Лицензия" value="Public domain (US Federal — CMS / NCHS)" />
+        <Fact label="Версия базы" value={`${version} · обновлено ${lastUpdated}`} />
+      </dl>
+    </div>
+  );
+}
+
+// ───────────────────────────────────────────────────────────────────
+// Панель ICD-10-PCS (FY2026, US Procedure Coding System) — рабочая
+// ───────────────────────────────────────────────────────────────────
+
+function Icd10pcsPanel() {
+  const [bank, setBank] = useState<Bank | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      try {
+        const r = await fetch('/icd10pcs-slim.json?v=1.0.0', { cache: 'force-cache' });
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const slim = await r.json();
+        if (cancelled) return;
+        setBank(slim as Bank);
+      } catch (e) {
+        if (!cancelled) setError((e as Error).message ?? 'load failed');
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  if (error) {
+    return (
+      <div style={{
+        padding: 24, borderRadius: 12, background: '#FEF2F2',
+        border: '1px solid #FECACA', color: '#991B1B', fontSize: 14,
+      }}>
+        Не удалось загрузить ICD-10-PCS: {error}.
+      </div>
+    );
+  }
+  if (!bank) {
+    return (
+      <div style={{ padding: '8px 0' }}>
+        <div className="lc-shimmer" style={{ height: 28, width: 240, borderRadius: 8, marginBottom: 14 }} />
+        <div className="lc-shimmer" style={{ height: 16, width: '60%', borderRadius: 6, marginBottom: 24 }} />
+        <div className="lc-shimmer" style={{ height: 48, width: '100%', borderRadius: 12, marginBottom: 12 }} />
+        <div className="lc-shimmer" style={{ height: 64, width: '100%', borderRadius: 12 }} />
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <Icd10pcsInfoCard
+        version={bank.version}
+        lastUpdated={bank.lastUpdated}
+        source={bank.source}
+        codesCount={bank.codes.length}
+        chaptersCount={bank.chapters.length}
+      />
+      <Icd10Lookup
+        chapters={bank.chapters}
+        codes={bank.codes}
+        version={bank.version}
+        lastUpdated={bank.lastUpdated}
+        source={bank.source}
+        hideHeading
+      />
+    </>
+  );
+}
+
+function Icd10pcsInfoCard({
+  version, lastUpdated, source, codesCount, chaptersCount,
+}: { version: string; lastUpdated: string; source: string; codesCount: number; chaptersCount: number }) {
+  return (
+    <div style={{
+      maxWidth: 880,
+      background: '#FFFFFF',
+      borderRadius: 16,
+      border: '1px solid #E5E7EB',
+      padding: '32px 32px 28px',
+      marginBottom: 24,
+    }}>
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 20, flexWrap: 'wrap' }}>
+        <div style={{ flex: 1, minWidth: 240 }}>
+          <div style={{ fontSize: 11, color: '#9CA3AF', letterSpacing: '0.06em', textTransform: 'uppercase', fontWeight: 600, marginBottom: 6 }}>
+            США · Procedures
+          </div>
+          <h2 style={{ fontSize: 22, fontWeight: 700, margin: '0 0 6px', color: '#101010' }}>
+            ICD-10-PCS (FY2026)
+          </h2>
+          <div style={{ fontSize: 14, color: '#6B7280', lineHeight: 1.55 }}>
+            Procedure Coding System — классификация хирургических и медицинских
+            процедур в США (заменила МКБ-9-CM Volume 3). Применяется только в
+            стационаре для отчётности перед CMS. Семизначные коды:
+            section / body system / root operation / body part / approach / device / qualifier.
+          </div>
+        </div>
+        <span style={{
+          flexShrink: 0,
+          display: 'inline-flex', alignItems: 'center', gap: 6,
+          background: '#DCFCE7', color: '#166534',
+          fontSize: 11, fontWeight: 600, letterSpacing: '0.04em',
+          textTransform: 'uppercase',
+          padding: '6px 12px', borderRadius: 999,
+        }}>
+          <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#22C55E' }} />
+          Рабочая система
+        </span>
+      </div>
+
+      <dl style={{
+        display: 'grid', gridTemplateColumns: '160px 1fr', gap: '12px 16px',
+        margin: '0 0 4px', padding: '20px 20px',
+        background: '#F9FAFB', borderRadius: 12,
+        border: '1px solid #F3F4F6',
+      }}>
+        <Fact label="Покрытие" value={`${codesCount.toLocaleString('ru-RU')} кодов · ${chaptersCount} разделов`} />
+        <Fact label="Источник" value={source} />
+        <Fact label="Лицензия" value="Public domain (US Federal — CMS)" />
         <Fact label="Версия базы" value={`${version} · обновлено ${lastUpdated}`} />
       </dl>
     </div>
