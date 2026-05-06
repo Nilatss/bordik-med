@@ -132,11 +132,8 @@ export default function ClassificationsHub({ defaultTab = 'icd10' }: Props) {
   const [activeTab, setActiveTab] = useState<TabId>(defaultTab);
   const [bank, setBank] = useState<Bank | null>(null);
   const [error, setError] = useState<string | null>(null);
-  // МКБ-11 теперь использует local-first архитектуру через IcdLookupV2:
-  // - Web Worker парсит JSON и хранит индекс (main thread free)
-  // - IndexedDB кэширует parsed bank (2-й визит instant)
-  // - @tanstack/react-virtual рендерит constant 5-15 нод
-  // Слой данных полностью внутри IcdLookupV2 — здесь стейт не нужен.
+  // (МКБ-11 / ICD-10-CM грузятся в их собственных panel-компонентах;
+  //  здесь только МКБ-10.)
 
   // Грузим МКБ-10 starter JSON только когда открыт его таб (lazy).
   // ?v=2.0.0 — полная база Минздрава РФ (14 641 код).
@@ -157,7 +154,6 @@ export default function ClassificationsHub({ defaultTab = 'icd10' }: Props) {
     return () => { cancelled = true; };
   }, [activeTab, bank, error]);
 
-  // (МКБ-11 загрузка вынесена в IcdLookupV2 — см. компонент выше.)
 
   const formatDate = (iso: string): string => {
     const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
