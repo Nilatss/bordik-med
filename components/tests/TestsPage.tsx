@@ -160,78 +160,74 @@ export default function TestsPage() {
         </p>
       </motion.div>
 
-      {/* Карточка «Последний результат диагностики» — показываем только
-          если у пользователя есть сохранённый результат. Клик откроет
-          DiagnosticTest сразу в done-фазе с пред-загруженным final. */}
+      {/* Карточка «Последний результат диагностики» — slim strip в Bordik-стиле.
+          Был большой #EFF6FF блок с белыми бордерами и 40×40 иконкой —
+          контрастировал с остальной /tests страницей (все карточки на #F5F6F8).
+          Теперь: тот же серый surface, 28×28 синий иконо-чип как акцент,
+          компактная типографика в одну/две строки. */}
       {lastDiagnostic && (
         <motion.button
           type="button"
-          initial={{ opacity: 0, y: 12 }}
+          initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1], delay: 0.04 }}
+          transition={{ duration: 0.3, ease: [0.05, 0.7, 0.1, 1], delay: 0.04 }}
           onClick={() => setActiveTest('diagnostic')}
           style={{
             width: '100%',
-            display: 'flex', alignItems: 'center', gap: 16,
-            padding: '16px 20px',
-            background: '#EFF6FF',
-            border: '1px solid #DBEAFE',
-            borderRadius: 14,
+            display: 'flex', alignItems: 'center', gap: 12,
+            padding: '12px 16px',
+            background: '#F5F6F8',
+            border: 'none',
+            borderRadius: 12,
             cursor: 'pointer',
-            marginBottom: 24,
+            marginBottom: 20,
             textAlign: 'left',
             fontFamily: 'inherit',
-            transition: 'background 160ms, border-color 160ms',
+            transition: 'background 180ms cubic-bezier(0.22,1,0.36,1)',
           }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = '#DBEAFE';
-            e.currentTarget.style.borderColor = '#BFDBFE';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = '#EFF6FF';
-            e.currentTarget.style.borderColor = '#DBEAFE';
-          }}
+          onMouseEnter={(e) => { e.currentTarget.style.background = '#F0F2F5'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = '#F5F6F8'; }}
         >
           <span style={{
             flex: '0 0 auto',
             display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-            width: 40, height: 40, borderRadius: 10,
+            width: 28, height: 28, borderRadius: 8,
             background: '#2563EB', color: '#FFFFFF',
           }}>
-            <svg width={18} height={18} viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">
+            <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round">
               <polyline points="20 6 9 17 4 12" />
             </svg>
           </span>
-          <span style={{ flex: 1, minWidth: 0 }}>
+          <span style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
             <span style={{
-              display: 'block',
-              fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700,
-              color: '#2563EB', textTransform: 'uppercase', letterSpacing: '0.06em',
+              display: 'flex', alignItems: 'baseline', gap: 8, flexWrap: 'wrap',
+              fontFamily: 'var(--font-display)', fontSize: 14, fontWeight: 600,
+              color: '#1A1A1A', letterSpacing: '-0.005em',
+              lineHeight: 1.3,
             }}>
-              Последний результат диагностики
+              <span style={{
+                fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
+                color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
+              }}>
+                Диагностика
+              </span>
+              <span>{lastDiagnostic.profession}</span>
             </span>
             <span style={{
-              display: 'block', marginTop: 4,
-              fontFamily: 'var(--font-display)', fontSize: 16, fontWeight: 700,
-              color: '#1A1A1A', letterSpacing: '-0.01em',
-            }}>
-              {lastDiagnostic.profession}
-            </span>
-            <span style={{
-              display: 'block', marginTop: 2,
               fontFamily: 'var(--font-body)', fontSize: 12, color: '#6B7280',
+              lineHeight: 1.4,
             }}>
-              {lastDiagnostic.correct}/{lastDiagnostic.total} верных · уровень{' '}
+              {lastDiagnostic.correct}/{lastDiagnostic.total} верных · {' '}
               {lastDiagnostic.level === 'basic' ? 'базовый'
-                : lastDiagnostic.level === 'intermediate' ? 'средний' : 'продвинутый'} ·{' '}
+                : lastDiagnostic.level === 'intermediate' ? 'средний' : 'продвинутый'} · {' '}
               {(() => {
                 const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(lastDiagnostic.completedAt);
                 return m ? `${m[3]}.${m[2]}.${m[1]}` : 'недавно';
               })()}
             </span>
           </span>
-          <ArrowRight size={16} color="#2563EB" />
+          <ArrowRight size={14} color="#9CA3AF" />
         </motion.button>
       )}
 
