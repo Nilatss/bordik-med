@@ -28,6 +28,23 @@ interface CodeEntry {
   code: string;
   title: string;
   chapter: string;
+  // Опциональные поля (используются для МКБ-11 после Phase 2 enrichment).
+  title_ru?: string;
+  definition?: string;
+  longDefinition?: string;
+  codingNote?: string;
+  inclusion?: string[];
+  exclusion?: string[];
+}
+
+/**
+ * Возвращает отображаемое название кода. Приоритет: title_ru > title.
+ * Заодно убирает hierarchical markers ("- ", "- - ") из simpleTabulation
+ * экспорта МКБ-11.
+ */
+function displayTitle(c: CodeEntry): string {
+  const t = c.title_ru || c.title;
+  return t.replace(/^[-–—\s]+/, '').trim();
 }
 
 interface Props {
@@ -51,6 +68,16 @@ export default function Icd10Lookup({ chapters, codes, version, lastUpdated, sou
   const [activeChapter, setActiveChapter] = useState<string | null>(null);
   const [expandedChapters, setExpandedChapters] = useState<Set<string>>(new Set());
   const [chapterShowAll, setChapterShowAll] = useState<Set<string>>(new Set());
+  /** Раскрытые коды — показывают definition / inclusion / exclusion панель. */
+  const [expandedCodes, setExpandedCodes] = useState<Set<string>>(new Set());
+
+  const toggleCode = (code: string) => {
+    setExpandedCodes((prev) => {
+      const next = new Set(prev);
+      if (next.has(code)) next.delete(code); else next.add(code);
+      return next;
+    });
+  };
 
   const isSearching = q.trim().length > 0 || activeChapter !== null;
 
@@ -77,7 +104,7 @@ export default function Icd10Lookup({ chapters, codes, version, lastUpdated, sou
     const scored: Scored[] = [];
     for (const c of pool) {
       const code = c.code.toLowerCase();
-      const title = c.title.toLowerCase().replace(/ё/g, 'е');
+      const title = displayTitle(c).toLowerCase().replace(/ё/g, 'е');
       let score = 0;
       // 100 — точное совпадение кода (I10 → I10)
       if (code === query) score = 100;
@@ -518,85 +545,212 @@ function FlatList({
           Ничего не найдено. Попробуйте другой запрос или сбросьте фильтр главы.
         </div>
       ) : (
-        <ul style={{
-          listStyle: 'none', padding: 0, margin: 0,
+        <div style={{
           display: 'flex', flexDirection: 'column', gap: 8,
         }}>
           {filtered.map((c) => (
-            <li
-              key={c.code}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 14,
-                padding: '14px 20px',
-                background: '#FFFFFF',
-                border: '1px solid #F0F1F5',
-                borderRadius: 14,
-                transition: 'border-color 150ms, background 150ms',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = '#F5F6F8';
-                e.currentTarget.style.borderColor = '#E2E4EA';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = '#FFFFFF';
-                e.currentTarget.style.borderColor = '#F0F1F5';
-              }}
-            >
-              <span style={{
-                flex: '0 0 80px',
-                fontFamily: 'var(--font-mono, ui-monospace)',
-                fontWeight: 700, fontSize: 13, color: '#2563EB',
-                letterSpacing: '0.02em',
-              }}>
-                <Highlight text={c.code} query={query} />
-              </span>
-              <span style={{ flex: 1, fontSize: 14, color: '#1A1A1A', lineHeight: 1.45 }}>
-                <Highlight text={c.title} query={query} />
-              </span>
-              <span style={{
-                flex: '0 0 auto',
-                fontFamily: 'var(--font-mono, ui-monospace)',
-                fontSize: 11, fontWeight: 700,
-                color: '#2563EB',
-                background: '#EFF6FF',
-                border: '1px solid #DBEAFE',
-                padding: '2px 8px', borderRadius: 999,
-                whiteSpace: 'nowrap',
-                letterSpacing: '0.04em',
-              }}>
-                {c.chapter}
-              </span>
-            </li>
+            <CodeRow key={c.code} code={c} query={query} variant="card" />
           ))}
-        </ul>
+        </div>
       )}
     </>
   );
 }
 
-function CodeRow({ code }: { code: CodeEntry }) {
+function CodeRow({
+  code, query, variant = 'compact',
+}: {
+  code: CodeEntry;
+  query?: string;
+  variant?: 'compact' | 'card';
+}) {
+  const [expanded, setExpanded] = useState(false);
+  const hasDetails = !!(code.definition || code.longDefinition || code.codingNote
+    || (code.inclusion && code.inclusion.length)
+    || (code.exclusion && code.exclusion.length));
+  const isCard = variant === 'card';
+  const titleText = displayTitle(code);
+
+  // Compact (внутри ChapterAccordion) и Card (в FlatList search results) —
+  // одна и та же модель, но разная плотность.
+  const containerStyle: React.CSSProperties = isCard ? {
+    background: '#FFFFFF',
+    border: '1px solid #F0F1F5',
+    borderRadius: 14,
+    overflow: 'hidden',
+    transition: 'border-color 150ms, background 150ms',
+  } : {
+    transition: 'background 120ms',
+  };
+
+  const headerStyle: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 14,
+    padding: isCard ? '14px 20px' : '10px 20px',
+    background: 'transparent',
+    border: 'none',
+    width: '100%',
+    cursor: hasDetails ? 'pointer' : 'default',
+    textAlign: 'left',
+    fontFamily: 'inherit',
+    color: 'inherit',
+  };
+
+  const TitleNode = query
+    ? <Highlight text={titleText} query={query} />
+    : titleText;
+
   return (
-    <div style={{
-      display: 'flex', alignItems: 'center', gap: 14,
-      padding: '10px 20px',
-      transition: 'background 120ms',
-    }}
-      onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.background = '#F5F6F8'; }}
-      onMouseLeave={(e) => { (e.currentTarget as HTMLDivElement).style.background = 'transparent'; }}
+    <div
+      style={containerStyle}
+      onMouseEnter={(e) => {
+        if (isCard) {
+          e.currentTarget.style.background = '#F5F6F8';
+          e.currentTarget.style.borderColor = '#E2E4EA';
+        } else {
+          e.currentTarget.style.background = '#F5F6F8';
+        }
+      }}
+      onMouseLeave={(e) => {
+        if (isCard) {
+          e.currentTarget.style.background = '#FFFFFF';
+          e.currentTarget.style.borderColor = '#F0F1F5';
+        } else {
+          e.currentTarget.style.background = 'transparent';
+        }
+      }}
     >
-      <span style={{
-        flex: '0 0 80px',
-        fontFamily: 'var(--font-mono, ui-monospace)',
-        fontWeight: 700, fontSize: 13, color: '#2563EB',
-        letterSpacing: '0.02em',
+      <button
+        type="button"
+        onClick={() => { if (hasDetails) setExpanded((v) => !v); }}
+        aria-expanded={hasDetails ? expanded : undefined}
+        style={headerStyle}
+      >
+        <span style={{
+          flex: '0 0 80px',
+          fontFamily: 'var(--font-mono, ui-monospace)',
+          fontWeight: 700, fontSize: isCard ? 13 : 13, color: '#2563EB',
+          letterSpacing: '0.02em',
+        }}>
+          {query ? <Highlight text={code.code} query={query} /> : code.code}
+        </span>
+        <span style={{
+          flex: 1, fontSize: isCard ? 14 : 13.5,
+          color: '#1A1A1A', lineHeight: 1.45,
+        }}>
+          {TitleNode}
+        </span>
+        {isCard && (
+          <span style={{
+            flex: '0 0 auto',
+            fontFamily: 'var(--font-mono, ui-monospace)',
+            fontSize: 11, fontWeight: 700,
+            color: '#2563EB',
+            background: '#EFF6FF',
+            border: '1px solid #DBEAFE',
+            padding: '2px 8px', borderRadius: 999,
+            whiteSpace: 'nowrap',
+            letterSpacing: '0.04em',
+          }}>
+            {code.chapter}
+          </span>
+        )}
+        {hasDetails && (
+          <span style={{
+            flex: '0 0 auto',
+            color: '#9CA3AF',
+            fontSize: 12,
+            transform: expanded ? 'rotate(90deg)' : 'rotate(0deg)',
+            transition: 'transform 150ms',
+            display: 'inline-flex',
+          }} aria-hidden>
+            ▶
+          </span>
+        )}
+      </button>
+
+      <AnimatePresence initial={false}>
+        {hasDetails && expanded && (
+          <motion.div
+            key="details"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{
+              height: { duration: 0.22, ease: [0.05, 0.7, 0.1, 1] },
+              opacity: { duration: 0.16 },
+            }}
+            style={{ overflow: 'hidden' }}
+          >
+            <div style={{
+              padding: '14px 20px 18px',
+              background: isCard ? '#FAFBFC' : '#FFFFFF',
+              borderTop: '1px solid #F0F1F5',
+              fontSize: 13.5, lineHeight: 1.55, color: '#374151',
+              display: 'flex', flexDirection: 'column', gap: 12,
+            }}>
+              {code.definition && (
+                <DetailBlock label="Определение">
+                  {code.definition}
+                </DetailBlock>
+              )}
+              {code.longDefinition && code.longDefinition !== code.definition && (
+                <DetailBlock label="Описание">
+                  {code.longDefinition}
+                </DetailBlock>
+              )}
+              {code.codingNote && (
+                <DetailBlock label="Заметка по кодированию" tone="warning">
+                  {code.codingNote}
+                </DetailBlock>
+              )}
+              {code.inclusion && code.inclusion.length > 0 && (
+                <DetailBlock label="Включает">
+                  <ul style={{ margin: 0, paddingLeft: 18 }}>
+                    {code.inclusion.map((x, i) => <li key={i}>{x}</li>)}
+                  </ul>
+                </DetailBlock>
+              )}
+              {code.exclusion && code.exclusion.length > 0 && (
+                <DetailBlock label="Не включает (исключения)">
+                  <ul style={{ margin: 0, paddingLeft: 18 }}>
+                    {code.exclusion.map((x, i) => <li key={i}>{x}</li>)}
+                  </ul>
+                </DetailBlock>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+function DetailBlock({
+  label, tone = 'neutral', children,
+}: {
+  label: string;
+  tone?: 'neutral' | 'warning';
+  children: React.ReactNode;
+}) {
+  return (
+    <div>
+      <div style={{
+        fontSize: 11,
+        fontWeight: 600,
+        letterSpacing: '0.06em',
+        textTransform: 'uppercase',
+        color: tone === 'warning' ? '#92400E' : '#9CA3AF',
+        marginBottom: 6,
       }}>
-        {code.code}
-      </span>
-      <span style={{ flex: 1, fontSize: 13.5, color: '#1A1A1A', lineHeight: 1.45 }}>
-        {code.title}
-      </span>
+        {label}
+      </div>
+      <div style={{
+        color: tone === 'warning' ? '#78350F' : '#374151',
+      }}>
+        {children}
+      </div>
     </div>
   );
 }

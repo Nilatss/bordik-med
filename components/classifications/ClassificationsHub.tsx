@@ -167,13 +167,14 @@ export default function ClassificationsHub({ defaultTab = 'icd10' }: Props) {
     return () => { cancelled = true; };
   }, [activeTab, bank, error]);
 
-  // Грузим МКБ-11 MMS JSON (lazy). v=1.0.0 — WHO 2018-12 release, 31 632 кода.
+  // Грузим МКБ-11 MMS JSON (lazy). v=2.0.0 — WHO API enrichment Phase 2:
+  // 24 660 RU-переводов + 6527 definitions + inclusion/exclusion.
   useEffect(() => {
     if (activeTab !== 'icd11' || icd11Bank || icd11Error) return;
     let cancelled = false;
     void (async () => {
       try {
-        const r = await fetch('/icd11-mms.json?v=1.0.0', { cache: 'no-cache' });
+        const r = await fetch('/icd11-mms.json?v=2.0.0', { cache: 'no-cache' });
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         const json = await r.json();
         if (!cancelled) setIcd11Bank(json);
@@ -467,7 +468,7 @@ function Icd11InfoCard({
             Международная классификация болезней 11-го пересмотра ВОЗ — Mortality
             and Morbidity Statistics linearization. Включает все терминальные категории,
             extension-коды (XA-XY) для постcoordination и раздел традиционной медицины (SA-SJ).
-            Названия категорий — английские (официальные WHO); главы переведены на русский.
+            Русские названия и определения подгружены через официальный WHO ICD-11 API.
           </div>
         </div>
         <span style={{
@@ -501,13 +502,12 @@ function Icd11InfoCard({
       </dl>
 
       <div style={{
-        padding: '14px 18px', background: '#FFFBEB', border: '1px solid #FDE68A',
-        borderRadius: 10, fontSize: 13, color: '#78350F', lineHeight: 1.5,
+        padding: '14px 18px', background: '#ECFDF5', border: '1px solid #A7F3D0',
+        borderRadius: 10, fontSize: 13, color: '#065F46', lineHeight: 1.5,
       }}>
-        <strong>Phase 1:</strong> доступны коды, заголовки и иерархия по главам.
-        Полные определения (definitions / описания) ВОЗ предоставляет только через
-        авторизованное API icd.who.int — будут добавлены в Phase 2 после регистрации
-        OAuth-доступа. Для просмотра описания сейчас — кликните «Открыть в WHO Browser».
+        <strong>Phase 2 готов:</strong> русские переводы названий + определения,
+        включения и исключения подгружены через официальный WHO ICD-11 API.
+        Кликните на любой код, чтобы развернуть описание.
       </div>
     </div>
   );
