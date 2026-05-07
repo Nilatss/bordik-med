@@ -472,13 +472,14 @@ function DrugCard({
                 </table>
               ) : (
                 /* Если структурированных полей нет — показываем raw монограф
-                 * как fallback (без дублирования). */
+                 * как fallback. Большую простыню режем на предложения и
+                 * отдаём списком, чтобы было удобно читать (содержимое
+                 * сохраняем целиком). */
                 <div style={{
-                  padding: '14px 18px',
+                  padding: '16px 20px',
                   fontSize: 13, lineHeight: 1.6, color: '#374151',
-                  whiteSpace: 'pre-wrap',
                 }}>
-                  {drug.fullText}
+                  <MonographFullText text={drug.fullText} />
                 </div>
               )}
             </div>
@@ -533,6 +534,104 @@ function renderFieldValue(value: string): React.ReactNode {
         <li key={i}>{p}</li>
       ))}
     </ul>
+  );
+}
+
+/** Структурированный рендер raw-монографа: режем на смысловые блоки
+ *  по ключевым медицинским секциям («Indications», «Dose», «Metabolism»,
+ *  «Excretion», «Precautions», «Extemporaneous Preparation», «References»),
+ *  потом каждый блок — на буллеты по предложениям. Содержимое не теряется. */
+const MONOGRAPH_SECTIONS: Array<{ keys: RegExp; label: string; labelRu: string; tone?: 'warning' }> = [
+  { keys: /^(Indications?|Use|Uses|Mechanism|Action)\b/i, label: 'Indications & Mechanism', labelRu: 'Показания и механизм' },
+  { keys: /^(Dose|Dosing|Dosage|Administration|PO|IV|IM)\b/i, label: 'Dose & Administration', labelRu: 'Доза и введение' },
+  { keys: /^(Metabolism|Pharmacokinetics|Half-life|Clearance|Levels?)\b/i, label: 'Pharmacokinetics', labelRu: 'Фармакокинетика' },
+  { keys: /^(Excretion|Elimination)\b/i, label: 'Excretion', labelRu: 'Выведение' },
+  { keys: /^(Monitor(?:ing)?|CBC|Renal|Hepatic function)\b/i, label: 'Monitoring', labelRu: 'Мониторинг' },
+  { keys: /^(Precaution|Adverse|Warning|Contraindication|Causes|Avoid)\b/i, label: 'Precautions', labelRu: 'Предосторожности', tone: 'warning' },
+  { keys: /^(Extemporaneous|Preparation|Reconstitution|Compounding|Stability|Storage)\b/i, label: 'Preparation', labelRu: 'Приготовление' },
+  { keys: /^(References?|Bibliography|Source)\b/i, label: 'References', labelRu: 'Источники' },
+];
+
+interface MonographBlock {
+  labelRu: string;
+  label: string;
+  tone?: 'warning';
+  sentences: string[];
+}
+
+function structureMonograph(raw: string): MonographBlock[] {
+  const clean = sanitizeFieldText(raw);
+  const sentences = splitIntoSentences(clean);
+  if (sentences.length === 0) return [];
+
+  const blocks: MonographBlock[] = [];
+  let current: MonographBlock = { labelRu: 'Описание', label: 'Description', sentences: [] };
+
+  const sectionFor = (s: string): MonographBlock | null => {
+    for (const sec of MONOGRAPH_SECTIONS) {
+      if (sec.keys.test(s)) {
+        const block: MonographBlock = { labelRu: sec.labelRu, label: sec.label, sentences: [] };
+        if (sec.tone) block.tone = sec.tone;
+        return block;
+      }
+    }
+    return null;
+  };
+
+  for (const sent of sentences) {
+    const next = sectionFor(sent);
+    if (next) {
+      if (current.sentences.length) blocks.push(current);
+      current = next;
+    }
+    current.sentences.push(sent);
+  }
+  if (current.sentences.length) blocks.push(current);
+  return blocks;
+}
+
+function MonographFullText({ text }: { text: string }) {
+  const blocks = structureMonograph(text);
+  if (blocks.length === 0) return null;
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+      {blocks.map((b, i) => (
+        <section key={i} style={{
+          padding: '12px 14px',
+          background: b.tone === 'warning' ? '#FFFBEB' : '#F9FAFB',
+          border: `1px solid ${b.tone === 'warning' ? '#FDE68A' : '#EAECEF'}`,
+          borderRadius: 10,
+        }}>
+          <header style={{
+            fontSize: 11, fontWeight: 600, letterSpacing: '0.06em',
+            textTransform: 'uppercase',
+            color: b.tone === 'warning' ? '#92400E' : '#9CA3AF',
+            marginBottom: 8,
+          }}>
+            <span>{b.labelRu}</span>
+            <span style={{ marginLeft: 6, fontSize: 10, opacity: 0.65, fontWeight: 500, textTransform: 'none', letterSpacing: 0 }}>
+              {b.label}
+            </span>
+          </header>
+          {b.sentences.length === 1 ? (
+            <p style={{ margin: 0, color: b.tone === 'warning' ? '#78350F' : '#374151' }}>
+              {b.sentences[0]}
+            </p>
+          ) : (
+            <ul style={{
+              margin: 0, paddingLeft: 18,
+              display: 'flex', flexDirection: 'column', gap: 6,
+              color: b.tone === 'warning' ? '#78350F' : '#374151',
+            }}>
+              {b.sentences.map((s, j) => (
+                <li key={j}>{s}</li>
+              ))}
+            </ul>
+          )}
+        </section>
+      ))}
+    </div>
   );
 }
 
