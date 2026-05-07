@@ -192,8 +192,8 @@
     "hash": "b91c7196e09725ba7d7695bd1a9a5882"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\components\\classifications\\ClassificationsHub.tsx": {
-    "mtime": 1778096477.215332,
-    "hash": "c4bc659bb6eb294eae2beb0c3594ce71"
+    "mtime": 1778131194.6675882,
+    "hash": "2cf21be771a5b910836b4fcb3afeb039"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\components\\course\\CourseHeader.tsx": {
     "mtime": 1777106063.0656214,
@@ -3699,6 +3699,10 @@
     "mtime": 1778066250.165583,
     "hash": "57aa18a6e80b989dfbd87d4a2e298c15"
   },
+  "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\scripts\\import-icd10ca.mjs": {
+    "mtime": 1778131096.4106922,
+    "hash": "b142c411ed45dd7545abf509bc83a323"
+  },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\scripts\\import-icd10cm-tabular.mjs": {
     "mtime": 1778096452.2351937,
     "hash": "d32988e23b2b2a356e02c0b6d7edce2f"
@@ -3986,6 +3990,10 @@
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\README.md": {
     "mtime": 1776317925.5716157,
     "hash": "f15aaa42d5d299d091b1171097ea56ad"
+  },
+  "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\data\\raw\\icd10ca\\icd10ca.txt": {
+    "mtime": 1778131051.6195598,
+    "hash": "5bcb0557f1f8a8087c1f6456a2553d11"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\data\\raw\\icd10cm-2026\\icd10cm_codes_2026.txt": {
     "mtime": 1749212949.0,

@@ -40,8 +40,11 @@ const CHAPTERS = [
 ];
 
 function chapterOf(code) {
-  const letter = code[0];
-  const num = parseInt(code.slice(1, 3));
+  // Strip dot if present для extraction главы (нужен только первый
+  // letter + 2 digit prefix).
+  const clean = code.replace('.', '');
+  const letter = clean[0];
+  const num = parseInt(clean.slice(1, 3));
   if (letter === 'A' || letter === 'B') return 'I';
   if (letter === 'C') return 'II';
   if (letter === 'D' && num <= 48) return 'II';
@@ -69,6 +72,8 @@ function chapterOf(code) {
 }
 
 function restoreDot(code) {
+  // Если точка уже есть → возвращаем как есть.
+  if (code.includes('.')) return code;
   // A00 — без точки. A000 → A00.0. A0000 → A00.00.
   if (code.length <= 3) return code;
   return code.slice(0, 3) + '.' + code.slice(3);
@@ -81,8 +86,9 @@ const codes = [];
 const details = {};
 const seen = new Set();
 
-// Regex: code (3-7 chars no dash) + at least 2 spaces + short desc + at least 2 spaces + long desc
-const codeRe = /^([A-Z][0-9]{2,5})\s{2,}(\S.+?)\s{2,}(\S.+)$/;
+// Regex: code (3-7 chars no dash, опционально с точкой типа B20.0)
+// + 2+ spaces + description (одно или два поля разделённых 2+ пробелами).
+const codeRe = /^([A-Z][0-9]{2,5}|[A-Z][0-9]{2}\.[0-9]{1,3})\s{2,}(\S.+)$/;
 
 for (const line of lines) {
   const trimmed = line.replace(/\s+$/, '');
@@ -92,11 +98,20 @@ for (const line of lines) {
   if (!m) continue;
 
   const rawCode = m[1];
-  // Skip block ranges like A00-A09 (uses 6+ chars with dash — already excluded by regex)
   if (rawCode.includes('-')) continue;
 
-  const shortDesc = m[2].trim();
-  const longDesc = m[3].trim();
+  // Разбиваем оставшуюся часть строки на short/long если есть 2+ пробелов
+  const rest = m[2];
+  const splitMatch = rest.match(/^(\S.+?)\s{2,}(\S.+)$/);
+  let shortDesc, longDesc;
+  if (splitMatch) {
+    shortDesc = splitMatch[1].trim();
+    longDesc = splitMatch[2].trim();
+  } else {
+    // Одна колонка описания (short=long)
+    shortDesc = rest.trim();
+    longDesc = rest.trim();
+  }
 
   const code = restoreDot(rawCode);
   if (seen.has(code)) continue;
@@ -105,14 +120,12 @@ for (const line of lines) {
   const chapter = chapterOf(rawCode);
   if (!chapter) continue;
 
-  // Используем longDesc как title (полный); short идёт в details
   codes.push({
     code,
     title: longDesc,
     chapter,
   });
 
-  // Если short и long разные — сохраняем short как codingNote
   if (shortDesc.toLowerCase() !== longDesc.toLowerCase()) {
     details[code] = { codingNote: shortDesc };
   }
