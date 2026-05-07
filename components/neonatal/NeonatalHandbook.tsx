@@ -514,15 +514,9 @@ function DrugCard({
                 </table>
               ) : (
                 /* Если структурированных полей нет — показываем raw монограф
-                 * как fallback. Большую простыню режем на предложения и
-                 * отдаём списком, чтобы было удобно читать (содержимое
-                 * сохраняем целиком). */
-                <div style={{
-                  padding: '16px 20px',
-                  fontSize: 13, lineHeight: 1.6, color: '#374151',
-                }}>
-                  <MonographFullText text={drug.fullText} />
-                </div>
+                 * как fallback. Большую простыню режем на смысловые блоки и
+                 * отдаём в той же таблице, что и структурированные препараты. */
+                <MonographFullText text={drug.fullText} />
               )}
             </div>
           </motion.div>
@@ -584,13 +578,16 @@ function renderFieldValue(value: string): React.ReactNode {
  *  «Excretion», «Precautions», «Extemporaneous Preparation», «References»),
  *  потом каждый блок — на буллеты по предложениям. Содержимое не теряется. */
 const MONOGRAPH_SECTIONS: Array<{ keys: RegExp; label: string; labelRu: string; tone?: 'warning' }> = [
-  { keys: /^(Indications?|Use|Uses|Mechanism|Action)\b/i, label: 'Indications & Mechanism', labelRu: 'Показания и механизм' },
+  // Узкие совпадения: "Indications", "Mechanism", "Action of ..." — не "Use" в общем
+  // (т.к. "Use within 4 hours" / "Use with caution" — это precautions/storage, не indications)
+  { keys: /^(Indications?|Mechanism|Action of)\b/i, label: 'Indications & Mechanism', labelRu: 'Показания и механизм' },
   { keys: /^(Dose|Dosing|Dosage|Administration|PO|IV|IM)\b/i, label: 'Dose & Administration', labelRu: 'Доза и введение' },
   { keys: /^(Metabolism|Pharmacokinetics|Half-life|Clearance|Levels?)\b/i, label: 'Pharmacokinetics', labelRu: 'Фармакокинетика' },
   { keys: /^(Excretion|Elimination)\b/i, label: 'Excretion', labelRu: 'Выведение' },
   { keys: /^(Monitor(?:ing)?|CBC|Renal|Hepatic function)\b/i, label: 'Monitoring', labelRu: 'Мониторинг' },
-  { keys: /^(Precaution|Adverse|Warning|Contraindication|Causes|Avoid)\b/i, label: 'Precautions', labelRu: 'Предосторожности', tone: 'warning' },
-  { keys: /^(Extemporaneous|Preparation|Reconstitution|Compounding|Stability|Storage)\b/i, label: 'Preparation', labelRu: 'Приготовление' },
+  // "Use 25% albumin with caution", "Use with caution", "Avoid", "Causes" — все попадают сюда
+  { keys: /^(Use with|Use \d|Use \w+ albumin|Precaution|Adverse|Warning|Contraindication|Causes|Avoid|May cause|Do not)\b/i, label: 'Precautions', labelRu: 'Предосторожности', tone: 'warning' },
+  { keys: /^(Extemporaneous|Preparation|Reconstitution|Compounding|Stability|Storage|Use within|Stable for|Refrigerate|Discard)\b/i, label: 'Preparation', labelRu: 'Приготовление' },
   { keys: /^(References?|Bibliography|Source)\b/i, label: 'References', labelRu: 'Источники' },
 ];
 
@@ -622,14 +619,29 @@ function structureMonograph(raw: string): MonographBlock[] {
 
   for (const sent of sentences) {
     const next = sectionFor(sent);
-    if (next) {
+    if (next && next.labelRu !== current.labelRu) {
+      // Только переключаемся, если новая секция действительно отличается от текущей.
+      // Иначе оставляем предложение в текущей секции (избегаем дублирования заголовков).
       if (current.sentences.length) blocks.push(current);
       current = next;
     }
     current.sentences.push(sent);
   }
   if (current.sentences.length) blocks.push(current);
-  return blocks;
+
+  // Финальный merge: если две соседние секции с одинаковым labelRu — склеиваем
+  // (бывает если между двумя одноимёнными секциями вклинилась короткая «Use ...»
+  // фраза, отнесённая в Precautions, и потом снова Indications).
+  const merged: MonographBlock[] = [];
+  for (const b of blocks) {
+    const prev = merged[merged.length - 1];
+    if (prev && prev.labelRu === b.labelRu) {
+      prev.sentences.push(...b.sentences);
+    } else {
+      merged.push(b);
+    }
+  }
+  return merged;
 }
 
 function MonographFullText({ text }: { text: string }) {
