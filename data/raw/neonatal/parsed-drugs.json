@@ -1,0 +1,392 @@
+[
+  {
+    "id": "neo_allopurinol",
+    "name_ru": "Аллопуринол",
+    "name_en": "Allopurinol",
+    "brand": "Zyloprim",
+    "population": "neonatal",
+    "class_ru": "",
+    "indications": [
+      {
+        "label": "Hyperuricemia (secondary to inborn errors of purine metabolism, large tissue breakdown, or renal failure).",
+        "age_min_months": 0,
+        "age_max_months": 1,
+        "mg_per_kg": 10,
+        "frequency_hours": 24,
+        "max_per_dose_mg": 0,
+        "max_per_day_mg_per_kg": 0,
+        "max_per_day_mg": 0,
+        "route": "PO, IV",
+        "comment": "PO: 10 mg/kg/day, divided in 1-4 doses/day. IV: 200 mg/m2/day, divided in 2-4 doses/day."
+      }
+    ],
+    "raw": {
+      "indications": "Hyperuricemia (secondary to inborn errors of purine metabolism, large tissue breakdown, or renal failure).",
+      "dose": "PO: 10 mg/kg/day, divided in 1-4 doses/day. IV: 200 mg/m2/day, divided in 2-4 doses/day.",
+      "route": "PO, IV",
+      "levels": "Decrease in serum uric acid occurs in 1-2 days. Oral absorption: ~80% from GI tract. Metabolism: ~75% to active metabolites, mainly oxypurinol. Half-life: parent: 1-3 hrs and oxypurinol: 18-30 hrs.",
+      "precautions": "May cause GI irritation, renal impairment, leukopenia, and rash. Dosing adjustment recommended with renal impairment.",
+      "extemporaneous": "A 20 mg/mL oral suspension may be made with tablets and either a 1:1 mixture of Ora-Sweet and Ora-Plus or a 1:1 mixture of Ora-Sweet SF and Ora-Plus or a 1:4 mixture of cherry syrup concentrate and simple syrup, NF. Crush eight 300 mg tablets in a mortar and reduce to a fine powder. Add small portions of chosen vehicle and mix to a uniform paste; mix while adding the vehicle in incremental proportions to almost 120 mL; transfer to a calibrated bottle, rinse mortar with vehicle, and add quantity of vehicle sufficient to make 120 mL. Label \"shake well\". Stable for 60 days refrigerated or at room temperature. References: 1. Allen LV Jr and Erickson MA 3rd. Stability of Acetazolamide, Allopurinol, Azathioprine, Clonazepam, and Flucytosine in Extemporaneously Compounded Oral Liquids. AJHP, 1996, 53(16):1944-9. 2. Nahata MC, Pai VB, and Hipple TF. Pediatric Drug Formulations, 5th ed, Cincinnati, OH: Harvey Whitney Books Co, 2004."
+    }
+  },
+  {
+    "id": "neo_bumetanide",
+    "name_ru": "Буметанид",
+    "name_en": "Bumetanide",
+    "brand": "Bumex",
+    "population": "neonatal",
+    "class_ru": "",
+    "indications": [
+      {
+        "label": "Edema refractory to furosemide.",
+        "age_min_months": 0,
+        "age_max_months": 1,
+        "mg_per_kg": 0.01,
+        "frequency_hours": 24,
+        "max_per_dose_mg": 0,
+        "max_per_day_mg_per_kg": 0,
+        "max_per_day_mg": 0,
+        "route": "IV, PO, IM",
+        "comment": "0.01-0.05 mg/kg/dose, q 24-48 hrs."
+      }
+    ],
+    "raw": {
+      "indications": "Edema refractory to furosemide.",
+      "dose": "0.01-0.05 mg/kg/dose, q 24-48 hrs.",
+      "route": "IV, PO, IM",
+      "levels": "Onset within a few minutes for IV and within 1 hour for PO and IM; Duration ~ 3-6 hrs; Half-life 6-15 hrs.",
+      "precautions": "Monitor for severe electrolytes disturbances and hypotension. May cause ototoxicity. 1 mg of bumetamide ~ equivalent in potency to 40 mg furosemide.",
+      "extemporaneous": ""
+    }
+  },
+  {
+    "id": "neo_captopril",
+    "name_ru": "Каптоприл",
+    "name_en": "Captopril",
+    "brand": "Capoten",
+    "population": "neonatal",
+    "class_ru": "",
+    "indications": [
+      {
+        "label": "Hypertension and afterload reduction in heart failure.",
+        "age_min_months": 0,
+        "age_max_months": 1,
+        "mg_per_kg": 0.01,
+        "frequency_hours": 8,
+        "max_per_dose_mg": 0,
+        "max_per_day_mg_per_kg": 0,
+        "max_per_day_mg": 0,
+        "route": "Infants: 0.15-0.3 mg/kg/dose; titrate dose upwards to max. of 6 mg/kg/",
+        "comment": "Neonates: 0.01-0.1 mg/kg/dose PO, q 8-24 hrs. Titrate up to 0.5 mg/kg/ dose q 6-24 hrs"
+      }
+    ],
+    "raw": {
+      "indications": "Hypertension and afterload reduction in heart failure.",
+      "dose": "Neonates: 0.01-0.1 mg/kg/dose PO, q 8-24 hrs. Titrate up to 0.5 mg/kg/ dose q 6-24 hrs",
+      "route": "Infants: 0.15-0.3 mg/kg/dose; titrate dose upwards to max. of 6 mg/kg/",
+      "levels": "day in 2-4 divided doses. Dosage titrated according to patient's response.",
+      "precautions": "PO 50% metabolized and primarily eliminated by renal excretion.",
+      "extemporaneous": "May cause hypotension, hyperkalemia, elevated BUN and serum creatinine, neutropenia, and rash. Use with caution and modify dose in renal impairment and volume depletion. A 1 mg/mL oral solution may be made by allowing two 50 mg tablets to dissolve in 50 mL of distilled water. Add the contents of one 500 mg sodium ascorbate injection ampule or one 500 mg ascorbic acid tablet and allow to dissolve. Add quantity of distilled water sufficient to make 100 mL. Label \"shake well\" and \"refrigerate\". Stable for 56 days refrigerated. References: Nahata MC, Pai VB, and Hipple TF. Pediatric Drug Formulations, 5th ed, Cincinnati, OH: Harvey Whitney Books Co, 2004."
+    }
+  },
+  {
+    "id": "neo_carbamazepine",
+    "name_ru": "Карбамазепин",
+    "name_en": "Carbamazepine",
+    "brand": "Tegretol",
+    "population": "neonatal",
+    "class_ru": "",
+    "indications": [
+      {
+        "label": "An anticonvulsant to treat a range of neonatal seizures.",
+        "age_min_months": 0,
+        "age_max_months": 1,
+        "mg_per_kg": 2.5,
+        "frequency_hours": 24,
+        "max_per_dose_mg": 0,
+        "max_per_day_mg_per_kg": 0,
+        "max_per_day_mg": 0,
+        "route": "dose slowly to allow for enzyme induction on initiation of therapy.",
+        "comment": "2.5 mg/kg twice daily, increased as necessary by 2.5�5 mg/kg every 3�7 days; usual maintenance dose 5 mg/kg 2�3 times daily. Increase"
+      }
+    ],
+    "raw": {
+      "indications": "An anticonvulsant to treat a range of neonatal seizures.",
+      "dose": "2.5 mg/kg twice daily, increased as necessary by 2.5�5 mg/kg every 3�7 days; usual maintenance dose 5 mg/kg 2�3 times daily. Increase",
+      "route": "dose slowly to allow for enzyme induction on initiation of therapy.",
+      "levels": "Dosage must be adjusted according to patient>s response and serum concentrations.",
+      "precautions": "PO Sampling time: Just before next dose",
+      "extemporaneous": "Therapeutic range: 4-12 mcg/mL Time to reach steady rate: 1-2 weeks Interacts with many drugs such as phenytoin (both drugs may be altered) and erythromycin (increases level of carbamazepine). CBC, renal and LFTs should be obtained prior to instituting therapy and periodically throughout the course of therapy. May cause Bone marrow depression mainly neutropenia, cardiovascular, renal, and hepatic disturbances, and drowsiness. An oral preparation in sucrose is available commercially. References: 1. Tulloch JK1, Carr RR, Ensom MH. A systematic review of the pharmacokinetics of antiepileptic drugs in neonates with refractory seizures. J Pediatr Pharmacol Ther. 2012 Jan;17(1):31-44. doi: 10.5863/1551-6776-17.1.31."
+    }
+  },
+  {
+    "id": "neo_clindamycin",
+    "name_ru": "Клиндамицин",
+    "name_en": "Clindamycin",
+    "brand": "",
+    "population": "neonatal",
+    "class_ru": "",
+    "indications": [
+      {
+        "label": "Cleocin",
+        "age_min_months": 0,
+        "age_max_months": 1,
+        "mg_per_kg": 10,
+        "frequency_hours": 12,
+        "max_per_dose_mg": 0,
+        "max_per_day_mg_per_kg": 0,
+        "max_per_day_mg": 0,
+        "route": "IV, IM, PO",
+        "comment": "Treatment of infections caused by anaerobic bacteria and susceptible gram positive organisms, second line drug for Bacteroides fragilis infections in infants. Not appropriate for meningitis. PNA 7 days: 2000 g: 10 mg/kg/day, divided q 12 hrs. > 2000 g: 15 mg/kg/day, divided q 8 hrs. PNA >7 days: < 1200 g: 10 mg/kg/day, divided q 12 hrs. 1200-2000 g: 15 mg/kg/day, divided q 8 hrs. > 2000 g: 20-30 mg/kg/day, divided q 6-8 hrs. Infants: PO: 10-30 mg/kg/day, divided q 6-8 hrs. IV, IM: 25-40 mg/kg/day, divided q 6-8 hrs."
+      }
+    ],
+    "raw": {
+      "indications": "Cleocin",
+      "dose": "Treatment of infections caused by anaerobic bacteria and susceptible gram positive organisms, second line drug for Bacteroides fragilis infections in infants. Not appropriate for meningitis. PNA 7 days: 2000 g: 10 mg/kg/day, divided q 12 hrs. > 2000 g: 15 mg/kg/day, divided q 8 hrs. PNA >7 days: < 1200 g: 10 mg/kg/day, divided q 12 hrs. 1200-2000 g: 15 mg/kg/day, divided q 8 hrs. > 2000 g: 20-30 mg/kg/day, divided q 6-8 hrs. Infants: PO: 10-30 mg/kg/day, divided q 6-8 hrs. IV, IM: 25-40 mg/kg/day, divided q 6-8 hrs.",
+      "route": "IV, IM, PO",
+      "levels": "Rapidly absorbed after PO with ~90% bioavailability. Half-life: 8.7 hrs in premature infants and 3.6 hrs in full-term infants. Distributes into bile, saliva, ascitic fluid and bone. Poor CSF distribution, even Precaution with inflamed meninges. Eliminated by hepatic inactivation and renal excretion of metabolites. May cause diarrhea, pseudomembranous colitis, rash, Stevens-Johnson Syndrome, elevated liver enzymes, and sterile abscess with IM injection. Rapid IV administration may cause hypotension, arrhythmias, and cardiac arrest.",
+      "precautions": "",
+      "extemporaneous": ""
+    }
+  },
+  {
+    "id": "neo_enalapril_enalaprilat",
+    "name_ru": "Эналаприл / эналаприлат",
+    "name_en": "Enalapril/ Enalaprilat",
+    "brand": "Vasotec",
+    "population": "neonatal",
+    "class_ru": "",
+    "indications": [
+      {
+        "label": "Mild-severe hypertension and afterload reduction in CHF.",
+        "age_min_months": 0,
+        "age_max_months": 1,
+        "mg_per_kg": 0.01,
+        "frequency_hours": 24,
+        "max_per_dose_mg": 0,
+        "max_per_day_mg_per_kg": 0,
+        "max_per_day_mg": 0,
+        "route": "interval as required every few days to up to 0.1 mg/kg/day divided in",
+        "comment": "Enalapril (PO): Initial 0.01 mg/kg/day, every 24 hrs; increase dose and"
+      }
+    ],
+    "raw": {
+      "indications": "Mild-severe hypertension and afterload reduction in CHF.",
+      "dose": "Enalapril (PO): Initial 0.01 mg/kg/day, every 24 hrs; increase dose and",
+      "route": "interval as required every few days to up to 0.1 mg/kg/day divided in",
+      "levels": "1-3 doses. Enalaprilat (IV): 5-10 mcg/kg/dose, every 8-24 hrs.",
+      "precautions": "PO, IV Enalapril is a prodrug (inactive) and undergoes biotransformation to",
+      "extemporaneous": "enalaprilat (active) in the liver. PO absorption 55-75%. Onset of action: 1-2 hrs (PO) and duration 8-24 hrs (PO, IV).Elimination: up to 80% in the urine. Use with caution in renal impairment. Oliguria and increased serum creatinine occur frequently. May cause hypotension (especially in volume depleted patients), hypoglycemia, hyperkalemia, and bone marrow suppression. A 1 mg/mL oral suspension may be made with tablets and one of three different vehicles (cherry syrup, a 1:1 mixture of Ora-Sweet and Ora-Plus, or a 1:1 mixture of Ora-Sweet SF and Ora-Plus). Crush six 20 mg tablets in a mortar and reduce to a fine powder. Add 15 mL of the chosen vehicle and mix to a uniform paste; mix while adding the vehicle in incremental proportions to almost 120 mL; transfer to a calibrated bottle, rinse mortar with vehicle, and add quantity of vehicle sufficient to make 120 mL. Label \"shake well\" and \"protect from light\". Stable for 60 days when stored in amber plastic prescription bottles in the dark at room temperature or refrigerated. A more dilute, 0.1 mg/mL oral suspension may be made with tablets and an isotonic buffer solution at pH 5. Grind one 20 mg tablet in a glass mortar and reduce to a fine powder; mix with isotonic citrate buffer (pH 5) and filter; add quantity of buffer solution sufficient to make 200 mL. Label \"shake well\", \"protect from light\", and \"refrigerate\". Stable for 90 days. References: 1. Allen LV Jr and Erickson MA 3rd. Stability of Alprazolam, Chloroquine Phosphate, Cisapride, Enalapril Maleate, and Hydralazine Hydrochloride in Extemporaneously Compounded Oral Liquids. AJHP, 1998, 55(18):1915-20. 2. Boulton DW, Woods DJ, Fawcett JP, et al. The Stability of an Enalapril Maleate Oral Solution Prepared From Tablets. Aust J Hosp Pharm, 1994, 24(2):151-6."
+    }
+  },
+  {
+    "id": "neo_ketamine",
+    "name_ru": "Кетамин",
+    "name_en": "Ketamine",
+    "brand": "Ketalar",
+    "population": "neonatal",
+    "class_ru": "",
+    "indications": [
+      {
+        "label": "Anesthesia, analgesia for short surgical procedures before intubation.",
+        "age_min_months": 0,
+        "age_max_months": 1,
+        "mg_per_kg": 4,
+        "frequency_hours": 24,
+        "max_per_dose_mg": 0,
+        "max_per_day_mg_per_kg": 0,
+        "max_per_day_mg": 0,
+        "route": "IV, IM",
+        "comment": "IM: 4 mg/kg; IV: 0.5-2 mg/kg."
+      }
+    ],
+    "raw": {
+      "indications": "Anesthesia, analgesia for short surgical procedures before intubation.",
+      "dose": "IM: 4 mg/kg; IV: 0.5-2 mg/kg.",
+      "route": "IV, IM",
+      "levels": "Onset of action: 3-4 min (IM) and 30 seconds (IV); Duration: 12-25 min metabolism (IM) and 5-10 min (IV). Metabolized in the liver; Half-life: 10-15 min.",
+      "precautions": "May cause hypertension, hypotension, seizures, increases ICP, laryngospasm, and stimulation of salivary secretions.",
+      "extemporaneous": ""
+    }
+  },
+  {
+    "id": "neo_lorazepam",
+    "name_ru": "Лоразепам",
+    "name_en": "Lorazepam",
+    "brand": "Ativan",
+    "population": "neonatal",
+    "class_ru": "",
+    "indications": [
+      {
+        "label": "Seizures, sedation",
+        "age_min_months": 0,
+        "age_max_months": 1,
+        "mg_per_kg": 0.05,
+        "frequency_hours": 24,
+        "max_per_dose_mg": 0,
+        "max_per_day_mg_per_kg": 0,
+        "max_per_day_mg": 0,
+        "route": "IV, IM, PO",
+        "comment": "0.05-0.1 mg/kg over 2-5 min, may be repeated in 10-15 min."
+      }
+    ],
+    "raw": {
+      "indications": "Seizures, sedation",
+      "dose": "0.05-0.1 mg/kg over 2-5 min, may be repeated in 10-15 min.",
+      "route": "IV, IM, PO",
+      "levels": "Onset of action: 5 min. Mean half-life: 40 hrs; Metabolized in the liver.",
+      "precautions": "May cause respiratory depression. Neurotoxicity and myoclonus have been reported. Antidote: Flumazenil 0.01 mg/kg/dose IV push. May repeat every minute for up to 4 more doses.",
+      "extemporaneous": ""
+    }
+  },
+  {
+    "id": "neo_metoclopramide",
+    "name_ru": "Метоклопрамид",
+    "name_en": "Metoclopramide",
+    "brand": "Reglan",
+    "population": "neonatal",
+    "class_ru": "",
+    "indications": [
+      {
+        "label": "Facilitate gastric emptying and GI motility.",
+        "age_min_months": 0,
+        "age_max_months": 1,
+        "mg_per_kg": 0.03,
+        "frequency_hours": 6,
+        "max_per_dose_mg": 0,
+        "max_per_day_mg_per_kg": 0,
+        "max_per_day_mg": 0,
+        "route": "IV, PO",
+        "comment": "0.03-0.2 mg/kg/dose given q 6-8 hrs PO or IV."
+      }
+    ],
+    "raw": {
+      "indications": "Facilitate gastric emptying and GI motility.",
+      "dose": "0.03-0.2 mg/kg/dose given q 6-8 hrs PO or IV.",
+      "route": "IV, PO",
+      "levels": "Absorbed well from GI tract. Variable first-pass metabolism by liver. Lipid-soluble; large volume of distribution. Significant fraction excreted unchanged in urine.",
+      "precautions": "Intended for short-term use only (several weeks). Dystonic reactions and extrapyramidal signs may be seen with prolonged use. May cause seizures. Generic Name Metolazone Brand Name Mykrox Indications Dose Thiazide-like diuretic, used for edema resistant to loop diuretics. Route Children: 0.2-0.4 mg/kg/day, divided every 12-24 hrs. Levels and PO Metabolism Onset of action: ~1 hr; Half-life: 6-20 hrs; 70-95% excreted unchanged Precautions in urine. Safety and effectiveness in pediatric patients have not been established",
+      "extemporaneous": "in controlled clinical trials. May cause electrolyte disturbances, hypotension, tachycardia, and bone marrow suppression. A 1 mg/mL oral suspension may be made by with tablets and one of three different vehicles (cherry syrup diluted 1:4 with simple syrup; a 1:1 mixture of Ora-Sweet and Ora-Plus; or a 1:1 mixture of Ora-Sweet SF and Ora-Plus). Crush twelve 10 mg tablets in a mortar and reduce to a fine powder. Add small portions of the chosen vehicle and mix to a uniform paste; mix while adding the vehicle in incremental proportions to almost 120 mL; transfer to a calibrated bottle, rinse mortar with vehicle, and add quantity of vehicle sufficient to make 120 mL. Label \"shake well\" and \"refrigerate\". Stable for 60 days. References Nahata, MC, Pai VB, and Hipple TF, Pediatric Drug Formulations, 5th ed, Cincinnati, OH: Harvey Whitney Books Co, 2004."
+    }
+  },
+  {
+    "id": "neo_naloxone",
+    "name_ru": "Налоксон",
+    "name_en": "Naloxone",
+    "brand": "Narcan",
+    "population": "neonatal",
+    "class_ru": "",
+    "indications": [
+      {
+        "label": "Стандартная доза",
+        "age_min_months": 0,
+        "age_max_months": 1,
+        "mg_per_kg": 0.1,
+        "frequency_hours": 24,
+        "max_per_dose_mg": 0,
+        "max_per_day_mg_per_kg": 0,
+        "max_per_day_mg": 0,
+        "route": "may be given, repeat q 2-3 min if needed.",
+        "comment": "Neonatal respiratory depression secondary to narcotics. Give 0.1 mg/kg/dose IV, IM, ET, or SubQ; doses as low as 0.01mg/kg"
+      }
+    ],
+    "raw": {
+      "indications": "",
+      "dose": "Neonatal respiratory depression secondary to narcotics. Give 0.1 mg/kg/dose IV, IM, ET, or SubQ; doses as low as 0.01mg/kg",
+      "route": "may be given, repeat q 2-3 min if needed.",
+      "levels": "IV, IM, SubQ, ET Onset of action: 2-5 min; Half-life: 1.2-3 hrs. Metabolized by the liver",
+      "precautions": "and excreted in the urine. May precipitate withdrawal symptoms in neonates with physical dependence to narcotics.",
+      "extemporaneous": ""
+    }
+  },
+  {
+    "id": "neo_prednisolone",
+    "name_ru": "Преднизолон",
+    "name_en": "Prednisolone",
+    "brand": "Orapred",
+    "population": "neonatal",
+    "class_ru": "",
+    "indications": [
+      {
+        "label": "Corticosteroid with anti-inflammatory and glucocorticoid actions.",
+        "age_min_months": 0,
+        "age_max_months": 1,
+        "mg_per_kg": 0.5,
+        "frequency_hours": 24,
+        "max_per_dose_mg": 0,
+        "max_per_day_mg_per_kg": 0,
+        "max_per_day_mg": 0,
+        "route": "PO",
+        "comment": "PO: 0.5-2 mg/kg/day divided every 12-24 hrs."
+      }
+    ],
+    "raw": {
+      "indications": "Corticosteroid with anti-inflammatory and glucocorticoid actions.",
+      "dose": "PO: 0.5-2 mg/kg/day divided every 12-24 hrs.",
+      "route": "PO",
+      "levels": "The liver is the principal site of its metabolism which typically inactivates the drug Precaution May cause immunosuppression, infection, hypertension, CHF, hypokalemia, edema, hyperglycemia, growth suppression, adrenal suppression, hypothalamic pituitary adrenal (HPA) suppression and peptic ulcer disease, nausea, vomiting. Monitor serum blood glucose, CBC and electrolytes",
+      "precautions": "",
+      "extemporaneous": ""
+    }
+  },
+  {
+    "id": "neo_rifampicin",
+    "name_ru": "Рифампицин",
+    "name_en": "Rifampicin",
+    "brand": "Rifampin",
+    "population": "neonatal",
+    "class_ru": "",
+    "indications": [
+      {
+        "label": "Broad spectrum antibiotic. Inhibits DNA dependent RNA polymerase activity Effective against Mycobacteria, Neisseria, gram-positive cocci. Effective in the treatment of persistent coagulase negative staphylococci infections in neonates in combination with vancomycin or aminoglycosides. Used as prophylaxis for meningitis contacts.",
+        "age_min_months": 0,
+        "age_max_months": 1,
+        "mg_per_kg": 5,
+        "frequency_hours": 24,
+        "max_per_dose_mg": 0,
+        "max_per_day_mg_per_kg": 0,
+        "max_per_day_mg": 0,
+        "route": "IV: Infuse over 30-60 minutes via syringe pump. PO: Give on empty stomach.",
+        "comment": "PO, IV: 5-10 mg/kg/dose once q 24 hrs Severe infections: 20 mg/kg/dose once q 24 hrs"
+      }
+    ],
+    "raw": {
+      "indications": "Broad spectrum antibiotic. Inhibits DNA dependent RNA polymerase activity Effective against Mycobacteria, Neisseria, gram-positive cocci. Effective in the treatment of persistent coagulase negative staphylococci infections in neonates in combination with vancomycin or aminoglycosides. Used as prophylaxis for meningitis contacts.",
+      "dose": "PO, IV: 5-10 mg/kg/dose once q 24 hrs Severe infections: 20 mg/kg/dose once q 24 hrs",
+      "route": "IV: Infuse over 30-60 minutes via syringe pump. PO: Give on empty stomach.",
+      "levels": "Metabolism: hepatic; undergoes enterohepatic recirculation. Excretion in adults: Feces (60% to 65%) and urine (~30%) as unchanged drug.",
+      "precautions": "CBC, renal and hepatic function tests should be obtained prior to instituting therapy and periodically throughout the course of therapy. Neonates with impaired liver function should only be given rifampin in case of necessity and then with caution and under strict medical supervision. Causes orange/red discoloration of body secretions. It passes into the breast milk and therefore should not be used during lactation. Preparation Use solution prepared in Pharmacy if available. References Reconstitute each vial using 9.5 mL of the diluent supplied. Shake the vial for 30 seconds (600 mg in 10 mL [60 mg/mL]). Take 1mL of this solution and further dilute to 10 mL with sodium chloride 0.9%, glucose 5% or glucose/saline combinations (6 mg/mL). If prepared in D5W it is stable for only 4 hours. Extemporaneous Preparation: A rifampin 1% w/v suspension (10 mg/mL) may be made with capsules and one of four syrups (Syrup NF, simple syrup, Syrpalta� syrup, or raspberry syrup). Empty the contents of four 300 mg capsules or eight 150 mg capsules onto a piece of weighing paper. If necessary, crush contents to produce a fine powder. Transfer powder to a 4-ounce amber glass or plastic prescription bottle. Rinse paper and spatula with 20 mL of chosen syrup and add the rinse to bottle; shake vigorously. Add 100 mL syrup to the bottle and shake vigorously. Label \"shake well\". Stable for 4 weeks at room temperature or refrigerated. 1. N Margreth van der Lugt, Sylke J Steggerda and Frans J Walther. Use of rifampin in persistent coagulase negative staphylococcal bacteremia in neonates. BMC Pediatrics 2010, 10:84 doi:10.1186/1471-2431-10-84. 2. Russell CD, Lawson McLean A, Saunders C, Laurenson IF. Adjunctive rifampicin may improve outcomes in Staphylococcus aureus bacteraemia: a systematic review. 3. Nahata MC, Pai VB, and Hipple TF, Pediatric Drug Formulations, 5th ed, Cincinnati, OH: Harvey Whitney Books Co, 2004.",
+      "extemporaneous": ""
+    }
+  },
+  {
+    "id": "neo_ursodeoxycholic_acid",
+    "name_ru": "Урсодезоксихолевая кислота",
+    "name_en": "Ursodeoxycholic acid",
+    "brand": "Ursodil",
+    "population": "neonatal",
+    "class_ru": "",
+    "indications": [
+      {
+        "label": "Naturally occurring bile acid present in small quantities in human bile. For chronic liver diseases associated with cholestasis.",
+        "age_min_months": 0,
+        "age_max_months": 1,
+        "mg_per_kg": 15,
+        "frequency_hours": 24,
+        "max_per_dose_mg": 0,
+        "max_per_day_mg_per_kg": 0,
+        "max_per_day_mg": 0,
+        "route": "PO; may be given at any time in regard to feeds",
+        "comment": "10 to 15 mg/kg/dose; given 1-2 times daily."
+      }
+    ],
+    "raw": {
+      "indications": "Naturally occurring bile acid present in small quantities in human bile. For chronic liver diseases associated with cholestasis.",
+      "dose": "10 to 15 mg/kg/dose; given 1-2 times daily.",
+      "route": "PO; may be given at any time in regard to feeds",
+      "levels": "Suppresses synthesis and secretion of cholesterol by the liver and inhibits intestinal absorption of cholesterol. So it can cause transient increase in liver function test values and transient hypercholesterolemia",
+      "precautions": "Monitor bilirubin levels and LFTs, prior to instituting therapy and periodically throughout the course of therapy.",
+      "extemporaneous": "Ursodeoxycholic Acid 50 mg/mL Oral Suspension Materials: � 20 tablets ursodeoxycholic acid (300 mg) � Ora-Blend q.s. to 120 mL Preparation: � Crush the tablet in a mortar to fine powder. � Add Ora-Blend to form a smooth paste. Note: If Ora-Blend unavailable: Pre-mix the Ora-Plus and Ora-Sweet, to form the diluent. � Gradually add diluent and transfer to final measuring flask, rinsing mortar well. Mix well. � Transfer finished product to pre-rinsed amber plastic medicine bottle. � Label appropriately. Stability: Thirty (30) days Auxiliary Labels: Store at room temperature. Shake well before use. References: 1. Chen CY, Tsao P, Chen H, et al. Ursodeoxycholic acid (UDCA) therapy in very- low-birth-weight infants with parenteral nutrition-associated cholestasis. J Pediatr 2004;145:317-21. 2. Arslanoglu S, Moro GE, Tauschel H, et al. Ursodeoxycholic acid treatment in preterm infants: a pilot study for the prevention of cholestasis associated with total parenteral nutrition. J Pediatr Gastroenterol Nutr 2008;46:228-31. 3. Am J Health-Syst Pharm. 1997; 54: 1401-4"
+    }
+  }
+]

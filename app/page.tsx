@@ -126,6 +126,7 @@ const ToolView = dynamic(() => import('@/components/tools/ToolView'), { ssr: fal
 // приложения (теряет сайдбар, навигацию, dark-mode и т.д.).
 const ClassificationsHub = dynamic(() => import('@/components/classifications/ClassificationsHub'), { ssr: false, loading: ViewLoading });
 const DrugChecker = dynamic(() => import('@/components/drugs/DrugChecker'), { ssr: false, loading: ViewLoading });
+const NeonatalHandbook = dynamic(() => import('@/components/neonatal/NeonatalHandbook'), { ssr: false, loading: ViewLoading });
 // Главная теперь — лента релизов («что нового»). Раньше view==='home'
 // рендерил ту же сетку разделов курсов что и view==='learning' — после
 // фидбека main view стал news feed-ом, разделы переехали только под
@@ -415,6 +416,7 @@ export default function Home() {
   const showTests = useAppStore((s) => s.showTests);
   const showIcd10 = useAppStore((s) => s.showIcd10);
   const showDrugs = useAppStore((s) => s.showDrugs);
+  const showNeonatal = useAppStore((s) => s.showNeonatal);
   const activeToolId = useAppStore((s) => s.activeToolId);
   // Action refs — stable across the component's lifetime (Zustand returns
   // the same function reference), so picking them via `getState` once is
@@ -445,6 +447,7 @@ export default function Home() {
     : showTools ? 'tools'
     : showIcd10 ? 'icd10'
     : showDrugs ? 'drugs'
+    : showNeonatal ? 'neonatal'
     : currentCourseId ? 'course'
     : activeModuleId ? 'module'
     : activeSection ? 'section'
@@ -541,6 +544,10 @@ export default function Home() {
 
           {view === 'drugs' && (
             <DrugChecker />
+          )}
+
+          {view === 'neonatal' && (
+            <NeonatalHandbook />
           )}
 
           {view === 'course' && (

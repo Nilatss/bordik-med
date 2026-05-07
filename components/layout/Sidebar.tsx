@@ -25,7 +25,7 @@ import Highlight from '@/components/ui/Highlight';
 // is just the existing avatar circle from the static SVG below.
 const UserMenu = nextDynamic(() => import('./UserMenu'), { ssr: false });
 
-type NavItem = 'home' | 'learning' | 'tests' | 'tools' | 'icd10' | 'drugs' | 'stats' | 'profile';
+type NavItem = 'home' | 'learning' | 'tests' | 'tools' | 'icd10' | 'drugs' | 'neonatal' | 'stats' | 'profile';
 
 // Highlight вынесен в `components/ui/Highlight.tsx` — единый паттерн
 // для всех мест поиска (sidebar, Cmd+K, фильтры, /icd10).
@@ -56,6 +56,7 @@ export default function Sidebar() {
     showTests,
     showIcd10,
     showDrugs,
+    showNeonatal,
     goHome,
     setShowLearning,
     setShowTools,
@@ -63,6 +64,7 @@ export default function Sidebar() {
     setShowTests,
     setShowIcd10,
     setShowDrugs,
+    setShowNeonatal,
     toggleProfile,
     sidebarOpen,
     toggleSidebar,
@@ -105,9 +107,11 @@ export default function Sidebar() {
             ? 'icd10'
             : showDrugs
               ? 'drugs'
-              : (activeSection || showLearning)
-                ? 'learning'
-                : 'home';
+              : showNeonatal
+                ? 'neonatal'
+                : (activeSection || showLearning)
+                  ? 'learning'
+                  : 'home';
 
   const handleNav = (item: NavItem) => {
     if (item === 'home') goHome();
@@ -117,6 +121,7 @@ export default function Sidebar() {
     else if (item === 'tools') setShowTools(true);
     else if (item === 'icd10') setShowIcd10(true);
     else if (item === 'drugs') setShowDrugs(true);
+    else if (item === 'neonatal') setShowNeonatal(true);
     else if (item === 'stats') setShowStats(true);
     // Auto-close drawer on mobile so the user actually sees the destination.
     // Profile is a modal panel that overlays the sidebar - closing the
@@ -143,6 +148,7 @@ export default function Sidebar() {
       case 'profile':  void import('@/components/profile/ProfilePage'); break;
       case 'icd10':    void import('@/components/classifications/ClassificationsHub'); break;
       case 'drugs':    void import('@/components/drugs/DrugChecker'); break;
+      case 'neonatal': void import('@/components/neonatal/NeonatalHandbook'); break;
       case 'learning': /* no chunk — sections render in app/page.tsx */ break;
       case 'home':     /* eager */ break;
     }
@@ -217,6 +223,19 @@ export default function Sidebar() {
         </svg>
       ),
     },
+    neonatal: {
+      id: 'neonatal',
+      label: 'Неонатология',
+      keywords: ['неонатология', 'неонатальный', 'неонатал', 'новорождённые', 'новорожденные', 'нику', 'nicu', 'neonatal', 'newborn', 'infant', 'preterm', 'недоношенные', 'педиатр'],
+      icon: (
+        <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+          <path d="M9 12a3 3 0 106 0 3 3 0 00-6 0z" />
+          <path d="M12 1v22" />
+          <path d="M5 8c0-3 3-5 7-5s7 2 7 5" />
+          <path d="M5 16c0 3 3 5 7 5s7-2 7-5" />
+        </svg>
+      ),
+    },
     stats: {
       id: 'stats',
       label: t('nav.stats'),
@@ -245,7 +264,7 @@ export default function Sidebar() {
   const groups: NavGroup[] = [
     { id: 'main',     title: t('nav.group.main'),     items: ['home', 'profile'] },
     { id: 'study',    title: t('nav.group.study'),    items: ['learning', 'tests', 'stats'] },
-    { id: 'services', title: t('nav.group.services'), items: ['tools', 'icd10', 'drugs'] },
+    { id: 'services', title: t('nav.group.services'), items: ['tools', 'icd10', 'drugs', 'neonatal'] },
   ];
 
   // Filter by search

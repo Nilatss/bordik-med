@@ -135,7 +135,10 @@ const serwist = new Serwist({
     // CacheFirst после первой загрузки = instant + offline.
     // Cache bust через query string ?v=X.Y.Z в коде клиента.
     {
-      matcher: ({ url }) => /^\/icd1[01](?:cm|pcs|ca|gm|am)?(-(?:mms(?:-ext)?|starter|slim|details|search|drug-table|neoplasm|index))?\.json$/.test(url.pathname),
+      matcher: ({ url }) => (
+        /^\/icd1[01](?:cm|pcs|ca|gm|am)?(-(?:mms(?:-ext)?|starter|slim|details|search|drug-table|neoplasm|index))?\.json$/.test(url.pathname)
+        || url.pathname === '/neonatal-monographs.json'
+      ),
       handler: new CacheFirst({
         cacheName: 'bordik-icd',
         plugins: [
