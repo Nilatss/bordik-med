@@ -320,7 +320,7 @@ export default function NeonatalHandbook() {
           marginTop: 32,
           padding: '20px 22px',
           background: '#F5F6F8',
-          border: '1px solid #E5E7EB',
+          border: 'none',
           borderRadius: 14,
           fontSize: 13,
           color: '#4B5563',
