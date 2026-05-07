@@ -713,12 +713,12 @@ export default function DrugChecker() {
                             }}>
                               <tbody>
                                 {i.mechanism && <DetailRow label="Механизм"  value={i.mechanism} />}
-                                {i.management && <DetailRow label="Тактика"   value={i.management} bold />}
+                                {i.management && <DetailRow label="Тактика"   value={i.management} />}
                                 {i.sources && i.sources.length > 0 && (
                                   <DetailRow
                                     label="Источники"
                                     value={i.sources.join(' · ')}
-                                    mono last
+                                    last
                                   />
                                 )}
                               </tbody>
@@ -1089,8 +1089,8 @@ function PoisonCell({ label, code }: { label: string; code?: string | null | und
  * Last row не имеет нижней рамки.
  */
 function DetailRow({
-  label, value, bold, mono, last,
-}: { label: string; value: string; bold?: boolean; mono?: boolean; last?: boolean }) {
+  label, value, last,
+}: { label: string; value: string; last?: boolean }) {
   const cellStyle: React.CSSProperties = {
     padding: '12px 18px',
     borderBottom: last ? 'none' : '1px solid #F0F1F5',
@@ -1106,8 +1106,8 @@ function DetailRow({
           width: 1,
           whiteSpace: 'nowrap',
           textAlign: 'left',
-          fontFamily: 'var(--font-mono, ui-monospace)',
-          fontSize: 11, fontWeight: 700,
+          fontFamily: 'inherit',
+          fontSize: 11, fontWeight: 600,
           color: '#9CA3AF',
           textTransform: 'uppercase',
           letterSpacing: '0.06em',
@@ -1120,8 +1120,8 @@ function DetailRow({
         style={{
           ...cellStyle,
           fontSize: 13, color: '#1A1A1A', lineHeight: 1.55,
-          fontWeight: bold ? 600 : 400,
-          fontFamily: mono ? 'var(--font-mono, ui-monospace)' : 'inherit',
+          fontWeight: 400,
+          fontFamily: 'inherit',
         }}
       >
         {value}
