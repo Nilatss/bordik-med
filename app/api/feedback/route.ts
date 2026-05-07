@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { withSameOrigin, apiError } from '@/lib/api-helpers';
 import { log } from '@/lib/log';
 
 /**
@@ -30,13 +31,13 @@ export const runtime = 'nodejs';
 export const dynamic  = 'force-dynamic';
 
 export async function POST(req: Request) {
+  // P2-NEW-1 — origin guard (раньше open POST). withSameOrigin
+  // не требует auth, но блокирует cross-origin запросы.
+  return withSameOrigin(req, async () => {
   const TOKEN = process.env.TELEGRAM_BOT_TOKEN;
   const CHAT  = process.env.TELEGRAM_CHAT_ID;
   if (!TOKEN || !CHAT) {
-    return NextResponse.json(
-      { ok: false, error: 'feedback-not-configured' },
-      { status: 503 },
-    );
+    return apiError('backend-not-configured', 503);
   }
 
   let form: FormData;
@@ -142,7 +143,8 @@ export async function POST(req: Request) {
     }
   }
 
-  return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true });
+  });
 }
 
 /** Escape Markdown V2 reserved characters per Telegram docs. */
