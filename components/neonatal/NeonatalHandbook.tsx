@@ -619,43 +619,24 @@ function MonographFullText({ text }: { text: string }) {
   if (blocks.length === 0) return null;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-      {blocks.map((b, i) => (
-        <section key={i} style={{
-          padding: '12px 14px',
-          background: b.tone === 'warning' ? '#FFFBEB' : '#F9FAFB',
-          border: `1px solid ${b.tone === 'warning' ? '#FDE68A' : '#EAECEF'}`,
-          borderRadius: 10,
-        }}>
-          <header style={{
-            fontSize: 11, fontWeight: 600, letterSpacing: '0.06em',
-            textTransform: 'uppercase',
-            color: b.tone === 'warning' ? '#92400E' : '#9CA3AF',
-            marginBottom: 8,
-          }}>
-            <span>{b.labelRu}</span>
-            <span style={{ marginLeft: 6, fontSize: 10, opacity: 0.65, fontWeight: 500, textTransform: 'none', letterSpacing: 0 }}>
-              {b.label}
-            </span>
-          </header>
-          {b.sentences.length === 1 ? (
-            <p style={{ margin: 0, color: b.tone === 'warning' ? '#78350F' : '#374151' }}>
-              {b.sentences[0]}
-            </p>
-          ) : (
-            <ul style={{
-              margin: 0, paddingLeft: 18,
-              display: 'flex', flexDirection: 'column', gap: 6,
-              color: b.tone === 'warning' ? '#78350F' : '#374151',
-            }}>
-              {b.sentences.map((s, j) => (
-                <li key={j}>{s}</li>
-              ))}
-            </ul>
-          )}
-        </section>
-      ))}
-    </div>
+    <table style={{
+      width: '100%',
+      borderCollapse: 'collapse',
+      fontSize: 13, color: '#374151', lineHeight: 1.55,
+    }}>
+      <tbody>
+        {blocks.map((b, i) => (
+          <DrugDetailRow
+            key={i}
+            label={b.labelRu}
+            labelEn={b.label}
+            value={b.sentences.join(' ')}
+            {...(b.tone === 'warning' ? { tone: 'warning' as const } : {})}
+            {...(i === blocks.length - 1 ? { last: true } : {})}
+          />
+        ))}
+      </tbody>
+    </table>
   );
 }
 
