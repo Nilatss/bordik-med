@@ -492,16 +492,61 @@ function DrugCard({
   );
 }
 
+/** Чистит broken-glyph (�) и схлопывает пробелы. */
+function sanitizeFieldText(s: string): string {
+  return s
+    .replace(/�/g, '÷')
+    .replace(/ /g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/** Разбивает длинный текст на читаемые предложения/клаузы.
+ *  Защищает медицинские сокращения (max., mg., hr., и т.д.) от
+ *  ложных делений на границе предложения. */
+function splitIntoSentences(raw: string): string[] {
+  const ABBREV = ['max', 'min', 'mg', 'mcg', 'hr', 'hrs', 'kg', 'mL', 'wk', 'wks', 'q', 'approx', 'incl', 'excl', 'ca', 'cf', 'i.e', 'e.g', 'vs', 'no', 'Dr', 'Mr', 'Ms', 'St'];
+  let s = raw;
+  // Защищаем сокращения временным маркером §
+  for (const a of ABBREV) {
+    const escaped = a.replace(/\./g, '\\.');
+    s = s.replace(new RegExp(`\\b${escaped}\\.`, 'g'), `${a}§`);
+  }
+  // Делим на границе предложения/клаузы: . или ; + пробел + заглавная
+  const parts = s.split(/(?<=[.;])\s+(?=[A-ZА-Я0-9])/g)
+    .map((p) => p.replace(/§/g, '.').trim())
+    .filter(Boolean);
+  return parts;
+}
+
+/** Рендер «значения» поля. Короткое — inline. Длинное (>120 знаков
+ *  или несколько предложений) — список с буллетами для удобства чтения. */
+function renderFieldValue(value: string): React.ReactNode {
+  const clean = sanitizeFieldText(value);
+  if (clean.length < 120) return clean;
+  const parts = splitIntoSentences(clean);
+  if (parts.length < 2) return clean;
+  return (
+    <ul style={{
+      margin: 0, paddingLeft: 18,
+      listStyle: 'disc',
+      display: 'flex', flexDirection: 'column', gap: 6,
+    }}>
+      {parts.map((p, i) => (
+        <li key={i}>{p}</li>
+      ))}
+    </ul>
+  );
+}
+
 /** Bordik-style таблица: th-label слева, td-value справа.
- *  Идентична DetailRow в DrugChecker — единый стиль. */
+ *  Один шрифт (body) везде — без mono. */
 function DrugDetailRow({
-  label, labelEn, value, bold, mono, tone = 'neutral', last,
+  label, labelEn, value, tone = 'neutral', last,
 }: {
   label: string;
   labelEn?: string;
   value: string;
-  bold?: boolean;
-  mono?: boolean;
   tone?: 'neutral' | 'warning';
   last?: boolean;
 }) {
@@ -519,7 +564,7 @@ function DrugDetailRow({
           ...cellStyle,
           width: 160,
           textAlign: 'left',
-          fontFamily: 'var(--font-mono, ui-monospace)',
+          fontFamily: 'inherit',
           fontSize: 11, fontWeight: 600,
           color: tone === 'warning' ? '#92400E' : '#9CA3AF',
           textTransform: 'uppercase',
@@ -536,10 +581,10 @@ function DrugDetailRow({
       <td style={{
         ...cellStyle,
         fontWeight: 400,
-        fontFamily: mono ? 'var(--font-mono, ui-monospace)' : 'inherit',
+        fontFamily: 'inherit',
         color: tone === 'warning' ? '#78350F' : '#374151',
       }}>
-        {value}
+        {renderFieldValue(value)}
       </td>
     </tr>
   );
