@@ -313,67 +313,56 @@ export default function NeonatalHandbook() {
         </>
       )}
 
-      {/* Source / disclaimer panel — единый стиль с Классификациями */}
-      <section style={{
-        marginTop: 32,
-        maxWidth: 880,
-        background: '#FFFFFF',
-        borderRadius: 16,
-        border: '1px solid #E5E7EB',
-        padding: '24px 28px 22px',
-      }}>
-        <div style={{ marginBottom: 16 }}>
-          <div style={{
-            fontSize: 11, color: '#9CA3AF', letterSpacing: '0.06em',
-            textTransform: 'uppercase', fontWeight: 600, marginBottom: 6,
-          }}>
-            Источник и оговорка
-          </div>
-          <p style={{ margin: 0, fontSize: 13, color: '#374151', lineHeight: 1.6 }}>
-            Не заменяет фарм-консультацию. Дозы у новорождённых критически зависят
-            от гестационного возраста, дней жизни, веса, функции почек и печени.
-            Решение по конкретному пациенту принимает врач/клин-фармаколог.
-          </p>
-        </div>
-        <NeonatalFactsPanel items={[
-          { label: 'Источник', value: bank.source },
-          { label: 'Авторы', value: bank.authors.join('; ') },
-          { label: 'Покрытие', value: `${bank.drugs.length} препаратов NICU` },
-        ]} />
+      {/* Source / disclaimer panel — единый стиль с DrugChecker provenance */}
+      <section
+        aria-labelledby="neonatal-provenance"
+        style={{
+          marginTop: 32,
+          padding: '20px 22px',
+          background: '#F5F6F8',
+          border: '1px solid #E5E7EB',
+          borderRadius: 14,
+          fontSize: 13,
+          color: '#4B5563',
+          lineHeight: 1.55,
+        }}
+      >
+        <h3 id="neonatal-provenance" style={{
+          margin: '0 0 14px',
+          fontFamily: 'var(--font-display)',
+          fontSize: 15, fontWeight: 700,
+          color: '#1A1A1A',
+          letterSpacing: '-0.01em',
+        }}>
+          Источник и обновление
+        </h3>
+        <dl style={{
+          margin: 0, display: 'grid',
+          gridTemplateColumns: 'auto 1fr', columnGap: 18, rowGap: 10,
+        }}>
+          <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Источник</dt>
+          <dd style={{ margin: 0, color: '#1A1A1A' }}>{bank.source}</dd>
+          <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Авторы</dt>
+          <dd style={{ margin: 0, color: '#1A1A1A' }}>{bank.authors.join('; ')}</dd>
+          <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Покрытие</dt>
+          <dd style={{ margin: 0, color: '#1A1A1A' }}>
+            {bank.drugs.length} препаратов NICU
+          </dd>
+        </dl>
+
+        <p role="note" style={{
+          marginTop: 18, paddingTop: 16,
+          borderTop: '1px solid #E5E7EB',
+          fontSize: 12, color: '#6B7280', lineHeight: 1.55,
+          margin: '18px 0 0',
+        }}>
+          <strong style={{ color: '#1A1A1A' }}>Не заменяет фарм-консультацию.</strong>{' '}
+          Дозы у новорождённых критически зависят от гестационного возраста, дней жизни,
+          веса, функции почек и печени. Решение по конкретному пациенту принимает
+          врач/клин-фармаколог.
+        </p>
       </section>
     </main>
-  );
-}
-
-/** Локальная панель «фактов» — единый стиль с InfoCard'ами Классификаций. */
-function NeonatalFactsPanel({ items }: { items: Array<{ label: string; value: React.ReactNode }> }) {
-  return (
-    <dl style={{
-      margin: 0,
-      background: '#F5F6F8',
-      borderRadius: 12,
-      border: '1px solid #E5E7EB',
-      overflow: 'hidden',
-    }}>
-      {items.map((item, i) => (
-        <div key={i} style={{
-          display: 'grid', gridTemplateColumns: '160px 1fr', gap: 16,
-          padding: '14px 18px',
-          borderBottom: i < items.length - 1 ? '1px solid #E5E7EB' : 'none',
-        }}>
-          <dt style={{
-            margin: 0,
-            fontSize: 11, color: '#9CA3AF', letterSpacing: '0.06em',
-            textTransform: 'uppercase', fontWeight: 600, paddingTop: 2,
-          }}>
-            {item.label}
-          </dt>
-          <dd style={{ margin: 0, fontSize: 13, color: '#374151', lineHeight: 1.55 }}>
-            {item.value}
-          </dd>
-        </div>
-      ))}
-    </dl>
   );
 }
 
