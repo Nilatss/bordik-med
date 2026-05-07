@@ -408,7 +408,7 @@ function ChapterAccordion({
   return (
     <div style={{
       background: '#F5F6F8',
-      border: 'none',
+      border: '1px solid #E5E7EB',
       borderRadius: 14,
       overflow: 'hidden',
     }}>

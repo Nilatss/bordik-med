@@ -650,7 +650,7 @@ export default function DrugChecker() {
                     transition={{ duration: 0.3, ease: [0.05, 0.7, 0.1, 1], delay: 0.04 * idx }}
                     style={{
                       background: '#F5F6F8',
-                      border: 'none',
+                      border: '1px solid #E5E7EB',
                       borderLeft: `3px solid ${meta.accent}`,
                       borderRadius: 14,
                       overflow: 'hidden',
@@ -744,7 +744,7 @@ export default function DrugChecker() {
           style={{
             marginTop: 24,
             background: '#F5F6F8',
-            border: 'none',
+            border: '1px solid #E5E7EB',
             borderLeft: '3px solid #2563EB',
             borderRadius: 14,
             overflow: 'hidden',
@@ -898,7 +898,7 @@ export default function DrugChecker() {
           marginTop: 32,
           padding: '20px 22px',
           background: '#F5F6F8',
-          border: 'none',
+          border: '1px solid #E5E7EB',
           borderRadius: 14,
           fontSize: 13,
           color: '#4B5563',
