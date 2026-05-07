@@ -350,7 +350,7 @@ function NeonatalFactsPanel({ items }: { items: Array<{ label: string; value: Re
   return (
     <dl style={{
       margin: 0,
-      background: '#F9FAFB',
+      background: '#F5F6F8',
       borderRadius: 12,
       border: '1px solid #E5E7EB',
       overflow: 'hidden',
@@ -359,7 +359,7 @@ function NeonatalFactsPanel({ items }: { items: Array<{ label: string; value: Re
         <div key={i} style={{
           display: 'grid', gridTemplateColumns: '160px 1fr', gap: 16,
           padding: '14px 18px',
-          borderBottom: i < items.length - 1 ? '1px solid #EAECEF' : 'none',
+          borderBottom: i < items.length - 1 ? '1px solid #E5E7EB' : 'none',
         }}>
           <dt style={{
             margin: 0,
