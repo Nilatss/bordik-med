@@ -149,102 +149,69 @@ function ControlsPanel({
 
   return (
     <div style={{
-      display: 'flex', flexDirection: 'column', gap: 14,
-      padding: 16,
+      display: 'flex', flexDirection: 'column', gap: 18,
+      padding: 18,
       background: '#F5F6F8',
-      borderRadius: 12,
+      borderRadius: 14,
     }}>
-      <div style={{
-        display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
-        gap: 12,
-      }}>
-        <Field label="GA, недели" hint="35–42">
-          <input
-            type="number" value={gaWeeks}
-            onChange={(e) => setGaWeeks(e.target.value)}
-            min={35} max={42} step={0.1}
-            style={inputStyle}
-          />
-        </Field>
-        <Field label="Возраст, часы жизни" hint="0–336 (14 сут)">
-          <input
-            type="number" value={hours}
-            onChange={(e) => setHours(e.target.value)}
-            min={0} max={336} step={1}
-            style={inputStyle}
-          />
-        </Field>
-        <Field label={`TSB, ${unit}`} hint="ваш замер">
-          <input
-            type="number" value={tsbInput}
-            onChange={(e) => setTsbInput(e.target.value)}
-            min={0} step={0.1}
-            placeholder="—"
-            style={inputStyle}
-          />
-        </Field>
-        <Field label="Единицы">
-          <div style={{ display: 'flex', gap: 6 }}>
-            {(['mg/dL', 'umol/L'] as const).map((u) => (
-              <button
-                key={u}
-                type="button"
-                onClick={() => setUnit(u)}
-                style={{
-                  flex: 1, padding: '10px 8px',
-                  background: unit === u ? '#2563EB' : '#FFFFFF',
-                  color: unit === u ? '#FFFFFF' : '#374151',
-                  border: '1px solid',
-                  borderColor: unit === u ? '#2563EB' : '#E5E7EB',
-                  borderRadius: 8,
-                  cursor: 'pointer',
-                  fontFamily: 'inherit',
-                  fontSize: 12, fontWeight: 600,
-                  transition: 'all 150ms',
-                }}
-              >
-                {u === 'mg/dL' ? 'mg/dL' : 'µmol/L'}
-              </button>
-            ))}
-          </div>
-        </Field>
+      {/* Section: Параметры пациента */}
+      <div>
+        <SectionLabel>Параметры пациента</SectionLabel>
+        <div style={{
+          display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
+          gap: 10,
+        }}>
+          <Field label="GA, недели" hint="35–42">
+            <BordikNumberInput
+              value={gaWeeks}
+              onChange={setGaWeeks}
+              min={35} max={42} step={0.1}
+            />
+          </Field>
+          <Field label="Часы жизни" hint="0–336 (14 сут)">
+            <BordikNumberInput
+              value={hours}
+              onChange={setHours}
+              min={0} max={336} step={1}
+            />
+          </Field>
+          <Field label={`TSB, ${unit === 'mg/dL' ? 'mg/dL' : 'µmol/L'}`} hint="ваш замер">
+            <BordikNumberInput
+              value={tsbInput}
+              onChange={setTsbInput}
+              min={0} step={0.1}
+              placeholder="—"
+            />
+          </Field>
+          <Field label="Единицы">
+            <SegmentedControl
+              value={unit}
+              onChange={setUnit}
+              options={[
+                { value: 'mg/dL', label: 'mg/dL' },
+                { value: 'umol/L', label: 'µmol/L' },
+              ]}
+            />
+          </Field>
+        </div>
       </div>
 
-      {/* Risk factors */}
+      {/* Section: Факторы риска */}
       <div>
-        <div style={{
-          fontSize: 11, fontWeight: 600, color: '#6B7280',
-          letterSpacing: '0.04em', textTransform: 'uppercase', marginBottom: 8,
-        }}>
-          Факторы риска нейротоксичности
-        </div>
+        <SectionLabel>Факторы риска нейротоксичности</SectionLabel>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
           {bank.riskFactors.map((rf) => {
             const active = risks.has(rf.id);
             const isAuto = rf.id === 'ga_lt_38';
             return (
-              <button
+              <RiskChip
                 key={rf.id}
-                type="button"
-                onClick={() => { if (!isAuto) toggle(rf.id); }}
+                label={rf.label_ru}
+                active={active}
                 disabled={isAuto}
-                title={isAuto ? 'Определяется автоматически по GA' : ''}
-                style={{
-                  padding: '6px 12px',
-                  background: active ? '#FEF3C7' : '#FFFFFF',
-                  color: active ? '#92400E' : '#374151',
-                  border: '1px solid',
-                  borderColor: active ? '#FDE68A' : '#E5E7EB',
-                  borderRadius: 999,
-                  cursor: isAuto ? 'not-allowed' : 'pointer',
-                  fontFamily: 'inherit',
-                  fontSize: 12, fontWeight: 500,
-                  opacity: isAuto ? 0.7 : 1,
-                  transition: 'all 150ms',
-                }}
-              >
-                {active ? '✓ ' : ''}{rf.label_ru}
-              </button>
+                hint={isAuto ? 'Определяется автоматически по GA' : ''}
+                onClick={() => { if (!isAuto) toggle(rf.id); }}
+              />
             );
           })}
         </div>
@@ -253,9 +220,22 @@ function ControlsPanel({
   );
 }
 
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <div style={{
+      fontFamily: 'var(--font-display)',
+      fontSize: 13, fontWeight: 600, color: '#111827',
+      letterSpacing: '-0.005em',
+      marginBottom: 10,
+    }}>
+      {children}
+    </div>
+  );
+}
+
 function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
   return (
-    <label style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+    <label style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
       <span style={{
         fontSize: 11, fontWeight: 600, color: '#6B7280',
         letterSpacing: '0.04em', textTransform: 'uppercase',
@@ -269,16 +249,144 @@ function Field({ label, hint, children }: { label: string; hint?: string; childr
   );
 }
 
-const inputStyle: React.CSSProperties = {
-  padding: '10px 12px',
-  background: '#FFFFFF',
-  border: '1px solid #E5E7EB',
-  borderRadius: 8,
-  fontSize: 14,
-  fontFamily: 'inherit',
-  color: '#1A1A1A',
-  outline: 'none',
-};
+/** Bordik-стайл инпут: серый pill-фон, focus-ring через .bordik-search.
+ *  Поведение синхронно с полями поиска по всему проекту. */
+function BordikNumberInput({
+  value, onChange, min, max, step, placeholder,
+}: {
+  value: string;
+  onChange: (s: string) => void;
+  min?: number;
+  max?: number;
+  step?: number;
+  placeholder?: string;
+}) {
+  const inputProps: React.InputHTMLAttributes<HTMLInputElement> = {
+    type: 'number',
+    value,
+    onChange: (e) => onChange(e.target.value),
+    inputMode: 'decimal',
+    style: {
+      width: '100%',
+      background: 'transparent',
+      border: 'none',
+      outline: 'none',
+      padding: 0,
+      fontFamily: 'inherit',
+      fontSize: 14,
+      fontWeight: 500,
+      color: '#111827',
+    },
+  };
+  if (min !== undefined) inputProps.min = min;
+  if (max !== undefined) inputProps.max = max;
+  if (step !== undefined) inputProps.step = step;
+  if (placeholder !== undefined) inputProps.placeholder = placeholder;
+  return (
+    <div className="bordik-search" style={{
+      padding: '9px 12px',
+      background: '#FFFFFF',
+      borderRadius: 10,
+      transition: 'background 140ms ease, box-shadow 140ms ease',
+    }}>
+      <input {...inputProps} />
+    </div>
+  );
+}
+
+/** Сегментированный переключатель — pill-обёртка с двумя кнопками внутри.
+ *  Используется для toggle между mg/dL и µmol/L. */
+function SegmentedControl<T extends string>({
+  value, onChange, options,
+}: {
+  value: T;
+  onChange: (v: T) => void;
+  options: Array<{ value: T; label: string }>;
+}) {
+  return (
+    <div role="tablist" style={{
+      display: 'flex', gap: 2,
+      padding: 3,
+      background: '#FFFFFF',
+      borderRadius: 10,
+    }}>
+      {options.map((opt) => {
+        const isActive = value === opt.value;
+        return (
+          <button
+            key={opt.value}
+            type="button"
+            role="tab"
+            aria-selected={isActive}
+            onClick={() => onChange(opt.value)}
+            style={{
+              flex: 1,
+              padding: '7px 10px',
+              background: isActive ? '#2563EB' : 'transparent',
+              color: isActive ? '#FFFFFF' : '#6B7280',
+              border: 'none',
+              borderRadius: 7,
+              cursor: 'pointer',
+              fontFamily: 'inherit',
+              fontSize: 12, fontWeight: 600,
+              letterSpacing: '0.01em',
+              transition: 'background 140ms ease, color 140ms ease',
+            }}
+            onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.color = '#111827'; }}
+            onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.color = '#6B7280'; }}
+          >
+            {opt.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+/** Bordik-стайл chip для toggle факторов риска. Серый по умолчанию,
+ *  жёлтый когда активен, приглушённый при disabled. */
+function RiskChip({
+  label, active, disabled, hint, onClick,
+}: {
+  label: string;
+  active: boolean;
+  disabled: boolean;
+  hint: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      title={hint}
+      aria-pressed={active}
+      style={{
+        display: 'inline-flex', alignItems: 'center', gap: 6,
+        padding: '7px 13px',
+        background: active ? '#FEF3C7' : '#FFFFFF',
+        color: active ? '#92400E' : disabled ? '#9CA3AF' : '#374151',
+        border: 'none',
+        borderRadius: 999,
+        cursor: disabled ? 'not-allowed' : 'pointer',
+        fontFamily: 'inherit',
+        fontSize: 12, fontWeight: 500,
+        opacity: disabled && !active ? 0.65 : 1,
+        transition: 'background 140ms ease, color 140ms ease',
+      }}
+      onMouseEnter={(e) => { if (!disabled && !active) e.currentTarget.style.background = '#EFF1F4'; }}
+      onMouseLeave={(e) => { if (!disabled && !active) e.currentTarget.style.background = '#FFFFFF'; }}
+    >
+      {active && (
+        <svg width={12} height={12} viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
+      )}
+      {label}
+    </button>
+  );
+}
 
 // ────────────────────────────────────────────────────────────────────
 

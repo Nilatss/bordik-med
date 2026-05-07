@@ -200,46 +200,40 @@ function ControlsPanel({
   return (
     <div style={{
       display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-      gap: 12,
-      padding: 16,
+      gap: 10,
+      padding: 18,
       background: '#F5F6F8',
-      borderRadius: 12,
+      borderRadius: 14,
     }}>
       <ControlField label="Параметр">
-        <select
+        <BordikSelect
           value={parameter}
-          onChange={(e) => setParameter(e.target.value as GrowthParameter)}
-          style={selectStyle}
-        >
-          {dataset.parameters.map((p) => (
-            <option key={p} value={p}>{PARAMETER_LABEL_RU[p]}</option>
-          ))}
-        </select>
+          onChange={(v) => setParameter(v as GrowthParameter)}
+          options={dataset.parameters.map((p) => ({ value: p, label: PARAMETER_LABEL_RU[p] }))}
+        />
       </ControlField>
 
       <ControlField label="Пол">
-        <select
+        <BordikSelect
           value={sex}
-          onChange={(e) => setSex(e.target.value as Sex)}
-          style={selectStyle}
-        >
-          <option value="boys">{SEX_LABEL_RU.boys}</option>
-          <option value="girls">{SEX_LABEL_RU.girls}</option>
-        </select>
+          onChange={(v) => setSex(v as Sex)}
+          options={[
+            { value: 'boys', label: SEX_LABEL_RU.boys },
+            { value: 'girls', label: SEX_LABEL_RU.girls },
+          ]}
+        />
       </ControlField>
 
       <ControlField
         label={dataset.ageType === 'postmenstrual' ? 'PMA, недели' : 'Возраст, недели'}
         hint={`${dataset.ageMin}–${dataset.ageMax}`}
       >
-        <input
-          type="number"
+        <BordikNumberInput
           value={age}
-          onChange={(e) => setAge(e.target.value)}
+          onChange={setAge}
           min={dataset.ageMin}
           max={dataset.ageMax}
           step={0.1}
-          style={inputStyle}
         />
       </ControlField>
 
@@ -247,13 +241,11 @@ function ControlsPanel({
         label={`${PARAMETER_LABEL_RU[parameter]}, ${PARAMETER_UNIT[parameter]}`}
         hint="ваш замер"
       >
-        <input
-          type="number"
+        <BordikNumberInput
           value={value}
-          onChange={(e) => setValue(e.target.value)}
-          step={parameter === 'weight' ? 1 : 0.1}
+          onChange={setValue}
           min={0}
-          style={inputStyle}
+          step={parameter === 'weight' ? 1 : 0.1}
           placeholder="—"
         />
       </ControlField>
@@ -265,7 +257,7 @@ function ControlField({
   label, hint, children,
 }: { label: string; hint?: string; children: React.ReactNode }) {
   return (
-    <label style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+    <label style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
       <span style={{
         fontSize: 11, fontWeight: 600, color: '#6B7280',
         letterSpacing: '0.04em', textTransform: 'uppercase',
@@ -281,21 +273,104 @@ function ControlField({
   );
 }
 
-const inputStyle: React.CSSProperties = {
-  padding: '10px 12px',
-  background: '#FFFFFF',
-  border: '1px solid #E5E7EB',
-  borderRadius: 8,
-  fontSize: 14,
-  fontFamily: 'inherit',
-  color: '#1A1A1A',
-  outline: 'none',
-};
+/** Bordik-стайл инпут — белая pill-обёртка + focus ring через .bordik-search. */
+function BordikNumberInput({
+  value, onChange, min, max, step, placeholder,
+}: {
+  value: string;
+  onChange: (s: string) => void;
+  min?: number;
+  max?: number;
+  step?: number;
+  placeholder?: string;
+}) {
+  const inputProps: React.InputHTMLAttributes<HTMLInputElement> = {
+    type: 'number',
+    value,
+    onChange: (e) => onChange(e.target.value),
+    inputMode: 'decimal',
+    style: {
+      width: '100%',
+      background: 'transparent',
+      border: 'none',
+      outline: 'none',
+      padding: 0,
+      fontFamily: 'inherit',
+      fontSize: 14,
+      fontWeight: 500,
+      color: '#111827',
+    },
+  };
+  if (min !== undefined) inputProps.min = min;
+  if (max !== undefined) inputProps.max = max;
+  if (step !== undefined) inputProps.step = step;
+  if (placeholder !== undefined) inputProps.placeholder = placeholder;
+  return (
+    <div className="bordik-search" style={{
+      padding: '9px 12px',
+      background: '#FFFFFF',
+      borderRadius: 10,
+      transition: 'background 140ms ease, box-shadow 140ms ease',
+    }}>
+      <input {...inputProps} />
+    </div>
+  );
+}
 
-const selectStyle: React.CSSProperties = {
-  ...inputStyle,
-  cursor: 'pointer',
-};
+/** Bordik-стайл select — кастомный chevron, такая же pill-обёртка. */
+function BordikSelect({
+  value, onChange, options,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  options: Array<{ value: string; label: string }>;
+}) {
+  return (
+    <div className="bordik-search" style={{
+      position: 'relative',
+      padding: '9px 36px 9px 12px',
+      background: '#FFFFFF',
+      borderRadius: 10,
+      transition: 'background 140ms ease, box-shadow 140ms ease',
+    }}>
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        style={{
+          width: '100%',
+          background: 'transparent',
+          border: 'none',
+          outline: 'none',
+          padding: 0,
+          fontFamily: 'inherit',
+          fontSize: 14,
+          fontWeight: 500,
+          color: '#111827',
+          appearance: 'none',
+          WebkitAppearance: 'none',
+          MozAppearance: 'none',
+          cursor: 'pointer',
+        }}
+      >
+        {options.map((opt) => (
+          <option key={opt.value} value={opt.value}>{opt.label}</option>
+        ))}
+      </select>
+      <svg
+        width={14} height={14} viewBox="0 0 24 24" fill="none"
+        stroke="#9CA3AF" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
+        style={{
+          position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)',
+          pointerEvents: 'none',
+        }}
+        aria-hidden
+      >
+        <polyline points="6 9 12 15 18 9" />
+      </svg>
+    </div>
+  );
+}
+
 
 function ResultPanel({
   dataset, parameter, sex, age, value,
