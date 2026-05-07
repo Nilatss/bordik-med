@@ -322,30 +322,14 @@ function Icd10InfoCard({
             и стационарной. Поиск работает в офлайн-режиме после первой загрузки.
           </div>
         </div>
-        <span style={{
-          flexShrink: 0,
-          display: 'inline-flex', alignItems: 'center', gap: 6,
-          background: '#DCFCE7', color: '#166534',
-          fontSize: 11, fontWeight: 600, letterSpacing: '0.04em',
-          textTransform: 'uppercase',
-          padding: '6px 12px', borderRadius: 999,
-        }}>
-          <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#22C55E' }} />
-          Рабочая система
-        </span>
       </div>
 
-      <dl style={{
-        display: 'grid', gridTemplateColumns: '160px 1fr', gap: '12px 16px',
-        margin: '0 0 4px', padding: '20px 20px',
-        background: '#F9FAFB', borderRadius: 12,
-        border: '1px solid #F3F4F6',
-      }}>
-        <Fact label="Покрытие" value={`${codesCount.toLocaleString('ru-RU')} кодов · ${chaptersCount} глав`} />
-        <Fact label="Источник" value={source} />
-        <Fact label="Лицензия" value="Public domain (ВОЗ) · перевод Минздрава РФ" />
-        <Fact label="Версия базы" value={`${version} · обновлено ${lastUpdated}`} />
-      </dl>
+      <FactsPanel items={[
+        { label: 'Покрытие', value: `${codesCount.toLocaleString('ru-RU')} кодов · ${chaptersCount} глав` },
+        { label: 'Источник', value: source },
+        { label: 'Лицензия', value: 'Public domain (ВОЗ) · перевод Минздрава РФ' },
+        { label: 'Версия базы', value: `${version} · обновлено ${lastUpdated}` },
+      ]} />
     </div>
   );
 }
@@ -461,30 +445,14 @@ function Icd11InfoCard({
             Русские названия и определения подгружены через официальный WHO ICD-11 API.
           </div>
         </div>
-        <span style={{
-          flexShrink: 0,
-          display: 'inline-flex', alignItems: 'center', gap: 6,
-          background: '#DCFCE7', color: '#166534',
-          fontSize: 11, fontWeight: 600, letterSpacing: '0.04em',
-          textTransform: 'uppercase',
-          padding: '6px 12px', borderRadius: 999,
-        }}>
-          <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#22C55E' }} />
-          Рабочая система
-        </span>
       </div>
 
-      <dl style={{
-        display: 'grid', gridTemplateColumns: '160px 1fr', gap: '12px 16px',
-        margin: '0 0 16px', padding: '20px 20px',
-        background: '#F9FAFB', borderRadius: 12,
-        border: '1px solid #F3F4F6',
-      }}>
-        <Fact label="Покрытие" value={`${codesCount.toLocaleString('ru-RU')} кодов · ${chaptersCount} глав (включая X-extension и V-functioning)`} />
-        <Fact label="Источник" value={source} />
-        <Fact label="Лицензия" value="CC BY-ND 3.0 IGO (WHO) — некоммерческое использование с указанием авторства" />
-        <Fact label="Версия базы" value={`${version} · обновлено ${lastUpdated}`} />
-      </dl>
+      <FactsPanel items={[
+        { label: 'Покрытие', value: `${codesCount.toLocaleString('ru-RU')} кодов · ${chaptersCount} глав (включая X-extension и V-functioning)` },
+        { label: 'Источник', value: source },
+        { label: 'Лицензия', value: 'CC BY-ND 3.0 IGO (WHO) — некоммерческое использование с указанием авторства' },
+        { label: 'Версия базы', value: `${version} · обновлено ${lastUpdated}` },
+      ]} />
 
     </div>
   );
@@ -1048,30 +1016,14 @@ function Icd10cmInfoCard({
             академического обмена.
           </div>
         </div>
-        <span style={{
-          flexShrink: 0,
-          display: 'inline-flex', alignItems: 'center', gap: 6,
-          background: '#DCFCE7', color: '#166534',
-          fontSize: 11, fontWeight: 600, letterSpacing: '0.04em',
-          textTransform: 'uppercase',
-          padding: '6px 12px', borderRadius: 999,
-        }}>
-          <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#22C55E' }} />
-          Рабочая система
-        </span>
       </div>
 
-      <dl style={{
-        display: 'grid', gridTemplateColumns: '160px 1fr', gap: '12px 16px',
-        margin: '0 0 4px', padding: '20px 20px',
-        background: '#F9FAFB', borderRadius: 12,
-        border: '1px solid #F3F4F6',
-      }}>
-        <Fact label="Покрытие" value={`${codesCount.toLocaleString('ru-RU')} кодов · ${chaptersCount} глав`} />
-        <Fact label="Источник" value={source} />
-        <Fact label="Лицензия" value="Public domain (US Federal — CMS / NCHS)" />
-        <Fact label="Версия базы" value={`${version} · обновлено ${lastUpdated}`} />
-      </dl>
+      <FactsPanel items={[
+        { label: 'Покрытие', value: `${codesCount.toLocaleString('ru-RU')} кодов · ${chaptersCount} глав` },
+        { label: 'Источник', value: source },
+        { label: 'Лицензия', value: 'Public domain (US Federal — CMS / NCHS)' },
+        { label: 'Версия базы', value: `${version} · обновлено ${lastUpdated}` },
+      ]} />
     </div>
   );
 }
@@ -1169,30 +1121,14 @@ function Icd10pcsInfoCard({
             section / body system / root operation / body part / approach / device / qualifier.
           </div>
         </div>
-        <span style={{
-          flexShrink: 0,
-          display: 'inline-flex', alignItems: 'center', gap: 6,
-          background: '#DCFCE7', color: '#166534',
-          fontSize: 11, fontWeight: 600, letterSpacing: '0.04em',
-          textTransform: 'uppercase',
-          padding: '6px 12px', borderRadius: 999,
-        }}>
-          <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#22C55E' }} />
-          Рабочая система
-        </span>
       </div>
 
-      <dl style={{
-        display: 'grid', gridTemplateColumns: '160px 1fr', gap: '12px 16px',
-        margin: '0 0 4px', padding: '20px 20px',
-        background: '#F9FAFB', borderRadius: 12,
-        border: '1px solid #F3F4F6',
-      }}>
-        <Fact label="Покрытие" value={`${codesCount.toLocaleString('ru-RU')} кодов · ${chaptersCount} разделов`} />
-        <Fact label="Источник" value={source} />
-        <Fact label="Лицензия" value="Public domain (US Federal — CMS)" />
-        <Fact label="Версия базы" value={`${version} · обновлено ${lastUpdated}`} />
-      </dl>
+      <FactsPanel items={[
+        { label: 'Покрытие', value: `${codesCount.toLocaleString('ru-RU')} кодов · ${chaptersCount} разделов` },
+        { label: 'Источник', value: source },
+        { label: 'Лицензия', value: 'Public domain (US Federal — CMS)' },
+        { label: 'Версия базы', value: `${version} · обновлено ${lastUpdated}` },
+      ]} />
     </div>
   );
 }
@@ -1302,30 +1238,14 @@ function Icd10caInfoCard({
             кодов, аборигенное население, специфика провинций).
           </div>
         </div>
-        <span style={{
-          flexShrink: 0,
-          display: 'inline-flex', alignItems: 'center', gap: 6,
-          background: '#DCFCE7', color: '#166534',
-          fontSize: 11, fontWeight: 600, letterSpacing: '0.04em',
-          textTransform: 'uppercase',
-          padding: '6px 12px', borderRadius: 999,
-        }}>
-          <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#22C55E' }} />
-          Рабочая система
-        </span>
       </div>
 
-      <dl style={{
-        display: 'grid', gridTemplateColumns: '160px 1fr', gap: '12px 16px',
-        margin: '0 0 4px', padding: '20px 20px',
-        background: '#F9FAFB', borderRadius: 12,
-        border: '1px solid #F3F4F6',
-      }}>
-        <Fact label="Покрытие" value={`${codesCount.toLocaleString('ru-RU')} кодов · ${chaptersCount} глав`} />
-        <Fact label="Источник" value={source} />
-        <Fact label="Лицензия" value="CIHI — некоммерческое использование с указанием авторства" />
-        <Fact label="Версия базы" value={`${version} · обновлено ${lastUpdated}`} />
-      </dl>
+      <FactsPanel items={[
+        { label: 'Покрытие', value: `${codesCount.toLocaleString('ru-RU')} кодов · ${chaptersCount} глав` },
+        { label: 'Источник', value: source },
+        { label: 'Лицензия', value: 'CIHI — некоммерческое использование с указанием авторства' },
+        { label: 'Версия базы', value: `${version} · обновлено ${lastUpdated}` },
+      ]} />
     </div>
   );
 }
@@ -1369,21 +1289,21 @@ function RoadmapPanel({ tab, info }: { tab: TabDef; info: StubInfo }) {
       </div>
 
       {/* Таблица фактов */}
-      <dl style={{
-        display: 'grid', gridTemplateColumns: '160px 1fr', gap: '12px 16px',
-        margin: '0 0 24px', padding: '20px 20px',
-        background: '#F9FAFB', borderRadius: 12,
-        border: '1px solid #F3F4F6',
-      }}>
-        <Fact label="Покрытие" value={info.coverage} />
-        <Fact label="Источник" value={
-          <a href={info.sourceUrl} target="_blank" rel="noopener noreferrer"
-             style={{ color: '#2563EB', textDecoration: 'none', borderBottom: '1px solid #BFDBFE' }}>
-            {info.source}
-          </a>
-        } />
-        <Fact label="Лицензия" value={info.license} />
-      </dl>
+      <div style={{ marginBottom: 24 }}>
+        <FactsPanel items={[
+          { label: 'Покрытие', value: info.coverage },
+          {
+            label: 'Источник',
+            value: (
+              <a href={info.sourceUrl} target="_blank" rel="noopener noreferrer"
+                style={{ color: '#2563EB', textDecoration: 'none', borderBottom: '1px solid #BFDBFE' }}>
+                {info.source}
+              </a>
+            ),
+          },
+          { label: 'Лицензия', value: info.license },
+        ]} />
+      </div>
 
       {/* Заметки */}
       {info.notes.length > 0 && (
@@ -1432,18 +1352,35 @@ function RoadmapPanel({ tab, info }: { tab: TabDef; info: StubInfo }) {
   );
 }
 
-function Fact({ label, value }: { label: string; value: React.ReactNode }) {
+/** Панель «фактов» — единый стиль для всех InfoCard'ов в Классификациях.
+ *  Серый фон, чёткие границы, row-дивайдеры между строками. */
+function FactsPanel({ items }: { items: Array<{ label: string; value: React.ReactNode }> }) {
   return (
-    <>
-      <dt style={{
-        fontSize: 11, color: '#9CA3AF', letterSpacing: '0.06em',
-        textTransform: 'uppercase', fontWeight: 600, paddingTop: 2,
-      }}>
-        {label}
-      </dt>
-      <dd style={{ margin: 0, fontSize: 14, color: '#374151' }}>
-        {value}
-      </dd>
-    </>
+    <dl style={{
+      margin: 0,
+      background: '#F9FAFB',
+      borderRadius: 12,
+      border: '1px solid #E5E7EB',
+      overflow: 'hidden',
+    }}>
+      {items.map((item, i) => (
+        <div key={i} style={{
+          display: 'grid', gridTemplateColumns: '160px 1fr', gap: 16,
+          padding: '14px 18px',
+          borderBottom: i < items.length - 1 ? '1px solid #EAECEF' : 'none',
+        }}>
+          <dt style={{
+            margin: 0,
+            fontSize: 11, color: '#9CA3AF', letterSpacing: '0.06em',
+            textTransform: 'uppercase', fontWeight: 600, paddingTop: 2,
+          }}>
+            {item.label}
+          </dt>
+          <dd style={{ margin: 0, fontSize: 14, color: '#374151', lineHeight: 1.55 }}>
+            {item.value}
+          </dd>
+        </div>
+      ))}
+    </dl>
   );
 }

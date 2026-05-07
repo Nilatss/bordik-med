@@ -334,42 +334,45 @@ export default function NeonatalHandbook() {
             Решение по конкретному пациенту принимает врач/клин-фармаколог.
           </p>
         </div>
-        <dl style={{
-          display: 'grid', gridTemplateColumns: '160px 1fr', gap: '12px 16px',
-          margin: 0, padding: '18px 20px',
-          background: '#F9FAFB', borderRadius: 12,
-          border: '1px solid #F3F4F6',
-        }}>
-          <dt style={{
-            fontSize: 11, color: '#9CA3AF', letterSpacing: '0.06em',
-            textTransform: 'uppercase', fontWeight: 600, paddingTop: 2,
-          }}>
-            Источник
-          </dt>
-          <dd style={{ margin: 0, fontSize: 13, color: '#374151', lineHeight: 1.55 }}>
-            {bank.source}
-          </dd>
-          <dt style={{
-            fontSize: 11, color: '#9CA3AF', letterSpacing: '0.06em',
-            textTransform: 'uppercase', fontWeight: 600, paddingTop: 2,
-          }}>
-            Авторы
-          </dt>
-          <dd style={{ margin: 0, fontSize: 13, color: '#374151', lineHeight: 1.55 }}>
-            {bank.authors.join('; ')}
-          </dd>
-          <dt style={{
-            fontSize: 11, color: '#9CA3AF', letterSpacing: '0.06em',
-            textTransform: 'uppercase', fontWeight: 600, paddingTop: 2,
-          }}>
-            Покрытие
-          </dt>
-          <dd style={{ margin: 0, fontSize: 13, color: '#374151', lineHeight: 1.55 }}>
-            {bank.drugs.length} препаратов NICU
-          </dd>
-        </dl>
+        <NeonatalFactsPanel items={[
+          { label: 'Источник', value: bank.source },
+          { label: 'Авторы', value: bank.authors.join('; ') },
+          { label: 'Покрытие', value: `${bank.drugs.length} препаратов NICU` },
+        ]} />
       </section>
     </main>
+  );
+}
+
+/** Локальная панель «фактов» — единый стиль с InfoCard'ами Классификаций. */
+function NeonatalFactsPanel({ items }: { items: Array<{ label: string; value: React.ReactNode }> }) {
+  return (
+    <dl style={{
+      margin: 0,
+      background: '#F9FAFB',
+      borderRadius: 12,
+      border: '1px solid #E5E7EB',
+      overflow: 'hidden',
+    }}>
+      {items.map((item, i) => (
+        <div key={i} style={{
+          display: 'grid', gridTemplateColumns: '160px 1fr', gap: 16,
+          padding: '14px 18px',
+          borderBottom: i < items.length - 1 ? '1px solid #EAECEF' : 'none',
+        }}>
+          <dt style={{
+            margin: 0,
+            fontSize: 11, color: '#9CA3AF', letterSpacing: '0.06em',
+            textTransform: 'uppercase', fontWeight: 600, paddingTop: 2,
+          }}>
+            {item.label}
+          </dt>
+          <dd style={{ margin: 0, fontSize: 13, color: '#374151', lineHeight: 1.55 }}>
+            {item.value}
+          </dd>
+        </div>
+      ))}
+    </dl>
   );
 }
 
