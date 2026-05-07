@@ -487,17 +487,19 @@ function DrugCard({
               fontSize: 13.5, lineHeight: 1.55, color: '#374151',
             }}>
               {showStructured ? (() => {
-                // Собираем массив видимых блоков, чтобы знать который из них
-                // last → не рисовать ему bottom-border.
+                // Собираем массив видимых блоков. Предосторожности всегда
+                // последним блоком (визуально-важно: пользователь видит
+                // их при скролле вниз, перед закрытием карточки), и с
+                // жёлтым фоном для дополнительного выделения.
                 const blocks: Array<{ key: string; label: string; value: string; tone?: 'warning' }> = [];
                 if (drug.brand)          blocks.push({ key: 'brand',          label: 'Бренд',           value: drug.brand });
                 if (drug.indications)    blocks.push({ key: 'indications',    label: 'Показания',       value: drug.indications });
                 if (drug.dose)           blocks.push({ key: 'dose',           label: 'Доза',            value: drug.dose });
                 if (drug.route)          blocks.push({ key: 'route',          label: 'Путь',            value: drug.route });
                 if (drug.levels)         blocks.push({ key: 'levels',         label: 'Метаболизм',      value: drug.levels });
-                if (drug.precautions)    blocks.push({ key: 'precautions',    label: 'Предосторожности', value: drug.precautions, tone: 'warning' });
                 if (drug.extemporaneous) blocks.push({ key: 'extemporaneous', label: 'Приготовление',   value: drug.extemporaneous });
                 if (drug.references)     blocks.push({ key: 'references',     label: 'Источники',       value: drug.references });
+                if (drug.precautions)    blocks.push({ key: 'precautions',    label: 'Предосторожности', value: drug.precautions, tone: 'warning' });
                 return blocks.map((b, i) => (
                   <NeonatalDetailBlock
                     key={b.key}
@@ -661,7 +663,8 @@ function MonographFullText({ text }: { text: string }) {
 }
 
 /** Bordik-style блок: label слева (узкая колонка), content справа.
- *  Между блоками — горизонтальная разделительная полоса. */
+ *  Между блоками — горизонтальная разделительная полоса.
+ *  warning-tone — жёлтый фон + контрастные цвета (для Предосторожностей). */
 function NeonatalDetailBlock({
   label, tone = 'neutral', isLast = false, children,
 }: {
@@ -670,24 +673,31 @@ function NeonatalDetailBlock({
   isLast?: boolean;
   children: React.ReactNode;
 }) {
+  const isWarning = tone === 'warning';
   return (
     <div style={{
       display: 'grid',
       gridTemplateColumns: '160px 1fr',
       gap: 24,
-      padding: '14px 0',
-      borderBottom: isLast ? 'none' : '1px solid #F0F1F5',
+      padding: isWarning ? '14px 16px' : '14px 0',
+      margin: isWarning ? '6px -8px 0' : 0,
+      background: isWarning ? '#FFFBEB' : 'transparent',
+      border: isWarning ? '1px solid #FDE68A' : 'none',
+      borderRadius: isWarning ? 10 : 0,
+      borderBottom: isWarning
+        ? '1px solid #FDE68A'
+        : (isLast ? 'none' : '1px solid #F0F1F5'),
     }}>
       <div style={{
         fontSize: 11, fontWeight: 600, letterSpacing: '0.06em',
         textTransform: 'uppercase',
-        color: tone === 'warning' ? '#92400E' : '#9CA3AF',
+        color: isWarning ? '#92400E' : '#9CA3AF',
         paddingTop: 1,
       }}>
         {label}
       </div>
       <div style={{
-        color: tone === 'warning' ? '#78350F' : '#374151',
+        color: isWarning ? '#78350F' : '#374151',
         fontSize: 13.5, lineHeight: 1.55,
       }}>
         {children}
