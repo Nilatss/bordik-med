@@ -30,6 +30,7 @@ interface Drug {
   levels: string;
   precautions: string;
   extemporaneous: string;
+  references: string;
   fullText: string;
 }
 
@@ -72,7 +73,7 @@ export default function NeonatalHandbook() {
     void (async () => {
       try {
         const [drugsR, guidelinesR] = await Promise.all([
-          fetch('/neonatal-monographs.json?v=2.0.0', { cache: 'force-cache' }),
+          fetch('/neonatal-monographs.json?v=2.1.0', { cache: 'force-cache' }),
           fetch('/neonatal-guidelines.json?v=1.0.0', { cache: 'force-cache' }),
         ]);
         if (!drugsR.ok) throw new Error(`monographs ${drugsR.status}`);
@@ -488,38 +489,43 @@ function DrugCard({
               {showStructured ? (
                 <>
                   {drug.brand && (
-                    <NeonatalDetailBlock label="Бренд" labelEn="Brand Name">
-                      {renderFieldValue(drug.brand)}
+                    <NeonatalDetailBlock label="Бренд">
+                      {drug.brand}
                     </NeonatalDetailBlock>
                   )}
                   {drug.indications && (
-                    <NeonatalDetailBlock label="Показания" labelEn="Indications">
-                      {renderFieldValue(drug.indications)}
+                    <NeonatalDetailBlock label="Показания">
+                      {drug.indications}
                     </NeonatalDetailBlock>
                   )}
                   {drug.dose && (
-                    <NeonatalDetailBlock label="Доза" labelEn="Dose">
-                      {renderFieldValue(drug.dose)}
+                    <NeonatalDetailBlock label="Доза">
+                      {drug.dose}
                     </NeonatalDetailBlock>
                   )}
                   {drug.route && (
-                    <NeonatalDetailBlock label="Путь" labelEn="Route">
-                      {renderFieldValue(drug.route)}
+                    <NeonatalDetailBlock label="Путь">
+                      {drug.route}
                     </NeonatalDetailBlock>
                   )}
                   {drug.levels && (
-                    <NeonatalDetailBlock label="Метаболизм" labelEn="Levels & Metabolism">
-                      {renderFieldValue(drug.levels)}
+                    <NeonatalDetailBlock label="Метаболизм">
+                      {drug.levels}
                     </NeonatalDetailBlock>
                   )}
                   {drug.precautions && (
-                    <NeonatalDetailBlock label="Предосторожности" labelEn="Precautions" tone="warning">
-                      {renderFieldValue(drug.precautions)}
+                    <NeonatalDetailBlock label="Предосторожности" tone="warning">
+                      {drug.precautions}
                     </NeonatalDetailBlock>
                   )}
                   {drug.extemporaneous && (
-                    <NeonatalDetailBlock label="Приготовление" labelEn="Extemporaneous">
-                      {renderFieldValue(drug.extemporaneous)}
+                    <NeonatalDetailBlock label="Приготовление">
+                      {drug.extemporaneous}
+                    </NeonatalDetailBlock>
+                  )}
+                  {drug.references && (
+                    <NeonatalDetailBlock label="Источники">
+                      {drug.references}
                     </NeonatalDetailBlock>
                   )}
                 </>
@@ -665,10 +671,9 @@ function MonographFullText({ text }: { text: string }) {
         <NeonatalDetailBlock
           key={i}
           label={b.labelRu}
-          labelEn={b.label}
           {...(b.tone === 'warning' ? { tone: 'warning' as const } : {})}
         >
-          {renderFieldValue(b.sentences.join(' '))}
+          {b.sentences.join(' ')}
         </NeonatalDetailBlock>
       ))}
     </>
@@ -676,14 +681,11 @@ function MonographFullText({ text }: { text: string }) {
 }
 
 /** Bordik-style блок «лейбл сверху → значение снизу» — единый паттерн с ICD-11
- *  / МКБ. Используется в раскрытых карточках препаратов и монографов.
- *  RU label первой строкой (мелкий uppercase mono-color), EN — вторым словом
- *  справа в той же строке (микро-капшен), ниже — content. */
+ *  / МКБ. RU label мелким uppercase, ниже — content параграфом. */
 function NeonatalDetailBlock({
-  label, labelEn, tone = 'neutral', children,
+  label, tone = 'neutral', children,
 }: {
   label: string;
-  labelEn?: string;
   tone?: 'neutral' | 'warning';
   children: React.ReactNode;
 }) {
@@ -691,7 +693,6 @@ function NeonatalDetailBlock({
     <div>
       <div style={{
         marginBottom: 6,
-        display: 'flex', alignItems: 'baseline', gap: 8, flexWrap: 'wrap',
       }}>
         <span style={{
           fontSize: 11, fontWeight: 600, letterSpacing: '0.06em',
@@ -700,15 +701,6 @@ function NeonatalDetailBlock({
         }}>
           {label}
         </span>
-        {labelEn && (
-          <span style={{
-            fontSize: 10, fontWeight: 500,
-            color: tone === 'warning' ? '#B45309' : '#9CA3AF',
-            opacity: 0.75,
-          }}>
-            {labelEn}
-          </span>
-        )}
       </div>
       <div style={{
         color: tone === 'warning' ? '#78350F' : '#374151',

@@ -262,6 +262,26 @@ function parseBlock(lines) {
   for (const f of FIELDS) {
     result[f] = fields[f].join(' ').replace(/\s+/g, ' ').trim();
   }
+
+  // Post-process: «References:» часто появляется как trailing-content
+  // внутри Extemporaneous Preparation (col 14+, не как label-токен).
+  // Вытаскиваем его в отдельное References поле.
+  for (const f of ['Extemporaneous Preparation', 'Precautions', 'Levels and Metabolism']) {
+    const text = result[f];
+    if (!text) continue;
+    const m = text.match(/\b(References?:)\s*(.+)$/i);
+    if (m) {
+      // Всё до "References:" остаётся в исходном поле
+      result[f] = text.slice(0, m.index).trim();
+      // Содержимое после — добавляем в References (если поле уже не заполнено)
+      if (!result['References']) {
+        result['References'] = m[2].trim();
+      } else {
+        result['References'] = (m[2].trim() + ' ' + result['References']).trim();
+      }
+    }
+  }
+
   return result;
 }
 
@@ -292,7 +312,7 @@ for (const block of blocks) {
 }
 
 const output = {
-  version: '2.0.0',
+  version: '2.1.0',
   lastUpdated: '2026-05-07',
   source: 'Neonatal Dosage and Practical Guidelines Handbook 2nd Ed. (Saudi Arabia, 2016)',
   authors: ['Saleh Al-Alaiyan, MD, FRCPC', 'Najwa Al-Ghamdi, BSc.Pharm, Pharm.D., MHA, BCNSP, BCPS, FCCP, TTS'],
