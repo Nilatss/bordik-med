@@ -1360,14 +1360,14 @@ function FactsPanel({ items }: { items: Array<{ label: string; value: React.Reac
       margin: 0,
       background: '#F5F6F8',
       borderRadius: 12,
-      border: '1px solid #E5E7EB',
+      border: 'none',
       overflow: 'hidden',
     }}>
       {items.map((item, i) => (
         <div key={i} style={{
           display: 'grid', gridTemplateColumns: '160px 1fr', gap: 16,
           padding: '14px 18px',
-          borderBottom: i < items.length - 1 ? '1px solid #E5E7EB' : 'none',
+          borderBottom: 'none',
         }}>
           <dt style={{
             margin: 0,
