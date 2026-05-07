@@ -403,7 +403,7 @@ export default function DrugChecker() {
                       display: 'block', marginTop: 2,
                       fontSize: 12, color: '#6B7280',
                     }}>
-                      {d.class_ru || (d.source === 'ddinter' ? 'DDInter' : '')}
+                      {d.class_ru || ''}
                       {(d.aliases?.length ?? 0) > 0 && ` · ${(d.aliases ?? []).slice(0, 3).join(', ')}`}
                     </span>
                   </span>
@@ -636,7 +636,12 @@ export default function DrugChecker() {
               {interactions.map((i, idx) => {
                 const meta = SEVERITY_META[i.severity];
                 const id = `${i.drugA}__${i.drugB}`;
-                const isExpanded = expandedId === id;
+                // Карточка expandable только если есть детали для раскрытия
+                // (mechanism, management, или нестандартные sources).
+                // Для DDInter pairs (только severity) — non-expandable.
+                const hasDetails = !!(i.mechanism || i.management
+                  || (i.sources && i.sources.length && i.sources[0] !== 'DDInter'));
+                const isExpanded = hasDetails && expandedId === id;
                 return (
                   <motion.li
                     key={id}
@@ -651,85 +656,35 @@ export default function DrugChecker() {
                       overflow: 'hidden',
                     }}
                   >
-                    <button
-                      type="button"
-                      onClick={() => setExpandedId(isExpanded ? null : id)}
-                      aria-expanded={isExpanded}
-                      style={{
-                        width: '100%',
-                        display: 'flex', alignItems: 'flex-start', gap: 14,
-                        padding: '14px 18px',
-                        background: 'transparent', border: 'none',
-                        cursor: 'pointer', textAlign: 'left',
-                        fontFamily: 'inherit',
-                        transition: 'background 150ms',
-                      }}
-                      onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
-                      onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
-                    >
-                      <span style={{ flex: 1, minWidth: 0 }}>
-                        {/* Severity-бейдж сверху */}
-                        <span style={{
-                          display: 'inline-flex', alignItems: 'center',
-                          padding: '3px 10px',
-                          marginBottom: 8,
-                          background: meta.bg,
-                          color: meta.color,
-                          border: `1px solid ${meta.border}`,
-                          borderRadius: 999,
-                          fontFamily: 'var(--font-mono, ui-monospace)',
-                          fontSize: 10, fontWeight: 700,
-                          letterSpacing: '0.04em',
-                          textTransform: 'uppercase',
-                          whiteSpace: 'nowrap',
-                        }}>
-                          {meta.label}
-                        </span>
-                        {/* Названия препаратов */}
-                        <span style={{
-                          display: 'block',
-                          fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 700,
-                          color: '#1A1A1A', letterSpacing: '-0.01em', lineHeight: 1.35,
-                        }}>
-                          {i.drugAName} + {i.drugBName}
-                        </span>
-                        {/* Краткий клинический эффект (fallback для DDInter — только severity) */}
-                        <span style={{
-                          display: 'block', marginTop: 4,
-                          fontSize: 13, color: '#4B5563', lineHeight: 1.5,
-                        }}>
-                          {i.effect ?? `Уровень риска: ${meta.label.toLowerCase()}. Детали уточняйте у клин-фармаколога.`}
-                        </span>
-                        {/* Source badge для DDInter записей */}
-                        {i.source === 'ddinter' && (
-                          <span style={{
-                            display: 'inline-block', marginTop: 6,
-                            padding: '2px 8px',
-                            background: '#F5F6F8',
-                            color: '#6B7280',
-                            border: '1px solid #E5E7EB',
-                            borderRadius: 999,
-                            fontFamily: 'var(--font-mono, ui-monospace)',
-                            fontSize: 10, fontWeight: 600,
-                            letterSpacing: '0.04em',
-                          }}>
-                            DDInter
-                          </span>
-                        )}
-                      </span>
-                      <span style={{
-                        flexShrink: 0,
-                        color: '#6B7280',
-                        transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
-                        transition: 'transform 200ms',
-                        marginTop: 4,
-                      }}>
-                        <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
-                          stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                          <polyline points="6 9 12 15 18 9" />
-                        </svg>
-                      </span>
-                    </button>
+                    {hasDetails ? (
+                      <button
+                        type="button"
+                        onClick={() => setExpandedId(isExpanded ? null : id)}
+                        aria-expanded={isExpanded}
+                        style={{
+                          width: '100%',
+                          display: 'flex', alignItems: 'flex-start', gap: 14,
+                          padding: '14px 18px',
+                          background: 'transparent', border: 'none',
+                          cursor: 'pointer', textAlign: 'left',
+                          fontFamily: 'inherit',
+                          transition: 'background 150ms',
+                        }}
+                        onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+                      >
+                        <InteractionRowContent i={i} meta={meta} hasDetails={hasDetails} isExpanded={isExpanded} />
+                      </button>
+                    ) : (
+                      <div
+                        style={{
+                          display: 'flex', alignItems: 'flex-start', gap: 14,
+                          padding: '14px 18px',
+                        }}
+                      >
+                        <InteractionRowContent i={i} meta={meta} hasDetails={hasDetails} isExpanded={false} />
+                      </div>
+                    )}
 
                     <AnimatePresence initial={false}>
                       {isExpanded && (
@@ -759,15 +714,11 @@ export default function DrugChecker() {
                               <tbody>
                                 {i.mechanism && <DetailRow label="Механизм"  value={i.mechanism} />}
                                 {i.management && <DetailRow label="Тактика"   value={i.management} bold />}
-                                <DetailRow
-                                  label="Источники"
-                                  value={(i.sources?.length ? i.sources : [i.source === 'ddinter' ? 'DDInter (academic DB)' : 'Manual review']).join(' · ')}
-                                  mono last
-                                />
-                                {i.source === 'ddinter' && (
+                                {i.sources && i.sources.length > 0 && (
                                   <DetailRow
-                                    label="Заметка"
-                                    value="Запись из базы DDInter содержит только уровень риска. Полный механизм и тактику см. в инструкциях производителей и UpToDate/Stockley's."
+                                    label="Источники"
+                                    value={i.sources.join(' · ')}
+                                    mono last
                                   />
                                 )}
                               </tbody>
@@ -784,7 +735,7 @@ export default function DrugChecker() {
         </motion.div>
       )}
 
-      {/* ICD-10-CM Poisoning codes — раскрываемая секция при выбранных препаратах */}
+      {/* ICD-10-CM Poisoning codes — справочные коды для МКБ кодирования */}
       {selected.length > 0 && (
         <motion.section
           initial={{ opacity: 0, y: 12 }}
@@ -793,36 +744,86 @@ export default function DrugChecker() {
           style={{
             marginTop: 24,
             background: '#FFFFFF',
-            border: '1px solid #E5E7EB',
+            border: '1px solid #DBEAFE',
+            borderLeft: '3px solid #2563EB',
             borderRadius: 14,
             overflow: 'hidden',
           }}
         >
+          {/* Title bar — выраженный «справочный» tone (синий код-icon) */}
           <button
             type="button"
             onClick={() => setShowPoisonCodes((v) => !v)}
             aria-expanded={showPoisonCodes}
             style={{
               width: '100%',
-              display: 'flex', alignItems: 'center', gap: 12,
+              display: 'flex', alignItems: 'flex-start', gap: 14,
               padding: '14px 18px',
-              background: 'transparent', border: 'none',
+              background: '#EFF6FF', border: 'none',
               cursor: 'pointer', textAlign: 'left',
               fontFamily: 'inherit',
+              transition: 'background 150ms',
             }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = '#DBEAFE'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = '#EFF6FF'; }}
           >
-            <span style={{ flex: 1 }}>
-              <span style={{ display: 'block', fontSize: 14, fontWeight: 600, color: '#1A1A1A' }}>
-                ICD-10-CM коды для отравлений и побочек
+            {/* Иконка-документ слева — визуально маркирует «справочные коды» */}
+            <span style={{
+              flexShrink: 0,
+              width: 36, height: 36,
+              borderRadius: 8,
+              background: '#FFFFFF',
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+              color: '#2563EB',
+              border: '1px solid #DBEAFE',
+            }}>
+              <svg width={18} height={18} viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="9" y1="13" x2="15" y2="13" />
+                <line x1="9" y1="17" x2="13" y2="17" />
+              </svg>
+            </span>
+            <span style={{ flex: 1, minWidth: 0 }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                <span style={{
+                  display: 'inline-flex', alignItems: 'center',
+                  padding: '2px 8px',
+                  background: '#2563EB',
+                  color: '#FFFFFF',
+                  borderRadius: 4,
+                  fontFamily: 'var(--font-mono, ui-monospace)',
+                  fontSize: 10, fontWeight: 700,
+                  letterSpacing: '0.06em',
+                  textTransform: 'uppercase',
+                }}>
+                  Справочник
+                </span>
+                <span style={{
+                  display: 'inline-block',
+                  fontSize: 11, color: '#1E40AF', fontWeight: 600,
+                  letterSpacing: '0.04em',
+                  textTransform: 'uppercase',
+                }}>
+                  ICD-10-CM кодирование
+                </span>
               </span>
-              <span style={{ display: 'block', marginTop: 2, fontSize: 12, color: '#6B7280' }}>
-                Source: CMS Table of Drugs and Chemicals (FY2026). Полезно для кодирования диагноза при поступлении пациента.
+              <span style={{ display: 'block', fontSize: 14, fontWeight: 600, color: '#1E3A8A', lineHeight: 1.35 }}>
+                Коды для отравлений и побочных действий
+              </span>
+              <span style={{ display: 'block', marginTop: 4, fontSize: 12, color: '#3730A3', lineHeight: 1.5 }}>
+                По каждому из выбранных препаратов — 6 ICD-10-CM кодов (Случайное / Преднамеренное / Нападение / Неуточнённое / Побочное / Underdosing) для записи в карту пациента.
+                <br />
+                <span style={{ color: '#6B7280' }}>Source: CMS Table of Drugs and Chemicals (FY2026)</span>
               </span>
             </span>
             <span style={{
+              flexShrink: 0,
               color: '#6B7280',
               transform: showPoisonCodes ? 'rotate(180deg)' : 'rotate(0deg)',
               transition: 'transform 200ms',
+              marginTop: 6,
             }}>
               <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
@@ -972,6 +973,66 @@ export default function DrugChecker() {
         </p>
       </motion.section>
     </main>
+  );
+}
+
+/** Тело строки взаимодействия (одинаково для button и div вариантов). */
+function InteractionRowContent({
+  i, meta, hasDetails, isExpanded,
+}: {
+  i: { drugAName: string; drugBName: string; effect?: string };
+  meta: { label: string; bg: string; color: string; border: string };
+  hasDetails: boolean;
+  isExpanded: boolean;
+}) {
+  return (
+    <>
+      <span style={{ flex: 1, minWidth: 0 }}>
+        <span style={{
+          display: 'inline-flex', alignItems: 'center',
+          padding: '3px 10px',
+          marginBottom: 8,
+          background: meta.bg,
+          color: meta.color,
+          border: `1px solid ${meta.border}`,
+          borderRadius: 999,
+          fontFamily: 'var(--font-mono, ui-monospace)',
+          fontSize: 10, fontWeight: 700,
+          letterSpacing: '0.04em',
+          textTransform: 'uppercase',
+          whiteSpace: 'nowrap',
+        }}>
+          {meta.label}
+        </span>
+        <span style={{
+          display: 'block',
+          fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 700,
+          color: '#1A1A1A', letterSpacing: '-0.01em', lineHeight: 1.35,
+        }}>
+          {i.drugAName} + {i.drugBName}
+        </span>
+        <span style={{
+          display: 'block', marginTop: 4,
+          fontSize: 13, color: '#4B5563', lineHeight: 1.5,
+        }}>
+          {i.effect ?? `Уровень риска: ${meta.label.toLowerCase()}. Детали уточните у клин-фармаколога.`}
+        </span>
+      </span>
+      {hasDetails && (
+        <span style={{
+          flexShrink: 0,
+          color: '#6B7280',
+          transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+          transition: 'transform 200ms',
+          marginTop: 4,
+        }}>
+          <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </span>
+      )}
+    </>
   );
 }
 

@@ -44,8 +44,8 @@
     "hash": "749188fdd4de9572682de23a215c4b73"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\app\\page.tsx": {
-    "mtime": 1777993585.1726148,
-    "hash": "833fbba806b9b1d5fb4dca187ad7e2c4"
+    "mtime": 1778134400.8068888,
+    "hash": "9f41a749e57c7719eda14af8f0bdd554"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\app\\robots.ts": {
     "mtime": 1777615785.3764093,
@@ -56,8 +56,8 @@
     "hash": "a154834035feb41bb2f1cea27b24cf2e"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\app\\sw.ts": {
-    "mtime": 1778132858.7590501,
-    "hash": "4e44da44b92699d8d0328311f686852e"
+    "mtime": 1778133959.3489602,
+    "hash": "81b3abd0443c1f0c6000a4da6d8572ba"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\app\\admin\\layout.tsx": {
     "mtime": 1777385855.3402252,
@@ -332,8 +332,8 @@
     "hash": "62e78cef1f26549447223d0658047a07"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\components\\layout\\Sidebar.tsx": {
-    "mtime": 1778047611.6396813,
-    "hash": "cbf8c5639b0b05c3ac9990e3715f9b03"
+    "mtime": 1778134493.742166,
+    "hash": "1ce2843e48815cfe5bf77dcfb00ee59f"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\components\\layout\\Topbar.tsx": {
     "mtime": 1776317951.945289,
@@ -346,6 +346,10 @@
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\components\\layout\\ZetDisclaimer.tsx": {
     "mtime": 1777974376.5578995,
     "hash": "73ba04a5b751fd2a0b66788ea37be30c"
+  },
+  "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\components\\neonatal\\NeonatalHandbook.tsx": {
+    "mtime": 1778133770.5097184,
+    "hash": "1321c86e445e7b92e4671e5ab980ed25"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\components\\profile\\ProfilePage.tsx": {
     "mtime": 1777101123.5261126,
@@ -488,8 +492,8 @@
     "hash": "9b43dfedaf272eebd3acee482bfe2f06"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\lib\\store.ts": {
-    "mtime": 1777986166.6125536,
-    "hash": "69fe92a8b6474bb1858526b5aa6d8985"
+    "mtime": 1778134386.318943,
+    "hash": "5f930ef3d4da1929c1a4abd0b3ee0624"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\lib\\sync-queue.ts": {
     "mtime": 1777356946.924642,
@@ -3723,6 +3727,10 @@
     "mtime": 1778066778.3585198,
     "hash": "a1bcc4f4f83366ab421397a0e77e65b1"
   },
+  "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\scripts\\import-neonatal-handbook.mjs": {
+    "mtime": 1778133651.7567377,
+    "hash": "15d9a2e47d882474a68391bae8c9ab45"
+  },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\scripts\\merge-ddinter.mjs": {
     "mtime": 1778097909.7333865,
     "hash": "cdcdec28a9fd2f4232f64214d498700f"
@@ -4022,6 +4030,14 @@
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\data\\raw\\icd10pcs-2026\\icd10pcs_codes_2026.txt": {
     "mtime": 1748483296.0,
     "hash": "6ba22171bec5dc654ba9d86bd2b5fd2d"
+  },
+  "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\data\\raw\\neonatal\\handbook-layout.txt": {
+    "mtime": 1778133211.7962706,
+    "hash": "1386401be8eed67652ad015cb9731170"
+  },
+  "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\data\\raw\\neonatal\\handbook.txt": {
+    "mtime": 1778133195.9718251,
+    "hash": "72f1241bb5203a2c9d1bd1caf73dde98"
   },
   "C:\\Users\\KDFX Modes\\Desktop\\bordik-med\\docs\\all-tools.md": {
     "mtime": 1777878184.7535827,
