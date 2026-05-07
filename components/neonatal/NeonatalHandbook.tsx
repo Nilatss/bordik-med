@@ -482,54 +482,32 @@ function DrugCard({
             <div style={{
               borderTop: '1px solid #E5E7EB',
               background: '#FFFFFF',
-              padding: '14px 20px 18px',
+              padding: '0 20px',
               fontSize: 13.5, lineHeight: 1.55, color: '#374151',
-              display: 'flex', flexDirection: 'column', gap: 12,
             }}>
-              {showStructured ? (
-                <>
-                  {drug.brand && (
-                    <NeonatalDetailBlock label="Бренд">
-                      {drug.brand}
-                    </NeonatalDetailBlock>
-                  )}
-                  {drug.indications && (
-                    <NeonatalDetailBlock label="Показания">
-                      {drug.indications}
-                    </NeonatalDetailBlock>
-                  )}
-                  {drug.dose && (
-                    <NeonatalDetailBlock label="Доза">
-                      {drug.dose}
-                    </NeonatalDetailBlock>
-                  )}
-                  {drug.route && (
-                    <NeonatalDetailBlock label="Путь">
-                      {drug.route}
-                    </NeonatalDetailBlock>
-                  )}
-                  {drug.levels && (
-                    <NeonatalDetailBlock label="Метаболизм">
-                      {drug.levels}
-                    </NeonatalDetailBlock>
-                  )}
-                  {drug.precautions && (
-                    <NeonatalDetailBlock label="Предосторожности" tone="warning">
-                      {drug.precautions}
-                    </NeonatalDetailBlock>
-                  )}
-                  {drug.extemporaneous && (
-                    <NeonatalDetailBlock label="Приготовление">
-                      {drug.extemporaneous}
-                    </NeonatalDetailBlock>
-                  )}
-                  {drug.references && (
-                    <NeonatalDetailBlock label="Источники">
-                      {drug.references}
-                    </NeonatalDetailBlock>
-                  )}
-                </>
-              ) : (
+              {showStructured ? (() => {
+                // Собираем массив видимых блоков, чтобы знать который из них
+                // last → не рисовать ему bottom-border.
+                const blocks: Array<{ key: string; label: string; value: string; tone?: 'warning' }> = [];
+                if (drug.brand)          blocks.push({ key: 'brand',          label: 'Бренд',           value: drug.brand });
+                if (drug.indications)    blocks.push({ key: 'indications',    label: 'Показания',       value: drug.indications });
+                if (drug.dose)           blocks.push({ key: 'dose',           label: 'Доза',            value: drug.dose });
+                if (drug.route)          blocks.push({ key: 'route',          label: 'Путь',            value: drug.route });
+                if (drug.levels)         blocks.push({ key: 'levels',         label: 'Метаболизм',      value: drug.levels });
+                if (drug.precautions)    blocks.push({ key: 'precautions',    label: 'Предосторожности', value: drug.precautions, tone: 'warning' });
+                if (drug.extemporaneous) blocks.push({ key: 'extemporaneous', label: 'Приготовление',   value: drug.extemporaneous });
+                if (drug.references)     blocks.push({ key: 'references',     label: 'Источники',       value: drug.references });
+                return blocks.map((b, i) => (
+                  <NeonatalDetailBlock
+                    key={b.key}
+                    label={b.label}
+                    isLast={i === blocks.length - 1}
+                    {...(b.tone ? { tone: b.tone } : {})}
+                  >
+                    {b.value}
+                  </NeonatalDetailBlock>
+                ));
+              })() : (
                 /* Если структурированных полей нет — показываем raw монограф
                  * как fallback. Большую простыню режем на смысловые блоки и
                  * отдаём в той же таблице, что и структурированные препараты. */
@@ -671,6 +649,7 @@ function MonographFullText({ text }: { text: string }) {
         <NeonatalDetailBlock
           key={i}
           label={b.labelRu}
+          isLast={i === blocks.length - 1}
           {...(b.tone === 'warning' ? { tone: 'warning' as const } : {})}
         >
           {b.sentences.join(' ')}
@@ -680,27 +659,31 @@ function MonographFullText({ text }: { text: string }) {
   );
 }
 
-/** Bordik-style блок «лейбл сверху → значение снизу» — единый паттерн с ICD-11
- *  / МКБ. RU label мелким uppercase, ниже — content параграфом. */
+/** Bordik-style блок: label слева (узкая колонка), content справа.
+ *  Между блоками — горизонтальная разделительная полоса. */
 function NeonatalDetailBlock({
-  label, tone = 'neutral', children,
+  label, tone = 'neutral', isLast = false, children,
 }: {
   label: string;
   tone?: 'neutral' | 'warning';
+  isLast?: boolean;
   children: React.ReactNode;
 }) {
   return (
-    <div>
+    <div style={{
+      display: 'grid',
+      gridTemplateColumns: '160px 1fr',
+      gap: 24,
+      padding: '14px 0',
+      borderBottom: isLast ? 'none' : '1px solid #F0F1F5',
+    }}>
       <div style={{
-        marginBottom: 6,
+        fontSize: 11, fontWeight: 600, letterSpacing: '0.06em',
+        textTransform: 'uppercase',
+        color: tone === 'warning' ? '#92400E' : '#9CA3AF',
+        paddingTop: 1,
       }}>
-        <span style={{
-          fontSize: 11, fontWeight: 600, letterSpacing: '0.06em',
-          textTransform: 'uppercase',
-          color: tone === 'warning' ? '#92400E' : '#9CA3AF',
-        }}>
-          {label}
-        </span>
+        {label}
       </div>
       <div style={{
         color: tone === 'warning' ? '#78350F' : '#374151',
