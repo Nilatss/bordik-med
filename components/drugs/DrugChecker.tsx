@@ -84,6 +84,18 @@ const EMPTY_PRESETS: Array<{
   },
 ];
 
+/** Запись из CMS Drug Table (Table of Drugs and Chemicals).
+ *  Каждая запись = subtance + 6 ICD-10-CM кодов для разных intent. */
+interface DrugTableEntry {
+  name: string;
+  accidental?: string | null;
+  intentional?: string | null;
+  assault?: string | null;
+  undetermined?: string | null;
+  adverse?: string | null;
+  underdosing?: string | null;
+}
+
 export default function DrugChecker() {
   const [data, setData] = useState<DrugInteractionData | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -91,6 +103,8 @@ export default function DrugChecker() {
   const [query, setQuery] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [drugTable, setDrugTable] = useState<DrugTableEntry[] | null>(null);
+  const [showPoisonCodes, setShowPoisonCodes] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   // Грузим базу с ?v= cache-bust для обхода SW precache.
@@ -108,6 +122,21 @@ export default function DrugChecker() {
     })();
     return () => { cancelled = true; };
   }, []);
+
+  // Lazy-load Drug Table только когда юзер раскрывает секцию.
+  useEffect(() => {
+    if (!showPoisonCodes || drugTable) return;
+    let cancelled = false;
+    void (async () => {
+      try {
+        const r = await fetch('/icd10cm-drug-table.json?v=1.0.0', { cache: 'force-cache' });
+        if (!r.ok) return;
+        const json = (await r.json()) as DrugTableEntry[];
+        if (!cancelled) setDrugTable(json);
+      } catch { /* */ }
+    })();
+    return () => { cancelled = true; };
+  }, [showPoisonCodes, drugTable]);
 
   const drugById = useMemo(
     () => (data ? new Map(data.drugs.map((d) => [d.id, d])) : new Map<string, Drug>()),
@@ -755,6 +784,130 @@ export default function DrugChecker() {
         </motion.div>
       )}
 
+      {/* ICD-10-CM Poisoning codes — раскрываемая секция при выбранных препаратах */}
+      {selected.length > 0 && (
+        <motion.section
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, ease: [0.05, 0.7, 0.1, 1], delay: 0.1 }}
+          style={{
+            marginTop: 24,
+            background: '#FFFFFF',
+            border: '1px solid #E5E7EB',
+            borderRadius: 14,
+            overflow: 'hidden',
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => setShowPoisonCodes((v) => !v)}
+            aria-expanded={showPoisonCodes}
+            style={{
+              width: '100%',
+              display: 'flex', alignItems: 'center', gap: 12,
+              padding: '14px 18px',
+              background: 'transparent', border: 'none',
+              cursor: 'pointer', textAlign: 'left',
+              fontFamily: 'inherit',
+            }}
+          >
+            <span style={{ flex: 1 }}>
+              <span style={{ display: 'block', fontSize: 14, fontWeight: 600, color: '#1A1A1A' }}>
+                ICD-10-CM коды для отравлений и побочек
+              </span>
+              <span style={{ display: 'block', marginTop: 2, fontSize: 12, color: '#6B7280' }}>
+                Source: CMS Table of Drugs and Chemicals (FY2026). Полезно для кодирования диагноза при поступлении пациента.
+              </span>
+            </span>
+            <span style={{
+              color: '#6B7280',
+              transform: showPoisonCodes ? 'rotate(180deg)' : 'rotate(0deg)',
+              transition: 'transform 200ms',
+            }}>
+              <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </span>
+          </button>
+          <AnimatePresence initial={false}>
+            {showPoisonCodes && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{
+                  height: { duration: 0.25, ease: [0.05, 0.7, 0.1, 1] },
+                  opacity: { duration: 0.18 },
+                }}
+                style={{ overflow: 'hidden' }}
+              >
+                <div style={{ borderTop: '1px solid #E5E7EB', padding: '16px 18px' }}>
+                  {!drugTable ? (
+                    <div style={{ fontSize: 13, color: '#6B7280' }}>Загружаем CMS Drug Table…</div>
+                  ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                      {selected.map((id) => {
+                        const drug = drugById.get(id);
+                        if (!drug) return null;
+                        const enName = drug.name_en?.toLowerCase().trim() || '';
+                        const ruName = drug.name_ru?.toLowerCase().trim() || '';
+                        // Match drug table entries by EN name (slim — last word in path)
+                        const matches = drugTable.filter((dt) => {
+                          const name = dt.name.toLowerCase();
+                          // Match if last segment === EN name or contains it
+                          const segments = name.split(',').map((s) => s.trim());
+                          const last = segments[segments.length - 1] ?? '';
+                          return enName && (last === enName || last.startsWith(enName + ' ') || segments.includes(enName))
+                            || (ruName && segments.includes(ruName));
+                        }).slice(0, 5);
+                        return (
+                          <div key={id}>
+                            <div style={{ fontSize: 13, fontWeight: 600, color: '#1A1A1A', marginBottom: 8 }}>
+                              {displayDrugName(drug)}
+                            </div>
+                            {matches.length === 0 ? (
+                              <div style={{ fontSize: 12, color: '#9CA3AF', fontStyle: 'italic' }}>
+                                Не найдено в CMS Table
+                              </div>
+                            ) : (
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                                {matches.map((m, idx) => (
+                                  <div key={idx} style={{
+                                    background: '#F5F6F8', borderRadius: 8, padding: '10px 12px',
+                                  }}>
+                                    <div style={{ fontSize: 12, color: '#6B7280', marginBottom: 6 }}>
+                                      {m.name}
+                                    </div>
+                                    <div style={{
+                                      display: 'grid',
+                                      gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
+                                      gap: 6,
+                                      fontSize: 11,
+                                    }}>
+                                      <PoisonCell label="Случайное"     code={m.accidental} />
+                                      <PoisonCell label="Преднамеренное" code={m.intentional} />
+                                      <PoisonCell label="Нападение"     code={m.assault} />
+                                      <PoisonCell label="Неуточнённое"  code={m.undetermined} />
+                                      <PoisonCell label="Побочное"      code={m.adverse} />
+                                      <PoisonCell label="Underdosing"   code={m.underdosing} />
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.section>
+      )}
+
       {/* Provenance + disclaimer — единый стиль с /icd10 и /tools */}
       <motion.section
         initial={{ opacity: 0, y: 12 }}
@@ -819,6 +972,41 @@ export default function DrugChecker() {
         </p>
       </motion.section>
     </main>
+  );
+}
+
+/** Кликабельная ячейка с ICD-10-CM кодом — копирует код в clipboard. */
+function PoisonCell({ label, code }: { label: string; code?: string | null | undefined }) {
+  if (!code) {
+    return (
+      <div style={{
+        padding: '6px 8px', background: '#FFFFFF', border: '1px solid #F0F1F5',
+        borderRadius: 6, color: '#D1D5DB', fontSize: 10, textAlign: 'center',
+      }}>
+        <div>{label}</div>
+        <div style={{ marginTop: 2 }}>—</div>
+      </div>
+    );
+  }
+  return (
+    <button
+      type="button"
+      onClick={() => { void navigator.clipboard?.writeText(code); }}
+      title={`Скопировать ${code}`}
+      style={{
+        padding: '6px 8px', background: '#FFFFFF', border: '1px solid #DBEAFE',
+        borderRadius: 6, cursor: 'pointer', textAlign: 'center',
+        fontFamily: 'inherit',
+      }}
+    >
+      <div style={{ fontSize: 10, color: '#6B7280' }}>{label}</div>
+      <div style={{
+        marginTop: 2, fontFamily: 'var(--font-mono, ui-monospace)',
+        fontSize: 12, fontWeight: 700, color: '#2563EB',
+      }}>
+        {code}
+      </div>
+    </button>
   );
 }
 

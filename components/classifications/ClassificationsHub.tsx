@@ -554,6 +554,8 @@ function Icd10cmPanel() {
         codesCount={bank.codes.length}
         chaptersCount={bank.chapters.length}
       />
+      <Icd10cmIndexSearch />
+      <Icd10cmNeoplasmCoder />
       <Icd10Lookup
         chapters={bank.chapters}
         codes={bank.codes}
@@ -563,6 +565,385 @@ function Icd10cmPanel() {
         hideHeading
       />
     </>
+  );
+}
+
+/**
+ * Поиск по симптому через CMS Alphabetic Index (Index to Diseases).
+ * 76 327 entries — лазит lazy при первом раскрытии секции.
+ * Use case: врач знает симптом ("боль в груди"), не знает точный код —
+ * вводит симптом, получает список ICD-10-CM кодов с full path в указателе.
+ */
+function Icd10cmIndexSearch() {
+  const [open, setOpen] = useState(false);
+  const [index, setIndex] = useState<Array<{ term: string; code?: string; see?: string; seeAlso?: string }> | null>(null);
+  const [q, setQ] = useState('');
+
+  useEffect(() => {
+    if (!open || index) return;
+    let cancelled = false;
+    void (async () => {
+      try {
+        const r = await fetch('/icd10cm-index.json?v=1.0.0', { cache: 'force-cache' });
+        if (!r.ok) return;
+        const json = await r.json();
+        if (!cancelled) setIndex(json);
+      } catch { /* */ }
+    })();
+    return () => { cancelled = true; };
+  }, [open, index]);
+
+  const results = useMemo(() => {
+    if (!index || !q.trim()) return [];
+    const query = q.trim().toLowerCase();
+    const out: typeof index = [];
+    for (const e of index) {
+      if (e.term.toLowerCase().includes(query)) {
+        out.push(e);
+        if (out.length >= 50) break;
+      }
+    }
+    return out;
+  }, [index, q]);
+
+  return (
+    <div style={{
+      maxWidth: 880,
+      background: '#FFFFFF',
+      borderRadius: 14,
+      border: '1px solid #E5E7EB',
+      marginBottom: 20,
+      overflow: 'hidden',
+    }}>
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        style={{
+          width: '100%',
+          display: 'flex', alignItems: 'center', gap: 12,
+          padding: '14px 18px',
+          background: 'transparent', border: 'none',
+          cursor: 'pointer', textAlign: 'left',
+          fontFamily: 'inherit',
+        }}
+      >
+        <span style={{ flex: 1 }}>
+          <span style={{ display: 'block', fontSize: 14, fontWeight: 600, color: '#1A1A1A' }}>
+            Поиск по симптому (Алфавитный указатель)
+          </span>
+          <span style={{ display: 'block', marginTop: 2, fontSize: 12, color: '#6B7280' }}>
+            CMS Alphabetic Index — 76 327 терминов. Удобно когда знаешь жалобу/симптом, а не точный диагноз.
+          </span>
+        </span>
+        <span style={{
+          color: '#6B7280',
+          transform: open ? 'rotate(180deg)' : 'rotate(0deg)',
+          transition: 'transform 200ms',
+        }}>
+          <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </span>
+      </button>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{
+              height: { duration: 0.25, ease: [0.05, 0.7, 0.1, 1] },
+              opacity: { duration: 0.18 },
+            }}
+            style={{ overflow: 'hidden' }}
+          >
+            <div style={{ borderTop: '1px solid #E5E7EB', padding: '14px 18px' }}>
+              <div style={{
+                display: 'flex', alignItems: 'center', gap: 10,
+                padding: '10px 14px', background: '#F5F6F8', borderRadius: 10, marginBottom: 12,
+              }}>
+                <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
+                  stroke="#9CA3AF" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+                <input
+                  type="text"
+                  value={q}
+                  onChange={(e) => setQ(e.target.value)}
+                  placeholder="Например: «headache», «pain», «cough», «fever»…"
+                  aria-label="Поиск по симптому"
+                  style={{
+                    flex: 1, background: 'transparent', border: 'none', outline: 'none',
+                    fontFamily: 'inherit', fontSize: 14, color: '#1A1A1A',
+                  }}
+                />
+              </div>
+              {!index ? (
+                <div style={{ fontSize: 13, color: '#6B7280', padding: 8 }}>Загружаем указатель…</div>
+              ) : !q.trim() ? (
+                <div style={{ fontSize: 12, color: '#9CA3AF', padding: 8, fontStyle: 'italic' }}>
+                  Начните печатать симптом или жалобу.
+                </div>
+              ) : results.length === 0 ? (
+                <div style={{ fontSize: 12, color: '#9CA3AF', padding: 8, fontStyle: 'italic' }}>
+                  Ничего не найдено.
+                </div>
+              ) : (
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  {results.map((r, i) => (
+                    <li key={i} style={{
+                      display: 'flex', alignItems: 'flex-start', gap: 10,
+                      padding: '8px 12px',
+                      background: '#FAFBFC', borderRadius: 8,
+                    }}>
+                      <span style={{ flex: 1, fontSize: 13, color: '#1A1A1A', lineHeight: 1.4 }}>
+                        {r.term}
+                      </span>
+                      {r.code ? (
+                        <button
+                          type="button"
+                          onClick={() => { void navigator.clipboard?.writeText(r.code!); }}
+                          title={`Скопировать ${r.code}`}
+                          style={{
+                            flexShrink: 0,
+                            padding: '4px 10px', background: '#EFF6FF', border: '1px solid #DBEAFE',
+                            borderRadius: 6, cursor: 'pointer',
+                            fontFamily: 'var(--font-mono, ui-monospace)',
+                            fontSize: 12, fontWeight: 700, color: '#2563EB',
+                          }}
+                        >
+                          {r.code}
+                        </button>
+                      ) : r.see ? (
+                        <span style={{ flexShrink: 0, fontSize: 11, color: '#6B7280', fontStyle: 'italic' }}>
+                          → см. {r.see}
+                        </span>
+                      ) : r.seeAlso ? (
+                        <span style={{ flexShrink: 0, fontSize: 11, color: '#6B7280', fontStyle: 'italic' }}>
+                          ↗ также {r.seeAlso}
+                        </span>
+                      ) : null}
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {results.length === 50 && (
+                <div style={{ fontSize: 11, color: '#9CA3AF', padding: '8px 0 0', fontStyle: 'italic' }}>
+                  Показаны первые 50 совпадений — уточните запрос.
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+/**
+ * Онко-кодер — поиск по локализации опухоли + поведению (Primary,
+ * Secondary, Ca in situ, Benign, Uncertain, Unspecified) → ICD-10-CM код.
+ * Источник: CMS Neoplasm Table (1828 записей).
+ */
+function Icd10cmNeoplasmCoder() {
+  const [open, setOpen] = useState(false);
+  const [data, setData] = useState<Array<{
+    site: string;
+    primary?: string | null;
+    secondary?: string | null;
+    in_situ?: string | null;
+    benign?: string | null;
+    uncertain?: string | null;
+    unspecified?: string | null;
+    seeAlso?: string;
+  }> | null>(null);
+  const [q, setQ] = useState('');
+
+  useEffect(() => {
+    if (!open || data) return;
+    let cancelled = false;
+    void (async () => {
+      try {
+        const r = await fetch('/icd10cm-neoplasm.json?v=1.0.0', { cache: 'force-cache' });
+        if (!r.ok) return;
+        const json = await r.json();
+        if (!cancelled) setData(json);
+      } catch { /* */ }
+    })();
+    return () => { cancelled = true; };
+  }, [open, data]);
+
+  const results = useMemo(() => {
+    if (!data || !q.trim()) return [];
+    const query = q.trim().toLowerCase();
+    const out: typeof data = [];
+    for (const e of data) {
+      if (e.site.toLowerCase().includes(query)) {
+        out.push(e);
+        if (out.length >= 30) break;
+      }
+    }
+    return out;
+  }, [data, q]);
+
+  return (
+    <div style={{
+      maxWidth: 880,
+      background: '#FFFFFF',
+      borderRadius: 14,
+      border: '1px solid #E5E7EB',
+      marginBottom: 20,
+      overflow: 'hidden',
+    }}>
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        style={{
+          width: '100%',
+          display: 'flex', alignItems: 'center', gap: 12,
+          padding: '14px 18px',
+          background: 'transparent', border: 'none',
+          cursor: 'pointer', textAlign: 'left',
+          fontFamily: 'inherit',
+        }}
+      >
+        <span style={{ flex: 1 }}>
+          <span style={{ display: 'block', fontSize: 14, fontWeight: 600, color: '#1A1A1A' }}>
+            Онко-кодер (Neoplasm Table)
+          </span>
+          <span style={{ display: 'block', marginTop: 2, fontSize: 12, color: '#6B7280' }}>
+            CMS Neoplasm Table — введи локализацию, получи коды для всех 6 типов поведения опухоли.
+          </span>
+        </span>
+        <span style={{
+          color: '#6B7280',
+          transform: open ? 'rotate(180deg)' : 'rotate(0deg)',
+          transition: 'transform 200ms',
+        }}>
+          <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </span>
+      </button>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{
+              height: { duration: 0.25, ease: [0.05, 0.7, 0.1, 1] },
+              opacity: { duration: 0.18 },
+            }}
+            style={{ overflow: 'hidden' }}
+          >
+            <div style={{ borderTop: '1px solid #E5E7EB', padding: '14px 18px' }}>
+              <div style={{
+                display: 'flex', alignItems: 'center', gap: 10,
+                padding: '10px 14px', background: '#F5F6F8', borderRadius: 10, marginBottom: 12,
+              }}>
+                <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
+                  stroke="#9CA3AF" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+                <input
+                  type="text"
+                  value={q}
+                  onChange={(e) => setQ(e.target.value)}
+                  placeholder="Локализация: «liver», «lung upper lobe», «brain stem»…"
+                  aria-label="Поиск локализации опухоли"
+                  style={{
+                    flex: 1, background: 'transparent', border: 'none', outline: 'none',
+                    fontFamily: 'inherit', fontSize: 14, color: '#1A1A1A',
+                  }}
+                />
+              </div>
+              {!data ? (
+                <div style={{ fontSize: 13, color: '#6B7280', padding: 8 }}>Загружаем Neoplasm Table…</div>
+              ) : !q.trim() ? (
+                <div style={{ fontSize: 12, color: '#9CA3AF', padding: 8, fontStyle: 'italic' }}>
+                  Введите анатомическую локализацию (на английском).
+                </div>
+              ) : results.length === 0 ? (
+                <div style={{ fontSize: 12, color: '#9CA3AF', padding: 8, fontStyle: 'italic' }}>
+                  Ничего не найдено.
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {results.map((r, i) => (
+                    <div key={i} style={{
+                      background: '#FAFBFC', borderRadius: 10, padding: '10px 12px',
+                    }}>
+                      <div style={{ fontSize: 12, color: '#6B7280', marginBottom: 8 }}>
+                        {r.site}
+                      </div>
+                      {r.seeAlso ? (
+                        <div style={{ fontSize: 11, color: '#9CA3AF', fontStyle: 'italic' }}>
+                          → см. также: {r.seeAlso}
+                        </div>
+                      ) : (
+                        <div style={{
+                          display: 'grid',
+                          gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))',
+                          gap: 6,
+                        }}>
+                          <NeoplasmCell label="Primary"      code={r.primary} />
+                          <NeoplasmCell label="Secondary"    code={r.secondary} />
+                          <NeoplasmCell label="Ca in situ"   code={r.in_situ} />
+                          <NeoplasmCell label="Benign"       code={r.benign} />
+                          <NeoplasmCell label="Uncertain"    code={r.uncertain} />
+                          <NeoplasmCell label="Unspecified"  code={r.unspecified} />
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+function NeoplasmCell({ label, code }: { label: string; code?: string | null | undefined }) {
+  if (!code || code === '--') {
+    return (
+      <div style={{
+        padding: '6px 8px', background: '#FFFFFF', border: '1px solid #F0F1F5',
+        borderRadius: 6, color: '#D1D5DB', fontSize: 10, textAlign: 'center',
+      }}>
+        <div>{label}</div>
+        <div style={{ marginTop: 2 }}>—</div>
+      </div>
+    );
+  }
+  return (
+    <button
+      type="button"
+      onClick={() => { void navigator.clipboard?.writeText(code); }}
+      title={`Скопировать ${code}`}
+      style={{
+        padding: '6px 8px', background: '#FFFFFF', border: '1px solid #DBEAFE',
+        borderRadius: 6, cursor: 'pointer', textAlign: 'center',
+        fontFamily: 'inherit',
+      }}
+    >
+      <div style={{ fontSize: 10, color: '#6B7280' }}>{label}</div>
+      <div style={{
+        marginTop: 2, fontFamily: 'var(--font-mono, ui-monospace)',
+        fontSize: 12, fontWeight: 700, color: '#2563EB',
+      }}>
+        {code}
+      </div>
+    </button>
   );
 }
 
