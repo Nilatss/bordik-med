@@ -580,9 +580,10 @@ function Icd10cmIndexSearch() {
       maxWidth: 880,
       background: '#F5F6F8',
       borderRadius: 14,
-      border: 'none',
+      border: open ? '1px solid #E5E7EB' : 'none',
       marginBottom: 12,
       overflow: 'hidden',
+      transition: 'border-color 150ms ease',
     }}>
       <button
         type="button"
@@ -753,9 +754,10 @@ function Icd10cmNeoplasmCoder() {
       maxWidth: 880,
       background: '#F5F6F8',
       borderRadius: 14,
-      border: 'none',
+      border: open ? '1px solid #E5E7EB' : 'none',
       marginBottom: 12,
       overflow: 'hidden',
+      transition: 'border-color 150ms ease',
     }}>
       <button
         type="button"
