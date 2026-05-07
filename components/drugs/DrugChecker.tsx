@@ -206,12 +206,12 @@ export default function DrugChecker() {
         color: 'var(--md-sys-color-on-surface, #1A1A1A)',
       }}
     >
-      {/* Header — единый ритм с /tools (h2 28 + body 14 + 20 margin) */}
+      {/* Header — единый ритм с /tools (h2 28 + body 14 + 24 margin) */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1] }}
-        style={{ marginBottom: 20 }}
+        style={{ marginBottom: 24 }}
       >
         <div style={{
           display: 'inline-flex', alignItems: 'center', gap: 6,
@@ -430,10 +430,10 @@ export default function DrugChecker() {
         >
           {/* Hero CTA — компактная подсказка над пресетами */}
           <div style={{
-            padding: '20px 22px',
+            padding: '20px 24px',
             background: '#F5F6F8',
             borderRadius: 14,
-            marginBottom: 24,
+            marginBottom: 32,
             display: 'flex',
             alignItems: 'center',
             gap: 16,
@@ -474,7 +474,7 @@ export default function DrugChecker() {
           {/* Готовые пресеты */}
           <div>
             <h3 style={{
-              margin: '0 0 12px',
+              margin: '0 0 16px',
               fontFamily: 'var(--font-mono, ui-monospace)', fontSize: 11, fontWeight: 700,
               color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
             }}>
@@ -483,7 +483,7 @@ export default function DrugChecker() {
             <div style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-              gap: 10,
+              gap: 12,
             }}>
               {EMPTY_PRESETS.map((preset) => {
                 const allExist = preset.drugs.every((id) => drugById.has(id));
@@ -496,7 +496,7 @@ export default function DrugChecker() {
                     onClick={() => setSelected(preset.drugs)}
                     style={{
                       display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 8,
-                      padding: '14px 16px 16px',
+                      padding: 16,
                       background: '#FFFFFF',
                       border: '1px solid #F0F1F5',
                       borderRadius: 12,
@@ -561,12 +561,12 @@ export default function DrugChecker() {
         >
           {/* Summary card */}
           <div style={{
-            padding: '16px 20px',
+            padding: '16px 24px',
             background: interactions.length === 0 ? '#ECFDF5' : '#F5F6F8',
             border: 'none',
             borderRadius: 14,
-            marginBottom: 16,
-            display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap',
+            marginBottom: 24,
+            display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap',
           }}>
             {interactions.length === 0 ? (
               <>
