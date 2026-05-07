@@ -1,30 +1,51 @@
 // Парсит "Neonatal Dosage and Practical Guidelines Handbook 2nd Ed."
-// → справочная база монографий для расширения K3 калькулятора.
+// → справочная база монографий.
 //
-// Стратегия: PDF имеет 2-колоночный layout (labels left + content right)
-// который pdftotext не сохраняет cleanly. Вместо попытки structured parse,
-// сохраняем full monograph text per drug — UI делает search + reading.
+// V2 PARSER: использует pdftotext -table output (handbook-table.txt) где
+// labels (col 0-13) и values (col 14+) выровнены по Y-координате один к
+// одному. Это позволяет корректно разбить на структурированные поля
+// (Brand Name / Indications / Dose / Route / Levels and Metabolism /
+// Precautions / Extemporaneous Preparation / References) — 1 в 1
+// как в исходном PDF без выдумывания/догадок.
 //
-// Output: data/neonatal-monographs.json
-//   { drugs: [{ id, name_en, name_ru, brand, fullText, indications, dose, ... }] }
+// Пересоздать табличный source:
+//   pdftotext -table "C:\path\to\book.pdf" data/raw/neonatal/handbook-table.txt
 
 import fs from 'node:fs';
 
-const srcPath = './data/raw/neonatal/handbook-layout.txt';
+const srcPath = './data/raw/neonatal/handbook-table.txt';
 const outPath = './public/neonatal-monographs.json';
 const dOutPath = './data/neonatal-monographs.json';
 
 const txt = fs.readFileSync(srcPath, 'utf8');
 
-// Разделяем на drug-блоки по "Generic Name" header (с пробелами и без)
-// Каждый блок = от "Generic Name X" до следующего "Generic Name Y" или end
-const drugBlocks = [];
-const sections = txt.split(/(?:^|\n)Generic Name\s+/);
-for (let i = 1; i < sections.length; i++) {
-  drugBlocks.push(sections[i]);
-}
+// Известные поля. Порядок — как в PDF:
+const FIELDS = [
+  'Brand Name',
+  'Indications',
+  'Dose',
+  'Route',
+  'Levels and Metabolism',
+  'Precautions',
+  'Extemporaneous Preparation',
+  'References',
+];
 
-console.log(`Found ${drugBlocks.length} drug blocks`);
+// Возможные label-токены в начале строки (col 0-13). Многословные labels
+// разбиваются на 2 строки в PDF: первая = "Levels and", вторая = "Metabolism".
+const LABEL_TOKENS = {
+  'Brand Name': 'Brand Name',
+  'Indications': 'Indications',
+  'Dose': 'Dose',
+  'Route': 'Route',
+  'Levels and': 'Levels and Metabolism',         // strip second line "Metabolism"
+  'Metabolism': '__cont__',                       // continuation of Levels and Metabolism
+  'Precautions': 'Precautions',
+  'Extemporaneous': 'Extemporaneous Preparation', // strip second line "Preparation"
+  'Preparation': '__cont__',                      // continuation of Extemporaneous
+  'References': 'References',
+  'References:': 'References',
+};
 
 const RU_NAMES = {
   'Acetaminophen': 'Ацетаминофен (парацетамол)',
@@ -164,86 +185,114 @@ function makeId(name) {
     .replace(/^_+|_+$/g, '');
 }
 
-// Подход: для каждого блока сохраняем full RIGHT COLUMN text (cols 14+).
-// PDF column layout не позволяет clean structured parse — но raw text
-// работает идеально как reference monograph.
-const drugs = [];
-for (const block of drugBlocks) {
-  const lines = block.split('\n');
-  if (lines.length === 0) continue;
-
-  // Имя препарата = первая строка (после "Generic Name")
-  const name = lines[0].trim();
-  if (!name || name.includes('Neonatal Dosage')) continue;
-
-  // Извлекаем правую колонку (cols 14+) каждой следующей строки.
-  // Skip page footers / headers.
-  const contentLines = [];
-  for (let i = 1; i < lines.length; i++) {
-    const line = lines[i];
-    if (!line.trim()) continue;
-    if (/^\s*\d{1,3}\s*$/.test(line)) continue; // page number
-    if (line.includes('Neonatal Dosage and Practical Guidelines Handbook')) continue;
-
-    // Берём content начиная с col 14 (right column).
-    // Если строка короче 14 chars — берём всю.
-    const right = line.length > 14 ? line.slice(14) : line.trimStart();
-    if (right.trim()) contentLines.push(right.trim());
-  }
-
-  const fullText = contentLines.join(' ').replace(/\s+/g, ' ').trim();
-
-  // Извлекаем секции через labels-как-разделители.
-  // Labels могут появляться в любом порядке т.к. PDF column layout
-  // ломает row-alignment. Просто ищем каждый label в тексте.
-  function extractSection(text, startLabel, endLabels) {
-    const startIdx = text.indexOf(startLabel);
-    if (startIdx === -1) return '';
-    const after = text.slice(startIdx + startLabel.length).trim();
-    let endIdx = after.length;
-    for (const endLbl of endLabels) {
-      const e = after.indexOf(endLbl);
-      if (e !== -1 && e < endIdx) endIdx = e;
+/** Split block by "Generic Name" header. Возвращает [{ name, lines[] }]. */
+function splitDrugBlocks(allText) {
+  const lines = allText.split('\n');
+  const blocks = [];
+  let current = null;
+  for (const line of lines) {
+    const m = line.match(/^Generic Name\s+(.+?)\s*$/);
+    if (m) {
+      if (current) blocks.push(current);
+      current = { name: m[1].trim(), lines: [] };
+      continue;
     }
-    return after.slice(0, endIdx).replace(/\s+/g, ' ').trim();
+    if (current) current.lines.push(line);
+  }
+  if (current) blocks.push(current);
+  return blocks;
+}
+
+/** Парсит блок одного препарата — возвращает структурированные поля. */
+function parseBlock(lines) {
+  const fields = Object.fromEntries(FIELDS.map((f) => [f, []]));
+  let currentField = null;
+
+  for (const rawLine of lines) {
+    // Skip page footers/headers
+    if (!rawLine.trim()) continue;
+    if (rawLine.includes('Neonatal Dosage and Practical Guidelines Handbook')) continue;
+    if (/^\s*\d{1,3}\s*$/.test(rawLine)) continue;
+
+    // Берём label (col 0-13) и value (col 14+).
+    // Label-колонка иногда шире — некоторые labels длиннее 14 chars
+    // (например "Extemporaneous"). Используем 14 как baseline,
+    // но сначала пробуем найти известный label-токен в начале.
+    const trimmedStart = rawLine.replace(/\s+$/, '');
+
+    // Если строка целиком не помещается в label-колонку (короткая) — это label-only
+    // или правый текст не отображается.
+    let label = '';
+    let value = '';
+    if (trimmedStart.length <= 14) {
+      // Только label или только короткий value — определим по содержимому.
+      const single = trimmedStart.trim();
+      if (LABEL_TOKENS[single] !== undefined) {
+        label = single;
+      } else {
+        // Короткий value continuation (типа "IV")
+        value = single;
+      }
+    } else {
+      label = trimmedStart.slice(0, 14).trim();
+      value = trimmedStart.slice(14).trim();
+    }
+
+    if (label) {
+      const mapped = LABEL_TOKENS[label];
+      if (mapped === '__cont__') {
+        // "Metabolism" / "Preparation" — продолжение предыдущего label
+        // ничего не делаем с label, просто значение пойдёт в currentField
+      } else if (mapped) {
+        currentField = mapped;
+      } else {
+        // Неизвестный label — игнорируем (возможно опечатка или не из списка)
+      }
+    }
+
+    if (value && currentField) {
+      fields[currentField].push(value);
+    } else if (value && !currentField) {
+      // Текст до первого label — в Indications по умолчанию (редко)
+    }
   }
 
-  const allLabels = ['Brand Name', 'Indications', 'Dose', 'Route', 'Levels and Metabolism',
-                      'Precautions', 'Extemporaneous Preparation', 'References:'];
+  // Объединяем строки каждого поля в плоский текст
+  const result = {};
+  for (const f of FIELDS) {
+    result[f] = fields[f].join(' ').replace(/\s+/g, ' ').trim();
+  }
+  return result;
+}
 
-  const brand = extractSection(fullText, 'Brand Name',
-    allLabels.filter(l => l !== 'Brand Name'));
-  const indications = extractSection(fullText, 'Indications',
-    allLabels.filter(l => !['Indications', 'Brand Name'].includes(l)));
-  const dose = extractSection(fullText, 'Dose',
-    allLabels.filter(l => !['Dose', 'Brand Name', 'Indications'].includes(l)));
-  const route = extractSection(fullText, 'Route',
-    allLabels.filter(l => !['Route', 'Brand Name', 'Indications', 'Dose'].includes(l)));
-  const levels = extractSection(fullText, 'Levels and Metabolism',
-    allLabels.filter(l => !['Levels and Metabolism', 'Brand Name', 'Indications', 'Dose', 'Route'].includes(l)));
-  const precautions = extractSection(fullText, 'Precautions',
-    allLabels.filter(l => !['Precautions', 'Brand Name', 'Indications', 'Dose', 'Route', 'Levels and Metabolism'].includes(l)));
-  const extemporaneous = extractSection(fullText, 'Extemporaneous Preparation', ['References:']);
+const blocks = splitDrugBlocks(txt);
+console.log(`Found ${blocks.length} drug blocks`);
 
+const drugs = [];
+for (const block of blocks) {
+  if (!block.name || block.name.includes('Neonatal Dosage')) continue;
+
+  const parsed = parseBlock(block.lines);
   drugs.push({
-    id: makeId(name),
-    name_en: name,
-    name_ru: RU_NAMES[name] || name,
-    brand,
-    indications,
-    dose,
-    route,
-    levels,
-    precautions,
-    extemporaneous,
-    // Full raw text сохраняем для fallback (когда section extraction
-    // неполная из-за PDF column layout — UI показывает full monograph)
-    fullText,
+    id: makeId(block.name),
+    name_en: block.name,
+    name_ru: RU_NAMES[block.name] || block.name,
+    brand: parsed['Brand Name'] || '',
+    indications: parsed['Indications'] || '',
+    dose: parsed['Dose'] || '',
+    route: parsed['Route'] || '',
+    levels: parsed['Levels and Metabolism'] || '',
+    precautions: parsed['Precautions'] || '',
+    extemporaneous: parsed['Extemporaneous Preparation'] || '',
+    references: parsed['References'] || '',
+    // fullText для fallback оставляем — на случай если парсинг отдельных
+    // полей дал пусто, UI покажет общий монограф
+    fullText: FIELDS.map((f) => parsed[f]).filter(Boolean).join(' '),
   });
 }
 
 const output = {
-  version: '1.0.0',
+  version: '2.0.0',
   lastUpdated: '2026-05-07',
   source: 'Neonatal Dosage and Practical Guidelines Handbook 2nd Ed. (Saudi Arabia, 2016)',
   authors: ['Saleh Al-Alaiyan, MD, FRCPC', 'Najwa Al-Ghamdi, BSc.Pharm, Pharm.D., MHA, BCNSP, BCPS, FCCP, TTS'],
@@ -260,14 +309,14 @@ console.log(`\n=== RESULT ===`);
 console.log(`Drugs: ${drugs.length}`);
 console.log(`File: ${sizeKB} KB raw`);
 
-// Sample
-console.log('\n--- Sample (Acetaminophen): ---');
-const sample = drugs.find(d => d.name_en === 'Acetaminophen');
-if (sample) {
-  console.log('  brand:       ', sample.brand);
-  console.log('  indications: ', sample.indications.slice(0, 80));
-  console.log('  dose:        ', sample.dose.slice(0, 200));
-  console.log('  route:       ', sample.route);
-  console.log('  levels:      ', sample.levels.slice(0, 100));
-  console.log('  precautions: ', sample.precautions.slice(0, 100));
+// Проверяем 3 sample-препарата на покрытие полей
+const checkSamples = ['Amphotericin B', 'Acetaminophen', 'Ampicillin'];
+for (const name of checkSamples) {
+  const d = drugs.find((x) => x.name_en === name);
+  if (!d) { console.log(`-- ${name}: NOT FOUND --`); continue; }
+  console.log(`\n--- ${name} ---`);
+  for (const k of ['brand', 'indications', 'dose', 'route', 'levels', 'precautions', 'extemporaneous']) {
+    const v = d[k] || '';
+    console.log(`  ${k.padEnd(15)} ${v.length > 80 ? v.slice(0, 80) + '…' : v || '(empty)'}`);
+  }
 }
