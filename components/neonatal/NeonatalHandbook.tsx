@@ -481,37 +481,48 @@ function DrugCard({
             <div style={{
               borderTop: '1px solid #E5E7EB',
               background: '#FFFFFF',
+              padding: '14px 20px 18px',
+              fontSize: 13.5, lineHeight: 1.55, color: '#374151',
+              display: 'flex', flexDirection: 'column', gap: 12,
             }}>
               {showStructured ? (
-                <table style={{
-                  width: '100%',
-                  borderCollapse: 'collapse',
-                  fontSize: 13, color: '#374151', lineHeight: 1.55,
-                }}>
-                  <tbody>
-                    {drug.brand && (
-                      <DrugDetailRow label="Бренд" labelEn="Brand Name" value={drug.brand} />
-                    )}
-                    {drug.indications && (
-                      <DrugDetailRow label="Показания" labelEn="Indications" value={drug.indications} />
-                    )}
-                    {drug.dose && (
-                      <DrugDetailRow label="Доза" labelEn="Dose" value={drug.dose} />
-                    )}
-                    {drug.route && (
-                      <DrugDetailRow label="Путь" labelEn="Route" value={drug.route} />
-                    )}
-                    {drug.levels && (
-                      <DrugDetailRow label="Метаболизм" labelEn="Levels & Metabolism" value={drug.levels} />
-                    )}
-                    {drug.precautions && (
-                      <DrugDetailRow label="Предосторожности" labelEn="Precautions" value={drug.precautions} tone="warning" />
-                    )}
-                    {drug.extemporaneous && (
-                      <DrugDetailRow label="Приготовление" labelEn="Extemporaneous" value={drug.extemporaneous} last />
-                    )}
-                  </tbody>
-                </table>
+                <>
+                  {drug.brand && (
+                    <NeonatalDetailBlock label="Бренд" labelEn="Brand Name">
+                      {renderFieldValue(drug.brand)}
+                    </NeonatalDetailBlock>
+                  )}
+                  {drug.indications && (
+                    <NeonatalDetailBlock label="Показания" labelEn="Indications">
+                      {renderFieldValue(drug.indications)}
+                    </NeonatalDetailBlock>
+                  )}
+                  {drug.dose && (
+                    <NeonatalDetailBlock label="Доза" labelEn="Dose">
+                      {renderFieldValue(drug.dose)}
+                    </NeonatalDetailBlock>
+                  )}
+                  {drug.route && (
+                    <NeonatalDetailBlock label="Путь" labelEn="Route">
+                      {renderFieldValue(drug.route)}
+                    </NeonatalDetailBlock>
+                  )}
+                  {drug.levels && (
+                    <NeonatalDetailBlock label="Метаболизм" labelEn="Levels & Metabolism">
+                      {renderFieldValue(drug.levels)}
+                    </NeonatalDetailBlock>
+                  )}
+                  {drug.precautions && (
+                    <NeonatalDetailBlock label="Предосторожности" labelEn="Precautions" tone="warning">
+                      {renderFieldValue(drug.precautions)}
+                    </NeonatalDetailBlock>
+                  )}
+                  {drug.extemporaneous && (
+                    <NeonatalDetailBlock label="Приготовление" labelEn="Extemporaneous">
+                      {renderFieldValue(drug.extemporaneous)}
+                    </NeonatalDetailBlock>
+                  )}
+                </>
               ) : (
                 /* Если структурированных полей нет — показываем raw монограф
                  * как fallback. Большую простыню режем на смысловые блоки и
@@ -649,75 +660,63 @@ function MonographFullText({ text }: { text: string }) {
   if (blocks.length === 0) return null;
 
   return (
-    <table style={{
-      width: '100%',
-      borderCollapse: 'collapse',
-      fontSize: 13, color: '#374151', lineHeight: 1.55,
-    }}>
-      <tbody>
-        {blocks.map((b, i) => (
-          <DrugDetailRow
-            key={i}
-            label={b.labelRu}
-            labelEn={b.label}
-            value={b.sentences.join(' ')}
-            {...(b.tone === 'warning' ? { tone: 'warning' as const } : {})}
-            {...(i === blocks.length - 1 ? { last: true } : {})}
-          />
-        ))}
-      </tbody>
-    </table>
+    <>
+      {blocks.map((b, i) => (
+        <NeonatalDetailBlock
+          key={i}
+          label={b.labelRu}
+          labelEn={b.label}
+          {...(b.tone === 'warning' ? { tone: 'warning' as const } : {})}
+        >
+          {renderFieldValue(b.sentences.join(' '))}
+        </NeonatalDetailBlock>
+      ))}
+    </>
   );
 }
 
-/** Bordik-style таблица: th-label слева, td-value справа.
- *  Один шрифт (body) везде — без mono. */
-function DrugDetailRow({
-  label, labelEn, value, tone = 'neutral', last,
+/** Bordik-style блок «лейбл сверху → значение снизу» — единый паттерн с ICD-11
+ *  / МКБ. Используется в раскрытых карточках препаратов и монографов.
+ *  RU label первой строкой (мелкий uppercase mono-color), EN — вторым словом
+ *  справа в той же строке (микро-капшен), ниже — content. */
+function NeonatalDetailBlock({
+  label, labelEn, tone = 'neutral', children,
 }: {
   label: string;
   labelEn?: string;
-  value: string;
   tone?: 'neutral' | 'warning';
-  last?: boolean;
+  children: React.ReactNode;
 }) {
-  const cellStyle: React.CSSProperties = {
-    padding: '12px 18px',
-    borderBottom: last ? 'none' : '1px solid #F0F1F5',
-    verticalAlign: 'top',
-    background: tone === 'warning' ? '#FFFBEB' : '#FFFFFF',
-  };
   return (
-    <tr>
-      <th
-        scope="row"
-        style={{
-          ...cellStyle,
-          width: 160,
-          textAlign: 'left',
-          fontFamily: 'inherit',
-          fontSize: 11, fontWeight: 600,
-          color: tone === 'warning' ? '#92400E' : '#9CA3AF',
-          textTransform: 'uppercase',
-          letterSpacing: '0.06em',
-        }}
-      >
-        <div>{label}</div>
-        {labelEn && (
-          <div style={{ marginTop: 2, fontSize: 10, fontWeight: 400, textTransform: 'none', letterSpacing: 0, opacity: 0.7 }}>
-            {labelEn}
-          </div>
-        )}
-      </th>
-      <td style={{
-        ...cellStyle,
-        fontWeight: 400,
-        fontFamily: 'inherit',
-        color: tone === 'warning' ? '#78350F' : '#374151',
+    <div>
+      <div style={{
+        marginBottom: 6,
+        display: 'flex', alignItems: 'baseline', gap: 8, flexWrap: 'wrap',
       }}>
-        {renderFieldValue(value)}
-      </td>
-    </tr>
+        <span style={{
+          fontSize: 11, fontWeight: 600, letterSpacing: '0.06em',
+          textTransform: 'uppercase',
+          color: tone === 'warning' ? '#92400E' : '#9CA3AF',
+        }}>
+          {label}
+        </span>
+        {labelEn && (
+          <span style={{
+            fontSize: 10, fontWeight: 500,
+            color: tone === 'warning' ? '#B45309' : '#9CA3AF',
+            opacity: 0.75,
+          }}>
+            {labelEn}
+          </span>
+        )}
+      </div>
+      <div style={{
+        color: tone === 'warning' ? '#78350F' : '#374151',
+        fontSize: 13.5, lineHeight: 1.55,
+      }}>
+        {children}
+      </div>
+    </div>
   );
 }
 
