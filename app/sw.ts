@@ -139,6 +139,7 @@ const serwist = new Serwist({
         /^\/icd1[01](?:cm|pcs|ca|gm|am)?(-(?:mms(?:-ext)?|starter|slim|details|search|drug-table|neoplasm|index))?\.json$/.test(url.pathname)
         || url.pathname === '/neonatal-monographs.json'
         || url.pathname === '/neonatal-guidelines.json'
+        || url.pathname === '/neonatal-growth.json'
       ),
       handler: new CacheFirst({
         cacheName: 'bordik-icd',

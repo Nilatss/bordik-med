@@ -15,6 +15,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Highlight from '@/components/ui/Highlight';
+import GrowthCharts from '@/components/neonatal/GrowthCharts';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface Drug {
@@ -55,7 +56,7 @@ interface GuidelinesBank {
   guidelines: Guideline[];
 }
 
-type Tab = 'drugs' | 'guidelines';
+type Tab = 'drugs' | 'guidelines' | 'growth';
 
 export default function NeonatalHandbook() {
   const [bank, setBank] = useState<Bank | null>(null);
@@ -160,7 +161,8 @@ export default function NeonatalHandbook() {
         </p>
       </motion.div>
 
-      {/* Search */}
+      {/* Search — только для табов с поиском (drugs/guidelines), на growth не нужен */}
+      {tab !== 'growth' && (
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
@@ -203,6 +205,7 @@ export default function NeonatalHandbook() {
           >×</button>
         )}
       </motion.div>
+      )}
 
       {/* Tabs: Препараты / Протоколы */}
       <div role="tablist" aria-label="Разделы" style={{
@@ -214,6 +217,7 @@ export default function NeonatalHandbook() {
         {([
           { id: 'drugs' as const, label: 'Препараты', count: bank.drugs.length },
           { id: 'guidelines' as const, label: 'Протоколы NICU', count: guidelines?.guidelines.length ?? 0 },
+          { id: 'growth' as const, label: 'Графики роста', count: null as number | null },
         ]).map((t) => {
           const isActive = tab === t.id;
           return (
@@ -239,13 +243,15 @@ export default function NeonatalHandbook() {
               }}
             >
               <span>{t.label}</span>
-              <span style={{
-                fontSize: 11, fontWeight: 700,
-                color: isActive ? '#2563EB' : '#9CA3AF',
-                opacity: isActive ? 0.85 : 0.7,
-              }}>
-                {t.count}
-              </span>
+              {t.count !== null && (
+                <span style={{
+                  fontSize: 11, fontWeight: 700,
+                  color: isActive ? '#2563EB' : '#9CA3AF',
+                  opacity: isActive ? 0.85 : 0.7,
+                }}>
+                  {t.count}
+                </span>
+              )}
             </button>
           );
         })}
@@ -281,7 +287,7 @@ export default function NeonatalHandbook() {
             )}
           </motion.div>
         </>
-      ) : (
+      ) : tab === 'guidelines' ? (
         <>
           <p style={{ fontSize: 13, color: '#6B7280', margin: '0 0 14px' }}>
             Показано: <strong style={{ color: '#1A1A1A' }}>{filteredGuidelines.length}</strong> из {guidelines?.guidelines.length ?? 0}
@@ -311,6 +317,14 @@ export default function NeonatalHandbook() {
             )}
           </motion.div>
         </>
+      ) : (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3 }}
+        >
+          <GrowthCharts />
+        </motion.div>
       )}
 
       {/* Source / disclaimer panel — единый стиль с DrugChecker provenance */}
