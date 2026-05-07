@@ -20,7 +20,15 @@
     "ai:questions": "node scripts/ai-generate-questions.mjs",
     "validate:scales": "npx tsx scripts/validate-scales.mjs",
     "validate:runners": "npx tsx scripts/smoke-runners.mjs",
+    "lint": "next lint",
+    "lint:fix": "next lint --fix",
+    "prepare": "husky",
     "prebuild": "node scripts/sync-mediapipe.mjs && node scripts/sync-mediapipe-models.mjs && node scripts/build-curriculum-stats.mjs && node scripts/build-tool-meta.mjs && node scripts/build-content.mjs"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "next lint --fix --file"
+    ]
   },
   "dependencies": {
     "@fontsource-variable/jetbrains-mono": "^5.2.8",
@@ -58,13 +66,20 @@
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^16.2.4",
+    "@next/eslint-plugin-next": "^16.2.4",
     "@serwist/next": "^9.5.10",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
     "cross-env": "^10.1.0",
+    "eslint": "^9.0.0",
+    "eslint-config-next": "^16.2.4",
     "exceljs": "^4.4.0",
+    "husky": "^9.1.0",
+    "lint-staged": "^15.0.0",
     "serwist": "^9.5.10",
     "tailwindcss": "^4",
     "typescript": "^5",

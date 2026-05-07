@@ -1,0 +1,28 @@
+#!/usr/bin/env sh
+# Pre-commit gate — fail-fast перед commit'ом если есть TS-ошибки или
+# lint-warnings в staged файлах. Защищает от красного CI и format-drift.
+#
+# Запускается автоматически после `npm install` (husky prepare hook).
+
+# 1. Lint-staged — форматирование + autofix только staged-файлов
+npx lint-staged || exit 1
+
+# 2. Type-check (быстрый incremental) — ловит staged TS-ошибки до push'а
+echo "→ tsc --noEmit (incremental)"
+npx tsc --noEmit || {
+  echo ""
+  echo "✘ TypeScript errors. Fix before committing."
+  exit 1
+}
+
+# 3. Запрет на @ts-nocheck в новых runner-файлах (P0-CR-1 gate).
+#    Существующие 739 runners — legacy, не блокируем. Но новые не должны
+#    добавлять новый @ts-nocheck.
+NEW_NOCHECK=$(git diff --cached --diff-filter=A --name-only -- 'lib/runners/*.ts' | xargs -I{} sh -c 'head -1 "{}" | grep -l "@ts-nocheck" >/dev/null 2>&1 && echo "{}"' 2>/dev/null || true)
+if [ -n "$NEW_NOCHECK" ]; then
+  echo ""
+  echo "✘ New runners with @ts-nocheck:"
+  echo "$NEW_NOCHECK"
+  echo "Generator должен писать типизированные runners. Fix scripts/build-tool-meta.mjs."
+  exit 1
+fi
