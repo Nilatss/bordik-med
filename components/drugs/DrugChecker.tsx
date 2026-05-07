@@ -98,7 +98,7 @@ export default function DrugChecker() {
     let cancelled = false;
     void (async () => {
       try {
-        const r = await fetch('/drug-interactions.json?v=0.1.0', { cache: 'no-cache' });
+        const r = await fetch('/drug-interactions.json?v=0.9.0', { cache: 'no-cache' });
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         const json = await r.json();
         if (!cancelled) setData(json as DrugInteractionData);
