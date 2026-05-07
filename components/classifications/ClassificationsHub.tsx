@@ -24,7 +24,7 @@
  * базы (текущая 0.6.0 = 3742 кода).
  */
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Icd10Lookup from '@/components/icd10/Icd10Lookup';
 
@@ -609,10 +609,10 @@ function Icd10cmIndexSearch() {
   return (
     <div style={{
       maxWidth: 880,
-      background: '#FFFFFF',
+      background: '#F5F6F8',
       borderRadius: 14,
-      border: '1px solid #E5E7EB',
-      marginBottom: 20,
+      border: 'none',
+      marginBottom: 12,
       overflow: 'hidden',
     }}>
       <button
@@ -622,11 +622,14 @@ function Icd10cmIndexSearch() {
         style={{
           width: '100%',
           display: 'flex', alignItems: 'center', gap: 12,
-          padding: '14px 18px',
+          padding: '12px 16px',
           background: 'transparent', border: 'none',
           cursor: 'pointer', textAlign: 'left',
           fontFamily: 'inherit',
+          transition: 'background 150ms',
         }}
+        onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
+        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
       >
         <span style={{ flex: 1 }}>
           <span style={{ display: 'block', fontSize: 14, fontWeight: 600, color: '#1A1A1A' }}>
@@ -659,7 +662,7 @@ function Icd10cmIndexSearch() {
             }}
             style={{ overflow: 'hidden' }}
           >
-            <div style={{ borderTop: '1px solid #E5E7EB', padding: '14px 18px' }}>
+            <div style={{ borderTop: '1px solid #E5E7EB', background: '#FFFFFF', padding: '12px 16px' }}>
               <div style={{
                 display: 'flex', alignItems: 'center', gap: 10,
                 padding: '10px 14px', background: '#F5F6F8', borderRadius: 10, marginBottom: 12,
@@ -703,20 +706,7 @@ function Icd10cmIndexSearch() {
                         {r.term}
                       </span>
                       {r.code ? (
-                        <button
-                          type="button"
-                          onClick={() => { void navigator.clipboard?.writeText(r.code!); }}
-                          title={`Скопировать ${r.code}`}
-                          style={{
-                            flexShrink: 0,
-                            padding: '4px 10px', background: '#EFF6FF', border: '1px solid #DBEAFE',
-                            borderRadius: 6, cursor: 'pointer',
-                            fontFamily: 'var(--font-mono, ui-monospace)',
-                            fontSize: 12, fontWeight: 700, color: '#2563EB',
-                          }}
-                        >
-                          {r.code}
-                        </button>
+                        <CopyCodeButton code={r.code} />
                       ) : r.see ? (
                         <span style={{ flexShrink: 0, fontSize: 11, color: '#6B7280', fontStyle: 'italic' }}>
                           → см. {r.see}
@@ -792,10 +782,10 @@ function Icd10cmNeoplasmCoder() {
   return (
     <div style={{
       maxWidth: 880,
-      background: '#FFFFFF',
+      background: '#F5F6F8',
       borderRadius: 14,
-      border: '1px solid #E5E7EB',
-      marginBottom: 20,
+      border: 'none',
+      marginBottom: 12,
       overflow: 'hidden',
     }}>
       <button
@@ -805,11 +795,14 @@ function Icd10cmNeoplasmCoder() {
         style={{
           width: '100%',
           display: 'flex', alignItems: 'center', gap: 12,
-          padding: '14px 18px',
+          padding: '12px 16px',
           background: 'transparent', border: 'none',
           cursor: 'pointer', textAlign: 'left',
           fontFamily: 'inherit',
+          transition: 'background 150ms',
         }}
+        onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
+        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
       >
         <span style={{ flex: 1 }}>
           <span style={{ display: 'block', fontSize: 14, fontWeight: 600, color: '#1A1A1A' }}>
@@ -842,7 +835,7 @@ function Icd10cmNeoplasmCoder() {
             }}
             style={{ overflow: 'hidden' }}
           >
-            <div style={{ borderTop: '1px solid #E5E7EB', padding: '14px 18px' }}>
+            <div style={{ borderTop: '1px solid #E5E7EB', background: '#FFFFFF', padding: '12px 16px' }}>
               <div style={{
                 display: 'flex', alignItems: 'center', gap: 10,
                 padding: '10px 14px', background: '#F5F6F8', borderRadius: 10, marginBottom: 12,
@@ -913,7 +906,62 @@ function Icd10cmNeoplasmCoder() {
   );
 }
 
+/** Inline pill-кнопка с кодом — копирует в clipboard, мигает зелёным
+ *  на 1.2с после клика, чтобы был визуальный фидбек. */
+function CopyCodeButton({ code }: { code: string }) {
+  const [copied, setCopied] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => () => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+  }, []);
+
+  const handleCopy = (): void => {
+    void navigator.clipboard?.writeText(code).then(() => {
+      setCopied(true);
+      if (timerRef.current) clearTimeout(timerRef.current);
+      timerRef.current = setTimeout(() => setCopied(false), 1200);
+    });
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={handleCopy}
+      title={copied ? `${code} скопирован` : `Скопировать ${code}`}
+      aria-live="polite"
+      style={{
+        flexShrink: 0,
+        display: 'inline-flex', alignItems: 'center', gap: 4,
+        padding: '4px 10px',
+        background: copied ? '#DCFCE7' : '#EFF6FF',
+        border: `1px solid ${copied ? '#86EFAC' : '#DBEAFE'}`,
+        borderRadius: 6, cursor: 'pointer',
+        fontFamily: 'var(--font-mono, ui-monospace)',
+        fontSize: 12, fontWeight: 700,
+        color: copied ? '#15803D' : '#2563EB',
+        transition: 'background 150ms, border-color 150ms',
+      }}
+    >
+      {copied && (
+        <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
+      )}
+      {code}
+    </button>
+  );
+}
+
 function NeoplasmCell({ label, code }: { label: string; code?: string | null | undefined }) {
+  const [copied, setCopied] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => () => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+  }, []);
+
   if (!code || code === '--') {
     return (
       <div style={{
@@ -925,22 +973,45 @@ function NeoplasmCell({ label, code }: { label: string; code?: string | null | u
       </div>
     );
   }
+
+  const handleCopy = (): void => {
+    void navigator.clipboard?.writeText(code).then(() => {
+      setCopied(true);
+      if (timerRef.current) clearTimeout(timerRef.current);
+      timerRef.current = setTimeout(() => setCopied(false), 1200);
+    });
+  };
+
   return (
     <button
       type="button"
-      onClick={() => { void navigator.clipboard?.writeText(code); }}
-      title={`Скопировать ${code}`}
+      onClick={handleCopy}
+      title={copied ? `${code} скопирован` : `Скопировать ${code}`}
+      aria-live="polite"
       style={{
-        padding: '6px 8px', background: '#FFFFFF', border: '1px solid #DBEAFE',
+        padding: '6px 8px',
+        background: copied ? '#DCFCE7' : '#FFFFFF',
+        border: `1px solid ${copied ? '#86EFAC' : '#DBEAFE'}`,
         borderRadius: 6, cursor: 'pointer', textAlign: 'center',
         fontFamily: 'inherit',
+        transition: 'background 150ms, border-color 150ms',
       }}
     >
-      <div style={{ fontSize: 10, color: '#6B7280' }}>{label}</div>
+      <div style={{ fontSize: 10, color: copied ? '#15803D' : '#6B7280' }}>
+        {copied ? 'Скопировано' : label}
+      </div>
       <div style={{
         marginTop: 2, fontFamily: 'var(--font-mono, ui-monospace)',
-        fontSize: 12, fontWeight: 700, color: '#2563EB',
+        fontSize: 12, fontWeight: 700,
+        color: copied ? '#15803D' : '#2563EB',
+        display: 'inline-flex', alignItems: 'center', gap: 4,
       }}>
+        {copied && (
+          <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        )}
         {code}
       </div>
     </button>

@@ -743,14 +743,12 @@ export default function DrugChecker() {
           transition={{ duration: 0.3, ease: [0.05, 0.7, 0.1, 1], delay: 0.1 }}
           style={{
             marginTop: 24,
-            background: '#FFFFFF',
-            border: '1px solid #DBEAFE',
-            borderLeft: '3px solid #2563EB',
+            background: '#F5F6F8',
+            border: 'none',
             borderRadius: 14,
             overflow: 'hidden',
           }}
         >
-          {/* Title bar — выраженный «справочный» tone (синий код-icon) */}
           <button
             type="button"
             onClick={() => setShowPoisonCodes((v) => !v)}
@@ -758,64 +756,44 @@ export default function DrugChecker() {
             style={{
               width: '100%',
               display: 'flex', alignItems: 'flex-start', gap: 14,
-              padding: '14px 18px',
-              background: '#EFF6FF', border: 'none',
+              padding: '12px 16px',
+              background: 'transparent', border: 'none',
               cursor: 'pointer', textAlign: 'left',
               fontFamily: 'inherit',
               transition: 'background 150ms',
             }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = '#DBEAFE'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = '#EFF6FF'; }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
           >
-            {/* Иконка-документ слева — визуально маркирует «справочные коды» */}
-            <span style={{
-              flexShrink: 0,
-              width: 36, height: 36,
-              borderRadius: 8,
-              background: '#FFFFFF',
-              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-              color: '#2563EB',
-              border: '1px solid #DBEAFE',
-            }}>
-              <svg width={18} height={18} viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
-                <polyline points="14 2 14 8 20 8" />
-                <line x1="9" y1="13" x2="15" y2="13" />
-                <line x1="9" y1="17" x2="13" y2="17" />
-              </svg>
-            </span>
             <span style={{ flex: 1, minWidth: 0 }}>
               <span style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
                 <span style={{
                   display: 'inline-flex', alignItems: 'center',
-                  padding: '2px 8px',
-                  background: '#2563EB',
-                  color: '#FFFFFF',
-                  borderRadius: 4,
+                  padding: '2px 9px',
+                  background: '#EFF6FF',
+                  color: '#1D4ED8',
+                  border: '1px solid #BFDBFE',
+                  borderRadius: 999,
                   fontFamily: 'var(--font-mono, ui-monospace)',
                   fontSize: 10, fontWeight: 700,
-                  letterSpacing: '0.06em',
-                  textTransform: 'uppercase',
-                }}>
-                  Справочник
-                </span>
-                <span style={{
-                  display: 'inline-block',
-                  fontSize: 11, color: '#1E40AF', fontWeight: 600,
                   letterSpacing: '0.04em',
                   textTransform: 'uppercase',
+                  whiteSpace: 'nowrap',
                 }}>
-                  ICD-10-CM кодирование
+                  ICD-10-CM
                 </span>
               </span>
-              <span style={{ display: 'block', fontSize: 14, fontWeight: 600, color: '#1E3A8A', lineHeight: 1.35 }}>
+              <span style={{
+                display: 'block',
+                fontFamily: 'var(--font-display)', fontSize: 14, fontWeight: 700,
+                color: '#1A1A1A', letterSpacing: '-0.01em', lineHeight: 1.35,
+              }}>
                 Коды для отравлений и побочных действий
               </span>
-              <span style={{ display: 'block', marginTop: 4, fontSize: 12, color: '#3730A3', lineHeight: 1.5 }}>
+              <span style={{ display: 'block', marginTop: 4, fontSize: 12, color: '#6B7280', lineHeight: 1.5 }}>
                 По каждому из выбранных препаратов — 6 ICD-10-CM кодов (Случайное / Преднамеренное / Нападение / Неуточнённое / Побочное / Underdosing) для записи в карту пациента.
                 <br />
-                <span style={{ color: '#6B7280' }}>Source: CMS Table of Drugs and Chemicals (FY2026)</span>
+                <span style={{ color: '#9CA3AF' }}>Source: CMS Table of Drugs and Chemicals (FY2026)</span>
               </span>
             </span>
             <span style={{
@@ -843,7 +821,7 @@ export default function DrugChecker() {
                 }}
                 style={{ overflow: 'hidden' }}
               >
-                <div style={{ borderTop: '1px solid #E5E7EB', padding: '16px 18px' }}>
+                <div style={{ borderTop: '1px solid #E5E7EB', background: '#FFFFFF', padding: '16px 18px' }}>
                   {!drugTable ? (
                     <div style={{ fontSize: 13, color: '#6B7280' }}>Загружаем CMS Drug Table…</div>
                   ) : (
@@ -1036,8 +1014,17 @@ function InteractionRowContent({
   );
 }
 
-/** Кликабельная ячейка с ICD-10-CM кодом — копирует код в clipboard. */
+/** Кликабельная ячейка с ICD-10-CM кодом — копирует код в clipboard.
+ *  Визуальный фидбек: 1.2с показываем галочку + «Скопировано», чтобы
+ *  пользователь видел что клик отработал. */
 function PoisonCell({ label, code }: { label: string; code?: string | null | undefined }) {
+  const [copied, setCopied] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => () => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+  }, []);
+
   if (!code) {
     return (
       <div style={{
@@ -1049,22 +1036,46 @@ function PoisonCell({ label, code }: { label: string; code?: string | null | und
       </div>
     );
   }
+
+  const handleCopy = (): void => {
+    void navigator.clipboard?.writeText(code).then(() => {
+      setCopied(true);
+      if (timerRef.current) clearTimeout(timerRef.current);
+      timerRef.current = setTimeout(() => setCopied(false), 1200);
+    });
+  };
+
   return (
     <button
       type="button"
-      onClick={() => { void navigator.clipboard?.writeText(code); }}
-      title={`Скопировать ${code}`}
+      onClick={handleCopy}
+      title={copied ? `${code} скопирован` : `Скопировать ${code}`}
+      aria-live="polite"
       style={{
-        padding: '6px 8px', background: '#FFFFFF', border: '1px solid #DBEAFE',
+        position: 'relative',
+        padding: '6px 8px',
+        background: copied ? '#DCFCE7' : '#FFFFFF',
+        border: `1px solid ${copied ? '#86EFAC' : '#DBEAFE'}`,
         borderRadius: 6, cursor: 'pointer', textAlign: 'center',
         fontFamily: 'inherit',
+        transition: 'background 150ms, border-color 150ms',
       }}
     >
-      <div style={{ fontSize: 10, color: '#6B7280' }}>{label}</div>
+      <div style={{ fontSize: 10, color: copied ? '#15803D' : '#6B7280' }}>
+        {copied ? 'Скопировано' : label}
+      </div>
       <div style={{
         marginTop: 2, fontFamily: 'var(--font-mono, ui-monospace)',
-        fontSize: 12, fontWeight: 700, color: '#2563EB',
+        fontSize: 12, fontWeight: 700,
+        color: copied ? '#15803D' : '#2563EB',
+        display: 'inline-flex', alignItems: 'center', gap: 4,
       }}>
+        {copied && (
+          <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        )}
         {code}
       </div>
     </button>

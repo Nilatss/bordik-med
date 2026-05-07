@@ -337,8 +337,8 @@ function DrugCard({
 
   return (
     <div style={{
-      background: '#FFFFFF',
-      border: '1px solid #F0F1F5',
+      background: '#F5F6F8',
+      border: 'none',
       borderRadius: 14,
       overflow: 'hidden',
     }}>
@@ -355,7 +355,7 @@ function DrugCard({
           fontFamily: 'inherit',
           transition: 'background 150ms',
         }}
-        onMouseEnter={(e) => { e.currentTarget.style.background = '#FAFBFC'; }}
+        onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
         onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
       >
         <span style={{ flex: 1, minWidth: 0 }}>
@@ -371,11 +371,6 @@ function DrugCard({
               </span>
             )}
           </span>
-          {drug.brand && (
-            <span style={{ display: 'block', marginTop: 2, fontSize: 12, color: '#9CA3AF' }}>
-              Brand: {drug.brand}
-            </span>
-          )}
         </span>
         <span style={{
           color: '#6B7280',
@@ -401,47 +396,258 @@ function DrugCard({
             style={{ overflow: 'hidden' }}
           >
             <div style={{
-              padding: '14px 18px 18px',
-              background: '#FAFBFC',
-              borderTop: '1px solid #F0F1F5',
-              fontSize: 13, lineHeight: 1.6, color: '#374151',
-              display: 'flex', flexDirection: 'column', gap: 12,
+              borderTop: '1px solid #E5E7EB',
+              background: '#FFFFFF',
             }}>
-              {showStructured && drug.indications && (
-                <Section label="Показания (Indications)">{drug.indications}</Section>
-              )}
-              {showStructured && drug.dose && (
-                <Section label="Доза (Dose)">{drug.dose}</Section>
-              )}
-              {showStructured && drug.route && (
-                <Section label="Путь введения (Route)">{drug.route}</Section>
-              )}
-              {showStructured && drug.levels && (
-                <Section label="Метаболизм / уровни (Levels and Metabolism)">{drug.levels}</Section>
-              )}
-              {showStructured && drug.precautions && (
-                <Section label="Меры предосторожности (Precautions)" tone="warning">{drug.precautions}</Section>
-              )}
-              {showStructured && drug.extemporaneous && (
-                <Section label="Приготовление (Extemporaneous)">{drug.extemporaneous}</Section>
-              )}
-
-              {/* Always show full raw text as fallback / verification */}
-              <details>
-                <summary style={{
-                  fontSize: 11, color: '#9CA3AF', cursor: 'pointer',
-                  fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase',
+              {showStructured ? (
+                <table style={{
+                  width: '100%',
+                  borderCollapse: 'collapse',
+                  fontSize: 13, color: '#374151', lineHeight: 1.55,
                 }}>
-                  Полный текст монографии (raw)
-                </summary>
-                <div style={{ marginTop: 8, fontSize: 12, color: '#6B7280', whiteSpace: 'pre-wrap' }}>
+                  <tbody>
+                    {drug.brand && (
+                      <DrugDetailRow label="Бренд" labelEn="Brand Name" value={drug.brand} mono />
+                    )}
+                    {drug.indications && (
+                      <DrugDetailRow label="Показания" labelEn="Indications" value={drug.indications} />
+                    )}
+                    {drug.dose && (
+                      <DrugDetailRow label="Доза" labelEn="Dose" value={drug.dose} bold />
+                    )}
+                    {drug.route && (
+                      <DrugDetailRow label="Путь" labelEn="Route" value={drug.route} mono />
+                    )}
+                    {drug.levels && (
+                      <DrugDetailRow label="Метаболизм" labelEn="Levels & Metabolism" value={drug.levels} />
+                    )}
+                    {drug.precautions && (
+                      <DrugDetailRow label="Предосторожности" labelEn="Precautions" value={drug.precautions} tone="warning" />
+                    )}
+                    {drug.extemporaneous && (
+                      <DrugDetailRow label="Приготовление" labelEn="Extemporaneous" value={drug.extemporaneous} last />
+                    )}
+                  </tbody>
+                </table>
+              ) : (
+                /* Если структурированных полей нет — показываем raw монограф
+                 * как fallback (без дублирования). */
+                <div style={{
+                  padding: '14px 18px',
+                  fontSize: 13, lineHeight: 1.6, color: '#374151',
+                  whiteSpace: 'pre-wrap',
+                }}>
                   {drug.fullText}
                 </div>
-              </details>
+              )}
             </div>
           </motion.div>
         )}
       </AnimatePresence>
+    </div>
+  );
+}
+
+/** Bordik-style таблица: th-label слева, td-value справа.
+ *  Идентична DetailRow в DrugChecker — единый стиль. */
+function DrugDetailRow({
+  label, labelEn, value, bold, mono, tone = 'neutral', last,
+}: {
+  label: string;
+  labelEn?: string;
+  value: string;
+  bold?: boolean;
+  mono?: boolean;
+  tone?: 'neutral' | 'warning';
+  last?: boolean;
+}) {
+  const cellStyle: React.CSSProperties = {
+    padding: '12px 18px',
+    borderBottom: last ? 'none' : '1px solid #F0F1F5',
+    verticalAlign: 'top',
+    background: tone === 'warning' ? '#FFFBEB' : '#FFFFFF',
+  };
+  return (
+    <tr>
+      <th
+        scope="row"
+        style={{
+          ...cellStyle,
+          width: 160,
+          textAlign: 'left',
+          fontFamily: 'var(--font-mono, ui-monospace)',
+          fontSize: 11, fontWeight: 700,
+          color: tone === 'warning' ? '#92400E' : '#9CA3AF',
+          textTransform: 'uppercase',
+          letterSpacing: '0.06em',
+        }}
+      >
+        <div>{label}</div>
+        {labelEn && (
+          <div style={{ marginTop: 2, fontSize: 10, fontWeight: 500, textTransform: 'none', letterSpacing: 0, opacity: 0.7 }}>
+            {labelEn}
+          </div>
+        )}
+      </th>
+      <td style={{
+        ...cellStyle,
+        fontWeight: bold ? 600 : 400,
+        fontFamily: mono ? 'var(--font-mono, ui-monospace)' : 'inherit',
+        color: tone === 'warning' ? '#78350F' : '#374151',
+      }}>
+        {value}
+      </td>
+    </tr>
+  );
+}
+
+type Block =
+  | { kind: 'step'; text: string }
+  | { kind: 'heading'; text: string }
+  | { kind: 'list'; items: string[] }
+  | { kind: 'formula'; text: string }
+  | { kind: 'para'; text: string };
+
+// Replace broken PDF glyphs (U+FFFD and similar) with a neutral placeholder.
+// Original handbook used ÷, ×, →, − that pdftotext could not decode.
+function sanitizePdfText(s: string): string {
+  return s
+    .replace(/�/g, '÷')      // best-guess: most � appear in division formulas
+    .replace(/ /g, '')
+    .replace(/[ \t]+/g, ' ')
+    .trim();
+}
+
+function isFormulaLine(s: string): boolean {
+  // Lines with blanks, equals signs, or unit ratios — render in mono.
+  return /_{2,}|\b(mg|mcg|mL|kg|g)\/(kg|day|min|hr|hour|mL)|=|×|÷/.test(s);
+}
+
+function parseGuidelineContent(raw: string): Block[] {
+  const lines = raw.split('\n').map((l) => sanitizePdfText(l));
+  const chunks: string[][] = [];
+  let cur: string[] = [];
+  for (const line of lines) {
+    if (!line) {
+      if (cur.length) { chunks.push(cur); cur = []; }
+    } else {
+      cur.push(line);
+    }
+  }
+  if (cur.length) chunks.push(cur);
+
+  const blocks: Block[] = [];
+  const bulletRe = /^\s*(?:[-•*·]|\d+[.)]|[a-z][.)])\s+/i;
+  const stepRe = /^STEP\s+(ONE|TWO|THREE|FOUR|FIVE|SIX|SEVEN|EIGHT|NINE|TEN|\d+)\b/i;
+
+  for (const chunk of chunks) {
+    // Step heading like "STEP ONE" possibly with trailing words.
+    if (chunk.length === 1 && chunk[0] && stepRe.test(chunk[0])) {
+      blocks.push({ kind: 'step', text: chunk[0] });
+      continue;
+    }
+
+    const allBullet = chunk.every((l) => bulletRe.test(l));
+    if (allBullet && chunk.length >= 2) {
+      blocks.push({ kind: 'list', items: chunk.map((l) => l.replace(bulletRe, '').trim()) });
+      continue;
+    }
+
+    // Multi-line formula block: every line looks like a formula.
+    if (chunk.length >= 1 && chunk.every(isFormulaLine)) {
+      blocks.push({ kind: 'formula', text: chunk.join('\n') });
+      continue;
+    }
+
+    const joined = chunk.join(' ').replace(/\s+/g, ' ').trim();
+    const isHeading =
+      chunk.length === 1 &&
+      joined.length <= 80 &&
+      (joined === joined.toUpperCase() || /:$/.test(joined)) &&
+      !isFormulaLine(joined);
+    if (isHeading) {
+      blocks.push({ kind: 'heading', text: joined.replace(/:$/, '') });
+      continue;
+    }
+
+    blocks.push({ kind: 'para', text: joined });
+  }
+  return blocks;
+}
+
+function GuidelineContent({ content }: { content: string }) {
+  const blocks = parseGuidelineContent(content);
+  return (
+    <div style={{ fontSize: 13, lineHeight: 1.6, color: '#374151' }}>
+      {blocks.map((b, i) => {
+        if (b.kind === 'step') {
+          return (
+            <div key={i} style={{
+              marginTop: i === 0 ? 0 : 18, marginBottom: 10,
+              padding: '6px 10px',
+              background: '#F3F4F6',
+              borderLeft: '3px solid #6B7280',
+              borderRadius: 4,
+              fontFamily: 'var(--font-mono, ui-monospace)',
+              fontSize: 11, fontWeight: 700,
+              color: '#111827',
+              letterSpacing: '0.06em',
+              textTransform: 'uppercase',
+            }}>
+              {b.text}
+            </div>
+          );
+        }
+        if (b.kind === 'heading') {
+          return (
+            <div key={i} style={{
+              marginTop: i === 0 ? 0 : 14, marginBottom: 6,
+              fontFamily: 'var(--font-display)',
+              fontSize: 13, fontWeight: 700, color: '#111827',
+              letterSpacing: '-0.005em',
+            }}>
+              {b.text}
+            </div>
+          );
+        }
+        if (b.kind === 'list') {
+          return (
+            <ul key={i} style={{
+              margin: '0 0 12px', paddingLeft: 20,
+              fontSize: 13, lineHeight: 1.6, color: '#374151',
+            }}>
+              {b.items.map((it, j) => (
+                <li key={j} style={{ marginBottom: 4 }}>{it}</li>
+              ))}
+            </ul>
+          );
+        }
+        if (b.kind === 'formula') {
+          return (
+            <pre key={i} style={{
+              margin: '0 0 12px',
+              padding: '10px 12px',
+              background: '#F9FAFB',
+              border: '1px solid #E5E7EB',
+              borderRadius: 8,
+              fontFamily: 'var(--font-mono, ui-monospace)',
+              fontSize: 12, lineHeight: 1.7,
+              color: '#1F2937',
+              whiteSpace: 'pre-wrap', wordBreak: 'break-word',
+            }}>
+              {b.text}
+            </pre>
+          );
+        }
+        return (
+          <p key={i} style={{
+            margin: '0 0 10px',
+            fontSize: 13, lineHeight: 1.6, color: '#374151',
+          }}>
+            {b.text}
+          </p>
+        );
+      })}
     </div>
   );
 }
@@ -455,9 +661,8 @@ function GuidelineCard({
 }) {
   return (
     <div style={{
-      background: '#FFFFFF',
-      border: '1px solid #DBEAFE',
-      borderLeft: '3px solid #2563EB',
+      background: '#F5F6F8',
+      border: 'none',
       borderRadius: 14,
       overflow: 'hidden',
     }}>
@@ -469,56 +674,25 @@ function GuidelineCard({
           width: '100%',
           display: 'flex', alignItems: 'flex-start', gap: 14,
           padding: '14px 18px',
-          background: '#F0F7FF', border: 'none',
+          background: 'transparent', border: 'none',
           cursor: 'pointer', textAlign: 'left',
           fontFamily: 'inherit',
           transition: 'background 150ms',
         }}
-        onMouseEnter={(e) => { e.currentTarget.style.background = '#DBEAFE'; }}
-        onMouseLeave={(e) => { e.currentTarget.style.background = '#F0F7FF'; }}
+        onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
+        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
       >
-        {/* Иконка-протокол */}
-        <span style={{
-          flexShrink: 0,
-          width: 36, height: 36,
-          borderRadius: 8,
-          background: '#FFFFFF',
-          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-          color: '#2563EB',
-          border: '1px solid #DBEAFE',
-        }}>
-          <svg width={18} height={18} viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-            <path d="M9 11l3 3L22 4" />
-            <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
-          </svg>
-        </span>
         <span style={{ flex: 1, minWidth: 0 }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-            <span style={{
-              display: 'inline-flex', alignItems: 'center',
-              padding: '2px 8px',
-              background: '#2563EB',
-              color: '#FFFFFF',
-              borderRadius: 4,
-              fontFamily: 'var(--font-mono, ui-monospace)',
-              fontSize: 10, fontWeight: 700,
-              letterSpacing: '0.06em',
-              textTransform: 'uppercase',
-            }}>
-              Протокол
-            </span>
-          </span>
           <span style={{
             display: 'block',
             fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 700,
-            color: '#1E3A8A', letterSpacing: '-0.01em', lineHeight: 1.35,
+            color: '#111827', letterSpacing: '-0.01em', lineHeight: 1.35,
           }}>
             {guideline.title_ru}
           </span>
           {guideline.title_en !== guideline.title_ru && (
             <span style={{
-              display: 'block', marginTop: 2, fontSize: 12, color: '#6B7280',
+              display: 'block', marginTop: 3, fontSize: 12, color: '#6B7280',
             }}>
               {guideline.title_en}
             </span>
@@ -526,10 +700,10 @@ function GuidelineCard({
         </span>
         <span style={{
           flexShrink: 0,
-          color: '#6B7280',
+          color: '#9CA3AF',
           transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
           transition: 'transform 200ms',
-          marginTop: 6,
+          marginTop: 4,
         }}>
           <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
             stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
@@ -550,26 +724,21 @@ function GuidelineCard({
             style={{ overflow: 'hidden' }}
           >
             <div style={{
-              padding: '16px 18px 18px',
-              background: '#FAFBFC',
-              borderTop: '1px solid #DBEAFE',
-              fontSize: 13, lineHeight: 1.6, color: '#374151',
+              padding: '18px 20px 20px',
+              background: '#FFFFFF',
+              borderTop: '1px solid #E5E7EB',
             }}>
-              <pre style={{
-                whiteSpace: 'pre-wrap', wordBreak: 'break-word',
-                fontFamily: 'inherit', margin: 0, fontSize: 13,
-              }}>
-                {guideline.content}
-              </pre>
+              <GuidelineContent content={guideline.content} />
               {guideline.references.length > 0 && (
-                <div style={{ marginTop: 16, paddingTop: 12, borderTop: '1px solid #E5E7EB' }}>
+                <div style={{ marginTop: 18, paddingTop: 14, borderTop: '1px solid #E5E7EB' }}>
                   <div style={{
-                    fontSize: 11, fontWeight: 600, letterSpacing: '0.06em',
-                    textTransform: 'uppercase', color: '#9CA3AF', marginBottom: 6,
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
+                    textTransform: 'uppercase', color: '#9CA3AF', marginBottom: 8,
                   }}>
                     References
                   </div>
-                  <ol style={{ margin: 0, paddingLeft: 20, fontSize: 12, color: '#6B7280' }}>
+                  <ol style={{ margin: 0, paddingLeft: 20, fontSize: 12, color: '#6B7280', lineHeight: 1.55 }}>
                     {guideline.references.map((ref, i) => (
                       <li key={i} style={{ marginBottom: 4 }}>{ref}</li>
                     ))}
@@ -584,26 +753,3 @@ function GuidelineCard({
   );
 }
 
-function Section({
-  label, tone = 'neutral', children,
-}: {
-  label: string;
-  tone?: 'neutral' | 'warning';
-  children: React.ReactNode;
-}) {
-  return (
-    <div>
-      <div style={{
-        fontSize: 11, fontWeight: 600, letterSpacing: '0.06em',
-        textTransform: 'uppercase',
-        color: tone === 'warning' ? '#92400E' : '#9CA3AF',
-        marginBottom: 4,
-      }}>
-        {label}
-      </div>
-      <div style={{ color: tone === 'warning' ? '#78350F' : '#374151' }}>
-        {children}
-      </div>
-    </div>
-  );
-}
