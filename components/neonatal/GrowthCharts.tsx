@@ -16,7 +16,7 @@
  * Lazy-loaded JSON через fetch + force-cache; SW-кэш покрывает offline.
  */
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   type GrowthBank,
   type GrowthDataset,
@@ -318,6 +318,9 @@ function BordikNumberInput({
 }
 
 /** Bordik-стайл select — кастомный chevron, такая же pill-обёртка. */
+/** Полностью кастомный dropdown — native <option> нельзя стилизовать,
+ *  браузер рендерит system-UI dropdown с белым фоном и синей подсветкой
+ *  выбранной опции. Делаем через button + floating list. */
 function BordikSelect({
   value, onChange, options,
 }: {
@@ -325,48 +328,125 @@ function BordikSelect({
   onChange: (v: string) => void;
   options: Array<{ value: string; label: string }>;
 }) {
+  const [open, setOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  // Click-outside / Escape — закрыть dropdown
+  useEffect(() => {
+    if (!open) return;
+    const handleClick = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('mousedown', handleClick);
+    document.addEventListener('keydown', handleKey);
+    return () => {
+      document.removeEventListener('mousedown', handleClick);
+      document.removeEventListener('keydown', handleKey);
+    };
+  }, [open]);
+
+  const current = options.find((o) => o.value === value);
+
   return (
-    <div className="bordik-search" style={{
-      position: 'relative',
-      padding: '9px 36px 9px 12px',
-      background: '#FFFFFF',
-      borderRadius: 10,
-      transition: 'background 140ms ease, box-shadow 140ms ease',
-    }}>
-      <select
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
+    <div ref={containerRef} style={{ position: 'relative' }}>
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-haspopup="listbox"
+        aria-expanded={open}
         style={{
           width: '100%',
-          background: 'transparent',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          gap: 8,
+          padding: '9px 12px',
+          background: open ? '#FFFFFF' : '#FFFFFF',
           border: 'none',
-          outline: 'none',
-          padding: 0,
-          fontFamily: 'inherit',
-          fontSize: 14,
-          fontWeight: 500,
-          color: '#111827',
-          appearance: 'none',
-          WebkitAppearance: 'none',
-          MozAppearance: 'none',
+          borderRadius: 10,
           cursor: 'pointer',
+          fontFamily: 'inherit',
+          fontSize: 14, fontWeight: 500,
+          color: '#111827',
+          textAlign: 'left',
+          boxShadow: open
+            ? '0 0 0 1px #2563EB, 0 0 0 4px rgba(37, 99, 235, 0.14)'
+            : 'none',
+          transition: 'box-shadow 140ms ease',
         }}
       >
-        {options.map((opt) => (
-          <option key={opt.value} value={opt.value}>{opt.label}</option>
-        ))}
-      </select>
-      <svg
-        width={14} height={14} viewBox="0 0 24 24" fill="none"
-        stroke="#9CA3AF" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
-        style={{
-          position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)',
-          pointerEvents: 'none',
-        }}
-        aria-hidden
-      >
-        <polyline points="6 9 12 15 18 9" />
-      </svg>
+        <span>{current?.label ?? '—'}</span>
+        <svg
+          width={14} height={14} viewBox="0 0 24 24" fill="none"
+          stroke="#9CA3AF" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
+          style={{
+            transform: open ? 'rotate(180deg)' : 'rotate(0deg)',
+            transition: 'transform 150ms ease',
+            flexShrink: 0,
+          }}
+          aria-hidden
+        >
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
+      </button>
+
+      {open && (
+        <ul role="listbox" style={{
+          position: 'absolute',
+          top: 'calc(100% + 4px)',
+          left: 0,
+          right: 0,
+          margin: 0,
+          padding: 4,
+          listStyle: 'none',
+          background: '#FFFFFF',
+          border: '1px solid #E5E7EB',
+          borderRadius: 10,
+          boxShadow: '0 8px 24px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(15, 23, 42, 0.06)',
+          zIndex: 20,
+          maxHeight: 280,
+          overflowY: 'auto',
+        }}>
+          {options.map((opt) => {
+            const isSelected = opt.value === value;
+            return (
+              <li
+                key={opt.value}
+                role="option"
+                aria-selected={isSelected}
+                onClick={() => { onChange(opt.value); setOpen(false); }}
+                style={{
+                  padding: '8px 10px',
+                  borderRadius: 6,
+                  fontSize: 14, fontWeight: isSelected ? 600 : 500,
+                  color: isSelected ? '#1D4ED8' : '#374151',
+                  background: isSelected ? '#EFF6FF' : 'transparent',
+                  cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                  transition: 'background 100ms ease',
+                }}
+                onMouseEnter={(e) => {
+                  if (!isSelected) e.currentTarget.style.background = '#F5F6F8';
+                }}
+                onMouseLeave={(e) => {
+                  if (!isSelected) e.currentTarget.style.background = 'transparent';
+                }}
+              >
+                <span>{opt.label}</span>
+                {isSelected && (
+                  <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
+                    stroke="#1D4ED8" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </div>
   );
 }
