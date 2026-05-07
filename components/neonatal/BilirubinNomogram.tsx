@@ -234,12 +234,18 @@ function Field({ label, hint, children }: { label: string; hint?: string; childr
       <span style={{
         fontSize: 11, fontWeight: 600, color: '#6B7280',
         letterSpacing: '0.04em', textTransform: 'uppercase',
-        display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
       }}>
-        <span>{label}</span>
-        {hint && <span style={{ fontWeight: 400, color: '#9CA3AF', textTransform: 'none', letterSpacing: 0 }}>{hint}</span>}
+        {label}
       </span>
       {children}
+      {hint && (
+        <span style={{
+          fontSize: 11, fontWeight: 400, color: '#9CA3AF',
+          marginTop: 2,
+        }}>
+          {hint}
+        </span>
+      )}
     </label>
   );
 }
@@ -279,10 +285,12 @@ function BordikNumberInput({
   if (placeholder !== undefined) inputProps.placeholder = placeholder;
   return (
     <div className="bordik-search" style={{
-      padding: '9px 12px',
+      padding: '10px 12px',
       background: '#FFFFFF',
       borderRadius: 10,
       transition: 'background 140ms ease, box-shadow 140ms ease',
+      minHeight: 40,
+      display: 'flex', alignItems: 'center',
     }}>
       <input {...inputProps} />
     </div>
@@ -290,7 +298,7 @@ function BordikNumberInput({
 }
 
 /** Сегментированный переключатель — pill-обёртка с двумя кнопками внутри.
- *  Используется для toggle между mg/dL и µmol/L. */
+ *  Высота 40px чтобы совпадать с input/select. */
 function SegmentedControl<T extends string>({
   value, onChange, options,
 }: {
@@ -301,9 +309,10 @@ function SegmentedControl<T extends string>({
   return (
     <div role="tablist" style={{
       display: 'flex', gap: 2,
-      padding: 3,
+      padding: 4,
       background: '#FFFFFF',
       borderRadius: 10,
+      minHeight: 40,
     }}>
       {options.map((opt) => {
         const isActive = value === opt.value;
@@ -316,14 +325,14 @@ function SegmentedControl<T extends string>({
             onClick={() => onChange(opt.value)}
             style={{
               flex: 1,
-              padding: '7px 10px',
+              padding: '6px 10px',
               background: isActive ? '#2563EB' : 'transparent',
               color: isActive ? '#FFFFFF' : '#6B7280',
               border: 'none',
               borderRadius: 7,
               cursor: 'pointer',
               fontFamily: 'inherit',
-              fontSize: 12, fontWeight: 600,
+              fontSize: 13, fontWeight: 600,
               letterSpacing: '0.01em',
               transition: 'background 140ms ease, color 140ms ease',
             }}
@@ -359,13 +368,13 @@ function RiskChip({
       style={{
         display: 'inline-flex', alignItems: 'center', gap: 6,
         padding: '7px 13px',
-        background: active ? '#FEF3C7' : '#FFFFFF',
-        color: active ? '#92400E' : disabled ? '#9CA3AF' : '#374151',
+        background: active ? '#EFF6FF' : '#FFFFFF',
+        color: active ? '#1D4ED8' : disabled ? '#9CA3AF' : '#374151',
         border: 'none',
         borderRadius: 999,
         cursor: disabled ? 'not-allowed' : 'pointer',
         fontFamily: 'inherit',
-        fontSize: 12, fontWeight: 500,
+        fontSize: 12, fontWeight: active ? 600 : 500,
         opacity: disabled && !active ? 0.65 : 1,
         transition: 'background 140ms ease, color 140ms ease',
       }}
@@ -464,33 +473,66 @@ function ResultPanel({
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      {/* Главная рекомендация: тон + label + detail + rationale + reference */}
       <div style={{
-        padding: '14px 18px',
+        padding: '14px 16px',
         background: toneBg,
         borderLeft: `4px solid ${toneAccent}`,
         borderRadius: 10,
       }}>
         <div style={{
           fontSize: 11, fontWeight: 700, color: toneText,
-          letterSpacing: '0.04em', textTransform: 'uppercase', marginBottom: 4, opacity: 0.85,
+          letterSpacing: '0.04em', textTransform: 'uppercase', marginBottom: 6, opacity: 0.85,
         }}>
           Рекомендация AAP 2022
         </div>
-        <div style={{ fontSize: 17, fontWeight: 700, color: toneText, fontFamily: 'var(--font-display)', letterSpacing: '-0.01em' }}>
+        <div style={{
+          fontFamily: 'var(--font-display)',
+          fontSize: 16, fontWeight: 600,
+          color: toneText, letterSpacing: '-0.005em',
+          lineHeight: 1.4, marginBottom: 8,
+        }}>
           {rec.label_ru}
         </div>
-        <div style={{ marginTop: 6, fontSize: 13, color: toneText, opacity: 0.92, lineHeight: 1.55 }}>
+        <p style={{
+          margin: 0, fontSize: 13, color: toneText, opacity: 0.92,
+          lineHeight: 1.55,
+        }}>
           {rec.detail_ru}
+        </p>
+        <div style={{
+          marginTop: 10, paddingTop: 10,
+          borderTop: `1px solid ${toneAccent}33`,
+        }}>
+          <div style={{
+            fontSize: 10, fontWeight: 700, color: toneText, opacity: 0.7,
+            letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 3,
+          }}>
+            Почему так
+          </div>
+          <div style={{
+            fontSize: 12, color: toneText, opacity: 0.92, lineHeight: 1.55,
+          }}>
+            {rec.rationale_ru}
+          </div>
+        </div>
+        <div style={{
+          marginTop: 8,
+          fontSize: 10, color: toneText, opacity: 0.6,
+          fontStyle: 'italic', lineHeight: 1.45,
+        }}>
+          Источник: {rec.reference}
         </div>
       </div>
 
+      {/* 4 метрики в 2×2 grid */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(2, 1fr)',
         gap: 8,
       }}>
         <Card label="Страт риска" value={STRATUM_LABEL_RU[computed.stratum]} small />
-        <Card label="Текущий TSB" value={`${fmt(computed.tsbMgdl)} ${unit}`} />
+        <Card label="Текущий TSB" value={`${fmt(computed.tsbMgdl)} ${unit}`} accent />
         <Card label="Порог ФТ" value={`${fmt(computed.ptThr)} ${unit}`} sub={`Δ ${rec.marginToPt > 0 ? '+' : ''}${rec.marginToPt.toFixed(1)}`} />
         <Card label="Порог ОП" value={`${fmt(computed.exThr)} ${unit}`} sub={`Δ ${rec.marginToEx > 0 ? '+' : ''}${rec.marginToEx.toFixed(1)}`} />
       </div>
@@ -498,16 +540,25 @@ function ResultPanel({
   );
 }
 
-function Card({ label, value, sub, small }: { label: string; value: string; sub?: string; small?: boolean }) {
+function Card({
+  label, value, sub, small, accent,
+}: {
+  label: string;
+  value: string;
+  sub?: string;
+  small?: boolean;
+  accent?: boolean;
+}) {
   return (
     <div style={{
       padding: '12px 14px',
-      background: '#FFFFFF',
-      border: '1px solid #E5E7EB',
+      background: accent ? '#EFF6FF' : '#FFFFFF',
+      border: `1px solid ${accent ? '#BFDBFE' : '#E5E7EB'}`,
       borderRadius: 12,
     }}>
       <div style={{
-        fontSize: 11, fontWeight: 600, color: '#9CA3AF',
+        fontSize: 11, fontWeight: 600,
+        color: accent ? '#1D4ED8' : '#9CA3AF',
         letterSpacing: '0.04em', textTransform: 'uppercase', marginBottom: 4,
       }}>
         {label}
@@ -515,12 +566,19 @@ function Card({ label, value, sub, small }: { label: string; value: string; sub?
       <div style={{
         fontFamily: 'var(--font-display)',
         fontSize: small ? 13 : 18, fontWeight: 700,
-        color: '#111827', letterSpacing: '-0.01em',
+        color: accent ? '#1E3A8A' : '#111827', letterSpacing: '-0.01em',
         lineHeight: 1.3,
       }}>
         {value}
       </div>
-      {sub && <div style={{ fontSize: 11, color: '#6B7280', marginTop: 3 }}>{sub}</div>}
+      {sub && (
+        <div style={{
+          fontSize: 11, color: accent ? '#3B82F6' : '#6B7280', marginTop: 3,
+          fontFamily: 'var(--font-mono, ui-monospace)',
+        }}>
+          {sub}
+        </div>
+      )}
     </div>
   );
 }
@@ -596,24 +654,40 @@ function ChartView({
 
   return (
     <div style={{
-      padding: '14px 16px 12px',
+      padding: '16px 18px 14px',
       background: '#FFFFFF',
       border: '1px solid #E5E7EB',
       borderRadius: 12,
-      display: 'flex', flexDirection: 'column', gap: 8,
+      display: 'flex', flexDirection: 'column', gap: 12,
       position: 'relative',
     }}>
-      {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: 8 }}>
+      {/* Header — title + параграф + контекст */}
+      <div>
         <div style={{
-          fontFamily: 'var(--font-display)', fontSize: 14, fontWeight: 700,
-          color: '#111827', letterSpacing: '-0.01em',
+          display: 'flex', alignItems: 'baseline', justifyContent: 'space-between',
+          flexWrap: 'wrap', gap: 8, marginBottom: 4,
         }}>
-          Билирубин (TSB), {unit}
+          <h3 style={{
+            margin: 0,
+            fontFamily: 'var(--font-display)', fontSize: 16, fontWeight: 600,
+            color: '#111827', letterSpacing: '-0.01em',
+          }}>
+            Билирубин TSB ({unit}) по часам жизни
+          </h3>
+          <div style={{
+            fontSize: 11, color: '#9CA3AF',
+            letterSpacing: '0.04em', textTransform: 'uppercase', fontWeight: 600,
+            fontFamily: 'var(--font-mono, ui-monospace)',
+          }}>
+            AAP 2022 · 0–168 ч
+          </div>
         </div>
-        <div style={{ fontSize: 11, color: '#9CA3AF', letterSpacing: '0.04em', textTransform: 'uppercase', fontWeight: 600 }}>
-          AAP 2022 · 0–168 ч
-        </div>
+        <p style={{
+          margin: 0, fontSize: 12, color: '#6B7280', lineHeight: 1.5,
+        }}>
+          Кривые отображают пороги для текущего страта риска. Точка пациента
+          между ФТ и ОП — фототерапия; над ОП — обменное переливание.
+        </p>
       </div>
 
       <svg viewBox={`0 0 ${width} ${height}`} style={{ width: '100%', height: 'auto' }}

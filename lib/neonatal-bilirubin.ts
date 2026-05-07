@@ -45,8 +45,10 @@ export type Decision =
 
 export interface Recommendation {
   decision: Decision;
-  label_ru: string;
-  detail_ru: string;
+  label_ru: string;          // короткий вердикт для card-header
+  detail_ru: string;         // развёрнутое клиническое объяснение
+  rationale_ru: string;      // почему именно так — ссылка на критерий AAP
+  reference: string;         // источник классификации
   tone: 'ok' | 'monitor' | 'warning' | 'critical';
   ptThreshold: number;
   exThreshold: number;
@@ -88,36 +90,43 @@ export function classifyStratum(gaWeeks: number, riskIds: ReadonlyArray<string>)
 export function decide(tsb: number, ptThreshold: number, exThreshold: number): Recommendation {
   const marginToPt = ptThreshold - tsb;
   const marginToEx = exThreshold - tsb;
+  const REF = 'AAP 2022 — Kemper AR, Newman TB, Slaughter JL, et al. Pediatrics 2022;150(3):e2022058859';
 
   let decision: Decision;
   let label_ru: string;
   let detail_ru: string;
+  let rationale_ru: string;
   let tone: Recommendation['tone'];
 
   if (tsb >= exThreshold) {
     decision = 'exchange';
     label_ru = 'Обменное переливание';
-    detail_ru = 'Срочно: интенсивная фототерапия + подготовка к обменному переливанию. Перевод в ОРИТН.';
+    detail_ru = `Срочно: интенсивная фототерапия (двойная/тройная лампа, расстояние ≤30 см, прозрачный кювет) + подготовка к обменному переливанию (двойной объёмный обмен ОЦК ~160 мл/кг). Перевод в ОРИТН. Контроль TSB через 2 ч после начала интенсивной ФТ; если снижение менее 1–2 mg/dL/ч — выполнять обменное.`;
+    rationale_ru = `TSB ${tsb.toFixed(1)} mg/dL ≥ порога обменного переливания ${exThreshold.toFixed(1)} mg/dL. Согласно AAP 2022 (Table 1, Figure 4), достижение exchange threshold = острый risk билирубиновой энцефалопатии (ОБЭ); intensive PT + обмен показаны без отлагательств.`;
     tone = 'critical';
   } else if (tsb >= exThreshold - 2) {
     decision = 'intensive';
     label_ru = 'Интенсивная фототерапия';
-    detail_ru = 'Двойная/тройная фототерапия, повторить TSB через 2–3 ч. Готовиться к обменному, если рост сохраняется.';
+    detail_ru = `Двойная/тройная фототерапия ≥30 µW/cm²/nm на участке кожи, IV-гидратация при необходимости. Повторить TSB через 2–3 ч. Готовиться к обменному переливанию (group&match, типирование, согласие родителей), если рост TSB сохраняется или снижение менее 0.5 mg/dL/ч.`;
+    rationale_ru = `TSB ${tsb.toFixed(1)} mg/dL в пределах 2 mg/dL до обменного переливания (порог ${exThreshold.toFixed(1)} mg/dL). AAP 2022 рекомендует escalation в intensive PT при достижении этой зоны "escalation-of-care threshold".`;
     tone = 'critical';
   } else if (tsb >= ptThreshold) {
     decision = 'phototherapy';
     label_ru = 'Начать фототерапию';
-    detail_ru = 'Стандартная фототерапия. Повторить TSB через 4–6 ч после начала, далее каждые 6–12 ч до устойчивого снижения.';
+    detail_ru = `Стандартная фототерапия — голубой свет 460–490 nm, ≥8–10 µW/cm²/nm, расстояние 30–50 см от кожи. Раздеть до подгузника, защитить глаза. Повторить TSB через 4–6 ч после начала, далее каждые 6–12 ч до устойчивого снижения. Прекратить, когда TSB < порога фототерапии минус 2 mg/dL.`;
+    rationale_ru = `TSB ${tsb.toFixed(1)} mg/dL ≥ порога фототерапии ${ptThreshold.toFixed(1)} mg/dL для текущего страта риска. AAP 2022 (Figure 2) — phototherapy threshold для предотвращения нарастания TSB к exchange-уровню.`;
     tone = 'warning';
   } else if (marginToPt <= 3) {
     decision = 'monitor';
     label_ru = 'Близко к порогу — наблюдение';
-    detail_ru = `До фототерапии ${marginToPt.toFixed(1)} mg/dL. Повторить TSB через 4–6 ч; оценить факторы риска повторно.`;
+    detail_ru = `До фототерапии ${marginToPt.toFixed(1)} mg/dL. Повторить TSB через 4–6 ч (или раньше при клиническом ухудшении); оценить динамику нарастания (rate-of-rise: > 0.3 mg/dL/ч после 24 ч жизни — предиктор пересечения порога), пересмотреть факторы риска нейротоксичности.`;
+    rationale_ru = `TSB ${tsb.toFixed(1)} mg/dL в пределах 3 mg/dL ниже порога фототерапии (${ptThreshold.toFixed(1)} mg/dL). Зона "active monitoring" по AAP 2022 — недостаточно для лечения, но требует усиленного контроля.`;
     tone = 'monitor';
   } else {
     decision = 'clear';
     label_ru = 'Ниже порога — рутинное наблюдение';
-    detail_ru = `До фототерапии ${marginToPt.toFixed(1)} mg/dL. Повторное измерение по клинической ситуации.`;
+    detail_ru = `До фототерапии ${marginToPt.toFixed(1)} mg/dL — комфортный запас. Повторное измерение по клинической ситуации (при выписке — TcB или TSB перед уходом домой; при риске — повторно через 24–48 ч после выписки).`;
+    rationale_ru = `TSB ${tsb.toFixed(1)} mg/dL более чем на 3 mg/dL ниже порога фототерапии (${ptThreshold.toFixed(1)} mg/dL). Это безопасная зона по AAP 2022 для текущего страта риска.`;
     tone = 'ok';
   }
 
@@ -125,6 +134,8 @@ export function decide(tsb: number, ptThreshold: number, exThreshold: number): R
     decision,
     label_ru,
     detail_ru,
+    rationale_ru,
+    reference: REF,
     tone,
     ptThreshold,
     exThreshold,

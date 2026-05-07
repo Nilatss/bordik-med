@@ -256,14 +256,18 @@ function ControlField({
       <span style={{
         fontSize: 11, fontWeight: 600, color: '#6B7280',
         letterSpacing: '0.04em', textTransform: 'uppercase',
-        display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
       }}>
-        <span>{label}</span>
-        {hint && <span style={{
-          fontWeight: 400, color: '#9CA3AF', textTransform: 'none', letterSpacing: 0,
-        }}>{hint}</span>}
+        {label}
       </span>
       {children}
+      {hint && (
+        <span style={{
+          fontSize: 11, fontWeight: 400, color: '#9CA3AF',
+          marginTop: 2,
+        }}>
+          {hint}
+        </span>
+      )}
     </label>
   );
 }
@@ -302,10 +306,12 @@ function BordikNumberInput({
   if (placeholder !== undefined) inputProps.placeholder = placeholder;
   return (
     <div className="bordik-search" style={{
-      padding: '9px 12px',
+      padding: '10px 12px',
       background: '#FFFFFF',
       borderRadius: 10,
       transition: 'background 140ms ease, box-shadow 140ms ease',
+      minHeight: 40,
+      display: 'flex', alignItems: 'center',
     }}>
       <input {...inputProps} />
     </div>
@@ -358,8 +364,9 @@ function BordikSelect({
           width: '100%',
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           gap: 8,
-          padding: '9px 12px',
-          background: open ? '#FFFFFF' : '#FFFFFF',
+          padding: '10px 12px',
+          minHeight: 40,
+          background: '#FFFFFF',
           border: 'none',
           borderRadius: 10,
           cursor: 'pointer',
