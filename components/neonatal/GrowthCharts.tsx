@@ -504,30 +504,77 @@ function ResultPanel({
     ok: '#10B981',
   }[result.interp.tone];
 
+  const medianStr = `${result.M.toFixed(parameter === 'weight' ? 0 : 1)} ${PARAMETER_UNIT[parameter]}`;
+
   return (
     <div style={{
-      display: 'flex', flexDirection: 'column', gap: 10,
+      display: 'flex', flexDirection: 'column', gap: 12,
     }}>
-      <ResultCard label="Перцентиль" value={`P${formatPercentile(result.pct)}`} sub={`Z-score = ${result.z.toFixed(2)}`} />
-      <ResultCard label="Медиана (P50)" value={`${result.M.toFixed(parameter === 'weight' ? 0 : 1)}`} sub={PARAMETER_UNIT[parameter]} />
+      {/* 2 метрики в один ряд: основная (Перцентиль, primary) + контекстная (Медиана) */}
       <div style={{
-        padding: '12px 14px',
+        display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10,
+      }}>
+        <ResultCard
+          label="Перцентиль"
+          value={`P${formatPercentile(result.pct)}`}
+          sub={`Z-score: ${result.z >= 0 ? '+' : ''}${result.z.toFixed(2)}`}
+          accent
+        />
+        <ResultCard
+          label="Норма (P50)"
+          value={medianStr}
+          sub={`для ${parseFloat(age).toFixed(1)} нед`}
+        />
+      </div>
+
+      {/* Развёрнутая клиническая интерпретация */}
+      <div style={{
+        padding: '14px 16px',
         background: toneBg,
         borderLeft: `4px solid ${toneAccent}`,
         borderRadius: 10,
       }}>
         <div style={{
           fontSize: 11, fontWeight: 700, color: toneText, opacity: 0.85,
-          letterSpacing: '0.04em', textTransform: 'uppercase', marginBottom: 4,
+          letterSpacing: '0.04em', textTransform: 'uppercase', marginBottom: 6,
         }}>
-          Интерпретация
+          Клиническая интерпретация
         </div>
         <div style={{
-          fontSize: 14, fontWeight: 600, color: toneText,
-          fontFamily: 'var(--font-display)', letterSpacing: '-0.005em',
-          lineHeight: 1.35,
+          fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 600,
+          color: toneText, letterSpacing: '-0.005em',
+          lineHeight: 1.4, marginBottom: 8,
         }}>
           {result.interp.label}
+        </div>
+        <p style={{
+          margin: 0, fontSize: 13, color: toneText, opacity: 0.92,
+          lineHeight: 1.55,
+        }}>
+          {result.interp.detail}
+        </p>
+        <div style={{
+          marginTop: 10, paddingTop: 10,
+          borderTop: `1px solid ${toneAccent}33`,
+        }}>
+          <div style={{
+            fontSize: 10, fontWeight: 700, color: toneText, opacity: 0.7,
+            letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 3,
+          }}>
+            Рекомендация
+          </div>
+          <div style={{
+            fontSize: 12, color: toneText, opacity: 0.92, lineHeight: 1.55,
+          }}>
+            {result.interp.recommendation}
+          </div>
+        </div>
+        <div style={{
+          marginTop: 8,
+          fontSize: 10, color: toneText, opacity: 0.6,
+          fontStyle: 'italic', lineHeight: 1.45,
+        }}>
+          Источник классификации: {result.interp.reference}
         </div>
       </div>
     </div>
@@ -541,27 +588,43 @@ function formatPercentile(p: number): string {
   return Math.round(p).toString();
 }
 
-function ResultCard({ label, value, sub }: { label: string; value: string; sub?: string }) {
+function ResultCard({
+  label, value, sub, accent,
+}: {
+  label: string;
+  value: string;
+  sub?: string;
+  accent?: boolean;
+}) {
   return (
     <div style={{
-      padding: '12px 16px',
-      background: '#FFFFFF',
-      border: '1px solid #E5E7EB',
+      padding: '12px 14px',
+      background: accent ? '#EFF6FF' : '#FFFFFF',
+      border: `1px solid ${accent ? '#BFDBFE' : '#E5E7EB'}`,
       borderRadius: 12,
     }}>
       <div style={{
-        fontSize: 11, fontWeight: 600, color: '#9CA3AF',
+        fontSize: 11, fontWeight: 600,
+        color: accent ? '#1D4ED8' : '#9CA3AF',
         letterSpacing: '0.04em', textTransform: 'uppercase', marginBottom: 4,
       }}>
         {label}
       </div>
       <div style={{
         fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 700,
-        color: '#111827', letterSpacing: '-0.02em',
+        color: accent ? '#1E3A8A' : '#111827', letterSpacing: '-0.02em',
+        lineHeight: 1.15,
       }}>
         {value}
       </div>
-      {sub && <div style={{ fontSize: 12, color: '#6B7280', marginTop: 2 }}>{sub}</div>}
+      {sub && (
+        <div style={{
+          fontSize: 11, color: accent ? '#3B82F6' : '#6B7280',
+          marginTop: 4, fontFamily: 'var(--font-mono, ui-monospace)',
+        }}>
+          {sub}
+        </div>
+      )}
     </div>
   );
 }

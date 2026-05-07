@@ -139,15 +139,78 @@ export function buildChartCurves(points: LmsPoint[]): ChartCurve[] {
   }));
 }
 
-/** Клиническая интерпретация Z-score / перцентиля. */
-export function interpretZ(z: number): { label: string; tone: 'critical' | 'warning' | 'ok' | 'high' } {
-  if (z < -3) return { label: 'Тяжёлое отклонение (< P0.1)', tone: 'critical' };
-  if (z < -2) return { label: 'Низкий рост / вес (< P3)', tone: 'warning' };
-  if (z < -1) return { label: 'Ниже среднего (P3–P15)', tone: 'ok' };
-  if (z <= 1) return { label: 'Норма (P15–P85)', tone: 'ok' };
-  if (z <= 2) return { label: 'Выше среднего (P85–P97)', tone: 'ok' };
-  if (z <= 3) return { label: 'Высокий показатель (> P97)', tone: 'warning' };
-  return { label: 'Очень высокий показатель (> P99.9)', tone: 'high' };
+/** Клиническая интерпретация Z-score / перцентиля.
+ *  Бэнды по WHO Multicentre Growth Reference Study Group (2006) +
+ *  Fenton TR, Kim JH (BMC Pediatrics 2013;13:59) — те же z-score
+ *  пороги используются в WHO Anthro и Fenton growth chart calculator
+ *  для классификации nutritional status / fetal-infant growth. */
+export interface InterpretationResult {
+  label: string;        // короткий вердикт (одна строка для card-header)
+  detail: string;       // развёрнутое объяснение клинического значения
+  recommendation: string; // что делать дальше (мониторинг / консультация)
+  reference: string;    // источник классификации
+  tone: 'critical' | 'warning' | 'ok' | 'high';
+}
+
+export function interpretZ(z: number): InterpretationResult {
+  const REF_FENTON = 'Fenton TR, Kim JH. BMC Pediatrics 2013;13:59 + WHO Multicentre Growth Reference Study Group, 2006';
+  const REF_WHO = 'WHO Multicentre Growth Reference Study Group, 2006 (Z-score classification, Anthro v3.2)';
+
+  if (z < -3) return {
+    label: 'Тяжёлое отклонение (Z < −3)',
+    detail: `Текущее значение ниже 0.1-го перцентиля (P0.1). Соответствует тяжёлой степени задержки роста / истощения по классификации ВОЗ. Z-score ${z.toFixed(2)} означает, что показатель отличается от медианы для данного PMA на 3 стандартных отклонения и более — это менее 0.13% популяции здоровых сверстников.`,
+    recommendation: 'Срочная консультация неонатолога. Оценить нутритивный статус, исключить тяжёлые соматические заболевания, рассмотреть необходимость интенсификации питания (PN, обогащение материнского молока, специализированные смеси).',
+    reference: REF_WHO,
+    tone: 'critical',
+  };
+
+  if (z < -2) return {
+    label: 'Ниже нормы (Z от −3 до −2)',
+    detail: `Значение между P0.1 и P3 — умеренная задержка роста (moderate stunting / wasting по ВОЗ). Z-score ${z.toFixed(2)} означает отклонение от медианы на 2–3 SD. Для недоношенных это часто extrauterine growth restriction (EUGR), особенно если показатели ухудшаются от визита к визиту.`,
+    recommendation: 'Динамический контроль каждые 1–2 недели, оценка прибавки в весе (target ≥15 г/кг/сут для preterm). Пересмотр режима питания совместно с неонатологом / диетологом NICU.',
+    reference: REF_FENTON,
+    tone: 'warning',
+  };
+
+  if (z < -1) return {
+    label: 'Ниже среднего (Z от −2 до −1)',
+    detail: `Значение между P3 и P15 — нижняя граница нормы. Z-score ${z.toFixed(2)} в пределах 1–2 SD ниже медианы. Сама по себе точка не является патологией, но требует оценки тренда: снижение траектории через 2 SD-line — клинически значимо.`,
+    recommendation: 'Плановый мониторинг по графику роста (вес — ежедневно в NICU, окружность головы — еженедельно). Сравнить с предыдущими измерениями: важна траектория, а не одна точка.',
+    reference: REF_FENTON,
+    tone: 'ok',
+  };
+
+  if (z <= 1) return {
+    label: 'Норма (Z от −1 до +1)',
+    detail: `Значение между P15 и P85 — центральная зона нормы. Z-score ${z.toFixed(2)} в пределах 1 SD от медианы; ~68% здоровых сверстников попадают в этот диапазон. Соответствует ожидаемому развитию для данного PMA.`,
+    recommendation: 'Рутинный мониторинг по протоколу NICU. При устойчивой траектории — без дополнительных вмешательств.',
+    reference: REF_FENTON,
+    tone: 'ok',
+  };
+
+  if (z <= 2) return {
+    label: 'Выше среднего (Z от +1 до +2)',
+    detail: `Значение между P85 и P97 — верхняя граница нормы. Z-score ${z.toFixed(2)} в пределах 1–2 SD выше медианы. Не патологическое состояние; чаще всего — индивидуальная конституция или хорошая прибавка на фоне адекватного питания.`,
+    recommendation: 'Плановый мониторинг. Если только окружность головы превышает P97 при норме веса/длины — оценить на признаки гидроцефалии.',
+    reference: REF_FENTON,
+    tone: 'ok',
+  };
+
+  if (z <= 3) return {
+    label: 'Выше нормы (Z от +2 до +3)',
+    detail: `Значение между P97 и P99.9 — выше нормы. Z-score ${z.toFixed(2)} означает отклонение от медианы на 2–3 SD, ~2.3% популяции. Для веса — оценить на признаки macrosomia / гипергидратации; для окружности головы — исключить гидроцефалию.`,
+    recommendation: 'Уточнить динамику предыдущих измерений. Для HC > P97 — нейросонография, оценка ФГТ. Для веса > P97 при изолированном повышении — оценить водный баланс.',
+    reference: REF_FENTON,
+    tone: 'warning',
+  };
+
+  return {
+    label: 'Тяжёлое превышение (Z > +3)',
+    detail: `Значение выше P99.9 — крайне высокий показатель. Z-score ${z.toFixed(2)} — отклонение более 3 SD; менее 0.13% популяции. Часто свидетельствует о патологии: для HC — гидроцефалия, для веса — отёки / эндокринная патология, для длины — конституциональный гигантизм или эндокринопатия.`,
+    recommendation: 'Срочная консультация специалиста (нейрохирург при HC; эндокринолог при изолированном росте; кардиолог при отёках). Дифференциальная диагностика обязательна.',
+    reference: REF_WHO,
+    tone: 'high',
+  };
 }
 
 export const PARAMETER_LABEL_RU: Record<GrowthParameter, string> = {
