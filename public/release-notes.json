@@ -3,6 +3,21 @@
   "$readme": "Append a new entry to the TOP of `releases` whenever a deploy ships USER-FACING changes. The PwaRegistrar shows an update toast only when the latest entry's `version` differs from what the visitor last saw (stored in localStorage as `bordik-last-seen-release`). Cosmetic deploys / hotfixes / pure infra work should NOT add an entry — that way users only get pinged when there's actually something new for them to see. Schema per entry: { version: semver string, date: YYYY-MM-DD, title: short headline (~6 words), summary: one-paragraph description, changes: array of bullet strings }.",
   "releases": [
     {
+      "version": "0.5.0",
+      "date": "2026-05-07",
+      "title": "Неонатология, ICD-10-CM кодирование и единый UI",
+      "summary": "Большой апдейт: новый раздел «Неонатология» (127 препаратов NICU + 13 протоколов из Saudi Arabia Handbook 2016), ICD-10-CM коды отравлений к каждой паре препаратов в Чекере взаимодействий, плюс полная унификация всех справочных плашек в едином UI-стиле.",
+      "changes": [
+        "Новый раздел «Неонатология» в сайдбаре: 127 препаратов NICU с дозированием по гестационному возрасту + 13 практических протоколов (Resuscitation, Hypotension, NOHK, Caffeine, MSUD, PN и др.). Источник — Neonatal Dosage and Practical Guidelines Handbook 2nd Ed. (Saudi Arabia 2016)",
+        "В Чекере взаимодействий — справочник ICD-10-CM кодирования отравлений: для каждого выбранного препарата 6 кодов (Случайное / Преднамеренное / Нападение / Неуточнённое / Побочное / Underdosing). Клик по коду — копирование в буфер с зелёной подсветкой и галочкой",
+        "Поисковая подсветка (Highlight) во всех справочниках — Онко-кодере, Алфавитном указателе CMS, Неонатологии, Классификациях. Совпадение выделяется фирменным синим",
+        "Focus-state на всех полях поиска: при клике/Tab появляется белый фон + синее кольцо (1px + 4px halo) — сразу видно куда введёт ввод",
+        "Длинные монографии в Неонатологии — структурированный рендер: содержимое разбивается по секциям (Показания, Доза, Фармакокинетика, Мониторинг, Предосторожности, Приготовление, Источники) и оформляется буллетами вместо стены текста",
+        "Hover-подсветка кодов в развёрнутой главе МКБ — видно на каком коде курсор",
+        "Унификация UI: карточки во всех справочниках в одном стиле (серый фон, мягкие скругления, единый паттерн раскрытия), консистентные отступы по 4px-сетке, одинаковые Highlight, focus-state и копи-фидбек везде где есть поиск"
+      ]
+    },
+    {
       "version": "0.4.0",
       "date": "2026-05-05",
       "title": "Чекер взаимодействий лекарств",
