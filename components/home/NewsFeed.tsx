@@ -55,7 +55,11 @@ export default function NewsFeed() {
     let cancelled = false;
     void (async () => {
       try {
-        const r = await fetch('/release-notes.json', { cache: 'force-cache' });
+        // cache: 'no-cache' — обходит SW/HTTP-кэш, заставляет браузер
+        // делать conditional GET (If-None-Match → 304 Not Modified если
+        // сервер не менял JSON). Раньше с force-cache пользователи
+        // зависали на старой версии после деплоя нового релиза.
+        const r = await fetch('/release-notes.json', { cache: 'no-cache' });
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         const json = (await r.json()) as ReleasesFile;
         if (!cancelled) setReleases((json.releases ?? []).slice(0, VISIBLE_COUNT));

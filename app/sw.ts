@@ -87,6 +87,7 @@ const serwist = new Serwist({
       matcher: ({ url }) => (
         url.pathname === '/catalog.meta.json' ||
         url.pathname === '/content-manifest.json' ||
+        url.pathname === '/release-notes.json' ||
         /^\/search-[a-z]{2}\.json$/.test(url.pathname)
       ),
       handler: new StaleWhileRevalidate({
