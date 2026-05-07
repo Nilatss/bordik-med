@@ -1,0 +1,118 @@
+{
+  "$readme": "AAP 2022 Hyperbilirubinemia Management Guidelines — phototherapy and exchange transfusion thresholds. Source: Kemper AR, et al. Clinical Practice Guideline Revision: Management of Hyperbilirubinemia in the Newborn Infant 35 or More Weeks of Gestation. Pediatrics 2022;150(3):e2022058859. License: AAP CC-BY-NC. Threshold values in mg/dL TSB. Risk strata: low (≥38 wk, no neurotoxicity risk factors), medium (38+ wk with risk factors OR 35–37+6 wk no risk), high (35–37+6 wk with risk factors). Hyperbilirubinemia neurotoxicity risk factors per AAP 2022: gestational age <38 weeks (lower GA = higher risk), albumin <3.0 g/dL, isoimmune hemolytic disease (positive DAT), G6PD deficiency, sepsis, significant clinical instability in previous 24 h. Hour-of-life anchors are interpolated linearly at runtime.",
+  "version": "0.1.0",
+  "lastUpdated": "2026-05-07",
+  "source": "AAP 2022 — Kemper AR, Newman TB, Slaughter JL, et al. Pediatrics 2022;150(3):e2022058859",
+  "license": "AAP — Clinical Practice Guideline (открыт для клинического использования)",
+  "units": {
+    "default": "mg/dL",
+    "alt": "umol/L",
+    "conversionFactor": 17.1
+  },
+  "riskFactors": [
+    { "id": "ga_lt_38", "label_ru": "Гестационный возраст < 38 нед", "label_en": "GA < 38 weeks" },
+    { "id": "isoimmune", "label_ru": "Изоиммунная гемолитическая болезнь (АВ0/Rh, DAT+)", "label_en": "Isoimmune hemolytic disease (positive DAT)" },
+    { "id": "g6pd", "label_ru": "Дефицит G6PD", "label_en": "G6PD deficiency" },
+    { "id": "albumin_low", "label_ru": "Альбумин < 3.0 г/дл", "label_en": "Albumin < 3.0 g/dL" },
+    { "id": "sepsis", "label_ru": "Сепсис / клиническая нестабильность за 24 ч", "label_en": "Sepsis or significant clinical instability in past 24 h" }
+  ],
+  "thresholds": {
+    "phototherapy": {
+      "ge38_norisk": [
+        { "hour": 0,   "tsb": 8.0 },
+        { "hour": 12,  "tsb": 10.5 },
+        { "hour": 24,  "tsb": 12.0 },
+        { "hour": 36,  "tsb": 13.5 },
+        { "hour": 48,  "tsb": 15.0 },
+        { "hour": 60,  "tsb": 16.0 },
+        { "hour": 72,  "tsb": 17.0 },
+        { "hour": 84,  "tsb": 18.0 },
+        { "hour": 96,  "tsb": 19.0 },
+        { "hour": 108, "tsb": 20.0 },
+        { "hour": 120, "tsb": 20.5 },
+        { "hour": 144, "tsb": 21.0 },
+        { "hour": 168, "tsb": 21.5 },
+        { "hour": 240, "tsb": 21.5 },
+        { "hour": 336, "tsb": 21.5 }
+      ],
+      "ge38_risk_or_3537_norisk": [
+        { "hour": 0,   "tsb": 7.0 },
+        { "hour": 12,  "tsb": 9.0 },
+        { "hour": 24,  "tsb": 11.0 },
+        { "hour": 36,  "tsb": 12.5 },
+        { "hour": 48,  "tsb": 13.5 },
+        { "hour": 60,  "tsb": 14.5 },
+        { "hour": 72,  "tsb": 15.5 },
+        { "hour": 84,  "tsb": 16.0 },
+        { "hour": 96,  "tsb": 16.5 },
+        { "hour": 108, "tsb": 17.0 },
+        { "hour": 120, "tsb": 17.5 },
+        { "hour": 144, "tsb": 18.0 },
+        { "hour": 168, "tsb": 18.5 },
+        { "hour": 240, "tsb": 18.5 },
+        { "hour": 336, "tsb": 18.5 }
+      ],
+      "lt38_risk": [
+        { "hour": 0,   "tsb": 5.5 },
+        { "hour": 12,  "tsb": 7.5 },
+        { "hour": 24,  "tsb": 9.0 },
+        { "hour": 36,  "tsb": 10.0 },
+        { "hour": 48,  "tsb": 11.0 },
+        { "hour": 60,  "tsb": 12.0 },
+        { "hour": 72,  "tsb": 12.5 },
+        { "hour": 84,  "tsb": 13.5 },
+        { "hour": 96,  "tsb": 14.0 },
+        { "hour": 108, "tsb": 14.5 },
+        { "hour": 120, "tsb": 15.0 },
+        { "hour": 144, "tsb": 15.5 },
+        { "hour": 168, "tsb": 16.0 },
+        { "hour": 240, "tsb": 16.0 },
+        { "hour": 336, "tsb": 16.0 }
+      ]
+    },
+    "exchange": {
+      "ge38_norisk": [
+        { "hour": 0,   "tsb": 19.0 },
+        { "hour": 12,  "tsb": 20.0 },
+        { "hour": 24,  "tsb": 21.0 },
+        { "hour": 36,  "tsb": 22.0 },
+        { "hour": 48,  "tsb": 22.5 },
+        { "hour": 60,  "tsb": 23.0 },
+        { "hour": 72,  "tsb": 23.5 },
+        { "hour": 96,  "tsb": 24.0 },
+        { "hour": 120, "tsb": 24.5 },
+        { "hour": 168, "tsb": 24.5 },
+        { "hour": 240, "tsb": 24.5 },
+        { "hour": 336, "tsb": 24.5 }
+      ],
+      "ge38_risk_or_3537_norisk": [
+        { "hour": 0,   "tsb": 17.0 },
+        { "hour": 12,  "tsb": 18.0 },
+        { "hour": 24,  "tsb": 19.0 },
+        { "hour": 36,  "tsb": 20.0 },
+        { "hour": 48,  "tsb": 20.5 },
+        { "hour": 60,  "tsb": 21.0 },
+        { "hour": 72,  "tsb": 21.5 },
+        { "hour": 96,  "tsb": 22.0 },
+        { "hour": 120, "tsb": 22.5 },
+        { "hour": 168, "tsb": 22.5 },
+        { "hour": 240, "tsb": 22.5 },
+        { "hour": 336, "tsb": 22.5 }
+      ],
+      "lt38_risk": [
+        { "hour": 0,   "tsb": 15.0 },
+        { "hour": 12,  "tsb": 16.0 },
+        { "hour": 24,  "tsb": 17.0 },
+        { "hour": 36,  "tsb": 18.0 },
+        { "hour": 48,  "tsb": 18.5 },
+        { "hour": 60,  "tsb": 19.0 },
+        { "hour": 72,  "tsb": 19.5 },
+        { "hour": 96,  "tsb": 20.0 },
+        { "hour": 120, "tsb": 20.5 },
+        { "hour": 168, "tsb": 20.5 },
+        { "hour": 240, "tsb": 20.5 },
+        { "hour": 336, "tsb": 20.5 }
+      ]
+    }
+  }
+}

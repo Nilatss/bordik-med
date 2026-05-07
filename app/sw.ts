@@ -140,6 +140,7 @@ const serwist = new Serwist({
         || url.pathname === '/neonatal-monographs.json'
         || url.pathname === '/neonatal-guidelines.json'
         || url.pathname === '/neonatal-growth.json'
+        || url.pathname === '/neonatal-bilirubin.json'
       ),
       handler: new CacheFirst({
         cacheName: 'bordik-icd',

@@ -16,6 +16,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import Highlight from '@/components/ui/Highlight';
 import GrowthCharts from '@/components/neonatal/GrowthCharts';
+import BilirubinNomogram from '@/components/neonatal/BilirubinNomogram';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface Drug {
@@ -56,7 +57,7 @@ interface GuidelinesBank {
   guidelines: Guideline[];
 }
 
-type Tab = 'drugs' | 'guidelines' | 'growth';
+type Tab = 'drugs' | 'guidelines' | 'growth' | 'bilirubin';
 
 export default function NeonatalHandbook() {
   const [bank, setBank] = useState<Bank | null>(null);
@@ -161,8 +162,8 @@ export default function NeonatalHandbook() {
         </p>
       </motion.div>
 
-      {/* Search — только для табов с поиском (drugs/guidelines), на growth не нужен */}
-      {tab !== 'growth' && (
+      {/* Search — только для табов с поиском (drugs/guidelines); на growth/bilirubin не нужен */}
+      {(tab === 'drugs' || tab === 'guidelines') && (
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
@@ -218,6 +219,7 @@ export default function NeonatalHandbook() {
           { id: 'drugs' as const, label: 'Препараты', count: bank.drugs.length },
           { id: 'guidelines' as const, label: 'Протоколы NICU', count: guidelines?.guidelines.length ?? 0 },
           { id: 'growth' as const, label: 'Графики роста', count: null as number | null },
+          { id: 'bilirubin' as const, label: 'Билирубин', count: null as number | null },
         ]).map((t) => {
           const isActive = tab === t.id;
           return (
@@ -317,13 +319,21 @@ export default function NeonatalHandbook() {
             )}
           </motion.div>
         </>
-      ) : (
+      ) : tab === 'growth' ? (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3 }}
         >
           <GrowthCharts />
+        </motion.div>
+      ) : (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3 }}
+        >
+          <BilirubinNomogram />
         </motion.div>
       )}
 
