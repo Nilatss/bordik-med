@@ -786,15 +786,16 @@ export default function DrugChecker() {
               </span>
               <span style={{
                 display: 'block',
-                fontFamily: 'var(--font-display)', fontSize: 14, fontWeight: 700,
-                color: '#1A1A1A', letterSpacing: '-0.01em', lineHeight: 1.35,
+                fontFamily: 'var(--font-display)', fontSize: 16, fontWeight: 600,
+                color: '#111827', letterSpacing: '-0.01em', lineHeight: 1.4,
               }}>
                 Коды для отравлений и побочных действий
               </span>
-              <span style={{ display: 'block', marginTop: 4, fontSize: 12, color: '#6B7280', lineHeight: 1.5 }}>
+              <span style={{ display: 'block', marginTop: 4, fontSize: 13, color: '#6B7280', lineHeight: 1.55 }}>
                 По каждому из выбранных препаратов — 6 ICD-10-CM кодов (Случайное / Преднамеренное / Нападение / Неуточнённое / Побочное / Underdosing) для записи в карту пациента.
-                <br />
-                <span style={{ color: '#9CA3AF' }}>Source: CMS Table of Drugs and Chemicals (FY2026)</span>
+              </span>
+              <span style={{ display: 'block', marginTop: 6, fontSize: 11, color: '#9CA3AF', letterSpacing: '0.02em' }}>
+                Source: CMS Table of Drugs and Chemicals (FY2026)
               </span>
             </span>
             <span style={{
@@ -843,7 +844,11 @@ export default function DrugChecker() {
                         }).slice(0, 5);
                         return (
                           <div key={id}>
-                            <div style={{ fontSize: 13, fontWeight: 600, color: '#1A1A1A', marginBottom: 8 }}>
+                            <div style={{
+                              fontFamily: 'var(--font-display)',
+                              fontSize: 14, fontWeight: 600, color: '#111827',
+                              letterSpacing: '-0.005em', marginBottom: 8,
+                            }}>
                               {displayDrugName(drug)}
                             </div>
                             {matches.length === 0 ? (
@@ -856,7 +861,10 @@ export default function DrugChecker() {
                                   <div key={idx} style={{
                                     background: '#F5F6F8', borderRadius: 8, padding: '10px 12px',
                                   }}>
-                                    <div style={{ fontSize: 12, color: '#6B7280', marginBottom: 6 }}>
+                                    <div style={{
+                                      fontSize: 11, color: '#9CA3AF', marginBottom: 6,
+                                      letterSpacing: '0.02em',
+                                    }}>
                                       {m.name}
                                     </div>
                                     <div style={{
@@ -970,7 +978,7 @@ function InteractionRowContent({
         <span style={{
           display: 'inline-flex', alignItems: 'center',
           padding: '3px 10px',
-          marginBottom: 8,
+          marginBottom: 10,
           background: meta.bg,
           color: meta.color,
           border: 'none',
@@ -985,14 +993,14 @@ function InteractionRowContent({
         </span>
         <span style={{
           display: 'block',
-          fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 700,
-          color: '#1A1A1A', letterSpacing: '-0.01em', lineHeight: 1.35,
+          fontFamily: 'var(--font-display)', fontSize: 16, fontWeight: 600,
+          color: '#111827', letterSpacing: '-0.01em', lineHeight: 1.4,
         }}>
           {i.drugAName} + {i.drugBName}
         </span>
         <span style={{
           display: 'block', marginTop: 4,
-          fontSize: 13, color: '#4B5563', lineHeight: 1.5,
+          fontSize: 13, color: '#6B7280', lineHeight: 1.55,
         }}>
           {i.effect ?? `Уровень риска: ${meta.label.toLowerCase()}. Детали уточните у клин-фармаколога.`}
         </span>
@@ -1054,22 +1062,26 @@ function PoisonCell({ label, code }: { label: string; code?: string | null | und
       aria-live="polite"
       style={{
         position: 'relative',
-        padding: '6px 8px',
+        padding: '8px 10px',
         background: copied ? '#DCFCE7' : '#FFFFFF',
         border: `1px solid ${copied ? '#86EFAC' : '#DBEAFE'}`,
-        borderRadius: 6, cursor: 'pointer', textAlign: 'center',
+        borderRadius: 8, cursor: 'pointer', textAlign: 'center',
         fontFamily: 'inherit',
         transition: 'background 150ms, border-color 150ms',
       }}
     >
-      <div style={{ fontSize: 10, color: copied ? '#15803D' : '#6B7280' }}>
+      <div style={{
+        fontSize: 11, fontWeight: 500,
+        color: copied ? '#15803D' : '#6B7280',
+      }}>
         {copied ? 'Скопировано' : label}
       </div>
       <div style={{
-        marginTop: 2, fontFamily: 'var(--font-mono, ui-monospace)',
-        fontSize: 12, fontWeight: 700,
+        marginTop: 3, fontFamily: 'var(--font-mono, ui-monospace)',
+        fontSize: 13, fontWeight: 700,
         color: copied ? '#15803D' : '#2563EB',
         display: 'inline-flex', alignItems: 'center', gap: 4,
+        letterSpacing: '0.01em',
       }}>
         {copied && (
           <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor"
