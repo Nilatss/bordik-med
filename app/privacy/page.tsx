@@ -146,7 +146,7 @@ export default function PrivacyPage() {
         </table>
       </Section>
 
-      <Section h="4. Под-процессоры">
+      <Section id="processors" h="4. Под-процессоры">
         <p>
           Мы используем сторонние сервисы для отдельных функций. Данные
           обрабатываются ими по их условиям + нашим DPA, где это возможно.
@@ -176,7 +176,7 @@ export default function PrivacyPage() {
         </ul>
       </Section>
 
-      <Section h="5. Прокторинг и MediaPipe (биометрические признаки)">
+      <Section id="proctoring" h="5. Прокторинг и MediaPipe (биометрические признаки)">
         <p>
           Для тестов с прокторингом мы используем библиотеку{' '}
           <strong>Google MediaPipe Tasks Vision</strong>{' '}
@@ -215,7 +215,7 @@ export default function PrivacyPage() {
         </ul>
       </Section>
 
-      <Section h="6. AI / Google Gemini">
+      <Section id="ai" h="6. AI / Google Gemini">
         <p>
           Адаптивный диагностический тест и часть учебного контента создаются
           с помощью <strong>Google Generative Language API (Gemini)</strong>.
@@ -228,14 +228,17 @@ export default function PrivacyPage() {
         </p>
         <p>
           <strong>Дисклеймер:</strong> AI-сгенерированный контент может
-          содержать ошибки. Все материалы платформы — учебные, а не
-          клинические рекомендации. Не используйте их для постановки диагноза
-          или назначения лечения конкретным пациентам без проверки с
-          профессионалом.
+          содержать ошибки и галлюцинации. Все материалы платформы —
+          учебные, а не клинические рекомендации. Не используйте их для
+          постановки диагноза или назначения лечения конкретным пациентам
+          без проверки с профессионалом. Подробнее об ограничениях
+          ответственности и допустимом использовании AI —{' '}
+          <a href="/terms#ai">Условия использования §9</a> и{' '}
+          <a href="/terms#disclaimer">§3</a>.
         </p>
       </Section>
 
-      <Section h="7. Сроки хранения">
+      <Section id="retention" h="7. Сроки хранения">
         <ul>
           <li>Аккаунт и прогресс: пока вы не удалите аккаунт.</li>
           <li>Технические логи (IP, ошибки запросов): 90 дней, затем удаление.</li>
@@ -316,9 +319,17 @@ export default function PrivacyPage() {
   );
 }
 
-function Section({ h, children }: { h: string; children: React.ReactNode }) {
+function Section({
+  id,
+  h,
+  children,
+}: {
+  id?: string;
+  h: string;
+  children: React.ReactNode;
+}) {
   return (
-    <section style={{ marginTop: 28 }}>
+    <section id={id} style={{ marginTop: 28, scrollMarginTop: 16 }}>
       <h2 style={{
         fontFamily: 'var(--font-display)', fontSize: 19, fontWeight: 700,
         marginBottom: 8,
