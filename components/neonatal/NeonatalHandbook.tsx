@@ -165,6 +165,7 @@ export default function NeonatalHandbook() {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1], delay: 0.06 }}
+        className="bordik-search"
         style={{
           display: 'flex', alignItems: 'center', gap: 10,
           padding: '10px 16px',

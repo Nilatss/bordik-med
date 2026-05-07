@@ -252,7 +252,7 @@ export default function Icd10Lookup({ chapters, codes, hideHeading = false }: Pr
         transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1], delay: 0.06 }}
         style={{ marginBottom: 14 }}
       >
-        <div style={{
+        <div className="bordik-search" style={{
           display: 'flex', alignItems: 'center', gap: 10,
           padding: '10px 16px',
           background: '#F5F6F8',

@@ -258,7 +258,7 @@ export default function DrugChecker() {
         transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1], delay: 0.06 }}
         style={{ marginBottom: 24 }}
       >
-        <div style={{
+        <div className="bordik-search" style={{
           padding: '10px 16px',
           background: '#F5F6F8',
           borderRadius: 12,

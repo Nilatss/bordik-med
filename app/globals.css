@@ -1359,3 +1359,16 @@ main:has(.stats-page) {
 @media (prefers-reduced-motion: reduce) {
   .bordik-spinner { animation-duration: 2.5s; }
 }
+
+/* Bordik search input wrapper — focus-within даёт визуальную обратную связь
+ * пользователю когда он навёл фокус на поисковую плашку. Меняем фон на
+ * белый и рисуем фирменное синее кольцо (1px solid + 3px halo) через
+ * box-shadow, чтобы не сдвигать layout (border сместил бы соседей на 1px).
+ * Применять на DIV-обёртке, внутри которой <input>. */
+.bordik-search {
+  transition: background-color 140ms ease, box-shadow 140ms ease;
+}
+.bordik-search:focus-within {
+  background-color: #FFFFFF !important;
+  box-shadow: 0 0 0 1px #2563EB, 0 0 0 4px rgba(37, 99, 235, 0.14);
+}

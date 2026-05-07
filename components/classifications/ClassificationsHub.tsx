@@ -632,7 +632,7 @@ function Icd10cmIndexSearch() {
             style={{ overflow: 'hidden' }}
           >
             <div style={{ borderTop: '1px solid #E5E7EB', background: '#FFFFFF', padding: '12px 16px' }}>
-              <div style={{
+              <div className="bordik-search" style={{
                 display: 'flex', alignItems: 'center', gap: 10,
                 padding: '10px 14px', background: '#F5F6F8', borderRadius: 10, marginBottom: 12,
               }}>
@@ -805,7 +805,7 @@ function Icd10cmNeoplasmCoder() {
             style={{ overflow: 'hidden' }}
           >
             <div style={{ borderTop: '1px solid #E5E7EB', background: '#FFFFFF', padding: '12px 16px' }}>
-              <div style={{
+              <div className="bordik-search" style={{
                 display: 'flex', alignItems: 'center', gap: 10,
                 padding: '10px 14px', background: '#F5F6F8', borderRadius: 10, marginBottom: 12,
               }}>
