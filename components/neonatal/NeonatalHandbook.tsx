@@ -364,13 +364,28 @@ export default function NeonatalHandbook() {
           margin: 0, display: 'grid',
           gridTemplateColumns: 'auto 1fr', columnGap: 18, rowGap: 10,
         }}>
-          <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Источник</dt>
-          <dd style={{ margin: 0, color: '#1A1A1A' }}>{bank.source}</dd>
-          <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Авторы</dt>
-          <dd style={{ margin: 0, color: '#1A1A1A' }}>{bank.authors.join('; ')}</dd>
-          <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Покрытие</dt>
+          <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Препараты + протоколы</dt>
           <dd style={{ margin: 0, color: '#1A1A1A' }}>
-            {bank.drugs.length} препаратов NICU
+            {bank.source} — {bank.drugs.length} препаратов NICU + 13 практических протоколов.
+            <span style={{ color: '#6B7280', display: 'block', marginTop: 2, fontSize: 12 }}>
+              Авторы: {bank.authors.join('; ')}
+            </span>
+          </dd>
+
+          <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Графики роста</dt>
+          <dd style={{ margin: 0, color: '#1A1A1A' }}>
+            Fenton TR, Kim JH. BMC Pediatrics 2013;13:59 — кривые для недоношенных 22–50 нед PMA.
+            <span style={{ color: '#6B7280', display: 'block', marginTop: 2, fontSize: 12 }}>
+              Лицензия: CC-BY 2.0 (open access)
+            </span>
+          </dd>
+
+          <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Билирубин</dt>
+          <dd style={{ margin: 0, color: '#1A1A1A' }}>
+            AAP 2022 — Kemper AR, Newman TB, Slaughter JL, et al. Pediatrics 2022;150(3):e2022058859. Пороги фототерапии и обменного переливания.
+            <span style={{ color: '#6B7280', display: 'block', marginTop: 2, fontSize: 12 }}>
+              Лицензия: AAP Clinical Practice Guideline (открыт для клинического использования)
+            </span>
           </dd>
         </dl>
 
@@ -380,10 +395,13 @@ export default function NeonatalHandbook() {
           fontSize: 12, color: '#6B7280', lineHeight: 1.55,
           margin: '18px 0 0',
         }}>
-          <strong style={{ color: '#1A1A1A' }}>Не заменяет фарм-консультацию.</strong>{' '}
-          Дозы у новорождённых критически зависят от гестационного возраста, дней жизни,
-          веса, функции почек и печени. Решение по конкретному пациенту принимает
-          врач/клин-фармаколог.
+          <strong style={{ color: '#1A1A1A' }}>Не заменяет клиническое решение.</strong>{' '}
+          Дозы у новорождённых критически зависят от гестационного возраста, дней жизни, веса,
+          функции почек и печени. Графики роста — для пограничных случаев сверяйтесь с официальными
+          LMS-таблицами производителя стандарта. Билирубин — для GA &lt; 35 нед, при острой
+          энцефалопатии или пограничных значениях TSB сверяйтесь с локальными протоколами и
+          руководством AAP 2022 в полном виде. Решение по конкретному пациенту принимает
+          врач/клин-фармаколог/неонатолог.
         </p>
       </section>
     </main>

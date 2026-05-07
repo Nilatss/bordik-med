@@ -133,8 +133,6 @@ export default function GrowthCharts() {
         age={age}
         value={value}
       />
-
-      <SourcePanel dataset={dataset} />
     </div>
   );
 }
@@ -548,23 +546,3 @@ function ChartView({
   );
 }
 
-function SourcePanel({ dataset }: { dataset: GrowthDataset }) {
-  return (
-    <section style={{
-      padding: '16px 20px',
-      background: '#F5F6F8',
-      borderRadius: 12,
-      fontSize: 12, color: '#6B7280', lineHeight: 1.55,
-    }}>
-      <div style={{ marginBottom: 6, fontSize: 11, fontWeight: 600, color: '#9CA3AF', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-        Источник
-      </div>
-      <div style={{ color: '#374151', fontSize: 13 }}>{dataset.source}</div>
-      <div style={{ marginTop: 4 }}>Лицензия: {dataset.license}</div>
-      <div style={{ marginTop: 10, padding: '8px 12px', background: '#FFFBEB', borderRadius: 8, color: '#78350F', fontSize: 11 }}>
-        Не заменяет клиническое решение. Для пограничных случаев сверяйтесь
-        с официальными LMS-таблицами производителя стандарта.
-      </div>
-    </section>
-  );
-}
