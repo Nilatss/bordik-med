@@ -602,13 +602,14 @@ function FlatList({
   return (
     <>
       <p style={{ margin: '0 0 12px', fontSize: 13, color: '#6B7280' }}>
-        Найдено: <strong style={{ color: '#1A1A1A' }}>{filtered.length}</strong>
-        {filtered.length > showCount && (
-          <span style={{ color: '#9CA3AF' }}>
-            {' '}· показано первых <strong style={{ color: '#1A1A1A' }}>{showCount}</strong>
-          </span>
+        {activeChapter ? (
+          <>
+            <strong style={{ color: '#1A1A1A' }}>Глава {activeChapter}: {chapterById[activeChapter]?.title}</strong>
+            {' '}· найдено <strong style={{ color: '#1A1A1A' }}>{filtered.length}</strong>
+          </>
+        ) : (
+          <>Найдено: <strong style={{ color: '#1A1A1A' }}>{filtered.length}</strong></>
         )}
-        {activeChapter ? <> · Глава {activeChapter}: {chapterById[activeChapter]?.title}</> : null}
       </p>
       {filtered.length === 0 ? (
         <div style={{
