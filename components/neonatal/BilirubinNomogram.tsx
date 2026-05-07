@@ -525,16 +525,68 @@ function ResultPanel({
         </div>
       </div>
 
-      {/* 4 метрики в 2×2 grid */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(2, 1fr)',
-        gap: 8,
-      }}>
-        <Card label="Страт риска" value={STRATUM_LABEL_RU[computed.stratum]} small />
-        <Card label="Текущий TSB" value={`${fmt(computed.tsbMgdl)} ${unit}`} accent />
-        <Card label="Порог ФТ" value={`${fmt(computed.ptThr)} ${unit}`} sub={`Δ ${rec.marginToPt > 0 ? '+' : ''}${rec.marginToPt.toFixed(1)}`} />
-        <Card label="Порог ОП" value={`${fmt(computed.exThr)} ${unit}`} sub={`Δ ${rec.marginToEx > 0 ? '+' : ''}${rec.marginToEx.toFixed(1)}`} />
+      {/* Иерархия:
+            1. Страт риска — узкий полноширинный contextual pill (Tier C)
+            2. Текущий TSB — primary metric, accent blue, full width (Tier A)
+            3. Порог ФТ + Порог ОП — secondary metrics в 2 колонки (Tier B) */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        {/* Tier C — стратум как inline-context */}
+        <div style={{
+          padding: '8px 12px',
+          background: '#F5F6F8',
+          borderRadius: 8,
+          display: 'flex', alignItems: 'baseline', gap: 8,
+          flexWrap: 'wrap',
+        }}>
+          <span style={{
+            fontSize: 10, fontWeight: 700, color: '#9CA3AF',
+            letterSpacing: '0.06em', textTransform: 'uppercase',
+            fontFamily: 'var(--font-mono, ui-monospace)',
+          }}>
+            Страт риска
+          </span>
+          <span style={{ fontSize: 12, fontWeight: 500, color: '#374151', lineHeight: 1.4 }}>
+            {STRATUM_LABEL_RU[computed.stratum]}
+          </span>
+        </div>
+
+        {/* Tier A — текущий TSB как primary */}
+        <div style={{
+          padding: '14px 16px',
+          background: '#EFF6FF',
+          border: '1px solid #BFDBFE',
+          borderRadius: 12,
+        }}>
+          <div style={{
+            fontSize: 11, fontWeight: 600, color: '#1D4ED8',
+            letterSpacing: '0.04em', textTransform: 'uppercase', marginBottom: 4,
+          }}>
+            Текущий TSB
+          </div>
+          <div style={{
+            fontFamily: 'var(--font-display)',
+            fontSize: 28, fontWeight: 700,
+            color: '#1E3A8A', letterSpacing: '-0.02em', lineHeight: 1.1,
+          }}>
+            {fmt(computed.tsbMgdl)} <span style={{ fontSize: 16, fontWeight: 600, opacity: 0.65 }}>{unit}</span>
+          </div>
+        </div>
+
+        {/* Tier B — пороги в 2 колонки */}
+        <div style={{
+          display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8,
+        }}>
+          <Card
+            label="Порог фототерапии"
+            value={`${fmt(computed.ptThr)} ${unit}`}
+            sub={`до порога: ${rec.marginToPt > 0 ? '+' : ''}${rec.marginToPt.toFixed(1)} mg/dL`}
+          />
+          <Card
+            label="Порог обменного"
+            value={`${fmt(computed.exThr)} ${unit}`}
+            sub={`до порога: ${rec.marginToEx > 0 ? '+' : ''}${rec.marginToEx.toFixed(1)} mg/dL`}
+          />
+        </div>
       </div>
     </div>
   );
