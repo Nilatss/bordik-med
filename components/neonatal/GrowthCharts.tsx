@@ -674,10 +674,10 @@ function ChartView({
   const minVal = Math.min(...allValues) * 0.92;
   const maxVal = Math.max(...allValues) * 1.06;
 
-  // SVG layout — компактнее (было 720×360, теперь 560×320)
+  // SVG layout — узкие margins для максимума plot-area
   const width = 560;
   const height = 320;
-  const margin = { top: 24, right: 44, bottom: 40, left: 52 };
+  const margin = { top: 16, right: 38, bottom: 36, left: 44 };
   const innerW = width - margin.left - margin.right;
   const innerH = height - margin.top - margin.bottom;
 
@@ -689,7 +689,7 @@ function ChartView({
   const showUserPoint = isFinite(userAge) && isFinite(userVal) && userVal > 0
     && userAge >= minAge && userAge <= maxAge;
 
-  // Y-axis ticks
+  // Y-axis ticks (5 равномерно)
   const yTicks = Array.from({ length: 5 }, (_, i) => minVal + (maxVal - minVal) * (i / 4));
   const xStep = Math.ceil((maxAge - minAge) / 7 / 2) * 2;
   const xTicks: number[] = [];
@@ -697,30 +697,48 @@ function ChartView({
     xTicks.push(a);
   }
 
+  // Y-formatter: вес — всегда кг с 1 знаком (раньше путались граммы и кг
+  // на одной оси); длина / окружность головы — целые см
   const fmtY = (t: number): string => parameter === 'weight'
-    ? (t >= 1000 ? `${(t / 1000).toFixed(1)} кг` : `${Math.round(t)}`)
-    : t.toFixed(0);
+    ? `${(t / 1000).toFixed(1)} кг`
+    : `${Math.round(t)} см`;
 
   return (
     <div style={{
-      padding: '14px 16px 12px',
+      padding: '16px 18px 14px',
       background: '#FFFFFF',
       border: '1px solid #E5E7EB',
       borderRadius: 12,
-      display: 'flex', flexDirection: 'column', gap: 8,
+      display: 'flex', flexDirection: 'column', gap: 12,
       position: 'relative',
     }}>
-      {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: 8 }}>
+      {/* Header — title + параметр + контекст */}
+      <div>
         <div style={{
-          fontFamily: 'var(--font-display)', fontSize: 14, fontWeight: 700,
-          color: '#111827', letterSpacing: '-0.01em',
+          display: 'flex', alignItems: 'baseline', justifyContent: 'space-between',
+          flexWrap: 'wrap', gap: 8, marginBottom: 4,
         }}>
-          {PARAMETER_LABEL_RU[parameter]} ({PARAMETER_UNIT[parameter]})
+          <h3 style={{
+            margin: 0,
+            fontFamily: 'var(--font-display)', fontSize: 16, fontWeight: 600,
+            color: '#111827', letterSpacing: '-0.01em',
+          }}>
+            {PARAMETER_LABEL_RU[parameter]} по гестационному возрасту
+          </h3>
+          <div style={{
+            fontSize: 11, color: '#9CA3AF',
+            letterSpacing: '0.04em', textTransform: 'uppercase', fontWeight: 600,
+            fontFamily: 'var(--font-mono, ui-monospace)',
+          }}>
+            {SEX_LABEL_RU[sex]} · {dataset.label_ru}
+          </div>
         </div>
-        <div style={{ fontSize: 11, color: '#9CA3AF', letterSpacing: '0.04em', textTransform: 'uppercase', fontWeight: 600 }}>
-          {SEX_LABEL_RU[sex]} · {dataset.label_ru}
-        </div>
+        <p style={{
+          margin: 0, fontSize: 12, color: '#6B7280', lineHeight: 1.5,
+        }}>
+          Кривые показывают распределение значений среди здоровых сверстников.
+          Перцентиль = % детей с показателем ниже этой линии.
+        </p>
       </div>
 
       <svg viewBox={`0 0 ${width} ${height}`} style={{ width: '100%', height: 'auto' }}
@@ -743,7 +761,7 @@ function ChartView({
                 stroke="#EAECEF" strokeWidth={1} strokeDasharray={i === 0 || i === yTicks.length - 1 ? 'none' : '2 4'}
               />
               <text
-                x={-10} y={yScale(t)} dy="0.32em" textAnchor="end"
+                x={-8} y={yScale(t)} dy="0.32em" textAnchor="end"
                 fontSize={10} fill="#9CA3AF"
               >
                 {fmtY(t)}
@@ -766,9 +784,15 @@ function ChartView({
             </g>
           ))}
 
-          {/* Reference curves — smooth Bezier */}
+          {/* Reference curves — smooth Bezier
+              Иерархия:
+              - P50 — solid синий, 2.4px (медиана, primary)
+              - P10/P90 — solid янтарный, 1.4px, opacity 0.7 (норма ±1 SD)
+              - P3/P97 — пунктир красный, 1.3px, opacity 0.55 (граница внимания)
+              Так визуально читается: solid линии = норма, пунктир = warning. */}
           {curves.map((c) => {
             const isMedian = c.percentile === 50;
+            const isInner = c.percentile === 10 || c.percentile === 90;
             const path = smoothPath(c.points.map((p) => ({ x: xScale(p.age), y: yScale(p.value) })));
             return (
               <path
@@ -776,9 +800,9 @@ function ChartView({
                 d={path}
                 fill="none"
                 stroke={PERCENTILE_COLORS[c.percentile]}
-                strokeWidth={isMedian ? 2.2 : 1.2}
-                strokeOpacity={isMedian ? 1 : 0.55}
-                strokeDasharray={isMedian ? 'none' : '3 3'}
+                strokeWidth={isMedian ? 2.4 : isInner ? 1.4 : 1.3}
+                strokeOpacity={isMedian ? 1 : isInner ? 0.7 : 0.55}
+                strokeDasharray={isMedian || isInner ? 'none' : '4 3'}
                 strokeLinecap="round"
                 strokeLinejoin="round"
               />
@@ -793,7 +817,7 @@ function ChartView({
             return (
               <text
                 key={`label-${c.percentile}`}
-                x={xScale(last.age) + 6}
+                x={xScale(last.age) + 5}
                 y={yScale(last.value)}
                 dy="0.32em"
                 fontSize={9}
@@ -870,7 +894,7 @@ function ChartView({
 
           {/* X-axis label */}
           <text
-            x={innerW / 2} y={innerH + 32} textAnchor="middle"
+            x={innerW / 2} y={innerH + 30} textAnchor="middle"
             fontSize={10} fill="#6B7280" fontWeight={500}
             pointerEvents="none"
           >
@@ -878,6 +902,35 @@ function ChartView({
           </text>
         </g>
       </svg>
+
+      {/* Легенда — объясняет что значит каждая линия */}
+      <div style={{
+        display: 'flex', flexWrap: 'wrap', gap: '8px 18px',
+        padding: '10px 12px',
+        background: '#F9FAFB',
+        borderRadius: 8,
+        fontSize: 11.5, color: '#4B5563', lineHeight: 1.5,
+      }}>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+          <span style={{ display: 'inline-block', width: 22, height: 2.5, background: PERCENTILE_COLORS[50], borderRadius: 1 }} />
+          <strong style={{ color: '#111827', fontWeight: 600 }}>P50</strong>
+          <span>— медиана, типичное значение</span>
+        </span>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+          <span style={{ display: 'inline-block', width: 22, height: 2, background: PERCENTILE_COLORS[10], borderRadius: 1, opacity: 0.7 }} />
+          <strong style={{ color: '#111827', fontWeight: 600 }}>P10–P90</strong>
+          <span>— широкая норма (~80% сверстников)</span>
+        </span>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+          <span style={{
+            display: 'inline-block', width: 22, height: 0,
+            borderTop: `2px dashed ${PERCENTILE_COLORS[3]}`,
+            opacity: 0.7,
+          }} />
+          <strong style={{ color: '#111827', fontWeight: 600 }}>P3 / P97</strong>
+          <span>— границы внимания (≤3% или ≥97% сверстников)</span>
+        </span>
+      </div>
 
       {/* Hover tooltip — HTML overlay над SVG */}
       {hoverAge != null && (() => {
