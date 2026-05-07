@@ -29,19 +29,9 @@ for (const drug of d.drugs) {
 const pairKey = (a, b) => [a, b].sort().join('|');
 const existingPairs = new Set(d.interactions.map(i => pairKey(i.drugA, i.drugB)));
 
-// 3. Простая транслитерация English → Cyrillic (для drugs без RU)
-const TRANSLIT = {
-  a: 'а', b: 'б', c: 'к', d: 'д', e: 'е', f: 'ф', g: 'г', h: 'х',
-  i: 'и', j: 'дж', k: 'к', l: 'л', m: 'м', n: 'н', o: 'о', p: 'п',
-  q: 'к', r: 'р', s: 'с', t: 'т', u: 'у', v: 'в', w: 'в', x: 'кс',
-  y: 'й', z: 'з',
-  ' ': ' ', '-': '-',
-};
-function transliterate(s) {
-  let out = '';
-  for (const ch of s.toLowerCase()) out += TRANSLIT[ch] ?? ch;
-  return out.charAt(0).toUpperCase() + out.slice(1);
-}
+// Транслитерация НЕ используется — для DDInter препаратов оставляем
+// EN-название как primary. Если у препарата есть официальный RU INN,
+// он уже в нашей базе (часть 427 ручных drugs).
 
 // 4. Парсим DDInter CSV
 const csv = fs.readFileSync(ddinterCsv, 'utf8');
@@ -100,7 +90,7 @@ for (const [keyLower, originalName] of ddDrugs) {
   }
   d.drugs.push({
     id: finalId,
-    name_ru: transliterate(originalName),
+    name_ru: '',           // нет официального RU перевода — пусто
     name_en: originalName,
     atc: '',
     class_ru: '',

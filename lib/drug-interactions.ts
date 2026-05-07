@@ -17,12 +17,18 @@ export type Severity = 'contraindicated' | 'major' | 'moderate' | 'minor';
 
 export interface Drug {
   id: string;
+  /** RU название. Может быть пустой строкой для DDInter-impport drugs
+   *  без официального русского перевода — в этом случае UI показывает
+   *  только name_en. */
   name_ru: string;
   name_en: string;
   inn?: string;
   atc?: string;
-  class_ru: string;
-  aliases: string[];
+  class_ru?: string;
+  aliases?: string[];
+  /** 'manual' = ручная запись (priority + полные RU-описания);
+   *  'ddinter' = автоматически добавлено из DDInter database. */
+  source?: 'manual' | 'ddinter';
 }
 
 export interface Interaction {
@@ -122,6 +128,19 @@ export const SEVERITY_META: Record<Severity, {
  * найденные взаимодействия отсортированные по severity (опаснее
  * сверху), затем по имени первого препарата.
  */
+/**
+ * Возвращает читаемое имя препарата:
+ *   - Если есть и name_ru и name_en → "Аспирин (Aspirin)"
+ *   - Только name_ru → "Аспирин"
+ *   - Только name_en → "Aspirin"
+ */
+export function displayDrugName(d: { name_ru?: string; name_en?: string }): string {
+  const ru = d.name_ru?.trim() || '';
+  const en = d.name_en?.trim() || '';
+  if (ru && en && ru.toLowerCase() !== en.toLowerCase()) return `${ru} (${en})`;
+  return ru || en || '';
+}
+
 export function findInteractions(
   selectedIds: string[],
   data: DrugInteractionData,
@@ -137,8 +156,8 @@ export function findInteractions(
       if (!a || !b) continue;
       found.push({
         ...inter,
-        drugAName: a.name_ru,
-        drugBName: b.name_ru,
+        drugAName: displayDrugName(a),
+        drugBName: displayDrugName(b),
       });
     }
   }
@@ -168,17 +187,17 @@ export function searchDrugs(
   const scored: Scored[] = [];
 
   for (const d of drugs) {
-    const ru = d.name_ru.toLowerCase().replace(/ё/g, 'е');
-    const en = d.name_en.toLowerCase();
-    const aliases = d.aliases.map((a) => a.toLowerCase().replace(/ё/g, 'е'));
+    const ru = (d.name_ru ?? '').toLowerCase().replace(/ё/g, 'е');
+    const en = (d.name_en ?? '').toLowerCase();
+    const aliases = (d.aliases ?? []).map((a) => a.toLowerCase().replace(/ё/g, 'е'));
     let score = 0;
 
-    if (ru === q || en === q) score = 100;
-    else if (ru.startsWith(q) || en.startsWith(q)) score = 80;
+    if ((ru && ru === q) || (en && en === q)) score = 100;
+    else if ((ru && ru.startsWith(q)) || (en && en.startsWith(q))) score = 80;
     else if (aliases.some((a) => a === q)) score = 90;
     else if (aliases.some((a) => a.startsWith(q))) score = 70;
-    else if (ru.includes(q)) score = 40;
-    else if (en.includes(q)) score = 35;
+    else if (ru && ru.includes(q)) score = 40;
+    else if (en && en.includes(q)) score = 35;
     else if (aliases.some((a) => a.includes(q))) score = 30;
     else continue;
 
@@ -187,7 +206,7 @@ export function searchDrugs(
 
   scored.sort((a, b) => {
     if (b.score !== a.score) return b.score - a.score;
-    return a.d.name_ru.localeCompare(b.d.name_ru);
+    return displayDrugName(a.d).localeCompare(displayDrugName(b.d));
   });
 
   return scored.slice(0, limit).map((s) => s.d);

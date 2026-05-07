@@ -21,6 +21,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   type Drug,
   type DrugInteractionData,
+  displayDrugName,
   findInteractions,
   searchDrugs,
   SEVERITY_META,
@@ -257,11 +258,11 @@ export default function DrugChecker() {
                   color: '#1A1A1A',
                 }}
               >
-                {d.name_ru}
+                {displayDrugName(d)}
                 <button
                   type="button"
                   onClick={() => removeDrug(id)}
-                  aria-label={`Убрать ${d.name_ru}`}
+                  aria-label={`Убрать ${displayDrugName(d)}`}
                   style={{
                     width: 20, height: 20, borderRadius: '50%',
                     background: '#F3F4F6', border: 'none',
@@ -367,14 +368,14 @@ export default function DrugChecker() {
                       display: 'block',
                       fontSize: 14, fontWeight: 600, color: '#1A1A1A',
                     }}>
-                      {d.name_ru}
+                      {displayDrugName(d)}
                     </span>
                     <span style={{
                       display: 'block', marginTop: 2,
                       fontSize: 12, color: '#6B7280',
                     }}>
-                      {d.class_ru}
-                      {d.aliases.length > 0 && ` · ${d.aliases.slice(0, 3).join(', ')}`}
+                      {d.class_ru || (d.source === 'ddinter' ? 'DDInter' : '')}
+                      {(d.aliases?.length ?? 0) > 0 && ` · ${(d.aliases ?? []).slice(0, 3).join(', ')}`}
                     </span>
                   </span>
                   <span style={{ flexShrink: 0, color: '#9CA3AF' }}>
