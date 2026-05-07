@@ -379,7 +379,7 @@ function DrugCard({
   return (
     <div style={{
       background: '#F5F6F8',
-      border: '1px solid #E5E7EB',
+      border: 'none',
       borderRadius: 14,
       overflow: 'hidden',
     }}>
@@ -848,7 +848,7 @@ function GuidelineCard({
   return (
     <div style={{
       background: '#F5F6F8',
-      border: '1px solid #E5E7EB',
+      border: 'none',
       borderRadius: 14,
       overflow: 'hidden',
     }}>
