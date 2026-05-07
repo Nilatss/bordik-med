@@ -422,9 +422,10 @@ function DrugCard({
   return (
     <div style={{
       background: '#F5F6F8',
-      border: 'none',
+      border: isOpen ? '1px solid #E5E7EB' : 'none',
       borderRadius: 14,
       overflow: 'hidden',
+      transition: 'border-color 150ms ease',
     }}>
       <button
         type="button"
@@ -857,9 +858,10 @@ function GuidelineCard({
   return (
     <div style={{
       background: '#F5F6F8',
-      border: 'none',
+      border: isOpen ? '1px solid #E5E7EB' : 'none',
       borderRadius: 14,
       overflow: 'hidden',
+      transition: 'border-color 150ms ease',
     }}>
       <button
         type="button"
