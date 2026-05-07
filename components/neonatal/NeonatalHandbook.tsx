@@ -14,6 +14,7 @@
  */
 
 import { useEffect, useMemo, useState } from 'react';
+import Highlight from '@/components/ui/Highlight';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface Drug {
@@ -264,6 +265,7 @@ export default function NeonatalHandbook() {
               <DrugCard
                 key={d.id}
                 drug={d}
+                query={q}
                 isOpen={openId === d.id}
                 onToggle={() => setOpenId(openId === d.id ? null : d.id)}
               />
@@ -293,6 +295,7 @@ export default function NeonatalHandbook() {
               <GuidelineCard
                 key={g.id}
                 guideline={g}
+                query={q}
                 isOpen={openId === g.id}
                 onToggle={() => setOpenId(openId === g.id ? null : g.id)}
               />
@@ -371,9 +374,10 @@ export default function NeonatalHandbook() {
 }
 
 function DrugCard({
-  drug, isOpen, onToggle,
+  drug, query, isOpen, onToggle,
 }: {
   drug: Drug;
+  query: string;
   isOpen: boolean;
   onToggle: () => void;
 }) {
@@ -408,10 +412,10 @@ function DrugCard({
             fontSize: 15, fontWeight: 600, color: '#1A1A1A',
             lineHeight: 1.35, letterSpacing: '-0.01em',
           }}>
-            {drug.name_ru}
+            <Highlight text={drug.name_ru} query={query} />
             {drug.name_en !== drug.name_ru && (
               <span style={{ fontWeight: 400, color: '#6B7280', marginLeft: 6 }}>
-                ({drug.name_en})
+                (<Highlight text={drug.name_en} query={query} />)
               </span>
             )}
           </span>
@@ -742,9 +746,10 @@ function GuidelineContent({ content }: { content: string }) {
 }
 
 function GuidelineCard({
-  guideline, isOpen, onToggle,
+  guideline, query, isOpen, onToggle,
 }: {
   guideline: Guideline;
+  query: string;
   isOpen: boolean;
   onToggle: () => void;
 }) {
@@ -777,13 +782,13 @@ function GuidelineCard({
             fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 600,
             color: '#111827', letterSpacing: '-0.01em', lineHeight: 1.35,
           }}>
-            {guideline.title_ru}
+            <Highlight text={guideline.title_ru} query={query} />
           </span>
           {guideline.title_en !== guideline.title_ru && (
             <span style={{
               display: 'block', marginTop: 3, fontSize: 12, color: '#6B7280',
             }}>
-              {guideline.title_en}
+              <Highlight text={guideline.title_en} query={query} />
             </span>
           )}
         </span>

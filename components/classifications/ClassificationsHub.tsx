@@ -27,6 +27,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Icd10Lookup from '@/components/icd10/Icd10Lookup';
+import Highlight from '@/components/ui/Highlight';
 
 interface Chapter { id: string; range: string; title: string }
 interface CodeEntry { code: string; title: string; chapter: string }
@@ -703,7 +704,7 @@ function Icd10cmIndexSearch() {
                       background: '#FAFBFC', borderRadius: 8,
                     }}>
                       <span style={{ flex: 1, fontSize: 13, color: '#1A1A1A', lineHeight: 1.4 }}>
-                        {r.term}
+                        <Highlight text={r.term} query={q} />
                       </span>
                       {r.code ? (
                         <CopyCodeButton code={r.code} />
@@ -874,7 +875,7 @@ function Icd10cmNeoplasmCoder() {
                       background: '#FAFBFC', borderRadius: 10, padding: '10px 12px',
                     }}>
                       <div style={{ fontSize: 12, color: '#6B7280', marginBottom: 8 }}>
-                        {r.site}
+                        <Highlight text={r.site} query={q} />
                       </div>
                       {r.seeAlso ? (
                         <div style={{ fontSize: 11, color: '#9CA3AF', fontStyle: 'italic' }}>
