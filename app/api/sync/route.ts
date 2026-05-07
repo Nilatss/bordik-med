@@ -1,7 +1,5 @@
-import { NextResponse } from 'next/server';
 import * as v from 'valibot';
-import { getSupabaseServerClient } from '@/lib/supabase/server';
-import { assertSameOrigin } from '@/lib/origin-check';
+import { withAuthedSupabase, parseJsonBody, apiError, apiOk } from '@/lib/api-helpers';
 
 /**
  * GET  /api/sync — pull all server-side state for the signed-in user.
@@ -22,25 +20,23 @@ import { assertSameOrigin } from '@/lib/origin-check';
  * The frontend is the source of truth at moment of write; conflicts
  * are resolved last-write-wins (same model as the local Zustand store).
  */
-export async function GET() {
-  const sb = await getSupabaseServerClient();
-  if (!sb) return NextResponse.json({ error: 'backend not configured' }, { status: 503 });
-  const { data: { user } } = await sb.auth.getUser();
-  if (!user) return NextResponse.json({ error: 'unauthorised' }, { status: 401 });
+export async function GET(req: Request) {
+  // P1-CR-7 — auth/origin/CSRF guard через withAuthedSupabase helper
+  return withAuthedSupabase(req, async (sb, user) => {
+    // Fan out reads in parallel — single round-trip to Supabase.
+    const [profileQ, progressQ, toolsQ, studyQ] = await Promise.all([
+      sb.from('profiles').select('*').eq('id', user.id).maybeSingle(),
+      sb.from('course_progress').select('*').eq('user_id', user.id),
+      sb.from('tool_settings').select('*').eq('user_id', user.id).maybeSingle(),
+      sb.from('study_time').select('*').eq('user_id', user.id),
+    ]);
 
-  // Fan out reads in parallel — single round-trip to Supabase.
-  const [profileQ, progressQ, toolsQ, studyQ] = await Promise.all([
-    sb.from('profiles').select('*').eq('id', user.id).maybeSingle(),
-    sb.from('course_progress').select('*').eq('user_id', user.id),
-    sb.from('tool_settings').select('*').eq('user_id', user.id).maybeSingle(),
-    sb.from('study_time').select('*').eq('user_id', user.id),
-  ]);
-
-  return NextResponse.json({
-    profile: profileQ.data ?? null,
-    courseProgress: progressQ.data ?? [],
-    toolSettings: toolsQ.data ?? null,
-    studyTime: studyQ.data ?? [],
+    return apiOk({
+      profile: profileQ.data ?? null,
+      courseProgress: progressQ.data ?? [],
+      toolSettings: toolsQ.data ?? null,
+      studyTime: studyQ.data ?? [],
+    });
   });
 }
 
@@ -85,29 +81,17 @@ const SyncPayloadSchema = v.object({
 type SyncPayload = v.InferOutput<typeof SyncPayloadSchema>;
 
 export async function POST(req: Request) {
-  // P1-5 (AUDIT_REPORT_2026-05-06): Origin-allowlist + valibot — мы
-  // полагались только на auth.getUser() + RLS, но defense-in-depth у
-  // остальных mutating endpoints включает обе ступени.
-  const blocked = assertSameOrigin(req);
-  if (blocked) return blocked;
-
-  const sb = await getSupabaseServerClient();
-  if (!sb) return NextResponse.json({ error: 'backend not configured' }, { status: 503 });
-  const { data: { user } } = await sb.auth.getUser();
-  if (!user) return NextResponse.json({ error: 'unauthorised' }, { status: 401 });
-
-  let raw: unknown;
-  try { raw = await req.json(); } catch {
-    return NextResponse.json({ error: 'bad json' }, { status: 400 });
-  }
-  const parsed = v.safeParse(SyncPayloadSchema, raw);
-  if (!parsed.success) {
-    return NextResponse.json(
-      { ok: false, error: 'invalid-input', issues: parsed.issues.slice(0, 3).map((i) => i.message) },
-      { status: 400 },
-    );
-  }
-  const body: SyncPayload = parsed.output;
+  // P1-CR-7 — origin/auth/CSRF через withAuthedSupabase
+  return withAuthedSupabase(req, async (sb, user) => {
+    const parsed = await parseJsonBody(req);
+    if (!parsed.ok) return parsed.response;
+    const validated = v.safeParse(SyncPayloadSchema, parsed.data);
+    if (!validated.success) {
+      return apiError('bad-input', 400, {
+        issues: validated.issues.slice(0, 3).map((i) => i.message),
+      });
+    }
+    const body: SyncPayload = validated.output;
 
   // Supabase query builders are thenable but their TS signature differs
    // from native Promise — wrap with `Promise.resolve().then(() => task)`
@@ -194,12 +178,13 @@ export async function POST(req: Request) {
     );
   }
 
-  const results = await Promise.allSettled(tasks);
-  const errors = results
-    .filter((r): r is PromiseRejectedResult => r.status === 'rejected')
-    .map((r) => String(r.reason));
-  if (errors.length > 0) {
-    return NextResponse.json({ ok: false, errors }, { status: 500 });
-  }
-  return NextResponse.json({ ok: true, count: tasks.length });
+    const results = await Promise.allSettled(tasks);
+    const errors = results
+      .filter((r): r is PromiseRejectedResult => r.status === 'rejected')
+      .map((r) => String(r.reason));
+    if (errors.length > 0) {
+      return apiError('internal-error', 500, { errors });
+    }
+    return apiOk({ count: tasks.length });
+  });
 }

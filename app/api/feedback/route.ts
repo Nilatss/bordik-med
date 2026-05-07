@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { log } from '@/lib/log';
 
 /**
  * POST /api/feedback
@@ -91,15 +92,24 @@ export async function POST(req: Request) {
       }),
     });
     if (!r.ok) {
-      const errText = await r.text().catch(() => '');
-      console.error('[feedback] sendMessage failed', r.status, errText);
+      // P2-SEC — структурированный лог через lib/log с redaction вместо
+      // голого console.error (Telegram body раньше тёк в plaintext-логи).
+      // log.error пропускает через redactor (token-pattern маскируется).
+      log.error({
+        event: 'feedback_tg_send_failed',
+        status: r.status,
+        // body НЕ логируем — может содержать sensitive bot-state
+      });
       return NextResponse.json(
         { ok: false, error: 'tg-send-failed', status: r.status },
         { status: 502 },
       );
     }
   } catch (err) {
-    console.error('[feedback] sendMessage threw', err);
+    log.error({
+      event: 'feedback_tg_send_threw',
+      message: (err as Error).message ?? 'unknown',
+    });
     return NextResponse.json({ ok: false, error: 'tg-network' }, { status: 502 });
   }
 
@@ -116,12 +126,19 @@ export async function POST(req: Request) {
         body: tgForm,
       });
       if (!r.ok) {
-        const errText = await r.text().catch(() => '');
-        console.error('[feedback] sendDocument failed', f.name, r.status, errText);
+        log.error({
+          event: 'feedback_tg_doc_failed',
+          fileName: f.name,
+          status: r.status,
+        });
         // Continue with the rest - the main text already went through.
       }
     } catch (err) {
-      console.error('[feedback] sendDocument threw', f.name, err);
+      log.error({
+        event: 'feedback_tg_doc_threw',
+        fileName: f.name,
+        message: (err as Error).message ?? 'unknown',
+      });
     }
   }
 

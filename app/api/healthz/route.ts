@@ -17,12 +17,14 @@ export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
+  // P3-SEC — убрали `sha` (VERCEL_GIT_COMMIT_SHA) и точный `env` —
+  // information disclosure без необходимости. Для liveness достаточно
+  // { ok, ts }. Vercel-side тоже отдаёт x-vercel-id если нужна
+  // диагностика, по auth.
   return NextResponse.json(
     {
       ok: true,
       ts: Date.now(),
-      sha: process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7) ?? null,
-      env: process.env.VERCEL_ENV ?? 'development',
     },
     {
       headers: {

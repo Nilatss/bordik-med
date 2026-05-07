@@ -1,6 +1,14 @@
+import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { redirect } from 'next/navigation';
 import { getSupabaseServerClient } from '@/lib/supabase/server';
+
+// P3-SEC — noindex: /admin не должен индексироваться поисковиками.
+// Defense-in-depth (auth-gate уже скрывает контент, но если кто-то
+// откроет админ-URL без сессии — Google не должен запоминать).
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
 
 /**
  * Admin layout - server-side auth guard.

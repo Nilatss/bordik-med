@@ -1,6 +1,10 @@
 'use client';
 
-import { useState, useMemo, useEffect, useRef } from 'react';
+import { useState, useMemo, useEffect, useLayoutEffect, useRef } from 'react';
+
+// useLayoutEffect на сервере выдаёт warning — используем useEffect-fallback.
+// На клиенте useLayoutEffect синхронен с paint → нет flash на desktop.
+const useIsoLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 // framer-motion removed in 2026-04-28 perf pass — replaced with pure
 // CSS transitions in app/globals.css (.sidebar-overlay, .sidebar-drawer,
 // .feedback-modal-overlay, .feedback-modal-card). Saves ~80 kB raw / 30
@@ -77,10 +81,11 @@ export default function Sidebar() {
   const [searchFocus, setSearchFocus] = useState(false);
 
   // Sidebar opens on desktop by default, stays closed on mobile.
-  // Store default is `false`; we flip it to `true` here on ≥ 768 px.
-  // Running in useEffect is fine — first paint shows no sidebar on any width
-  // (avoids the mobile flash), and desktop users get it back immediately.
-  useEffect(() => {
+  // P2-PERF — useLayoutEffect (вместо useEffect): запускается ДО paint,
+  // поэтому desktop-юзер не видит flash «sidebar появляется через 10-20мс
+  // после первого render». На SSR fallback на useEffect через
+  // useIsoLayoutEffect-обёртку.
+  useIsoLayoutEffect(() => {
     if (typeof window === 'undefined') return;
     const mq = window.matchMedia('(min-width: 768px)');
     if (mq.matches) {

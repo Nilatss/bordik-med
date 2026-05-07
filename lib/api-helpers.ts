@@ -17,38 +17,19 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import type { SupabaseClient, User } from '@supabase/supabase-js';
 import { getSupabaseServerClient } from '@/lib/supabase/server';
+import { assertSameOrigin as assertSameOriginLib } from '@/lib/origin-check';
 import { apiError, type ApiErrorCode } from '@/lib/api-errors';
 
 type ReqLike = Request | NextRequest;
 
 /**
- * P1-SEC — origin-check для CSRF. Принимаем mutating-запросы только
- * из нашего же origin. Современные браузеры отправляют
- * `Sec-Fetch-Site: same-origin` для in-app fetch и `cross-site`/`none`
- * для атакующего origin (CSRF gadget). Fallback на `Origin` header.
+ * Re-export более продвинутого origin-check из lib/origin-check.ts —
+ * он включает PREVIEW_HOST_REGEX whitelist (vercel.app preview-домены)
+ * и обработку отсутствующего Origin header. Сигнатура: возвращает
+ * Response (403) если cross-origin, иначе null.
  */
-export function isSameOrigin(req: ReqLike): boolean {
-  const sfs = req.headers.get('sec-fetch-site');
-  if (sfs === 'same-origin' || sfs === 'same-site') return true;
-  if (sfs && sfs !== 'same-origin' && sfs !== 'same-site') return false;
-  // Fallback: старые браузеры без Sec-Fetch-Site
-  const origin = req.headers.get('origin');
-  if (!origin) return false;
-  try {
-    return new URL(origin).host === new URL(req.url).host;
-  } catch {
-    return false;
-  }
-}
-
-/**
- * Возвращает Response (403) если cross-origin, иначе null. Удобно
- * чейнить в начале handler'а:
- *   const blocked = assertSameOrigin(req); if (blocked) return blocked;
- */
-export function assertSameOrigin(req: ReqLike): NextResponse | null {
-  if (isSameOrigin(req)) return null;
-  return apiError('forbidden-origin', 403);
+export function assertSameOrigin(req: ReqLike): Response | null {
+  return assertSameOriginLib(req as Request);
 }
 
 /**
@@ -66,7 +47,7 @@ export async function withAuthedSupabase(
 ): Promise<NextResponse> {
   // 1. CSRF guard
   const blocked = assertSameOrigin(req);
-  if (blocked) return blocked;
+  if (blocked) return blocked as NextResponse;
 
   // 2. Supabase backend
   const sb = await getSupabaseServerClient();
@@ -89,7 +70,7 @@ export async function withSameOrigin(
   handler: () => Promise<NextResponse>,
 ): Promise<NextResponse> {
   const blocked = assertSameOrigin(req);
-  if (blocked) return blocked;
+  if (blocked) return blocked as NextResponse;
   return handler();
 }
 
