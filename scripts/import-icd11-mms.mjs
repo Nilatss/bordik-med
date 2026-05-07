@@ -10,20 +10,47 @@
 // поэтому Phase 1 — без описаний; Phase 2 будет добавление definitions.
 
 import fs from 'node:fs';
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
+import ExcelJS from 'exceljs';
 
-// Программный парсинг xlsx через npm-пакет (xlsx-cli ставит CSV-разделителем
-// своё имя — баг — поэтому используем библиотеку напрямую).
-const XLSX = require('xlsx');
+// P1-SEC — мигрировали с xlsx@0.18.5 (prototype pollution + ReDoS CVE)
+// на exceljs (актуально поддерживается, без известных high-sev CVE).
+// Скрипт — build-time only (devDeps), не попадает в runtime bundle.
 
 const xlsxPath = './data/raw/icd11-mms.xlsx';
 const outPath = './public/icd11-mms.json';
 const dPath = './data/icd11-mms.json';
 
-const wb = XLSX.readFile(xlsxPath);
-const ws = wb.Sheets[wb.SheetNames[0]];
-const rows = XLSX.utils.sheet_to_json(ws, { defval: '' });
+const wb = new ExcelJS.Workbook();
+await wb.xlsx.readFile(xlsxPath);
+const ws = wb.worksheets[0];
+
+// Конвертируем worksheet в массив объектов (sheet_to_json эквивалент):
+// первая строка = headers, остальные — данные.
+const rows = [];
+let headers = [];
+ws.eachRow({ includeEmpty: false }, (row, rowNumber) => {
+  const values = row.values; // [empty, col1, col2, ...] (1-indexed)
+  if (rowNumber === 1) {
+    headers = values.slice(1).map((v) => String(v ?? '').trim());
+    return;
+  }
+  const obj = {};
+  for (let i = 0; i < headers.length; i++) {
+    const cell = values[i + 1];
+    let val = cell;
+    // ExcelJS возвращает rich-text / hyperlink / formula объекты —
+    // приводим к плоской строке.
+    if (val && typeof val === 'object') {
+      if ('text' in val) val = val.text;
+      else if ('result' in val) val = val.result;
+      else if ('richText' in val && Array.isArray(val.richText)) {
+        val = val.richText.map((p) => p.text ?? '').join('');
+      } else val = String(val);
+    }
+    obj[headers[i]] = val ?? '';
+  }
+  rows.push(obj);
+});
 
 console.log(`Total rows in xlsx: ${rows.length}`);
 console.log(`Sample row keys: ${Object.keys(rows[0]).join(', ')}`);

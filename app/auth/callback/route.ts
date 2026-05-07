@@ -12,10 +12,29 @@ import { getSupabaseServerClient } from '@/lib/supabase/server';
  * OAuth flow:       Google/GitHub redirect → /auth/callback?code=...
  *                  → same as above
  */
+/**
+ * P1-SEC — open-redirect guard. Supabase передаёт `next` user-controlled
+ * параметром, который мы используем для пост-логин редиректа. Без
+ * валидации `?next=//evil.com` или `?next=https://evil.com/x` уведёт
+ * пользователя на чужой хост (URL-конструктор резолвит `//host` как
+ * authority, не как path). Разрешаем только относительные пути с
+ * единственным ведущим `/` и без `//` / `\\` / control-chars.
+ */
+function safeNextPath(raw: string | null): string {
+  if (!raw) return '/';
+  // Разрешаем только локальный путь: должен начинаться с одного `/`,
+  // не быть `//host`, `\\host`, `/\evil`, `\/evil` и не содержать
+  // control-символов (CRLF injection).
+  if (!raw.startsWith('/')) return '/';
+  if (raw.startsWith('//') || raw.startsWith('/\\')) return '/';
+  if (/[\x00-\x1F]/.test(raw)) return '/';
+  return raw;
+}
+
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const code = url.searchParams.get('code');
-  const next = url.searchParams.get('next') ?? '/';
+  const next = safeNextPath(url.searchParams.get('next'));
 
   if (code) {
     const sb = await getSupabaseServerClient();

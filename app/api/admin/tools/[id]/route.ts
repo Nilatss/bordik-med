@@ -5,6 +5,81 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 /**
+ * P1-SEC — origin-check для CSRF. Принимаем mutating-запросы только
+ * если они инициированы из нашего же origin. Современные браузеры
+ * отправляют `Sec-Fetch-Site: same-origin` для in-app fetch и
+ * `cross-site` или `none` для атакующего origin (от <form> или CSRF
+ * gadget). Fallback на `Origin` header для старых браузеров.
+ */
+function isSameOrigin(req: Request): boolean {
+  const sfs = req.headers.get('sec-fetch-site');
+  if (sfs === 'same-origin' || sfs === 'same-site') return true;
+  if (sfs && sfs !== 'same-origin' && sfs !== 'same-site') return false;
+  // Fallback (старые браузеры — Sec-Fetch-Site не отправляют)
+  const origin = req.headers.get('origin');
+  if (!origin) return false;
+  try {
+    return new URL(origin).host === new URL(req.url).host;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * P1-SEC — whitelist полей в patch + строгая type-проверка. До этого
+ * `patch: Record<string, unknown>` лился прямо в `.update()`, что
+ * позволяло writer'у с med_editor ролью переписать `id`, `created_by`,
+ * `reviewed_by`, `status` и обойти 4-eye principle. Зод не используем
+ * (deps minimisation), пишем явный валидатор.
+ */
+const ALLOWED_PATCH_KEYS = new Set([
+  'name_ru', 'name_en', 'group_id', 'tags',
+  'description_md', 'inputs', 'formula', 'guideline_source', 'guideline_doi',
+  'category', 'specialty', 'kind', 'version',
+]);
+
+interface PatchResult {
+  ok: true;
+  data: Record<string, unknown>;
+}
+
+interface PatchError {
+  ok: false;
+  error: string;
+}
+
+function validatePatch(raw: unknown): PatchResult | PatchError {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) {
+    return { ok: false, error: 'patch-not-object' };
+  }
+  const out: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(raw as Record<string, unknown>)) {
+    if (!ALLOWED_PATCH_KEYS.has(k)) {
+      return { ok: false, error: `field-not-allowed:${k}` };
+    }
+    // Базовая type-проверка по виду поля
+    if (k === 'tags' && !Array.isArray(v)) {
+      return { ok: false, error: 'tags-must-be-array' };
+    }
+    if ((k === 'inputs' || k === 'formula') && v !== null && typeof v !== 'object') {
+      return { ok: false, error: `${k}-must-be-object-or-null` };
+    }
+    // Все остальные whitelist-поля = string | null
+    const stringFields = ['name_ru', 'name_en', 'group_id', 'description_md',
+      'guideline_source', 'guideline_doi', 'category', 'specialty', 'kind', 'version'];
+    if (stringFields.includes(k) && v !== null && typeof v !== 'string') {
+      return { ok: false, error: `${k}-must-be-string-or-null` };
+    }
+    // Длина строк — защита от стуффинга
+    if (typeof v === 'string' && v.length > 50_000) {
+      return { ok: false, error: `${k}-too-long` };
+    }
+    out[k] = v;
+  }
+  return { ok: true, data: out };
+}
+
+/**
  * Editor API for a single tool. Authenticates the caller via the active
  * Supabase session, checks the editor_role from JWT app_metadata, and
  * applies the requested action.
@@ -18,6 +93,11 @@ export const dynamic = 'force-dynamic';
  * "row violates row-level security policy" 401.
  */
 export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }> }) {
+  // P1-SEC — CSRF guard
+  if (!isSameOrigin(req)) {
+    return NextResponse.json({ ok: false, error: 'cross-origin-not-allowed' }, { status: 403 });
+  }
+
   const { id } = await ctx.params;
   const sb = await getSupabaseServerClient();
   if (!sb) return NextResponse.json({ ok: false, error: 'backend-not-configured' }, { status: 503 });
@@ -38,7 +118,12 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
   }
 
   const action = body.action;
-  const patch = body.patch ?? {};
+  // P1-SEC — schema validation on patch
+  const validated = validatePatch(body.patch ?? {});
+  if (!validated.ok) {
+    return NextResponse.json({ ok: false, error: validated.error }, { status: 400 });
+  }
+  const patch = validated.data;
 
   // Common metadata fields written on every action
   const meta = {
