@@ -361,7 +361,7 @@ function DrugCard({
         <span style={{ flex: 1, minWidth: 0 }}>
           <span style={{
             display: 'block', fontFamily: 'var(--font-display)',
-            fontSize: 15, fontWeight: 700, color: '#1A1A1A',
+            fontSize: 15, fontWeight: 600, color: '#1A1A1A',
             lineHeight: 1.35, letterSpacing: '-0.01em',
           }}>
             {drug.name_ru}
@@ -407,16 +407,16 @@ function DrugCard({
                 }}>
                   <tbody>
                     {drug.brand && (
-                      <DrugDetailRow label="Бренд" labelEn="Brand Name" value={drug.brand} mono />
+                      <DrugDetailRow label="Бренд" labelEn="Brand Name" value={drug.brand} />
                     )}
                     {drug.indications && (
                       <DrugDetailRow label="Показания" labelEn="Indications" value={drug.indications} />
                     )}
                     {drug.dose && (
-                      <DrugDetailRow label="Доза" labelEn="Dose" value={drug.dose} bold />
+                      <DrugDetailRow label="Доза" labelEn="Dose" value={drug.dose} />
                     )}
                     {drug.route && (
-                      <DrugDetailRow label="Путь" labelEn="Route" value={drug.route} mono />
+                      <DrugDetailRow label="Путь" labelEn="Route" value={drug.route} />
                     )}
                     {drug.levels && (
                       <DrugDetailRow label="Метаболизм" labelEn="Levels & Metabolism" value={drug.levels} />
@@ -476,7 +476,7 @@ function DrugDetailRow({
           width: 160,
           textAlign: 'left',
           fontFamily: 'var(--font-mono, ui-monospace)',
-          fontSize: 11, fontWeight: 700,
+          fontSize: 11, fontWeight: 600,
           color: tone === 'warning' ? '#92400E' : '#9CA3AF',
           textTransform: 'uppercase',
           letterSpacing: '0.06em',
@@ -484,14 +484,14 @@ function DrugDetailRow({
       >
         <div>{label}</div>
         {labelEn && (
-          <div style={{ marginTop: 2, fontSize: 10, fontWeight: 500, textTransform: 'none', letterSpacing: 0, opacity: 0.7 }}>
+          <div style={{ marginTop: 2, fontSize: 10, fontWeight: 400, textTransform: 'none', letterSpacing: 0, opacity: 0.7 }}>
             {labelEn}
           </div>
         )}
       </th>
       <td style={{
         ...cellStyle,
-        fontWeight: bold ? 600 : 400,
+        fontWeight: 400,
         fontFamily: mono ? 'var(--font-mono, ui-monospace)' : 'inherit',
         color: tone === 'warning' ? '#78350F' : '#374151',
       }}>
@@ -685,7 +685,7 @@ function GuidelineCard({
         <span style={{ flex: 1, minWidth: 0 }}>
           <span style={{
             display: 'block',
-            fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 700,
+            fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 600,
             color: '#111827', letterSpacing: '-0.01em', lineHeight: 1.35,
           }}>
             {guideline.title_ru}
