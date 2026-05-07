@@ -101,22 +101,29 @@ export default function BilirubinNomogram() {
         risks={risks}
         setRisks={setRisks}
       />
-      <ResultPanel
-        bank={bank}
-        gaWeeks={gaWeeks}
-        hours={hours}
-        tsbInput={tsbInput}
-        unit={unit}
-        risks={risks}
-      />
-      <ChartView
-        bank={bank}
-        gaWeeks={gaWeeks}
-        hours={hours}
-        tsbInput={tsbInput}
-        unit={unit}
-        risks={risks}
-      />
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'minmax(0, 1.6fr) minmax(280px, 1fr)',
+        gap: 16,
+        alignItems: 'stretch',
+      }}>
+        <ChartView
+          bank={bank}
+          gaWeeks={gaWeeks}
+          hours={hours}
+          tsbInput={tsbInput}
+          unit={unit}
+          risks={risks}
+        />
+        <ResultPanel
+          bank={bank}
+          gaWeeks={gaWeeks}
+          hours={hours}
+          tsbInput={tsbInput}
+          unit={unit}
+          risks={risks}
+        />
+      </div>
     </div>
   );
 }
@@ -314,9 +321,11 @@ function ResultPanel({
   if (!computed) {
     return (
       <div style={{
-        padding: '14px 18px', background: '#FFFFFF',
+        padding: '20px 18px', background: '#FFFFFF',
         border: '1px dashed #E5E7EB', borderRadius: 12,
         color: '#9CA3AF', fontSize: 13,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        textAlign: 'center', minHeight: 240,
       }}>
         Введите GA, часы жизни и TSB — рассчитаем пороги фототерапии и обменного переливания + рекомендацию по AAP 2022.
       </div>
@@ -374,13 +383,13 @@ function ResultPanel({
 
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
-        gap: 12,
+        gridTemplateColumns: 'repeat(2, 1fr)',
+        gap: 8,
       }}>
         <Card label="Страт риска" value={STRATUM_LABEL_RU[computed.stratum]} small />
-        <Card label={`Текущий TSB`} value={`${fmt(computed.tsbMgdl)} ${unit}`} />
-        <Card label="Порог фототерапии" value={`${fmt(computed.ptThr)} ${unit}`} sub={`до порога ${rec.marginToPt > 0 ? '+' : ''}${rec.marginToPt.toFixed(1)} mg/dL`} />
-        <Card label="Порог обменного" value={`${fmt(computed.exThr)} ${unit}`} sub={`до порога ${rec.marginToEx > 0 ? '+' : ''}${rec.marginToEx.toFixed(1)} mg/dL`} />
+        <Card label="Текущий TSB" value={`${fmt(computed.tsbMgdl)} ${unit}`} />
+        <Card label="Порог ФТ" value={`${fmt(computed.ptThr)} ${unit}`} sub={`Δ ${rec.marginToPt > 0 ? '+' : ''}${rec.marginToPt.toFixed(1)}`} />
+        <Card label="Порог ОП" value={`${fmt(computed.exThr)} ${unit}`} sub={`Δ ${rec.marginToEx > 0 ? '+' : ''}${rec.marginToEx.toFixed(1)}`} />
       </div>
     </div>
   );
@@ -438,10 +447,10 @@ function ChartView({
   const minVal = 0;
   const maxVal = Math.max(...allValues) * 1.08;
 
-  // SVG layout
-  const width = 720;
-  const height = 360;
-  const margin = { top: 16, right: 60, bottom: 36, left: 56 };
+  // SVG layout — компактнее (было 720×360, теперь 560×320)
+  const width = 560;
+  const height = 320;
+  const margin = { top: 28, right: 48, bottom: 40, left: 52 };
   const innerW = width - margin.left - margin.right;
   const innerH = height - margin.top - margin.bottom;
 
@@ -457,25 +466,68 @@ function ChartView({
   const yTicks = Array.from({ length: 6 }, (_, i) => minVal + (maxVal - minVal) * (i / 5));
   const xTickHours = [0, 24, 48, 72, 96, 120, 144, 168];
 
-  const ptPoints = ptCurve.filter((p) => p.hour <= maxHour).map((p) => `${xScale(p.hour)},${yScale(transform(p.tsb))}`).join(' ');
-  const exPoints = exCurve.filter((p) => p.hour <= maxHour).map((p) => `${xScale(p.hour)},${yScale(transform(p.tsb))}`).join(' ');
+  // Catmull-Rom plumber через cubic Bezier (плавные кривые)
+  const smoothPath = (pts: Array<{ x: number; y: number }>): string => {
+    if (pts.length === 0) return '';
+    if (pts.length === 1) return `M ${pts[0]!.x} ${pts[0]!.y}`;
+    if (pts.length === 2) return `M ${pts[0]!.x} ${pts[0]!.y} L ${pts[1]!.x} ${pts[1]!.y}`;
+    const tension = 0.5;
+    let d = `M ${pts[0]!.x} ${pts[0]!.y}`;
+    for (let i = 0; i < pts.length - 1; i++) {
+      const p0 = pts[i - 1] ?? pts[i]!;
+      const p1 = pts[i]!;
+      const p2 = pts[i + 1]!;
+      const p3 = pts[i + 2] ?? p2;
+      const cp1x = p1.x + (p2.x - p0.x) * tension / 3;
+      const cp1y = p1.y + (p2.y - p0.y) * tension / 3;
+      const cp2x = p2.x - (p3.x - p1.x) * tension / 3;
+      const cp2y = p2.y - (p3.y - p1.y) * tension / 3;
+      d += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${p2.x} ${p2.y}`;
+    }
+    return d;
+  };
+
+  const ptPath = smoothPath(ptCurve.filter((p) => p.hour <= maxHour).map((p) => ({ x: xScale(p.hour), y: yScale(transform(p.tsb)) })));
+  const exPath = smoothPath(exCurve.filter((p) => p.hour <= maxHour).map((p) => ({ x: xScale(p.hour), y: yScale(transform(p.tsb)) })));
 
   return (
     <div style={{
-      padding: 16,
+      padding: '14px 16px 12px',
       background: '#FFFFFF',
       border: '1px solid #E5E7EB',
       borderRadius: 12,
-      overflow: 'auto',
+      display: 'flex', flexDirection: 'column', gap: 8,
     }}>
-      <svg viewBox={`0 0 ${width} ${height}`} style={{ width: '100%', height: 'auto', minWidth: 480 }}
+      {/* Header */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: 8 }}>
+        <div style={{
+          fontFamily: 'var(--font-display)', fontSize: 14, fontWeight: 700,
+          color: '#111827', letterSpacing: '-0.01em',
+        }}>
+          Билирубин (TSB), {unit}
+        </div>
+        <div style={{ fontSize: 11, color: '#9CA3AF', letterSpacing: '0.04em', textTransform: 'uppercase', fontWeight: 600 }}>
+          AAP 2022 · 0–168 ч
+        </div>
+      </div>
+
+      <svg viewBox={`0 0 ${width} ${height}`} style={{ width: '100%', height: 'auto' }}
         role="img" aria-label="График порогов AAP 2022">
+        <defs>
+          <linearGradient id="bili-bg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#F8FAFC" />
+            <stop offset="100%" stopColor="#FFFFFF" />
+          </linearGradient>
+        </defs>
         <g transform={`translate(${margin.left},${margin.top})`}>
+          {/* Plot area */}
+          <rect x={0} y={0} width={innerW} height={innerH} fill="url(#bili-bg)" rx={4} />
+
           {/* Grid Y */}
           {yTicks.map((t, i) => (
             <g key={`y-${i}`}>
-              <line x1={0} x2={innerW} y1={yScale(t)} y2={yScale(t)} stroke="#F0F1F5" strokeWidth={1} />
-              <text x={-8} y={yScale(t)} dy="0.32em" textAnchor="end" fontSize={11} fill="#9CA3AF" fontFamily="var(--font-mono, ui-monospace)">
+              <line x1={0} x2={innerW} y1={yScale(t)} y2={yScale(t)} stroke="#EAECEF" strokeWidth={1} strokeDasharray={i === 0 || i === yTicks.length - 1 ? 'none' : '2 4'} />
+              <text x={-10} y={yScale(t)} dy="0.32em" textAnchor="end" fontSize={10} fill="#9CA3AF">
                 {unit === 'mg/dL' ? t.toFixed(0) : Math.round(t)}
               </text>
             </g>
@@ -483,55 +535,53 @@ function ChartView({
           {/* Grid X */}
           {xTickHours.map((h, i) => (
             <g key={`x-${i}`}>
-              <line x1={xScale(h)} x2={xScale(h)} y1={0} y2={innerH} stroke="#F0F1F5" strokeWidth={1} />
-              <text x={xScale(h)} y={innerH + 18} textAnchor="middle" fontSize={11} fill="#9CA3AF" fontFamily="var(--font-mono, ui-monospace)">
+              <line x1={xScale(h)} x2={xScale(h)} y1={0} y2={innerH} stroke="#EAECEF" strokeWidth={1} strokeDasharray="2 4" />
+              <text x={xScale(h)} y={innerH + 16} textAnchor="middle" fontSize={10} fill="#9CA3AF">
                 {h}
               </text>
             </g>
           ))}
 
-          {/* Phototherapy curve (blue) */}
-          <polyline fill="none" stroke="#2563EB" strokeWidth={2.4} points={ptPoints} />
-          {/* Exchange curve (red, dashed) */}
-          <polyline fill="none" stroke="#DC2626" strokeWidth={2.2} strokeDasharray="6 4" points={exPoints} />
+          {/* Smooth curves */}
+          <path d={ptPath} fill="none" stroke="#2563EB" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" />
+          <path d={exPath} fill="none" stroke="#DC2626" strokeWidth={2} strokeDasharray="5 4" strokeLinecap="round" strokeLinejoin="round" />
 
           {/* Curve labels (right edge) */}
-          <text x={innerW + 6} y={yScale(transform(ptCurve[ptCurve.length - 1]?.tsb ?? 0))} dy="0.32em" fontSize={11} fill="#2563EB" fontFamily="var(--font-mono, ui-monospace)" fontWeight={700}>
+          <text x={innerW + 6} y={yScale(transform(ptCurve[ptCurve.length - 1]?.tsb ?? 0))} dy="0.32em" fontSize={9} fill="#2563EB" fontFamily="var(--font-mono, ui-monospace)" fontWeight={700}>
             ФТ
           </text>
-          <text x={innerW + 6} y={yScale(transform(exCurve[exCurve.length - 1]?.tsb ?? 0))} dy="0.32em" fontSize={11} fill="#DC2626" fontFamily="var(--font-mono, ui-monospace)" fontWeight={700}>
+          <text x={innerW + 6} y={yScale(transform(exCurve[exCurve.length - 1]?.tsb ?? 0))} dy="0.32em" fontSize={9} fill="#DC2626" fontFamily="var(--font-mono, ui-monospace)" fontWeight={700}>
             ОП
           </text>
 
           {/* User point */}
           {showUserPoint && (
             <g>
-              <line x1={xScale(userHour)} x2={xScale(userHour)} y1={0} y2={innerH} stroke="#111827" strokeWidth={1} strokeDasharray="2 3" opacity={0.3} />
-              <circle cx={xScale(userHour)} cy={yScale(userTsbDisp)} r={6} fill="#111827" stroke="#FFFFFF" strokeWidth={2} />
+              <line x1={xScale(userHour)} x2={xScale(userHour)} y1={0} y2={innerH} stroke="#111827" strokeWidth={1} strokeDasharray="2 3" opacity={0.25} />
+              <line x1={0} x2={innerW} y1={yScale(userTsbDisp)} y2={yScale(userTsbDisp)} stroke="#111827" strokeWidth={1} strokeDasharray="2 3" opacity={0.25} />
+              <circle cx={xScale(userHour)} cy={yScale(userTsbDisp)} r={9} fill="#111827" opacity={0.12} />
+              <circle cx={xScale(userHour)} cy={yScale(userTsbDisp)} r={5} fill="#111827" stroke="#FFFFFF" strokeWidth={2} />
             </g>
           )}
 
           {/* Axis labels */}
-          <text x={innerW / 2} y={innerH + 32} textAnchor="middle" fontSize={11} fill="#6B7280">
+          <text x={innerW / 2} y={innerH + 32} textAnchor="middle" fontSize={10} fill="#6B7280" fontWeight={500}>
             Часы жизни
-          </text>
-          <text x={-innerH / 2} y={-44} textAnchor="middle" fontSize={11} fill="#6B7280" transform="rotate(-90)">
-            TSB, {unit}
           </text>
         </g>
       </svg>
 
       {/* Legend */}
       <div style={{
-        display: 'flex', gap: 18, justifyContent: 'center', marginTop: 8,
-        fontSize: 12, color: '#6B7280',
+        display: 'flex', gap: 16, justifyContent: 'center',
+        fontSize: 11, color: '#6B7280',
       }}>
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-          <span style={{ display: 'inline-block', width: 18, height: 2, background: '#2563EB' }} />
+          <span style={{ display: 'inline-block', width: 16, height: 2, background: '#2563EB', borderRadius: 1 }} />
           Фототерапия
         </span>
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-          <span style={{ display: 'inline-block', width: 18, height: 2, background: '#DC2626' }} />
+          <span style={{ display: 'inline-block', width: 16, height: 2, background: '#DC2626', borderRadius: 1, opacity: 0.85 }} />
           Обменное переливание
         </span>
       </div>

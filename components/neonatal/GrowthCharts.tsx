@@ -118,21 +118,27 @@ export default function GrowthCharts() {
         setValue={setValue}
       />
 
-      <ResultPanel
-        dataset={dataset}
-        parameter={parameter}
-        sex={sex}
-        age={age}
-        value={value}
-      />
-
-      <ChartView
-        dataset={dataset}
-        parameter={parameter}
-        sex={sex}
-        age={age}
-        value={value}
-      />
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'minmax(0, 1.6fr) minmax(260px, 1fr)',
+        gap: 16,
+        alignItems: 'stretch',
+      }}>
+        <ChartView
+          dataset={dataset}
+          parameter={parameter}
+          sex={sex}
+          age={age}
+          value={value}
+        />
+        <ResultPanel
+          dataset={dataset}
+          parameter={parameter}
+          sex={sex}
+          age={age}
+          value={value}
+        />
+      </div>
     </div>
   );
 }
@@ -316,11 +322,13 @@ function ResultPanel({
   if (!result) {
     return (
       <div style={{
-        padding: '14px 18px', background: '#FFFFFF',
+        padding: '20px 18px', background: '#FFFFFF',
         border: '1px dashed #E5E7EB', borderRadius: 12,
         color: '#9CA3AF', fontSize: 13,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        textAlign: 'center', minHeight: 200,
       }}>
-        Введите PMA и измеренное значение — рассчитаем процентиль и Z-score.
+        Введите PMA и измеренное значение — рассчитаем перцентиль и Z-score.
       </div>
     );
   }
@@ -337,28 +345,36 @@ function ResultPanel({
     high: '#92400E',
     ok: '#065F46',
   }[result.interp.tone];
+  const toneAccent = {
+    critical: '#EF4444',
+    warning: '#F59E0B',
+    high: '#F59E0B',
+    ok: '#10B981',
+  }[result.interp.tone];
 
   return (
     <div style={{
-      display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
-      gap: 12,
+      display: 'flex', flexDirection: 'column', gap: 10,
     }}>
-      <ResultCard label="Перцентиль" value={`P${formatPercentile(result.pct)}`} sub={`Z = ${result.z.toFixed(2)}`} />
+      <ResultCard label="Перцентиль" value={`P${formatPercentile(result.pct)}`} sub={`Z-score = ${result.z.toFixed(2)}`} />
       <ResultCard label="Медиана (P50)" value={`${result.M.toFixed(parameter === 'weight' ? 0 : 1)}`} sub={PARAMETER_UNIT[parameter]} />
       <div style={{
-        padding: '12px 16px',
+        padding: '12px 14px',
         background: toneBg,
-        borderRadius: 12,
-        gridColumn: 'span 2',
+        borderLeft: `4px solid ${toneAccent}`,
+        borderRadius: 10,
       }}>
         <div style={{
-          fontSize: 11, fontWeight: 600, color: toneText, opacity: 0.8,
+          fontSize: 11, fontWeight: 700, color: toneText, opacity: 0.85,
           letterSpacing: '0.04em', textTransform: 'uppercase', marginBottom: 4,
         }}>
           Интерпретация
         </div>
-        <div style={{ fontSize: 14, fontWeight: 600, color: toneText }}>
+        <div style={{
+          fontSize: 14, fontWeight: 600, color: toneText,
+          fontFamily: 'var(--font-display)', letterSpacing: '-0.005em',
+          lineHeight: 1.35,
+        }}>
           {result.interp.label}
         </div>
       </div>
@@ -398,6 +414,29 @@ function ResultCard({ label, value, sub }: { label: string; value: string; sub?:
   );
 }
 
+/** Catmull-Rom через cubic Bezier — даёт плавную кривую через все точки.
+ *  Используем для биологических кривых (рост, билирубин), где данные
+ *  должны выглядеть как непрерывная функция, а не ломаная linear-интерполяция. */
+function smoothPath(pts: Array<{ x: number; y: number }>): string {
+  if (pts.length === 0) return '';
+  if (pts.length === 1) return `M ${pts[0]!.x} ${pts[0]!.y}`;
+  if (pts.length === 2) return `M ${pts[0]!.x} ${pts[0]!.y} L ${pts[1]!.x} ${pts[1]!.y}`;
+  const tension = 0.5;
+  let d = `M ${pts[0]!.x} ${pts[0]!.y}`;
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[i - 1] ?? pts[i]!;
+    const p1 = pts[i]!;
+    const p2 = pts[i + 1]!;
+    const p3 = pts[i + 2] ?? p2;
+    const cp1x = p1.x + (p2.x - p0.x) * tension / 3;
+    const cp1y = p1.y + (p2.y - p0.y) * tension / 3;
+    const cp2x = p2.x - (p3.x - p1.x) * tension / 3;
+    const cp2y = p2.y - (p3.y - p1.y) * tension / 3;
+    d += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${p2.x} ${p2.y}`;
+  }
+  return d;
+}
+
 function ChartView({
   dataset, parameter, sex, age, value,
 }: {
@@ -417,12 +456,12 @@ function ChartView({
   const maxAge = points[points.length - 1]?.age ?? dataset.ageMax;
   const allValues = curves.flatMap((c) => c.points.map((p) => p.value));
   const minVal = Math.min(...allValues) * 0.92;
-  const maxVal = Math.max(...allValues) * 1.05;
+  const maxVal = Math.max(...allValues) * 1.06;
 
-  // SVG layout
-  const width = 720;
-  const height = 360;
-  const margin = { top: 16, right: 24, bottom: 36, left: 56 };
+  // SVG layout — компактнее (было 720×360, теперь 560×320)
+  const width = 560;
+  const height = 320;
+  const margin = { top: 24, right: 44, bottom: 40, left: 52 };
   const innerW = width - margin.left - margin.right;
   const innerH = height - margin.top - margin.bottom;
 
@@ -434,38 +473,63 @@ function ChartView({
   const showUserPoint = isFinite(userAge) && isFinite(userVal) && userVal > 0
     && userAge >= minAge && userAge <= maxAge;
 
-  // Y-axis ticks (5 evenly spaced)
+  // Y-axis ticks
   const yTicks = Array.from({ length: 5 }, (_, i) => minVal + (maxVal - minVal) * (i / 4));
-  // X-axis ticks: every 4 weeks for Fenton, max 8 ticks
-  const xStep = Math.ceil((maxAge - minAge) / 8 / 2) * 2;
+  const xStep = Math.ceil((maxAge - minAge) / 7 / 2) * 2;
   const xTicks: number[] = [];
   for (let a = Math.ceil(minAge / xStep) * xStep; a <= maxAge; a += xStep) {
     xTicks.push(a);
   }
 
+  const fmtY = (t: number): string => parameter === 'weight'
+    ? (t >= 1000 ? `${(t / 1000).toFixed(1)} кг` : `${Math.round(t)}`)
+    : t.toFixed(0);
+
   return (
     <div style={{
-      padding: 16,
+      padding: '14px 16px 12px',
       background: '#FFFFFF',
       border: '1px solid #E5E7EB',
       borderRadius: 12,
-      overflow: 'auto',
+      display: 'flex', flexDirection: 'column', gap: 8,
     }}>
-      <svg viewBox={`0 0 ${width} ${height}`} style={{ width: '100%', height: 'auto', minWidth: 480 }}
-        role="img" aria-label={`График роста ${PARAMETER_LABEL_RU[parameter]}`}>
+      {/* Header */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: 8 }}>
+        <div style={{
+          fontFamily: 'var(--font-display)', fontSize: 14, fontWeight: 700,
+          color: '#111827', letterSpacing: '-0.01em',
+        }}>
+          {PARAMETER_LABEL_RU[parameter]} ({PARAMETER_UNIT[parameter]})
+        </div>
+        <div style={{ fontSize: 11, color: '#9CA3AF', letterSpacing: '0.04em', textTransform: 'uppercase', fontWeight: 600 }}>
+          {SEX_LABEL_RU[sex]} · {dataset.label_ru}
+        </div>
+      </div>
+
+      <svg viewBox={`0 0 ${width} ${height}`} style={{ width: '100%', height: 'auto' }}
+        role="img" aria-label={`График ${PARAMETER_LABEL_RU[parameter]}`}>
+        <defs>
+          <linearGradient id="growth-bg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#F8FAFC" />
+            <stop offset="100%" stopColor="#FFFFFF" />
+          </linearGradient>
+        </defs>
         <g transform={`translate(${margin.left},${margin.top})`}>
+          {/* Plot area background */}
+          <rect x={0} y={0} width={innerW} height={innerH} fill="url(#growth-bg)" rx={4} />
+
           {/* Grid Y */}
           {yTicks.map((t, i) => (
             <g key={`y-${i}`}>
               <line
                 x1={0} x2={innerW} y1={yScale(t)} y2={yScale(t)}
-                stroke="#F0F1F5" strokeWidth={1}
+                stroke="#EAECEF" strokeWidth={1} strokeDasharray={i === 0 || i === yTicks.length - 1 ? 'none' : '2 4'}
               />
               <text
-                x={-8} y={yScale(t)} dy="0.32em" textAnchor="end"
-                fontSize={11} fill="#9CA3AF" fontFamily="var(--font-mono, ui-monospace)"
+                x={-10} y={yScale(t)} dy="0.32em" textAnchor="end"
+                fontSize={10} fill="#9CA3AF"
               >
-                {parameter === 'weight' ? Math.round(t) : t.toFixed(1)}
+                {fmtY(t)}
               </text>
             </g>
           ))}
@@ -474,69 +538,79 @@ function ChartView({
             <g key={`x-${i}`}>
               <line
                 x1={xScale(t)} x2={xScale(t)} y1={0} y2={innerH}
-                stroke="#F0F1F5" strokeWidth={1}
+                stroke="#EAECEF" strokeWidth={1} strokeDasharray="2 4"
               />
               <text
-                x={xScale(t)} y={innerH + 18} textAnchor="middle"
-                fontSize={11} fill="#9CA3AF" fontFamily="var(--font-mono, ui-monospace)"
+                x={xScale(t)} y={innerH + 16} textAnchor="middle"
+                fontSize={10} fill="#9CA3AF"
               >
                 {t}
               </text>
             </g>
           ))}
 
-          {/* Reference curves */}
-          {curves.map((c) => (
-            <polyline
-              key={c.percentile}
-              fill="none"
-              stroke={PERCENTILE_COLORS[c.percentile]}
-              strokeWidth={c.percentile === 50 ? 2.2 : 1.4}
-              strokeOpacity={c.percentile === 50 ? 1 : 0.7}
-              strokeDasharray={c.percentile === 50 ? 'none' : '4 3'}
-              points={c.points.map((p) => `${xScale(p.age)},${yScale(p.value)}`).join(' ')}
-            />
-          ))}
+          {/* Reference curves — smooth Bezier */}
+          {curves.map((c) => {
+            const isMedian = c.percentile === 50;
+            const path = smoothPath(c.points.map((p) => ({ x: xScale(p.age), y: yScale(p.value) })));
+            return (
+              <path
+                key={c.percentile}
+                d={path}
+                fill="none"
+                stroke={PERCENTILE_COLORS[c.percentile]}
+                strokeWidth={isMedian ? 2.2 : 1.2}
+                strokeOpacity={isMedian ? 1 : 0.55}
+                strokeDasharray={isMedian ? 'none' : '3 3'}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            );
+          })}
 
           {/* Curve labels (right edge) */}
           {curves.map((c) => {
             const last = c.points[c.points.length - 1];
             if (!last) return null;
+            const isMedian = c.percentile === 50;
             return (
               <text
                 key={`label-${c.percentile}`}
-                x={xScale(last.age) + 4}
+                x={xScale(last.age) + 6}
                 y={yScale(last.value)}
                 dy="0.32em"
-                fontSize={10}
+                fontSize={9}
                 fill={PERCENTILE_COLORS[c.percentile]}
                 fontFamily="var(--font-mono, ui-monospace)"
-                fontWeight={c.percentile === 50 ? 700 : 600}
+                fontWeight={isMedian ? 700 : 600}
               >
                 P{c.percentile}
               </text>
             );
           })}
 
-          {/* User point */}
+          {/* User point — пунктирная линия + кружок с halo */}
           {showUserPoint && (
             <g>
               <line
                 x1={xScale(userAge)} x2={xScale(userAge)}
                 y1={0} y2={innerH}
-                stroke="#111827" strokeWidth={1} strokeDasharray="2 3" opacity={0.3}
+                stroke="#111827" strokeWidth={1} strokeDasharray="2 3" opacity={0.25}
               />
-              <circle
-                cx={xScale(userAge)} cy={yScale(userVal)}
-                r={6} fill="#111827" stroke="#FFFFFF" strokeWidth={2}
+              <line
+                x1={0} x2={innerW}
+                y1={yScale(userVal)} y2={yScale(userVal)}
+                stroke="#111827" strokeWidth={1} strokeDasharray="2 3" opacity={0.25}
               />
+              <circle cx={xScale(userAge)} cy={yScale(userVal)} r={9} fill="#111827" opacity={0.12} />
+              <circle cx={xScale(userAge)} cy={yScale(userVal)} r={5} fill="#111827" stroke="#FFFFFF" strokeWidth={2} />
             </g>
           )}
 
-          {/* Axis labels */}
+          {/* X-axis label */}
           <text
             x={innerW / 2} y={innerH + 32} textAnchor="middle"
-            fontSize={11} fill="#6B7280"
+            fontSize={10} fill="#6B7280" fontWeight={500}
           >
             {dataset.ageType === 'postmenstrual' ? 'PMA' : 'Возраст'}, недели
           </text>
