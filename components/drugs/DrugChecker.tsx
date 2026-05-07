@@ -745,6 +745,7 @@ export default function DrugChecker() {
             marginTop: 24,
             background: '#F5F6F8',
             border: 'none',
+            borderLeft: '3px solid #2563EB',
             borderRadius: 14,
             overflow: 'hidden',
           }}
