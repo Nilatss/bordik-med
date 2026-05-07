@@ -39,20 +39,46 @@ interface Bank {
   drugs: Drug[];
 }
 
+interface Guideline {
+  id: string;
+  title_en: string;
+  title_ru: string;
+  content: string;
+  references: string[];
+}
+
+interface GuidelinesBank {
+  version: string;
+  lastUpdated: string;
+  source: string;
+  guidelines: Guideline[];
+}
+
+type Tab = 'drugs' | 'guidelines';
+
 export default function NeonatalHandbook() {
   const [bank, setBank] = useState<Bank | null>(null);
+  const [guidelines, setGuidelines] = useState<GuidelinesBank | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [q, setQ] = useState('');
   const [openId, setOpenId] = useState<string | null>(null);
+  const [tab, setTab] = useState<Tab>('drugs');
 
   useEffect(() => {
     let cancelled = false;
     void (async () => {
       try {
-        const r = await fetch('/neonatal-monographs.json?v=1.0.0', { cache: 'force-cache' });
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        const json = await r.json();
-        if (!cancelled) setBank(json as Bank);
+        const [drugsR, guidelinesR] = await Promise.all([
+          fetch('/neonatal-monographs.json?v=1.0.0', { cache: 'force-cache' }),
+          fetch('/neonatal-guidelines.json?v=1.0.0', { cache: 'force-cache' }),
+        ]);
+        if (!drugsR.ok) throw new Error(`monographs ${drugsR.status}`);
+        const drugsJson = await drugsR.json();
+        const guidesJson = guidelinesR.ok ? await guidelinesR.json() : null;
+        if (!cancelled) {
+          setBank(drugsJson as Bank);
+          if (guidesJson) setGuidelines(guidesJson as GuidelinesBank);
+        }
       } catch (e) {
         if (!cancelled) setError((e as Error).message ?? 'load failed');
       }
@@ -60,7 +86,7 @@ export default function NeonatalHandbook() {
     return () => { cancelled = true; };
   }, []);
 
-  const filtered = useMemo(() => {
+  const filteredDrugs = useMemo(() => {
     if (!bank) return [];
     const query = q.trim().toLowerCase();
     if (!query) return bank.drugs;
@@ -71,6 +97,17 @@ export default function NeonatalHandbook() {
       || d.fullText.toLowerCase().includes(query)
     );
   }, [bank, q]);
+
+  const filteredGuidelines = useMemo(() => {
+    if (!guidelines) return [];
+    const query = q.trim().toLowerCase();
+    if (!query) return guidelines.guidelines;
+    return guidelines.guidelines.filter((g) =>
+      g.title_en.toLowerCase().includes(query)
+      || g.title_ru.toLowerCase().includes(query)
+      || g.content.toLowerCase().includes(query)
+    );
+  }, [guidelines, q]);
 
   if (error) {
     return (
@@ -166,34 +203,112 @@ export default function NeonatalHandbook() {
         )}
       </motion.div>
 
-      <p style={{ fontSize: 13, color: '#6B7280', margin: '0 0 14px' }}>
-        Показано: <strong style={{ color: '#1A1A1A' }}>{filtered.length}</strong> из {bank.drugs.length}
-      </p>
+      {/* Tabs: Препараты / Протоколы */}
+      <div role="tablist" aria-label="Разделы" style={{
+        display: 'flex', gap: 4, flexWrap: 'wrap',
+        borderBottom: '1px solid #E5E7EB',
+        marginBottom: 18, paddingBottom: 0,
+        marginLeft: -14, marginRight: -14,
+      }}>
+        {([
+          { id: 'drugs' as const, label: 'Препараты', count: bank.drugs.length },
+          { id: 'guidelines' as const, label: 'Протоколы NICU', count: guidelines?.guidelines.length ?? 0 },
+        ]).map((t) => {
+          const isActive = tab === t.id;
+          return (
+            <button
+              key={t.id}
+              role="tab"
+              aria-selected={isActive}
+              onClick={() => { setTab(t.id); setOpenId(null); }}
+              style={{
+                position: 'relative',
+                background: 'transparent',
+                border: 'none',
+                padding: '10px 14px',
+                fontSize: 14,
+                fontWeight: isActive ? 600 : 500,
+                fontFamily: 'inherit',
+                color: isActive ? '#2563EB' : '#374151',
+                cursor: 'pointer',
+                borderBottom: isActive ? '2px solid #2563EB' : '2px solid transparent',
+                marginBottom: -1,
+                display: 'inline-flex', alignItems: 'center', gap: 6,
+                transition: 'color 120ms',
+              }}
+            >
+              <span>{t.label}</span>
+              <span style={{
+                fontSize: 11, fontWeight: 700,
+                color: isActive ? '#2563EB' : '#9CA3AF',
+                opacity: isActive ? 0.85 : 0.7,
+              }}>
+                {t.count}
+              </span>
+            </button>
+          );
+        })}
+      </div>
 
-      {/* Drug list */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.3, delay: 0.12 }}
-        style={{ display: 'flex', flexDirection: 'column', gap: 8 }}
-      >
-        {filtered.map((d) => (
-          <DrugCard
-            key={d.id}
-            drug={d}
-            isOpen={openId === d.id}
-            onToggle={() => setOpenId(openId === d.id ? null : d.id)}
-          />
-        ))}
-        {filtered.length === 0 && (
-          <div style={{
-            padding: '32px 16px', background: '#F5F6F8', borderRadius: 12,
-            textAlign: 'center', color: '#6B7280', fontSize: 14,
-          }}>
-            Ничего не найдено.
-          </div>
-        )}
-      </motion.div>
+      {tab === 'drugs' ? (
+        <>
+          <p style={{ fontSize: 13, color: '#6B7280', margin: '0 0 14px' }}>
+            Показано: <strong style={{ color: '#1A1A1A' }}>{filteredDrugs.length}</strong> из {bank.drugs.length}
+          </p>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+            style={{ display: 'flex', flexDirection: 'column', gap: 8 }}
+          >
+            {filteredDrugs.map((d) => (
+              <DrugCard
+                key={d.id}
+                drug={d}
+                isOpen={openId === d.id}
+                onToggle={() => setOpenId(openId === d.id ? null : d.id)}
+              />
+            ))}
+            {filteredDrugs.length === 0 && (
+              <div style={{
+                padding: '32px 16px', background: '#F5F6F8', borderRadius: 12,
+                textAlign: 'center', color: '#6B7280', fontSize: 14,
+              }}>
+                Ничего не найдено.
+              </div>
+            )}
+          </motion.div>
+        </>
+      ) : (
+        <>
+          <p style={{ fontSize: 13, color: '#6B7280', margin: '0 0 14px' }}>
+            Показано: <strong style={{ color: '#1A1A1A' }}>{filteredGuidelines.length}</strong> из {guidelines?.guidelines.length ?? 0}
+          </p>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+            style={{ display: 'flex', flexDirection: 'column', gap: 8 }}
+          >
+            {filteredGuidelines.map((g) => (
+              <GuidelineCard
+                key={g.id}
+                guideline={g}
+                isOpen={openId === g.id}
+                onToggle={() => setOpenId(openId === g.id ? null : g.id)}
+              />
+            ))}
+            {filteredGuidelines.length === 0 && (
+              <div style={{
+                padding: '32px 16px', background: '#F5F6F8', borderRadius: 12,
+                textAlign: 'center', color: '#6B7280', fontSize: 14,
+              }}>
+                Ничего не найдено.
+              </div>
+            )}
+          </motion.div>
+        </>
+      )}
 
       {/* Disclaimer */}
       <section style={{
@@ -293,22 +408,22 @@ function DrugCard({
               display: 'flex', flexDirection: 'column', gap: 12,
             }}>
               {showStructured && drug.indications && (
-                <Section label="Показания">{drug.indications}</Section>
+                <Section label="Показания (Indications)">{drug.indications}</Section>
               )}
               {showStructured && drug.dose && (
-                <Section label="Доза">{drug.dose}</Section>
+                <Section label="Доза (Dose)">{drug.dose}</Section>
               )}
               {showStructured && drug.route && (
-                <Section label="Путь введения">{drug.route}</Section>
+                <Section label="Путь введения (Route)">{drug.route}</Section>
               )}
               {showStructured && drug.levels && (
-                <Section label="Levels and Metabolism">{drug.levels}</Section>
+                <Section label="Метаболизм / уровни (Levels and Metabolism)">{drug.levels}</Section>
               )}
               {showStructured && drug.precautions && (
-                <Section label="Precautions" tone="warning">{drug.precautions}</Section>
+                <Section label="Меры предосторожности (Precautions)" tone="warning">{drug.precautions}</Section>
               )}
               {showStructured && drug.extemporaneous && (
-                <Section label="Extemporaneous Preparation">{drug.extemporaneous}</Section>
+                <Section label="Приготовление (Extemporaneous)">{drug.extemporaneous}</Section>
               )}
 
               {/* Always show full raw text as fallback / verification */}
@@ -323,6 +438,144 @@ function DrugCard({
                   {drug.fullText}
                 </div>
               </details>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+function GuidelineCard({
+  guideline, isOpen, onToggle,
+}: {
+  guideline: Guideline;
+  isOpen: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <div style={{
+      background: '#FFFFFF',
+      border: '1px solid #DBEAFE',
+      borderLeft: '3px solid #2563EB',
+      borderRadius: 14,
+      overflow: 'hidden',
+    }}>
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={isOpen}
+        style={{
+          width: '100%',
+          display: 'flex', alignItems: 'flex-start', gap: 14,
+          padding: '14px 18px',
+          background: '#F0F7FF', border: 'none',
+          cursor: 'pointer', textAlign: 'left',
+          fontFamily: 'inherit',
+          transition: 'background 150ms',
+        }}
+        onMouseEnter={(e) => { e.currentTarget.style.background = '#DBEAFE'; }}
+        onMouseLeave={(e) => { e.currentTarget.style.background = '#F0F7FF'; }}
+      >
+        {/* Иконка-протокол */}
+        <span style={{
+          flexShrink: 0,
+          width: 36, height: 36,
+          borderRadius: 8,
+          background: '#FFFFFF',
+          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+          color: '#2563EB',
+          border: '1px solid #DBEAFE',
+        }}>
+          <svg width={18} height={18} viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+            <path d="M9 11l3 3L22 4" />
+            <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
+          </svg>
+        </span>
+        <span style={{ flex: 1, minWidth: 0 }}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+            <span style={{
+              display: 'inline-flex', alignItems: 'center',
+              padding: '2px 8px',
+              background: '#2563EB',
+              color: '#FFFFFF',
+              borderRadius: 4,
+              fontFamily: 'var(--font-mono, ui-monospace)',
+              fontSize: 10, fontWeight: 700,
+              letterSpacing: '0.06em',
+              textTransform: 'uppercase',
+            }}>
+              Протокол
+            </span>
+          </span>
+          <span style={{
+            display: 'block',
+            fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 700,
+            color: '#1E3A8A', letterSpacing: '-0.01em', lineHeight: 1.35,
+          }}>
+            {guideline.title_ru}
+          </span>
+          {guideline.title_en !== guideline.title_ru && (
+            <span style={{
+              display: 'block', marginTop: 2, fontSize: 12, color: '#6B7280',
+            }}>
+              {guideline.title_en}
+            </span>
+          )}
+        </span>
+        <span style={{
+          flexShrink: 0,
+          color: '#6B7280',
+          transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+          transition: 'transform 200ms',
+          marginTop: 6,
+        }}>
+          <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </span>
+      </button>
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{
+              height: { duration: 0.25, ease: [0.05, 0.7, 0.1, 1] },
+              opacity: { duration: 0.18 },
+            }}
+            style={{ overflow: 'hidden' }}
+          >
+            <div style={{
+              padding: '16px 18px 18px',
+              background: '#FAFBFC',
+              borderTop: '1px solid #DBEAFE',
+              fontSize: 13, lineHeight: 1.6, color: '#374151',
+            }}>
+              <pre style={{
+                whiteSpace: 'pre-wrap', wordBreak: 'break-word',
+                fontFamily: 'inherit', margin: 0, fontSize: 13,
+              }}>
+                {guideline.content}
+              </pre>
+              {guideline.references.length > 0 && (
+                <div style={{ marginTop: 16, paddingTop: 12, borderTop: '1px solid #E5E7EB' }}>
+                  <div style={{
+                    fontSize: 11, fontWeight: 600, letterSpacing: '0.06em',
+                    textTransform: 'uppercase', color: '#9CA3AF', marginBottom: 6,
+                  }}>
+                    References
+                  </div>
+                  <ol style={{ margin: 0, paddingLeft: 20, fontSize: 12, color: '#6B7280' }}>
+                    {guideline.references.map((ref, i) => (
+                      <li key={i} style={{ marginBottom: 4 }}>{ref}</li>
+                    ))}
+                  </ol>
+                </div>
+              )}
             </div>
           </motion.div>
         )}

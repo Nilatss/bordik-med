@@ -1,16 +1,16 @@
 # Graph Report - bordik-med  (2026-05-07)
 
 ## Corpus Check
-- 998 files · ~5,473,216 words
+- 998 files · ~5,473,449 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 2281 nodes · 2346 edges · 968 communities (952 shown, 16 thin omitted)
+- 2281 nodes · 2346 edges · 970 communities (954 shown, 16 thin omitted)
 - Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 75 edges (avg confidence: 0.81)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `4829417e`
+- Built from commit: `bb157fdc`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -44,18 +44,18 @@
 - [[_COMMUNITY_Community 26|Community 26]]
 - [[_COMMUNITY_Community 27|Community 27]]
 - [[_COMMUNITY_Community 28|Community 28]]
-- [[_COMMUNITY_Community 29|Community 29]]
 - [[_COMMUNITY_Community 30|Community 30]]
 - [[_COMMUNITY_Community 31|Community 31]]
 - [[_COMMUNITY_Community 32|Community 32]]
 - [[_COMMUNITY_Community 33|Community 33]]
 - [[_COMMUNITY_Community 34|Community 34]]
 - [[_COMMUNITY_Community 35|Community 35]]
+- [[_COMMUNITY_Community 36|Community 36]]
 - [[_COMMUNITY_Community 37|Community 37]]
 - [[_COMMUNITY_Community 38|Community 38]]
 - [[_COMMUNITY_Community 39|Community 39]]
-- [[_COMMUNITY_Community 40|Community 40]]
 - [[_COMMUNITY_Community 41|Community 41]]
+- [[_COMMUNITY_Community 42|Community 42]]
 - [[_COMMUNITY_Community 43|Community 43]]
 - [[_COMMUNITY_Community 44|Community 44]]
 - [[_COMMUNITY_Community 45|Community 45]]
@@ -70,18 +70,18 @@
 - [[_COMMUNITY_Community 54|Community 54]]
 - [[_COMMUNITY_Community 55|Community 55]]
 - [[_COMMUNITY_Community 56|Community 56]]
+- [[_COMMUNITY_Community 57|Community 57]]
 - [[_COMMUNITY_Community 58|Community 58]]
 - [[_COMMUNITY_Community 59|Community 59]]
-- [[_COMMUNITY_Community 60|Community 60]]
 - [[_COMMUNITY_Community 61|Community 61]]
+- [[_COMMUNITY_Community 62|Community 62]]
 - [[_COMMUNITY_Community 63|Community 63]]
 - [[_COMMUNITY_Community 64|Community 64]]
-- [[_COMMUNITY_Community 65|Community 65]]
-- [[_COMMUNITY_Community 66|Community 66]]
 - [[_COMMUNITY_Community 67|Community 67]]
 - [[_COMMUNITY_Community 68|Community 68]]
 - [[_COMMUNITY_Community 69|Community 69]]
 - [[_COMMUNITY_Community 70|Community 70]]
+- [[_COMMUNITY_Community 71|Community 71]]
 - [[_COMMUNITY_Community 72|Community 72]]
 - [[_COMMUNITY_Community 73|Community 73]]
 - [[_COMMUNITY_Community 74|Community 74]]
@@ -92,20 +92,22 @@
 - [[_COMMUNITY_Community 79|Community 79]]
 - [[_COMMUNITY_Community 80|Community 80]]
 - [[_COMMUNITY_Community 81|Community 81]]
-- [[_COMMUNITY_Community 84|Community 84]]
-- [[_COMMUNITY_Community 87|Community 87]]
+- [[_COMMUNITY_Community 82|Community 82]]
+- [[_COMMUNITY_Community 85|Community 85]]
 - [[_COMMUNITY_Community 88|Community 88]]
-- [[_COMMUNITY_Community 91|Community 91]]
+- [[_COMMUNITY_Community 89|Community 89]]
 - [[_COMMUNITY_Community 92|Community 92]]
 - [[_COMMUNITY_Community 93|Community 93]]
 - [[_COMMUNITY_Community 94|Community 94]]
 - [[_COMMUNITY_Community 95|Community 95]]
-- [[_COMMUNITY_Community 98|Community 98]]
+- [[_COMMUNITY_Community 96|Community 96]]
 - [[_COMMUNITY_Community 99|Community 99]]
-- [[_COMMUNITY_Community 110|Community 110]]
-- [[_COMMUNITY_Community 965|Community 965]]
-- [[_COMMUNITY_Community 966|Community 966]]
+- [[_COMMUNITY_Community 100|Community 100]]
+- [[_COMMUNITY_Community 111|Community 111]]
+- [[_COMMUNITY_Community 149|Community 149]]
 - [[_COMMUNITY_Community 967|Community 967]]
+- [[_COMMUNITY_Community 968|Community 968]]
+- [[_COMMUNITY_Community 969|Community 969]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `fetch()` - 32 edges
@@ -139,15 +141,15 @@
 - **UI design system tokens** — ui_kit, ui_guidelines, concept_callout_pattern, concept_neutral_by_default, concept_brand_blue [EXTRACTED 1.00]
 - **Course module 1.1 foundational topics** — concept_homeostasis, concept_poiseuille, concept_mendel_inheritance, concept_action_potential, concept_sensitivity_specificity, concept_biopsychosocial, concept_ebbinghaus [EXTRACTED 1.00]
 
-## Communities (968 total, 16 thin omitted)
+## Communities (970 total, 16 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.02
-Nodes (39): calculateMouseCoords(), calculateMouseEvent(), convertReturnValue(), ExitStatus, fromWireType(), getMovementX(), getMovementY(), makeBlendComponent() (+31 more)
+Nodes (34): convertReturnValue(), ExitStatus, fromWireType(), makeBlendComponent(), makeBlendState(), makeBufferEntry(), makeColorAttachment(), makeColorAttachments() (+26 more)
 
 ### Community 1 - "Community 1"
 Cohesion: 0.02
-Nodes (31): convertReturnValue(), ExitStatus, fromWireType(), makeBlendComponent(), makeBlendState(), makeBufferEntry(), makeColorAttachment(), makeColorAttachments() (+23 more)
+Nodes (30): convertReturnValue(), fromWireType(), makeBlendComponent(), makeBlendState(), makeBufferEntry(), makeColorAttachment(), makeColorAttachments(), makeColorState() (+22 more)
 
 ### Community 2 - "Community 2"
 Cohesion: 0.05
@@ -158,16 +160,16 @@ Cohesion: 0.07
 Nodes (28): GET(), captureToSentry(), classifyDirective(), looksSuspicious(), POST(), DELETE(), POST(), buildFinalizePrompt() (+20 more)
 
 ### Community 4 - "Community 4"
-Cohesion: 0.1
-Nodes (39): analyzePath(), chdir(), create(), createFile(), createNode(), destroyNode(), findObject(), flagsToPermissionString() (+31 more)
+Cohesion: 0.09
+Nodes (46): analyzePath(), chdir(), chmod(), create(), createDataFile(), createNode(), createStandardStreams(), destroyNode() (+38 more)
 
 ### Community 5 - "Community 5"
 Cohesion: 0.12
-Nodes (34): analyzePath(), chdir(), createStandardStreams(), destroyNode(), doTruncate(), findObject(), flagsToPermissionString(), getMounts() (+26 more)
+Nodes (33): analyzePath(), chdir(), destroyNode(), findObject(), flagsToPermissionString(), getMounts(), getPath(), hashAddNode() (+25 more)
 
 ### Community 6 - "Community 6"
-Cohesion: 0.1
-Nodes (14): createHandlerBoundToUrl(), d(), er(), getPrecacheKeyForUrl(), handlerDidError(), M(), matchPrecache(), N() (+6 more)
+Cohesion: 0.09
+Nodes (17): createHandlerBoundToUrl(), d(), er(), fetchDidFail(), getEntryCountByQueueName(), getPrecacheKeyForUrl(), handlerDidError(), M() (+9 more)
 
 ### Community 7 - "Community 7"
 Cohesion: 0.14
@@ -178,12 +180,12 @@ Cohesion: 0.12
 Nodes (14): SupabaseSyncMounter(), signOut(), recordConsent(), fullLogout(), enqueueSync(), flushSyncQueue(), hasPendingSync(), readQueue() (+6 more)
 
 ### Community 9 - "Community 9"
-Cohesion: 0.13
-Nodes (5): isValidEmail(), normalizeLang(), useLang(), useT(), commit()
+Cohesion: 0.11
+Nodes (21): abort(), assert(), close(), closeStream(), createFile(), createLazyFile(), expandFileStorage(), _fd_close() (+13 more)
 
 ### Community 10 - "Community 10"
-Cohesion: 0.21
-Nodes (16): getModuleById(), cleanTerm(), extractKeyTerms(), extractSentences(), generateContentQuestions(), getCourseTestSlice(), getModuleTestSlice(), hashString() (+8 more)
+Cohesion: 0.13
+Nodes (9): formatCooldown(), formatTimer(), getCooldownRemaining(), gradeModuleTest(), gradeTest(), formatStudyTime(), getHighestPassedLevel(), getTotalStudyTime() (+1 more)
 
 ### Community 11 - "Community 11"
 Cohesion: 0.12
@@ -194,8 +196,8 @@ Cohesion: 0.15
 Nodes (19): chmod(), close(), closeStream(), createDataFile(), expandFileStorage(), _fd_close(), _fd_seek(), fsync() (+11 more)
 
 ### Community 13 - "Community 13"
-Cohesion: 0.15
-Nodes (19): chmod(), close(), closeStream(), createDataFile(), expandFileStorage(), _fd_close(), _fd_seek(), fsync() (+11 more)
+Cohesion: 0.14
+Nodes (18): checkOpExists(), chown(), doChmod(), doChown(), doSetAttr(), doTruncate(), fchmod(), fchown() (+10 more)
 
 ### Community 14 - "Community 14"
 Cohesion: 0.12
@@ -203,23 +205,23 @@ Nodes (4): getIcdEngine(), getWorker(), bankSignature(), IcdSearchEngine
 
 ### Community 15 - "Community 15"
 Cohesion: 0.14
-Nodes (17): checkOpExists(), chown(), doChmod(), doChown(), doSetAttr(), doTruncate(), fchmod(), fchown() (+9 more)
+Nodes (17): checkOpExists(), chown(), doChmod(), doChown(), doSetAttr(), fchmod(), fchown(), fstat() (+9 more)
 
 ### Community 16 - "Community 16"
+Cohesion: 0.17
+Nodes (17): create(), createDefaultDevices(), createDefaultDirectories(), createDevice(), createFile(), createPath(), createSpecialDirectories(), createStandardStreams() (+9 more)
+
+### Community 17 - "Community 17"
 Cohesion: 0.19
 Nodes (7): buildCategoryCounts(), buildCountryCounts(), buildSubcategoryCounts(), countryFlag(), countryMatches(), matchCountry(), primaryCountriesFor()
 
-### Community 17 - "Community 17"
-Cohesion: 0.16
-Nodes (7): formatCooldown(), formatTimer(), getCooldownRemaining(), gradeModuleTest(), gradeTest(), getHighestPassedLevel(), isModuleTestUnlocked()
-
 ### Community 18 - "Community 18"
-Cohesion: 0.16
-Nodes (16): _addSyncListener(), addToPrecacheList(), cacheDidUpdate(), cachedResponseWillBeUsed(), constructor(), el(), ey(), _getCacheExpiration() (+8 more)
+Cohesion: 0.17
+Nodes (16): addEntry(), delete(), deleteCacheAndMetadata(), deleteEntry(), em(), expireEntries(), getAll(), getAllEntriesByQueueName() (+8 more)
 
-### Community 19 - "Community 19"
-Cohesion: 0.15
-Nodes (16): checkOpExists(), chown(), doChmod(), doChown(), doSetAttr(), fchmod(), fchown(), fstat() (+8 more)
+### Community 20 - "Community 20"
+Cohesion: 0.17
+Nodes (5): splitIntoTabs(), getCourseById(), getModuleForCourse(), useT(), useStudyTimer()
 
 ### Community 21 - "Community 21"
 Cohesion: 0.27
@@ -230,192 +232,196 @@ Cohesion: 0.18
 Nodes (15): b(), fetchAndCachePut(), findMatchingRoute(), _getNetworkPromise(), getPreloadResponse(), _getTimeoutPromise(), handle(), handleActivate() (+7 more)
 
 ### Community 23 - "Community 23"
-Cohesion: 0.21
-Nodes (15): calculateAt(), fstat(), getattr(), getStr(), isChrdev(), isDevice(), lstat(), stat() (+7 more)
+Cohesion: 0.16
+Nodes (3): createContext(), ExceptionInfo, initRuntime()
 
 ### Community 24 - "Community 24"
 Cohesion: 0.16
 Nodes (3): createContext(), ExceptionInfo, initRuntime()
 
 ### Community 25 - "Community 25"
-Cohesion: 0.16
-Nodes (3): createContext(), ExceptionInfo, initRuntime()
-
-### Community 26 - "Community 26"
-Cohesion: 0.2
-Nodes (15): create(), createDefaultDevices(), createDefaultDirectories(), createDevice(), createFile(), createPath(), createSpecialDirectories(), mkdev() (+7 more)
-
-### Community 27 - "Community 27"
 Cohesion: 0.13
 Nodes (15): ACC/AHA COR/LOE classification, ATLS 11th Edition (xABCDE), CHA2DS2-VASc / CHA2DS2-VA, Dose Adjustment CKD/Liver (K2), ESC ACS 2023, ESC AF 2024 (AF-CARE), GINA 2025 Asthma, GOLD 2025 COPD (+7 more)
 
+### Community 26 - "Community 26"
+Cohesion: 0.2
+Nodes (7): getModuleById(), getModuleTestSlice(), generateModulePlaceholder(), generatePlaceholder(), getModuleTestQuestions(), getTestQuestions(), hasRealQuestions()
+
+### Community 27 - "Community 27"
+Cohesion: 0.15
+Nodes (13): abort(), assert(), createLazyFile(), createWasm(), findWasmBinary(), forceLoadFile(), getBinarySync(), getMouseWheelDelta() (+5 more)
+
 ### Community 28 - "Community 28"
-Cohesion: 0.21
-Nodes (7): getCourseById(), getCourseSearchIndex(), getModuleForCourse(), getModulesBySection(), getSectionById(), searchCourses(), useStudyTimer()
-
-### Community 29 - "Community 29"
-Cohesion: 0.22
-Nodes (14): _awaitComplete(), cacheMatch(), cachePut(), destroy(), doneWaiting(), _ensureResponseSafeToCache(), getCacheKey(), _getResponse() (+6 more)
-
-### Community 30 - "Community 30"
-Cohesion: 0.18
-Nodes (14): addEntry(), em(), getAll(), getAllEntriesByQueueName(), getDb(), getEntryCountByQueueName(), getFirstEntryId(), _getId() (+6 more)
-
-### Community 31 - "Community 31"
-Cohesion: 0.21
-Nodes (14): createDefaultDevices(), createDefaultDirectories(), createDevice(), createPath(), createSpecialDirectories(), createStandardStreams(), init(), mkdev() (+6 more)
-
-### Community 32 - "Community 32"
-Cohesion: 0.15
-Nodes (13): abort(), assert(), createLazyFile(), createWasm(), findWasmBinary(), forceLoadFile(), getBinarySync(), getMouseWheelDelta() (+5 more)
-
-### Community 33 - "Community 33"
-Cohesion: 0.15
-Nodes (13): abort(), assert(), createLazyFile(), createWasm(), findWasmBinary(), forceLoadFile(), getBinarySync(), getMouseWheelDelta() (+5 more)
-
-### Community 34 - "Community 34"
 Cohesion: 0.17
 Nodes (13): createStream(), dupStream(), _fd_read(), _fd_write(), getStreamFromFD(), ioctl(), ioctl_tcgets(), ioctl_tcsets() (+5 more)
 
-### Community 35 - "Community 35"
+### Community 30 - "Community 30"
 Cohesion: 0.21
-Nodes (13): Classifications Hub (#3a), Cmd-K global fuzzy search, CR-1 hardcoded '83 pairs' bug, CredibleMeds QT scale, Drug Interaction Checker (K1), ICD-10 Lookup (МКБ-10), K1-Verify (clinical pharmacologist audit), North Star Metric (WAU-врачей) (+5 more)
+Nodes (4): isValidEmail(), normalizeLang(), useLang(), commit()
 
-### Community 37 - "Community 37"
+### Community 31 - "Community 31"
+Cohesion: 0.26
+Nodes (12): createDefaultDevices(), createDefaultDirectories(), createDevice(), createPath(), createSpecialDirectories(), mkdev(), mkdir(), mkdirTree() (+4 more)
+
+### Community 32 - "Community 32"
 Cohesion: 0.18
 Nodes (12): createNode(), doMsync(), getattr(), isBlkdev(), isChrdev(), isDevice(), isFIFO(), isFile() (+4 more)
 
-### Community 38 - "Community 38"
+### Community 33 - "Community 33"
 Cohesion: 0.2
 Nodes (12): AUDIT_TODO_2026-05 product audit, CONTENT_ROADMAP killer features, #2 Dose adjustment renal/hepatic, #1 Drug Interaction Checker, ФЗ № 28-ФЗ 28.02.2025 (regulatory risk), #5 Guidelines catalog (~250 docs), #3a Unified ICD/МКБ classifications hub, МКБ-10 lookup (T6) (+4 more)
 
-### Community 39 - "Community 39"
+### Community 34 - "Community 34"
 Cohesion: 0.18
 Nodes (12): ACC/AHA ACS 2025 Guideline, Action potential (потенциал действия), ASCVD Risk Estimator / PREVENT, Biopsychosocial model, Ebbinghaus forgetting curve / Anki, GRACE / TIMI / HEART scores, Homeostasis (gomeostaz), Mendel inheritance patterns (+4 more)
 
-### Community 40 - "Community 40"
-Cohesion: 0.24
-Nodes (11): _addRequest(), clone(), fetchDidFail(), fromRequest(), pushRequest(), registerSync(), replayRequests(), shiftRequest() (+3 more)
+### Community 35 - "Community 35"
+Cohesion: 0.23
+Nodes (12): Classifications Hub (#3a), Cmd-K global fuzzy search, CR-1 hardcoded '83 pairs' bug, CredibleMeds QT scale, Drug Interaction Checker (K1), ICD-10 Lookup (МКБ-10), K1-Verify (clinical pharmacologist audit), Serwist PWA offline (+4 more)
 
-### Community 41 - "Community 41"
+### Community 36 - "Community 36"
+Cohesion: 0.25
+Nodes (6): fetchJson(), getCatalog(), getManifest(), getToolDetail(), TOOL_DETAIL_URL(), useCatalog()
+
+### Community 37 - "Community 37"
 Cohesion: 0.31
 Nodes (11): calculateAt(), getStr(), lstat(), stat(), ___syscall_faccessat(), ___syscall_fstat64(), ___syscall_lstat64(), ___syscall_newfstatat() (+3 more)
 
+### Community 38 - "Community 38"
+Cohesion: 0.18
+Nodes (11): AUDIT_REPORT_2026-05-06, P0-1 GFR Infinity Guard, P0-2 740 runners @ts-nocheck, P1-1 aa-grad vs aa-gradient duplicate, P1-3 Scale segments 288 issues, P1-4 SI/US unit conversion not centralized, P1-5 /api/sync POST missing assertSameOrigin, P1-6 Large files split candidates (+3 more)
+
+### Community 39 - "Community 39"
+Cohesion: 0.24
+Nodes (11): AMBOSS (competitor), Freemium MDCalc-style monetization, ФЗ № 28-ФЗ regulation, MDCalc (competitor), North Star Metric (WAU-врачей), Pediatric Dose Calc (K3), RAG AI Explanations, UpToDate (competitor) (+3 more)
+
+### Community 41 - "Community 41"
+Cohesion: 0.38
+Nodes (9): cleanTerm(), extractKeyTerms(), extractSentences(), generateContentQuestions(), getCourseTestSlice(), hashString(), looksLikeTerm(), makeRng() (+1 more)
+
+### Community 42 - "Community 42"
+Cohesion: 0.29
+Nodes (10): _addSyncListener(), addToPrecacheList(), constructor(), el(), ey(), h(), l(), o() (+2 more)
+
 ### Community 43 - "Community 43"
+Cohesion: 0.31
+Nodes (10): cacheMatch(), cachePut(), _ensureResponseSafeToCache(), f(), g(), getCacheKey(), hasCallback(), iterateCallbacks() (+2 more)
+
+### Community 44 - "Community 44"
+Cohesion: 0.36
+Nodes (10): calculateAt(), getStr(), lstat(), stat(), ___syscall_faccessat(), ___syscall_lstat64(), ___syscall_newfstatat(), ___syscall_openat() (+2 more)
+
+### Community 45 - "Community 45"
+Cohesion: 0.22
+Nodes (10): AUDIT_PASS_4_TODO (29 findings), BACKLOG.md post-audit, P0-DEVOPS-1 Sentry+RUM+Uptime, P0-SEC-2 Cascaded fallback timeout, P0-SEC-3 In-memory rate-limit -> Upstash, P0-SEC-4 atomic /api/account/delete RPC, P0-SEC-5 DOMParser output guard, P1-SEC-1 CSP Report-Only -> Enforce (+2 more)
+
+### Community 46 - "Community 46"
 Cohesion: 0.2
 Nodes (10): BACKEND.md Supabase setup, docs/README.md index, 152-FZ ст.21 24h Roskomnadzor notification, GDPR Art.33 72h notification, P1-SEC-3 RLS versions leak, supabase/schema.sql (5 tables), Secret rotation schedule, SECURITY_SETUP IR runbook (+2 more)
 
-### Community 44 - "Community 44"
+### Community 47 - "Community 47"
 Cohesion: 0.24
 Nodes (10): Brand blue #2563EB, Calculator tooltips (info icons), Callout pattern (info/warn/error/success), <Highlight/> shared component, Main container 32px rounding, Neutral-by-default color rule, Provenance block (source + date), TODO Pass 2 (UX/UI polish) (+2 more)
 
-### Community 45 - "Community 45"
-Cohesion: 0.27
-Nodes (10): AMBOSS (competitor), Freemium MDCalc-style monetization, ФЗ № 28-ФЗ regulation, MDCalc (competitor), Pediatric Dose Calc (K3), RAG AI Explanations, UpToDate (competitor), USMLE-style Vignette Cases (+2 more)
-
-### Community 46 - "Community 46"
+### Community 48 - "Community 48"
 Cohesion: 0.31
 Nodes (4): clearState(), loadState(), saveState(), storageKey()
 
-### Community 47 - "Community 47"
+### Community 49 - "Community 49"
 Cohesion: 0.31
 Nodes (5): fireVisibilityViolation(), handleBlur(), handleKeydown(), handleVisibility(), isViolationKey()
 
-### Community 48 - "Community 48"
+### Community 50 - "Community 50"
 Cohesion: 0.33
 Nodes (5): countryFlag(), countryMatches(), countryMeta(), matchCountry(), primaryCountriesFor()
 
-### Community 49 - "Community 49"
-Cohesion: 0.28
-Nodes (9): deleteEntry(), getEndEntryFromIndex(), getFirstEntryByQueueName(), getLastEntryByQueueName(), popEntry(), popRequest(), _removeEntry(), _removeRequest() (+1 more)
-
-### Community 50 - "Community 50"
-Cohesion: 0.22
-Nodes (9): AUDIT_REPORT_2026-05-06, P0-2 740 runners @ts-nocheck, P1-1 aa-grad vs aa-gradient duplicate, P1-3 Scale segments 288 issues, P1-4 SI/US unit conversion not centralized, P1-5 /api/sync POST missing assertSameOrigin, P1-6 Large files split candidates, P0-SEC-1 GEMINI_API_KEY in query string (+1 more)
-
 ### Community 51 - "Community 51"
-Cohesion: 0.22
-Nodes (9): P0-1 GFR Infinity Guard, AUDIT_PASS_4_TODO (29 findings), P0-CQ-1 Golden tests on CRITICAL_TOOL_IDS, P0-DEVOPS-1 Sentry+RUM+Uptime, P0-SEC-2 Cascaded fallback timeout, P0-SEC-4 atomic /api/account/delete RPC, P0-SEC-5 DOMParser output guard, P1-SEC-1 CSP Report-Only -> Enforce (+1 more)
+Cohesion: 0.31
+Nodes (9): _addRequest(), clone(), fromRequest(), registerSync(), replayRequests(), shiftRequest(), toObject(), unshiftRequest() (+1 more)
 
 ### Community 52 - "Community 52"
 Cohesion: 0.22
-Nodes (9): BATCH2_BRIEF 49 diagnostic scales, kind:'calculator' formula contract, CAM / 4AT delirium tools, Charlson Comorbidity Index, ESI v.5 triage runner, NEWS2 / MEWS / PEWS early warning, ResultCard rendering order, RUNNER_TEMPLATE for tools-runners.ts (+1 more)
+Nodes (9): P1-2 Golden test coverage 5%, Em-dash -> hyphen normalization, next-pwa dead dependency 5 high CVE, 12 orphan runners not in catalog, scripts/smoke-runners.mjs, STRESS_TEST_TODO 14 items, Test coverage 948 tests / 181 tools, TestGuard consent + grace 10s + 48h lockout (+1 more)
 
 ### Community 53 - "Community 53"
+Cohesion: 0.22
+Nodes (9): BATCH2_BRIEF 49 diagnostic scales, kind:'calculator' formula contract, CAM / 4AT delirium tools, Charlson Comorbidity Index, ESI v.5 triage runner, NEWS2 / MEWS / PEWS early warning, ResultCard rendering order, RUNNER_TEMPLATE for tools-runners.ts (+1 more)
+
+### Community 54 - "Community 54"
 Cohesion: 0.36
 Nodes (3): displayDrugName(), findInteractions(), searchDrugs()
 
-### Community 54 - "Community 54"
+### Community 55 - "Community 55"
+Cohesion: 0.32
+Nodes (8): getEndEntryFromIndex(), getFirstEntryByQueueName(), getLastEntryByQueueName(), popEntry(), popRequest(), _removeEntry(), _removeRequest(), shiftEntry()
+
+### Community 56 - "Community 56"
+Cohesion: 0.25
+Nodes (8): createWasm(), findWasmBinary(), getBinarySync(), getWasmBinary(), getWasmImports(), instantiateArrayBuffer(), instantiateAsync(), locateFile()
+
+### Community 57 - "Community 57"
 Cohesion: 0.46
 Nodes (7): loadReferenceFor(), main(), parseCatalog(), parseMeta(), sha(), todayIso(), unescapeString()
 
-### Community 55 - "Community 55"
+### Community 58 - "Community 58"
 Cohesion: 0.39
 Nodes (5): decodeText(), isListPara(), paragraphToMd(), paraStyle(), paraText()
 
-### Community 58 - "Community 58"
-Cohesion: 0.33
-Nodes (3): useCatalog(), formatStudyTime(), getTotalStudyTime()
+### Community 61 - "Community 61"
+Cohesion: 0.38
+Nodes (4): getCourseSearchIndex(), getModulesBySection(), getSectionById(), searchCourses()
 
-### Community 59 - "Community 59"
-Cohesion: 0.48
-Nodes (5): fetchJson(), getCatalog(), getManifest(), getToolDetail(), TOOL_DETAIL_URL()
-
-### Community 60 - "Community 60"
+### Community 62 - "Community 62"
 Cohesion: 0.48
 Nodes (5): evalNode(), parse(), safeEval(), tokenize(), validateDslSpec()
 
-### Community 61 - "Community 61"
+### Community 63 - "Community 63"
+Cohesion: 0.33
+Nodes (7): _awaitComplete(), destroy(), doneWaiting(), _getResponse(), handleAll(), N(), runCallbacks()
+
+### Community 64 - "Community 64"
 Cohesion: 0.48
 Nodes (5): extractDiagBlocks(), extractName(), extractNotes(), processDiag(), unwrapDiag()
 
-### Community 64 - "Community 64"
+### Community 67 - "Community 67"
+Cohesion: 0.33
+Nodes (6): cacheDidUpdate(), cachedResponseWillBeUsed(), _getCacheExpiration(), _getDateHeaderTimestamp(), _isResponseDateFresh(), updateTimestamp()
+
+### Community 68 - "Community 68"
 Cohesion: 0.47
 Nodes (6): getFullscreenElement(), setCanvasSize(), setFullscreenCanvasSize(), setWindowedCanvasSize(), updateCanvasDimensions(), updateResizeListeners()
 
-### Community 65 - "Community 65"
+### Community 69 - "Community 69"
 Cohesion: 0.47
 Nodes (6): getFullscreenElement(), setCanvasSize(), setFullscreenCanvasSize(), setWindowedCanvasSize(), updateCanvasDimensions(), updateResizeListeners()
 
-### Community 66 - "Community 66"
+### Community 70 - "Community 70"
 Cohesion: 0.53
 Nodes (4): fixInfoBlock(), joinSections(), splitByHeadings(), transformBody()
 
-### Community 67 - "Community 67"
-Cohesion: 0.33
-Nodes (6): Em-dash -> hyphen normalization, next-pwa dead dependency 5 high CVE, 12 orphan runners not in catalog, STRESS_TEST_TODO 14 items, TestGuard consent + grace 10s + 48h lockout, TestActiveView 60-min timer + back nav
-
-### Community 68 - "Community 68"
-Cohesion: 0.33
-Nodes (6): P1-2 Golden test coverage 5%, BACKLOG.md post-audit, P0-SEC-3 In-memory rate-limit -> Upstash, scripts/smoke-runners.mjs, Test coverage 948 tests / 181 tools, Vercel 100/day Hobby quota issue
-
-### Community 70 - "Community 70"
+### Community 72 - "Community 72"
 Cohesion: 0.6
 Nodes (3): deviceCategory(), effectiveConnection(), reportMetric()
-
-### Community 72 - "Community 72"
-Cohesion: 0.4
-Nodes (5): delete(), deleteCacheAndMetadata(), expireEntries(), f(), g()
 
 ### Community 73 - "Community 73"
 Cohesion: 0.5
 Nodes (5): calculateMouseCoords(), calculateMouseEvent(), getMovementX(), getMovementY(), setMouseCoords()
 
 ### Community 74 - "Community 74"
+Cohesion: 0.5
+Nodes (5): calculateMouseCoords(), calculateMouseEvent(), getMovementX(), getMovementY(), setMouseCoords()
+
+### Community 75 - "Community 75"
 Cohesion: 0.4
 Nodes (5): CLAUDE.md project memory, Graphify code-graph integration, html2canvas over autoTable (Cyrillic fonts), Bordik Memory System (claude-code adaptation), PDF download for reference tables
 
-### Community 75 - "Community 75"
+### Community 76 - "Community 76"
 Cohesion: 0.5
 Nodes (5): claude-code-memory-setup pattern, /resume and /save commands, Session: memory-system setup, Sessions README, Sessions Template
 
-### Community 77 - "Community 77"
+### Community 78 - "Community 78"
 Cohesion: 0.83
 Nodes (3): deviceCategory(), effectiveConnection(), reportToolTimeToResult()
-
-### Community 79 - "Community 79"
-Cohesion: 0.83
-Nodes (3): displayEmoji(), displayLabel(), findOption()
 
 ### Community 80 - "Community 80"
 Cohesion: 0.67
@@ -423,21 +429,25 @@ Nodes (3): getArticle(), getAvailableLessonTypes(), hasContent()
 
 ### Community 81 - "Community 81"
 Cohesion: 0.83
+Nodes (3): displayEmoji(), displayLabel(), findOption()
+
+### Community 82 - "Community 82"
+Cohesion: 0.83
 Nodes (3): emit(), isRedactKey(), sanitizeValue()
 
-### Community 84 - "Community 84"
+### Community 85 - "Community 85"
 Cohesion: 0.83
 Nodes (3): parseInput(), pickHint(), processFile()
 
-### Community 88 - "Community 88"
+### Community 89 - "Community 89"
 Cohesion: 0.83
 Nodes (3): collectStrings(), stripAsterisks(), visit()
 
-### Community 91 - "Community 91"
+### Community 92 - "Community 92"
 Cohesion: 0.5
 Nodes (4): LCP StorageBanner late render, PERF_DIAGNOSTIC baseline, SSR SectionCards LCP fix (PR #16/#17), Supabase chunk 92% unused on home
 
-### Community 92 - "Community 92"
+### Community 93 - "Community 93"
 Cohesion: 0.5
 Nodes (4): editor_role (med_editor/med_reviewer/auditor), Supabase RLS hardening, supa_audit + 4-eye review, Supabase README
 
@@ -449,11 +459,11 @@ Nodes (4): editor_role (med_editor/med_reviewer/auditor), Supabase RLS hardening
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `fetch()` connect `Community 2` to `Community 32`, `Community 33`, `Community 3`, `Community 6`, `Community 40`, `Community 14`, `Community 22`, `Community 59`, `Community 29`?**
+- **Why does `fetch()` connect `Community 2` to `Community 3`, `Community 36`, `Community 6`, `Community 43`, `Community 14`, `Community 51`, `Community 22`, `Community 56`, `Community 27`, `Community 63`?**
   _High betweenness centrality (0.134) - this node is a cross-community bridge._
-- **Why does `instantiateAsync()` connect `Community 32` to `Community 1`, `Community 2`?**
+- **Why does `instantiateAsync()` connect `Community 56` to `Community 0`, `Community 2`?**
   _High betweenness centrality (0.072) - this node is a cross-community bridge._
-- **Why does `instantiateAsync()` connect `Community 33` to `Community 0`, `Community 2`?**
+- **Why does `instantiateAsync()` connect `Community 27` to `Community 1`, `Community 2`?**
   _High betweenness centrality (0.068) - this node is a cross-community bridge._
 - **Are the 20 inferred relationships involving `fetch()` (e.g. with `geminiCall()` and `POST()`) actually correct?**
   _`fetch()` has 20 INFERRED edges - model-reasoned connections that need verification._

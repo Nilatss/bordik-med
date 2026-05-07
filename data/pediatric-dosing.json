@@ -1,7 +1,7 @@
 {
   "$readme": "Педиатрические дозы препаратов. Дозы по mg/kg с capping на максимальную взрослую дозу. Возрастные группы: новорождённый (0-1 мес), младенец (1-12 мес), ребёнок (1-12 лет), подросток (13-17 лет). Многие препараты имеют разные дозы по показаниям — выбор в UI.",
   "$verification_status": "🚨 BETA — Phase 1, требует верификации педиатром / клин-фармакологом перед коммерческим использованием. Каждая запись имеет verified_by:null. Не использовать для прямого назначения без сверки с актуальными протоколами.",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "lastUpdated": "2026-05-07",
   "sources": [
     "WHO Pocket Book of Hospital Care for Children, 2nd ed (2013)",
@@ -1269,6 +1269,2514 @@
         "precautions": "Monitor bilirubin levels and LFTs, prior to instituting therapy and periodically throughout the course of therapy.",
         "extemporaneous": "Ursodeoxycholic Acid 50 mg/mL Oral Suspension Materials: � 20 tablets ursodeoxycholic acid (300 mg) � Ora-Blend q.s. to 120 mL Preparation: � Crush the tablet in a mortar to fine powder. � Add Ora-Blend to form a smooth paste. Note: If Ora-Blend unavailable: Pre-mix the Ora-Plus and Ora-Sweet, to form the diluent. � Gradually add diluent and transfer to final measuring flask, rinsing mortar well. Mix well. � Transfer finished product to pre-rinsed amber plastic medicine bottle. � Label appropriately. Stability: Thirty (30) days Auxiliary Labels: Store at room temperature. Shake well before use. References: 1. Chen CY, Tsao P, Chen H, et al. Ursodeoxycholic acid (UDCA) therapy in very- low-birth-weight infants with parenteral nutrition-associated cholestasis. J Pediatr 2004;145:317-21. 2. Arslanoglu S, Moro GE, Tauschel H, et al. Ursodeoxycholic acid treatment in preterm infants: a pilot study for the prevention of cholestasis associated with total parenteral nutrition. J Pediatr Gastroenterol Nutr 2008;46:228-31. 3. Am J Health-Syst Pharm. 1997; 54: 1401-4"
       }
+    },
+    {
+      "id": "neo_acetaminophen",
+      "name_ru": "Ацетаминофен (парацетамол)",
+      "name_en": "Acetaminophen",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Ацетаминофен (парацетамол) — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 10,
+          "frequency_hours": 6,
+          "max_per_dose_mg": 40,
+          "max_per_day_mg_per_kg": 40,
+          "max_per_day_mg": 0,
+          "route": "PO/PR/PO/PR/PO/PR/PO/PR/PO/PR",
+          "comment": "Fever, mild pain. Neonate: PO, PR: 10-15 mg/kg/dose q 6-8 hrs prn. International Evidence � Based Group for Neonatal Pain recommendation: Preterm (28-32 weeks): PO: 10-12 mg/kg/dose q 6-8 hr; max. 40 mg/kg/day. PR: 20 mg/kg/dose q 12 hrs; max. 40 mg/kg/day. Preterm (32-36 weeks) and term <10 days: PO: 10-15 mg/kg/dose q 6 hrs; max. 60 mg/kg/day. PR: 15 mg/kg/dose q 8 hrs; max. 60 mg/kg/day. Term 10 days: PO: 10-15 mg/kg/dose q 4-6 hrs; max. 90 mg/kg/day. PR: 20 mg/kg/dose q 6-8 hrs; max. 90 mg/kg/day. PO, PR Half-life in preterm: 5-11 hrs; Half-life in neonates: 2-3 hrs. Metabolized mainly in the liver. Hepatotoxicity may occur with serum levels >200 mcg/mL at 4 hrs or 50 mcg/mL at 12 hrs after overdose. Avoid in G6PD deficiency. Liquid preparations may contain sodium benzoate which can le"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_acetazolamide",
+      "name_ru": "Ацетазоламид",
+      "name_en": "Acetazolamide",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Ацетазоламид — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 2.5,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV/PO/IV/PO/IM",
+          "comment": "Diamox Slows progression of hydrocephalus in patients who are not good surgical candidates (may be used in conjunction with furosemide), renal tubular acidosis to alkalinize the urine (carbonic anhydrase inhibitor), adjunct in the treatment of refractory seizures. Hydrocephalus or Adjunct Anticonvulsant: 2.5-5 mg/kg/dose given q 12-8 hrs slow IV push or PO; increase as tolerated to 7 mg/kg/dose given q 8 hrs. Renal Tubular Acidosis: 5 mg/kg/dose q 8-12 hrs. IV, PO Eliminated primarily by renal excretion with a serum half-life of 2-6 hrs. Tolerance to anticonvulsant effect may develop with long-term use. IM administration is painful and not recommended. May cause hyperchloremic metabolic acidosis (which may be severe even at very low doses in a small sick premature infant), hypokalemia, dro"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_acetylcysteine",
+      "name_ru": "Ацетилцистеин",
+      "name_en": "Acetylcysteine",
+      "atc": "",
+      "class_ru": "Неонатологический справочник",
+      "indications": [
+        {
+          "label": "Справочно (доза не рассчитывается)",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0,
+          "frequency_hours": 0,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "",
+          "comment": "Brand Name Mucomyst Mucolytic agent, adjunctive therapy for abnormal or viscid mucus secretions in BPD. Nebulization: 1-2 mL of 20% solution or 2-4 mL of 10% solution, given 3-4 times daily. Inhalation Metabolism Onset of action: Mucus liquefaction occurs within 10-15 min; Duration > 1 hr. Patients should receive an aerosolized bronchodilator 10-15 min prior to acetylcysteine."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_acetylsalicylic_acid_asa",
+      "name_ru": "Ацетилсалициловая кислота",
+      "name_en": "Acetylsalicylic Acid (ASA)",
+      "atc": "",
+      "class_ru": "Неонатологический справочник",
+      "indications": [
+        {
+          "label": "Справочно (доза не рассчитывается)",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0,
+          "frequency_hours": 0,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "Analgesic and antipyretic (children): PO, PR: 10-15 mg/kg/dose q 4-6 hrs. Anti-inflammatory: PO: 60-90 mg/kg/day in divided doses. Antiplatelet: PO: 1-5 mg/kg/day to 5-10 mg/kg/day given as a single daily dose (doses are rounded to convenient amount e.g., � of 80 mg tablet). PO, PR Analgesic and antipyretic therapeutic levels 30-50 mcg/mL; anti- inflammatory therapeutic levels 150-300 mcg/mL. Metabolized in the liver; Elimination: renal as salicylate and conjugated metabolites. May cause GI upset, allergic reactions, hepatotoxicity, bleeding. Use with extreme caution in children < 2 years old. Because of possible risk of Reyes Syndrome do not use during viral illnesses especially flu or varicella.",
+          "comment": "Analgesic, antipyretic, antiplatelet (post cardiac surgery)."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_acyclovir",
+      "name_ru": "Ацикловир",
+      "name_en": "Acyclovir",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Ацикловир — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 10,
+          "frequency_hours": 12,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV/IV/PO/IV/PO",
+          "comment": "Herpes simplex infection (HSV), varicella zoster infection with CNS and pulmonary involvement, herpes simplex encephalitis. Levels and HSV Infection (Disseminated): Premature neonates: 10 mg/kg/dose q 12 hrs for 14-21 days. Neonates:10 mg/kg/dose q 8 hrs; infuse IV over 1 hr. Usual course of treatment 10-14 days, but 21 days recommended in disseminated disease. Varicella Zoster: IV: 10-20 mg/kg q 8 hrs for at least 7-10 days. PO: 10 mg/kg 4 times daily for 7-10 days after exposure. IV, PO 30-90% of administered dose is excreted unchanged in the urine, primarily by glomerular filtration. Protein binding and metabolism are minimal. Half-life is 2-3 hrs in children over 1 year of age and adults, but longer (4 hours) in newborns. Penetrates the heart, lung, liver, saliva, and vaginal secretion"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_adenosine",
+      "name_ru": "Аденозин",
+      "name_en": "Adenosine",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Аденозин — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0.05,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV/IV/IV/IV",
+          "comment": "Treatment of sustained paroxysmal supraventricular tachycardia (PSVT). 0.05 mg/kg by rapid IV bolus. Increase dose by increments of 0.05 mg/kg q 2 minutes until return to sinus rhythm. Maximum dose of 0.25 mg/kg IV, do not exceed 12 mg per dose. Flush IV with saline after each dose. IV Metabolized very rapidly and has a half-life of approximately 1-10 seconds in the plasma. Adenosine is contraindicated in adenosine-deaminase deficiency which is a rare form of immune deficiency. The incidence of side effects with adenosine is quite high, although these effects are of short duration and do not require intervention. Transient side effects include sinus arrest, sinus bradycardia, atrioventricular block, cutaneous flushing, and dyspnea due to bronchoconstriction."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_albumin",
+      "name_ru": "Альбумин",
+      "name_en": "Albumin",
+      "atc": "",
+      "class_ru": "Неонатологический справочник",
+      "indications": [
+        {
+          "label": "Справочно (доза не рассчитывается)",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0,
+          "frequency_hours": 0,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "",
+          "comment": "Indications Hypovolemia, pre-exchange transfusion for hyperbilirubinemia, infants with cardiorespiratory compromise, symptomatic hypoalbuminemia. Hypovolemia: 5-10 mL/kg of 5% albumin given IV push or by infusion pump over 30 min-1 hr, repeat as clinically indicated. Hypoalbuminemia: 0.25-1 g/kg/dose of 20% albumin given by slow infusion. May follow by furosemide (Lasix). IV Duration of volume expansion: ~24 hrs; Half-life: 21 days. When given rapidly may cause pulmonary edema and/or circulatory overload. In older patients, hypersensitivity reactions may include chills, fever, nausea, and urticaria. Use 25% albumin with caution in preterm infants at risk for IVH. Use with caution in severe anemia, congestive heart failure, and hypervolemia. Use within 4 hours of opening vial."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_alprostadil_prostaglandin_e1_pge1",
+      "name_ru": "Alprostadil (Prostaglandin E1; PGE1)",
+      "name_en": "Alprostadil (Prostaglandin E1; PGE1)",
+      "atc": "",
+      "class_ru": "Неонатологический справочник",
+      "indications": [
+        {
+          "label": "Справочно (доза не рассчитывается)",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0,
+          "frequency_hours": 0,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "",
+          "comment": "(mcg/kg/min) x Weight (kg) x 60 min/hr Concentration (mcg/mL) * For recommended standard concentrations and more details on calculations please see the appendix."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_alteplase_tpa",
+      "name_ru": "Альтеплаза (TPA)",
+      "name_en": "Alteplase (TPA)",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Альтеплаза (TPA) — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0.1,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV",
+          "comment": "Thrombolytic agent. Used for treatment of occluded central venous catheters and thrombosis. Occluded CVC Clearance: Instill into occluded catheter 1 mg/ml. Use 110% of the internal lumen volume of the catheter, not to exceed 2 mg/2 mL; retain in catheter for 0.5-2 hours; aspirate lysate and flush with 0.9% sodium chloride. May instill a second dose if catheter remains occluded. Intravascular Thrombosis: 0.1-0.5 mg/kg/hr for 3-6 hrs; use ultrasound assessment to monitor effect before considering a second course of treatment. Intracatheter, IV Cleared rapidly from the plasma; Metabolized in the liver. Use with caution if there is a risk of bleeding including that from venipuncture or invasive procedures. Intracranial hemorrhage may occur. Monitor coagulation studies. Discontinue heparin seve"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_amikacin",
+      "name_ru": "Амикацин",
+      "name_en": "Amikacin",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Амикацин — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 7.5,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "Age Total Daily Dose Divided Metabolism 0-7 days, <1200 g 7.5 mg/kg q 24 hrs 0-7 days, 1200-2000 g 15 mg/kg q 12 hrs 0-7 days, >2000 g 15-20 mg/kg q 12 hrs >7 days, <1200 g 7.5-10 mg/kg q 24 hrs >7 days, 1200-2000 g 22.5-30 mg/kg q 8 hrs >7 days, >2000 g 30 mg/kg q 8 hrs Infuse IV over 15-30 min. Recommended concentration of infusion is 10 mg/mL. IV, IM Therapeutic Drug Monitoring: Trough: 5-10 mcg/mL; Peak: 20-30 mcg/mL. Draw peak levels 30 min after IV infusion or 1 hr after IM administration. Specimens should be spun and frozen or refrigerated as soon as possible. Not absorbed from GI tract in normal host; crosses blood-brain barrier poorly; excreted through the kidneys. Peak levels of >35 mcg/mL and trough levels >10 mcg/mL are considered toxic. Nephrotoxicity and ototoxicity are associated with aminoglycosides in general. Dose adjustment required with impaired renal function. Literature indicates that hearing impairment in neonates is rare if the usual doses of aminoglycosides are used. May cause neuromuscular blockade especially with concomitant use of neuromuscular blocking agents and in patients with hypermagnesemia.",
+          "comment": "Divided Metabolism 0-7 days, <1200 g 7.5 mg/kg q 24 hrs 0-7 days, 1200-2000 g 15 mg/kg q 12 hrs 0-7 days, >2000 g 15-20 mg/kg q 12 hrs >7 days, <1200 g 7.5-10 mg/kg q 24 hrs >7 days, 1200-2000 g 22.5-30 mg/kg q 8 hrs >7 days, >2000 g 30 mg/kg q 8 hrs Infuse IV over 15-30 min. Recommended concentration of infusion is 10 mg/mL. IV, IM Therapeutic Drug Monitoring: Trough: 5-10 mcg/mL; Peak: 20-30 mcg/mL. Draw peak levels 30 min after IV infusion or 1 hr after IM administration. Specimens should be spun and frozen or refrigerated as soon as possible. Not absorbed from GI tract in normal host; crosses blood-brain barrier poorly; excreted through the kidneys. Peak levels of >35 mcg/mL and trough levels >10 mcg/mL are considered toxic. Nephrotoxicity and ototoxicity are associated with aminoglyco"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_aminophylline",
+      "name_ru": "Аминофиллин",
+      "name_en": "Aminophylline",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Аминофиллин — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 4,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "PO/IV/IV/PO/IV/PO/IV/PO/IV/PO/PO",
+          "comment": "Apnea of prematurity, bronchodilation, bronchopulmonary dysplasia, prevention of post-extubation atelectasis. Apnea: Loading dose: 4-6 mg/kg PO or infused IV over 30 min; Maintenance dose (8-12 hrs after loading dose): 2 mg/kg/dose IV or PO given q 6-8 hrs. Bronchodilation: Loading dose: 6 mg/kg IV or PO, then give maintenance dose: 0.2-0.5 mg/kg/hr. IV, PO Therapeutic Drug Monitoring: Apnea: 6-13 mcg/mL. Bronchodilation: 10-20 mcg/mL. Trough level should be obtained 48-72 hrs after loading dose, then at least once per week. Half-life can be as long as 20-30 hrs in small premature infants. May cause tachycardia, jitteriness, vomiting, abdominal distention, hyperglycemia, and seizures. Bradycardia has been observed during concurrent therapy with digitalis, suggesting potentiation of vagal s"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_amiodarone",
+      "name_ru": "Амиодарон",
+      "name_en": "Amiodarone",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Амиодарон — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 5,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV/IV/IV/PO",
+          "comment": "An antiarrhythmic agent used to control life-threatening ventricular tachyarrhythmias. Loading dose: 5 mg/kg IV infused over 30-60 min followed by maintenance infusion. (I.V. should be administered only by a pediatric cardiologist) Maintenance dose: 5 microgram/kg/minute (up to 15 microgram/kg/ minute). Taper the IV infusion and switch to oral therapy as soon as possible. Oral: Initially 5�10 mg/kg twice daily for 7�10 days, then reduced to maintenance dose of 5�10 mg/kg once daily. IV, PO The elimination half-life of amiodarone is not accurately estimated in neonates; however, it varies, depending on how the half-life has been measured and the route of amiodarone administration. After long-term oral therapy, amiodarone has a true elimination half-life between 60 and 142 days. Amiodarone i"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_amoxicillin",
+      "name_ru": "Амоксициллин",
+      "name_en": "Amoxicillin",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Амоксициллин — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 20,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "PO",
+          "comment": "Brand Name Amoxil To treat infections involving the upper respiratory tract and urinary tract due to susceptible organisms. 20-30 mg/kg/day; in dividid doses q 12-8 hrs. UTI prophylaxis: 10-20 mg/kg once daily PO Metabolized partially in the liver; eliminated by renal excretion (80% unchanged). With prolonged therapy, monitor renal, hepatic, and hematologic function periodically. Powder for oral suspension: 125 mg/5 mL, 250 mg/5 mL"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_amphotericin_b",
+      "name_ru": "Амфотерицин B",
+      "name_en": "Amphotericin B",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Амфотерицин B — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0.25,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV/IV/IV/IV",
+          "comment": "Brand Name Fungizone Disseminated fungal infections caused by susceptible fungi such as: Blastomyces dermatitidis, Histoplasma capsulatum, Cryptococcus neoformans, Candida sp., Sporothrix schenkii, Coccidioides immitis, Aspergillus sp. Test dose: 0.1/kg IV infused over 30 min or 0.25 mg/kg IV on first day over 6 hrs. Subsequently increase gradually to 0.5-1 mg/kg/day IV as single infusion over 4-6 hrs. IV Poor penetration into CSF, bile, aqueous humor, and pleural fluid. Undergoes renal elimination. Initial half-life ~15-48 hrs; Terminal half- life ~15 days. May cause infusion related reactions, fever, vomiting, hypokalemia, mild renal tubular acidosis, and hypomagnesemia. Serious renal toxicity occurs frequently. Renal damage results from vasoconstriction, impaired acid excretion, and dir"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_amphotericin_b_liposomal",
+      "name_ru": "Амфотерицин B липосомальный",
+      "name_en": "Amphotericin B Liposomal",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Treatment of systemic fungal infections resistant to conventional amphotericin B or in patients with renal or hepatic dysfunction. 5-7 mg/kg daily infused over 2 hrs. IV Penetrates the liver and spleen but poor penetration into CSF. Undergoes renal elimination. Mean half-life 24-40 hrs. Less nephrotoxic than conventional amphotericin B.",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 5,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV",
+          "comment": "Ambisome Indications Treatment of systemic fungal infections resistant to conventional amphotericin B or in patients with renal or hepatic dysfunction. 5-7 mg/kg daily infused over 2 hrs. IV Penetrates the liver and spleen but poor penetration into CSF. Undergoes renal elimination. Mean half-life 24-40 hrs. Less nephrotoxic than conventional amphotericin B."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_ampicillin",
+      "name_ru": "Ампициллин",
+      "name_en": "Ampicillin",
+      "atc": "",
+      "class_ru": "Неонатологический справочник",
+      "indications": [
+        {
+          "label": "Справочно (доза не рассчитывается)",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0,
+          "frequency_hours": 0,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "",
+          "comment": "Divided"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_amrinone_inamrinone",
+      "name_ru": "Амринон (Инамринон)",
+      "name_en": "Amrinone (Inamrinone)",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Амринон (Инамринон) — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0.75,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV/IV/IV",
+          "comment": "Short term treatment of low cardiac output states (not responding to other treatments). e.g., due to sepsis, CHF. 0.75 mg/kg IV bolus over 2-3 min followed by maintenance infusion 3-5 mcg/kg/min; IV bolus may need to be repeated in 30 min; titrate to clinical response. Dose should not exceed 10 mg/kg/24hrs. IV Onset of action: 2-5 min; Peak effect: within 10 min; Duration is dose dependent (30 min to 2 hrs); Half-life ~22 hrs in neonates and ~7 hrs in infants. Metabolized in the liver to several metabolites; Excreted in the urine as metabolites and unchanged drug (10-40%). Monitor for hypotension, thrombocytopenia, hepatotoxicity, and GI side effects. Dose adjustment required in renal impairment. *Calculating infusion rate (mL/hr) = Dose (mcg/kg/min) x Weight (kg) x 60 min/hr Concentration"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_atracurium",
+      "name_ru": "Атракурий",
+      "name_en": "Atracurium",
+      "atc": "",
+      "class_ru": "Неонатологический справочник",
+      "indications": [
+        {
+          "label": "Справочно (доза не рассчитывается)",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0,
+          "frequency_hours": 0,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "",
+          "comment": "(mcg/kg/min) x Weight (kg) x 60 min/hr Concentration (mcg/mL) * For recommended standard concentrations and more details on calculations please see the appendix."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_atropine",
+      "name_ru": "Атропин",
+      "name_en": "Atropine",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Атропин — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0.04,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV/IM/ET",
+          "comment": "may be repeated q 2-5 min to achieve desired effect, with a maximum total dose of 0.04 mg/kg. IV, IM, SubQ, ET Peak tachycardia in 12-16 min after dose given; Half-life ~ 6 hrs. Up to 50% excreted unchanged by the kidneys. Monitor for cardiac arrhythmias, fever especially in brain damaged infants, abdominal distention, esophageal reflux, mydriasis and cycloplegia. Avoid in thyrotoxicosis, tachycardia secondary to cardiac insufficiency, and obstructive gastrointestinal disease."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_aztreonam",
+      "name_ru": "Азтреонам",
+      "name_en": "Aztreonam",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Азтреонам — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 60,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV/IM",
+          "comment": "Brand Name Azactam Treatment of multidrug resistant life-threatening infections with gram- negative aerobic organisms, especially Pseudomonas aeruginosa. Little activity against gram-positive or anaerobic bacteria. Treatment of susceptible organisms in patients with penicillin or cephalosporin allergy. PNA 7 days: 2000 g: 60 mg/kg/day, divided q 12 hrs. >2000 g: 90 mg/kg/day, divided q 8 hrs. PNA >7 days: <1200 g: 60 mg/kg/day, divided q 12 hrs. 1200 -2000 g: 90 mg/kg/day, divided q 8 hrs. >2000 g:120 mg/kg/day, divided q 6 hrs. IV, IM Up to 70% undergoes renal excretion; Half-life 3-9 hrs. Monitor for thrombophlebitis, rash, and diarrhea."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_beractant",
+      "name_ru": "Берактант",
+      "name_en": "Beractant",
+      "atc": "",
+      "class_ru": "Неонатологический справочник",
+      "indications": [
+        {
+          "label": "Справочно (доза не рассчитывается)",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0,
+          "frequency_hours": 0,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "",
+          "comment": "Brand Name Survanta Surfactant for prevention and treatment of respiratory distress syndrome. 4 mL/kg intratracheally through ET, divided into 4 aliquots; may give up to 4 doses during the first 48 hrs of life, no more frequently than q 6 hrs apart. Intratracheal Penetrates the liver and spleen but poor penetration into CSF. Undergoes renal elimination. Mean half-life 24-40 hrs. May cause transient bradycardia and oxygen desaturation. For intratracheal administration only. Suction infant prior to administration. Do not shake just gentle swirling if settling occurs during storage. Keep refrigerated and protected from light. Warm at room temperature before administration."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_caffeine_citrate",
+      "name_ru": "Кофеина цитрат",
+      "name_en": "Caffeine Citrate",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Кофеина цитрат — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 10,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV/PO",
+          "comment": "Neonatal apnea. Loading dose (as caffeine citrate salt): 10-20 mg/kg. Maintenance dose: 5 mg/kg/dose given q 24 hrs. Begin maintenance 24 hrs after the loading dose. Note: doses for anhydrous caffeine are lower: use 1/2 the caffeine citrate dose. If theophylline has been administered within the previous 3 days, a full or modified loading dose (50-70%) may be given. Maintenance dose is adjusted based on patient's response and serum caffeine concentrations. IV, PO Therapeutic Drug Monitoring: Draw trough level on day 5 or 6 after loading dose. Therapeutic levels: 7-20 mcg/mL; Toxic levels: > 40-50 mcg/mL. Interconversion between caffeine and theophylline occurs in preterm neonates. Serum half-life widely variable in newborns, mean half-life is 103 hrs. In neonates 1 month, excreted primarily"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_calcium_glubionate",
+      "name_ru": "Кальция глубионат",
+      "name_en": "Calcium Glubionate",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Кальция глубионат — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 1200,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "PO",
+          "comment": "Treatment and replacement of calcium deficiency. Neonates: 1200 mg/kg/day in 4-6 divided doses as calcium glubionate salt. Low-birth-weight infant: 2-4 mL/kg/day in 2-3 divided doses. Can be increased gradually as indicated by serum calcium level and clinical condition. PO Absorption inhibited by high phosphate intake. High osmotic load of syrup may cause diarrhea. Each 1 mL of calcium glubionate 6.5% syrup = 23 mg elemental calcium = 1.2 m Eq calcium = 360 mg of salt."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_calcium_gluconate_10",
+      "name_ru": "Calcium Gluconate (10%)",
+      "name_en": "Calcium Gluconate (10%)",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Symptomatic hypocalcemia, cardiac arrest in the presence of hyperkalemia or hypocalcemia, magnesium toxicity or calcium antagonist toxicity. Symptomatic Hypocalcemia: 100-200 mg/kg/dose (1-2 mL/kg/dose) slow IV over 5-10 min, may repeat dose or follow with a continuous infusion. Maintenance dose: 200-800 mg/kg/day (2-8 mL/kg/day divided q 6 hrs or as a continuous infusion. Cardiac Arrest: 60-100 mg/kg/dose (0.6-1 mL/kg/dose) IV. IV Monitor for hypercalcemia and bradycardia. Use in digitalized patients may precipitate cardiac arrhythmias. May cause severe tissue necrosis with IV infiltration. Correct hypomagnesemia if present. Dilute salt to 50 mg/mL; recommended rate of infusion 120-240 mg/kg/ hr. 1 mL of 10% calcium gluconate contains 9.4 mg elemental calcium = 4.5 mEq calcium.",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 100,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV/IV/IV/IV",
+          "comment": "Indications Symptomatic hypocalcemia, cardiac arrest in the presence of hyperkalemia or hypocalcemia, magnesium toxicity or calcium antagonist toxicity. Symptomatic Hypocalcemia: 100-200 mg/kg/dose (1-2 mL/kg/dose) slow IV over 5-10 min, may repeat dose or follow with a continuous infusion. Maintenance dose: 200-800 mg/kg/day (2-8 mL/kg/day divided q 6 hrs or as a continuous infusion. Cardiac Arrest: 60-100 mg/kg/dose (0.6-1 mL/kg/dose) IV. IV Monitor for hypercalcemia and bradycardia. Use in digitalized patients may precipitate cardiac arrhythmias. May cause severe tissue necrosis with IV infiltration. Correct hypomagnesemia if present. Dilute salt to 50 mg/mL; recommended rate of infusion 120-240 mg/kg/ hr. 1 mL of 10% calcium gluconate contains 9.4 mg elemental calcium = 4.5 mEq calcium"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_cefazolin",
+      "name_ru": "Цефазолин",
+      "name_en": "Cefazolin",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Цефазолин — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 40,
+          "frequency_hours": 12,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV/IV/IM",
+          "comment": "Divided Levels and 0-7 days, 2000 g 40 mg/kg q 12 hrs >7 days, 2000 g 40 mg/kg q 12 hrs >7 days, > 2000 g 60 mg/kg q 8 hrs Preferred route is IV over 15-30 min. IV, IM Half-life: 3-5 hrs. Eliminated unchanged in the urine. Does not penetrate well into the CSF. May cause rash, phlebitis, leukopenia, thrombocytopenia, and false- positive urinary reducing substances and coomb's test."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_cefepime",
+      "name_ru": "Цефепим",
+      "name_en": "Cefepime",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Цефепим — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 30,
+          "frequency_hours": 12,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV/IM",
+          "comment": "Brand Name Maxipime Fourth generation cephalosporin used for treatment of infections caused by susceptible gram negative bacteria, including Pseudomonas aeruginosa. Lower respiratory tract infections, cellulitis, and urinary tract infections. Neonates <14 days: 30 mg/kg/dose q 12 hrs IV, IM Half-life: 1.7-2 hrs. Distributes into inflammatory fluid at concentrations ~80% of serum levels and into bronchial mucosa at levels ~60% of plasma levels; 85% excreted as unchanged drug in urine. May cause phlebitis, diarrhea, rash, seizures, neutropenia with prolonged use, thrombocytopenia, transient elevation of LFTs and elevated BUN and creatinine."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_cefotaxime",
+      "name_ru": "Цефотаксим",
+      "name_en": "Cefotaxime",
+      "atc": "",
+      "class_ru": "Неонатологический справочник",
+      "indications": [
+        {
+          "label": "Справочно (доза не рассчитывается)",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0,
+          "frequency_hours": 0,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "",
+          "comment": "Divided"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_ceftazidime",
+      "name_ru": "Цефтазидим",
+      "name_en": "Ceftazidime",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Цефтазидим — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 100,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV/IM",
+          "comment": "Brand Name Fortaz, Tazicef Third generation cephalosporin used for treatment of infections caused by susceptible gram negative bacteria, particularly Pseudomonas aeruginosa. Meningitis and neonatal sepsis in neonates at risk of aminoglycoside toxicity. Postnatal Age (PNA) 7 days: 2000 g: 100 mg/kg/day, divided q 12 hrs. > 2000 g: 100-150 mg/kg/day, divided q 8-12 hrs. PNA > 7 days, 1,200 g:100 mg/kg/day, divided q 12 hrs. PNA > 7 days, 1200 g: 150 mg/kg/day, divided q 8 hrs. IV, IM Half-life: 3-12 hrs. Distributes widely into bone, bile, CSF (diffuses at higher concentrations when the meninges are inflamed), pleural and lymphatic fluids. Excreted as unchanged drug in urine. May cause phlebitis, diarrhea, rash, neutropenia, thrombocytopenia, false positive urine-reducing substances and coom"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_ceftriaxone",
+      "name_ru": "Цефтриаксон",
+      "name_en": "Ceftriaxone",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Цефтриаксон — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 50,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV/IM/IV/IM",
+          "comment": "Brand Name Rocephin Third generation cephalosporin used in treatment of neonatal sepsis and meningitis caused by susceptible gram-negative organisms (e.g. E. coli, Pseudomonas, Klebsiella, H. influenza). Treatment of gonococcal infections. Levels and Sepsis and Meningitis: PNA 7 days: 50 mg/kg q 24 hrs. PNA > 7 days: 2000 g: 50 mg/kg q 24 hrs; > 2000 gm: 50-75mg/kg q 24 hrs. Uncomplicated Gonococcal Ophthalmia or Prophylaxis: 25-50 mg/kg x 1 dose (max. dose 125 mg). Disseminated Gonococcal Infection: 25-50 mg/kg/dose (max. dose 125 mg) once daily IV or IM for 7 days, up to 10-14 days if meningitis is documented. Note: Use cefotaxime in place of ceftriaxone in hyperbilirubinemic neonates. IV, IM Distributes widely in CSF, bile, bronchial secretions, lung tissue, ascitic fluid, and middle ea"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_cefuroxime",
+      "name_ru": "Цефуроксим",
+      "name_en": "Cefuroxime",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Цефуроксим — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 50,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV/IM/IV/IV/IV/PO/IM/IV/PO",
+          "comment": "Brand Name Zinnat Second generation cephalosporin used for treatment of infections caused by susceptible gram positive and gram negative organisms; not active against Enterococci or Pseudomonas. Neonates: < 7 days: 50 mg/kg; divided q 12 hrs IV or IM. 7-21 days: 75 mg/kg; divided q 8 hrs IV. > 21 days: 100 mg/kg; divided q 6 hrs IV. In severe infections may double the dose for all of the above age groups and administer IV only. PO: 10-20 mg/kg; divided q 12 hrs. IM, IV, PO Distributes into bronchial secretions, bone, bile, and CSF with inflamed meninges. Half-life: 1.5-5 hrs. Elimination is primarily unchanged in the urine. May cause diarrhea, urticaria, neutropenia, rash, elevated liver enzymes, false-positive test for urinary reducing substances and coomb's test."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_cephalexin",
+      "name_ru": "Цефалексин",
+      "name_en": "Cephalexin",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Цефалексин — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 50,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 125,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "PO",
+          "comment": "Brand Name Keflex First generation cephalosporin used for treatment of infections caused by susceptible gram positive and gram negative organisms; not active against enterococci. Neonates: < 7 days: 50 mg/kg (max.125 mg); divided q 12 hrs. 7-21 days: 75 mg/kg (max.125 mg); divided q 8 hrs. 21-28 days: 100 mg/kg (max.125 mg); divided q 6 hrs. UTI prophylaxis: 12.5 mg/kg (max.125 mg) once daily. PO Absorption delayed up to 50% in neonates. Half-life: 5 hrs. Undergoes renal excretion as unchanged drug. May cause diarrhea, urticaria, neutropenia, rash, elevated liver enzymes, false-positive test for urinary reducing substances and coomb's test."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_chloral_hydrate",
+      "name_ru": "Хлоралгидрат",
+      "name_en": "Chloral Hydrate",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Хлоралгидрат — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 25,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "PO/PR/PO/PR/PO/PR",
+          "comment": "Sedatives and hypnotic for short term use and prior to non-painful therapeutic and diagnostic procedures. 25 mg/kg/dose given PO or PR. May repeat with caution in � hr if inadequate effect. PO, PR Well absorbed after PO or PR administration. Onset of action 10-20 minutes; Maximum effect in 1 hr. Rapidly metabolized in the liver to an active metabolite, trichlorethanol (active metabolite), which is excreted by the kidney after conjugation to the glucuronide salt. Plasma half- life of active metabolite is 8-64 hrs in neonates (mean 37 hrs). Protein binding of active metabolite ~40%. Repeat doses should be used with great caution due to possible accumulation of drug and metabolite. May potentiate the effects of CNS depressants. Prolonged use is associated with direct hyperbilirubinemia. Avoid"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_chloramphenicol",
+      "name_ru": "Хлорамфеникол",
+      "name_en": "Chloramphenicol",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Хлорамфеникол — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 20,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "",
+          "comment": "Treatment of serious infections due to organisms resistant to other less toxic antibiotics. Useful for infections with Bacteroides, H. influenzae, N. meningitidis, salmonella, and Rickettsia. Loading dose: 20 mg/kg. Maintenance dose should be given 12 hrs later, as follows:"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_chlorothiazide",
+      "name_ru": "Хлоротиазид",
+      "name_en": "Chlorothiazide",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Хлоротиазид — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 20,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "PO/IV/IV/PO/PO",
+          "comment": "Diuril Mild to moderate edema and/or hypertension. Effects potentiated when used in combination with furosemide or spironolactone. May improve pulmonary function in patients with bronchopulmonary dysplasia (BPD). PO: 20-40 mg/kg/day; divided in two doses. IV: 2-8 mg/kg/day, divided in two doses. IV, PO Poor PO absorption (10-20%); Onset of diuresis within 2 hrs. Half-life: ~5 hrs. Excreted unchanged in urine. Use with caution in liver and severe renal disease. May cause hyperbilirubinemia, hypokalemia, alkalosis, hyperglycemia, hyperuricemia, and hypomagnesemia. A 50 mg/mL oral suspension may be made with tablets. Crush ten 500 mg chlorothiazide tablets in a mortar and reduce to a fine powder; mix with a small amount of glycerin to form a uniform paste. Add 2 g carboxymethylcellulose gel ("
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_chlorpromazine",
+      "name_ru": "Хлорпромазин",
+      "name_en": "Chlorpromazine",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Хлорпромазин — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0.5,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV/IM/PO",
+          "comment": "Neonatal abstinence syndrome. Initially: 0.5-0.7 mg/kg/dose given q 6 hrs, decrease dose gradually over 2-3 weeks. Note: chlorpromazine is rarely used for neonatal abstinence syndrome due to adverse effects such as hypothermia and eosinophilia. Other agents are preferred such as phenobarbital. IV, IM, PO Oral absorption rapid and complete; large first-pass effect (30% bioavailable); widely distributed in body tissue. Metabolized in the liver. Use with caution in patients with cardiovascular, renal or hepatic disease, and seizures. May cause altered central temperature regulation, leucopenia, and hyperpigmentation."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_cholecalciferol_vitamin_d",
+      "name_ru": "Холекальциферол (вит. D)",
+      "name_en": "Cholecalciferol (Vitamin D)",
+      "atc": "",
+      "class_ru": "Неонатологический справочник",
+      "indications": [
+        {
+          "label": "Справочно (доза не рассчитывается)",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0,
+          "frequency_hours": 0,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "",
+          "comment": "steVit-D, Pentavite utritional or physiological deficiency: � Rickets � Intestinal malabsorption � Chronic liver disease � Hypoparathyroidism � All infants born <35 weeks who are tolerating full enteral feeds � All breastfed babies of vitamin D deficient mothers 00-500 Units once daily or breastfed babies of Vitamin D deficient mothers: � Mild maternal vitamin D deficiency (25-50 nmol/L): 400 Units once daily until 12 months of age. � Moderate to severe maternal vitamin D deficiency (<25 nmol/L): 1000 Units once daily for 3 months to be followed by maintenance therapy for 12 months. O itamin D metabolism in the liver: 25-hydroxylation of vitamin occurs leading to 25(OH) vitamin D. In the kidney, a second ydroxylation takes place by 1 -hydroxylase leading to the formation f 1,25-dihydroxivi"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_cholestyramine",
+      "name_ru": "Холестирамин",
+      "name_en": "Cholestyramine",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Холестирамин — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 240,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "PO",
+          "comment": "Diarrhea secondary to ileal resection. Children: (dose expressed in terms of anhydrous resin) 240 mg/kg/ day, in 3 divided doses, mixed into feedings. Titrate dose according to response and tolerance. Can be mixed into paste and applied to skin of buttocks to reduce irritation from bile salts in babies with diarrhea or malabsorption. PO Not absorbed from the GIT; forms an insoluble complex with bile acids which is excreted in feces. Avoid in patients with biliary obstruction or biliary atresia. Use with caution in patients with constipation. May decrease absorption of other drugs. Long term use may result in steatorrhea and deficiency of fat soluble vitamins."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_clonazepam",
+      "name_ru": "Клоназепам",
+      "name_en": "Clonazepam",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Клоназепам — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0.01,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "PO",
+          "comment": "Clonopin, Rivotril Seizures: Effective for typical absence (petit mal), myoclonic seizures, may be effective for infantile spasms, atypical petit mal, and akinetic seizures. Infants and children: 0.01-0.03 mg/kg/day, divided in 2-3 doses; increase gradually in increments of 0.25-0.5 mg/day, at intervals of 3 days. Maintenance dose: 0.1-0.2 mg/kg/day, divided 3 times/day. PO Therapeutic levels: 20-80 ng/mL. (Relationship between serum concentration and seizure control is not well established).Well absorbed. Extensively metabolized in the liver. Half-life 22-33 hrs in children. Use with caution in patients with chronic respiratory disease, hepatic disease, or impaired renal function; abrupt discontinuation may precipitate withdrawal symptoms, status epilepticus, or seizures (withdraw gradual"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_cosyntropin_tetracosactide",
+      "name_ru": "Косинтропин (тетракозактид)",
+      "name_en": "Cosyntropin (Tetracosactide)",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Косинтропин (тетракозактид) — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0.015,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV/IM",
+          "comment": "Diagnostic test to differentiate primary adrenal from secondary adrenocortical insufficiency and for congenital adrenal hyperplasia. Adrenocortical Insufficiency: 0.015 mg/kg/dose. Congenital Adrenal Hyperplasia: 1 mg/m2/dose up to a max. of 1 mg. IV, IM Onset of action: Plasma cortisol levels rise in healthy individuals in 5 min; Max. effect: At 45-60 min after the dose. Plasma cortisol should be measured immediately before and 30 min after the dose; dose should be given in the early morning. Metabolism unknown. Patient should not receive corticosteroids or spironolactone the day prior to and the day of the test. May cause bradycardia, tachycardia, hypertension, edema, and rash."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_desmopressin_acetate",
+      "name_ru": "Десмопрессина ацетат",
+      "name_en": "Desmopressin Acetate",
+      "atc": "",
+      "class_ru": "Неонатологический справочник",
+      "indications": [
+        {
+          "label": "Справочно (доза не рассчитывается)",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0,
+          "frequency_hours": 0,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "",
+          "comment": "Treatment of diabetes insipidus. Neonates : PO: Initially 1-4 mcg 2-3 times daily, adjusted according to response. Intranasally: Initially 0.1-0.5 mcg daily in 1-2 doses, adjusted according to response. IM: Initially 0.1mcg once daily, adjusted according to response. PO, Intranasally, IM PO onset of antidiuretic hormone (ADH) action: 1 hr; Maximum effect: 2-7 hrs; Duration: 6-8 hrs. Intranasally onset of ADH action: within 1 hr; Maximum effect within 1.5 hrs; Duration: 5-21 hrs. PO absorption 5-15% and nasal solution 10-20%. Metabolism is unknown and excretion is primarily in urine. May cause edema, hyponatremia, seizures, nausea, and vomiting. Monitor fluid intake, urine volume, specific gravity, plasma ad urine osmolality, and serum electrolytes."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_dexamethasone",
+      "name_ru": "Дексаметазон",
+      "name_en": "Dexamethasone",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Дексаметазон — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 1,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "PO/IV/IM/PO/IV/IV/PO/IV/IV/IM/PO",
+          "comment": "Cerebral edema, airway edema prior to extubation, and BPD to facilitate ventilator weaning. Cerebral Edema: PO, IV, IM: Loading dose: 1-2 mg/kg single dose, then maintenance of 1-1.5 mg/kg/day, divided q 4-6 hrs. BPD (to facilitate ventilator weaning): PO, IV: (Numerous dosing schedules have been proposed) range 0.5-0.6 mg/kg/day, given in divided doses q 12 hrs for 3-7 days, then taper over 1-6 weeks. Regimen example: -0.075 mg/kg/dose q12 hrs for 3 days, then - 0.05mg/kg/dose q 12 hrs for 3 days, then - 0.025mg/kg/dose q 12 hrs for 2 days, then - 0.01 mg/kg/dose q 12 hrs for 2 days. - Doses may be administered slow IV push or PO. - Repeat courses may be indicated in selected infants with severe BPD. Airway Edema or Extubation: IV: Usual 0.25 mg/kg/dose given ~4 hrs prior to scheduled ext"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_diazepam",
+      "name_ru": "Диазепам",
+      "name_en": "Diazepam",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Диазепам — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0.1,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV/IV/IV/PO/PR/PO/IV/IV",
+          "comment": "Status epilepticus, severe recurrent convulsive seizures, neonatal tetanus. Seizures: 0.1-0.3 mg/kg/dose slow IV push, may repeat as needed every 15-30 min for 2-3 doses to a max. of 2 mg. Rectal: 1.25-2.5 mg repeated once after 10 min if necessary. Neonatal Tetanus (for muscle spasms): 0.1-0.3 mg/kg slow IV push, may be repeat q1-4 hrs. IV, PO, PR Well absorbed after PO and rectal administration. Metabolized in the liver to active metabolite. Half-life in neonates 50-95 hrs for diazepam and up to 100 hrs for the active metabolite. Metabolites excreted in the urine. Onset of action for IV 1-3 min and for rectal 2-10 min with a duration of 15-30min. Not recommended at first line agent for neonatal status epilepticus. Use with caution in patients with low albumin, renal or hepatic dysfunctio"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_diazoxide",
+      "name_ru": "Диазоксид",
+      "name_en": "Diazoxide",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Диазоксид — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 10,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV/PO",
+          "comment": "Hyperinsulinemic hypoglycemia (such as nisidioblastosis). Initial: 10 mg/kg/day in divided doses 2-3 times per day; Usual range: 5-15 mg/kg/day, divided q 8-12 hrs. Start with higher dosage and taper according to response. IV, PO Protein binding >90%. Half-life: 10-24 hrs in infants; 50% excreted unchanged in urine. Hyperglycemic effect onset of action within 1 hr with duration of 8 hrs in normal renal function. Positive responses are usually seen in 48-72 hrs. May cause excessive hair growth, seizures, hypotension, hyperglycemia, ketoacidosis, GI disturbances, arrhythmias, hyperuricemia, and sodium retention leading to edema and congestive heart failure. Use with caution in renal impairment."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_digoxin",
+      "name_ru": "Дигоксин",
+      "name_en": "Digoxin",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Дигоксин — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0.02,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "Digitalizing (Loading) Dose Total Daily Maintenance Dose Age PO IM or IV PO IM or IV Preterm 20-30 mcg/kg 15-25 mcg/kg 5-7.5 mcg/kg 4-6 mcg/kg Term 25-35 mcg/kg 20-30 mcg/kg 6-10 mcg/kg 5-8 mcg/kg Digitalize by giving 50% initially then give remainder divided into 2 doses q 6-12 hrs. Maintenance dose divided q12-24 hrs. IV, IM, PO Therapeutic trough level: 0.8-2 ng/mL. Serum sampling recommended at steady state (after 5-8 days of therapy). Note: Serum concentration must be used in conjunction with clinical symptoms and EKG. Neonates may have falsely elevated levels due to presence of digoxin like substances. Route Onset of action Peak action PO 1-2 hrs 2-8 hrs 2-5 hrs IM 15-60 min 1-4 hrs IV 5-30 min Distribution phase 6-8 hrs; half-life 35-45 hrs in full term neonates and up to 170 hrs in premature neonates; 50-70% excreted unchanged in urine. May cause bradycardia. Toxicity may be associated with arrhythmias. Use with caution in renal failure; dosage adjustment is required based on creatinine clearance. Electrolyte disturbances may increase risk of digoxin toxicity. Digoxin injection comes in a highly concentrated dosage form. Ensure special dilution is prepared to avoid medication errors related to overdosing.",
+          "comment": "Total Daily Maintenance Dose Age PO IM or IV PO IM or IV Preterm 20-30 mcg/kg 15-25 mcg/kg 5-7.5 mcg/kg 4-6 mcg/kg Term 25-35 mcg/kg 20-30 mcg/kg 6-10 mcg/kg 5-8 mcg/kg Digitalize by giving 50% initially then give remainder divided into 2 doses q 6-12 hrs. Maintenance dose divided q12-24 hrs. IV, IM, PO Therapeutic trough level: 0.8-2 ng/mL. Serum sampling recommended at steady state (after 5-8 days of therapy). Note: Serum concentration must be used in conjunction with clinical symptoms and EKG. Neonates may have falsely elevated levels due to presence of digoxin like substances."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_dobutamine",
+      "name_ru": "Добутамин",
+      "name_en": "Dobutamine",
+      "atc": "",
+      "class_ru": "Неонатологический справочник",
+      "indications": [
+        {
+          "label": "Справочно (доза не рассчитывается)",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0,
+          "frequency_hours": 0,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "",
+          "comment": "(mcg/kg/min) x Weight (kg) x 60 min/hr Concentration (mcg/mL) Dobutamine Titration Chart: Concentration Dose IV Rate (mcg/ml) (mcg/kg/min) (ml/kg/hr) 2.5 0.19 1600 5 0.38 7.5 0.56 3200 10 0.75 2.5 0.094 5 0.19 7.5 0.28 10 0.38 2.5 0.047 5 0.094 7.5 0.14 10 0.19 ded standard concentrations and more details on calculations please ndix."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_domperidone",
+      "name_ru": "Домперидон",
+      "name_en": "Domperidone",
+      "atc": "",
+      "class_ru": "Неонатологический справочник",
+      "indications": [
+        {
+          "label": "Справочно (доза не рассчитывается)",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0,
+          "frequency_hours": 0,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "100 -300 mcg/kg/dose; given 4 to 6 times daily prior to feeds. PO Eliminated by renal excretion; half-life is prolonged in severe renal impairment It is contraindicated in moderate or severe hepatic impairment. Dose modification in mild hepatic impairment is not needed. On repeated administration, the dosing frequency of domperidone should be reduced to once or twice daily depending on the severity of the impairment, and the dose may need to be reduced. Overdosing may cause extrapyramidal symptoms in young children. Close monitoring is needed in patients who are known to have existing prolongation of cardiac conduction intervals, particularly prolonged QT interval. 0ral suspension contains domperidone 1 mg/mL. References zal NA, Bevan A, Hayen A, Munro A, Beattie RM. Pharmacological of children with gastro-oesophageal reflux. Cochrane Database Syst Rev. 4;11:CD008550. doi: 10.1002/14651858.CD008550.pub2. , Costalos C, Varchalama E, Kokori F, Grivea IN, Konstantinidi K, poulos GA. Gastric emptying of preterm neonates receiving domperidone. y. 2010;97(1):56-60. doi: 10.1159/000231517. Epub 2009 Jul 31.",
+          "comment": "modification in mild hepatic impairment is not needed. On repeated administration, the dosing frequency of domperidone should be reduced to once or twice daily depending on the severity of the impairment, and the dose may need to be reduced. Overdosing may cause extrapyramidal symptoms in young children. Close monitoring is needed in patients who are known to have existing prolongation of cardiac conduction intervals, particularly prolonged QT interval. 0ral suspension contains domperidone 1 mg/mL. References zal NA, Bevan A, Hayen A, Munro A, Beattie RM. Pharmacological of children with gastro-oesophageal reflux. Cochrane Database Syst Rev. 4;11:CD008550. doi: 10.1002/14651858.CD008550.pub2. , Costalos C, Varchalama E, Kokori F, Grivea IN, Konstantinidi K, poulos GA. Gastric emptying of p"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_dopamine",
+      "name_ru": "Допамин",
+      "name_en": "Dopamine",
+      "atc": "",
+      "class_ru": "Неонатологический справочник",
+      "indications": [
+        {
+          "label": "Справочно (доза не рассчитывается)",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0,
+          "frequency_hours": 0,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "",
+          "comment": "(mcg/kg/min) x Weight (kg) x 60 min/hr Concentration (mcg/mL) Dopamine Titration Chart: (mcg/ml) Dose (mcg/kg/min) IV Rate (ml/kg/hr) 00 2.5 0.19 5 0.38 7.5 0.56 10 0.75 600 2.5 0.094 5 0.19 7.5 0.28 10 0.38 200 2.5 0.047 5 0.094 7.5 0.14 10 0.19 ded standard concentrations and more details on calculations please endix."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_enoxaparin",
+      "name_ru": "Эноксапарин",
+      "name_en": "Enoxaparin",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Эноксапарин — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0.75,
+          "frequency_hours": 12,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "",
+          "comment": "Brand Name Lovenox A low molecular weight heparin (LMWH) used as prophylaxis and treatment of thromboembolic disorders. Prophylaxis: 0.75 mg/kg q 12 hrs. Treatment: 1.5 mg/kg q 12 hrs. Metabolism SubQ Based on antifactor Xa and anithromin activities: Max. effect after SubQ: 3-5 hrs; Duration ~12 hrs. Metabolized primarily in the liver. Excreted in urine as active and inactive products. Bleeding or thrombocytopenia may occur. Use with caution in patients with increased risk of bleeding, history of heparin-induced thrombocytopenia, and severe renal dysfunction. Reference range for antifactor Xa: 0.5-1 Unit/mL measured 4-6 hours after SubQ administration. Preterm infants may require a higher dose of 2 mg/kg q 12 hrs to maintain target levels."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_epinephrine",
+      "name_ru": "Эпинефрин (адреналин)",
+      "name_en": "Epinephrine",
+      "atc": "",
+      "class_ru": "Неонатологический справочник",
+      "indications": [
+        {
+          "label": "Справочно (доза не рассчитывается)",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0,
+          "frequency_hours": 0,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "",
+          "comment": "(mcg/kg/min) x Weight (kg) x 60 min/hr Concentration (mcg/mL) * For recommended standard concentrations and more details on calculations please see the appendix."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_erythromycin",
+      "name_ru": "Эритромицин",
+      "name_en": "Erythromycin",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Эритромицин — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 20,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "PO/PO/IV/PO/PO/IV/IV/IV",
+          "comment": "Infections caused by Chlamydia, Mycoplasma, and Ureaplasma. Treatment of and prophylaxis against B. pertussis. As a prokinetic in cases of feeding intolerance. Ophthalmic ointment used to prevent gonococcal ophthalmia neonatorum. PO: Ethylsuccinate (EES): PNA 7 days: 20 mg/kg/day, divided q 12 hrs. PNA >7 days, < 1200 g: 20 mg/kg/day, divided q 12 hrs. PNA >7 days, 1200-2000 g: 30 mg/kg/day, divided q 8 hrs. PNA >7 days, > 2000 g: 30-40 mg/kg /day, divided q 6-8 hrs. Ophthalmic: Prophylaxis of Neonatal Gonococcal Ophthalmia: 0.5-1 cm ribbon of ointment instilled into each conjunctival sac once. Chlamydial Conjunctivitis and Pneumonia: PO (EES): 50 mg/kg/day, divided q 6 hrs. IV: Lactobionate: 25-40 mg/kg/day, divided q 6 hrs. Feeding Intolerance (Dysmotility): 3-10 mg/kg/dose PO q 6 hrs. S"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_erythropoietin_epoetin_alfa",
+      "name_ru": "Эритропоэтин (эпоэтин альфа)",
+      "name_en": "Erythropoietin (Epoetin Alfa)",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Эритропоэтин (эпоэтин альфа) — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 25,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV/IV",
+          "comment": "Brand Name Epogen, Procrit Anemia and to decrease the need for erythrocyte transfusions in high- risk preterm infants. 25-100 Units/kg/dose 3 times/week or 100 Units/kg/dose 5 times/week or 200 Units/kg/dose every other day for 10 doses. SubQ, IV SubQ absorption 30%; distributes rapidly in plasma; majority of drug taken up by liver, kidneys, and bone marrow. Half-life: 12-18 hrs. Subcut administration results in 30-50% lower dose requirements compared to IV administration. Use with caution in patients with seizures. May cause hypertension, neutropenia, and irritation at injection site."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_famotidine",
+      "name_ru": "Фамотидин",
+      "name_en": "Famotidine",
+      "atc": "",
+      "class_ru": "Неонатологический справочник",
+      "indications": [
+        {
+          "label": "Справочно (доза не рассчитывается)",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0,
+          "frequency_hours": 0,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "",
+          "comment": "adjustment required in renal impairment."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_fentanyl",
+      "name_ru": "Фентанил",
+      "name_en": "Fentanyl",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Фентанил — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0.0005,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV/IV/IV/IV",
+          "comment": "Analgesia, short term sedation, adjunct to general anesthesia. Sedation and analgesia: Intermittent: 0.5-4 mcg/kg/dose given by slow IV push, repeat as required q 2-4 hrs. Continuous IV infusion: 0.5-5 mcg/kg/hr. Tolerance may develop with prolonged use. IV Highly lipophilic, redistributes into muscle and fat. Metabolized extensively in the liver then excreted by the kidney. Physical and psychological dependence may occur with prolonged use; abrupt discontinuation may result in withdrawal and seizures. Rapid IV infusion may result in skeletal muscle and chest wall rigidity, respiratory distress and impaired ventilation. Inject slowly over 3-5 minutes; nondepolarizing skeletal muscle relaxant may be required. Use with caution in bradycardia, renal failure, and increased intracranial pressur"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_ferrous_sulfate",
+      "name_ru": "Сульфат железа",
+      "name_en": "Ferrous Sulfate",
+      "atc": "",
+      "class_ru": "Неонатологический справочник",
+      "indications": [
+        {
+          "label": "Справочно (доза не рассчитывается)",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0,
+          "frequency_hours": 0,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "",
+          "comment": "Treatment and prevention of iron deficiency anemia. Dose expressed as elemental iron (Fe): Prophylaxis: 2-4 mg Fe/kg/day. Give in 1-2 divided doses per day. Therapeutic: 6 mg Fe/kg/day. Give in 1-2 divided doses per day. Maximum dose 15 mg/day. PO Absorbed in the duodenum and upper jejunum; 20-30% absorbed in conditions of inadequate iron stores and 10% in normal iron stores. Food and achlorhydria decrease absorption. May increase red cell hemolysis in vitamin E deficient infants. Nausea, constipation, black stools, lethargy, hypotension, erosion of gastric mucosa may occur."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_fluconazole",
+      "name_ru": "Флуконазол",
+      "name_en": "Fluconazole",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Флуконазол — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 5,
+          "frequency_hours": 72,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "PO/IV/PO/IV/PO/IV/PO/PO/IV",
+          "comment": "Systemic fungal infections including meningitis due to Candida species. 29 weeks gestation (PO, IV): PNA 0-14 days: 5-6 mg/kg/dose q 72 hrs. PNA >14 days: 5-6 mg/kg/dose q 48 hrs. 30-36 weeks gestation (PO, IV): PNA 0-14 days: 3-6 mg/kg/dose q 48 hrs. PNA >14 days: 3-6 mg/kg/dose q 24 hrs. Systemic Infections Including Meningitis (PO, IV): Loading Dose: 12 mg/kg on day 1, then 6 mg/kg/dose q 24 hrs. Oropharyngeal Candidiasis (PO): Loading Dose: 6 mg/kg on day 1, then 3 mg/kg/dose q 24 hrs. Duration of therapy depends on type of infection and may range from 14 to 28 days. For meningitis duration is 10-12 weeks after CSF culture becomes negative. Prophylaxis: 3 mg/kg/dose twice weekly. PO, IV Well absorbed orally with oral bioavailability >90%; Widely distributed into body tissues and fluids"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_flucytosine_5_fc",
+      "name_ru": "Флуцитозин (5-FC)",
+      "name_en": "Flucytosine (5-FC)",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Флуцитозин (5-FC) — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 50,
+          "frequency_hours": 12,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "PO/IV",
+          "comment": "Brand Name Ancobon Systemic fungal infections in combination with Amphotericin B or fluconazole. 50 mg/kg q 12 hrs; given for 2-6 weeks. PO, IV Therapeutic levels: 25-50 mcg/mL. Obtain trough immediately before the next dose. Maintain trough � 25mcg/mL to prevent emergence of resistance. Absorption: 75-90%; widely distributed into body tissues and fluids. Minimal hepatic metabolism. Eliminated unchanged in the urine. Toxicity related to serum concentrations above 80 mcg/ml; use with caution in patients with renal impairment; dosage adjustment required. May cause enterocolitis, nausea, vomiting, diarrhea, rash, anemia, leukopenia, thrombocytopenia, elevated liver enzymes, increased BUN or creatinine, and CNS derangements."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_folic_acid",
+      "name_ru": "Фолиевая кислота",
+      "name_en": "Folic Acid",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Фолиевая кислота — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0.015,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV/IM/PO",
+          "comment": "Folvite Folic acid deficiency. Premature infants: 50 mcg/24 hrs (~15 mcg/kg/24 hrs). IV, IM, PO, SubQ Total folate Serum levels: 5-15 ng/mL. Levels and May cause allergic reactions. Large doses may mask the hematologic effects of vitamin B-12 deficiency but will not prevent the progression of neurologic abnormalities."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_furosemide",
+      "name_ru": "Фуросемид",
+      "name_en": "Furosemide",
+      "atc": "",
+      "class_ru": "Неонатологический справочник",
+      "indications": [
+        {
+          "label": "Справочно (доза не рассчитывается)",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0,
+          "frequency_hours": 0,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "Intermittent: 1-3 mg/kg/dose IV, IM, or PO given q 12-24 hrs. Continuous IV infusion: 0.05 mg/kg/hr, titrate dosage to clinical effect. IV, IM, PO Onset of action: 30-60 min (PO), 30 min (IM), 5 min (IV). Absorption: 65% with normal renal function; duration of effect ~6 hrs. Eliminated primarily unchanged in the urine. May cause sodium, calcium and potassium depletion, dehydration, and hypochloremic metabolic alkalosis. Hypercalciuria and development of renal calculi with chronic therapy. Ototoxicity, including both transient and permanent hearing loss. Increased risk of deafness in presence of renal failure and with aminoglycoside use. In infants on digoxin, potassium depletion may exacerbate digoxin toxicity. Displaces bilirubin from albumin especially in doses greater than 1 mg/kg. *Calculating infusion rate (mL/hr) = Dose (mg/kg/hr) x Weight (kg) Concentration (mg/mL) * For recommended standard concentrations and more details on calculations please see the appendix.",
+          "comment": "(mg/kg/hr) x Weight (kg) Concentration (mg/mL) * For recommended standard concentrations and more details on calculations please see the appendix."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_filgrastim_g_csf",
+      "name_ru": "Филграстим (G-CSF)",
+      "name_en": "Filgrastim (G-CSF)",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Neutropenia, ANC < 500. IV, SubQ: 5-10 mcg/kg/day. Give once daily until ANC >1000 or 5 doses have been given. IV, SubQ Onset of action: immediate, transient leukopenia followed by a sustained elevation in neutrophils within 24 hrs. May cause low grade fever, mild anemia, and mild decreases in platelets.",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0.005,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV/IV",
+          "comment": "Neupogen Indications Neutropenia, ANC < 500. IV, SubQ: 5-10 mcg/kg/day. Give once daily until ANC >1000 or 5 doses have been given. IV, SubQ Onset of action: immediate, transient leukopenia followed by a sustained elevation in neutrophils within 24 hrs. May cause low grade fever, mild anemia, and mild decreases in platelets."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_gentamicin",
+      "name_ru": "Гентамицин",
+      "name_en": "Gentamicin",
+      "atc": "",
+      "class_ru": "Неонатологический справочник",
+      "indications": [
+        {
+          "label": "Справочно (доза не рассчитывается)",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0,
+          "frequency_hours": 0,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "",
+          "comment": "Infections caused by susceptible gram negative organism (such as E. colli, Pseudomonas, Proteus). Used in combination with ampicillin as empiric therapy for newborn sepsis. IV or IM dosing for suspected or proven neonatal infection: Postnatal Age Postnatal Age Dose (mg/kg) Interval (hrs) (Weeks) (Days) 29 5 48 0 to 7 4 36 30 to 34 8 to 28 4 24 4.5 36 0 to 7 4 24 35 All 4 24 Administer over 15-30 min. Intraventitricular/Intrathecal: 1 mg/day (use preservative free preparation) IV, IM, IT/IVT Therapeutic Drug Monitoring: Peak: 5-10 mcg/mL; drawn 30 min after the end of a 30 min IV- infusion or 1 hr after an IM injection. Trough: 0.5-2 mcg/mL; drawn within 30min before next dose. Serum concentrations should be checked with third dose. Distributes primarily within the extracellular fluid volum"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_glucagon",
+      "name_ru": "Глюкагон",
+      "name_en": "Glucagon",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Глюкагон — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0.02,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 50,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV/IV/IM/IM/IV/IM/IV",
+          "comment": "Hypoglycemia, refractory to dextrose infusion. Hypoglycemia associated with diabetes: 0.02 mg/kg Endogenous hyperinsulinemia: 0.1-0.2 mg/kg/dose, repeated q 20 min prn. Maximum total dose: 1 mg. By continuous IV infusion 1-18 mcg/kg/hr, adjusted according to response (max. 50 mcg/kg/hrs). IV, IM, SubQ Onset of action: 8-10 min (IM) and 1min (IV); Duration: 12-27 min (IM) and 9-17 (IV). Extensively degraded in liver and kidneys. Half- life: 6-8 min. May deplete glycogen stores. At high doses cardiac stimulatory effects. May cause nausea, vomiting, and respiratory distress. 1 unit of glucagon = 1 mg of glucagon *Calculating infusion rate (mL/hr) = Dose (mcg/kg/hr) x Weight (kg) Concentration (mcg/mL) * For recommended standard concentrations and more details on calculations please see the ap"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_heparin",
+      "name_ru": "Гепарин",
+      "name_en": "Heparin",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Гепарин — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 75,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV/IV/IV",
+          "comment": "Anticoagulation to maintain patency of peripheral and central catheters, treatment of thrombosis. Patency of Catheters: 0.5-1 Units/ml of IV fluid. Line Flushing: 10 Units/mL commonly used; volume of heparin flush is usually similar to volume of catheter. Systemic Heparinization: Initial loading dose: 75 Units/kg given over 10 min (use 50 Units/kg if patient <35 weeks) followed by continuous IV infusion: 28 Units/kg/hr. IV Adjust dosing to maintain APTT of 60-85 seconds (1.5-2.5 times control value). Obtain blood for APTT 4 hrs after heparin loading dose and 4 hrs after every infusion rate change. Metabolized by liver. Excretion by kidneys should occur within 6 hrs, but may be delayed. Half-life is dose-dependent, but averages 1-3 hrs. May cause hemorrhage, allergy, thrombocytopenia, eleva"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_hyaluronidase",
+      "name_ru": "Гиалуронидаза",
+      "name_en": "Hyaluronidase",
+      "atc": "",
+      "class_ru": "Неонатологический справочник",
+      "indications": [
+        {
+          "label": "Справочно (доза не рассчитывается)",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0,
+          "frequency_hours": 0,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "",
+          "comment": "Brand Name Wydase Hyaluronidase is a protein enzyme that enhances the permeability of tissue, facilitating Absorption of extravasated IV fluid. Severe tissue infiltration/ extravasation of IV solutions, especially hypertonic solutions or drugs that are irritating such as calcium, vancomycin, naficillin, and aminophylline. Give SubQ or intradermally 1 mL (150 Units) as 5 separate 0.2- ml injections around the periphery of extravasation site. Use 25 or 26-gauge needle and change needle after each injection. Approach lesion from periphery and beneath - do not inject directly into the affected area. Use within 1 hr of extravasation for best results. SubQ Onset of action immediate. Duration: 24-48 hrs. Not recommended for IV use. Do not infiltrate into infected areas or use for infiltrations/ex"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_hydralazine",
+      "name_ru": "Гидралазин",
+      "name_en": "Hydralazine",
+      "atc": "",
+      "class_ru": "Неонатологический справочник",
+      "indications": [
+        {
+          "label": "Справочно (доза не рассчитывается)",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0,
+          "frequency_hours": 0,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "Intermittent: 0.1-0.5 mg/kg/dose given slow IV push, IM, or PO q 4-6 hrs as needed for blood pressure control. Dose may be gradually increased to max. of 6 mg/kg/day PO in 2-4 divided doses or 3 mg/kg/ day IV in 4-6 divided doses. Continuous IV infusion: 12.5-50 mcg/kg/hr. IV, IM, PO Onset of action: 20-30 min (PO) and 5-20 min (IV). Duration: 2-4 hrs (PO) and 2-6 hrs (IV). Bioavailability: 30-50% (large first pass effect); Metabolized by the liver; 14% eliminated unchanged in urine. Lupus-like syndrome, blood dyscrasias (anemia, agranulocytosis), tachycardia, nasal congestion, diarrhea, and emesis. *Calculating infusion rate (mL/hr) = Dose (mcg/kg/hr) x Weight (kg) Concentration (mcg/mL) * For recommended standard concentrations and more details on calculations please see the appendix.",
+          "comment": "Hypertension, afterload reduction in patients with congestive heart failure."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_human_milk_fortifier",
+      "name_ru": "Фортификатор грудного молока",
+      "name_en": "Human Milk Fortifier",
+      "atc": "",
+      "class_ru": "Неонатологический справочник",
+      "indications": [
+        {
+          "label": "Справочно (доза не рассчитывается)",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0,
+          "frequency_hours": 0,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "",
+          "comment": "Brand Name Human Milk Fortifier (HMF) Nutritional supplementation of breast milk for premature infants. 1. Shake container of human milk to be fortified. 2. Pour desired amount of human milk into a container according to the Precautions following schedule: Additional Calories Desired Human Milk Enfamil Human Milk Fortifier 2 Calories/fluid ounce 50 mL 1 packet 4 Calories/fluid ounce 25 mL 1 packet 3. Add the HMF powder to the measured human milk, cap container, shake well, and feed. 4. Use within 4 hours of preparation, or within normal hospital policy and procedures. Shake well before using. PO May cause hypercalcemia. Improper dilution may be harmful. Nutritionally incomplete. Enfamil Human Milk Fortifier product insert."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_hydrochlorothiazide",
+      "name_ru": "Гидрохлоротиазид",
+      "name_en": "Hydrochlorothiazide",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Гидрохлоротиазид — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 1,
+          "frequency_hours": 12,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "1-2 mg/kg/dose q 12 hrs PO. PO Rapidly absorbed from GI tract. Onset of action within 2 hrs. Half-life dependent on GFR. Eliminated unchanged in urine. May cause hypokalemia, hyperglycemia, and hyperuricemia. Do not use in patients with significant renal or hepatic impairment. A 10 mg/mL oral syrup can be made with tablets. Crush forty 25 mg Hydrochlorothiazide tablets into a powder using a mortar and pestle. Mix with simple syrup vehicle and q.s. to 100 mL. Stable for 60 days in refrigerator.",
+          "comment": "Esidrix, Hydrodiuril Diuresis in mild to moderate edema and mild to moderate hypertension. Effects potentiated when used with furosemide or spironolactone. May improve pulmonary function in patients with BPD. Route 1-2 mg/kg/dose q 12 hrs PO. PO Rapidly absorbed from GI tract. Onset of action within 2 hrs. Half-life dependent on GFR. Eliminated unchanged in urine. May cause hypokalemia, hyperglycemia, and hyperuricemia. Do not use in patients with significant renal or hepatic impairment. A 10 mg/mL oral syrup can be made with tablets. Crush forty 25 mg Hydrochlorothiazide tablets into a powder using a mortar and pestle. Mix with simple syrup vehicle and q.s. to 100 mL. Stable for 60 days in refrigerator. References: Hydrochlorothiazide 10 mg per mL Oral Syrup. International Journal of Phar"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_hydrocortisone",
+      "name_ru": "Гидрокортизон",
+      "name_en": "Hydrocortisone",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Гидрокортизон — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 5,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV/IM/PO/IV/IV/PO/IV/IM/PO",
+          "comment": "s: 25-50 mg/m2/day IV or IM divided q 6 hrs; 75 mg/m2/day PO divided q 6-8 hrs. Acute Adrenal Crisis: 50 mg/m2 IV bolus followed by 50 mg/m2 divided q 6-8 hrs. Neonatal Hypoglycemia: IV/PO: 5 mg/kg/day, divided q 8-12 hrs or 1-2 mg/kg/dose q 6 hrs. IV, IM, PO Absorption is rapid; Half-life 8-12 hrs; Metabolized in the liver and eliminated in the urine. In acute use may mask signs of infection or exacerbate systemic fungal infections. Chronic use may cause growth failure, peptic ulcer, hypertension, sodium and water retention, increased excretion of potassium, and bone demineralization. For body surface area (BSA) calculation see appendix. A 2 mg/mL oral suspension can be made with tablets. Crush ten 20 mg Hydrocortisone tablets in a mortar to a fine powder. Wet powder with a minimal amount"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_ibuprofen_lysine",
+      "name_ru": "Ибупрофена лизинат",
+      "name_en": "Ibuprofen Lysine",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Ибупрофена лизинат — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 10,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV",
+          "comment": "Closure of the ductus arteriosus (PDA) for premature infants at age 2 days or greater Initial dose: 10 mg/kg/dose followed by 2 doses of 5 mg/kg/dose given 24 hours and 48 hours after the initial dose. Administer over 15 minutes. Use birth weight to calculate all doses. Hold second and third doses if urine output is <0.6 mL/kg/hr; may give when renal function improves. IV Ibuprofen is 95% protein bound and has a volume of distribution of 320 mL/kg. The metabolism and excretion of ibuprofen have not been well studied in preterm infants. Ibuprofen is contraindicated in premature neonates with at least one of the following: 1. Proven or suspected infection that is untreated 2. Congenital heart disease in which patency of the ductus arteriosus is necessary for satisfactory pulmonary or systemi"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_imipenem_and_cilastatin",
+      "name_ru": "Imipenem and Cilastatin",
+      "name_en": "Imipenem and Cilastatin",
+      "atc": "",
+      "class_ru": "Неонатологический справочник",
+      "indications": [
+        {
+          "label": "Справочно (доза не рассчитывается)",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0,
+          "frequency_hours": 0,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "",
+          "comment": "adjustment required in renal impairment. May cause nausea, vomiting, diarrhea, skin rash, phlebitis, eosinophilia, and transient elevation of liver function tests."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_indomethacin",
+      "name_ru": "Индометацин",
+      "name_en": "Indomethacin",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Индометацин — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0.2,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV",
+          "comment": "Closure of patent ductus arteriosus, prevention of intraventricular hemorrhage. Treatment of PDA: Usually 3 doses per c ourse: Metabolism Age at 1st dose 1st dose 2nd dose 3rd dose < 48 hrs 0.2 mg/kg 0.1 mg/kg 0.1 mg/kg 2-7 days 0.2 mg/kg 0.2 mg/kg 0.2 mg/kg > 7 days 0.2 mg/kg 0.25 mg/kg 0.25 mg/kg Give doses 12-24 hrs apart. Longer treatment courses maybe used: 0.2 mg/kg/day for up to 5-7 days. Prevention of IVH for infants with a birth weight 1 kg or gestational age 28 weeks: 0.1 mg/kg q 24 hrs for 3 doses beginning at 6-12 hrs of age. IV Metabolized in the liver and eliminated in the feces and urine. Half-life ranges between 11-20 hrs. May cause transient decrease in urine output. If anuria or severe oliguria occurs, doses should be delayed. May cause hyponatremia, hypokalemia and hypog"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_insulin_regular",
+      "name_ru": "Инсулин (короткий)",
+      "name_en": "Insulin (Regular)",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Инсулин (короткий) — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0.1,
+          "frequency_hours": 6,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV/IV",
+          "comment": "Hyperglycemia in very-low-birth weight infants with persistent glucose intolerance, adjuvant therapy for hyperkalemia. Intermittent: 0.1-0.2 Units/kg q 6-12 hrs SubQ or IV. Continuous infusion: 0.01-0.1 Units/kg/hr. Titrate to blood glucose levels. Hyperkalemia: 0.05 Units/kg regular insulin + 0.5-1 g/kg using D10W (infuse dextrose over 15 min followed by insulin). Please see appendix for protocol. IV, SubQ Plasma half-life is ~9 min (adults). Degraded in the liver and kidney. Neonates are very sensitive to hypoglycemia; start at lower end of dose and monitor serum glucose closely. Check blood glucose levels every 15-30 minutes after initiation of insulin infusion and after changes in infusion rate. *Calculating infusion rate (mL/hr) = Dose (Units/kg/hr) x Weight (kg) Concentration (Units/"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_intravenous_immune_globulin_ivig",
+      "name_ru": "Intravenous Immune Globulin (IVIG)",
+      "name_en": "Intravenous Immune Globulin (IVIG)",
+      "atc": "",
+      "class_ru": "Неонатологический справочник",
+      "indications": [
+        {
+          "label": "Справочно (доза не рассчитывается)",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0,
+          "frequency_hours": 0,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "Hypogammaglobulemia: Usual dose 0.5 g/kg as single dose every 4 weeks. Alloimmune thrombocytopenia: 0.4-1 g/kg as single dose infused over 6 hrs. Severe hemolysis (Rh or ABO iso): When the total serum bilirubin levels approach or surpass the exchange transfusions limits: 0.5-1 g/kg in the first few hours of life, to be infused over 2-4 hours and the dose can be repeated 2-3 times. IV Maintain trough IgG � 500 mg/dL. Half-life: 21-29 days. May cause volume overload, infuse over 2-6 hours, monitor for infusion related side effects (hypersensitivity reaction.). May cause acute renal failure. Start infusion at 0.01 mL/kg/min; double rate q 15-30 min, up to a max of 0.08 mL/kg/min (refer to individual IVIG product for administration guidelines).",
+          "comment": "Hypogammaglobulinemia, alloimmune thrombocytopenia."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_ipratropium",
+      "name_ru": "Ипратропий",
+      "name_en": "Ipratropium",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Ипратропий — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0.025,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "",
+          "comment": "Brand Name Atrovent Anticholinergic bronchodilator. Used for bronchospasm in infants with bronchopulmonary dysplasia (BPD). 25 mcg/kg/dose 3 times a day. Nebulization Not readily absorbed into the systemic circulation from the lung or GIT. Following inhalation 15% of dose reaches the lower airways. Onset of action: 1-3 min; peak effect: ~2 hrs; duration: ~4-6 hrs. May cause palpitation and tachycardia."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_isoproterenol",
+      "name_ru": "Изопротеренол",
+      "name_en": "Isoproterenol",
+      "atc": "",
+      "class_ru": "Неонатологический справочник",
+      "indications": [
+        {
+          "label": "Справочно (доза не рассчитывается)",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0,
+          "frequency_hours": 0,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "",
+          "comment": "(mcg/kg/min) x Weight (kg) x 60 min/hr Concentration (mcg/mL) * For recommended standard concentrations and more details on calculations please see the appendix."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_levetiracetam",
+      "name_ru": "Леветирацетам",
+      "name_en": "Levetiracetam",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Леветирацетам — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 10,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 10,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV/PO/IV/PO",
+          "comment": "Neonatal seizures. Neonates: IV, PO: Initial 10 mg/kg once daily, increased gradually by max. 10 mg/ kg twice daily every 2 weeks; max. 30 mg/kg twice daily. IV, PO Oral absorption rapid and complete; Bioavailability ~100%. Metabolism is not extensive; ~70% excreted unchanged in urine and the remainder as inactive metabolites. Dose adjustment needed in renal impairment. May cause vomiting, diarrhea, and somnolence."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_levothyroxine_t4",
+      "name_ru": "Левотироксин (T4)",
+      "name_en": "Levothyroxine (T4)",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Левотироксин (T4) — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0.01,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "PO/IV/IM/PO/PO/IV/IM/PO",
+          "comment": "Synthroid Congenital or acquired hypothyroidism. PO: 10-15 mcg/kg/dose daily. IV, IM: 50-75% of PO dose. PO, IV, IM PO absorption erratic (40-80%). Metabolism: liver and peripheral sites to triiodothyronine (active). Half-life: 6-7 days. Eliminated in the urine and feces. Monitor TSH and T4 after 2 weeks of therapy. Assess for signs of hypothyroidism and thyrotoxicosis. Give oral doses one hour before or 2 hrs after feeds, preferably in the morning. A 25 mcg/mL oral suspension may be made with tablets and 40 mL glycerol. Crush twenty-five 0.1 mg levothyroxine tablets in a mortar and reduce to a fine powder. Add small portions of glycerol and mix to a uniform suspension. Transfer to a calibrated 100 mL amber bottle; rinse the mortar with about 10 mL of glycerol and pour into the bottle; rep"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_lidocaine",
+      "name_ru": "Лидокаин",
+      "name_en": "Lidocaine",
+      "atc": "",
+      "class_ru": "Неонатологический справочник",
+      "indications": [
+        {
+          "label": "Справочно (доза не рассчитывается)",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0,
+          "frequency_hours": 0,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "",
+          "comment": "(mcg/kg/min) x Weight (kg) x 60 min/hr Concentration (mcg/mL) * For recommended standard concentrations and more details on calculations please see the appendix."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_magnesium_sulfate",
+      "name_ru": "Магния сульфат",
+      "name_en": "Magnesium Sulfate",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Hypomagnesemia, hypocalcemia, torsade de pointes (polymorphic ventricular tachycardia), and severe persistent pulmonary hypertension of the newborn unresponsive to other vasodilation management, if nitric oxide is not available. Hypomagnesemia: 25-100 mg/kg/dose (0.2-0.8 mEq/kg/dose) IV q 8-12 hrs for 2-3 doses. Maintenance: 0.25-0.5 mEq/kg/day IV. Hypocalcemia: 100 mg/kg IV q12 hrs for 2-3 doses. IV, IM May cause heart block, CNS and respiratory depression, hypotension, intestinal ileus, urinary retention, hypotonia and hypermagnesemia. Monitor magnesium level.",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 25,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV/IV/IV/IV/IM",
+          "comment": "Indications Hypomagnesemia, hypocalcemia, torsade de pointes (polymorphic ventricular tachycardia), and severe persistent pulmonary hypertension of the newborn unresponsive to other vasodilation management, if nitric oxide is not available. Hypomagnesemia: 25-100 mg/kg/dose (0.2-0.8 mEq/kg/dose) IV q 8-12 hrs for 2-3 doses. Maintenance: 0.25-0.5 mEq/kg/day IV. Hypocalcemia: 100 mg/kg IV q12 hrs for 2-3 doses. IV, IM May cause heart block, CNS and respiratory depression, hypotension, intestinal ileus, urinary retention, hypotonia and hypermagnesemia. Monitor magnesium level."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_mct_oil",
+      "name_ru": "MCT масло",
+      "name_en": "MCT Oil",
+      "atc": "",
+      "class_ru": "Неонатологический справочник",
+      "indications": [
+        {
+          "label": "Справочно (доза не рассчитывается)",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0,
+          "frequency_hours": 0,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "",
+          "comment": "Indications Caloric supplementation for patients who cannot digest long chain fats. Initial: 0.5 ml every other feeding, then advance to every feeding. Increase in increments of 0.25-0.5 ml per feeding at intervals of 2-3 days as tolerated. 1 ml = 0.93 g = 7.6 calories. PO Up to 30% absorbed unchanged as triglyceride; almost completely oxidized by liver to acetyl COA and carbon dioxide; ~20% eliminated in expired CO2 in 50 min; <10% in feces. May cause sedation, ketosis, abdominal pain, and diarrhea. Does not provide essential fatty acids."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_meropenem",
+      "name_ru": "Меропенем",
+      "name_en": "Meropenem",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Меропенем — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 20,
+          "frequency_hours": 12,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV",
+          "comment": "Treatment of multidrug resistant gram negative and gram positive aerobic and anaerobic pathogens. PNA 7 days: 20 mg/kg/dose q 12 hrs. PNA > 7days: 1200-2000 g: 20 mg/kg/dose q 12 hrs. > 2000 g: 20 mg/kg/dose q 8 hrs. Miningitis: 40 mg/kg/dose q 8 hrs. IV Penetrates to most tissues and body fluids including CSF, bone, bile, and lung tissue; 20% hydrolyzed in the plasma to inactive metabolite; half- life 2-3 hrs; 70% excreted in urine unchanged. Use with caution in patients with history of seizures and renal impairment. May cause diarrhea and hypotension. Monitor for: - Thrombocytosis and eosinophilia with prolonged use. - Renal function - increase dose interval in renal failure. - Hepatic function � at the beginning of treatment and weekly thereafter. - Vomiting and pseudomembranous colitis"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_metronidazole",
+      "name_ru": "Метронидазол",
+      "name_en": "Metronidazole",
+      "atc": "",
+      "class_ru": "Неонатологический справочник",
+      "indications": [
+        {
+          "label": "Справочно (доза не рассчитывается)",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0,
+          "frequency_hours": 0,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "",
+          "comment": "Dose Interval"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_midazolam",
+      "name_ru": "Мидазолам",
+      "name_en": "Midazolam",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Мидазолам — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0.0002,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV/IV/IM/PO/IV/IV/IM/PO/PO/PO/IV/IM/IV",
+          "comment": "Sedation and anesthesia and refractory seizures. Moderate (Conscious) Sedation for Mechanical Ventilation: Continuous IV infusion: 0.2-1 mcg/kg/min. Sedation for Procedures or Pre-op: IV, IM: 0.05-0.1 mg/kg/dose, may repeat q 2-4 hrs as needed. PO: 0.25 mg/kg/dose. Anticonvulsant: Loading dose: 0.15 mg/kg (150 mcg/kg) IV given over at least 5 minutes. Maintenance infusion: 0.06-0.4 mg/kg/hr (or 1-7 mcg/kg/min). IV, IM, PO PO absorption rapid; Onset of action: 10-20 min (PO), 1-5 min (IV, IM); Half-life 4-17 hrs. Metabolized by hydroxylation and conjugation prior to excretion in urine. Metabolites have little sedative effect. Use with caution in patients with renal and hepatic dysfunction. May cause respiratory depression. May cause myoclonus in premature infants. Rapid IV injection may cau"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_milrinone",
+      "name_ru": "Милринон",
+      "name_en": "Milrinone",
+      "atc": "",
+      "class_ru": "Неонатологический справочник",
+      "indications": [
+        {
+          "label": "Справочно (доза не рассчитывается)",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0,
+          "frequency_hours": 0,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "",
+          "comment": "should be titrated based on hemodynamic and clinical response. IV Onset of action: 5-15 min; Half-life 1-5 in infants. Excreted in the urine as unchanged drug (~85%) and liver metabolite (~15%). Monitor for hypotension, electrolyte changes, thrombocytopenia, hepatotoxicity, and renal function. Dose adjustment required in renal impairment. *Calculating infusion rate (mL/hr) = Dose (mcg/kg/min) x Weight (kg) x 60 min/hr Concentration (mcg/mL) * For recommended standard concentrations and more details on calculations please see the appendix."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_morphine_sulfate",
+      "name_ru": "Морфина сульфат",
+      "name_en": "Morphine sulfate",
+      "atc": "",
+      "class_ru": "Неонатологический справочник",
+      "indications": [
+        {
+          "label": "Справочно (доза не рассчитывается)",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0,
+          "frequency_hours": 0,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "",
+          "comment": "(mg/kg/min) x Weight (kg) Concentration (mg/mL) * For recommended standard concentrations and more details on calculations please see the appendix."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_nafcillin",
+      "name_ru": "Нафциллин",
+      "name_en": "Nafcillin",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Нафциллин — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 50,
+          "frequency_hours": 12,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "Age, Weight Total Daily Dose Divided Metabolism 0-7 days, < 2000 g 50 mg/kg q 12 hrs 0-7 days, > 2000 g 75 mg/kg q 8 hrs >7 days, < 2000 g 75 mg/kg q 8 hrs >7 days, > 2000 g 100 mg/kg q 6 hrs IV Distributed into bile, bone, synovial, and pericardial fluids; CSF penetration poor unless meninges are inflamed; Half-life: 2-5 hrs; eliminated primarily in bile; 10-30% eliminated unchanged in urine. Use with caution in infants with hepatic dysfunction. Irritating to veins; observe for phlebitis. May cause hypokalemia, neutropenia, anemia, eosinophilia, and rarely interstitial nephritis.",
+          "comment": "Divided Metabolism 0-7 days, < 2000 g 50 mg/kg q 12 hrs 0-7 days, > 2000 g 75 mg/kg q 8 hrs >7 days, < 2000 g 75 mg/kg q 8 hrs >7 days, > 2000 g 100 mg/kg q 6 hrs IV Distributed into bile, bone, synovial, and pericardial fluids; CSF penetration poor unless meninges are inflamed; Half-life: 2-5 hrs; eliminated primarily in bile; 10-30% eliminated unchanged in urine. Use with caution in infants with hepatic dysfunction. Irritating to veins; observe for phlebitis. May cause hypokalemia, neutropenia, anemia, eosinophilia, and rarely interstitial nephritis."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_nitroprusside",
+      "name_ru": "Нитропруссид",
+      "name_en": "Nitroprusside",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Нитропруссид — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0.00025,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV/IV",
+          "comment": "Hypertension, reduction of afterload. Initial dose: 0.25-0.5 mcg/kg/min IV continuous infusion, titrate to achieve desired effect to max. of 4 mcg/kg/min. Maintenance dose: < 2 mcg/kg/min. IV Therapeutic Drug Monitoring: Thyocyanate: toxic level: 35-100 mcg/mL. Cyanide: toxic level: >2 mcg/mL. Hypotensive effect: onset of action: within 2 min; duration: 1-10 min. Metabolized by erythrocytes and tissue sulfhydryl group to cyanide; cyanide is then metabolized in the liver by rhodanase to thiocyanate which is then eliminated in the urine. Half-life: <10 min (thiocyanate: 3-7 days). May cause excessive hypotension and tachycardia. Requires careful monitoring of BP and prompt adjustment of infusion rate. Use with caution in renal and hepatic impairment. Protect from light. *Calculating infusion"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_norepinephrine",
+      "name_ru": "Норэпинефрин (норадреналин)",
+      "name_en": "Norepinephrine",
+      "atc": "",
+      "class_ru": "Неонатологический справочник",
+      "indications": [
+        {
+          "label": "Справочно (доза не рассчитывается)",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0,
+          "frequency_hours": 0,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "",
+          "comment": "listed above is a guide only and must be considered in light of clinical response. Begin at low dose and titrate to effect. Dosages should be increased or decreased in small increments only. *Calculating infusion rate (mL/hr) = Dose (mcg/kg/min) x Weight (kg) x 60 min/hr Concentration (mcg/mL) * For recommended standard concentrations and more details on calculations please see the appendix."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_nystatin",
+      "name_ru": "Нистатин",
+      "name_en": "Nystatin",
+      "atc": "",
+      "class_ru": "Неонатологический справочник",
+      "indications": [
+        {
+          "label": "Справочно (доза не рассчитывается)",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0,
+          "frequency_hours": 0,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "Prophylaxis 100,000 units (1 mL) q 8 hrs. Metabolism Diaper rash Topical cream, ointment, or powder applied 2-4 times per day. PO, topical Poorly absorbed; eliminated in feces unchanged. May cause diarrhea, GI symptoms, contact dermatitis.",
+          "comment": "Thrush 100,000 units (1 mL) q 6-8 hrs."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_octreotide",
+      "name_ru": "Октреотид",
+      "name_en": "Octreotide",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Октреотид — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0.001,
+          "frequency_hours": 6,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV/IV/IV",
+          "comment": "Treatment of hyperinsulinemic hypoglycemia (nesidioblastosis) and as an adjunct treatment for chylothorax. Hyperinsulinemic Hypoglycemia: 1 mcg/kg/dose q 6 hrs SubQ or IV. Titrate to response. Max. dose: 10 mcg/kg/dose q 6 hrs. Chylothorax: Start at 1 mcg/kg/hr SubQ or IV continuous infusion. Titrate upwards as needed up to a max. of 7 mcg/kg/hr. Monitor chyle production. IV, SubQ Extensively metabolized by the liver; 30% excreted unchanged in the urine. May cause cholelithiasis, biliary sludge, elevated liver enzymes, increased CPK, hypoglycemia, nausea, vomiting, and fat malabsorption. *Calculating infusion rate (mL/hr) = Dose (mcg/kg/hr) x Weight (kg) Concentration (mcg/mL) * For recommended standard concentrations and more details on calculations please see the appendix."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_omeprazole",
+      "name_ru": "Омепразол",
+      "name_en": "Omeprazole",
+      "atc": "",
+      "class_ru": "Неонатологический справочник",
+      "indications": [
+        {
+          "label": "Справочно (доза не рассчитывается)",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0,
+          "frequency_hours": 0,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "eonates:PO, IV: 0.5 mg/kg once daily; may be increased to 2 mg/kg once daily. Metabolism PO, IV",
+          "comment": "0.5 mg 1 mg 1.5 mg 2 mg 2.5 mg 3 mg Volume 1.25 mL 2.5 mL 3.7 mL 5 mL 6.25 mL 7.5 mL nfuse over 20 to 30 minutes xtemporaneous Preparation: Omeprazole 2 mg/mL Oral Suspension aterials: � 5 capsules Omeprazole (20 mg) � Sodium Bicarbonate solution 8.4% (50 mL) reparation: Empty the contents of the capsules into a mortar and triturate gently with bout 10 mL of the Sodium Bicarbonate solution. A smooth paste will be formed when he enteric coating has dissolved and the drug is dispersed. Make to volume. tability: 14 days at 24�c or 30 days at 5�c. Store in amber containers. Shake before use. Dose 1 mg 2 mg 3 mg 4 mg 5 mg 6 mg Volume 0.5 mL 1 mL 1.5 mL 2 mL 2.5 mL 3 mL References Solana & Jes�s L�pez-Herce. Pharmacokinetics of intravenous omeprazole in critically ill patients. Eur J Clin Pharma"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_oxacillin",
+      "name_ru": "Оксациллин",
+      "name_en": "Oxacillin",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Оксациллин — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 50,
+          "frequency_hours": 12,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "Age Total Daily Dose Divided Metabolism 0-7 days, < 2000 g 50 mg/kg q 12 hrs 0-7 days, > 2000 g 75-150 mg/kg q 8 hrs >7 days, < 2000 g 75-150 mg/kg q 8 hrs >7 days, > 2000 g 100-150 mg/kg q 6 hrs Infuse over 30 min. IV, IM Distributes well into bile, pleural and synovial fluids, lungs and bone. Penetrates CSF only when meninges are inflamed. Metabolized in the liver. Half-life: 1.6 hrs. May cause fever, mild leukopenia, and rarely acute interstitial nephritis.",
+          "comment": "Divided Metabolism 0-7 days, < 2000 g 50 mg/kg q 12 hrs 0-7 days, > 2000 g 75-150 mg/kg q 8 hrs >7 days, < 2000 g 75-150 mg/kg q 8 hrs >7 days, > 2000 g 100-150 mg/kg q 6 hrs Infuse over 30 min. IV, IM Distributes well into bile, pleural and synovial fluids, lungs and bone. Penetrates CSF only when meninges are inflamed. Metabolized in the liver. Half-life: 1.6 hrs. May cause fever, mild leukopenia, and rarely acute interstitial nephritis."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_palivizumab",
+      "name_ru": "Паливизумаб",
+      "name_en": "Palivizumab",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Паливизумаб — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 15,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IM",
+          "comment": "Brand Name Synagis RSV prophylaxis in high risk infants. Main indications: 1. Up to 24 months of age, hemodynamically significant a cyanotic Levels and and cyanotic congenital. 2. Heart disease. 3. Less than 24 months of age receiving medical therapy for chronic lung disease within the last 6 months before the start of the RSV season. 4. Up to 12 months of age, born at 28 weeks gestation or earlier. 5. Up to 6 months of age, born at 29 - 32 weeks gestation 6. Less than 6 months of age, born between 32 -35 weeks gestation with at least 2 of the following risk factors: i. School-age siblings ii. Child care attendance iii. Severe neuromuscular disease iv. Congenital abnormalities of the airways 15 mg/kg once monthly during RSV season. IM Half-life: 20 days. Observe injection site for swelling"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_pancuronium_bromide",
+      "name_ru": "Pancuronium Bromide",
+      "name_en": "Pancuronium Bromide",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Pancuronium Bromide — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0.1,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV/IV/IV",
+          "comment": "Skeletal muscle relaxant, paralysis for ventilator therapy or surgery. Intermittent: 0.1 mg/kg/dose IV as needed q 30-60 min. Continuous IV infusion: 0.02-0.04 mg/kg/hr. IV Onset of action: 1-2 min. Duration: 40-60 min (dose dependent). Partially metabolized by the liver; 60% excreted unchanged in the urine and 40% unchanged in bile. May cause tachycardia, hypertension, and increased salivation. Potentiated by: acidosis, hepatic disease, renal failure, aminoglycosides, hypermagnesemia, and hypokalemia. Antagonized by: alkalosis, hypercalcemia, and caffeine. *Calculating infusion rate (mL/hr) = Dose (mg/kg/hr) x Weight (kg) Concentration (mg/mL) * For recommended standard concentrations and more details on calculations please see the appendix."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_penicillin_g",
+      "name_ru": "Пенициллин G",
+      "name_en": "Penicillin G",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Treatment of infections caused by susceptible organisms (such as Streptococci, Neisseria). For congenital syphilis and meningitis. PNA 7 days: 2000 g: 50,000 Units/kg/day, divided q 12 hrs (Meningitis: 100,000 Units/kg/day, divided q 12 hrs). > 2000 g: 75,000 Units/kg/day, divided q 8 hrs (Meningitis: 150,000 Units/kg/day, divided q 8 hrs). Congenital syphilis: 100,000 Units/kg/day, divided q 12 hrs. Group B strep. meningitis: 250,000-450,000 units/kg/day, divided q 8 hrs. PNA >7 days: <1200 g: 50,000 Units/kg/day, divided q 12 hrs (Meningitis: 100,000 Units/kg/day, divided q 12 hrs). 1200-2000 g: 75,000 Units/kg/day, divided q 8 hrs (Meningitis: 150,000 Units/kg/day, divided q 8 hrs). > 2000 g: 100,000 Units/kg/day, divided q 6 hrs (Meningitis: 200,000 Units/kg/day, divided q 6 hrs) Congenital syphilis: 150,000 Units/kg/day, divided q 8 hrs. Group B strep. meningitis: 450,000 Units/kg/day, divided q 6 hrs. IV, IM Poor penetration into uninflamed meninges; 10-30% metabolized in the liver; half-life ranges from 1-3 hrs. Excreted unchanged and as metabolite in the urine. May cause anaphylaxis, diarrhea, hemolytic anemia, hematuria, and interstitial nephritis. Seizures may occur with IV bolus injection, particularly with the higher doses used in meningitis.",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV/IM/IV",
+          "comment": "Indications Treatment of infections caused by susceptible organisms (such as Streptococci, Neisseria). For congenital syphilis and meningitis. PNA 7 days: 2000 g: 50,000 Units/kg/day, divided q 12 hrs (Meningitis: 100,000 Units/kg/day, divided q 12 hrs). > 2000 g: 75,000 Units/kg/day, divided q 8 hrs (Meningitis: 150,000 Units/kg/day, divided q 8 hrs). Congenital syphilis: 100,000 Units/kg/day, divided q 12 hrs. Group B strep. meningitis: 250,000-450,000 units/kg/day, divided q 8 hrs. PNA >7 days: <1200 g: 50,000 Units/kg/day, divided q 12 hrs (Meningitis: 100,000 Units/kg/day, divided q 12 hrs). 1200-2000 g: 75,000 Units/kg/day, divided q 8 hrs (Meningitis: 150,000 Units/kg/day, divided q 8 hrs). > 2000 g: 100,000 Units/kg/day, divided q 6 hrs (Meningitis: 200,000 Units/kg/day, divided q "
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_phenobarbital",
+      "name_ru": "Фенобарбитал",
+      "name_en": "Phenobarbital",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Фенобарбитал — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 15,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV/IV/PO/IV/PO/IV/IM/PO/PO",
+          "comment": "Anticonvulsant (first-line drug for seizures in neonates), narcotic withdrawal, may be used for neonatal hyperbilirubinemia and chronic cholestasis. Anticonvulsant: Loading dose: 15-20 mg/kg IV as single or divided doses. May give additional boluses: 5-10 mg/kg/dose; max. up to 40 mg/kg total. Maintenance: 3-4 mg/kg/day, IV or PO given once daily; up to 5 mg/kg/ day, once daily. Hyperbilirubinemia: 3-8 mg/kg/day, IV or PO in 2-3 divided doses. IV, IM, PO Therapeutic serum level: 15-40 mcg/mL. PO absorption: up to 90%; metabolized by liver, then excreted in urine; 20-50% excreted unchanged; excretion enhanced by alkaline urine, half- life ranges between 45-200 hrs. Abrupt withdrawal may cause status epilepticus. Use with caution in hepatic and renal impairment. May cause Respiratory depress"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_phentolamine",
+      "name_ru": "Фентоламин",
+      "name_en": "Phentolamine",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Фентоламин — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0.1,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV",
+          "comment": "Brand Name Regitine Prevention of dermal necrosis and sloughing due to IV infiltration of drugs with alpha-adrenergic effects such as dopamine or norepinephrine. Make solution of 0.25-0.5 mg/mL with normal saline. Inject 1 mL (in 5 divided doses of 0.2 mL) SubQ around site of extravasation; max total dose: 0.1 mg/kg or 2.5 mg total. SubQ Metabolized by the liver; 10-13% excreted unchanged in the urine. May cause hypotension."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_phenytoin",
+      "name_ru": "Фенитоин",
+      "name_en": "Phenytoin",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Фенитоин — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 15,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV/IV/PO/IV/PO/IV/PO/IM",
+          "comment": "Seizures refractory to treatment with phenobarbital alone. Loading dose: 15-20 mg/kg IV, given over 30 minutes in single or divided doses. Maintenance: 4-8 mg/kg IV or PO, once daily or q 12 hrs. IV, PO Therapeutic serum levels: 6-15 mcg/mL. Obtain initial trough level 48 hrs after IV loading dose. PO absorption slow and variable. Metabolized by the liver. Half-life: 18-60 hrs (depends on serum concentration). Highly variable clearance, dependent upon intrinsic hepatic function and dose given. 85-90% protein-bound. Difficult to use safely and effectively in neonates. Do not exceed infusion rate of 0.5 mg/kg/min; avoid IM. Administration requires 0.22 micron in-line filter. May cause hyperglycemia, osteomalacia, and arrhythmias. Hypersensitivity reactions include: rashes, abnormal LFTs, eos"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_piperacillin",
+      "name_ru": "Пиперациллин",
+      "name_en": "Piperacillin",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Treatment of infections caused by susceptible Pseudomonas aeruginosa, Klebsiella, Serratia, E. coli, Enterobacter, Citrobacter, and Proteus. Also effective against Group B streptococcus. PNA 7 days: 36 weeks gestation: 150 mg/kg/day, divided q 12 hrs. >36 weeks gestation: 225 mg/kg/day, divided q 8 hrs. PNA >7 days: 36 weeks gestation: 225 mg/kg/day, divided q 8 hrs. > 36 weeks gestation: 300 mg/kg/day, divided q 6 hrs. IV, IM Penetrates poorly uninflamed meninges; good biliary concentration; Half-life: 2-4 hrs depending on age. May cause seizures, hypokalemia, eosinophilia, elevated LFTs, and interstitial nephritis.",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 150,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV/IM",
+          "comment": "Indications Treatment of infections caused by susceptible Pseudomonas aeruginosa, Klebsiella, Serratia, E. coli, Enterobacter, Citrobacter, and Proteus. Also effective against Group B streptococcus. PNA 7 days: 36 weeks gestation: 150 mg/kg/day, divided q 12 hrs. >36 weeks gestation: 225 mg/kg/day, divided q 8 hrs. PNA >7 days: 36 weeks gestation: 225 mg/kg/day, divided q 8 hrs. > 36 weeks gestation: 300 mg/kg/day, divided q 6 hrs. IV, IM Penetrates poorly uninflamed meninges; good biliary concentration; Half-life: 2-4 hrs depending on age. May cause seizures, hypokalemia, eosinophilia, elevated LFTs, and interstitial nephritis."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_piperacillin_and_tazobactam",
+      "name_ru": "Piperacillin and Tazobactam",
+      "name_en": "Piperacillin and Tazobactam",
+      "atc": "",
+      "class_ru": "Неонатологический справочник",
+      "indications": [
+        {
+          "label": "Справочно (доза не рассчитывается)",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0,
+          "frequency_hours": 0,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "",
+          "comment": "Brand Name Tazocin Treatment of sepsis, intra-abdominal infections caused by susceptible beta-lactamase producing bacteria. 150-300 mg as piperacillin/kg/day, divided q 6-8 hrs. (Please refer to piperacillin for details on dosing) IV Widely distributed into tissues and body fluid; poor penetration into uninflamed meninges. Eliminated primarily unchanged in urine. Half- life: 1.5 hrs. May cause seizures, hypokalemia, hypertension, edema, interstitial nephritis, and bone marrow suppression. Piperacillin to Tazobactam ratio: 8:1."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_polycose",
+      "name_ru": "Поликоз",
+      "name_en": "Polycose",
+      "atc": "",
+      "class_ru": "Неонатологический справочник",
+      "indications": [
+        {
+          "label": "Справочно (доза не рассчитывается)",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0,
+          "frequency_hours": 0,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "",
+          "comment": "Indications Caloric supplementation. Liquid form: 1 mL = 2 calories. Powder form: 1 teaspoon = 8 calories, 1 tablespoon = 23 calories. PO May cause diarrhea."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_propranolol",
+      "name_ru": "Пропранолол",
+      "name_en": "Propranolol",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Пропранолол — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0.25,
+          "frequency_hours": 6,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "PO/IV/IV/PO",
+          "comment": "Brand Name Inderal Tachyarrhythmias, hypertension, palliation of Tetralogy of Fallot, adjunctive treatment in neonatal thyrotoxicosis. Starting dose PO: 0.25 mg/kg/dose q 6-8 hrs. Increase as needed to max. of 5 mg/kg/day. Starting dose IV: 0.01 mg/kg q 6-8 hrs over 10 min. Increase as needed to max. of 0.15 mg/kg/dose q 6-8 hrs. IV, PO Extensive first pass effect; 30-40% bioavailable; metabolized in the liver to active and inactive metabolites. Metabolites eliminated in urine. Clearance decreased in hepatic dysfunction. May cause hypotension, bradycardia, hypoglycemia, and GI disturbance."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_protamine_sulfate",
+      "name_ru": "Протамина сульфат",
+      "name_en": "Protamine Sulfate",
+      "atc": "",
+      "class_ru": "Неонатологический справочник",
+      "indications": [
+        {
+          "label": "Справочно (доза не рассчитывается)",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0,
+          "frequency_hours": 0,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "",
+          "comment": "Denpru Indications Reversal of heparin effect. 1 mg protamine neutralizes 100 Units of heparin delivered within 4 hrs, given by slow IV push or IM; maximum dose 50 mg. IV, IM Onset of action: within 5 min; Elimination unknown. Precautions Warning: Protamine sulfate has its own anticoagulant effect and if given in doses in excess of the amount needed to neutralize heparin could result in uncontrollable bleeding. May cause hypotension and bradycardia."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_pyridoxine",
+      "name_ru": "Пиридоксин",
+      "name_en": "Pyridoxine",
+      "atc": "",
+      "class_ru": "Неонатологический справочник",
+      "indications": [
+        {
+          "label": "Справочно (доза не рассчитывается)",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0,
+          "frequency_hours": 0,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "",
+          "comment": "Indications Diagnosis and treatment of pyridoxine-dependent seizures and prevention and/or treatment of vitamin B6 deficiency. Initial diagnostic dose in presence of seizures: 50-100 mg IV push or IM. Maintenance dose: 50-100 mg/day PO. Vitamin B6 deficiency: 2-5 mg per day PO. PO, IV, IM Rapidly absorbed form the GI; converted in the liver to active form. Half-life: 15-20 days. Eliminated by liver. Profound sedation may occur; be prepared to support with ventilator. Adverse neurologic effects may occur with chronic administration."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_ranitidine",
+      "name_ru": "Ранитидин",
+      "name_en": "Ranitidine",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Ранитидин — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 2,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "PO/IV/IV/PO/PO/PO/IV",
+          "comment": "Brand Name Zantac Prevention and treatment of stress ulcer and GI bleeding aggravated by gastric acid secretion. PO: 2 mg/kg/dose, q 12-8 hrs. IV: 0.5-1 mg/kg/dose, q 12-8 hrs. Continuous infusion: 0.04-0.08 mg/kg/hrs. IV, PO Metabolized by the liver. PO bioavailability ~50%. Half-life 3-7 hrs. 30% of PO dose and 70% of IV dose eliminated unchanged in urine and feces. May cause nausea, diarrhea, constipation, vomiting, and thrombocytopenia."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_salbutamol_albuterol",
+      "name_ru": "Сальбутамол (альбутерол)",
+      "name_en": "Salbutamol (Albuterol)",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Сальбутамол (альбутерол) — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0.1,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "Inhalation/IV/Inhalation/IV",
+          "comment": "Bronchodilation, treatment of hyperkalemia. Nebulization: 0.1-0.5 mg/kg/dose given q 2-6 hrs. Inhalation: 100 mcg (1 MDI actuation)/dose q 2-6 hrs. IV: 4 mcg/kg/dose; repeat if necessary. Continuous infusion: 1-2 mcg/kg/min, adjusted according to response and heart rate up to 5 mcg/kg/min. Inhalation, IV Metabolized in the liver; half-life: ~3.5 hrs. Elimination: 30% unchanged in urine. May cause tachycardia, arrhythmias, tremor, and irritable behavior. Do not administer if heart rate > 180 beats/min. Excessive or prolonged use may cause tolerance."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_sildenafil",
+      "name_ru": "Силденафил",
+      "name_en": "Sildenafil",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Силденафил — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0.3,
+          "frequency_hours": 6,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "PO/PO",
+          "comment": "Viagra, Revatio Persistent pulmonary hypertension refractory to inhaled nitric oxide, for those unable to be weaned off of nitric oxide, or in situations where nitric oxide is unavailable. 0.3-1 mg/kg/dose q 6-12 hrs. PO Rapid PO absorption; 40% bioavailability. Distributes well into tissue. Protein binding: 96%. Metabolized in the liver; metabolite has 50% of sildenafil's activity. Half-life: 4 hrs (active metabolite: 4 hrs). Excreted as metabolites in feces Monitor blood pressure and oxygenation. Rare cases of sudden vision loss due to nonarteritic ischemic optic neuropathy have been reported. A 2.5 mg/mL sildenafil citrate oral suspension may be made with tablets and either a 1:1 mixture of methylcellulose 1% and simple syrup NF or a 1:1 mixture of Ora-Sweet and Ora-Plus. Crush thirty s"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_sodium_bicarbonate",
+      "name_ru": "Натрия бикарбонат",
+      "name_en": "Sodium Bicarbonate",
+      "atc": "",
+      "class_ru": "Неонатологический справочник",
+      "indications": [
+        {
+          "label": "Справочно (доза не рассчитывается)",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0,
+          "frequency_hours": 0,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "",
+          "comment": "Indications Metabolic acidosis during prolonged resuscitation in the presence of adequate ventilation, treatment of bicarbonate deficit due to renal or GI losses. Resuscitation: 0.5-1 mEq/kg slow IV push; may repeat in 10 min. Metabolic Acidosis: Based on the following formula: HCO3 (mEq) = base deficit (mEq/L) x weight (kg) x 0.3 Or HCO3 (mEq) = 0.5 x weight (kg) x [24 - serum HCO3- (mEq/L)] Administer half of the calculated dose, and then assess need for remainder. Distal Renal Tubular Acidosis: 2-3 mEq/kg/day. Proximal Renal Tubular Acidosis: 5-10 mEq/kg/day. IV, PO Onset of IV rapid; duration 8-10 min; elimination: reabsorbed by the kidney and < 1% excreted in urine. The osmolarity of sodium bicarbonate (8.4%) is 2000 mOsm/L. Sodium bicarbonate 4.2% is the recommended preparation for n"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_spironolactone",
+      "name_ru": "Спиронолактон",
+      "name_en": "Spironolactone",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Спиронолактон — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 1,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "PO/PO",
+          "comment": "Aldactone Diuresis in combination with other diuretics in the treatment of congestive heart failure and BPD (conditions of increased aldosterone secretion). 1-3 mg/kg/dose PO, given q 12-24 hrs. PO Metabolized in the liver to canrenone, an active metabolite with a half- life of 13-24 hrs. Highly protein bound. Eliminated in urine and bile. May cause hyponatremia, hyperkalemia, rashes, vomiting, diarrhea, headaches, nausea, and drowsiness. Use with caution in patients with impaired renal function. A 1 mg/mL oral suspension may be made with tablets. Crush ten 25 mg tablets in a mortar and reduce to a fine powder. Add a small amount of purified water and soak for 5 minutes; add 50 mL 1.5% carboxymethylcellulose, 100 mL syrup NF, and mix to a uniform paste; mix while adding purified water in i"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_tromethamine_tham",
+      "name_ru": "Трометамин (THAM)",
+      "name_en": "Tromethamine (THAM)",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Correction of metabolic acidosis, usually given in lieu of sodium bicarbonate when infant is hypernatremic. ml = Weight (kg) x Base deficit (mEq/L). Max. 500 mg/kg/dose (13.9 ml/kg/dose). IV THAM is a 0.3 molar solution of tris(hydroxymethyl)-aminomethane. Each 1 mM = 120 mg = 3.3 ml= 1 mEq of THAM. Rapidly eliminated by the kidneys. May cause hypoglycemia, hyperkalemia, alkalosis, venospasm, and tissue necrosis from infiltration. Do not use in renal failure. Infusion via umbilical venous catheter should be avoided.",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 500,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 500,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV",
+          "comment": "Indications Correction of metabolic acidosis, usually given in lieu of sodium bicarbonate when infant is hypernatremic. ml = Weight (kg) x Base deficit (mEq/L). Max. 500 mg/kg/dose (13.9 ml/kg/dose). IV THAM is a 0.3 molar solution of tris(hydroxymethyl)-aminomethane. Each 1 mM = 120 mg = 3.3 ml= 1 mEq of THAM. Rapidly eliminated by the kidneys. May cause hypoglycemia, hyperkalemia, alkalosis, venospasm, and tissue necrosis from infiltration. Do not use in renal failure. Infusion via umbilical venous catheter should be avoided."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_urokinase",
+      "name_ru": "Урокиназа",
+      "name_en": "Urokinase",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Урокиназа — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 400,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV/IV",
+          "comment": "Occluded CVC and intravascular thrombosis. Occluded IV catheter: Use a concentration of 5,000 Units/mL; administer into catheter a volume equal to the internal volume of catheter over 1-2 min; leave in place for 1-4 hrs, then aspirate out of catheter, flush catheter with NS; may repeat with 10,000 Units/ml in each lumen if no response. Do not infuse into patient. Thrombolysis: Loading dose: 4,400 Units/kg, then maintenance of 4,400 Units/kg/hr for 6-12 hrs; as high as 10,000 Units/kg/hr if necessary. IV Onset of action rapid. Half-life: 10-20 min. Eliminated by the liver. Bleeding, especially at sites of trauma or surgery. Dislodgement of emboli from thrombus. Do not start urokinase if heparin has been given recently; discontinue heparin and then start urokinase when APTT is less than twic"
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_vancomycin",
+      "name_ru": "Ванкомицин",
+      "name_en": "Vancomycin",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Ванкомицин — стандартная доза",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 10,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV",
+          "comment": "Infections due to methicillin-resistant Staphylococcus, beta-lactam resistant coagulase negative staphylococcus, penicillin-resistant streptococcus. Orally for C. difficile colitis. Metabolism Corrected GA Postnatal Age Dose Frequency < 30 weeks 30-37 weeks 0-7 days 10-15 mg/kg/dose q 24 hrs 37-44 weeks >7 days 10-15 mg/kg/dose q 12 hrs 0-7 days 15 mg/kg/dose q 12 hrs >7 days 15 mg/kg/dose q 8 hrs All ages 10-20 mg/kg/dose q 12 hrs Higher doses may be requested at the discretion of the microbiologist. Dosage adjustment may be required in cases of renal impairment. IV Desired trough level: 5-15 mcg/mL. Desired peak level: 25-40 mcg/mL. Check trough level before 3rd dose and peak level 1 hr after the end of a 1 hr infusion. Oral absorption poor; distributes widely into body tissue and fluid."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_vecuronium_bromide",
+      "name_ru": "Векуроний бромид",
+      "name_en": "Vecuronium Bromide",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": "Skeletal muscle relaxation and paralysis for ventilator therapy or surgery. 0.03-0.15 mg/kg/dose prn (usually given as 0.1 mg/kg/dose q 1-2 hrs). IV Onset of action: 1-2 min. Duration: 30-40 min (varies with dose and age). Cleared rapidly in the bile and urine. Hypoxemia may occur due to inadequate mechanical ventilation and deterioration in pulmonary mechanics. Tachycardia and blood pressure changes occur frequently. Avoid in hepatic disease. Potentiated by: acidosis, hypothermia, neuromuscular disease, hepatic disease, renal failure, cardiovascular disease, aminoglycosides, hypermagnesemia, hypokalemia. Antagonized by: alkalosis, hyperkalemia, caffeine. Vecuronium has no sedative or analgesic properties, so analgesia and/or sedation can be given if indicated.",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0.03,
+          "frequency_hours": 24,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "IV",
+          "comment": "Norcuron Indications Skeletal muscle relaxation and paralysis for ventilator therapy or surgery. 0.03-0.15 mg/kg/dose prn (usually given as 0.1 mg/kg/dose q 1-2 hrs). IV Onset of action: 1-2 min. Duration: 30-40 min (varies with dose and age). Cleared rapidly in the bile and urine. Hypoxemia may occur due to inadequate mechanical ventilation and deterioration in pulmonary mechanics. Tachycardia and blood pressure changes occur frequently. Avoid in hepatic disease. Potentiated by: acidosis, hypothermia, neuromuscular disease, hepatic disease, renal failure, cardiovascular disease, aminoglycosides, hypermagnesemia, hypokalemia. Antagonized by: alkalosis, hyperkalemia, caffeine. Vecuronium has no sedative or analgesic properties, so analgesia and/or sedation can be given if indicated."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_vitamin_k1_phytonadione",
+      "name_ru": "Витамин K1 (фитонадион)",
+      "name_en": "Vitamin K1 (Phytonadione)",
+      "atc": "",
+      "class_ru": "Неонатологический справочник",
+      "indications": [
+        {
+          "label": "Справочно (доза не рассчитывается)",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 0,
+          "frequency_hours": 0,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": "",
+          "comment": "Brand Name Aquamephyton Prophylaxis and treatment of neonatal hemorrhagic disease, treatment of hypoprothrombinemia secondary to liver disease or malabsorption, vitamin K deficiency. Prophylaxis: 0.5-1 mg IM at birth. Preterm <32 weeks gestation: 1000 g: 0.5 mg IM; < 1000 g: 0.25 mg IM. Treatment: 1-2 mg/day. IM, SubQ, IV Oral absorption in the intestines in the presence of bile; rapidly metabolized in the liver then eliminated in bile and urine. IV administration has been associated with severe reactions resembling anaphylaxis. Monitor response with serial PT."
+        }
+      ],
+      "population": "neonatal"
+    },
+    {
+      "id": "neo_zidovudine",
+      "name_ru": "Зидовудин",
+      "name_en": "Zidovudine",
+      "atc": "",
+      "class_ru": "Неонатология",
+      "indications": [
+        {
+          "label": ": ures include but are not limited to venipuncture, peripheral venous line placement, terial stab, and peripheral arterial line placement. Ways to reduce pain can be e of pharmacological and non-pharmacological measures. Oral sucrose analgesia eliminate crying, and significantly reduce the physiological stress of pain. Exclusions: ts on continuous or scheduled pain medications (i.e., fentanyl, morphine, etc.). ts with preexisting hyperglycemia (accucheck > 8.5 mmol/L). procedures (i.e., chest tube insertion, etc.). : L of a 66.7% Sucrose Solution (Syrup BP, 0.67 g/ml). n 4 oral sucrose doses are to be administered in any 24 hr period. minimum interval time between doses of oral sucrose. : ster: ister 24% Oral Sucrose 2-4 minutes prior to procedure. ocedure > 15 minutes, may repeat in 2-5 min if pain score > 7, for a total of 3 doses ocedure. um of 9 doses in a 24-hr period (i.e., 3 doses given for 3 procedures). ter: ants Pacifier user: Dip the pacifier in 1-2 mL of 24% Oral Sucrose and allow the infant to suck. Nonpacifier user: place a few drops (2-8) of 24% Oral Sucrose (using a TB syringe) to the anterior part (tip) of the tongue. infants Give 0.1-0.4 mL (using a TB syringe) and administer via nasogastric tube (NGT) or to the anterior part of the tongue. ons: tes with known fructose intolerance. tes <1500 g and <31 weeks postconceptional age. tes who are paralyzed. ith caution in infants who are intubated. Storage: olution (Syrup BP) should be stored in the refrigerator and discarded one week le has been opened.",
+          "age_min_months": 0,
+          "age_max_months": 1,
+          "mg_per_kg": 2,
+          "frequency_hours": 6,
+          "max_per_dose_mg": 0,
+          "max_per_day_mg_per_kg": 0,
+          "max_per_day_mg": 0,
+          "route": ":10,000 10 mL prefilled 0.1-0.3 mL/kg Give rapidly; may repeat 0.1 mg/mL) every 5 min, as needed. syringe IV or ET ormal Saline, Give over 5-10 min; may repeat as needed. inger>s Varies 10 ml/kg IV Give slowly over at least actate 2 min; may repeat every 10 min. /mL 10 mL prefilled 1-2 mEq/kg Give rapidly; may repeat .2% solution) syringes (2-4 ml/kg) IV as needed. g/mL 1 mL syringe 0.1 mg/kg (0.25 mL/kg) IV, IM, SubQ, ET otracheal (ET administration should be followed by 0.5 mL of normal saline flush). Weight 1 kg Weight 2 kg Weight 3 kg Weight 4 kg 0.1-0.3 mL 0.2-0.6 mL 0.3-0.9 mL 0.4-1.2 mL 1:10,000 rs 10 mL 20 mL 30 mL 40 mL 4 mL (2 mEq) 8 mL (4 mEq) 12 mL (6 mEq) 16 mL (8 mEq) 5 mEq/ml g/ 0.25 mL (0.1 0.5 mL (0.2 mg) 0.75 mL (0.3 1 mL (0.4 mg) mg) mg) ntrations that Maybe Options for Common Drips Used in NICU Appropriate Diluent Standard Maximum Concentration Concentration D5W, D10W, NS NS Options 20 mcg/mL 3000 mcg/mL D5W, NS 5 mcg/mL 5000 mcg/mL 10 mcg/mL 5000 mcg/mL D5W, D10W, NS 500 mcg/mL 5000 mcg/mL D5W, D10W, NS 1000 mcg/mL 125 mcg/mL D5W, NS 500 mcg/mL 50 mcg/mL 1000 mcg/mL 5 mg/mL D5W, D10W, NS 80 mcg/mL D5W, NS 800 mcg/mL 100 units/mL 1600 mcg/mL 1000 mcg/mL D5W, NS 3200 mcg/mL 1 Units/mL D5W, NS 800 mcg/mL 20 mcg/mL D5W, NS 1600 mcg/mL ar) D5W, NS 3200 mcg/mL l 8 mcg/mL 16 mcg/mL 32 mcg/mL 64 mcg/mL 10 mcg/mL 0.5 mg/mL 1 mg/mL 2 mg/mL 20 mcg/mL 40 mcg/mL 50 units/mL 100 mcg/mL 500 mcg/mL 0.1 Units/mL 0.5 Units/ml 10 mcg/mL Concentrations that Maybe Options for Common Drips Used in NICU Appropriate Diluent Standard Maximum D5W, NS Concentration Concentration D5W, NS 4000 mcg/mL D5W, NS Options 5000 mcg/mL 2000 mcg/mL 400 mcg/mL 500 mcg/mL 1000 mcg/mL 200 mcg/mL D5W, NS 1 mg/mL 2 mg/mL D5W 200 mcg/mL 400 mcg/mL D5W, NS 8 mcg/mL 125 mcg/mL D5W, NS 16 mcg/mL 25 mcg/mL D5W, NS 32 mcg/mL 0.1 mg/mL Pancuronium 5 mcg/mL 10 mcg/mL 0.01 mg/mL 0.02 mg/mL 0.05 mg/mL m microgram (mcg) to milligram (mg) divide by 1000. lculating Rate: ine 7.5 mcg/kg/min. = 5 kg. uid restricted. the dose: 7.5 mcg/kg/min x 5 kg = 37.5 mcg/min bove standard concentrations, may choose: 800 or 1600 mcg/ml the standard concentration of dopamine 800 mcg/mL: as dopamine 80 mg/2 mL (i.e., 40 mg/mL). 50 mL volume of 800 mcg/mL. 0 mcg = 40,000 mcg in 50 mL or if �1000 = 40 mg in 50 mL. of the 40 mg/mL vial and complete with 49 mL of D5W or NS to make the 800 ndard concentration. ate = Dose/Standard Concentration = 37.5 mcg/800 mcg/mL = 0.047 mL/min. rate to mcg per hour for pump programming: 0.047 mL/min x 60 min = 2.8 mL/hr. ng Body Surface Area (BSA) BSA sq meters) .08 .1 .12 .15 .2 .25 = (0.05 x kg) + 0.05 Currently Marketed Surfactant Products Calfactant (Infasurt) Beractant (Survanta) e Natural, calf lung wash Modified natural, bovine lung mince extract Natural DPPC with mixed Natural and supplemented DPPC phospholipids and mixed phospholipids Calf proteins SP-B and SP-C Bovines proteins SP-B and SP-C 3 mL/kg (phospholipids 105 mg/kg) 4 mL/kg (phospholipids 100 mg/kg) Prophylaxis and rescue therapy Prophylaxis and rescue therapy Indications Premature infants <29 weeks' GA Birth weight <1,250 g or evidence prophylaxis at high risk for RDS. of surfactant deficiency. Give 1st dose ASAP after birth, Give 1st dose ASAP after birth, preferably within 30 min; repeat preferably within 15 min; repeat as early as 6 hrs up to a total of q12hr up to a total of 3 doses if infant still remains intubated 4 doses if infant still remains or repeat as early as 6 hrs up to intubated and requires FiO2 30 a total of 4 doses if infant still remains intubated and requires with PaO2 80 mmHg. FiO2 30 with PaO2 80 mmHg. Infants with confirmed RDS who Infants 72 hr of age with require endotracheal intubation. confirmed RDS who require endotracheal intubation. Give 1st dose ASAP after RDS Give 1st dose ASAP after RDS diagnosis, repeat q 12 hr up to diagnosis, preferably by 8 hr a total of 3 doses if infant still PNA; repeat as early as 6 hr up remains intubated or repeat as to a total of 4 doses if infant still early as 6 hrs up to a total of remains intubated and requires 4 doses if infant still remains FiO2 30 with PaO2 80 mmHg. intubated and requires FiO2 30 with PaO2 80 mmHg. Calfactant (Infasurt) Beractant (Survanta) Administer through side-port of Administer through disconnected ETT adaptor via ventilator, divide ETT via 5-French catheter, divide dose into 2 aliquots with position dose into 4 aliquots with position technique change OR through disconnect change. ETT via 5-French catheter, divide dose into 4 aliquots with position change. Suspension Suspension Storage Refrigerate 2-8�C; protect from light Refrigerate 2-8�C; protect from light Volume/vial 6 mL 4 mL, 8 mL Gentle swirling of the vial may Warm to room temperature before be necessary for redispersion; use, do not shake. warming to room temperature is not necessary; do not shake. If warmed to room temperature If warmed to room temperature <24 hr, unopened, unused <8 hr, unopened, unused vials may be returned once to vials may be returned once to refrigerator; single use vials refrigerator; single use vials contains no preservative, discard contains no preservative, discard unused portion. unused portion.",
+          "comment": "Chemoprophylaxis to reduce perinatal HIV transmission. Neonates > 35 weeks of gestation PO: 2 mg/kg/dose q 6 hrs for the first 6 weeks of life. IV: 1.5 mg/kg/dose q 6 hrs for the first 6 weeks of life. Neonates > 30 weeks but < 35 weeks of gestation PO: 2 mg/kg/dose q 12 hrs for the first 2 weeks of life then increase to q 8 hrs for the next 4 weeks (total of 6 weeks). IV: 1.5 mg/kg/dose q 12 hrs for the first 2 weeks of life then increase to q 8 hrs for the next 4 weeks (total of 6 weeks). Neonates < 30 weeks gestation PO: 2 mg/kg/dose q 12 hrs for the first 4 weeks of life then increase to q 8 hrs for the next 2 weeks (total of 6 weeks). IV: 1.5 mg/kg/dose q 12 hrs for the first 4 weeks of life then increase to q 8 hrs for the next 2 weeks (total of 6 weeks). PO, IV PO well absorbed; Met"
+        }
+      ],
+      "population": "neonatal"
     }
   ]
 }
