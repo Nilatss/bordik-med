@@ -428,47 +428,116 @@ export default function DrugChecker() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1], delay: 0.12 }}
         >
-          {/* Hero CTA — компактная подсказка над пресетами */}
+          {/* Hero CTA — две карточки рядом + подсказка снизу */}
           <div style={{
-            padding: '20px 24px',
-            background: '#F5F6F8',
-            borderRadius: 14,
-            marginBottom: 32,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 16,
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: 12,
+            marginBottom: 12,
           }}>
+            {/* Card 1: «Как начать» */}
             <div style={{
-              width: 44, height: 44, borderRadius: 12,
-              background: '#FFFFFF',
-              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-              color: '#2563EB',
-              flexShrink: 0,
+              padding: '18px 20px',
+              background: '#F5F6F8',
+              borderRadius: 14,
+              display: 'flex', alignItems: 'flex-start', gap: 14,
             }}>
-              <svg width={20} height={20} viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
-                <path d="M10.5 20.5L20 11a4.95 4.95 0 00-7-7L3.5 13.5a4.95 4.95 0 007 7z" />
-                <path d="M8.5 8.5l7 7" />
-              </svg>
-            </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <h3 style={{
-                margin: 0,
-                fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 700,
-                color: '#1A1A1A', letterSpacing: '-0.01em',
-                lineHeight: 1.35,
+              <div style={{
+                width: 38, height: 38, borderRadius: 10,
+                background: '#FFFFFF',
+                display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                color: '#2563EB',
+                flexShrink: 0,
               }}>
-                Добавьте 2+ препарата для проверки
-              </h3>
-              <p style={{
-                margin: '4px 0 0',
-                fontSize: 13, color: '#6B7280', lineHeight: 1.55,
-              }}>
-                Введите названия в строке поиска выше. База —{' '}
-                <strong style={{ color: '#1A1A1A' }}>{data.drugs.length}</strong> препаратов и{' '}
-                <strong style={{ color: '#1A1A1A' }}>{data.interactions.length}</strong> взаимодействий.
-              </p>
+                <svg width={18} height={18} viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{
+                  fontSize: 11, fontWeight: 600, color: '#9CA3AF',
+                  letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 4,
+                }}>
+                  Шаг 1
+                </div>
+                <h3 style={{
+                  margin: 0,
+                  fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 600,
+                  color: '#111827', letterSpacing: '-0.01em', lineHeight: 1.4,
+                }}>
+                  Добавьте 2+ препарата
+                </h3>
+                <p style={{
+                  margin: '4px 0 0',
+                  fontSize: 13, color: '#6B7280', lineHeight: 1.5,
+                }}>
+                  В строке поиска выше. По русскому, английскому или торговому названию.
+                </p>
+              </div>
             </div>
+
+            {/* Card 2: База знаний */}
+            <div style={{
+              padding: '18px 20px',
+              background: '#F5F6F8',
+              borderRadius: 14,
+              display: 'flex', alignItems: 'flex-start', gap: 14,
+            }}>
+              <div style={{
+                width: 38, height: 38, borderRadius: 10,
+                background: '#FFFFFF',
+                display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                color: '#2563EB',
+                flexShrink: 0,
+              }}>
+                <svg width={18} height={18} viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                  <ellipse cx="12" cy="5" rx="9" ry="3" />
+                  <path d="M3 5v14a9 3 0 0 0 18 0V5" />
+                  <path d="M3 12a9 3 0 0 0 18 0" />
+                </svg>
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{
+                  fontSize: 11, fontWeight: 600, color: '#9CA3AF',
+                  letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 4,
+                }}>
+                  База
+                </div>
+                <h3 style={{
+                  margin: 0,
+                  fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 600,
+                  color: '#111827', letterSpacing: '-0.01em', lineHeight: 1.4,
+                }}>
+                  {data.drugs.length.toLocaleString('ru-RU')} препаратов · {data.interactions.length.toLocaleString('ru-RU')} пар
+                </h3>
+                <p style={{
+                  margin: '4px 0 0',
+                  fontSize: 13, color: '#6B7280', lineHeight: 1.5,
+                }}>
+                  Stockley's, UpToDate Lexidrug, ESC/AHA Guidelines, FDA.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Inline hint */}
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: 8,
+            padding: '8px 14px',
+            color: '#6B7280',
+            fontSize: 12, lineHeight: 1.5,
+            marginBottom: 32,
+          }}>
+            <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="16" x2="12" y2="12" />
+              <line x1="12" y1="8" x2="12.01" y2="8" />
+            </svg>
+            <span>Не нашли препарат? Попробуйте классические комбинации ниже или поищите по EN-названию.</span>
           </div>
 
           {/* Готовые пресеты */}
