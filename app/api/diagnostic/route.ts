@@ -3,6 +3,7 @@ import * as v from 'valibot';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { identifyAndLimit } from '@/lib/rate-limit';
+import { reserveGeminiQuota } from '@/lib/gemini-quota';
 import { getSupabaseServerClient } from '@/lib/supabase/server';
 import { isOutputSafe as isOutputSafeStrict } from '@/lib/output-guard';
 import { assertSameOrigin } from '@/lib/origin-check';
@@ -209,6 +210,14 @@ const GEMINI_PER_MODEL_BUDGET_MS = 2_500;
 async function geminiCall(prompt: string, expectArray = false): Promise<unknown> {
   const KEY = process.env.GEMINI_API_KEY;
   if (!KEY) throw new Error('gemini-not-configured');
+
+  // P2-NEW-9 — daily quota hard cap. Reserve до fetch'a; если cap превышен,
+  // НЕ дёргаем upstream и логируем для алерта.
+  const quota = await reserveGeminiQuota();
+  if (!quota.ok) {
+    log.warn({ event: 'gemini_daily_cap_exceeded', used: quota.used, cap: quota.cap });
+    throw new Error(`gemini-daily-cap-exceeded (${quota.used}/${quota.cap})`);
+  }
   const body = {
     contents: [{ role: 'user', parts: [{ text: prompt }] }],
     generationConfig: {
