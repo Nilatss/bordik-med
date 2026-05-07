@@ -155,8 +155,7 @@ export default function NeonatalHandbook() {
         </h1>
         <p style={{ fontSize: 14, color: '#6B7280', margin: 0, maxWidth: 720, lineHeight: 1.55 }}>
           {bank.drugs.length} препаратов NICU с дозированием по гестационному возрасту,
-          путём введения, метаболизмом и предостережениями. Источник:{' '}
-          <em>{bank.source}</em>.
+          путём введения, метаболизмом и предостережениями.
         </p>
       </motion.div>
 
@@ -310,17 +309,62 @@ export default function NeonatalHandbook() {
         </>
       )}
 
-      {/* Disclaimer */}
+      {/* Source / disclaimer panel — единый стиль с Классификациями */}
       <section style={{
-        marginTop: 32, padding: '16px 18px',
-        background: '#FFFBEB', border: '1px solid #FDE68A',
-        borderRadius: 10, fontSize: 12, color: '#78350F', lineHeight: 1.55,
+        marginTop: 32,
+        maxWidth: 880,
+        background: '#FFFFFF',
+        borderRadius: 16,
+        border: '1px solid #E5E7EB',
+        padding: '24px 28px 22px',
       }}>
-        <strong>Не заменяет фарм-консультацию.</strong>{' '}
-        Дозы у новорождённых критически зависят от гестационного возраста,
-        дней жизни, веса, функции почек и печени. Решение по конкретному
-        пациенту принимает врач/клин-фармаколог. Авторы исходного руководства:
-        {' '}{bank.authors.join('; ')}.
+        <div style={{ marginBottom: 16 }}>
+          <div style={{
+            fontSize: 11, color: '#9CA3AF', letterSpacing: '0.06em',
+            textTransform: 'uppercase', fontWeight: 600, marginBottom: 6,
+          }}>
+            Источник и оговорка
+          </div>
+          <p style={{ margin: 0, fontSize: 13, color: '#374151', lineHeight: 1.6 }}>
+            Не заменяет фарм-консультацию. Дозы у новорождённых критически зависят
+            от гестационного возраста, дней жизни, веса, функции почек и печени.
+            Решение по конкретному пациенту принимает врач/клин-фармаколог.
+          </p>
+        </div>
+        <dl style={{
+          display: 'grid', gridTemplateColumns: '160px 1fr', gap: '12px 16px',
+          margin: 0, padding: '18px 20px',
+          background: '#F9FAFB', borderRadius: 12,
+          border: '1px solid #F3F4F6',
+        }}>
+          <dt style={{
+            fontSize: 11, color: '#9CA3AF', letterSpacing: '0.06em',
+            textTransform: 'uppercase', fontWeight: 600, paddingTop: 2,
+          }}>
+            Источник
+          </dt>
+          <dd style={{ margin: 0, fontSize: 13, color: '#374151', lineHeight: 1.55 }}>
+            {bank.source}
+          </dd>
+          <dt style={{
+            fontSize: 11, color: '#9CA3AF', letterSpacing: '0.06em',
+            textTransform: 'uppercase', fontWeight: 600, paddingTop: 2,
+          }}>
+            Авторы
+          </dt>
+          <dd style={{ margin: 0, fontSize: 13, color: '#374151', lineHeight: 1.55 }}>
+            {bank.authors.join('; ')}
+          </dd>
+          <dt style={{
+            fontSize: 11, color: '#9CA3AF', letterSpacing: '0.06em',
+            textTransform: 'uppercase', fontWeight: 600, paddingTop: 2,
+          }}>
+            Покрытие
+          </dt>
+          <dd style={{ margin: 0, fontSize: 13, color: '#374151', lineHeight: 1.55 }}>
+            {bank.drugs.length} препаратов NICU
+          </dd>
+        </dl>
       </section>
     </main>
   );
