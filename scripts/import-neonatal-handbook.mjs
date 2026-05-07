@@ -257,10 +257,27 @@ function parseBlock(lines) {
     }
   }
 
+  // Sanitize: pdftotext не всегда декодирует special-chars (em-dash, division
+  // sign, multiplication, arrow) — выкидывает � ('�'). Чиним
+  // контекстно: между словами = en-dash, между числами/units = × (умножение),
+  // в остальных случаях — дефис.
+  const sanitize = (s) => s
+    // "Evidence � Based" → "Evidence-Based"
+    .replace(/(\w)\s*�\s*(\w)/g, '$1-$2')
+    // "5 � 10" / "5� 10" — обычно × (multiplication) в дозиров. контексте
+    .replace(/(\d)\s*�\s*(\d)/g, '$1 × $2')
+    // Остаточные одиночные � → длинное тире
+    .replace(/�/g, '—')
+    // Non-breaking space → обычный пробел
+    .replace(/ /g, ' ')
+    // Многократные пробелы → один
+    .replace(/\s+/g, ' ')
+    .trim();
+
   // Объединяем строки каждого поля в плоский текст
   const result = {};
   for (const f of FIELDS) {
-    result[f] = fields[f].join(' ').replace(/\s+/g, ' ').trim();
+    result[f] = sanitize(fields[f].join(' '));
   }
 
   // Post-process: «References:» часто появляется как trailing-content
@@ -312,7 +329,7 @@ for (const block of blocks) {
 }
 
 const output = {
-  version: '2.1.0',
+  version: '2.2.0',
   lastUpdated: '2026-05-07',
   source: 'Neonatal Dosage and Practical Guidelines Handbook 2nd Ed. (Saudi Arabia, 2016)',
   authors: ['Saleh Al-Alaiyan, MD, FRCPC', 'Najwa Al-Ghamdi, BSc.Pharm, Pharm.D., MHA, BCNSP, BCPS, FCCP, TTS'],
