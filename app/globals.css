@@ -1372,3 +1372,61 @@ main:has(.stats-page) {
   background-color: #FFFFFF !important;
   box-shadow: 0 0 0 1px #2563EB, 0 0 0 4px rgba(37, 99, 235, 0.14);
 }
+
+/* ─────────────────────────────────────────────────────────────────────
+   Адаптивные классы для раздела «Неонатология».
+   Inline-styles из tsx не умеют в media queries — поэтому grid-разметки
+   и брейкпоинты для drug-cards / графиков / контролов вынесены сюда.
+   ───────────────────────────────────────────────────────────────────── */
+
+/* Строка раскрытой карточки препарата:
+   desktop — лейбл слева 160px, content справа.
+   mobile (<640px) — стек: лейбл сверху, content снизу. */
+.neo-detail-row {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 24px;
+}
+@media (max-width: 640px) {
+  .neo-detail-row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+}
+
+/* 2-колоночная сетка «график + результаты» на странице роста/билирубина.
+   desktop — 1.6fr / 1fr. mobile (<860px) — стек, график сверху. */
+.neo-chart-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(260px, 1fr);
+  gap: 16px;
+  align-items: stretch;
+}
+@media (max-width: 860px) {
+  .neo-chart-split {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Tooltip графика — на узких экранах не overflow за viewport. */
+.neo-chart-tooltip {
+  position: absolute;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 10px;
+  padding: 10px 12px;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(15, 23, 42, 0.06);
+  pointer-events: none;
+  font-size: 12px;
+  min-width: 140px;
+  z-index: 5;
+}
+@media (max-width: 640px) {
+  .neo-chart-tooltip {
+    /* На мобиле tooltip может закрыть chart — делаем компактнее
+       и центрируем по горизонтали через transform в JSX. */
+    min-width: 120px;
+    padding: 8px 10px;
+    font-size: 11px;
+  }
+}

@@ -120,12 +120,7 @@ export default function GrowthCharts() {
         setValue={setValue}
       />
 
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'minmax(0, 1.6fr) minmax(260px, 1fr)',
-        gap: 16,
-        alignItems: 'stretch',
-      }}>
+      <div className="neo-chart-split">
         <ChartView
           dataset={dataset}
           parameter={parameter}
@@ -828,20 +823,10 @@ function ChartView({
         const tooltipLeftPct = ((margin.left + xScale(hoverAge)) / width) * 100;
         const isRightHalf = tooltipLeftPct > 60;
         return (
-          <div style={{
-            position: 'absolute',
+          <div className="neo-chart-tooltip" style={{
             left: `${tooltipLeftPct}%`,
             top: `${(margin.top / height) * 100 + 2}%`,
             transform: isRightHalf ? 'translateX(calc(-100% - 12px))' : 'translateX(12px)',
-            background: '#FFFFFF',
-            border: '1px solid #E5E7EB',
-            borderRadius: 10,
-            padding: '10px 12px',
-            boxShadow: '0 4px 16px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(15, 23, 42, 0.06)',
-            pointerEvents: 'none',
-            fontSize: 12,
-            minWidth: 140,
-            zIndex: 5,
           }}>
             <div style={{
               fontFamily: 'var(--font-display)',

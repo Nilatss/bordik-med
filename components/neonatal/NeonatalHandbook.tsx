@@ -675,10 +675,7 @@ function NeonatalDetailBlock({
 }) {
   const isWarning = tone === 'warning';
   return (
-    <div style={{
-      display: 'grid',
-      gridTemplateColumns: '160px 1fr',
-      gap: 24,
+    <div className="neo-detail-row" style={{
       padding: isWarning ? '14px 16px' : '14px 0',
       margin: isWarning ? '6px -8px 0' : 0,
       background: isWarning ? '#FFFBEB' : 'transparent',

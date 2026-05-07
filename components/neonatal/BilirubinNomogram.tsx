@@ -101,12 +101,7 @@ export default function BilirubinNomogram() {
         risks={risks}
         setRisks={setRisks}
       />
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'minmax(0, 1.6fr) minmax(280px, 1fr)',
-        gap: 16,
-        alignItems: 'stretch',
-      }}>
+      <div className="neo-chart-split">
         <ChartView
           bank={bank}
           gaWeeks={gaWeeks}
@@ -726,20 +721,11 @@ function ChartView({
         const isRightHalf = tooltipLeftPct > 60;
         const fmt = (v: number): string => unit === 'mg/dL' ? v.toFixed(1) : Math.round(v * factor).toString();
         return (
-          <div style={{
-            position: 'absolute',
+          <div className="neo-chart-tooltip" style={{
             left: `${tooltipLeftPct}%`,
             top: `${(margin.top / height) * 100 + 2}%`,
             transform: isRightHalf ? 'translateX(calc(-100% - 12px))' : 'translateX(12px)',
-            background: '#FFFFFF',
-            border: '1px solid #E5E7EB',
-            borderRadius: 10,
-            padding: '10px 12px',
-            boxShadow: '0 4px 16px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(15, 23, 42, 0.06)',
-            pointerEvents: 'none',
-            fontSize: 12,
             minWidth: 160,
-            zIndex: 5,
           }}>
             <div style={{
               fontFamily: 'var(--font-display)',
