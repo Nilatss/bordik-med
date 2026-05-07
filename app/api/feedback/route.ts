@@ -91,6 +91,8 @@ export async function POST(req: Request) {
         parse_mode: 'MarkdownV2',
         disable_web_page_preview: true,
       }),
+      // P2-NEW-4 — SSRF guard
+      redirect: 'error',
     });
     if (!r.ok) {
       // P2-SEC — структурированный лог через lib/log с redaction вместо
@@ -125,6 +127,8 @@ export async function POST(req: Request) {
       const r = await fetch(`${TG_API}/bot${TOKEN}/sendDocument`, {
         method: 'POST',
         body: tgForm,
+        // P2-NEW-4 — SSRF guard
+        redirect: 'error',
       });
       if (!r.ok) {
         log.error({

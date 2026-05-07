@@ -23,7 +23,12 @@ const PROD_ALLOWLIST = [
   'https://www.bordik.app',
 ].filter((s): s is string => Boolean(s));
 
-const PREVIEW_HOST_REGEX = /^https?:\/\/[a-z0-9-]+\.vercel\.app$/i;
+// P2-NEW-3 — раньше regex был `[a-z0-9-]+\.vercel\.app$` — пропускал
+// ЛЮБОЙ vercel preview-домен из любой команды. Сузили до префикса
+// `bordik-med-` (наши preview deploys имеют вид
+// bordik-med-git-<branch>-<team>.vercel.app), плюс отдельная dev
+// preview-форма bordik-med-<hash>-<team>.vercel.app.
+const PREVIEW_HOST_REGEX = /^https?:\/\/bordik-med-[a-z0-9-]+\.vercel\.app$/i;
 const DEV_HOST_REGEX     = /^https?:\/\/(?:localhost|127\.0\.0\.1)(?::\d+)?$/i;
 
 export interface OriginCheckResult {

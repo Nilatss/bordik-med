@@ -56,6 +56,8 @@ async function pingUpstash(): Promise<{ ok: boolean; latencyMs?: number; reason?
       headers: { Authorization: `Bearer ${token}` },
       signal: ctrl.signal,
       cache: 'no-store',
+      // P2-NEW-4 — SSRF guard: отказываемся следовать редиректам.
+      redirect: 'error',
     });
     clearTimeout(t);
     const latencyMs = Date.now() - t0;

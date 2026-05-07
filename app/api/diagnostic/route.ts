@@ -249,6 +249,10 @@ async function geminiCall(prompt: string, expectArray = false): Promise<unknown>
         },
         body: bodyStr,
         signal: ac.signal,
+        // P2-NEW-4 — SSRF guard: при upstream-redirect (DNS hijack
+        // или compromised provider) fetch не последует на 169.254.169.254
+        // или иной internal endpoint, а упадёт с TypeError 'redirect mode'.
+        redirect: 'error',
       });
     } catch (err) {
       clearTimeout(timer);
@@ -538,10 +542,21 @@ function checkOutput(s: string): { safe: boolean; reason?: string } {
 }
 
 export async function POST(req: Request) {
+  const res = await postImpl(req);
+  // P2-PERF-NEW-10 — diagnostic ответы содержат пользовательский bank-state,
+  // их нельзя класть ни в браузерный, ни в CDN-кеш. На случай, если кто-то
+  // забудет header'ы внутри — навешиваем здесь централизованно.
+  if (!res.headers.has('cache-control')) {
+    res.headers.set('cache-control', 'no-store, max-age=0');
+  }
+  return res;
+}
+
+async function postImpl(req: Request): Promise<NextResponse> {
   // P2-SEC-4 — Origin allowlist; defends against extension-context
   // and cross-subdomain CSRF where SameSite=Lax wouldn't help.
   const blocked = assertSameOrigin(req);
-  if (blocked) return blocked;
+  if (blocked) return blocked as NextResponse;
 
   // Per-user rate limit: prefer authenticated id, fall back to hashed IP.
   // Failure to read auth is non-fatal; we still rate-limit by IP hash.

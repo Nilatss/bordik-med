@@ -23,6 +23,22 @@ import { apiError, type ApiErrorCode } from '@/lib/api-errors';
 type ReqLike = Request | NextRequest;
 
 /**
+ * P2-PERF-NEW-10 — гарантируем Cache-Control: no-store на всех ответах,
+ * проходящих через эти helper'ы. Authed/sync/feedback/diagnostic — это
+ * пользовательские данные, кешировать их в браузере или CDN нельзя
+ * (риск утечки между аккаунтами через shared cache, а также залипания
+ * stale state). Дешевле один раз навесить header'ы здесь, чем
+ * полагаться, что каждый route не забудет.
+ */
+function applyNoStore(res: NextResponse): NextResponse {
+  // Не перетираем, если route уже выставил что-то осознанно.
+  if (!res.headers.has('cache-control')) {
+    res.headers.set('cache-control', 'no-store, max-age=0');
+  }
+  return res;
+}
+
+/**
  * Re-export более продвинутого origin-check из lib/origin-check.ts —
  * он включает PREVIEW_HOST_REGEX whitelist (vercel.app preview-домены)
  * и обработку отсутствующего Origin header. Сигнатура: возвращает
@@ -47,18 +63,18 @@ export async function withAuthedSupabase(
 ): Promise<NextResponse> {
   // 1. CSRF guard
   const blocked = assertSameOrigin(req);
-  if (blocked) return blocked as NextResponse;
+  if (blocked) return applyNoStore(blocked as NextResponse);
 
   // 2. Supabase backend
   const sb = await getSupabaseServerClient();
-  if (!sb) return apiError('backend-not-configured', 503);
+  if (!sb) return applyNoStore(apiError('backend-not-configured', 503));
 
   // 3. Auth
   const { data: { user }, error: userErr } = await sb.auth.getUser();
-  if (userErr || !user) return apiError('unauthorized', 401);
+  if (userErr || !user) return applyNoStore(apiError('unauthorized', 401));
 
   // 4. Run handler
-  return handler(sb, user);
+  return applyNoStore(await handler(sb, user));
 }
 
 /**
@@ -70,8 +86,8 @@ export async function withSameOrigin(
   handler: () => Promise<NextResponse>,
 ): Promise<NextResponse> {
   const blocked = assertSameOrigin(req);
-  if (blocked) return blocked as NextResponse;
-  return handler();
+  if (blocked) return applyNoStore(blocked as NextResponse);
+  return applyNoStore(await handler());
 }
 
 /**

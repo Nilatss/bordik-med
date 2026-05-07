@@ -47,6 +47,13 @@ const PATTERNS = [
   { name: 'Postgres URL/password (env name leak)', re: /POSTGRES_(?:URL|PASSWORD|PRISMA_URL|URL_NON_POOLING)/g, severity: 'critical' },
   { name: 'Supabase service-role env name leak', re: /SUPABASE_SERVICE_ROLE_KEY/g, severity: 'critical' },
   { name: 'Supabase publishable key (sb_publishable_)', re: /sb_publishable_[A-Za-z0-9_-]{20,}/g, severity: 'high' },
+  // P2-NEW-6 — добавлены env-names для оставшихся серверных секретов:
+  // GEMINI_API_KEY (LLM-вызовы), TELEGRAM_BOT_TOKEN/CHAT_ID (feedback bot).
+  // Если кто-то случайно прочитает process.env.X из client component,
+  // Next inline-bake'нет name + value в bundle.
+  { name: 'Gemini API key (env name leak)',  re: /GEMINI_API_KEY/g, severity: 'critical' },
+  { name: 'Telegram bot token (env name leak)', re: /TELEGRAM_BOT_TOKEN/g, severity: 'critical' },
+  { name: 'Telegram chat id (env name leak)',   re: /TELEGRAM_CHAT_ID/g, severity: 'high' },
 
   // Hardcoded `process.env.SOMETHING = "literal"`. Narrower than a
   // generic long-string scan to keep false positives low.
