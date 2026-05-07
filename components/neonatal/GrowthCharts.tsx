@@ -24,11 +24,13 @@ import {
   type Sex,
   type ReferencePercentile,
   REFERENCE_PERCENTILES,
+  PERCENTILE_TO_Z,
   PARAMETER_LABEL_RU,
   PARAMETER_UNIT,
   SEX_LABEL_RU,
   buildChartCurves,
   lmsAt,
+  valueFromZ,
   zScoreFromValue,
   percentileFromZ,
   interpretZ,
@@ -448,6 +450,7 @@ function ChartView({
 }) {
   const points = dataset.data[sex][parameter] ?? [];
   const curves = useMemo(() => buildChartCurves(points), [points]);
+  const [hoverAge, setHoverAge] = useState<number | null>(null);
 
   if (curves.length === 0) return null;
 
@@ -492,6 +495,7 @@ function ChartView({
       border: '1px solid #E5E7EB',
       borderRadius: 12,
       display: 'flex', flexDirection: 'column', gap: 8,
+      position: 'relative',
     }}>
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: 8 }}>
@@ -607,15 +611,116 @@ function ChartView({
             </g>
           )}
 
+          {/* Hover guide line + dots */}
+          {hoverAge != null && (() => {
+            const lms = lmsAt(points, hoverAge);
+            if (!lms) return null;
+            const hx = xScale(hoverAge);
+            return (
+              <g pointerEvents="none">
+                <line x1={hx} x2={hx} y1={0} y2={innerH} stroke="#111827" strokeWidth={1} opacity={0.35} />
+                {curves.map((c) => {
+                  const v = valueFromZ(PERCENTILE_TO_Z[c.percentile], lms);
+                  return (
+                    <circle
+                      key={`hover-${c.percentile}`}
+                      cx={hx} cy={yScale(v)} r={c.percentile === 50 ? 4 : 3}
+                      fill={PERCENTILE_COLORS[c.percentile]}
+                      stroke="#FFFFFF" strokeWidth={1.5}
+                    />
+                  );
+                })}
+              </g>
+            );
+          })()}
+
+          {/* Mouse capture overlay (transparent) */}
+          <rect
+            x={0} y={0} width={innerW} height={innerH}
+            fill="transparent"
+            onMouseMove={(e) => {
+              const svg = e.currentTarget.ownerSVGElement;
+              if (!svg) return;
+              const ctm = svg.getScreenCTM();
+              if (!ctm) return;
+              const pt = svg.createSVGPoint();
+              pt.x = e.clientX;
+              pt.y = e.clientY;
+              const local = pt.matrixTransform(ctm.inverse());
+              const innerX = local.x - margin.left;
+              const a = minAge + (innerX / innerW) * (maxAge - minAge);
+              if (a >= minAge && a <= maxAge) setHoverAge(a);
+              else setHoverAge(null);
+            }}
+            onMouseLeave={() => setHoverAge(null)}
+          />
+
           {/* X-axis label */}
           <text
             x={innerW / 2} y={innerH + 32} textAnchor="middle"
             fontSize={10} fill="#6B7280" fontWeight={500}
+            pointerEvents="none"
           >
             {dataset.ageType === 'postmenstrual' ? 'PMA' : 'Возраст'}, недели
           </text>
         </g>
       </svg>
+
+      {/* Hover tooltip — HTML overlay над SVG */}
+      {hoverAge != null && (() => {
+        const lms = lmsAt(points, hoverAge);
+        if (!lms) return null;
+        const tooltipLeftPct = ((margin.left + xScale(hoverAge)) / width) * 100;
+        const isRightHalf = tooltipLeftPct > 60;
+        return (
+          <div style={{
+            position: 'absolute',
+            left: `${tooltipLeftPct}%`,
+            top: `${(margin.top / height) * 100 + 2}%`,
+            transform: isRightHalf ? 'translateX(calc(-100% - 12px))' : 'translateX(12px)',
+            background: '#FFFFFF',
+            border: '1px solid #E5E7EB',
+            borderRadius: 10,
+            padding: '10px 12px',
+            boxShadow: '0 4px 16px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(15, 23, 42, 0.06)',
+            pointerEvents: 'none',
+            fontSize: 12,
+            minWidth: 140,
+            zIndex: 5,
+          }}>
+            <div style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 13, fontWeight: 600, color: '#111827',
+              marginBottom: 8, letterSpacing: '-0.005em',
+            }}>
+              {hoverAge.toFixed(1)} нед {dataset.ageType === 'postmenstrual' ? 'PMA' : ''}
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+              {curves.map((c) => {
+                const v = valueFromZ(PERCENTILE_TO_Z[c.percentile], lms);
+                return (
+                  <div key={c.percentile} style={{
+                    display: 'flex', alignItems: 'center', gap: 8,
+                    fontSize: 12,
+                  }}>
+                    <span style={{
+                      width: 8, height: 8, borderRadius: '50%',
+                      background: PERCENTILE_COLORS[c.percentile],
+                      flexShrink: 0,
+                    }} />
+                    <span style={{ color: '#6B7280', minWidth: 32, fontFamily: 'var(--font-mono, ui-monospace)', fontSize: 11 }}>
+                      P{c.percentile}
+                    </span>
+                    <span style={{ color: '#111827', fontWeight: 600, marginLeft: 'auto' }}>
+                      {parameter === 'weight' && v >= 1000 ? `${(v / 1000).toFixed(2)} кг` : `${v.toFixed(parameter === 'weight' ? 0 : 1)} ${PARAMETER_UNIT[parameter]}`}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 }

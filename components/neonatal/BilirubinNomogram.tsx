@@ -434,6 +434,7 @@ function ChartView({
   const stratum = isFinite(ga) ? classifyStratum(ga, Array.from(risks)) : 'ge38_norisk';
   const ptCurve = bank.thresholds.phototherapy[stratum];
   const exCurve = bank.thresholds.exchange[stratum];
+  const [hoverHour, setHoverHour] = useState<number | null>(null);
 
   const factor = bank.units.conversionFactor;
   const transform = (v: number): number => unit === 'mg/dL' ? v : v * factor;
@@ -497,6 +498,7 @@ function ChartView({
       border: '1px solid #E5E7EB',
       borderRadius: 12,
       display: 'flex', flexDirection: 'column', gap: 8,
+      position: 'relative',
     }}>
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: 8 }}>
@@ -564,12 +566,95 @@ function ChartView({
             </g>
           )}
 
+          {/* Hover guide + dots */}
+          {hoverHour != null && (() => {
+            const ptV = thresholdAt(ptCurve, hoverHour);
+            const exV = thresholdAt(exCurve, hoverHour);
+            if (ptV == null || exV == null) return null;
+            const hx = xScale(hoverHour);
+            return (
+              <g pointerEvents="none">
+                <line x1={hx} x2={hx} y1={0} y2={innerH} stroke="#111827" strokeWidth={1} opacity={0.35} />
+                <circle cx={hx} cy={yScale(transform(ptV))} r={4} fill="#2563EB" stroke="#FFFFFF" strokeWidth={1.5} />
+                <circle cx={hx} cy={yScale(transform(exV))} r={4} fill="#DC2626" stroke="#FFFFFF" strokeWidth={1.5} />
+              </g>
+            );
+          })()}
+
+          {/* Mouse capture overlay */}
+          <rect
+            x={0} y={0} width={innerW} height={innerH}
+            fill="transparent"
+            onMouseMove={(e) => {
+              const svg = e.currentTarget.ownerSVGElement;
+              if (!svg) return;
+              const ctm = svg.getScreenCTM();
+              if (!ctm) return;
+              const pt = svg.createSVGPoint();
+              pt.x = e.clientX;
+              pt.y = e.clientY;
+              const local = pt.matrixTransform(ctm.inverse());
+              const innerX = local.x - margin.left;
+              const h = minHour + (innerX / innerW) * (maxHour - minHour);
+              if (h >= minHour && h <= maxHour) setHoverHour(h);
+              else setHoverHour(null);
+            }}
+            onMouseLeave={() => setHoverHour(null)}
+          />
+
           {/* Axis labels */}
-          <text x={innerW / 2} y={innerH + 32} textAnchor="middle" fontSize={10} fill="#6B7280" fontWeight={500}>
+          <text x={innerW / 2} y={innerH + 32} textAnchor="middle" fontSize={10} fill="#6B7280" fontWeight={500} pointerEvents="none">
             Часы жизни
           </text>
         </g>
       </svg>
+
+      {/* Hover tooltip */}
+      {hoverHour != null && (() => {
+        const ptV = thresholdAt(ptCurve, hoverHour);
+        const exV = thresholdAt(exCurve, hoverHour);
+        if (ptV == null || exV == null) return null;
+        const tooltipLeftPct = ((margin.left + xScale(hoverHour)) / width) * 100;
+        const isRightHalf = tooltipLeftPct > 60;
+        const fmt = (v: number): string => unit === 'mg/dL' ? v.toFixed(1) : Math.round(v * factor).toString();
+        return (
+          <div style={{
+            position: 'absolute',
+            left: `${tooltipLeftPct}%`,
+            top: `${(margin.top / height) * 100 + 2}%`,
+            transform: isRightHalf ? 'translateX(calc(-100% - 12px))' : 'translateX(12px)',
+            background: '#FFFFFF',
+            border: '1px solid #E5E7EB',
+            borderRadius: 10,
+            padding: '10px 12px',
+            boxShadow: '0 4px 16px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(15, 23, 42, 0.06)',
+            pointerEvents: 'none',
+            fontSize: 12,
+            minWidth: 160,
+            zIndex: 5,
+          }}>
+            <div style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 13, fontWeight: 600, color: '#111827',
+              marginBottom: 8, letterSpacing: '-0.005em',
+            }}>
+              {Math.round(hoverHour)} ч жизни
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#2563EB', flexShrink: 0 }} />
+                <span style={{ color: '#6B7280', minWidth: 24 }}>ФТ</span>
+                <span style={{ color: '#111827', fontWeight: 600, marginLeft: 'auto' }}>{fmt(ptV)} {unit}</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#DC2626', flexShrink: 0 }} />
+                <span style={{ color: '#6B7280', minWidth: 24 }}>ОП</span>
+                <span style={{ color: '#111827', fontWeight: 600, marginLeft: 'auto' }}>{fmt(exV)} {unit}</span>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* Legend */}
       <div style={{
