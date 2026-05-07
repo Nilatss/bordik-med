@@ -718,10 +718,13 @@ function CodeRow({
       style={containerStyle}
       onMouseEnter={(e) => {
         if (isCard) {
+          // Card variant: parent — белая сетка, hover из белого → серый
           e.currentTarget.style.background = '#F5F6F8';
           e.currentTarget.style.borderColor = '#E2E4EA';
         } else {
-          e.currentTarget.style.background = '#F5F6F8';
+          // Compact variant: parent уже #F5F6F8 — hover нужен темнее
+          // чтобы было видно. #EFF1F4 — на 1 шаг темнее серого.
+          e.currentTarget.style.background = '#EFF1F4';
         }
       }}
       onMouseLeave={(e) => {
