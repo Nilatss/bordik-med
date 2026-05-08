@@ -40,6 +40,24 @@ function buildAdditionalPrecacheEntries(): { url: string; revision: string }[] {
       const rev = manifest.toolRevs?.[id];
       if (rev) entries.push({ url: `/tools-data/${id}.json`, revision: rev });
     }
+
+    // P1-PERF-NEW-6 — добавляем МКБ-10 slim (2.4MB) в precache.
+    // Bordik — медицинская PWA для RU/UZ; МКБ-10 используется в каждой
+    // консультации (диагноз → код). На холодной загрузке ICD-страницы
+    // без precache: 2-3s до первого render'а через CacheFirst-fetch.
+    // С precache: SW install увеличивается на 2.4MB (~3s на 4G), но
+    // first ICD-paint = instant.
+    //
+    // НЕ добавляем icd11-slim/icd11-mms (4-14MB) — slow-3G install
+    // выйдет за порог терпения юзера. icd10cm/cpcs/ca — niche для US/CA,
+    // 1-time CacheFirst достаточно.
+    if (fs.existsSync(path.resolve(__dirname, 'public', 'icd10-slim.json'))) {
+      entries.push({
+        url: '/icd10-slim.json',
+        revision: manifest.catalogRev, // привязан к catalog version
+      });
+    }
+
     return entries;
   } catch {
     return [];
