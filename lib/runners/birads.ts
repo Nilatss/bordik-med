@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: birads */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,
@@ -51,7 +50,7 @@ const runner: CalculatorTool = {
       '6': { color: '#450A0A', risk: 'Подтверждённая малигнизация', action: 'Стадирование (МРТ, УЗИ лимфоузлов, КТ), мультидисциплинарный консилиум', num: 8 },
     };
 
-    const entry = map[cat] || map['0'];
+    const entry = (map[cat] || map['0'])!;
 
     return {
       value: `BI-RADS ${cat.toUpperCase()}`,

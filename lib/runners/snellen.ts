@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: snellen - Snellen visual acuity + logMAR + WHO impairment */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -46,7 +45,7 @@ const runner: CalculatorTool = {
       NLP: { logMAR: 3.0, decimal: 0 },
     };
     const key = String(v.snellen || '6/6');
-    const d = map[key] || map['6/6'];
+    const d = (map[key] || map['6/6'])!;
     const logMAR = d.logMAR;
 
     let band = '', color = '#22C55E', details = '';

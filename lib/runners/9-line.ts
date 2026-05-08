@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: 9-line - 9-Line MEDEVAC / MIST / SBAR / AT-MIST */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -72,7 +71,7 @@ const runner: CalculatorTool = {
         details: 'IHI / WHO / Joint Commission стандарт. Разработан ВМФ США (submarines), адаптирован для medicine Kaiser Permanente 2002.',
       },
     };
-    const r = map[format] || map['9line'];
+    const r = (map[format] || map['9line'])!;
     return {
       value: r.title,
       unit: '',

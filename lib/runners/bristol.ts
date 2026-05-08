@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: bristol — Bristol Stool Scale */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,
@@ -71,7 +70,7 @@ const runner: CalculatorTool = {
       },
     };
 
-    const d = descriptions[type] || descriptions[4];
+    const d = (descriptions[type] || descriptions[4])!;
 
     return {
       value: d.label,

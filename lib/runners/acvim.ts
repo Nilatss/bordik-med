@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: acvim */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -50,7 +49,7 @@ const runner: CalculatorTool = {
         '3': { col: '#F59E0B', lab: 'CKD 3 · Кр 250-440 / 250-440', cre: 'Умеренная азотемия', act: ['Активная терапия: фосфат-биндеры', 'Эритропоэтин при Hct < 25 %', 'АПФ при UPC > 0,5'] },
         '4': { col: '#EF4444', lab: 'CKD 4 · Кр > 440 (все)', cre: 'Тяжёлая — уремия', act: ['Паллиативная / заместительная терапия', 'Подкожные инфузии дома', 'Антиэметики, гастропротекция'] },
       };
-      const m = map[st] || map['1'];
+      const m = (map[st] || map['1'])!;
       color = m.col; label = m.lab; details = m.cre; actions = m.act;
     } else if (dis === 'mvd') {
       const map: Record<string, { col: string; lab: string; det: string; act: string[] }> = {
@@ -69,7 +68,7 @@ const runner: CalculatorTool = {
         '3': { col: '#EF4444', lab: 'IRE / IBD', det: 'Immune-responsive — иммуносупрессия', act: ['Преднизолон 1-2 мг/кг/сут (собаки) / 2-4 (кошки)', 'Циклоспорин 5 мг/кг при стероид-рефрактерной', 'Биопсия обязательна'] },
         '4': { col: '#991B1B', lab: 'Non-responsive / PLE', det: 'Протеин-потеря / тяжёлая', act: ['Альбумин < 20 г/л → пересмотреть диагноз (лимфангиэктазия, неоплазия)', 'Хлорамбуцил + преднизолон', 'Коллоиды при гипопротеинемии'] },
       };
-      const m = map[st] || map['1'];
+      const m = (map[st] || map['1'])!;
       color = m.col; label = m.lab; details = m.det; actions = m.act;
     }
 

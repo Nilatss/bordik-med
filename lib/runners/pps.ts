@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: pps */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,
@@ -44,7 +43,7 @@ const runner: CalculatorTool = {
       0: { survival: 'Смерть', color: '#000000', care: 'Посмертный уход; поддержка семьи', hospice: '—' },
     };
 
-    const entry = map[pps] || map[50];
+    const entry = (map[pps] || map[50])!;
 
     return {
       value: `PPS ${pps}%`,

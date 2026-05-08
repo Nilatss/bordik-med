@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: orads */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,
@@ -53,7 +52,7 @@ const runner: CalculatorTool = {
       '5': { color: '#7F1D1D', risk: '≥ 50%', action: 'Срочная консультация онколога; стадирование + хирургия', num: 5 },
     };
 
-    const entry = map[cat] || map['0'];
+    const entry = (map[cat] || map['0'])!;
 
     return {
       value: `O-RADS ${cat}`,

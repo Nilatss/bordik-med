@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: bls-acls - AHA BLS / ACLS / PALS 2020 */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -105,7 +104,7 @@ const runner: CalculatorTool = {
         ],
       },
     };
-    const r = map[a] || map['bls-adult'];
+    const r = (map[a] || map['bls-adult'])!;
     return {
       value: r.title,
       unit: '',
