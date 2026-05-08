@@ -411,6 +411,23 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [content, showTests]);
   const [activeId, setActiveId] = useState(tabs[0]?.id ?? '');
+
+  // P1-PERF-NEW-2 — memoize preprocessContent. Без useMemo функция
+  // (em-dash replace + multi-pass scan по строкам таблиц) пересчитывалась
+  // на каждом ре-рендере viewer'а (resize, hover state, scroll-tracking),
+  // даже если активная вкладка не менялась. Тяжёлый кейс: lesson 'patient
+  // safety' с 6 callout-таблицами ~70k chars, ~6ms на пересчёт ×30Hz =
+  // 18% main-thread budget на анимациях.
+  //
+  // ВАЖНО: useMemo стоит ДО early-return'ов ниже (`if (!content)`,
+  // `if (tabs.length <= 1)`), иначе rules-of-hooks ругается на
+  // conditional hook-call. activeBody — '' для случаев, когда tab не
+  // найден (defensive, не обязан рендериться).
+  const activeBody = useMemo(() => {
+    const active = tabs.find((tab) => tab.id === activeId) ?? tabs[0];
+    return active ? preprocessContent(active.body) : '';
+  }, [tabs, activeId]);
+
   // TOC defaults: closed on mobile, open on desktop. A media-query listener
   // keeps the state in sync with viewport changes (resize / orientation).
   const [tocCollapsed, setTocCollapsed] = useState(true);
@@ -491,17 +508,6 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
   const activeIndex = tabs.indexOf(active);
   const prevTab = tabs[activeIndex - 1];
   const nextTab = tabs[activeIndex + 1];
-
-  // P1-PERF-NEW-2 — memoize preprocessContent. Без useMemo функция
-  // (em-dash replace + multi-pass scan по строкам таблиц) пересчитывалась
-  // на каждом ре-рендере viewer'а (resize, hover state, scroll-tracking),
-  // даже если активная вкладка не менялась. Тяжёлый кейс: lesson 'patient
-  // safety' с 6 callout-таблицами ~70k chars, ~6ms на пересчёт ×30Hz =
-  // 18% main-thread budget на анимациях.
-  const activeBody = useMemo(
-    () => preprocessContent(active.body),
-    [active.body],
-  );
 
   return (
     <div className="rg-main-toc">
