@@ -6,6 +6,7 @@ import * as v from 'valibot';
 import bankData from '@/data/diagnostic-question-bank.json';
 import { identifyAndLimit } from '@/lib/rate-limit';
 import { reserveGeminiQuota } from '@/lib/gemini-quota';
+import { streamGemini } from '@/lib/gemini-stream';
 import { getSupabaseServerClient } from '@/lib/supabase/server';
 import { isOutputSafe as isOutputSafeStrict } from '@/lib/output-guard';
 import { assertSameOrigin } from '@/lib/origin-check';
@@ -615,7 +616,7 @@ export async function POST(req: Request) {
   return res;
 }
 
-async function postImpl(req: Request): Promise<NextResponse> {
+async function postImpl(req: Request): Promise<Response> {
   // P2-SEC-4 — Origin allowlist; defends against extension-context
   // and cross-subdomain CSRF where SameSite=Lax wouldn't help.
   const blocked = assertSameOrigin(req);
@@ -689,6 +690,24 @@ async function postImpl(req: Request): Promise<NextResponse> {
     if (history.length === 0 || modules.length === 0) {
       return apiError('empty-input', 400);
     }
+
+    // P1-PERF-NEW-5 — streaming branch. Если client заявляет
+    // Accept: application/x-ndjson, возвращаем ReadableStream с
+    // chunks accumulated text. Каждая строка = JSON object:
+    //   {"type":"chunk","text":"<accumulated so far>"}
+    //   {"type":"done","result":<final structured object>}
+    //   {"type":"error","reason":"..."}
+    //
+    // Client (DiagnosticTest.finalize) показывает text как preview
+    // в "finalizing" UI пока full result не пришёл. На любую ошибку
+    // (Gemini fails, parse fails, и т.д.) emit'им rule-based fallback
+    // как 'done' event — UX никогда не падает после 30 вопросов.
+    const accept = req.headers.get('accept') ?? '';
+    if (accept.includes('application/x-ndjson')) {
+      return streamFinalize(history, modules);
+    }
+
+    // Non-streaming fallback (legacy + curl + clients which don't opt-in).
     // Try Gemini first for the personalised recommendation. If it's
     // down / over quota / wrong shape, fall through to a rule-based
     // synthesis so the test always finishes with SOMETHING useful
@@ -730,4 +749,98 @@ async function postImpl(req: Request): Promise<NextResponse> {
   }
 
   return apiError('unknown-action', 400);
+}
+
+/* ── P1-PERF-NEW-5: streaming finalize ──────────────────────────── */
+
+function streamFinalize(history: Turn[], modules: ModuleSummary[]): Response {
+  const encoder = new TextEncoder();
+
+  const stream = new ReadableStream<Uint8Array>({
+    async start(controller) {
+      const emit = (obj: unknown) => {
+        controller.enqueue(encoder.encode(JSON.stringify(obj) + '\n'));
+      };
+
+      let accumulated = '';
+      try {
+        // Try first model only for streaming — multi-model fallback
+        // не нужен, т.к. на ошибку идём в rule-based (см. catch).
+        const model = GEMINI_MODELS[0];
+        if (!model) throw new Error('no-models');
+        for await (const chunk of streamGemini(buildFinalizePrompt(history, modules), model)) {
+          accumulated += chunk;
+          // Emit accumulated text каждые 50ms-equivalent — chunks приходят
+          // достаточно редко чтобы каждый flush был полезным сигналом.
+          emit({ type: 'chunk', text: accumulated.slice(0, 2000) }); // cap preview at 2KB
+        }
+
+        // Parse final accumulated text как JSON (с dirty-JSON resilience)
+        const parsed = parseFinalJson(accumulated);
+        const f = parsed as {
+          profession?: string;
+          professionRationale?: string;
+          level?: string;
+          strengths?: string[];
+          weaknesses?: string[];
+          recommendedModuleIds?: number[];
+          studyPlan?: string;
+        };
+        if (!f?.profession || !Array.isArray(f.recommendedModuleIds)) {
+          log.warn({ event: 'finalize_stream_invalid_shape_falling_back' });
+          emit({ type: 'done', result: ruleBasedFinalize(history, modules) });
+        } else {
+          const validIds = new Set(modules.map((m) => m.id));
+          const cleanIds = f.recommendedModuleIds.filter((id) => validIds.has(id)).slice(0, 6);
+          emit({
+            type: 'done',
+            result: {
+              profession: f.profession,
+              professionRationale: f.professionRationale ?? '',
+              level: (f.level === 'basic' || f.level === 'advanced') ? f.level : 'intermediate',
+              strengths: Array.isArray(f.strengths) ? f.strengths.slice(0, 5) : [],
+              weaknesses: Array.isArray(f.weaknesses) ? f.weaknesses.slice(0, 5) : [],
+              recommendedModuleIds: cleanIds,
+              studyPlan: f.studyPlan ?? '',
+            },
+          });
+        }
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        log.warn({ event: 'finalize_stream_failed_falling_back', message: msg.slice(0, 200) });
+        emit({ type: 'done', result: ruleBasedFinalize(history, modules) });
+      } finally {
+        controller.close();
+      }
+    },
+  });
+
+  return new Response(stream, {
+    status: 200,
+    headers: {
+      'content-type': 'application/x-ndjson; charset=utf-8',
+      'cache-control': 'no-store, max-age=0',
+      'x-content-type-options': 'nosniff',
+    },
+  });
+}
+
+/** Dirty-JSON parser (тот же 3-candidate algorithm что в geminiCall). */
+function parseFinalJson(text: string): unknown {
+  try { return JSON.parse(text); } catch { /* try fallbacks */ }
+  const candidates: string[] = [];
+  const fenceMatch = text.match(/```(?:[a-zA-Z0-9_-]+)?\s*([\s\S]*?)```/);
+  if (fenceMatch && fenceMatch[1]) candidates.push(fenceMatch[1]);
+  const objStart = text.search(/[{[]/);
+  if (objStart >= 0) {
+    const objEnd = Math.max(text.lastIndexOf('}'), text.lastIndexOf(']'));
+    if (objEnd > objStart) candidates.push(text.slice(objStart, objEnd + 1));
+  }
+  candidates.push(text);
+  for (const c of candidates) {
+    try {
+      return JSON.parse(c.replace(/,(\s*[}\]])/g, '$1').trim());
+    } catch { /* next */ }
+  }
+  return null;
 }

@@ -56,6 +56,10 @@ export default function DiagnosticTest({ onClose }: { onClose: () => void }) {
   // обнуляет кеш и начинает с loading.
   const [phase, setPhase] = useState<Phase>(cachedResult ? 'done' : 'loading');
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  // P1-PERF-NEW-5 — streaming preview text (Gemini partial output) для
+  // показа пользователю под spinner'ом в "finalizing" phase. Обновляется
+  // по мере прихода chunks от /api/diagnostic NDJSON stream.
+  const [streamingPreview, setStreamingPreview] = useState<string>('');
   const [history, setHistory] = useState<Turn[]>([]);
   const [current, setCurrent] = useState<ServerQuestion | null>(null);
   const [picked, setPicked] = useState<number | null>(null);
@@ -159,17 +163,68 @@ export default function DiagnosticTest({ onClose }: { onClose: () => void }) {
   const finalize = useCallback(async (h: Turn[]) => {
     setPhase('finalizing');
     setErrorMsg(null);
+    setStreamingPreview(''); // P1-PERF-NEW-5 — reset preview on each attempt
     // Same one-shot retry pattern as fetchNext — finalize is a single
     // expensive call that summarises all 30 turns; we'd rather wait 2.5s
     // and retry than burn the whole completed test on a transient 429.
     let attempt = 0;
     while (attempt < 2) {
       try {
+        // P1-PERF-NEW-5 — request streaming response. Server returns
+        // application/x-ndjson с строками { type: 'chunk' | 'done', ... }.
+        // Каждый 'chunk' даёт accumulated raw text от Gemini, чтобы UI
+        // мог показать live preview ("анализирую...") вместо blank
+        // spinner на 3-8 секунд. На любую ошибку streaming server emit'ит
+        // 'done' с rule-based fallback — UX никогда не падает.
         const r = await fetch('/api/diagnostic', {
           method: 'POST',
-          headers: { 'content-type': 'application/json' },
+          headers: {
+            'content-type': 'application/json',
+            'accept': 'application/x-ndjson',
+          },
           body: JSON.stringify({ action: 'finalize', history: h, modules: moduleSummaries }),
         });
+
+        // Streaming path: read NDJSON line by line.
+        if (r.ok && r.body && r.headers.get('content-type')?.includes('application/x-ndjson')) {
+          const reader = r.body.pipeThrough(new TextDecoderStream()).getReader();
+          let buf = '';
+          let finalResult: FinalResult | null = null;
+          for (;;) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            buf += value;
+            let idx;
+            while ((idx = buf.indexOf('\n')) >= 0) {
+              const line = buf.slice(0, idx).trim();
+              buf = buf.slice(idx + 1);
+              if (!line) continue;
+              try {
+                const evt = JSON.parse(line) as { type: string; text?: string; result?: FinalResult };
+                if (evt.type === 'chunk' && typeof evt.text === 'string') {
+                  setStreamingPreview(evt.text);
+                } else if (evt.type === 'done' && evt.result) {
+                  finalResult = evt.result;
+                }
+              } catch { /* skip malformed line */ }
+            }
+          }
+          if (finalResult) {
+            setFinal(finalResult);
+            setPhase('done');
+            setLastDiagnosticResult({
+              ...finalResult,
+              correct: h.filter((t) => t.selectedIndex === t.correctIndex).length,
+              total: h.length,
+              completedAt: new Date().toISOString(),
+            });
+            return;
+          }
+          // Stream ended without 'done' event — treat as transient
+          throw new Error('stream-ended-without-result');
+        }
+
+        // Fallback: non-streaming JSON response (server didn't honor ndjson Accept)
         const json = await r.json();
         if (r.ok && json.ok) {
           const result = json as FinalResult;
@@ -348,6 +403,37 @@ export default function DiagnosticTest({ onClose }: { onClose: () => void }) {
           <motion.div key="finalizing" {...fadeProps} style={panelStyle}>
             <Spinner />
             <p style={loadingTextStyle}>Анализируем ответы и собираем рекомендацию…</p>
+            {/* P1-PERF-NEW-5 — streaming preview: показываем raw text от
+                Gemini по мере прихода chunks. Truncate первые 240 chars
+                чтобы UI не «прыгал» при разрастании текста. Опционально —
+                есть только если streamingPreview непустое (т.е. сервер
+                действительно вернул NDJSON и chunk'и приходят). */}
+            {streamingPreview.length > 20 && (
+              <p style={{
+                marginTop: 14,
+                padding: '10px 14px',
+                background: '#F5F6F8',
+                borderRadius: 10,
+                fontFamily: 'var(--font-mono, ui-monospace)',
+                fontSize: 11.5,
+                color: '#6B7280',
+                lineHeight: 1.5,
+                maxWidth: 480,
+                fontStyle: 'italic',
+                opacity: 0.85,
+                // Truncate visually — не показываем больше 240 chars,
+                // последние 240 chars (живой "хвост" generation'а).
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                display: '-webkit-box',
+                WebkitLineClamp: 3,
+                WebkitBoxOrient: 'vertical',
+              }}>
+                {streamingPreview.length > 240
+                  ? '…' + streamingPreview.slice(-240)
+                  : streamingPreview}
+              </p>
+            )}
           </motion.div>
         )}
 
