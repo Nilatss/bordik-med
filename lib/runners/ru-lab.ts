@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: ru-lab — Российские лабораторные стандарты */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,
@@ -40,7 +39,7 @@ const runner: CalculatorTool = {
     ] },
   ],
   compute: (v) => {
-    const t = (TESTS[v.test] || TESTS.glu)!;
+    const t = (TESTS[String(v.test)] || TESTS.glu)!;
     const val = Number(v.value) || 0;
     let interpretation = 'В пределах нормы (РФ)';
     let color = '#22C55E';

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: asean — ASEAN clinical guidelines coordination */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -161,7 +160,7 @@ const runner: CalculatorTool = {
         ],
       },
     };
-    const e = map[c];
+    const e = map[c]!;
     return {
       value: e.name,
       unit: 'ASEAN',

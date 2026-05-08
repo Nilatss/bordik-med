@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: head-growth
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
@@ -96,7 +95,7 @@ const runner: CalculatorTool = {
             const muac = Number(v.muac);
             // Упрощённые WHO-LMS (мальчики; для девочек ~ −0.5 см)
             // Референсные данные WHO Child Growth Standards 2006
-            const boysHC = {
+            const boysHC: Record<number, { m: number; sd: number }> = {
                 0: {
                     m: 34.5,
                     sd: 1.3
@@ -147,11 +146,11 @@ const runner: CalculatorTool = {
                 }
             };
             const keys = Object.keys(boysHC).map(Number).sort((a, b)=>a - b);
-            let k = keys[0];
+            let k = keys[0]!;
             for (const kk of keys){
                 if (kk <= age) k = kk;
             }
-            const ref = boysHC[k];
+            const ref = boysHC[k]!;
             const mean = sex === 'f' ? ref.m - 0.5 : ref.m;
             const z = (hc - mean) / ref.sd;
             let interpretation = '', color = '#22C55E';

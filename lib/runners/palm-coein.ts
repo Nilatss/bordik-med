@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: palm-coein - классификация аномальных маточных кровотечений (FIGO 2011) */
 import type {
   CalculatorTool,
@@ -95,7 +94,7 @@ const runner: CalculatorTool = {
         actions: ['Расширенная визуализация (МРТ)', 'Биопсия при подозрении на эндометрит'],
       },
     };
-    const m = (map[c] || map.N)!;
+    const m = (map[String(c)] || map.N)!;
     return {
       value: m.title,
       unit: '',

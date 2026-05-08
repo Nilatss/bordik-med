@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: intergrowth
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
@@ -113,7 +112,7 @@ const runner: CalculatorTool = {
             const l = Number(v.length);
             const hc = Number(v.hc);
             // Fenton 2013 median weight (grams) by GA - simplified interpolation
-            const fentonWeight = {
+            const fentonWeight: Record<string, { ga: number; med: number; sd: number }[]> = {
                 m: [
                     {
                         ga: 24,
@@ -220,11 +219,11 @@ const runner: CalculatorTool = {
                 ]
             };
             const tbl = (fentonWeight[sex] || fentonWeight.m)!;
-            let lo = tbl[0], hi = tbl[tbl.length - 1];
+            let lo = tbl[0]!, hi = tbl[tbl.length - 1]!;
             for(let i = 0; i < tbl.length - 1; i++){
-                if (ga >= tbl[i].ga && ga <= tbl[i + 1].ga) {
-                    lo = tbl[i];
-                    hi = tbl[i + 1];
+                if (ga >= tbl[i]!.ga && ga <= tbl[i + 1]!.ga) {
+                    lo = tbl[i]!;
+                    hi = tbl[i + 1]!;
                     break;
                 }
             }

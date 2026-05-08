@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: cdc-growth
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
@@ -95,7 +94,7 @@ const runner: CalculatorTool = {
             const h = Number(v.height);
             const bmi = w / Math.pow(h / 100, 2);
             // BMI-for-age approximate LMS median and SD (CDC 2000) by sex
-            const bmiTable = {
+            const bmiTable: Record<string, { age: number; med: number; sd: number }[]> = {
                 m: [
                     {
                         age: 2,
@@ -182,11 +181,11 @@ const runner: CalculatorTool = {
                 ]
             };
             const table = (bmiTable[String(v.sex)] || bmiTable.m)!;
-            let lo = table[0], hi = table[table.length - 1];
+            let lo = table[0]!, hi = table[table.length - 1]!;
             for(let i = 0; i < table.length - 1; i++){
-                if (age >= table[i].age && age <= table[i + 1].age) {
-                    lo = table[i];
-                    hi = table[i + 1];
+                if (age >= table[i]!.age && age <= table[i + 1]!.age) {
+                    lo = table[i]!;
+                    hi = table[i + 1]!;
                     break;
                 }
             }

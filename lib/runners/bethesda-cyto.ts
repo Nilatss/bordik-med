@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: bethesda-cyto - цитология шейки матки (Bethesda System 2014) */
 import type {
   CalculatorTool,
@@ -54,7 +53,7 @@ const runner: CalculatorTool = {
       ais: { title: 'AIS', action: 'Диагностическая эксцизия (cold-knife cone)', color: '#DC2626', desc: 'AIS: конизация с отрицательными краями; гистерэктомия при завершённом деторождении.' },
       adeno: { title: 'Аденокарцинома', action: 'Онкогинеколог; FIGO стадирование', color: '#7F1D1D', desc: 'Инвазивная аденокарцинома - онкологическое ведение.' },
     };
-    const m = (map[r] || map.nilm)!;
+    const m = (map[String(r)] || map.nilm)!;
     return {
       value: m.title,
       unit: '',

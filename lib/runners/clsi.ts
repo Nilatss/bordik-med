@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: clsi — CLSI reference intervals + critical values */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,
@@ -39,7 +38,7 @@ const runner: CalculatorTool = {
     ] },
   ],
   compute: (v) => {
-    const t = (TESTS[v.test] || TESTS.na)!;
+    const t = (TESTS[String(v.test)] || TESTS.na)!;
     const val = Number(v.value) || 0;
     let interpretation = 'В норме';
     let color = '#22C55E';

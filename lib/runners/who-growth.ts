@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: who-growth
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
@@ -99,7 +98,7 @@ const runner: CalculatorTool = {
             const w = Number(v.weight);
             const h = Number(v.height);
             // Упрощённые медианы WHO (2006) по полу и возрасту (кг и см) - reference anchors
-            const anchors = {
+            const anchors: Record<string, { age: number; wMed: number; wSD: number; hMed: number; hSD: number }[]> = {
                 m: [
                     {
                         age: 0,
@@ -219,11 +218,11 @@ const runner: CalculatorTool = {
             };
             const table = (anchors[sex] || anchors.m)!;
             // linear interpolation between anchors
-            let lo = table[0], hi = table[table.length - 1];
+            let lo = table[0]!, hi = table[table.length - 1]!;
             for(let i = 0; i < table.length - 1; i++){
-                if (age >= table[i].age && age <= table[i + 1].age) {
-                    lo = table[i];
-                    hi = table[i + 1];
+                if (age >= table[i]!.age && age <= table[i + 1]!.age) {
+                    lo = table[i]!;
+                    hi = table[i + 1]!;
                     break;
                 }
             }
@@ -239,7 +238,7 @@ const runner: CalculatorTool = {
             const bmiMed = wMed / Math.pow(hMed / 100, 2);
             const zBMI = (bmi - bmiMed) / (bmiMed * 0.08); // rough CV-based SD ~8%
             // percentile from z (normal CDF approximation)
-            const pct = (z)=>{
+            const pct = (z: number)=>{
                 const p = 0.5 * (1 + Math.sign(z) * Math.sqrt(1 - Math.exp(-2 * z * z / Math.PI)));
                 return Math.max(0.1, Math.min(99.9, p * 100));
             };
