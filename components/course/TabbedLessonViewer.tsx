@@ -2,13 +2,21 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import type { ReactNode } from 'react';
-import { Children, cloneElement, isValidElement } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeSanitize from 'rehype-sanitize';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useT } from '@/lib/i18n';
 import { safeUrlTransform, sanitizeSchema } from '@/lib/safe-markdown';
+// P1-CR-3 — pure helpers вынесены в lib/course/. Уменьшает главный
+// компонент с 890 LOC до ~600. См. также lesson-tabs.ts (Tab + splitIntoTabs).
+import {
+  preprocessContent,
+  parseGlossary,
+  stripLeadingEmoji,
+  extractText,
+} from '@/lib/course/lesson-utils';
+import { splitIntoTabs, type Tab } from '@/lib/course/lesson-tabs';
 import { BookOpen } from '@/components/icons';
 import TestPanel from './TestPanel';
 import { CourseIllustration } from './CourseIllustrations';
@@ -16,79 +24,10 @@ import InlineQuiz from './InlineQuiz';
 import DownloadableTable from './DownloadableTable';
 import CourseProgressBar from './CourseProgressBar';
 
-/**
- * Convert single-column tables that hold ℹ/⚠/📷/✓ callouts back into
- * blockquotes (so they render as styled callouts), and normalize dashes.
- * Multi-column tables are left untouched.
- */
-function preprocessContent(md: string): string {
-  // Replace em-dash / en-dash with hyphen
-  let result = md.replace(/-/g, '-').replace(/-/g, '-');
-
-  const lines = result.split('\n');
-  const out: string[] = [];
-
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i] ?? '';
-    const next = lines[i + 1] ?? '';
-
-    // Detect a table start: header row `| ... |` followed by separator `| --- | ... |`
-    const isHeader = /^\|.+\|\s*$/.test(line) && /^\|\s*---/.test(next);
-    if (!isHeader) {
-      out.push(line);
-      continue;
-    }
-
-    // Read full table block
-    const tableLines: string[] = [line, next];
-    let j = i + 2;
-    while (j < lines.length) {
-      const li = lines[j];
-      if (!li || !/^\|.+\|\s*$/.test(li)) break;
-      tableLines.push(li);
-      j++;
-    }
-    // Column count from separator
-    const sepCells = next.split('|').slice(1, -1);
-    const colCount = sepCells.length;
-
-    // Single column + first row contains ℹ/⚠/📷/✓ -> callout
-    const headerText = line.replace(/^\|\s*|\s*\|$/g, '').trim();
-    const emojiMatch = headerText.match(/^(ℹ|⚠|📷|✓|✅|🎯|💡)\s*(.*)$/);
-    if (colCount === 1 && emojiMatch) {
-      // Split title from body via <br>
-      const parts = headerText.split(/<br>/i).map((s) => s.trim()).filter(Boolean);
-      const firstEmoji = emojiMatch[1] ?? '';
-      const title = (parts[0] ?? '').replace(/^(ℹ|⚠|📷|✓|✅|🎯|💡)\s*/, '').trim();
-      // Unescape \| (used in source to protect pipes inside table cells) → |
-      const unescape = (s: string) => s.replace(/\\\|/g, '|');
-      const body = parts.slice(1).map(unescape).map((p) => {
-        // If a line has ` | ` separators, it's a definition list - render as bullet list
-        if (/ \| /.test(p) && !/^(Пример|Важно|Значит|Итог|Запомни)[:：]/i.test(p)) {
-          const items = p.split(/ \| /).map((s) => s.trim()).filter(Boolean);
-          if (items.length >= 2) {
-            return items.map((it) => `- ${it}`).join('\n> ');
-          }
-        }
-        // Bold leading keyword like "Пример:", "Значит:", "Итог:", "Запомни:" etc.
-        return p.replace(/^(Пример|Важно|Значит|Итог|Запомни|Вывод|Ключевое|Правило|Формула|Факт|Совет|Внимание)([:：])\s*/i,
-          '**$1$2** ');
-      });
-      const bqLines = [`${firstEmoji} **${title}**`, ...body];
-      // Join with `>\n>` to create blank line between paragraphs inside blockquote
-      out.push(bqLines.map((l) => '> ' + l).join('\n>\n'));
-      out.push('');
-      i = j - 1;
-      continue;
-    }
-
-    // Regular table - keep as is
-    for (const tl of tableLines) out.push(tl);
-    i = j - 1;
-  }
-
-  return out.join('\n');
-}
+// Re-export для backward compatibility — CoursePage.tsx импортирует
+// { splitIntoTabs, type Tab } отсюда.
+export { splitIntoTabs, type Tab } from '@/lib/course/lesson-tabs';
+export { parseGlossary } from '@/lib/course/lesson-utils';
 
 function GlossaryView({ body }: { body: string }) {
   const { intro, terms } = parseGlossary(body);
@@ -136,78 +75,10 @@ function GlossaryView({ body }: { body: string }) {
   );
 }
 
-/** Parse a glossary block (plain-text "Term: description" lines) into cards data */
-export function parseGlossary(body: string): { intro: string; terms: { term: string; def: string }[] } {
-  const GLOSSARY_RE = /^([A-Za-zА-ЯЁа-яё0-9][A-Za-zА-ЯЁа-яё0-9 \-()/+]{1,40}):\s+(.+)$/;
-  const lines = body.split('\n');
-  const intro: string[] = [];
-  const terms: { term: string; def: string }[] = [];
-  let foundFirstTerm = false;
-  for (const raw of lines) {
-    const line = raw.trim();
-    if (!line) continue;
-    const m = line.match(GLOSSARY_RE);
-    if (m && m[1] && m[2]) {
-      foundFirstTerm = true;
-      terms.push({ term: m[1].trim(), def: m[2].trim() });
-    } else if (!foundFirstTerm) {
-      intro.push(line);
-    }
-  }
-  return { intro: intro.join(' '), terms };
-}
-
-const EMOJI_RE = /^(ℹ|⚠|📷|✓|✅|🎯|💡|i)\s*/;
-
-/** Strip leading emoji/marker from the first text node of children tree. */
-function stripLeadingEmoji(children: ReactNode): ReactNode {
-  const arr = Children.toArray(children);
-  for (let i = 0; i < arr.length; i++) {
-    const el = arr[i];
-    if (typeof el === 'string') {
-      const stripped = el.replace(EMOJI_RE, '');
-      if (stripped !== el) {
-        arr[i] = stripped;
-        return arr;
-      }
-      if (el.trim() === '') continue;
-      return arr;
-    }
-    if (isValidElement(el)) {
-      const props = (el as { props: { children: ReactNode } }).props;
-      const newChildren = stripLeadingEmoji(props.children);
-      if (newChildren !== props.children) {
-        arr[i] = cloneElement(el as React.ReactElement<{ children?: ReactNode }>, {}, newChildren);
-        return arr;
-      }
-      return arr;
-    }
-  }
-  return arr;
-}
-
-function extractText(node: ReactNode): string {
-  if (typeof node === 'string') return node;
-  if (Array.isArray(node)) return node.map(extractText).join('');
-  if (node && typeof node === 'object' && 'props' in node) {
-    return extractText((node as { props: { children: ReactNode } }).props.children);
-  }
-  return '';
-}
-
 interface Props {
   content: string | null;
   courseId: string;
   showTests?: boolean;
-}
-
-export interface Tab {
-  id: string;
-  title: string;
-  short: string;
-  iconKey: string;
-  body: string;
-  kind?: 'tests' | 'selfcheck';
 }
 
 const TabIcon = ({ name, size = 16 }: { name: string; size?: number }) => {
@@ -310,90 +181,6 @@ const TabIcon = ({ name, size = 16 }: { name: string; size?: number }) => {
       );
   }
 };
-
-/** Split markdown by top-level `# ` headings into tabs. */
-export function splitIntoTabs(md: string): Tab[] {
-  const lines = md.split('\n');
-  const tabs: Tab[] = [];
-  let current: Tab | null = null;
-  let buffer: string[] = [];
-
-  const flush = () => {
-    if (current) {
-      current.body = buffer.join('\n').trim();
-      tabs.push(current);
-    }
-  };
-
-  for (const line of lines) {
-    const h1 = line.match(/^#\s+(.+)$/);
-    if (h1 && h1[1]) {
-      flush();
-      const title = h1[1].trim();
-      // Skip "Что дальше?" / "Заключение" sections entirely
-      if (/заключ|что дальше/i.test(title)) {
-        current = null;
-        buffer = [];
-        continue;
-      }
-      // Pick icon key and shortname based on subject
-      let iconKey = 'intro';
-      let short = title;
-
-      if (/введение/i.test(title)) {
-        iconKey = 'intro';
-        short = 'Введение';
-      } else if (/глоссарий/i.test(title)) {
-        iconKey = 'glossary';
-        short = 'Глоссарий';
-      } else if (/контроль|самопровер/i.test(title)) {
-        iconKey = 'check';
-        short = 'Самопроверка';
-        current = { id: `t${tabs.length}`, title, short, iconKey, body: '', kind: 'selfcheck' };
-        buffer = [];
-        continue;
-      } else if (/биолог/i.test(title)) {
-        iconKey = 'biology';
-        short = 'Биология';
-      } else if (/хим/i.test(title)) {
-        iconKey = 'chemistry';
-        short = 'Химия';
-      } else if (/физик/i.test(title)) {
-        iconKey = 'physics';
-        short = 'Физика';
-      } else if (/математик|статист/i.test(title)) {
-        iconKey = 'math';
-        short = 'Математика';
-      } else if (/психолог/i.test(title)) {
-        iconKey = 'psychology';
-        short = 'Психология';
-      } else if (/англ|язык/i.test(title)) {
-        iconKey = 'language';
-        short = 'Английский';
-      } else if (/учить|обуч/i.test(title)) {
-        iconKey = 'learning';
-        short = 'Как учиться';
-      } else {
-        // Fallback: take text after "Тема N. " and before " - "
-        const m = title.match(/^Тема\s+\d+\.?\s*(.+)$/i);
-        const baseTxt = m && m[1] ? m[1] : title;
-        const rest = (baseTxt.split(/[--:]/)[0] ?? baseTxt).trim();
-        short = rest.length > 22 ? rest.slice(0, 20) + '…' : rest;
-      }
-
-      current = { id: `t${tabs.length}`, title, short, iconKey, body: '' };
-      buffer = [];
-    } else {
-      if (!current) {
-        // Content before first h1 - skip or collect as intro
-        continue;
-      }
-      buffer.push(line);
-    }
-  }
-  flush();
-  return tabs;
-}
 
 export default function TabbedLessonViewer({ content, courseId, showTests = true }: Props) {
   const t = useT();
