@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: tsh - TSH reflex panel interpretation */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -31,7 +30,8 @@ hint: 'Свободный T3. Норма: 3.5-6.5 пмоль/л', label: 'сво
     const ft4High = ft4 > 22;
     const ft4Low = ft4 < 12;
 
-    let band = '', color = '#22C55E', details = '', actions = [];
+    let band = '', color = '#22C55E', details = '';
+    let actions: string[] = [];
 
     if (tsh >= tshLo && tsh <= tshHi) {
       if (ft4Normal) {

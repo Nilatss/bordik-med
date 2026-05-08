@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: psa */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,
@@ -35,7 +34,7 @@ hint: 'Концентрация в нг/мл', label: 'PSA #3 (последни�
     const n = 3;
     const sumT = ts.reduce((s, x) => s + x, 0);
     const sumP = ps.reduce((s, x) => s + x, 0);
-    const sumTP = ts.reduce((s, x, i) => s + x * ps[i], 0);
+    const sumTP = ts.reduce((s, x, i) => s + x * (ps[i] ?? 0), 0);
     const sumTT = ts.reduce((s, x) => s + x * x, 0);
     const denom = n * sumTT - sumT * sumT;
     const velocity = denom !== 0 ? (n * sumTP - sumT * sumP) / denom : 0;
@@ -43,7 +42,7 @@ hint: 'Концентрация в нг/мл', label: 'PSA #3 (последни�
     // Doubling time: ln2 / slope of ln(PSA) vs t
     const lps = ps.map(p => Math.log(Math.max(p, 0.001)));
     const sumLP = lps.reduce((s, x) => s + x, 0);
-    const sumTLP = ts.reduce((s, x, i) => s + x * lps[i], 0);
+    const sumTLP = ts.reduce((s, x, i) => s + x * (lps[i] ?? 0), 0);
     const slope = denom !== 0 ? (n * sumTLP - sumT * sumLP) / denom : 0;
     const dtYears = slope > 0 ? Math.log(2) / slope : Infinity;
     const dtMonths = isFinite(dtYears) ? dtYears * 12 : Infinity;

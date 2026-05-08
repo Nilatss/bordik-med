@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: forrester
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
@@ -54,7 +53,7 @@ const runner: CalculatorTool = {
     ],
     compute: (v)=>{
             const key = `${v.perf}-${v.cong}`;
-            const map = {
+            const map: Record<string, { p: string; tx: string; color: string }> = {
                 'warm-dry': {
                     p: 'A - теплый/сухой',
                     tx: 'Компенсированная ХСН. Поддерживающая терапия.',
@@ -107,7 +106,7 @@ const runner: CalculatorTool = {
                     title: "Сердечно-сосудистая физиология"
                 }
             ];
-            const actionsMap = {
+            const actionsMap: Record<string, { details: string; actions: string[] }> = {
                 'warm-dry': {
                     details: 'Компенсированное состояние (профиль A). Оптимизируйте базовую терапию сердечной недостаточности - продолжать "fab four" GDMT.',
                     actions: [

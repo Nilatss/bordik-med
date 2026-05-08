@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: sanford */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,
@@ -56,7 +55,7 @@ const runner: CalculatorTool = {
     };
     const e = map[key] || { first: 'См. Sanford Guide для точной комбинации', alt: '—', duration: 'См. руководство', note: 'Уточните в приложении Sanford Guide' };
     return {
-      value: e.first.split(' ИЛИ ')[0].split(';')[0],
+      value: e.first.split(' ИЛИ ')[0]!.split(';')[0]!,
       unit: 'Sanford',
       interpretation: `${s} · ${p}`,
       color: '#22C55E',

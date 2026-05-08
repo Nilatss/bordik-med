@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: figo-onco */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,
@@ -38,7 +37,7 @@ const runner: CalculatorTool = {
     const siteName = site === 'cervix' ? 'шейки матки' : site === 'endometrium' ? 'эндометрия' : 'яичника';
 
     // 5-year survival by stage & site
-    const survival = {
+    const survival: Record<string, Record<string, string>> = {
       cervix: { I: '80-93%', II: '58-65%', III: '32-35%', IV: '15-17%' },
       endometrium: { I: '88-95%', II: '70-80%', III: '45-60%', IV: '15-20%' },
       ovary: { I: '85-92%', II: '65-70%', III: '35-45%', IV: '15-20%' },
@@ -46,7 +45,7 @@ const runner: CalculatorTool = {
 
     const color = stageNum === 1 ? '#22C55E' : stageNum === 2 ? '#F59E0B' : stageNum === 3 ? '#EF4444' : '#991B1B';
 
-    const actions = {
+    const actions: Record<string, string[]> = {
       cervix: [
         'IA1: конизация (при желании сохранить фертильность) или гистерэктомия',
         'IA2-IB1: радикальная гистерэктомия + ТЛАЭ; альтернатива — ХЛТ',
@@ -71,8 +70,8 @@ const runner: CalculatorTool = {
       value: `FIGO ${stage}`,
       interpretation: `FIGO ${stage} рака ${siteName}`,
       color,
-      details: `5-летняя выживаемость: ${survival[site][stage]}.`,
-      actions: actions[site],
+      details: `5-летняя выживаемость: ${survival[site]?.[stage] ?? 'данные недоступны'}.`,
+      actions: actions[site] ?? [],
       caveats: [
         'FIGO 2018 (шейка матки), FIGO 2009 (эндометрий, с изменениями 2023), FIGO 2014 (яичник)',
         'Стадирование хирургическое для эндометрия и яичника; клинико-визуализационное для шейки',

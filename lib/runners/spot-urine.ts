@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: spot-urine - Spot urine panel (FENa, FEUrea, UACR, UPCR, UCa/Cr) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -20,7 +19,8 @@ const runner: CalculatorTool = {
     const test = String(v.test);
     const val = Number(v.value);
 
-    let band = '', color = '#22C55E', details = '', actions = [];
+    let band = '', color = '#22C55E', details = '';
+    let actions: string[] = [];
 
     if (test === 'uacr') {
       // UACR mg/g creatinine - KDIGO albuminuria categories A1-A3

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: impact
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
@@ -185,7 +184,7 @@ const runner: CalculatorTool = {
             let risk = 0;
             risk += Math.max(0, age - 40) * 0.03;
             // Motor: lower = worse
-            const motorPts = {
+            const motorPts: Record<number, number> = {
                 1: 1.5,
                 2: 1.3,
                 3: 1.0,
@@ -201,7 +200,7 @@ const runner: CalculatorTool = {
             if (hypoxia) risk += 0.5;
             if (hypotension) risk += 0.7;
             // Marshall
-            const marshallPts = {
+            const marshallPts: Record<string, number> = {
                 '1': 0,
                 '2': 0.2,
                 '3': 0.8,

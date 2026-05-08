@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: velscope - VELscope + oral cancer screening */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -25,7 +24,8 @@ const runner: CalculatorTool = {
     const finding = String(v.finding);
     const risk = !!v.risk;
 
-    let band = '', color = '#22C55E', details = '', actions = [];
+    let band = '', color = '#22C55E', details = '';
+    let actions: string[] = [];
 
     if (finding === 'normal') {
       band = 'Норма';

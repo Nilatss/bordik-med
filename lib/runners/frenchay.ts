@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: frenchay - Frenchay Dysarthria Assessment (FDA-2) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -38,19 +37,19 @@ const runner: CalculatorTool = {
     else { band = 'Тяжёлая дизартрия'; color = '#EF4444'; details = 'Выраженные нарушения — потенциально нужны AAC (альтернативная коммуникация).'; }
 
     const weakest: string[] = [];
-    keys.forEach((k, i) => { if (scores[i] <= 1) weakest.push(k); });
+    keys.forEach((k, i) => { if (scores[i]! <= 1) weakest.push(k); });
 
     return {
       value: String(total),
       unit: `/${max} (${pct}%)`,
       interpretation: band,
       color,
-      details: `${details} Интеллигибельность: ${scores[7]}/4.${weakest.length ? ' Наиболее нарушены: ' + weakest.join(', ') + '.' : ''}`,
+      details: `${details} Интеллигибельность: ${scores[7] ?? 0}/4.${weakest.length ? ' Наиболее нарушены: ' + weakest.join(', ') + '.' : ''}`,
       actions: [
         'Выявить тип дизартрии по Mayo (спастическая / атактическая / гипокинетическая / гиперкинетическая / вялая / смешанная)',
         'Оценить глотание (dysphagia screen) — частая коморбидность',
         total < 20 ? 'Направить к логопеду; индивидуальная программа 10-20 сессий' : 'Мониторинг + домашние упражнения',
-        scores[5] <= 1 ? 'Голосовая терапия (LSVT LOUD при болезни Паркинсона)' : '',
+        (scores[5] ?? 0) <= 1 ? 'Голосовая терапия (LSVT LOUD при болезни Паркинсона)' : '',
         total < 12 ? 'Оценить необходимость AAC (речевые приложения, коммуникативные доски)' : '',
         'Связать с этиологией: инсульт, БАС, Паркинсон, ЧМТ, ДЦП, рассеянный склероз',
       ].filter(Boolean),
