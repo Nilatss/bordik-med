@@ -18,6 +18,9 @@ import { MemoisedMarkdown } from './view/Markdown';
 import { InputField } from './view/InputField';
 import { ResultCard } from './view/Result';
 import { linkify } from './view/linkify';
+import { TabIcon } from './view/TabIcon';
+import { NavButton, BackButton } from './view/Nav';
+import { cleanReference, shortRef } from '@/lib/tool-view/refs';
 
 /* slugify, URL_REGEX, shortenTitle, iconKeyForTitle, buildInfoTabs, Tab → lib/tool-view/ (P1-CR-3 step 1). */
 /* linkify → ./view/linkify.tsx (P1-CR-3 step 4). */
@@ -461,141 +464,11 @@ function CalculatorBody({ inputs, values, setValues, result }: {
 }
 
 /* ResultCard, ResultSection, ResultScale → ./view/Result.tsx (P1-CR-3 step 4). */
-
-/* ════════════════ Navigation button (Prev/Next) ════════════════ */
-
-function NavButton({ onClick, label, dir, primary }: {
-  onClick: () => void; label: string; dir: 'prev' | 'next'; primary?: boolean;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      style={{
-        display: 'inline-flex', alignItems: 'center', gap: 8,
-        padding: '10px 16px',
-        background: primary ? '#3B82F6' : '#F5F6F8',
-        color: primary ? '#FFFFFF' : '#1A1A1A',
-        border: 'none', borderRadius: 10,
-        cursor: 'pointer',
-        fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: primary ? 600 : 500,
-        transition: 'background 180ms',
-        maxWidth: '50%',
-        overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.background = primary ? '#2563EB' : '#EFF1F4';
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.background = primary ? '#3B82F6' : '#F5F6F8';
-      }}
-    >
-      {dir === 'prev' ? '← ' : ''}{label}{dir === 'next' ? ' →' : ''}
-    </button>
-  );
-}
-
-/* ════════════════ Tab icons ════════════════ */
-
-function TabIcon({ name, size = 16 }: { name: string; size?: number }) {
-  const p = { fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const };
-  const s = size;
-  switch (name) {
-    case 'calc':
-      return (<svg width={s} height={s} viewBox="0 0 24 24" {...p}><rect x={4} y={2} width={16} height={20} rx={2}/><line x1={8} y1={6} x2={16} y2={6}/><circle cx={8} cy={10.5} r={0.5}/><circle cx={12} cy={10.5} r={0.5}/><circle cx={16} cy={10.5} r={0.5}/><circle cx={8} cy={14.5} r={0.5}/><circle cx={12} cy={14.5} r={0.5}/><circle cx={16} cy={14.5} r={0.5}/><circle cx={8} cy={18.5} r={0.5}/><circle cx={12} cy={18.5} r={0.5}/><circle cx={16} cy={18.5} r={0.5}/></svg>);
-    case 'info':
-      return (<svg width={s} height={s} viewBox="0 0 24 24" {...p}><circle cx={12} cy={12} r={10}/><line x1={12} y1={16} x2={12} y2={12}/><line x1={12} y1={8} x2={12.01} y2={8}/></svg>);
-    case 'clock':
-      return (<svg width={s} height={s} viewBox="0 0 24 24" {...p}><circle cx={12} cy={12} r={10}/><polyline points="12,6 12,12 16,14"/></svg>);
-    case 'formula':
-      return (<svg width={s} height={s} viewBox="0 0 24 24" {...p}><path d="M4 20h4l6-16h4"/><line x1={4} y1={12} x2={12} y2={12}/></svg>);
-    case 'bar':
-      return (<svg width={s} height={s} viewBox="0 0 24 24" {...p}><line x1={6} y1={20} x2={6} y2={14}/><line x1={12} y1={20} x2={12} y2={8}/><line x1={18} y1={20} x2={18} y2={4}/></svg>);
-    case 'action':
-      return (<svg width={s} height={s} viewBox="0 0 24 24" {...p}><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>);
-    case 'compare':
-      return (<svg width={s} height={s} viewBox="0 0 24 24" {...p}><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>);
-    case 'warn':
-      return (<svg width={s} height={s} viewBox="0 0 24 24" {...p}><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1={12} y1={9} x2={12} y2={13}/><line x1={12} y1={17} x2={12.01} y2={17}/></svg>);
-    case 'check':
-      return (<svg width={s} height={s} viewBox="0 0 24 24" {...p}><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>);
-    case 'germ':
-      return (<svg width={s} height={s} viewBox="0 0 24 24" {...p}><circle cx={12} cy={12} r={5}/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2 2M16.4 16.4l2 2M5.6 18.4l2-2M16.4 7.6l2-2"/></svg>);
-    case 'child':
-      return (<svg width={s} height={s} viewBox="0 0 24 24" {...p}><circle cx={12} cy={8} r={4}/><path d="M6 22v-3c0-2 2-4 6-4s6 2 6 4v3"/></svg>);
-    case 'preg':
-      return (<svg width={s} height={s} viewBox="0 0 24 24" {...p}><circle cx={12} cy={7} r={3}/><path d="M9 22c0-5 1-8 3-8s3 3 3 8"/></svg>);
-    case 'pulse':
-      return (<svg width={s} height={s} viewBox="0 0 24 24" {...p}><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>);
-    case 'shield':
-      return (<svg width={s} height={s} viewBox="0 0 24 24" {...p}><path d="M12 2l9 4v6c0 5.5-4 10-9 10S3 17.5 3 12V6z"/></svg>);
-    case 'numbers':
-      return (<svg width={s} height={s} viewBox="0 0 24 24" {...p}><line x1={10} y1={4} x2={8} y2={20}/><line x1={16} y1={4} x2={14} y2={20}/><line x1={4} y1={9} x2={20} y2={9}/><line x1={4} y1={15} x2={20} y2={15}/></svg>);
-    case 'link':
-      return (<svg width={s} height={s} viewBox="0 0 24 24" {...p}><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>);
-    case 'book':
-      return (<svg width={s} height={s} viewBox="0 0 24 24" {...p}><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>);
-    case 'doc':
-    default:
-      return (<svg width={s} height={s} viewBox="0 0 24 24" {...p}><rect x={4} y={3} width={16} height={18} rx={2}/><line x1={8} y1={9} x2={16} y2={9}/><line x1={8} y1={13} x2={16} y2={13}/><line x1={8} y1={17} x2={12} y2={17}/></svg>);
-  }
-}
+/* NavButton, BackButton → ./view/Nav.tsx (P1-CR-3 step 5). */
+/* TabIcon → ./view/TabIcon.tsx (P1-CR-3 step 5). */
+/* cleanReference, shortRef → lib/tool-view/refs.ts (P1-CR-3 step 5). */
 
 /* ════════════════ Header ════════════════ */
-
-/**
- * Full citation cleanup for the Источник tab body.
- * Keeps author + journal + year, strips formulas/doses/threshold values.
- * Year (4-digit) is preserved.
- */
-function cleanReference(ref: string): string {
-  if (!ref) return '';
-  // Remove obvious formulas like "= ... expr ..." / ": value threshold stuff"
-  // but keep if the segment contains a 4-digit year.
-  const segments = ref.split(/\.\s+/).map((s) => s.trim()).filter(Boolean);
-  const keep: string[] = [];
-  for (const seg of segments) {
-    // Drop segments that are pure thresholds/formulas (no year, contain math/drug dosing)
-    const hasYear = /\b(19|20)\d{2}\b/.test(seg);
-    const isFormulaOrDose = /[×÷∑√=<>≤≥±]|\bмг\b|\bмл\b|\bкг\b|\bч\b|мг\/|мл\/|кг\/|мм рт/.test(seg);
-    if (isFormulaOrDose && !hasYear) continue;
-    // Inside a kept segment, still trim after formula markers
-    let clean = seg.replace(/[:=][^.]*?([×÷=<>≤≥][^.]*)/, '').replace(/\s{2,}/g, ' ').trim();
-    if (clean) keep.push(clean);
-  }
-  return keep.join('. ') + (keep.length ? '.' : '');
-}
-
-/**
- * Extract just the citation (author + optional year + journal) from the reference string.
- * Strip formulas, thresholds, drug doses and everything that isn't bibliographic.
- *
- * Examples:
- *  "Antman EM. JAMA 2000. TIMI Risk Score for UA/NSTEMI." → "Antman EM. JAMA 2000"
- *  "ВОЗ: <18.5 / 18.5-24.9 / 25-29.9 / ≥30. Азия: 23 и 27.5." → "ВОЗ"
- *  "Parkland (Baxter): 4 мл × %TBSA × кг Ringer за 24 ч..." → "Parkland (Baxter)"
- */
-function shortRef(ref: string): string {
-  if (!ref) return '';
-  // Split by sentence; the citation is usually the first sentence.
-  // Keep only first sentence, then strip content after any of: colon, equals, formula chars.
-  let s = ref.split(/\.\s/)[0] ?? ref;
-
-  // Remove anything after formula/value markers
-  s = s.replace(/[:=].*$/, '')           // "ВОЗ: <18.5 / 18.5..." → "ВОЗ"
-       .replace(/\s-\s.*$/, '')          // "Wells 2001 - алгоритм..." → "Wells 2001"
-       .replace(/\s-\s.*$/, '');         // same with hyphen
-
-  // If still contains formula characters, keep only up to first one
-  const formulaMatch = s.match(/^(.+?)[×÷∑√=<>≤≥±][^.]*$/);
-  if (formulaMatch && formulaMatch[1]) s = formulaMatch[1].trim();
-
-  // Drop trailing punctuation and collapse whitespace
-  s = s.replace(/[,;:\s]+$/, '').trim();
-
-  // If looks like just a list of abbreviations without author, keep as-is but max 50 chars
-  if (s.length > 50) s = s.slice(0, 50).replace(/[,\s]+$/, '') + '…';
-  return s;
-}
 
 /**
  * Favourite toggle pill. Idle = neutral grey; Active = amber/gold (same
@@ -831,28 +704,6 @@ function IconBook() {
 }
 function IconGlobe() {
   return <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><circle cx={12} cy={12} r={10}/><line x1={2} y1={12} x2={22} y2={12}/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>;
-}
-
-const backBtnStyle: React.CSSProperties = {
-  display: 'inline-flex', alignItems: 'center', gap: 8,
-  background: 'transparent', border: 'none', cursor: 'pointer',
-  fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 500,
-  color: '#6B7280', padding: '6px 10px', borderRadius: 8,
-  marginBottom: 16, alignSelf: 'flex-start',
-};
-
-function BackButton({ onClick }: { onClick: () => void }) {
-  return (
-    <button
-      onClick={onClick}
-      style={backBtnStyle}
-      onMouseEnter={(e) => { e.currentTarget.style.background = '#F0F1F5'; }}
-      onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
-    >
-      <ArrowLeft size={16} />
-      Назад
-    </button>
-  );
 }
 
 /* InlineHintIcon, LabelWithHint, SelectField, InputField → ./view/InputField.tsx (P1-CR-3 step 3). */
