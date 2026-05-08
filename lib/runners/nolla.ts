@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: nolla - Nolla stages of tooth development */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -31,10 +30,10 @@ const runner: CalculatorTool = {
   ],
   compute: (v) => {
     const stage = Number(v.stage);
-    const tooth = v.tooth;
+    const tooth = Number(v.tooth);
 
     // Примерный возраст по Nolla (мальчики постоянные зубы)
-    const ageMap = {
+    const ageMap: Record<number, Record<number, number>> = {
       1: { 3: 3, 5: 6, 6: 7, 7: 8, 8: 9, 10: 10 }, // центральный резец
       2: { 3: 4, 5: 7, 6: 8, 7: 9, 8: 10, 10: 11 },
       3: { 3: 4, 5: 9, 6: 10, 7: 11, 8: 12, 10: 13 },
@@ -46,7 +45,7 @@ const runner: CalculatorTool = {
     };
 
     const estimatedAge = ageMap[tooth]?.[stage] ?? null;
-    const bands = {
+    const bands: Record<number, string> = {
       0: 'Крипта отсутствует',
       1: 'Крипта',
       2: 'Начальная кальцификация',
@@ -68,7 +67,7 @@ const runner: CalculatorTool = {
 
     return {
       value: String(stage) + '/10', unit: 'Nolla',
-      interpretation: bands[stage], color,
+      interpretation: bands[stage] ?? '', color,
       details: `Стадия Nolla ${stage}${estimatedAge ? `, ориентировочный возраст: ~${estimatedAge} лет` : ''}. ${bands[stage]}.`,
       actions: [
         'Оценка по контралатеральному зубу для асимметрии',

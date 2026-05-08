@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: figo-staging - стадирование гинекологических опухолей (FIGO 2014/2018/2023) */
 import type {
   CalculatorTool,
@@ -37,15 +36,15 @@ const runner: CalculatorTool = {
   ],
   compute: (v) => {
     const c = v.cancer;
-    const s = v.stage;
+    const s = String(v.stage);
     let title = '';
     let desc = '';
     let color = '';
     let actions: string[] = [];
-    const palette = { I: '#22C55E', II: '#F59E0B', III: '#EF4444', IV: '#7F1D1D' };
+    const palette: Record<string, string> = { I: '#22C55E', II: '#F59E0B', III: '#EF4444', IV: '#7F1D1D' };
     color = palette[s] || '#1A1A1A';
     if (c === 'cervix') {
-      const map = {
+      const map: Record<string, string> = {
         I: 'FIGO I (cervix): опухоль ограничена шейкой. IA1 (инвазия ≤ 3 мм), IA2 (3-5 мм), IB1 (≤ 2 см), IB2 (2-4 см), IB3 (> 4 см).',
         II: 'FIGO II: распространение за пределы шейки, но без перехода на нижнюю треть влагалища и стенку таза. IIA (верхние 2/3 влагалища), IIB (параметрий).',
         III: 'FIGO III: нижняя треть влагалища, гидронефроз, лимфатические узлы. IIIA (нижняя 1/3 влагалища), IIIB (стенка таза/гидронефроз), IIIC1 (тазовые ЛУ), IIIC2 (парааортальные ЛУ).',
@@ -60,7 +59,7 @@ const runner: CalculatorTool = {
         'IVB: системная химиотерапия ± таргетная (бевацизумаб, пембролизумаб)',
       ];
     } else if (c === 'endo') {
-      const map = {
+      const map: Record<string, string> = {
         I: 'FIGO I (endometrium 2023): опухоль ограничена телом матки. IA - без/с минимальной инвазией миометрия, IB - инвазия ≥ 50%, IC - агрессивная гистология.',
         II: 'FIGO II: инвазия стромы шейки или существенная LVSI / агрессивная гистология с инвазией миометрия.',
         III: 'FIGO III: местное/регионарное распространение. IIIA - серозная/придатки, IIIB - влагалище/параметрий, IIIC - ЛУ (C1 тазовые, C2 парааортальные).',
@@ -75,7 +74,7 @@ const runner: CalculatorTool = {
         'IV: системная терапия (включая пембролизумаб при dMMR)',
       ];
     } else {
-      const map = {
+      const map: Record<string, string> = {
         I: 'FIGO I (ovary 2014): опухоль в пределах яичников. IA - один яичник, капсула интактна. IB - оба. IC - разрыв/клетки в смывах.',
         II: 'FIGO II: тазовое распространение. IIA - матка/трубы, IIB - другие тазовые ткани.',
         III: 'FIGO III: перитонеальные метастазы вне таза и/или ретроперитонеальные ЛУ. IIIA - только ЛУ или микроскопия, IIIB - ≤ 2 см, IIIC - > 2 см.',
