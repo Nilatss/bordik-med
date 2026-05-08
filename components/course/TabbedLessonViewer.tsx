@@ -22,8 +22,8 @@ import { CourseIllustration } from './CourseIllustrations';
 import InlineQuiz from './InlineQuiz';
 import DownloadableTable from './DownloadableTable';
 import CourseProgressBar from './CourseProgressBar';
-import { TabIcon } from './lesson/TabIcon';
 import { GlossaryView } from './lesson/GlossaryView';
+import { LessonHeader } from './lesson/LessonHeader';
 
 // Re-export для backward compatibility — CoursePage.tsx импортирует
 // { splitIntoTabs, type Tab } отсюда.
@@ -167,21 +167,7 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
         padding: 'var(--space-6)',
         minHeight: 300,
       }}>
-        <div style={{
-          display: 'flex', alignItems: 'center', gap: 12,
-          marginBottom: 16, paddingBottom: 16,
-          borderBottom: '1px solid #F0F0F0',
-        }}>
-          <span style={{ display: 'flex', color: '#1A1A1A' }}>
-            <TabIcon name={active.iconKey} size={24} />
-          </span>
-          <h2 style={{
-            fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 700,
-            color: '#1A1A1A', lineHeight: 1.2, letterSpacing: '-0.01em',
-          }}>
-            {active.title}
-          </h2>
-        </div>
+        <LessonHeader iconKey={active.iconKey} title={active.title} />
 
         {active.kind === 'tests' ? (
           <TestPanel courseId={courseId} />
