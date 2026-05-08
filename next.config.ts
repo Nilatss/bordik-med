@@ -107,6 +107,15 @@ const nextConfig: NextConfig = {
   },
   // Hide server framework signature from response headers - small but free win
   poweredByHeader: false,
+  // P3-PERF-NEW-4 — AVIF в дополнение к WebP. AVIF на ~30% меньше WebP
+  // на cyrillic-content screenshots / illustrations / charts. Next/Image
+  // отдаёт лучший формат, который понимает браузер (Accept header negotiation):
+  // Chrome/Edge/Firefox/Safari 16.4+ → AVIF, старые Safari → WebP, IE → JPG.
+  // Cost: build time увеличивается на ~5-10s (sharp кодирует AVIF медленнее
+  // чем WebP), но это амортизируется кэшем .next/cache/images.
+  images: {
+    formats: ['image/avif', 'image/webp'],
+  },
   // Source maps must be generated so Sentry's build plugin can upload them.
   // The Sentry wrapper (`sourcemaps.deleteSourcemapsAfterUpload: true`) wipes
   // them from the public bundle right after upload, so view-source on prod
