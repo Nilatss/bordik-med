@@ -343,7 +343,7 @@ npm uninstall xlsx
 | **P2-PERF-NEW-1** | `rehype-highlight` мёртвая dep (in package.json, не импортится) | `package.json:51` | 0 байт в bundle (хорошо), но риск случайного импорта (600 KB raw / 180 KB gz). Удалить через `npm uninstall`. |
 | **P2-PERF-NEW-2** | Drug interactions JSON = **15 MB** парсится на main thread при открытии вью | `public/drug-interactions.json` (verified 15 MB) | -400-600 ms TBT на slow device при первом открытии DrugChecker. **Решение**: Worker + IndexedDB по образцу ICD search. |
 | **P2-PERF-NEW-3** | ICD-10 lookup без virtualization после "Show All" | `components/icd10/Icd10Lookup.tsx:88-158` | 500-1500 ms render для chapter 0X (16.8k codes). **Решение**: `<Virtuoso>` row height ~32px. |
-| **P2-PERF-NEW-4** | Zustand store-persist sync read из localStorage | `lib/store.ts:408-500` | 50-200 ms hydration delay. **Решение**: `onRehydrateStorage` async hook + defer до post-paint. |
+| **P2-PERF-NEW-4** | ~~Zustand store-persist sync read из localStorage~~ | `lib/store.ts:157-175` | **CLOSED 2026-05-09 — DECIDED NOT TO FIX.** Async hydration уже однажды поломала home: SSR-render `home`-stub → client post-mount swap to `SectionCards` дал **+1990 ms LCP render-delay** (Lighthouse). Fixed via stable SSR tree (`components/home/HomeApp.tsx:616-628`) — переход на async вернёт регрессию. Дополнительно: theme/language/profile-name FOUC хуже визуально, чем 5-200 ms sync delay. Inline-комментарий: `lib/store.ts:157-175`. |
 | **P2-PERF-NEW-5** | Нет `<Suspense>` вокруг lazy view-компонентов | `app/page.tsx:121-139` | 500-1500 ms на route switch (chunk download без skeleton). **Решение**: обернуть каждую `<lazy view />` в `<Suspense fallback={<ViewLoading/>}>`. |
 | **P2-PERF-NEW-6** | `react-markdown` re-mounts на tab switch (`<div key={active.id}>`) | `components/course/TabbedLessonViewer.tsx:504,545-677` | 20-50 ms на каждый tab switch (re-parse markdown AST). **Решение**: убрать key или мемоизировать AST. |
 | **P2-PERF-NEW-7** | Calculator runners не code-split per-tool | `lib/tools-runners.ts` | +100-200 KB в tools chunk (740 калькуляторов в одном модуле). **Решение**: dynamic `import()` маршрутизатор по slug. |
@@ -489,8 +489,10 @@ heap для huge expansions; smooth scroll даже на $200 девайсе.
    - P1-NEW-2 (`useMemo` на `preprocessContent`) — снимает 10-50 ms на
      interactions с course content.
    - P2-NEW-12 (`useLayoutEffect` в Sidebar) — 10-20 ms на first paint.
-   - P2-NEW-4 (Zustand persist async) — 50-200 ms hydration → не TBT, но
-     перекрашивает критический путь.
+   - ~~P2-NEW-4 (Zustand persist async) — 50-200 ms hydration → не TBT, но
+     перекрашивает критический путь.~~ **CLOSED 2026-05-09** (см. таблицу
+     §3, строка P2-PERF-NEW-4): async hydration возвращает регрессию LCP
+     +1990 ms — sync persist остаётся by design.
 2. **LCP simulated → field metrics**. Lighthouse simulated применяет
    3.3× CPU-throttle к observed на test machine. Real Cyrillic-only
    аудитория с 2-3 летним телефоном — observed × 1.5-2 = **1.5-2 s LCP**,
@@ -528,7 +530,7 @@ heap для huge expansions; smooth scroll даже на $200 девайсе.
 
 15. **P1-NEW-1** конвертация `app/page.tsx` в Server Component с
     `<HomeClient>` островом — **2 дня**, -100-300 ms TBT, открывает SSG.
-16. **P2-NEW-4** Zustand `onRehydrateStorage` async + defer persist read.
+16. ~~**P2-NEW-4** Zustand `onRehydrateStorage` async + defer persist read.~~ **CLOSED 2026-05-09** — WONTFIX из-за LCP-регрессии (см. §3 таблица).
 17. **P2-NEW-7** code-split calculator runners per-tool через router.
 18. **P2-NEW-6** мемоизация AST в TabbedLessonViewer.
 19. **P2-NEW-14** worker-offload для bilirubin/growth/drug-monograph.
@@ -575,7 +577,7 @@ heap для huge expansions; smooth scroll даже на $200 девайсе.
 ### Nice-to-have
 
 - [ ] **P1-NEW-1** Server Component refactor для home
-- [ ] **P2-NEW-4** Zustand async rehydrate
+- [x] ~~**P2-NEW-4** Zustand async rehydrate~~ — **CLOSED 2026-05-09** (WONTFIX, см. §3)
 - [ ] **P2-NEW-7** code-split runners
 - [ ] **P3-NEW-1** offline page с cached content
 - [ ] **P3-NEW-2** RUM 3-tier device

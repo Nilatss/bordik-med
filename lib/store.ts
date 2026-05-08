@@ -154,6 +154,24 @@ interface AppState {
   ) => void;
 }
 
+// P2-PERF-NEW-4 — DECIDED NOT TO FIX (закрыто 2026-05-09).
+// Audit предлагал заменить sync persist hydration на onRehydrateStorage
+// async hook + defer до post-paint, чтобы выиграть 50-200 ms «hydration
+// delay». НО:
+//   1. Зустранд persist по умолчанию использует sync localStorage read —
+//      это feature, а не bug. Render видит persisted state СРАЗУ, без
+//      flash-of-default-state.
+//   2. Async hydration уже однажды поломала Bordik: SSR рендерил initial
+//      state ('home'-stub), client-mount после async rehydrate переключал
+//      на SectionCards — content swap давал +1990 ms LCP `render-delay`
+//      на Lighthouse home-route. Fix: stable SSR tree (см.
+//      components/home/HomeApp.tsx:616-628) — переход на async снова
+//      вернул бы регрессию.
+//   3. Cyrillic content даёт worse FOUC: theme/language/profile-name
+//      flicker заметен глазу. 5-200 ms hydration < визуального FOUC.
+// Sync persist остаётся by design. См. также P2-PERF-NEW-13 в этом же
+// файле — другой пример «WONTFIX из-за конфликта с другим guard'ом».
+// Доку: docs/performance-audit-2026-05.md (P2-PERF-NEW-4 row).
 export const useAppStore = create<AppState>()(
   persist(
     (set, get) => ({
