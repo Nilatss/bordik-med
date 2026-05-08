@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import type { ReactNode } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeSanitize from 'rehype-sanitize';
@@ -9,22 +8,17 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useT } from '@/lib/i18n';
 import { safeUrlTransform, sanitizeSchema } from '@/lib/safe-markdown';
 // P1-CR-3 — pure helpers вынесены в lib/course/. Уменьшает главный
-// компонент с 890 LOC до ~600. См. также lesson-tabs.ts (Tab + splitIntoTabs).
-import {
-  preprocessContent,
-  stripLeadingEmoji,
-  extractText,
-} from '@/lib/course/lesson-utils';
+// компонент с 890 LOC до ~250. См. также lesson-tabs.ts (Tab + splitIntoTabs).
+import { preprocessContent } from '@/lib/course/lesson-utils';
 import { splitIntoTabs, type Tab } from '@/lib/course/lesson-tabs';
 import { BookOpen } from '@/components/icons';
 import TestPanel from './TestPanel';
-import { CourseIllustration } from './CourseIllustrations';
 import InlineQuiz from './InlineQuiz';
-import DownloadableTable from './DownloadableTable';
 import CourseProgressBar from './CourseProgressBar';
 import { GlossaryView } from './lesson/GlossaryView';
 import { LessonHeader } from './lesson/LessonHeader';
 import { LessonNavigation } from './lesson/LessonNavigation';
+import { LessonContent } from './lesson/LessonContent';
 
 // Re-export для backward compatibility — CoursePage.tsx импортирует
 // { splitIntoTabs, type Tab } отсюда.
@@ -187,139 +181,10 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
         ) : active.iconKey === 'glossary' ? (
           <GlossaryView body={active.body} />
         ) : (
-          <div className="lesson-content">
-            <ReactMarkdown
-              remarkPlugins={[remarkGfm]}
-              rehypePlugins={[[rehypeSanitize, sanitizeSchema]]}
-              urlTransform={safeUrlTransform}
-              components={{
-                table: ({ children, node }) => {
-                  const theadNode = (node as any)?.children?.find?.((c: any) => c.tagName === 'thead');
-                  const thRow = theadNode?.children?.find?.((c: any) => c.tagName === 'tr');
-                  const headersRaw: string[] = thRow?.children
-                    ?.filter((c: any) => c.tagName === 'th')
-                    ?.map((c: any) => extractText(c.children as never)) || [];
-                  const headers = headersRaw.map((h) => h.toLowerCase());
-                  const tbodyNode = (node as any)?.children?.find?.((c: any) => c.tagName === 'tbody');
-                  const rowCount = tbodyNode?.children?.filter?.((c: any) => c.tagName === 'tr').length || 0;
-                  const colCount = headers.length;
-
-                  // Useful table criteria - show PDF button if ANY of:
-                  // 1) Header contains reference/science keywords
-                  // 2) Table is large (3+ cols AND 4+ rows) - likely reference data
-                  const USEFUL_KEYWORDS = [
-                    // словари / термины
-                    'корень', 'префикс', 'суффикс', 'термин', 'аббревиат', 'обозначени',
-                    // нормы и значения
-                    'норма', 'референс', 'диапазон', 'показател',
-                    // препараты
-                    'препарат', 'дозировк', 'доза', 'лекарств', 'действующ',
-                    // формулы / классификации
-                    'формула', 'классификаци', 'стадия', 'стадии', 'шкала', 'балл', 'градац',
-                    // симптомы / диагнозы
-                    'симптом', 'синдром', 'критери', 'признак',
-                    'этиологи', 'патоген', 'заболеван', 'болезн', 'диагноз', 'диагностик',
-                    // анатомия / физиология
-                    'орган', 'систем', 'функция', 'роль', 'структур', 'ткань',
-                    // химия / физика
-                    'вещество', 'элемент', 'реакци', 'соединени', 'ph\b',
-                    // методы и процессы
-                    'метод', 'процесс', 'применени', 'лечени', 'терапи',
-                    // статистика / единицы
-                    'единиц', 'размер', 'масштаб',
-                  ];
-                  const hasKeyword = headers.some((h) =>
-                    USEFUL_KEYWORDS.some((kw) => new RegExp(kw).test(h))
-                  );
-                  const isLarge = colCount >= 3 && rowCount >= 4;
-                  const isUseful = hasKeyword || isLarge;
-
-                  if (!isUseful) {
-                    // Простые таблицы тоже оборачиваем в scroll-wrapper —
-                    // на узких контентных колонках (когда рядом TOC-сайдбар)
-                    // 4+ колонки иначе обрезаются справа.
-                    return (
-                      <div className="table-scroll">
-                        <table>{children}</table>
-                      </div>
-                    );
-                  }
-                  // Build a descriptive title: "<Tab> - Col1 / Col2 / Col3"
-                  const headerLabel = headersRaw.length > 0
-                    ? headersRaw
-                        .slice(0, 3)
-                        .map((h) => h.trim())
-                        .map((h) => h.charAt(0).toUpperCase() + h.slice(1))
-                        .join(' / ')
-                    : '';
-                  const contextTitle = active?.short && active.short !== 'Введение'
-                    ? active.short
-                    : ((active?.title || '').replace(/^Тема\s+\d+\.?\s*/, '').split(/[--]/)[0] ?? '').trim();
-                  const title = [contextTitle, headerLabel].filter(Boolean).join(' - ')
-                    || headerLabel
-                    || 'Справочная таблица';
-                  return (
-                    <DownloadableTable title={title}>
-                      <table>{children}</table>
-                    </DownloadableTable>
-                  );
-                },
-                blockquote: ({ children }) => {
-                  const text = extractText(children).trim();
-                  let className = 'callout';
-                  let icon = '';
-                  let label = '';
-                  if (text.startsWith('ℹ')) {
-                    className += ' callout-info';
-                    icon = 'ℹ';
-                    label = 'Информация';
-                  } else if (text.startsWith('⚠')) {
-                    className += ' callout-warning';
-                    icon = '⚠';
-                    label = 'Важно';
-                  } else if (text.startsWith('📷')) {
-                    className += ' callout-image';
-                    icon = '📷';
-                    label = 'Иллюстрация';
-                    const idMatch = text.match(/#(\d+\.\d+\.\d+)/);
-                    const illustrationId = idMatch ? idMatch[1] : null;
-                    return (
-                      <blockquote className={className}>
-                        <div className="callout-label">
-                          <span>{label}</span>
-                        </div>
-                        {illustrationId && <CourseIllustration id={illustrationId} />}
-                      </blockquote>
-                    );
-                  } else if (text.startsWith('✓') || text.startsWith('✅')) {
-                    className += ' callout-success';
-                    icon = '✓';
-                    label = 'Главное';
-                  } else if (text.startsWith('🎯')) {
-                    className += ' callout-goal';
-                    icon = '🎯';
-                    label = 'Цель';
-                  } else if (text.startsWith('💡')) {
-                    className += ' callout-tip';
-                    icon = '💡';
-                    label = 'Совет';
-                  }
-                  return (
-                    <blockquote className={className}>
-                      {icon && (
-                        <div className="callout-label">
-                          <span>{label}</span>
-                        </div>
-                      )}
-                      <div className="callout-body">{stripLeadingEmoji(children)}</div>
-                    </blockquote>
-                  );
-                },
-              }}
-            >
-              {activeBody}
-            </ReactMarkdown>
-          </div>
+          <LessonContent
+            body={activeBody}
+            tabContext={{ short: active.short, title: active.title }}
+          />
         )}
 
         <LessonNavigation
