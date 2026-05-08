@@ -10,6 +10,7 @@ import CourseHeader from './CourseHeader';
 import TabbedLessonViewer, { splitIntoTabs, type Tab } from './TabbedLessonViewer';
 import PediatricCalculator from './PediatricCalculator';
 import CourseProgressBar from './CourseProgressBar';
+import StatPill from './StatPill';
 
 interface CoursePageProps {
   courseId: string;
@@ -235,32 +236,6 @@ export default function CoursePage({ courseId }: CoursePageProps) {
           })}
         </aside>
       </div>
-    </div>
-  );
-}
-
-function StatPill({ label, value }: { label: string; value: string }) {
-  return (
-    <div style={{
-      background: '#F5F6F8',
-      borderRadius: 12,
-      padding: '12px 14px',
-      display: 'flex', flexDirection: 'column', gap: 4,
-      minWidth: 0,
-    }}>
-      <span style={{
-        fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-        color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
-      }}>
-        {label}
-      </span>
-      <span style={{
-        fontFamily: 'var(--font-body)', fontSize: 13.5, fontWeight: 600,
-        color: '#1A1A1A', lineHeight: 1.35,
-        overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-      }}>
-        {value}
-      </span>
     </div>
   );
 }
