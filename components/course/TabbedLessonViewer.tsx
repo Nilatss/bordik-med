@@ -4,21 +4,20 @@ import { useState, useMemo, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeSanitize from 'rehype-sanitize';
-import { motion, AnimatePresence } from 'framer-motion';
 import { useT } from '@/lib/i18n';
 import { safeUrlTransform, sanitizeSchema } from '@/lib/safe-markdown';
-// P1-CR-3 — pure helpers вынесены в lib/course/. Уменьшает главный
-// компонент с 890 LOC до ~250. См. также lesson-tabs.ts (Tab + splitIntoTabs).
+// P1-CR-3 — pure helpers + 7 sub-components вынесены в lib/course/ +
+// components/course/lesson/. Главный компонент сжат с 890 LOC до ~150.
 import { preprocessContent } from '@/lib/course/lesson-utils';
-import { splitIntoTabs, type Tab } from '@/lib/course/lesson-tabs';
+import { splitIntoTabs } from '@/lib/course/lesson-tabs';
 import { BookOpen } from '@/components/icons';
 import TestPanel from './TestPanel';
 import InlineQuiz from './InlineQuiz';
-import CourseProgressBar from './CourseProgressBar';
 import { GlossaryView } from './lesson/GlossaryView';
 import { LessonHeader } from './lesson/LessonHeader';
 import { LessonNavigation } from './lesson/LessonNavigation';
 import { LessonContent } from './lesson/LessonContent';
+import { LessonTOC } from './lesson/LessonTOC';
 
 // Re-export для backward compatibility — CoursePage.tsx импортирует
 // { splitIntoTabs, type Tab } отсюда.
@@ -194,152 +193,15 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
         />
       </div>
 
-      {/* RIGHT: Tabs sidebar.
-          On mobile the body is collapsed by default — header acts as a
-          toggle that shows current topic + progress and expands the full
-          list on tap. CSS keeps everything visible on desktop regardless. */}
-      <aside
-        className={`toc-sidebar${tocCollapsed ? ' is-collapsed' : ''}`}
-        style={{
-          position: 'sticky', top: 20,
-          background: '#F5F6F8',
-          borderRadius: 'var(--md-sys-shape-corner-extra-large)',
-          padding: 16,
-          display: 'flex', flexDirection: 'column', gap: 4,
-        }}
-      >
-        {/* Mobile-only toggle header. Desktop CSS hides it. */}
-        <button
-          type="button"
-          className="toc-toggle"
-          onClick={() => setTocCollapsed((v) => !v)}
-          aria-expanded={!tocCollapsed}
-        >
-          <span className="toc-toggle-label">
-            <span style={{
-              fontFamily: 'var(--font-body)', fontSize: 11,
-              fontWeight: 600, color: '#888',
-              textTransform: 'uppercase', letterSpacing: '0.08em',
-            }}>
-              {t('course.toc.title')}
-            </span>
-            <span style={{
-              fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
-              color: '#1A1A1A',
-            }}>
-              {active.short} · {activeIndex + 1}/{tabs.length}
-            </span>
-          </span>
-          <span className="toc-toggle-chevron">
-            <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="6 9 12 15 18 9" />
-            </svg>
-          </span>
-        </button>
-
-        {/* Desktop static label */}
-        <p className="toc-static-title" style={{
-          fontFamily: 'var(--font-body)', fontSize: 11,
-          fontWeight: 600, color: '#888',
-          textTransform: 'uppercase', letterSpacing: '0.08em',
-          padding: '4px 12px 6px',
-        }}>
-          {t('course.toc.title')}
-        </p>
-
-        {/* TOC body — animated open/close on mobile (the .is-collapsed CSS
-            class controls visibility on desktop = always open). framer-motion
-            animates height so the unfold matches the rest of the app. */}
-        <AnimatePresence initial={false}>
-          {!tocCollapsed && (
-            <motion.div
-              key="toc-body"
-              className="toc-body"
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.25, ease: [0.05, 0.7, 0.1, 1] }}
-              style={{ overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: 4 }}
-            >
-        {/* Live progress — striped green bar identical to the intro page */}
-        {tabs.length > 1 && (() => {
-          const pct = Math.round(((activeIndex + 1) / tabs.length) * 100);
-          return (
-            <div style={{ padding: '0 12px 10px' }}>
-              <CourseProgressBar
-                pct={pct}
-                currentLabel={t('course.intro.topicN', { n: activeIndex + 1 })}
-                endLabel={t('course.progress.ofTotal', { n: tabs.length })}
-                startCaption={t('course.progress.start')}
-                endCaption={t('course.progress.final')}
-              />
-            </div>
-          );
-        })()}
-        {tabs.map((tab, i) => {
-          const isActive = tab.id === active.id;
-          return (
-            <button
-              key={tab.id}
-              onClick={() => {
-                setActiveId(tab.id);
-                // Auto-collapse TOC on mobile so the user immediately sees
-                // the topic content; on desktop the accordion stays open.
-                if (typeof window !== 'undefined' && window.matchMedia('(max-width: 1024px)').matches) {
-                  setTocCollapsed(true);
-                }
-              }}
-              className={`toc-tab${isActive ? ' is-active' : ''}`}
-              style={{
-                position: 'relative',
-                display: 'flex', alignItems: 'center', gap: 10,
-                padding: '10px 12px',
-                color: isActive ? '#1A1A1A' : '#9CA3AF',
-                border: 'none', borderRadius: 10,
-                cursor: 'pointer', textAlign: 'left',
-                fontFamily: 'var(--font-body)', fontSize: 13,
-                fontWeight: isActive ? 600 : 500,
-                transition: 'color 200ms ease',
-              }}
-            >
-              {isActive && (
-                <motion.span
-                  layoutId="toc-active-pill"
-                  style={{
-                    position: 'absolute', inset: 0,
-                    background: '#FFFFFF',
-                    borderRadius: 10,
-                    boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 1px 3px rgba(16,24,40,0.04)',
-                    zIndex: 0,
-                  }}
-                  transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                />
-              )}
-              <span style={{
-                position: 'relative', zIndex: 1,
-                display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                width: 24, height: 24, borderRadius: '50%', flexShrink: 0,
-                background: isActive ? '#3B82F6' : '#E2E4EA',
-                color: isActive ? '#FFF' : '#9CA3AF',
-                fontSize: 11.5, fontWeight: 700,
-                transition: 'background 200ms ease, color 200ms ease',
-              }}>
-                {i + 1}
-              </span>
-              <span style={{
-                position: 'relative', zIndex: 1,
-                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-              }}>
-                {tab.short}
-              </span>
-            </button>
-          );
-        })}
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </aside>
+      {/* RIGHT: Tabs sidebar — see LessonTOC for behaviour notes. */}
+      <LessonTOC
+        tabs={tabs}
+        activeId={active.id}
+        collapsed={tocCollapsed}
+        onToggleCollapse={() => setTocCollapsed((v) => !v)}
+        onSelect={setActiveId}
+        onCollapseAfterSelect={() => setTocCollapsed(true)}
+      />
     </div>
   );
 }
