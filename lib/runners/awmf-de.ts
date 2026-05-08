@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: awmf-de — AWMF (Germany) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -170,7 +169,7 @@ const runner: CalculatorTool = {
         ],
       },
     };
-    const e = map[s];
+    const e = map[s]!;
     return {
       value: e.name,
       unit: 'AWMF',

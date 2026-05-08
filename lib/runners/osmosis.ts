@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: osmosis — Osmosis.org medical video library */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -42,7 +41,7 @@ const runner: CalculatorTool = {
       nursing: { title: 'Nursing content', count: '~400 nursing videos', format: 'NCLEX-RN aligned: med-surg, pharmacology, pathology на уровне nursing', tip: 'Включает care plans, drug classes для nurses, pediatric + OB focus' },
       patient: { title: 'Patient education', count: '~200 patient videos', format: '2-4 минуты, простой язык, translated в 15+ языков', tip: 'Хорошо использовать в приёме врача — направить пациента смотреть дома' },
     };
-    const e = map[c];
+    const e = map[c]!;
     return {
       value: e.title,
       unit: 'Osmosis',

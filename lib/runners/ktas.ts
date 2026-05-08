@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: ktas — Korean Triage and Acuity Scale */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -76,7 +75,7 @@ const runner: CalculatorTool = {
         disposition: 'Fast-track или перенаправление в амбулаторию; образовательный совет.',
       },
     };
-    const e = map[level];
+    const e = map[level]!;
     return {
       value: `KTAS Level ${level}`,
       unit: pop === 'pediatric' ? 'pKTAS' : 'KTAS',

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: evidencepoint — EvidencePoint (DynaMed alternative) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -42,7 +41,7 @@ const runner: CalculatorTool = {
       derm: { title: 'Дерматология', nav: 'Dermatology atlas со стоковыми фото + алгоритмы ведения по морфологии высыпания.' },
       primary: { title: 'Primary care / семейная', nav: 'Preventive care schedules (USPSTF) + chronic disease management (HTN/DM/CKD/COPD). Интеграция USPSTF grades A-D.' },
     };
-    const e = map[s];
+    const e = map[s]!;
     return {
       value: e.title,
       unit: 'DynaMed/EvPoint',

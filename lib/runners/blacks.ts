@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: blacks — G.V. Black Class I-VI caries classification */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -33,7 +32,7 @@ const runner: CalculatorTool = {
       'V':   { loc: 'Пришеечная треть вестибулярной/язычной поверхности всех зубов (часто абфракция/эрозия)', rest: 'Стеклоиономер (влага), композит; CPP-ACP для профилактики', color: '#F59E0B' },
       'VI':  { loc: 'Бугры моляров/премоляров и режущие края резцов (износ/абразия/кариес)', rest: 'Композит, onlay; защита от абразии (каппа при бруксизме)', color: '#84CC16' },
     };
-    const e = map[c];
+    const e = map[c]!;
     return {
       value: c,
       unit: 'Black',

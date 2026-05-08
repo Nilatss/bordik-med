@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: nice-cks — NICE Clinical Knowledge Summaries (UK) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -42,7 +41,7 @@ const runner: CalculatorTool = {
       'sore-throat': { title: 'Sore throat (acute)', summary: 'FeverPAIN или Centor score для решения об АБ', guidance: 'FeverPAIN 0-1: no АБ. 2-3: no АБ или backup. 4-5: immediate АБ — феноксиметилпенициллин 500 мг × 4 × 5-10 дней', ng: 'NG84 (2018)' },
       contracept: { title: 'Contraception', summary: 'UKMEC категории 1-4 для оценки риска методов', guidance: 'LARC (IUS/IUD/implant) — наиболее эффективны. КОК противопоказаны при мигрени с аурой (UKMEC 4)', ng: 'FSRH guidelines (integrated with CKS)' },
     };
-    const e = map[t];
+    const e = map[t]!;
     return {
       value: e.title,
       unit: 'NICE CKS',

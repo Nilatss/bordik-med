@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: china — Chinese national clinical guidelines */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -172,7 +171,7 @@ const runner: CalculatorTool = {
         ],
       },
     };
-    const e = map[s];
+    const e = map[s]!;
     return {
       value: e.name,
       unit: 'China / CMA',

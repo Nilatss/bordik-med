@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: saudi — Saudi Arabia MoH + SCFHS */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -170,7 +169,7 @@ const runner: CalculatorTool = {
         ],
       },
     };
-    const e = map[s];
+    const e = map[s]!;
     return {
       value: e.name,
       unit: 'Saudi Arabia',

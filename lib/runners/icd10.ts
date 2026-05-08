@@ -44,7 +44,7 @@ const runner: CalculatorTool = {
       'f00-f99': { title: 'Психические (F00–F99)', samples: 'F20 шизофрения; F31 биполярное; F32 деп. эпизод; F33 рекуррентное; F41 тревога; F10 алкоголь', related: 'См. DSM-5-TR / ICD-11 crosswalk' },
       's00-t98': { title: 'Травмы/отравления (S00–T98)', samples: 'S06 ЧМТ; S72 перелом бедра; T14 травма неуточ.; T78 анафилаксия; T81 осложнения мед. помощи', related: 'V–Y внешние причины' },
     };
-    const e = map[ch];
+    const e = map[ch]!;
     return {
       value: e.title.split(' ')[0],
       unit: 'ICD-10',

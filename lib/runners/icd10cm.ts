@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: icd10cm — ICD-10-CM (Clinical Modification, USA) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -62,7 +61,7 @@ const runner: CalculatorTool = {
         note: 'Neoplasm Table в Alphabetic Index: primary / secondary / CIS / benign / uncertain / unspecified',
       },
     };
-    const e = map[c];
+    const e = map[c]!;
     return {
       value: e.code,
       unit: 'ICD-10-CM',

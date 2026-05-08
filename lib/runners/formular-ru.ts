@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: formular-ru — Формуляр ЛС РФ (ЖНВЛП, ВЗН, ОНЛС) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -82,7 +81,7 @@ const runner: CalculatorTool = {
         notes: 'OTC. Макс. 4 г/сут взрослым, 60 мг/кг/сут детям.',
       },
     };
-    const e = map[d];
+    const e = map[d]!;
     return {
       value: e.name,
       unit: 'Перечни РФ',

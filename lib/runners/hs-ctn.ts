@@ -41,7 +41,7 @@ hint: 'Концентрация в нг/л', label: '1 ч (или 3 ч) знач
       'i-siemens': { rule_out: 3, low: 45, rule_in_single: 120, delta1: 6, delta3: 12 },
       'i-beckman': { rule_out: 4, low: 18, rule_in_single: 50, delta1: 5, delta3: 10 },
     };
-    const t = thresholds[assay];
+    const t = thresholds[assay]!;
     const deltaAbs = Math.abs(val1 - val0);
     const relevantDelta = interval === '1' ? t.delta1 : t.delta3;
 

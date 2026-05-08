@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: dsm-icd — DSM-5-TR vs ICD-11 / ICD-10 crosswalk */
 import type {
   CalculatorTool,
@@ -115,7 +114,7 @@ const runner: CalculatorTool = {
       },
     };
 
-    const info = crosswalk[cat];
+    const info = crosswalk[cat]!;
     const color = '#4B8DF5';
 
     return {

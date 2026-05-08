@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: imci-africa — Integrated Management of Childhood Illness (WHO/Africa) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -186,7 +185,7 @@ const runner: CalculatorTool = {
         ],
       },
     };
-    const e = countryMap[c];
+    const e = countryMap[c]!;
     return {
       value: `IMCI — ${e.name}`,
       unit: 'WHO/UNICEF IMCI',

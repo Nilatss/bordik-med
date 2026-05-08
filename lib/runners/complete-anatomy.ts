@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: complete-anatomy — Complete Anatomy (Elsevier 3D app) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -42,7 +41,7 @@ const runner: CalculatorTool = {
       microscopic: { title: 'Microscopic / Histology', features: 'Clinical histology slides + interactive tissue layers (skin, vessels, GI mucosa, etc.)', use: 'Histology teaching combining 3D и микропрепараты' },
       'female-model': { title: 'Female Full Model (добавлен 2020)', features: 'Complete Anatomy исторически имел только male full body; female full model добавлен 2020 после критики gender representation.', use: 'Gender-appropriate anatomy teaching, female-specific clinical applications' },
     };
-    const e = map[r];
+    const e = map[r]!;
     return {
       value: e.title,
       unit: 'Complete Anatomy',

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: uptodate — UpToDate (Wolters Kluwer) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -42,7 +41,7 @@ const runner: CalculatorTool = {
       peds: { title: 'Педиатрия', topics: '~2400 topics: неонатология, инфекции, развитие, подростковая медицина', grades: 'Grade 1A: вакцинация по ACIP/AAP schedule' },
       obgyn: { title: 'Акушерство/гинекология', topics: '~1800 topics: пренатальный уход, осложнения беременности, гинекологическая онкология', grades: 'Согласовано с ACOG bulletins' },
     };
-    const e = map[c];
+    const e = map[c]!;
     return {
       value: e.title,
       unit: 'UpToDate',

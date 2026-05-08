@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: icd-o — ICD-O-3 Oncology */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -46,7 +45,7 @@ const runner: CalculatorTool = {
       glioblastoma: { topo: 'C71.9 Brain, NOS', morph: '9440', behavior: '/3', grade: '4 (WHO CNS grade)', name: 'Glioblastoma, IDH-wildtype' },
       'cis-breast': { topo: 'C50.9 Breast, NOS', morph: '8500', behavior: '/2 (in situ)', grade: 'Nuclear grade 1-3', name: 'Ductal carcinoma in situ (DCIS)' },
     };
-    const e = map[t];
+    const e = map[t]!;
     const fullCode = `${e.topo.split(' ')[0]} / ${e.morph}${e.behavior.split(' ')[0]}`;
     return {
       value: fullCode,

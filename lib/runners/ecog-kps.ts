@@ -32,7 +32,7 @@ const runner: CalculatorTool = {
       4: { range: '20-10', label: 'госпитализация, поддержка жизни' },
     };
 
-    const interp = kpsMap[ecog];
+    const interp = kpsMap[ecog]!;
 
     const color = ecog === 0 ? '#22C55E'
       : ecog === 1 ? '#84CC16'

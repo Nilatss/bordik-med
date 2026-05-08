@@ -44,7 +44,7 @@ const runner: CalculatorTool = {
         examples: ['D9110 - Паллиативная помощь неотложная', 'D9222 - Общий наркоз 1-й час', 'D9230 - N2O/O2', 'D9310 - Консультация', 'D9972 - Вnешнее отбеливание'] },
     };
 
-    const m = map[cat];
+    const m = map[cat]!;
     return {
       value: m.title, unit: '',
       interpretation: `Примеры ${cat}xxx кодов`,

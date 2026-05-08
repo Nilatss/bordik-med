@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: nhg — Dutch College of General Practitioners (NHG) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -154,7 +153,7 @@ const runner: CalculatorTool = {
         ],
       },
     };
-    const e = map[t];
+    const e = map[t]!;
     return {
       value: 'NHG-Standaard',
       unit: 'Nederland',

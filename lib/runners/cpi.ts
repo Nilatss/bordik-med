@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: cpi — Community Periodontal Index (WHO) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -33,7 +32,7 @@ const runner: CalculatorTool = {
       '4': { t: 'Глубокий карман ≥6 мм', tn: 'TN III — комплексное пародонт. лечение (включая хирургию)', color: '#B91C1C' },
       'X': { t: 'Секстант исключён', tn: '—', color: '#6B7280' },
     };
-    const e = map[c];
+    const e = map[c]!;
     return {
       value: c,
       unit: 'CPI',

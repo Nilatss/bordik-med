@@ -76,7 +76,7 @@ const runner: CalculatorTool = {
                     color: '#EF4444'
                 }
             };
-            const m = map[key];
+            const m = map[key]!;
             const caveats = [
                 'Субъективная клиническая оценка - межрейтерская вариабельность',
                 '"Cold" часто недооценивается у пациентов с длительной ХСН (адаптация)',
@@ -146,7 +146,7 @@ const runner: CalculatorTool = {
                     ]
                 }
             };
-            const extras = actionsMap[key];
+            const extras = actionsMap[key]!;
             return {
                 value: m.p,
                 interpretation: m.tx,

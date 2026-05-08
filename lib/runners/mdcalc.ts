@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: mdcalc — MDCalc (evidence-based medical calculators) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -42,7 +41,7 @@ const runner: CalculatorTool = {
       ob: { title: 'Акушерство', count: '~25 калькуляторов', top: 'Bishop Score, APGAR, Gestational age, EDD (Naegele), BPP, PPH risk', evidence: 'Bishop — Level A для прогноза индукции родов' },
       endo: { title: 'Эндокринология', count: '~30 калькуляторов', top: 'HbA1c → eAG, Corrected Ca, Corrected Na, Plasma Osm, FINDRISC, HOMA-IR, Free Water Deficit', evidence: 'Corrected Ca и HbA1c conversion — consensus formulas' },
     };
-    const e = map[c];
+    const e = map[c]!;
     return {
       value: e.title,
       unit: 'MDCalc',

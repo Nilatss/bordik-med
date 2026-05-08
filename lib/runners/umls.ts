@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: umls — Unified Medical Language System */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -46,7 +45,7 @@ const runner: CalculatorTool = {
       anab: { name: 'Anatomical Structure (T017)', example: 'Heart', cui: 'C0018787', mappings: 'SNOMED CT 80891009 · FMA 7088 · MeSH A07.541 · ICD-O T-32000' },
       neop: { name: 'Neoplastic Process (T191)', example: 'Breast Carcinoma', cui: 'C0678222', mappings: 'SNOMED CT 254837009 · ICD-10 C50 · ICD-O-3 8500/3 · MeSH D001943' },
     };
-    const e = map[sem];
+    const e = map[sem]!;
     return {
       value: e.cui,
       unit: 'CUI',

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: osce — OSCE station structure & rubrics */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -40,7 +39,7 @@ const runner: CalculatorTool = {
       prescribing: { title: 'Prescribing / safe medication', rubric: 'Patient details · Drug name + dose + route + frequency · Duration · Allergies/interactions check · Signature + date · Patient counseling', time: '5-7 мин', pass: 'Один missing item (dose, route, allergy check) — часто critical fail. BNF use demonstration positive.' },
       resus: { title: 'Resuscitation (симуляция)', rubric: 'Safety + response check · Call for help + ABC · CPR 30:2 (or continuous with ETT) · Defib/AED если shockable · ALS algorithm (4H/4T) · Post-ROSC care', time: '5-8 мин (BLS scenario); 10-12 мин (ALS)', pass: 'CPR качество (rate 100-120/min, depth 5-6cm, full recoil) + правильные ACLS drugs + defib timing' },
     };
-    const e = map[s];
+    const e = map[s]!;
     return {
       value: e.title,
       unit: 'OSCE',

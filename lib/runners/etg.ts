@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: etg — Therapeutic Guidelines Australia (eTG) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -186,7 +185,7 @@ const runner: CalculatorTool = {
         ],
       },
     };
-    const e = map[s];
+    const e = map[s]!;
     return {
       value: 'eTG Complete',
       unit: 'Australia',

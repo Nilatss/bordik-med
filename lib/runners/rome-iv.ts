@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: rome-iv - Rome IV functional GI disorders criteria */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -84,7 +83,7 @@ const runner: CalculatorTool = {
       },
     };
 
-    const c = criteria[d];
+    const c = criteria[d]!;
     const meetsDuration = dur === 2;
     let color = '#22C55E', band = 'Критерии выполнены';
     if (alarm === 1) { color = '#991B1B'; band = 'КРАСНЫЕ ФЛАГИ — нельзя ставить функциональный диагноз'; }

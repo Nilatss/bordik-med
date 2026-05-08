@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: has-fr — HAS (Haute Autorité de Santé, France) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -47,7 +46,7 @@ const runner: CalculatorTool = {
         access: 'has-sante.fr + santé.fr + ameli.fr (Assurance Maladie). Recommandations souvent intégrées au Rendez-vous de prévention (Mon Bilan Prévention, depuis 2024).',
       },
     };
-    const e = map[d];
+    const e = map[d]!;
     return {
       value: e.name,
       unit: 'HAS France',

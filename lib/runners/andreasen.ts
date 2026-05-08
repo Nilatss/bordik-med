@@ -82,7 +82,7 @@ const runner: CalculatorTool = {
           : ['НЕ реплантировать временный зуб (риск повреждения зачатка постоянного)', 'Наблюдение, гигиена', 'Контроль зачатка постоянного зуба'] },
     };
 
-    const m = map[inj];
+    const m = map[inj]!;
     return {
       value: inj, unit: '',
       interpretation: m.band, color: m.color,

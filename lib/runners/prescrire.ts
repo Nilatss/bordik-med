@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: prescrire — Prescrire (French independent drug bulletin) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -42,7 +41,7 @@ const runner: CalculatorTool = {
       antibiotic: { title: 'Антибиотики', verdict: 'Amoxicillin, доксициклин — "a real advance"; FQ — "requires caution" (разрывы сухожилий, аневризмы); telithromycin "not acceptable"', stars: '★★ amoxicillin; ★ doxycycline; ☒ telithromycin (гепатотоксичность); ⚠ FQ', examples: 'FQ — chronicite tendinopathy предупреждение с 2008' },
       oncology: { title: 'Онкология (новые таргетные)', verdict: 'Большинство — "nothing new" (malg surrogate endpoints); PFS ≠ OS; qualified approval часто без мед значимости', stars: 'Каждый год > 50% новых онкопрепаратов оцениваются "nothing new" по Prescrire', examples: 'Bevacizumab, sorafenib (HCC) — часто переоценены; trastuzumab (HER2+ BC) — один из немногих "advance"' },
     };
-    const e = map[c];
+    const e = map[c]!;
     return {
       value: e.title,
       unit: 'Prescrire',

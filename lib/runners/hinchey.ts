@@ -64,7 +64,7 @@ const runner: CalculatorTool = {
                     color: '#EF4444'
                 }
             };
-            const m = map[String(v.class)];
+            const m = map[String(v.class)]!;
             const cls = String(v.class);
             let details = '', actions = [];
             if (cls === 'I') {

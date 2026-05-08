@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: mz-ru — Министерство здравоохранения РФ (minzdrav.gov.ru) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -47,7 +46,7 @@ const runner: CalculatorTool = {
         legal: 'Определяют организационные требования: штаты, оборудование, маршрутизацию пациентов, стандарты оснащения кабинетов/отделений. Лицензирование проверяет соответствие порядку.',
       },
     };
-    const e = map[c];
+    const e = map[c]!;
     return {
       value: e.name,
       unit: 'МЗ РФ',

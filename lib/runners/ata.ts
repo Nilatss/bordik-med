@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: ata — ATA 2015 thyroid nodule sonographic risk + FNA threshold */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -57,7 +56,7 @@ const runner: CalculatorTool = {
       intermed: { risk: '10-20 %', threshold: 10, label: 'Промежут.', color: '#F59E0B', scalePos: 3.5 },
       high: { risk: '70-90 %', threshold: 10, label: 'Высокий', color: '#EF4444', scalePos: 4.5 },
     };
-    const meta = patternMeta[pattern];
+    const meta = patternMeta[pattern]!;
 
     let fna = '';
     if (pattern === 'benign') fna = 'FNA не показана';
@@ -77,7 +76,7 @@ const runner: CalculatorTool = {
         V: { txt: 'Bethesda V — тиреоидэктомия (подозрит. на карциному)', act: ['Тотальная/субтотальная тиреоидэктомия', 'Риск малигн. 60-75 %'], color: '#EF4444' },
         VI: { txt: 'Bethesda VI — тиреоидэктомия + возможный РЙТ', act: ['Тотальная тиреоидэктомия', 'Стадирование + РЙТ по TNM', 'L-тироксин супрессивно'], color: '#EF4444' },
       };
-      const b = bethMap[beth];
+      const b = bethMap[beth]!;
       verdict += ` · ${b.txt}`;
       color = b.color;
       actions.push(...b.act);

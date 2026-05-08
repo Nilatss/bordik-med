@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: ru-scales — Российские адаптированные шкалы и справочники */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -68,7 +67,7 @@ const runner: CalculatorTool = {
         authors: 'Тиганов А.С. (НЦПЗ РАМН), Краснов В.Н. (МНИИ психиатрии), Незнанов Н.Г. (НМИЦ психиатрии и неврологии им. Бехтерева), Мосолов С.Н. (психофармакология)',
       },
     };
-    const e = map[a];
+    const e = map[a]!;
     return {
       value: e.title,
       unit: 'РФ-шкалы',

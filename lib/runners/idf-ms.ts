@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: idf-ms — IDF 2006 Metabolic Syndrome criteria */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -42,7 +41,7 @@ hint: 'Глюкоза плазмы. Натощак: 3.9-5.5 ммоль/л', labe
     const thresholds: Record<string, number> = {
       euro_m: 94, euro_f: 80, south_m: 90, south_f: 80, japan_m: 85, japan_f: 90,
     };
-    const th = thresholds[eth];
+    const th = thresholds[eth]!;
     const waistPos = waist >= th;
 
     const tg = Number(v.tg) || 0;

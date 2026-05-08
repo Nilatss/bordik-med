@@ -62,7 +62,7 @@ const runner: CalculatorTool = {
 
     if (system === 'us') {
       const cylKey = String(v.cylinder || 'e');
-      const cyl = US_CYLINDERS[cylKey];
+      const cyl = US_CYLINDERS[cylKey]!;
       const psi = Math.max(0, (Number(v.pressure_psi) || 0) - (safety ? 200 : 0));
       totalLiters = psi * (cyl?.factor ?? US_CYLINDERS.e.factor);
       detailLine = `Баллон: ${cyl?.label}. Доступное давление: ${psi} psi (резерв ${safety ? '200 psi учтён' : 'не учтён'}).

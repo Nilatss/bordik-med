@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: pcdt-br — Protocolos Clínicos e Diretrizes Terapêuticas (Brazil SUS) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -160,7 +159,7 @@ const runner: CalculatorTool = {
         ],
       },
     };
-    const e = map[a];
+    const e = map[a]!;
     return {
       value: `PCDT — ${e.name}`,
       unit: 'SUS Brasil',

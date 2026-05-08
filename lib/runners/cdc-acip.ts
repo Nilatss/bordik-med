@@ -100,7 +100,7 @@ const runner: CalculatorTool = {
                     ]
                 }
             };
-            const s = schedules[cohort];
+            const s = schedules[cohort]!;
             return {
                 value: s.value,
                 interpretation: 'CDC/ACIP 2024 - рутинный график (США)',

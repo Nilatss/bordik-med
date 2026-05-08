@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: ru-kr — Клинические рекомендации МЗ РФ (Рубрикатор КР) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -92,7 +91,7 @@ const runner: CalculatorTool = {
         approval: 'Острый аппендицит КР345 — 2020; Холецистит КР720 — 2021',
       },
     };
-    const e = map[s];
+    const e = map[s]!;
     const firstKR = (e.examples.match(/\*\*(КР\d+|МР)\*\*/) || [null, 'КР—'])[1];
     return {
       value: firstKR,

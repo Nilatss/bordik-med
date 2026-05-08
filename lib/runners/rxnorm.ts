@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: rxnorm — RxNorm (NIH/NLM) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -40,7 +39,7 @@ const runner: CalculatorTool = {
       GPCK: { name: 'Generic Pack', example: 'Methylprednisolone 4 MG Oral Tablet Pack', rxcui: '573621', structure: 'Уп-ка с несколькими SCDs (напр., blister pack с разными дозами для tapering).' },
       BPCK: { name: 'Brand Pack', example: 'Medrol Dosepak', rxcui: '573623', structure: 'GPCK + Brand Name.' },
     };
-    const e = map[tty];
+    const e = map[tty]!;
     return {
       value: e.rxcui,
       unit: 'RXCUI',

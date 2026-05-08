@@ -38,7 +38,7 @@ const runner: CalculatorTool = {
       journal: { syntax: 'journal[TA] — Title Abbreviation (полностью или сокращённо NLM). ISSN[TA] также работает', example: '"N Engl J Med"[TA] AND "heart failure"[tiab] AND 2023[dp]', note: 'NLM catalog для точных аббревиатур: https://www.ncbi.nlm.nih.gov/nlmcatalog/journals' },
       clinical: { syntax: 'Clinical Queries filters: Therapy/Diagnosis/Etiology/Prognosis/Clinical Prediction Guides × Narrow/Broad. Прямой hedge можно вставить в query.', example: '"diabetes type 2"[tiab] AND (randomized controlled trial[pt] OR controlled clinical trial[pt]) — эквивалент Therapy/Narrow', note: 'Доступен на /clinical — готовые filters для систематических обзоров' },
     };
-    const e = map[t];
+    const e = map[t]!;
     return {
       value: e.syntax.split(' · ')[0] || e.syntax.split('.')[0],
       unit: 'PubMed',

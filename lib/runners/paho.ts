@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: paho — Pan-American Health Organization / WHO AMRO */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -162,7 +161,7 @@ const runner: CalculatorTool = {
         ],
       },
     };
-    const e = map[p];
+    const e = map[p]!;
     return {
       value: e.name,
       unit: 'PAHO / AMRO',

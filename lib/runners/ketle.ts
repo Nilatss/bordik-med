@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: ketle — Казахстанский формуляр / Стандарты МЗ РК */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -47,7 +46,7 @@ const runner: CalculatorTool = {
         legal: 'Приказы МЗ РК, регистрируются в Министерстве юстиции РК. Обязательны для медорганизаций всех форм собственности в РК. Проверка — Комитет медицинского и фармацевтического контроля МЗ РК.',
       },
     };
-    const e = map[d];
+    const e = map[d]!;
     return {
       value: e.title,
       unit: 'МЗ РК',

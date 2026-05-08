@@ -87,7 +87,7 @@ const runner: CalculatorTool = {
                     ]
                 }
             };
-            const s = schedules[cohort];
+            const s = schedules[cohort]!;
             return {
                 value: s.value,
                 interpretation: 'UK Green Book - NHS schedule',

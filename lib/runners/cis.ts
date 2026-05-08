@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: cis — СНГ / ЕАЭС общие медицинские стандарты */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -61,7 +60,7 @@ const runner: CalculatorTool = {
         status: 'Единая регистрация возможна с 2017. С 31.12.2026 — плановый переход всех МИ на единую регистрацию ЕАЭС. Уполномоченные органы: Росздравнадзор (РФ), НЦЭЛС (РК), Минздрав РБ.',
       },
     };
-    const e = map[d];
+    const e = map[d]!;
     return {
       value: e.title,
       unit: 'ЕАЭС / СНГ',

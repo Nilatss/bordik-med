@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: aifa-simg — AIFA + SIMG (Italy) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -99,7 +98,7 @@ const runner: CalculatorTool = {
         ],
       },
     };
-    const e = map[d];
+    const e = map[d]!;
     return {
       value: e.name,
       unit: 'Italia',

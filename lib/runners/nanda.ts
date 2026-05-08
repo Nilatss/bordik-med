@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: nanda — NANDA-I nursing diagnoses */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -52,7 +51,7 @@ const runner: CalculatorTool = {
       '12': { name: 'Comfort', example: '00132 Acute pain', defining: 'Verbal report, protective behavior, facial expression, diaphoresis, changes in vital signs', related: 'Injury agents (biological, chemical, physical, psychological)' },
       '13': { name: 'Growth/Development', example: '00112 Risk for delayed development', defining: 'Risk factors: prematurity, poverty, maternal age <15 or >35, lack of stimulation', related: 'Biological, individual, environmental caregiver factors' },
     };
-    const e = map[d];
+    const e = map[d]!;
     const code = (e.example.match(/^(\d+)/) || [null, '—'])[1];
     return {
       value: code,

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: esc-eu — European Society of Cardiology guidelines */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -42,7 +41,7 @@ const runner: CalculatorTool = {
       pe: { name: 'Pulmonary Embolism', year: '2019', cosponsor: 'ERS (Respiratory Society)', key: 'Hemodynamic instability → reperfusion (thrombolysis / embolectomy). Stable: risk stratify by sPESI + RV dysfunction + troponin → low-risk home treatment possible. DOACs preferred for most.' },
       pregnancy: { name: 'CVD in Pregnancy', year: '2018 (update in progress)', cosponsor: 'EACVI', key: 'mWHO classification (I-IV) for maternal CV risk. Pre-pregnancy counselling mandatory for mWHO II-IV. Avoid ACEi/ARB/MRA/warfarin (teratogenic). β-blockers, methyldopa, nifedipine safe for HTN.' },
     };
-    const e = map[d];
+    const e = map[d]!;
     return {
       value: e.name,
       unit: 'ESC Guideline',

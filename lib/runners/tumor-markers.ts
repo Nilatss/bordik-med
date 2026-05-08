@@ -56,7 +56,7 @@ hint: 'Возраст в годах', label: 'Возраст', type: 'number', u
         uses: 'Медуллярный рак ЩЖ, MEN2.',
         falses: 'ХБП, ингибиторы протонной помпы.' },
     };
-    const d = data[marker];
+    const d = data[marker]!;
     const norm = d.norm;
 
     let band = '', color = '#22C55E', details = '', actions = [];

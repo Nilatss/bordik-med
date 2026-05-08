@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: iap — Indian Academy of Pediatrics */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -152,7 +151,7 @@ const runner: CalculatorTool = {
         ],
       },
     };
-    const e = map[t];
+    const e = map[t]!;
     return {
       value: e.name,
       unit: 'IAP India',

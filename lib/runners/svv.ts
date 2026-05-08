@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: svv - SVV / PPV / IVC for fluid responsiveness (Marik 2009) */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -31,7 +30,7 @@ const runner: CalculatorTool = {
       ivcDist: 'IVC distensibility (MV)',
       mini: 'ΔSV mini-fluid',
     };
-    const threshold = thresholds[method];
+    const threshold = thresholds[method]!;
     const responder = val >= threshold;
 
     let interpretation = '', color = '', details = '';

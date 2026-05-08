@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: awmf — AWMF (Germany) clinical guidelines portal */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -42,7 +41,7 @@ const runner: CalculatorTool = {
       psychiatrie: { title: 'Психиатрия', society: 'Deutsche Gesellschaft für Psychiatrie (DGPPN)', examples: 'Depression (S3 NVL), Schizophrenie (S3), Angststörungen (S3), Bipolare Störung (S3)', preferred: 'S3 NVL Depression — одна из наиболее цитируемых в Европе' },
       gynaek: { title: 'Акушерство/гинекология', society: 'Deutsche Gesellschaft für Gynäkologie und Geburtshilfe (DGGG)', examples: 'Mammakarzinom (S3), Zervixkarzinom (S3), Endometriose (S2k), Geburt am Termin (S3)', preferred: 'S3 особенно для онкогинекологии (Leitlinienprogramm Onkologie)' },
     };
-    const e = map[s];
+    const e = map[s]!;
     return {
       value: e.title,
       unit: 'AWMF',

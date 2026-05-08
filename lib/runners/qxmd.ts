@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: qxmd — QxMD Read + Calculate */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -36,7 +35,7 @@ const runner: CalculatorTool = {
       keywords: { title: 'Keywords — персонализированная лента', detail: 'Добавьте keywords (напр. "SGLT2 inhibitors", "sepsis guidelines") — приложение отправляет push-уведомления о новых статьях по теме.', tip: 'Лучший способ держать руку на пульсе литературы. Можно подписаться на журналы ("JAMA", "NEJM") — все новые выпуски появляются в ленте.' },
       topic: { title: 'Topic Reviews — обзоры по тегам', detail: 'Курируемые подборки статей по клиническим темам (напр. "COVID-19", "Heart failure", "Alzheimer"). Обновляются редакторами QxMD.', tip: 'Хороший старт для новой темы — меньше шума чем raw PubMed поиск.' },
     };
-    const e = map[f];
+    const e = map[f]!;
     return {
       value: e.title,
       unit: 'QxMD',

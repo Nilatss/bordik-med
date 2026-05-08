@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: netter — Netter's Atlas of Human Anatomy (Elsevier) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -42,7 +41,7 @@ const runner: CalculatorTool = {
       lower: { title: 'Lower Limb', plates: 'Plates 560-639', key: 'Pl 560: hip bone; Pl 580: femoral triangle; Pl 600: popliteal fossa; Pl 622: muscles of foot', clinical: 'Pl 580: femoral vein access; Pl 600: popliteal pulse; Pl 608: saphenous vein harvesting (CABG)' },
       cross: { title: 'Cross-sectional anatomy', plates: 'Integrated with regional sections (+ additional in digital edition)', key: 'Axial CT/MRI-like sections: head (Pl 112); thorax (Pl 250); abdomen (Pl 328); pelvis (Pl 410)', clinical: 'Для корреляции с CT/MRI — используйте Netter вместе с Weir Imaging Atlas или Grainger radiology' },
     };
-    const e = map[r];
+    const e = map[r]!;
     return {
       value: e.title,
       unit: 'Netter',

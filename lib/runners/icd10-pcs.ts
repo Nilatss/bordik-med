@@ -68,7 +68,7 @@ const runner: CalculatorTool = {
       'H': { name: 'Substance Abuse Treatment', example: 'HZ2ZZZZ — Alcohol Detoxification', breakdown: 'H=SUD · Z=None · 2=Detoxification · Z=None · Z=None · Z=None · Z=None' },
       'X': { name: 'New Technology', example: 'XW033A6 — Introduction Nafamostat Anticoagulant, Periph Vein', breakdown: 'X=New Tech · W=Anat · 0=Introduction · 3=Periph Vein · 3=Percutaneous · A6=Nafamostat' },
     };
-    const e = map[s];
+    const e = map[s]!;
     return {
       value: e.example.split(' — ')[0],
       unit: 'ICD-10-PCS',

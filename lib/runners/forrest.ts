@@ -86,7 +86,7 @@ const runner: CalculatorTool = {
                     tx: 'ИПП per os, амбулаторное наблюдение.'
                 }
             };
-            const m = map[String(v.class)];
+            const m = map[String(v.class)]!;
             const cls = String(v.class);
             const highRisk = [
                 'Ia',

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: ferriman — Modified Ferriman-Gallwey score for hirsutism */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -48,7 +47,7 @@ const runner: CalculatorTool = {
     const total = areas.reduce((acc, a) => acc + (Number(v[a.id]) || 0), 0);
     const eth = String(v.ethnicity || 'white');
     const thresh: Record<string, number> = { med: 9, white: 8, asian: 3, black: 8, hispanic: 9 };
-    const th = thresh[eth];
+    const th = thresh[eth]!;
     const positive = total >= th;
 
     let severity = '';

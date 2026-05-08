@@ -25,7 +25,7 @@ hint: 'ЛПВП. Норма: М ≥1.0, Ж ≥1.3 ммоль/л', label: 'HDL-C'
     const nonHdl = tc - hdl;
 
     const targets = { vhigh: 2.2, high: 2.6, moderate: 3.4, low: 3.8 };
-    const target = targets[risk];
+    const target = targets[risk]!;
 
     let band = '', color = '#22C55E', details = '';
     if (nonHdl <= target) {

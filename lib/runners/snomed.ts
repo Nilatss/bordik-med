@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: snomed — SNOMED CT */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -89,7 +88,7 @@ const runner: CalculatorTool = {
         parents: '← Accident ← Event',
       },
     };
-    const e = map[h];
+    const e = map[h]!;
     return {
       value: e.example,
       unit: 'SCTID',

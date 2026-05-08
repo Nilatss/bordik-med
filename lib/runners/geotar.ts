@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: geotar — ГЭОТАР-Мед (онлайн-ресурсы) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -47,7 +46,7 @@ const runner: CalculatorTool = {
         access: 'Consultant Studenta: 15-20 тыс руб/год подписка; Consultant Vracha: 10-30 тыс руб/год. Многие ВУЗы подключены (бесплатно для студентов/сотрудников).',
       },
     };
-    const e = map[c];
+    const e = map[c]!;
     return {
       value: e.title,
       unit: 'ГЭОТАР-Мед',

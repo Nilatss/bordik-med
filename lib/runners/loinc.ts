@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: loinc — Logical Observation Identifiers Names and Codes */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -74,7 +73,7 @@ const runner: CalculatorTool = {
         note: 'Стандарт FHIR Observation — используй LOINC vital signs',
       },
     };
-    const e = map[c];
+    const e = map[c]!;
     const firstCode = (e.examples.match(/\*\*([^*]+)\*\*/) || [null, '—'])[1];
     return {
       value: firstCode,

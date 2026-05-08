@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: consmed — Consilium Medicum (РФ) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -42,7 +41,7 @@ const runner: CalculatorTool = {
       neuro: { title: 'Consilium Medicum · Неврология', archive: '«Неврология и ревматология» (приложение к Consilium Medicum)', topics: 'ОНМК, мигрень, деменции, ДЭ, полинейропатии, болевые синдромы' },
       psy: { title: 'Consilium Medicum · Психиатрия', archive: '«Психиатрия и психофармакотерапия» — ISSN 2075-1761', topics: 'Депрессии, тревожные расстройства, шизофрения, деменция, когнитивные расстройства' },
     };
-    const e = map[s];
+    const e = map[s]!;
     return {
       value: e.title,
       unit: 'Consilium',

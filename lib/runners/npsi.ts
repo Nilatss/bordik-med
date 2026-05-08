@@ -196,7 +196,7 @@ const runner: CalculatorTool = {
                 'q10'
             ].map((k)=>Number(v[k] ?? 0));
             const total = items.reduce((a, b)=>a + b, 0);
-            const burning = items[0];
+            const burning = items[0]!;
             const pressing = (items[1] + items[2]) / 2;
             const paroxysmal = (items[3] + items[4]) / 2;
             const evoked = (items[5] + items[6] + items[7]) / 3;

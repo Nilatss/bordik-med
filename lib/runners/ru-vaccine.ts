@@ -107,7 +107,7 @@ const runner: CalculatorTool = {
                     ]
                 }
             };
-            const s = schedules[cohort];
+            const s = schedules[cohort]!;
             return {
                 value: s.value,
                 interpretation: 'Нац. календарь РФ - Приказ МЗ №1122н от 06.12.2021',

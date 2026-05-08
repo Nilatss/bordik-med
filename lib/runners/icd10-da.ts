@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: icd10-da — ICD-10 Dental Adaptation (WHO) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -86,7 +85,7 @@ const runner: CalculatorTool = {
         note: 'Классификация Эллиса I-IV интегрирована в S02.5x. Вывих = S03.2, интрузия/экструзия = S03.2*',
       },
     };
-    const e = map[g];
+    const e = map[g]!;
     const firstCode = (e.subs.match(/\*\*([A-Z]\d+[^.]*\.?\d*)\*\*/) || [null, '—'])[1];
     return {
       value: firstCode,

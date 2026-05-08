@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: sbar - SBAR structured communication */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -67,7 +66,7 @@ const runner: CalculatorTool = {
       },
     };
 
-    const t = templates[sc];
+    const t = templates[sc]!;
     let color = '#22C55E', band = 'SBAR — плановая коммуникация';
     if (urg === 'urgent') { color = '#F59E0B'; band = 'SBAR — срочная коммуникация'; }
     if (urg === 'emergent') { color = '#EF4444'; band = 'SBAR — экстренная коммуникация'; }

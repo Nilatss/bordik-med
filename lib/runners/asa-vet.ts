@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: asa-vet */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -37,7 +36,7 @@ const runner: CalculatorTool = {
       4: { label: 'Угроза жизни', mortality: '5-10 %', color: '#EF4444', example: 'Декомпенсированная ХСН, шок, пиометра, ОПН' },
       5: { label: 'Moribund', mortality: '> 50 %', color: '#991B1B', example: 'GDV с перфорацией, массивное кровотечение, полиорганная недостаточность' },
     };
-    const d = info[c];
+    const d = info[c]!;
 
     return {
       value: `ASA ${c}${suffix}`,

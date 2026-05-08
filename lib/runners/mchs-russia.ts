@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: mchs-russia - МЧС РФ 4-уровневая цветовая сортировка */
 import type {
   CalculatorTool,
@@ -70,7 +69,7 @@ const runner: CalculatorTool = {
         ],
       },
     };
-    const d = data[cat];
+    const d = data[cat]!;
     return {
       value: cat,
       interpretation: d.label,

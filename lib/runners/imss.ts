@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: imss — IMSS Guías de Práctica Clínica (Mexico) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -154,7 +153,7 @@ const runner: CalculatorTool = {
         ],
       },
     };
-    const e = map[s];
+    const e = map[s]!;
     return {
       value: 'GPC IMSS',
       unit: 'México',

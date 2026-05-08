@@ -44,7 +44,7 @@ const runner: CalculatorTool = {
       '23': { title: 'Внешние причины', stem: 'PA80 ДТП пассажир; PB40 падение; PD20 самоповреждение', ext: 'XE-место; XV-активность', note: 'Глава 23 + extension codes обязательны при травмах' },
       '26': { title: 'Традиционная медицина (новое в ICD-11)', stem: 'SF7Z состояния TM; SK50 принципы TM', ext: '—', note: 'Первая ICD с главой TM — покрывает традиционную китайскую/корейскую/японскую медицину; необязательна для членов' },
     };
-    const e = map[ch];
+    const e = map[ch]!;
     return {
       value: e.stem.split(';')[0].trim(),
       unit: 'ICD-11',

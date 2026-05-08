@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: dsm5tr — DSM-5-TR (Text Revision, APA 2022) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -48,7 +47,7 @@ const runner: CalculatorTool = {
       bpd: { name: 'Borderline Personality Disorder', dsm: 'F60.3', icd10cm: 'F60.3', criteria: 'Pervasive pattern нестабильности межл. отношений, самоидентичности, аффекта + импульсивность (≥5 из 9): fear of abandonment, unstable relationships, identity disturbance, impulsivity, self-harm, affective instability, emptiness, anger, dissociative/paranoid', diff: 'Mood disorders, Other PDs (histrionic F60.4, narcissistic F60.81), PTSD, Bipolar' },
       pgd: { name: 'Prolonged Grief Disorder (NEW в DSM-5-TR 2022)', dsm: 'F43.81', icd10cm: 'F43.81', criteria: 'A: смерть близкого ≥12 мес назад (6 мес у детей). B: ≥1 симптомов горя (ежеднев. ≥1 мес): intense yearning ИЛИ preoccupation. C: ≥3 из 8 доп. симптомов. D: клинически значимый дистресс / дисфункция. E: превышает культурные/социальные нормы. F: не объясняется другим расстройством', diff: 'MDD w/ bereavement, PTSD, Adjustment disorder, Normal grief' },
     };
-    const e = map[d];
+    const e = map[d]!;
     return {
       value: e.dsm,
       unit: 'DSM-5-TR',

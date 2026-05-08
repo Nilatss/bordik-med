@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: nice-uk — NICE Guidelines (UK) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -82,7 +81,7 @@ const runner: CalculatorTool = {
         ta: 'TA595 Lefamulin; TA787 Cefiderocol; multiple antimicrobial TAs',
       },
     };
-    const e = map[s];
+    const e = map[s]!;
     return {
       value: e.name,
       unit: 'NICE UK',

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: mz-standards — Стандарты медицинской помощи МЗ РФ */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -82,7 +81,7 @@ const runner: CalculatorTool = {
         services: 'A02.12.002 Измерение АД, A05.10.008 СМАД, A04.10.002 ЭхоКГ',
       },
     };
-    const e = map[n];
+    const e = map[n]!;
     return {
       value: e.title,
       unit: 'Стандарт МЗ РФ',

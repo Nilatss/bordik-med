@@ -104,7 +104,7 @@ const runner: CalculatorTool = {
                     ]
                 }
             };
-            const s = schedules[country];
+            const s = schedules[country]!;
             return {
                 value: s.value,
                 interpretation: 'Международные и национальные схемы иммунизации',

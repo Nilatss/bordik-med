@@ -47,7 +47,7 @@ const runner: CalculatorTool = {
       'mixed': 'Комбинированный подход, ORIF всех уровней',
     };
     const severityMap: Record<string, number> = { '1': 1, '2': 2, '3': 3, 'mixed': 4 };
-    const severity = severityMap[level];
+    const severity = severityMap[level]!;
     const color = severity === 1 ? '#F59E0B' : severity === 2 ? '#EF4444' : '#B91C1C';
     return {
       value: names[level],

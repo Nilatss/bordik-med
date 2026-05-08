@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: simman — SimMan / high-fidelity patient simulators (Laerdal) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -42,7 +41,7 @@ const runner: CalculatorTool = {
       pediatric: { title: 'Педиатрия', manikin: 'SimJunior (6-летний) или SimBaby (infant) или Premature Anne', objectives: 'PALS algorithms (weight-based dosing), anaphylaxis pediatric, meningococcal sepsis, bronchiolitis', debrief: 'Broselow tape usage, pediatric dosing calculation, parent communication' },
       crisis: { title: 'Crisis Resource Management (CRM)', manikin: 'Любой high-fidelity manikin + камеры для debrief', objectives: 'Leadership, closed-loop communication, situation awareness, distribution of workload, calling for help', debrief: 'Используется TeamSTEPPS фреймворк; видео-assisted debriefing' },
     };
-    const e = map[s];
+    const e = map[s]!;
     return {
       value: e.title,
       unit: 'SimMan',

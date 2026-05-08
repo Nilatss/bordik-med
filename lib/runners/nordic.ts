@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: nordic — Nordic countries clinical guidelines */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -127,7 +126,7 @@ const runner: CalculatorTool = {
         ],
       },
     };
-    const e = map[c];
+    const e = map[c]!;
     return {
       value: e.main,
       unit: 'Nordic',

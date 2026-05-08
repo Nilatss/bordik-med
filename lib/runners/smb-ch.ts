@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: smb-ch — SMB / Swissmedic / Swiss guidelines */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -103,7 +102,7 @@ const runner: CalculatorTool = {
         ],
       },
     };
-    const e = map[t];
+    const e = map[t]!;
     return {
       value: e.name,
       unit: 'Switzerland',

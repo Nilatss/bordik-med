@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: door-to - Door-to-X metrics bundle */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -40,7 +39,7 @@ const runner: CalculatorTool = {
       abx: { target: 60, name: 'Door-to-Antibiotic', source: 'SSC 2021 sepsis hour-1 bundle ≤ 60 мин' },
     };
 
-    const cfg = targets[m];
+    const cfg = targets[m]!;
     const delta = t - cfg.target;
     const onTarget = t > 0 && t <= cfg.target;
 

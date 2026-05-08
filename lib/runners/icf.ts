@@ -58,7 +58,7 @@ const runner: CalculatorTool = {
         note: '+ уровень facilitator · . уровень barrier',
       },
     };
-    const e = map[d];
+    const e = map[d]!;
     return {
       value: e.example.split(' ')[0],
       unit: 'ICF',

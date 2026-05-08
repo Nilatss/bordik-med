@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: senic — Study on Efficacy of Nosocomial Infection Control index */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,
@@ -27,7 +26,7 @@ const runner: CalculatorTool = {
       3: { rate: '~ 17 %', risk: 'Высокий', color: '#F97316' },
       4: { rate: '~ 27 %', risk: 'Очень высокий', color: '#EF4444' },
     };
-    const r = risks[pts];
+    const r = risks[pts]!;
 
     return {
       value: `${pts} / 4`,

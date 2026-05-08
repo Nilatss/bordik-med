@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: ru-societies — Российские медицинские профессиональные общества */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -96,7 +95,7 @@ const runner: CalculatorTool = {
         notes: 'НОГР (Научное общество гастроэнтерологов России). Журнал "Российский журнал гастроэнтерологии, гепатологии, колопроктологии".',
       },
     };
-    const e = map[s];
+    const e = map[s]!;
     return {
       value: e.abbr,
       unit: 'Проф.общество РФ',
