@@ -1,6 +1,47 @@
 // @ts-nocheck
 /**
- * Runner: euroscore
+ * Runner: euroscore — EuroSCORE II Cardiac Surgery Risk
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    Nashef SA, Roques F, Sharples LD, et al. EuroSCORE II.
+ *               Eur J Cardiothorac Surg. 2012;41(4):734-744; discussion 744-745.
+ *               doi:10.1093/ejcts/ezs043
+ *   GUIDELINE:  ESC/EACTS 2021 Valvular Heart Disease Guidelines —
+ *               EuroSCORE II + STS Score рутинно используются для
+ *               TAVR vs SAVR Heart Team decision.
+ *               doi:10.1093/eurheartj/ehab395
+ *
+ * Variables (18 — logistic regression model):
+ *   Patient-related: age, female sex, renal impairment, peripheral
+ *     arteriopathy, poor mobility, previous cardiac surgery, COPD,
+ *     active endocarditis, critical preoperative state, diabetes на
+ *     insulin
+ *   Cardiac-related: NYHA, CCS Class 4, LV function, recent MI,
+ *     pulmonary hypertension
+ *   Operation-related: urgency (elective/urgent/emergent/salvage),
+ *     weight of intervention (single vs multiple), surgery on thoracic
+ *     aorta
+ *
+ * Output: predicted in-hospital mortality (%).
+ *
+ * Bands (clinical convention):
+ *   <2%      → low risk
+ *   2-5%     → intermediate
+ *   5-10%    → high risk
+ *   >10%     → very high risk → consider TAVR / palliative
+ *
+ * History:
+ *   - EuroSCORE I (1999) — additive model, deprecated (over-estimated
+ *     mortality в modern era)
+ *   - Logistic EuroSCORE (1999) — also deprecated
+ *   - EuroSCORE II (2012) — current standard, re-calibrated
+ *
+ * Caveats:
+ *   - Discrimination C-statistic ~0.81 (good)
+ *   - Calibration drift в high-risk patients (>10%) — alternative:
+ *     STS Score, GRACE для CABG-only
+ *   - Не applicable к TAVR cohorts (separate STS-PROM TAVR scores)
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *

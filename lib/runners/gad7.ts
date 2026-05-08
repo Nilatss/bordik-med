@@ -1,6 +1,41 @@
 // @ts-nocheck
 /**
- * Runner: gad7
+ * Runner: gad7 — Generalised Anxiety Disorder 7-item scale
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    Spitzer RL, Kroenke K, Williams JB, Löwe B. A brief
+ *               measure for assessing generalized anxiety disorder: the
+ *               GAD-7. Arch Intern Med. 2006;166(10):1092-1097.
+ *               doi:10.1001/archinte.166.10.1092
+ *   GUIDELINE:  NICE CG113 (Generalised anxiety disorder) — GAD-7 как
+ *               primary screening tool в primary care + outcome measure
+ *               для CBT / SSRI treatment monitoring.
+ *
+ * 7 questions (frequency in past 2 weeks, 0-3 each):
+ *   1. Feeling nervous, anxious, or on edge
+ *   2. Not being able to stop or control worrying
+ *   3. Worrying too much about different things
+ *   4. Trouble relaxing
+ *   5. Being so restless that it is hard to sit still
+ *   6. Becoming easily annoyed or irritable
+ *   7. Feeling afraid as if something awful might happen
+ *
+ *   Each scored: 0 (not at all) / 1 (several days) /
+ *                2 (more than half the days) / 3 (nearly every day)
+ *
+ * Total: 0-21
+ *
+ * Severity bands:
+ *   0-4    → minimal anxiety
+ *   5-9    → mild anxiety        — watchful waiting / self-help
+ *   10-14  → moderate anxiety    — active treatment (psychotherapy)
+ *   15-21  → severe anxiety      — combination CBT + medication
+ *
+ * Caveats:
+ *   - Self-report — может быть искажён social desirability
+ *   - НЕ specific GAD — ловит panic, social phobia, PTSD overlap
+ *   - Pediatric / elderly populations требуют адаптированные cut-offs
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *

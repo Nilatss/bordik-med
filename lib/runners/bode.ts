@@ -1,6 +1,58 @@
 // @ts-nocheck
 /**
- * Runner: bode
+ * Runner: bode — BODE Index for COPD Survival Prognosis
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    Celli BR, Cote CG, Marin JM, et al. The body-mass index,
+ *               airflow obstruction, dyspnea, and exercise capacity index
+ *               in chronic obstructive pulmonary disease. N Engl J Med.
+ *               2004;350(10):1005-1012. doi:10.1056/NEJMoa021322
+ *   GUIDELINE:  GOLD 2024 (Global Initiative for COPD) — BODE как
+ *               survival prognosis tool, multidimensional assessment
+ *               беyond FEV1.
+ *               https://goldcopd.org/2024-gold-report/
+ *
+ * Items + points (max 10):
+ *
+ *   B — BMI:
+ *       >21    0
+ *       ≤21    1
+ *
+ *   O — Obstruction (FEV1 % predicted):
+ *       ≥65    0
+ *       50-64  1
+ *       36-49  2
+ *       ≤35    3
+ *
+ *   D — Dyspnoea (mMRC scale):
+ *       0      0   (no dyspnoea unless strenuous exercise)
+ *       1      0   (dyspnoea на hurry/incline)
+ *       2      1   (slower than peers due to dyspnoea на flat)
+ *       3      2   (stops for breath after 100m)
+ *       4      3   (too breathless to leave house, dressing)
+ *
+ *   E — Exercise (6-Minute Walk Distance):
+ *       ≥350m  0
+ *       250-349 1
+ *       150-249 2
+ *       ≤149   3
+ *
+ * Bands → 4-year mortality:
+ *   0-2  → quartile 1 (~10%)
+ *   3-4  → quartile 2 (~30%)
+ *   5-6  → quartile 3 (~50%)
+ *   7-10 → quartile 4 (~80%)
+ *
+ * Use cases:
+ *   - Long-term survival counselling
+ *   - Lung volume reduction surgery / transplant referral threshold
+ *     (BODE ≥7 → consider transplant evaluation)
+ *
+ * Caveats:
+ *   - 6MWD требует stable conditions, опытного assessor'a
+ *   - SR-EFC (Self-Reported Exercise Capacity) variant exists для primary
+ *     care без 6MWT
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *

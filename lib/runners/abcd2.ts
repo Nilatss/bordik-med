@@ -1,6 +1,42 @@
 // @ts-nocheck
 /**
- * Runner: abcd2
+ * Runner: abcd2 — ABCD² Score for TIA → Stroke Risk
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    Johnston SC, Rothwell PM, Nguyen-Huynh MN, et al.
+ *               Validation and refinement of scores to predict very early
+ *               stroke risk after transient ischaemic attack. Lancet.
+ *               2007;369(9558):283-292. doi:10.1016/S0140-6736(07)60150-0
+ *   GUIDELINE:  AHA/ASA 2021 TIA Statement — ABCD² ≥4 = high-risk
+ *               TIA → admit, expedited workup. ESO 2008 — ABCD² ≥6
+ *               warrants immediate hospitalisation.
+ *               doi:10.1161/STR.0000000000000354
+ *
+ * Items + points (max 7):
+ *   A — Age ≥60                                        1
+ *   B — Blood pressure ≥140/90 at presentation         1
+ *   C — Clinical features:
+ *       Unilateral weakness                            2
+ *       Speech disturbance без weakness                1
+ *       Other                                          0
+ *   D — Duration of symptoms:
+ *       ≥60 min                                        2
+ *       10-59 min                                      1
+ *       <10 min                                        0
+ *   D — Diabetes                                       1
+ *
+ * 2-day stroke risk:
+ *   0-3   → low (1.0%)        — outpatient workup
+ *   4-5   → moderate (4.1%)   — admit, urgent imaging
+ *   6-7   → high (8.1%)       — emergent admission, full stroke pathway
+ *
+ * Caveats:
+ *   - ABCD² overestimates во time-of-event (TIA fact обычно known
+ *     по retrospect)
+ *   - DWI-MRI positive (acute infarct) → high-risk regardless of ABCD²
+ *   - Modern era: ABCD³-I (с DWI + ipsilateral carotid stenosis) более
+ *     specific для acute decision-making
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *

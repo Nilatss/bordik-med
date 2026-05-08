@@ -1,5 +1,51 @@
 // @ts-nocheck
-/** Runner: fib4 - FIB-4 / APRI / NAFLD FS / FibroTest / FibroScan */
+/**
+ * Runner: fib4 — FIB-4 / APRI / NAFLD FS / FibroTest / FibroScan composite
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   FIB-4:      Sterling RK, Lissen E, Clumeck N, et al. Development of
+ *               a simple noninvasive index to predict significant
+ *               fibrosis in patients with HIV/HCV coinfection. Hepatology.
+ *               2006;43(6):1317-1325. doi:10.1002/hep.21178
+ *   APRI:       Wai CT, Greenson JK, Fontana RJ, et al. A simple
+ *               noninvasive index can predict both significant fibrosis
+ *               and cirrhosis in patients with chronic hepatitis C.
+ *               Hepatology. 2003;38(2):518-526. doi:10.1053/jhep.2003.50346
+ *   NAFLD FS:   Angulo P, Hui JM, Marchesini G, et al. The NAFLD fibrosis
+ *               score: a noninvasive system that identifies liver fibrosis
+ *               in patients with NAFLD. Hepatology. 2007;45(4):846-854.
+ *               doi:10.1002/hep.21496
+ *   GUIDELINE:  AASLD 2023 NAFLD/NASH Guidance + EASL 2024 — FIB-4 как
+ *               primary screen в primary care; APRI как cheap alternative
+ *               (uses ALT instead of AST). FibroScan для confirmation.
+ *
+ * Formulas:
+ *   FIB-4 = (Age × AST) / (Platelets × √ALT)
+ *     где Age в годах, AST/ALT в IU/L, Platelets в ×10⁹/L
+ *
+ *   APRI = (AST / AST_upper_normal) × 100 / Platelets (×10⁹/L)
+ *
+ *   NAFLD FS = -1.675 + 0.037×age + 0.094×BMI + 1.13×IFG/diabetes
+ *              + 0.99×AST/ALT - 0.013×platelets - 0.66×albumin
+ *
+ * FIB-4 cut-offs (AASLD 2023):
+ *   <1.30  → low risk advanced fibrosis (NPV >90%) — primary care follow-up
+ *   1.30-2.67 → indeterminate — refer to hepatology / FibroScan
+ *   ≥2.67  → high risk advanced fibrosis — hepatology, biopsy consideration
+ *
+ * APRI cut-offs:
+ *   <0.5   → unlikely fibrosis
+ *   0.5-1  → indeterminate
+ *   ≥1     → likely fibrosis
+ *   ≥2     → likely cirrhosis
+ *
+ * Caveats:
+ *   - FIB-4 inaccurate в age <35 (over-diagnoses) и age >65 (over-diagnoses).
+ *     В age extremes use FibroScan / Enhanced Liver Fibrosis (ELF) test.
+ *   - Не для acute hepatitis (transaminitis confounds)
+ *
+ * Tool implementation here: composite (3 algorithms select'able).
+ */
 import type { CalculatorTool } from '../tools-runners';
 
 const runner: CalculatorTool = {

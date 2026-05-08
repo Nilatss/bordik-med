@@ -1,6 +1,44 @@
 // @ts-nocheck
 /**
- * Runner: caprini
+ * Runner: caprini — Caprini Score for Surgical VTE Risk
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    Caprini JA, Arcelus JI, Hasty JH, Tamhane AC, Fabrega F.
+ *               Clinical assessment of venous thromboembolic risk in
+ *               surgical patients. Semin Thromb Hemost. 1991;17 Suppl 3:304-12.
+ *               PMID: 1820271
+ *   UPDATE:     Caprini JA. Risk assessment as a guide for the prevention
+ *               of the many faces of venous thromboembolism. Am J Surg.
+ *               2010;199(1 Suppl):S3-10. doi:10.1016/j.amjsurg.2009.10.006
+ *   GUIDELINE:  ACCP 2012 / ASH 2018 — Caprini standard для surgical VTE
+ *               risk stratification + prophylaxis decision.
+ *
+ * Items + points (cumulative — each met independently):
+ *   1 балл: age 41-60, minor surgery, BMI >25, swollen legs, varicose,
+ *           OCP/HRT, pregnancy/postpartum, fetal loss, sepsis (<1mo),
+ *           pneumonia (<1mo), abnormal pulmonary function, AMI, CHF,
+ *           IBD, acute medical illness
+ *   2 балла: age 61-74, arthroscopic surgery, major open (>45 min),
+ *           laparoscopic (>45 min), malignancy, bedrest >72h, immobilising
+ *           plaster, central venous access
+ *   3 балла: age ≥75, hx VTE, family hx thrombosis, factor V Leiden,
+ *           prothrombin 20210A, lupus anticoagulant, anticardiolipin,
+ *           HIT, other thrombophilia
+ *   5 баллов: stroke (<1mo), elective major lower extremity arthroplasty,
+ *           hip/pelvis/leg fracture, acute spinal cord injury (<1mo),
+ *           multiple trauma (<1mo)
+ *
+ * Bands → prophylaxis (ACCP 2012):
+ *   0     → very low risk → early ambulation
+ *   1-2   → low risk → mechanical (sequential compression devices)
+ *   3-4   → moderate → mechanical OR LMWH
+ *   ≥5    → high → mechanical + LMWH (or fondaparinux)
+ *
+ * Caveats:
+ *   - Designed for surgical inpatients (general/abdominal/thoracic);
+ *     для medical inpatients используй PADUA / IMPROVE
+ *   - Bleeding risk (IMPROVE-BLEED) надо взвесить параллельно
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *

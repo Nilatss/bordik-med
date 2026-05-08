@@ -1,6 +1,41 @@
 // @ts-nocheck
 /**
- * Runner: phq9
+ * Runner: phq9 — Patient Health Questionnaire 9 (Depression)
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    Kroenke K, Spitzer RL, Williams JB. The PHQ-9: validity
+ *               of a brief depression severity measure. J Gen Intern Med.
+ *               2001;16(9):606-613. doi:10.1046/j.1525-1497.2001.016009606.x
+ *   GUIDELINE:  USPSTF 2016 Final Recommendation — depression screening
+ *               в всех adults в primary care, PHQ-2 (questions 1-2) →
+ *               PHQ-9 если positive. NICE CG90 / APA 2010 рекомендуют
+ *               PHQ-9 для severity tracking + treatment response.
+ *
+ * 9 questions (frequency in past 2 weeks, 0-3 each):
+ *   1. Little interest or pleasure in doing things
+ *   2. Feeling down, depressed, or hopeless
+ *   3. Trouble falling/staying asleep, sleeping too much
+ *   4. Feeling tired or having little energy
+ *   5. Poor appetite or overeating
+ *   6. Feeling bad about yourself
+ *   7. Trouble concentrating
+ *   8. Moving/speaking slowly OR being fidgety/restless
+ *   9. Thoughts you would be better off dead OR hurting yourself
+ *
+ *   Each: 0 (not at all) / 1 (several days) / 2 (>half days) / 3 (nearly every day)
+ *
+ * Total: 0-27
+ *
+ * Severity bands:
+ *   0-4    → none-minimal depression
+ *   5-9    → mild — watchful waiting, repeat in 2 weeks
+ *   10-14  → moderate — active treatment (psychotherapy / SSRI)
+ *   15-19  → moderately severe — active treatment + close monitoring
+ *   20-27  → severe — immediate treatment, consider psychiatry referral
+ *
+ * Critical: Question 9 (suicidality) — ANY non-zero answer requires
+ *   immediate safety assessment, regardless of total score.
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *
