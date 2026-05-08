@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: hbb - AAP-WHO Helping Babies Breathe 2010/2016 */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -89,7 +88,7 @@ const runner: CalculatorTool = {
         ],
       },
     };
-    const r = map[s] || map.gm;
+    const r = (map[s] || map.gm)!;
     return {
       value: r.title,
       unit: '',

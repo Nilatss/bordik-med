@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: mayo-uc - Mayo / Partial Mayo / Truelove-Witts для язвенного колита */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -59,7 +58,7 @@ const runner: CalculatorTool = {
         moderate: { c: '#F59E0B', txt: 'Средняя - ГКС PO (преднизолон 40 мг) или будесонид MMX' },
         severe: { c: '#991B1B', txt: 'Тяжёлая (ACG definition): госпитализация, IV метилпреднизолон 60 мг/сут, VTE профилактика, rescue therapy (инфликсимаб/циклоспорин) к дню 3, колэктомия при неудаче' },
       };
-      const r = map[tw] || map.mild;
+      const r = (map[tw] || map.mild)!;
       return {
         value: tw === 'severe' ? 'Severe UC' : tw === 'moderate' ? 'Moderate' : 'Mild',
         unit: '',

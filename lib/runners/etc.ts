@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: etc - European Trauma Course (ERC) */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -89,7 +88,7 @@ const runner: CalculatorTool = {
         ],
       },
     };
-    const r = map[m] || map.horizontal;
+    const r = (map[m] || map.horizontal)!;
     return {
       value: r.title,
       unit: '',

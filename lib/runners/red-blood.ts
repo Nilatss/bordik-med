@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: red-blood - Combat Pulse Check + R.E.D. / LTOWB (JTS 2023) */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -36,7 +35,7 @@ const runner: CalculatorTool = {
         carotid: { txt: 'Только сонный (нет бедренного)', sbp: 'SBP ≈ 60-70 мм рт.ст.', c: '#EF4444' },
         none: { txt: 'Пульс отсутствует', sbp: 'Клиническая смерть / PEA', c: '#991B1B' },
       };
-      const r = map[p] || map.radial;
+      const r = (map[p] || map.radial)!;
       return {
         value: r.sbp,
         unit: '',

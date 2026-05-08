@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: ru-skoraya - Приказ МЗ РФ №388н + Багненко СПб алгоритмы СМП */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -113,7 +112,7 @@ const runner: CalculatorTool = {
         ],
       },
     };
-    const r = map[a] || map.acs;
+    const r = (map[a] || map.acs)!;
     return {
       value: r.title,
       unit: '',

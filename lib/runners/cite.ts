@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: cite */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -38,7 +37,7 @@ const runner: CalculatorTool = {
       ruminant: { low: 150,  mod: 500,  high: 1000 },
       small:    { low: 50,   mod: 200,  high: 500 },
     };
-    const t = thresholds[sp] || thresholds.horse;
+    const t = (thresholds[sp] || thresholds.horse)!;
 
     let color = '#22C55E';
     let cat = 'Низкий выделитель';

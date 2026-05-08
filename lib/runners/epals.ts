@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: epals - EPALS / APLS / EPLS (ERC 2021, APLS 7th ed) */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -86,7 +85,7 @@ const runner: CalculatorTool = {
         ],
       },
     };
-    const r = map[s] || map.abcde;
+    const r = (map[s] || map.abcde)!;
     return {
       value: r.title,
       unit: '',

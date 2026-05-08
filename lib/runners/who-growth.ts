@@ -217,7 +217,7 @@ const runner: CalculatorTool = {
                     }
                 ]
             };
-            const table = anchors[sex] || anchors.m;
+            const table = (anchors[sex] || anchors.m)!;
             // linear interpolation between anchors
             let lo = table[0], hi = table[table.length - 1];
             for(let i = 0; i < table.length - 1; i++){

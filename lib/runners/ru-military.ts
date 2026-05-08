@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: ru-military - Российская военная медицина («Защита», ВПХ Гуманенко, Указания МО РФ 2024) */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -76,7 +75,7 @@ const runner: CalculatorTool = {
         ],
       },
     };
-    const r = map[s] || map.zashchita;
+    const r = (map[s] || map.zashchita)!;
     return {
       value: r.title,
       unit: '',

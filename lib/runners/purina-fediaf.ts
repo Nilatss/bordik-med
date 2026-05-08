@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: purina-fediaf */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -58,7 +57,7 @@ const runner: CalculatorTool = {
       lactation:  { dog: 4.0, cat: 3.5, label: 'Лактация' },
       senior:     { dog: 1.4, cat: 1.1, label: 'Старший' },
     };
-    const f = factorMap[st] || factorMap.neutered;
+    const f = (factorMap[st] || factorMap.neutered)!;
     const factor = sp === 'cat' ? f.cat : f.dog;
     const der = Math.round(rer * factor);
     const rerR = Math.round(rer);

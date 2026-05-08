@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: ems-assess - Prehospital assessment mnemonics */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -91,7 +90,7 @@ const runner: CalculatorTool = {
         ],
       },
     };
-    const r = map[m] || map.sample;
+    const r = (map[m] || map.sample)!;
     return {
       value: r.title,
       unit: '',

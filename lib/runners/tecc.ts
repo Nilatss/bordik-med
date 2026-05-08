@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: tecc - TECC Tactical Emergency Casualty Care (civilian) */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -59,7 +58,7 @@ const runner: CalculatorTool = {
         details: 'Cold zone = безопасная зона (собственно EMS standard of care). Полный протокол ALS.',
       },
     };
-    const r = map[zone] || map.warm;
+    const r = (map[zone] || map.warm)!;
     return {
       value: r.title,
       unit: '',

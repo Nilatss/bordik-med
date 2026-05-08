@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: ahs-ecc - AHA ECC / ERC / SAMU / HEMS dispatch */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -90,7 +89,7 @@ const runner: CalculatorTool = {
         ],
       },
     };
-    const r = map[s] || map.mpds;
+    const r = (map[s] || map.mpds)!;
     return {
       value: r.title,
       unit: '',

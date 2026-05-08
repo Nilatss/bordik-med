@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: ilcor - ILCOR CoSTR (Consensus on Science with Treatment Recommendations) */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -94,7 +93,7 @@ const runner: CalculatorTool = {
         ],
       },
     };
-    const r = map[t] || map.bls;
+    const r = (map[t] || map.bls)!;
     return {
       value: r.title,
       unit: '',

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: tccc-17 - Tactical Combat Casualty Care (JTS 2023) */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -81,7 +80,7 @@ const runner: CalculatorTool = {
         ],
       },
     };
-    const r = map[p] || map.tfc;
+    const r = (map[p] || map.tfc)!;
 
     // MARCH score (checklist completion) - not a real score, but a progression indicator
     let color = r.c;

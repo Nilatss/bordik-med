@@ -95,7 +95,7 @@ const runner: CalculatorTool = {
         actions: ['Расширенная визуализация (МРТ)', 'Биопсия при подозрении на эндометрит'],
       },
     };
-    const m = map[c] || map.N;
+    const m = (map[c] || map.N)!;
     return {
       value: m.title,
       unit: '',

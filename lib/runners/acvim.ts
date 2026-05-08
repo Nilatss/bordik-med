@@ -60,7 +60,7 @@ const runner: CalculatorTool = {
         c:  { col: '#EF4444', lab: 'MMVD C', det: 'Клиническая ХСН (отёк лёгких)', act: ['Фуросемид 2-4 мг/кг × 2-3/сут', 'Пимобендан 0,3 мг/кг × 2', 'Беназеприл 0,5 мг/кг/сут', 'Спиронолактон 2 мг/кг/сут'] },
         d:  { col: '#991B1B', lab: 'MMVD D', det: 'Рефрактерная ХСН', act: ['Максимизировать фуросемид / торасемид', 'Сильденафил при ЛГ', 'Кислород, диета, прогноз сдержанный'] },
       };
-      const m = map[st] || map.a;
+      const m = (map[st] || map.a)!;
       color = m.col; label = m.lab; details = m.det; actions = m.act;
     } else if (dis === 'ce') {
       const map: Record<string, { col: string; lab: string; det: string; act: string[] }> = {

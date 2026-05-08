@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: march-paws - MARCH-PAWS алгоритм TFC (TCCC) */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -136,7 +135,7 @@ const runner: CalculatorTool = {
         details: 'TCCC 2018 изменил spine immobilization - не рутинно (задержка эвакуации опаснее, чем spine injury в проникающей травме).',
       },
     };
-    const s = steps[step] || steps.m;
+    const s = (steps[step] || steps.m)!;
     return {
       value: s.title,
       unit: '',

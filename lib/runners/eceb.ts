@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: eceb - Essential Care for Every Baby + ECSB (small babies) */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -108,7 +107,7 @@ const runner: CalculatorTool = {
         ],
       },
     };
-    const r = map[s] || map.delivery;
+    const r = (map[s] || map.delivery)!;
     return {
       value: r.title,
       unit: '',

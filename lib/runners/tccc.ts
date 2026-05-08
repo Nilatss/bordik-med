@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: tccc - TCCC Tactical Combat Casualty Care (CoTCCC/JTS 2023) */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -80,7 +79,7 @@ const runner: CalculatorTool = {
         ],
       },
     };
-    const r = map[phase] || map.tfc;
+    const r = (map[phase] || map.tfc)!;
     return {
       value: r.title,
       unit: '',

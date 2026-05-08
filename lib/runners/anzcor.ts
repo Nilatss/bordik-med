@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: anzcor - Australian and New Zealand Committee on Resuscitation */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -72,7 +71,7 @@ const runner: CalculatorTool = {
         ],
       },
     };
-    const r = map[s] || map.drsabcd;
+    const r = (map[s] || map.drsabcd)!;
     return {
       value: r.title,
       unit: '',

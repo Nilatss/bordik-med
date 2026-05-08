@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: pears - AHA PEARS 2018/2023 (Paediatric Emergency Assessment, Recognition, Stabilization) */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -105,7 +104,7 @@ const runner: CalculatorTool = {
         ],
       },
     };
-    const r = map[s] || map.pat;
+    const r = (map[s] || map.pat)!;
     return {
       value: r.title,
       unit: '',

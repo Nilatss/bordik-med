@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: far-ru - Клинические рекомендации ФАР РФ по СЛР */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -96,7 +95,7 @@ const runner: CalculatorTool = {
         ],
       },
     };
-    const r = map[a] || map.bls;
+    const r = (map[a] || map.bls)!;
     return {
       value: r.title,
       unit: '',

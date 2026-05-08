@@ -39,7 +39,7 @@ const runner: CalculatorTool = {
     ] },
   ],
   compute: (v) => {
-    const t = TESTS[v.test] || TESTS.na;
+    const t = (TESTS[v.test] || TESTS.na)!;
     const val = Number(v.value) || 0;
     let interpretation = 'В норме';
     let color = '#22C55E';

@@ -39,7 +39,7 @@ const runner: CalculatorTool = {
     { id: 'value', label: 'Значение', type: 'number', min: 0, max: 10000, step: 0.01 },
   ],
   compute: (v) => {
-    const t = TESTS[v.test] || TESTS.ca;
+    const t = (TESTS[v.test] || TESTS.ca)!;
     const val = Number(v.value) || 0;
     let interpretation = 'В пределах референса';
     let color = '#22C55E';

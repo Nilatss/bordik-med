@@ -40,7 +40,7 @@ const runner: CalculatorTool = {
     ] },
   ],
   compute: (v) => {
-    const t = TESTS[v.test] || TESTS.glu;
+    const t = (TESTS[v.test] || TESTS.glu)!;
     const val = Number(v.value) || 0;
     let interpretation = 'В пределах нормы (РФ)';
     let color = '#22C55E';

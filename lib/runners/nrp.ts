@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: nrp - AAP NRP 8th edition 2021 */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -87,7 +86,7 @@ const runner: CalculatorTool = {
         ],
       },
     };
-    const r = map[s] || map.initial;
+    const r = (map[s] || map.initial)!;
     return {
       value: r.title,
       unit: '',

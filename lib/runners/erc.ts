@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: erc - ERC Guidelines 2021 / 2025 */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -92,7 +91,7 @@ const runner: CalculatorTool = {
         ],
       },
     };
-    const r = map[p] || map.bls;
+    const r = (map[p] || map.bls)!;
     return {
       value: r.title,
       unit: '',

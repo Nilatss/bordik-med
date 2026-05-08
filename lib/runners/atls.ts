@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: atls - ATLS 10th ed (ACS-COT 2018) */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -113,7 +112,7 @@ const runner: CalculatorTool = {
         ],
       },
     };
-    const r = phaseMap[phase] || phaseMap.primary;
+    const r = (phaseMap[phase] || phaseMap.primary)!;
     return {
       value: r.title,
       unit: '',

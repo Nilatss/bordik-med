@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: phtls-nm - PHTLS / ITLS NAEMT prehospital trauma */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -84,7 +83,7 @@ const runner: CalculatorTool = {
         ],
       },
     };
-    const r = map[s] || map.scene;
+    const r = (map[s] || map.scene)!;
     return {
       value: r.title,
       unit: '',

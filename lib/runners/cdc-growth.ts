@@ -181,7 +181,7 @@ const runner: CalculatorTool = {
                     }
                 ]
             };
-            const table = bmiTable[String(v.sex)] || bmiTable.m;
+            const table = (bmiTable[String(v.sex)] || bmiTable.m)!;
             let lo = table[0], hi = table[table.length - 1];
             for(let i = 0; i < table.length - 1; i++){
                 if (age >= table[i].age && age <= table[i + 1].age) {

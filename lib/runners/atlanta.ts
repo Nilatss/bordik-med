@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: atlanta - Revised Atlanta 2012 + Balthazar CTSI для острого панкреатита */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -57,7 +56,7 @@ const runner: CalculatorTool = {
         moderate: { txt: 'Moderately severe acute pancreatitis', color: '#F59E0B', mort: 'Смертность ~ 8%, госпитализация, возможен ICU' },
         severe: { txt: 'Severe acute pancreatitis', color: '#991B1B', mort: 'Смертность 20-50%, ICU, MOF' },
       };
-      const r = map[cl] || map.mild;
+      const r = (map[cl] || map.mild)!;
       return {
         value: r.txt,
         unit: '',

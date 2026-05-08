@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: scid — Structured Clinical Interview for DSM-5 (SCID-5) */
 import type {
   CalculatorTool,
@@ -76,7 +75,7 @@ const runner: CalculatorTool = {
       I: { name: 'Пищевые', dx: ['Нервная анорексия', 'Нервная булимия', 'Binge-eating disorder', 'ARFID'], minDur: 12, durUnit: 'нед (3 мес для BED)' },
       J: { name: 'Соматические', dx: ['Соматических симптомов', 'Тревога за здоровье', 'Конверсионное', 'Искусственное'], minDur: 26, durUnit: 'нед' },
     };
-    const info = moduleMap[module] || moduleMap.A;
+    const info = (moduleMap[module] || moduleMap.A)!;
 
     let color = '#64748B';
     let label = 'Скрининг положительный, диагноз не подтверждён';

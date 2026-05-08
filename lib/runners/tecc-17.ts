@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: tecc-17 - Tactical Emergency Casualty Care (civilian) */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -62,7 +61,7 @@ const runner: CalculatorTool = {
         ],
       },
     };
-    const r = map[z] || map.indirect;
+    const r = (map[z] || map.indirect)!;
     return {
       value: r.title,
       unit: '',

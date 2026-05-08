@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: phtls - PHTLS / ITLS Prehospital Trauma Life Support */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -106,7 +105,7 @@ const runner: CalculatorTool = {
         details: 'Гипотермия + ацидоз + коагулопатия - "lethal triad" травмы. < 35 °C удваивает mortality.',
       },
     };
-    const r = map[step] || map.x;
+    const r = (map[step] || map.x)!;
     return {
       value: r.title,
       unit: '',

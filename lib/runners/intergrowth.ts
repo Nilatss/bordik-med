@@ -219,7 +219,7 @@ const runner: CalculatorTool = {
                     }
                 ]
             };
-            const tbl = fentonWeight[sex] || fentonWeight.m;
+            const tbl = (fentonWeight[sex] || fentonWeight.m)!;
             let lo = tbl[0], hi = tbl[tbl.length - 1];
             for(let i = 0; i < tbl.length - 1; i++){
                 if (ga >= tbl[i].ga && ga <= tbl[i + 1].ga) {

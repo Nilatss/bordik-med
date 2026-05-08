@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: vhs */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -35,7 +34,7 @@ const runner: CalculatorTool = {
       wolfhound: { max: 11.5, range: '≤ 11,5' },
       cat:       { max: 8.0,  range: '≤ 8,0' },
     };
-    const n = norms[sp] || norms.dog;
+    const n = (norms[sp] || norms.dog)!;
 
     let color = '#22C55E';
     let cat = 'Норма';
