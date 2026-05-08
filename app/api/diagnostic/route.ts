@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server';
 import * as v from 'valibot';
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
+// P1-PERF-NEW-3 — bank inline-import'ится для Edge runtime (вместо
+// readFileSync, который не доступен в Edge). 216KB raw → ~50KB
+// compressed в bundle, fits Vercel Edge function size limit (1MB compressed).
+import bankData from '@/data/diagnostic-question-bank.json';
 import { identifyAndLimit } from '@/lib/rate-limit';
 import { reserveGeminiQuota } from '@/lib/gemini-quota';
 import { getSupabaseServerClient } from '@/lib/supabase/server';
@@ -33,7 +35,13 @@ import { apiError, apiOk } from '@/lib/api-errors';
  * Required env: GEMINI_API_KEY (server-side only).
  */
 
-export const runtime = 'nodejs';
+// P1-PERF-NEW-3 — Edge runtime: ~50-150ms cold-start reduction vs Node
+// runtime, plus regional routing к ближайшему юзеру. Все используемые
+// модули edge-compat: valibot (pure JS), @supabase/ssr, @upstash/redis
+// + ratelimit (lazy-imported в lib/rate-limit), parse5 (output-guard),
+// fetch с redirect:'error' (SSRF-guard). Question bank inline-import'ится
+// (bankData) — больше нет filesystem-доступа.
+export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 
 // Free-tier daily quotas are PER-MODEL on Gemini. We try the primary model
@@ -88,9 +96,10 @@ let bankCache: BankQuestion[] | null = null;
 function loadBank(): BankQuestion[] {
   if (bankCache) return bankCache;
   try {
-    const filePath = join(process.cwd(), 'data', 'diagnostic-question-bank.json');
-    const raw = readFileSync(filePath, 'utf8');
-    const parsed = JSON.parse(raw) as { questions?: BankQuestion[] };
+    // P1-PERF-NEW-3 — inline-imported JSON (bankData) вместо readFileSync.
+    // Edge runtime не имеет filesystem access; webpack/turbopack бандлит
+    // 216KB JSON прямо в function chunk.
+    const parsed = bankData as { questions?: BankQuestion[] };
     const arr = Array.isArray(parsed.questions) ? parsed.questions : [];
 
     // P2-NEW-7 — defensive checkOutput на bank questions.
