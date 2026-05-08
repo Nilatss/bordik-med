@@ -20,6 +20,7 @@ import euro from '@/lib/runners/euroscore';
 
 interface EuroResult {
   value: string;
+  unit: string;
   interpretation: string;
   color: string;
   details: string;
