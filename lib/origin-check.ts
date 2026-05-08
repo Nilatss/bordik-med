@@ -39,11 +39,29 @@ export interface OriginCheckResult {
 
 export function checkOrigin(req: Request): OriginCheckResult {
   const origin = req.headers.get('origin');
+
+  // P3-NEW-5 — Sec-Fetch-Site backup. Современные браузеры (Chrome 76+,
+  // Safari 16.4+, Firefox 90+) отправляют этот header на ВСЕ запросы,
+  // включая same-origin XHR/fetch без явного Origin. Значения:
+  //   - "same-origin" — точно тот же scheme+host+port (надёжный сигнал)
+  //   - "same-site"   — eTLD+1 совпадает (например, sub.bordik.app)
+  //   - "cross-site"  — другой сайт (CSRF-кандидат)
+  //   - "none"        — direct user activation (адресная строка, bookmark)
+  // Добавляем как secondary-проверку: если Origin отсутствует НО
+  // Sec-Fetch-Site = "cross-site", всё равно блокируем. Если Origin
+  // есть и проходит allowlist, Sec-Fetch-Site не учитываем (allowlist —
+  // primary trust signal).
+  const sfs = req.headers.get('sec-fetch-site');
+
   // Same-origin browser navigations and many programmatic same-origin
-  // fetches OMIT the Origin header. We don't want to deny those.
-  // Browsers always send Origin on cross-origin requests though, so
-  // missing Origin = treated as same-origin = ok.
-  if (!origin) return { ok: true };
+  // fetches OMIT the Origin header. We don't want to deny those —
+  // если sec-fetch-site явно говорит cross-site, тогда блокируем.
+  if (!origin) {
+    if (sfs === 'cross-site') {
+      return { ok: false, reason: `sfs-cross-site` };
+    }
+    return { ok: true };
+  }
 
   if (PROD_ALLOWLIST.includes(origin)) return { ok: true };
   if (PREVIEW_HOST_REGEX.test(origin)) return { ok: true };

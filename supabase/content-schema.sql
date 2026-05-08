@@ -148,7 +148,10 @@ begin
   end if;
   return new;
 end;
-$$ language plpgsql;
+$$ language plpgsql
+   set search_path = public, pg_temp;
+   -- P3-NEW-4 — pin search_path: защищает от CVE-2018-1058
+   -- (атакующий shadow'ит public.* через свою схему).
 
 drop trigger if exists trg_ccr_four_eye on public.content_change_request;
 create trigger trg_ccr_four_eye
@@ -178,7 +181,11 @@ alter table public.content_change_request   enable row level security;
 alter table audit.record_version            enable row level security;
 
 -- Helper: read the role from the JWT app_metadata (set by service role).
-create or replace function public.editor_role_of(uid uuid) returns text language sql stable as $$
+create or replace function public.editor_role_of(uid uuid) returns text language sql stable
+  set search_path = public, pg_temp
+  -- P3-NEW-4 — pin search_path: функция читает auth.jwt() и используется
+  -- в RLS-политиках, нужно гарантировать, что auth.* не shadow'ится.
+  as $$
   select coalesce((auth.jwt() -> 'app_metadata' ->> 'editor_role'), '')
 $$;
 

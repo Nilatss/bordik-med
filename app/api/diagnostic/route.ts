@@ -90,7 +90,32 @@ function loadBank(): BankQuestion[] {
     const filePath = join(process.cwd(), 'data', 'diagnostic-question-bank.json');
     const raw = readFileSync(filePath, 'utf8');
     const parsed = JSON.parse(raw) as { questions?: BankQuestion[] };
-    bankCache = Array.isArray(parsed.questions) ? parsed.questions : [];
+    const arr = Array.isArray(parsed.questions) ? parsed.questions : [];
+
+    // P2-NEW-7 — defensive checkOutput на bank questions.
+    // Источник банка — Gemini-generated JSON, который мог быть подменён
+    // или содержать XSS-вектор (HTML-entity smuggling, javascript: URL,
+    // <svg onload=...>) на момент генерации. Прогоняем КАЖДУЮ строку
+    // (question + options) через output-guard перед кешированием.
+    // Невалидные вопросы выбрасываем; не блокируем весь test, чтобы
+    // одна "плохая" запись не положила endpoint.
+    const filtered: BankQuestion[] = [];
+    let dropped = 0;
+    for (const q of arr) {
+      if (!q || typeof q !== 'object') { dropped++; continue; }
+      const fields = [q.question, ...(Array.isArray(q.options) ? q.options : [])];
+      const allSafe = fields.every((s) => {
+        if (typeof s !== 'string') return false;
+        const v = isOutputSafeStrict(s);
+        return v.safe;
+      });
+      if (allSafe) filtered.push(q);
+      else dropped++;
+    }
+    if (dropped > 0) {
+      log.warn({ event: 'bank_unsafe_dropped', dropped, kept: filtered.length });
+    }
+    bankCache = filtered;
   } catch (err) {
     log.error({ event: 'bank_load_failed', message: String(err).slice(0, 200) });
     bankCache = [];

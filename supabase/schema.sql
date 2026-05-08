@@ -107,7 +107,9 @@ create policy "self write study"   on public.study_time
 create or replace function public.handle_new_user()
 returns trigger
 language plpgsql
-security definer set search_path = public
+-- P3-NEW-4 — добавлен pg_temp в search_path: защита от CVE-2018-1058
+-- (атакующий через свою временную схему может shadow'ить public.profiles).
+security definer set search_path = public, pg_temp
 as $$
 begin
   insert into public.profiles (id, email)
