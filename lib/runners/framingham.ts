@@ -1,6 +1,46 @@
 // @ts-nocheck
 /**
- * Runner: framingham
+ * Runner: framingham — Framingham 10-year CVD Risk (D'Agostino 2008 general)
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    D'Agostino RB Sr, Vasan RS, Pencina MJ, et al. General
+ *               cardiovascular risk profile for use in primary care: the
+ *               Framingham Heart Study. Circulation. 2008;117(6):743-753.
+ *               doi:10.1161/CIRCULATIONAHA.107.699579
+ *   GUIDELINE:  AHA/ACC: SUPERSEDED by ASCVD-PCE 2013 для US populations.
+ *               Framingham used historically + остаётся в некоторых
+ *               international guidelines.
+ *
+ * Variables:
+ *   - Age (30-74; clamp at extremes)
+ *   - Sex (M / F — separate equations / coefficients)
+ *   - Total cholesterol (mg/dL)
+ *   - HDL (mg/dL)
+ *   - Systolic BP
+ *   - On hypertension treatment (yes/no — modifier)
+ *   - Current smoker (yes/no)
+ *   - Diabetes (yes/no)
+ *
+ * Output: 10-year risk total CVD (CHD + stroke + PVD + heart failure) %.
+ *
+ * Bands (commonly):
+ *   <10%      → low
+ *   10-20%    → intermediate
+ *   ≥20%      → high
+ *
+ * Versus ASCVD / SCORE2:
+ *   - Framingham captures ВСЕ CVD outcomes (broader endpoint)
+ *   - ASCVD captures hard outcomes (MI + stroke + CV death)
+ *   - SCORE2 captures fatal + non-fatal events, ESC region-calibrated
+ *   - Choose by population: AHA/ACC US → ASCVD; ESC EU → SCORE2;
+ *     historical comparison → Framingham
+ *
+ * Caveats:
+ *   - Over-estimates в low-risk Mediterranean/Asian populations
+ *   - Under-estimates в Eastern European / Russian populations
+ *     (same direction как ASCVD)
+ *   - НЕ применяй для secondary prevention (already-event patients)
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *

@@ -1,5 +1,65 @@
 // @ts-nocheck
-/** Runner: ranson - Ranson criteria / Glasgow-Imrie / HAPS for acute pancreatitis */
+/**
+ * Runner: ranson — Ranson Criteria / Glasgow-Imrie / HAPS for Acute Pancreatitis
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   RANSON:     Ranson JH, Rifkind KM, Roses DF, Fink SD, Eng K, Spencer FC.
+ *               Prognostic signs and the role of operative management in
+ *               acute pancreatitis. Surg Gynecol Obstet. 1974;139(1):69-81.
+ *               PMID: 4834279
+ *   GLASGOW:    Imrie CW, Benjamin IS, Ferguson JC, et al. A single-centre
+ *               double-blind trial of Trasylol therapy in primary acute
+ *               pancreatitis. Br J Surg. 1978;65(5):337-341.
+ *               doi:10.1002/bjs.1800650513
+ *   HAPS:       Lankisch PG, Weber-Dany B, Hebel K, Maisonneuve P, Lowenfels AB.
+ *               The harmless acute pancreatitis score: a clinical algorithm
+ *               for rapid initial stratification of nonsevere disease.
+ *               Clin Gastroenterol Hepatol. 2009;7(6):702-705.
+ *               doi:10.1016/j.cgh.2009.02.020
+ *   GUIDELINE:  AGA 2018 / ACG 2013 acute pancreatitis guidelines —
+ *               рекомендуют BISAP / APACHE-II как modern alternatives;
+ *               Ranson сохраняется для historical comparison.
+ *
+ * Three implementations в одном runner (selectable):
+ *
+ * 1) Ranson (gallstone OR non-gallstone):
+ *    On admission (5):
+ *      - Age >55 (>70 для gallstone)
+ *      - WBC >16 ×10⁹/L (>18 для gallstone)
+ *      - Glucose >11.1 mmol/L (>12.2 для gallstone)
+ *      - LDH >350 IU/L (>400 для gallstone)
+ *      - AST >250 IU/L (>250 для обоих)
+ *    Within 48h (6):
+ *      - Hct drop >10% (>10% для обоих)
+ *      - BUN ↑ >5 mg/dL (>2 для gallstone)
+ *      - Calcium <2 mmol/L (<2 для обоих)
+ *      - Pa02 <60 mmHg (только non-gallstone)
+ *      - Base deficit >4 (>5 для gallstone)
+ *      - Fluid sequestration >6L (>4L gallstone)
+ *
+ *    Mortality:
+ *      0-2 → 0-3%
+ *      3-4 → 15%
+ *      5-6 → 40%
+ *      ≥7  → 100%
+ *
+ * 2) Glasgow-Imrie (8 criteria within 48h):
+ *      - Age >55, WBC >15, Glucose >10, BUN >16,
+ *      - PaO2 <60, Calcium <2, LDH >600, Albumin <32
+ *    Mortality: ≥3 → severe pancreatitis
+ *
+ * 3) HAPS (admission, screening нежёлчного "harmless" course):
+ *      - No rebound tenderness / guarding
+ *      - Normal Hct (M <43, F <39.6)
+ *      - Normal creatinine (<2 mg/dL)
+ *    All 3 met → 98% PPV mild course, NO ICU needed
+ *
+ * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
+ * Do not edit by hand - regenerate via `npm run split:runners`.
+ *
+ * Loaded lazily via dynamic import from lib/runners/index.ts so the
+ * encyclopaedia of clinical content stays out of the main app bundle.
+ */
 import type { CalculatorTool } from '../tools-runners';
 
 const runner: CalculatorTool = {

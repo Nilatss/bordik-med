@@ -1,6 +1,36 @@
 // @ts-nocheck
 /**
- * Runner: killip
+ * Runner: killip — Killip Classification of Heart Failure in MI
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    Killip T 3rd, Kimball JT. Treatment of myocardial
+ *               infarction in a coronary care unit. A two year experience
+ *               with 250 patients. Am J Cardiol. 1967;20(4):457-464.
+ *               doi:10.1016/0002-9149(67)90023-9
+ *   USE:        Variable в GRACE risk score (P1-CR-10 grace.ts) и в ESC
+ *               2023 ACS Guidelines для in-hospital mortality estimation.
+ *
+ * Classes (clinical exam at presentation):
+ *   I    — No clinical signs of heart failure
+ *          → 30-day mortality ≈ 6%
+ *   II   — Crackles в lung bases, S3 gallop, elevated JVP
+ *          → 30-day mortality ≈ 17%
+ *   III  — Acute pulmonary oedema (rales >50% of lung fields)
+ *          → 30-day mortality ≈ 38%
+ *   IV   — Cardiogenic shock (SBP <90, hypoperfusion, oliguria)
+ *          → 30-day mortality ≈ 81%
+ *
+ * Применение:
+ *   - Сразу при ED admission MI patient
+ *   - Component в GRACE 2.0 calculation
+ *   - Гид для disposition: Class I-II → ward, Class III-IV → CCU/ICU
+ *
+ * Caveats:
+ *   - Subjective component (auscultation skill)
+ *   - Modern Era ↓ mortality (PCI, statins) — original Killip 1967
+ *     numbers overestimate, GRACE uses re-calibrated coefficients
+ *   - НЕ применяй в non-MI heart failure (use NYHA / ACC/AHA stages)
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *
