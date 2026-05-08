@@ -219,7 +219,10 @@ interface ModuleSummary {
 // P1-CR-6 — промпты вынесены в lib/prompts/ для версионирования,
 // A/B-тестирования и i18n. См. lib/prompts/index.ts.
 import { prompts } from '@/lib/prompts';
-const SYSTEM_PROMPT_NEXT = prompts.diagnosticNext.ru.content;
+// SYSTEM_PROMPT_NEXT удалён вместе с buildNextPrompt — bank-mode не
+// дёргает Gemini per-question. lib/prompts.diagnosticNext оставлен в
+// репо как documentation, может пригодиться при возврате к runtime
+// generation для adaptive-difficulty.
 const SYSTEM_PROMPT_FINALIZE = prompts.diagnosticFinalize.ru.content;
 
 interface GeminiResponse {
@@ -394,31 +397,10 @@ function sanitizeUserField(s: unknown, maxLen = 1000): string {
     .trim();
 }
 
-function buildNextPrompt(history: Turn[]): string {
-  const summary = history.map((t, i) => {
-    const correct = t.selectedIndex === t.correctIndex ? '✓' : '✗';
-    const topic = sanitizeUserField(t.topic, 60);
-    const question = sanitizeUserField(t.question, 500);
-    const picked = sanitizeUserField(t.options[t.selectedIndex] ?? '?', 200);
-    const right = sanitizeUserField(t.options[t.correctIndex] ?? '?', 200);
-    return `Q${i + 1} [${topic}] ${correct} ${question}\n   Дано вариантов: ${t.options.length}\n   Выбрал: «${picked}»${correct === '✗' ? `\n   Правильный: «${right}»` : ''}`;
-  }).join('\n');
-  const meta = history.length === 0
-    ? 'Это ПЕРВЫЙ вопрос - начни со средне-сложного по анатомии или физиологии, чтобы откалибровать базу.'
-    : `Уже задано ${history.length} вопросов из ${TOTAL_QUESTIONS}. Подбери СЛЕДУЮЩИЙ вопрос с учётом истории ниже.`;
-  return `${SYSTEM_PROMPT_NEXT}
-
-${USER_DATA_INSTRUCTION}
-
-${meta}
-
-<user_data>
-История:
-${summary || '(пусто)'}
-</user_data>
-
-Верни ровно один JSON-объект следующего вопроса.`;
-}
+// P1-CR-6 — buildNextPrompt (dynamic generation на каждый вопрос) был
+// убран после миграции /next на bank-mode (см. pickNextQuestion).
+// Bank pre-generated через AI offline. Runtime AI вызов остался только
+// для /finalize (synthesis рекомендации).
 
 function buildFinalizePrompt(history: Turn[], modules: ModuleSummary[]): string {
   const summary = history.map((t, i) => {
@@ -607,17 +589,11 @@ const PostBodySchema = v.object({
   modules: v.optional(v.pipe(v.array(ModuleSummarySchema), v.maxLength(200))),
 });
 
-/* ── Output guard. Defence-in-depth: lib/output-guard.ts uses parse5
-   plus multi-pass entity decode so HTML-entity smuggling
-   (`&#x6A;avascript:`), SVG `onload`, MathML, and tab-injected
-   protocols (`jav&#x09;ascript:`) cannot survive into the response
-   payload. The previous one-shot regex (kept here as a soft pre-check)
-   stays for fast-path rejection of obvious cases. */
-const FAST_FORBIDDEN = /<\s*script|<\s*iframe|javascript:|vbscript:|data:text\/html/i;
-function checkOutput(s: string): { safe: boolean; reason?: string } {
-  if (FAST_FORBIDDEN.test(s)) return { safe: false, reason: 'fast-regex' };
-  return isOutputSafeStrict(s);
-}
+// checkOutput тоже удалён — был soft pre-check на /next responses, но
+// /next теперь возвращает данные из pre-generated bank (P2-NEW-7
+// прогоняет КАЖДУЮ запись банка через isOutputSafeStrict при загрузке),
+// а /finalize возвращает только enum-поля (level, recommendedModuleIds)
+// и фиксированные строки — XSS-вектор отсутствует структурно.
 
 export async function POST(req: Request) {
   const res = await postImpl(req);
