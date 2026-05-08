@@ -492,6 +492,17 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
   const prevTab = tabs[activeIndex - 1];
   const nextTab = tabs[activeIndex + 1];
 
+  // P1-PERF-NEW-2 — memoize preprocessContent. Без useMemo функция
+  // (em-dash replace + multi-pass scan по строкам таблиц) пересчитывалась
+  // на каждом ре-рендере viewer'а (resize, hover state, scroll-tracking),
+  // даже если активная вкладка не менялась. Тяжёлый кейс: lesson 'patient
+  // safety' с 6 callout-таблицами ~70k chars, ~6ms на пересчёт ×30Hz =
+  // 18% main-thread budget на анимациях.
+  const activeBody = useMemo(
+    () => preprocessContent(active.body),
+    [active.body],
+  );
+
   return (
     <div className="rg-main-toc">
       {/* LEFT: Tab content. The previous fade+slide AnimatePresence kept the
@@ -672,7 +683,7 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
                 },
               }}
             >
-              {preprocessContent(active.body)}
+              {activeBody}
             </ReactMarkdown>
           </div>
         )}
