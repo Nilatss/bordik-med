@@ -27,6 +27,7 @@ import {
   CHUNK_SIZE,
 } from '@/lib/icd10/utils';
 import { ChapterPill } from './ChapterPill';
+import { DetailBlock } from './DetailBlock';
 
 interface Props {
   chapters: Chapter[];
@@ -821,33 +822,6 @@ function CodeRow({
   );
 }
 
-function DetailBlock({
-  label, tone = 'neutral', children,
-}: {
-  label: string;
-  tone?: 'neutral' | 'warning';
-  children: React.ReactNode;
-}) {
-  return (
-    <div>
-      <div style={{
-        fontSize: 11,
-        fontWeight: 600,
-        letterSpacing: '0.06em',
-        textTransform: 'uppercase',
-        color: tone === 'warning' ? '#92400E' : '#9CA3AF',
-        marginBottom: 6,
-      }}>
-        {label}
-      </div>
-      <div style={{
-        color: tone === 'warning' ? '#78350F' : '#374151',
-      }}>
-        {children}
-      </div>
-    </div>
-  );
-}
-
+// DetailBlock вынесен в ./DetailBlock.tsx
 // ChapterPill вынесен в ./ChapterPill.tsx
 // pluralCodes вынесен в lib/icd10/utils.ts
