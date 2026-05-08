@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: credmeds */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,
@@ -67,9 +66,9 @@ const runner: CalculatorTool = {
     return {
       value: cat,
       unit: 'CredibleMeds',
-      interpretation: catDesc[cat],
+      interpretation: catDesc[cat]!,
       color,
-      details: `Препарат: ${d}. Категория риска TdP: ${cat}.\n\n${catDesc[cat]}\n\nДоп. факторы: ${r}.\n\nРекомендации по мониторингу:\n- ЭКГ исходно (QTc по Bazett/Fridericia)\n- QTc > 500 мс или ΔQTc > 60 мс — отменить\n- Коррекция K+ > 4,0 ммоль/л, Mg2+ > 2,0 мг/дл\n- Избегать комбинаций 2+ QT-удлиняющих препаратов\n- При Known Risk + риск-факторы → альтернативный препарат`,
+      details: `Препарат: ${d}. Категория риска TdP: ${cat}.\n\n${catDesc[cat]!}\n\nДоп. факторы: ${r}.\n\nРекомендации по мониторингу:\n- ЭКГ исходно (QTc по Bazett/Fridericia)\n- QTc > 500 мс или ΔQTc > 60 мс — отменить\n- Коррекция K+ > 4,0 ммоль/л, Mg2+ > 2,0 мг/дл\n- Избегать комбинаций 2+ QT-удлиняющих препаратов\n- При Known Risk + риск-факторы → альтернативный препарат`,
       actions: [
         'Открыть crediblemeds.org → QTDrugs Lists → проверить категорию',
         'Снять ЭКГ до начала и через 3-5 дней терапии',

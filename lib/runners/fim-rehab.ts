@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: fim-rehab — Functional Independence Measure (FIM) */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -38,8 +37,8 @@ const cognitive = [
 const runner: CalculatorTool = {
   kind: 'calculator',
   inputs: [
-    ...motor.map((m) => ({ id: m.id, label: m.label, type: 'select', options: scale17 })),
-    ...cognitive.map((c) => ({ id: c.id, label: c.label, type: 'select', options: scale17 })),
+    ...motor.map((m) => ({ id: m.id, label: m.label, type: 'select' as const, options: scale17 })),
+    ...cognitive.map((c) => ({ id: c.id, label: c.label, type: 'select' as const, options: scale17 })),
   ],
   compute: (v) => {
     const motorSum = motor.reduce((s, m) => s + Number(v[m.id] || 1), 0);

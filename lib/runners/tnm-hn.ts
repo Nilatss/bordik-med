@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: tnm-hn - TNM 8th ed for head & neck cancers */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -57,7 +56,7 @@ const runner: CalculatorTool = {
       else if (t === 'T4b' || n === 'N3a' || n === 'N3b') stage = 'IVB';
     }
 
-    const survivalMap = {
+    const survivalMap: Record<string, string> = {
       'I': '5-yr OS ~ 80-90%',
       'II': '5-yr OS ~ 65-80%',
       'III': '5-yr OS ~ 50-65%',

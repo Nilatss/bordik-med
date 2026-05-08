@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: icpc — ICPC-2 International Classification of Primary Care */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -74,7 +73,7 @@ const runner: CalculatorTool = {
     const e = examples[ch] || { s: '—', d: '—' };
     const content = comp === 'diagnosis' ? e.d : comp === 'symptom' ? e.s : `См. WONCA ICPC-2 для процессов. Компонент 2 (диагностика), 3 (профилактика), 4 (результаты тестов), 5 (назначения), 6 (направления)`;
     return {
-      value: content.split(';')[0].trim().split(' ')[0] || ch,
+      value: content.split(';')[0]!.trim().split(' ')[0] || ch,
       unit: 'ICPC-2',
       color: '#6B7280',
       interpretation: `ICPC-2 Chapter ${ch} — ${comp}`,

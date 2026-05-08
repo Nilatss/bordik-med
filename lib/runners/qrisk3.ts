@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: qrisk3
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
@@ -196,7 +195,7 @@ const runner: CalculatorTool = {
             const ageT = Math.log(age);
             const bmiT = Math.log(bmi / 10);
             const baseIntercept = female ? -12.822 : -11.611;
-            const ethAdj = {
+            const ethAdj: Record<string, number> = {
                 white: 0,
                 indian: 0.28,
                 pakistani: 0.27,

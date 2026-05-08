@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: score2 — SCORE2 ESC 2021 Cardiovascular Risk
  *
@@ -188,7 +187,7 @@ const runner: CalculatorTool = {
             }
             let risk = 1 - Math.pow(s0, Math.exp(xb));
             // Recalibration scaling by region (ESC 2021 Supplementary Table 8)
-            const scale = {
+            const scale: Record<string, { mF: number; mM: number; sF: number; sM: number }> = {
                 low: {
                     mF: -0.85,
                     mM: -0.52,
@@ -214,7 +213,7 @@ const runner: CalculatorTool = {
                     sM: 0.89
                 }
             };
-            const sc = scale[region] ?? scale.mod;
+            const sc = (scale[region] ?? scale.mod)!;
             const m = female ? sc.mF : sc.mM;
             const s = female ? sc.sF : sc.sM;
             const lcl = Math.log(-Math.log(1 - risk));

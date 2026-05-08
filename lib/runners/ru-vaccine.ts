@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: ru-vaccine
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
@@ -51,7 +50,7 @@ const runner: CalculatorTool = {
     ],
     compute: (v)=>{
             const cohort = String(v.cohort);
-            const schedules = {
+            const schedules: Record<string, { value: string; details: string; actions: string[] }> = {
                 newborn: {
                     value: 'Новорождённые 0-1 мес (РФ)',
                     details: 'Национальный календарь РФ (Приказ Минздрава №1122н от 06.12.2021, действующий). Первые прививки в роддоме.',

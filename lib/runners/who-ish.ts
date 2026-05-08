@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: who-ish
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
@@ -156,7 +155,7 @@ const runner: CalculatorTool = {
             // WHO/ISH 2019 updated charts use Globorisk/pooled approach. Approximate
             // via region baseline + points (Mendis 2007 - Bull WHO 85:12). Native charts
             // give 5 categories: <10, 10-<20, 20-<30, 30-<40, ≥40 %.
-            const regionBase = {
+            const regionBase: Record<string, number> = {
                 euroA: 0,
                 amroA: 0.1,
                 wproA: 0,

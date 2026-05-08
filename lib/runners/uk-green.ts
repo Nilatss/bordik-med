@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: uk-green
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
@@ -47,7 +46,7 @@ const runner: CalculatorTool = {
     ],
     compute: (v)=>{
             const cohort = String(v.cohort);
-            const schedules = {
+            const schedules: Record<string, { value: string; details: string; actions: string[] }> = {
                 infant: {
                     value: 'Младенцы 0-12 мес (UK)',
                     details: 'Британский календарь (Green Book, UK Health Security Agency 2022, с обновлениями 2024). Отличия от CDC: нет рутинного RV (отменён в некоторых регионах, переоценивается), HepB только в 6-in-1, MenB в рутине, MenC - убран.',

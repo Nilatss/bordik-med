@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: icd11 — WHO ICD-11 (2022) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -46,7 +45,7 @@ const runner: CalculatorTool = {
     };
     const e = map[ch]!;
     return {
-      value: e.stem.split(';')[0].trim(),
+      value: e.stem.split(';')[0]!.trim(),
       unit: 'ICD-11',
       color: '#6B7280',
       interpretation: `ICD-11 Chapter ${ch}: ${e.title}`,

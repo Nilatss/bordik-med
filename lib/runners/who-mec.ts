@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: who-mec - критерии приемлемости контрацепции (WHO MEC 5e 2015 / CDC US MEC 2024) */
 import type {
   CalculatorTool,
@@ -75,8 +74,8 @@ const runner: CalculatorTool = {
     return {
       value: `Категория ${cat}`,
       unit: '',
-      interpretation: titles[cat],
-      color: colors[cat],
+      interpretation: titles[cat] ?? '',
+      color: colors[cat] ?? '#1A1A1A',
       details:
         cat === 4
           ? 'Метод противопоказан при данном состоянии. Выбрать альтернативу (LARC, барьер, стерилизация).'

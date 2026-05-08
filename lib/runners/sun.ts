@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: sun - SUN (Standardization of Uveitis Nomenclature) */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -72,7 +71,7 @@ const runner: CalculatorTool = {
         cells >= 2 ? 'Топические ГКС (преднизолон ацетат 1% каждые 1-2 ч), мидриатики (циклопентолат / атропин)' : '',
         cells >= 3 && (anat !== 'anterior') ? 'Системные ГКС 1 мг/кг или стероид-сберегающие (метотрексат, MMF, TNFi)' : '',
         'HLA-B27 тест при рецидивирующем переднем увеите',
-        `Этиология: ${causesByAnat[anat].join('; ')}`,
+        `Этиология: ${(causesByAnat[anat] ?? []).join('; ')}`,
       ].filter(Boolean),
       caveats: [
         'SUN (2005) — стандартизированная терминология, не диагноз',
