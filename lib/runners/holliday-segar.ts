@@ -1,6 +1,42 @@
 // @ts-nocheck
 /**
- * Runner: holliday-segar
+ * Runner: holliday-segar — Holliday-Segar Pediatric Maintenance Fluid (4-2-1 rule)
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    Holliday MA, Segar WE. The maintenance need for water in
+ *               parenteral fluid therapy. Pediatrics. 1957;19(5):823-832.
+ *               PMID: 13431307
+ *   GUIDELINE:  AAP 2018 Choice of IV Fluids in Hospitalized Children —
+ *               рекомендуют isotonic fluids (D5LR, D5NS, D5 1/2NS) с
+ *               Holliday-Segar для maintenance rate. ОТКАЗ от hypotonic
+ *               (D5 1/4NS) — historical safety concern (hyponatraemia).
+ *               doi:10.1542/peds.2018-3083
+ *
+ * 4-2-1 Hourly Rule:
+ *   First 10 kg:   4 mL/kg/h
+ *   Second 10 kg:  2 mL/kg/h (i.e., 11-20 kg)
+ *   Each kg >20:   1 mL/kg/h
+ *
+ * Daily equivalent:
+ *   First 10 kg:   100 mL/kg/day
+ *   Second 10 kg:  50 mL/kg/day
+ *   Each kg >20:   20 mL/kg/day
+ *
+ * Examples:
+ *   25 kg child:  4×10 + 2×10 + 1×5 = 65 mL/h (1560 mL/day)
+ *   8 kg infant:  4×8 = 32 mL/h (768 mL/day)
+ *
+ * Caveats:
+ *   - Это MAINTENANCE only (не resuscitation). Bolus / replacement —
+ *     отдельно (10-20 mL/kg NS bolus при dehydration).
+ *   - НЕ для neonates <28 days — у новорождённых отдельные guideline
+ *     (NICU policy, ~80-100 mL/kg/day day 1, ↑ 10-20 mL/kg/day каждый
+ *     день до 150-160 by day 5-7).
+ *   - НЕ для anuric / oliguric / heart failure / SIADH — restrict
+ *     fluids manually.
+ *   - Учитывай fever (+10-12% per °C above 37.8), tachypnoea, third-
+ *     spacing — adjust upward.
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *

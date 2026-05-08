@@ -1,6 +1,50 @@
 // @ts-nocheck
 /**
- * Runner: aa-gradient
+ * Runner: aa-gradient — Alveolar-arterial (A-a) Oxygen Gradient
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    Alveolar gas equation (Riley, 1949):
+ *               PAO2 = FiO2 × (Patm - PH2O) - (PaCO2 / R)
+ *   STANDARD:   ATS / ERS Diagnostic Tests Standardisation —
+ *               A-a gradient как baseline для evaluating diffusion
+ *               impairment, V/Q mismatch, shunt physiology.
+ *
+ * Formulas:
+ *   PAO2 = FiO2 × (Patm - PH2O) - (PaCO2 / R)
+ *        = 0.21 × (760 - 47) - (PaCO2 / 0.8)        — на room air, sea level
+ *        = 150 - 1.25 × PaCO2                        — упрощённый bedside
+ *
+ *   A-a gradient = PAO2 - PaO2
+ *
+ * Где:
+ *   Patm  = atmospheric pressure (760 mmHg sea level)
+ *   PH2O  = water vapour pressure (47 mmHg @ 37°C)
+ *   FiO2  = fraction inspired O2 (0.21 room air, 1.0 100% O2 mask)
+ *   R     = respiratory exchange ratio ≈ 0.8 (typical diet)
+ *   PaO2/PaCO2 — arterial blood gas values
+ *
+ * Normal expected gradient (adult, room air):
+ *   Age-adjusted normal: (Age/4) + 4
+ *     20 yr → ~9 mmHg
+ *     40 yr → ~14 mmHg
+ *     60 yr → ~19 mmHg
+ *     80 yr → ~24 mmHg
+ *
+ * Elevated → causes (5 categories of hypoxaemia):
+ *   - V/Q mismatch (PE, COPD exacerbation, asthma)
+ *   - Right-to-left shunt (intracardiac, pulmonary AVM, ARDS)
+ *   - Diffusion impairment (interstitial lung disease)
+ *   - Высокий FiO2 toxicity (>50% over hours-days)
+ *
+ * Normal at altitude:
+ *   Patm уменьшается ~25 mmHg per 1000 ft. Расчёт компенсирует
+ *   через input "atmospheric pressure" если runner поддерживает.
+ *
+ * Caveats:
+ *   - На supplemental O2 (FiO2 > 0.21) gradient может быть нормально
+ *     elevated — не overinterpret
+ *   - PaO2/FiO2 ratio (P/F ratio) проще для ARDS staging по Berlin Definition
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *

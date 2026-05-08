@@ -1,6 +1,37 @@
 // @ts-nocheck
 /**
- * Runner: parkland
+ * Runner: parkland — Parkland Formula for burn fluid resuscitation
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    Baxter CR, Shires T. Physiological response to crystalloid
+ *               resuscitation of severe burns. Ann N Y Acad Sci.
+ *               1968;150(3):874-894. doi:10.1111/j.1749-6632.1968.tb14738.x
+ *   GUIDELINE:  ABA (American Burn Association) Practice Guidelines —
+ *               Parkland как initial estimate, но titrate by urine output
+ *               (target 0.5 mL/kg/h в adults, 1.0 mL/kg/h в children).
+ *               https://ameriburn.org/
+ *   GUIDELINE:  ATLS 10th Edition — Parkland для major burns ≥20% TBSA
+ *               (adults) или ≥10% (children).
+ *
+ * Formula:
+ *   24h fluid (mL) = 4 × weight (kg) × %TBSA burned
+ *
+ * Administration:
+ *   First 8h:    50% от total (от time of burn, not arrival)
+ *   Next 16h:    50% от total
+ *   Fluid:       Lactated Ringer (LR / Hartmann's)
+ *
+ * Caveats:
+ *   - НЕ включает maintenance fluid (добавляй по weight: 4-2-1 rule
+ *     для adults, Holliday-Segar для children)
+ *   - %TBSA: используй Wallace Rule of Nines / Lund-Browder в pediatric
+ *   - Titrate to urine output: SLOW down если >1 mL/kg/h, SPEED up если <0.5
+ *   - Modified Brooke Formula (2 mL/kg/%TBSA) применяется в ABA studies
+ *     с тенденцией снижения over-resuscitation ("fluid creep")
+ *   - Пересчитай в DETAILED burn assessment на 24h mark — Parkland
+ *     overestimates в superficial / partial-thickness, underestimates
+ *     в inhalation injury / electric burns
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *

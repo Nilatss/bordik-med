@@ -1,6 +1,43 @@
 // @ts-nocheck
 /**
- * Runner: bsa-mosteller
+ * Runner: bsa-mosteller — Body Surface Area (Mosteller formula)
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    Mosteller RD. Simplified calculation of body-surface area.
+ *               N Engl J Med. 1987;317(17):1098. doi:10.1056/NEJM198710223171717
+ *   STANDARD:   FDA / EMA accept Mosteller для drug dosing (oncology,
+ *               renal). Du Bois (1916) — older standard, accuracy
+ *               сравнимая, но Mosteller проще для bedside/mobile.
+ *
+ * Formula:
+ *   BSA (m²) = √( height (cm) × weight (kg) / 3600 )
+ *
+ * Equivalent (imperial):
+ *   BSA (m²) = √( height (in) × weight (lb) / 3131 )
+ *
+ * Typical adult range: 1.5-2.0 m². Normal "1.73 m²" — average value
+ *   используется в eGFR normalisation (CKD-EPI, MDRD).
+ *
+ * Use cases:
+ *   - Oncology: chemotherapy dosing (mg/m²) — несмотря на критику
+ *     "BSA-dosing oversimplifies drug PK", FDA labels пока используют
+ *   - Cardiac: cardiac index (CI = CO / BSA)
+ *   - Renal: BSA-normalised eGFR (mL/min/1.73 m²)
+ *   - Burns: %TBSA estimation (in conjunction с Wallace / Lund-Browder)
+ *
+ * Caveats:
+ *   - Inaccurate в obesity / cachexia / pediatric extremes (use age-
+ *     specific formulas: Haycock для infants, Boyd для toddlers)
+ *   - Не учитывает body composition / muscle mass
+ *   - Modern PK studies показывают что BSA correlates poorly с drug
+ *     clearance — некоторые oncology dosings переходят на flat-dose
+ *     или actual body weight scaling
+ *
+ * Alternatives:
+ *   - Du Bois 1916: BSA = 0.007184 × weight^0.425 × height^0.725
+ *   - Haycock 1978 (pediatric): BSA = 0.024265 × weight^0.5378 × height^0.3964
+ *   - Boyd 1935: complex polynomial, accuracy в pediatric
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *

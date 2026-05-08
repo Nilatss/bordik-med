@@ -1,6 +1,37 @@
 // @ts-nocheck
 /**
- * Runner: mdrd
+ * Runner: mdrd — MDRD-4 GFR (legacy formula)
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    Levey AS, Coresh J, Greene T, et al. Using standardized
+ *               serum creatinine values in the modification of diet in
+ *               renal disease study equation for estimating glomerular
+ *               filtration rate. Ann Intern Med. 2006;145(4):247-254.
+ *               doi:10.7326/0003-4819-145-4-200608150-00004
+ *   GUIDELINE:  KDIGO 2012 — MDRD-4 разрешён (legacy), но CKD-EPI 2021
+ *               предпочтителен для CKD staging. MDRD используется в
+ *               некоторых FDA drug labels (исторически).
+ *
+ * Formula (4-variable IDMS-traceable):
+ *   eGFR = 175 × (Cr mg/dL)^(-1.154) × age^(-0.203)
+ *               × 0.742 (if female) × 1.212 (if Black, исторически)
+ *
+ * Bordik НЕ применяет race-coefficient (NKF-ASN 2021 Task Force):
+ *   eGFR = 175 × (Cr mg/dL)^(-1.154) × age^(-0.203) × 0.742^female
+ *
+ * Result: mL/min/1.73 m² (BSA-normalised)
+ *
+ * Caveats:
+ *   - Underestimates eGFR при normal function (>60), accuracy лучше
+ *     в CKD ranges
+ *   - Inaccurate при extreme age / muscle mass / hospitalised acute
+ *   - Cystatin-based variant (MDRD-CysC) более precise, но менее
+ *     доступен по всему миру
+ *   - Используй CKD-EPI 2021 как primary; MDRD оставлен для
+ *     compatibility с старыми clinical guidelines / drug labels
+ *
+ * P0-CR closure (2026-05-06): добавлен guard на creatinine ≤0 / NaN.
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *

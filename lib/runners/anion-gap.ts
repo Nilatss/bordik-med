@@ -1,6 +1,49 @@
 // @ts-nocheck
 /**
- * Runner: anion-gap
+ * Runner: anion-gap — Serum Anion Gap (with albumin correction)
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   ORIGIN:     Emmett M, Narins RG. Clinical use of the anion gap.
+ *               Medicine (Baltimore). 1977;56(1):38-54.
+ *               doi:10.1097/00005792-197756010-00002
+ *   STANDARD:   KDIGO Acute Kidney Injury / Acid-Base Practice — AG
+ *               как cornerstone в evaluating metabolic acidosis;
+ *               albumin correction ESSENTIAL в hospitalised pacientов
+ *               с hypoalbuminaemia (most ICU patients).
+ *
+ * Formulas:
+ *   AG = Na+ - (Cl- + HCO3-)
+ *
+ *   Corrected AG (Figge et al. 1998) — поправка на hypoalbuminaemia:
+ *     cAG = AG + 2.5 × (4.0 - albumin g/dL)
+ *
+ * Normal range: 8-12 mEq/L (с albumin correction).
+ *
+ * Differential для elevated AG (mnemonic MUDPILES / GOLDMARK):
+ *   M — Methanol
+ *   U — Uraemia
+ *   D — DKA / starvation ketoacidosis / alcoholic ketoacidosis
+ *   P — Paraldehyde / propylene glycol
+ *   I — Iron / Isoniazid / Inborn errors of metabolism
+ *   L — Lactic acidosis (sepsis, metformin, hypoxia, ischaemia)
+ *   E — Ethylene glycol / Ethanol
+ *   S — Salicylates
+ *
+ * GOLDMARK (расширенный):
+ *   Glycols, Oxoproline, L-lactate, D-lactate, Methanol,
+ *   Aspirin, Renal failure, Ketoacidosis
+ *
+ * Normal AG metabolic acidosis (HARDASS):
+ *   Hyperalimentation, Acetazolamide, RTA (Renal Tubular Acidosis),
+ *   Diarrhoea, Adrenal insufficiency, Saline (NaCl excess), Spironolactone
+ *
+ * Delta-Delta:
+ *   ∆AG / ∆HCO3 = (AG - 12) / (24 - HCO3)
+ *     <0.4   pure non-AG metabolic acidosis (RTA, GI loss)
+ *     0.4-1  mixed (high-AG + non-AG)
+ *     1-2    pure high-AG (DKA, lactic, uraemia)
+ *     >2     mixed (high-AG + metabolic alkalosis OR resp. acidosis)
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *
