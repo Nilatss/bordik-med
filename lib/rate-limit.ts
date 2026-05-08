@@ -149,6 +149,20 @@ async function loadUpstashLimiters(): Promise<{ ip: UpstashLimiterShape; user: U
     }) as unknown as UpstashLimiterShape;
     return { ip: upstashIp, user: upstashUser };
   } catch (err) {
+    // P2-NEW-2 — Upstash init fail в production = деградация rate-limit'а
+    // до in-memory token bucket (30/мин × N isolates). Финансовый риск
+    // для Gemini-эндпоинтов (см. P0-SEC-3 в audit). Раньше тут был
+    // голый console.warn, который терялся в Vercel-логах и не алёртил.
+    // Теперь captureException → Sentry-issue + log.error для structured
+    // logs. Не блокируем работу (fallback продолжает обслуживать).
+    try {
+      const Sentry = await import('@sentry/nextjs');
+      Sentry.captureException(err, {
+        level: 'warning',
+        tags: { component: 'rate-limit', subsystem: 'upstash' },
+        extra: { phase: 'init' },
+      });
+    } catch { /* sentry import failed → skip, не падаем */ }
     console.warn('[rate-limit] Upstash init failed, falling back to in-memory', err);
     return null;
   }
@@ -172,18 +186,34 @@ export async function identifyAndLimit(
   const upstash = await loadUpstashLimiters();
   if (upstash) {
     const limiter = userId ? upstash.user : upstash.ip;
-    const r = await limiter.limit(ident);
-    const retryAfter = Math.max(0, Math.ceil((r.reset - Date.now()) / 1000));
-    return {
-      ok: r.success,
-      retryAfter,
-      headers: {
-        'X-RateLimit-Limit':     String(r.limit),
-        'X-RateLimit-Remaining': String(r.remaining),
-        'X-RateLimit-Reset':     String(Math.floor(r.reset / 1000)),
-        ...(r.success ? {} : { 'Retry-After': String(retryAfter) }),
-      },
-    };
+    try {
+      const r = await limiter.limit(ident);
+      const retryAfter = Math.max(0, Math.ceil((r.reset - Date.now()) / 1000));
+      return {
+        ok: r.success,
+        retryAfter,
+        headers: {
+          'X-RateLimit-Limit':     String(r.limit),
+          'X-RateLimit-Remaining': String(r.remaining),
+          'X-RateLimit-Reset':     String(Math.floor(r.reset / 1000)),
+          ...(r.success ? {} : { 'Retry-After': String(retryAfter) }),
+        },
+      };
+    } catch (err) {
+      // P2-NEW-2 — per-request Upstash failure (network glitch, quota,
+      // 5xx). Раньше падало tihi — без алёрта в Sentry. Теперь capture
+      // + degrade в in-memory bucket вместо 500-ошибки клиенту.
+      try {
+        const Sentry = await import('@sentry/nextjs');
+        Sentry.captureException(err, {
+          level: 'warning',
+          tags: { component: 'rate-limit', subsystem: 'upstash' },
+          extra: { phase: 'limit', ident: ident.slice(0, 32) },
+        });
+      } catch { /* skip */ }
+      console.warn('[rate-limit] Upstash limit() failed, degrading to in-memory', err);
+      // Fall through to in-memory path below.
+    }
   }
   const limiter = userId ? fallbackUser : fallbackIp;
   const d = limiter(ident);
