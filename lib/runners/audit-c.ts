@@ -1,6 +1,45 @@
 // @ts-nocheck
 /**
- * Runner: audit-c
+ * Runner: audit-c — AUDIT-C 3-question Alcohol Use Screen
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    Bush K, Kivlahan DR, McDonell MB, Fihn SD, Bradley KA.
+ *               The AUDIT alcohol consumption questions (AUDIT-C): an
+ *               effective brief screening test for problem drinking.
+ *               Arch Intern Med. 1998;158(16):1789-1795.
+ *               doi:10.1001/archinte.158.16.1789
+ *   GUIDELINE:  USPSTF 2018 Final Recommendation — alcohol misuse
+ *               screening + brief counseling в primary care. AUDIT-C
+ *               recommended over CAGE для outpatient screen.
+ *               doi:10.1001/jama.2018.16789
+ *
+ * 3 questions (0-4 each, max 12):
+ *   1. How often do you have a drink containing alcohol?
+ *      0 = Never        1 = ≤monthly      2 = 2-4 times/month
+ *      3 = 2-3 times/week  4 = ≥4 times/week
+ *   2. How many standard drinks containing alcohol do you have on
+ *      a typical day when drinking?
+ *      0 = 1-2          1 = 3-4           2 = 5-6
+ *      3 = 7-9          4 = ≥10
+ *   3. How often do you have ≥6 drinks on one occasion?
+ *      0 = Never        1 = <monthly      2 = monthly
+ *      3 = weekly       4 = daily/almost daily
+ *
+ * Bands (USPSTF cut-offs):
+ *   Men:   ≥4   → positive screen — brief intervention
+ *   Women: ≥3   → positive screen — brief intervention
+ *
+ * Caveats:
+ *   - Self-report — социальный bias underestimates real use
+ *   - НЕ диагноз alcohol use disorder; positive screen → DSM-5 AUD
+ *     evaluation требуется
+ *   - Pregnant women: ≥3 = consider any alcohol use as risk
+ *
+ * Variants:
+ *   - AUDIT (full 10-question, max 40) — для confirmation после
+ *     positive AUDIT-C screen
+ *   - CAGE (4 questions) — older, deprecated в primary care
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *

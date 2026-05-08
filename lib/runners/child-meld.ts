@@ -1,6 +1,46 @@
 // @ts-nocheck
 /**
- * Runner: child-meld
+ * Runner: child-meld — Child-Pugh + MELD composite (cirrhosis prognosis)
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   CHILD-PUGH:  Child CG, Turcotte JG. Surgery and portal hypertension.
+ *                Major Probl Clin Surg. 1964;1:1-85. PMID: 4950264
+ *   PUGH UPDATE: Pugh RN, Murray-Lyon IM, Dawson JL, Pietroni MC,
+ *                Williams R. Transection of the oesophagus for bleeding
+ *                oesophageal varices. Br J Surg. 1973;60(8):646-649.
+ *                doi:10.1002/bjs.1800600817
+ *   MELD:        См. meld.ts (Kamath 2001 + UNOS Policy 9 + MELD-Na 2016).
+ *   GUIDELINE:   AASLD 2014 Liver Transplantation in adults — MELD как
+ *                primary tool для liver transplant priority since 2002.
+ *                Child-Pugh остаётся в clinical practice для surgery
+ *                fitness assessment + варicеal bleeding risk.
+ *
+ * Child-Pugh items + points (1/2/3 each):
+ *   Encephalopathy:     none / Grade 1-2 / Grade 3-4
+ *   Ascites:            absent / mild controlled / refractory
+ *   Bilirubin:          <2 / 2-3 / >3 mg/dL
+ *                       (PBC/PSC: <4 / 4-10 / >10)
+ *   Albumin:            >3.5 / 2.8-3.5 / <2.8 g/dL
+ *   INR (or PT > control): <1.7 / 1.7-2.3 / >2.3
+ *
+ *   Total: 5-15
+ *
+ * Bands:
+ *   A (5-6)   → 1-yr survival 100%, 2-yr 85%
+ *   B (7-9)   → 1-yr 80%, 2-yr 60%
+ *   C (10-15) → 1-yr 45%, 2-yr 35%
+ *
+ * Use cases (Child-Pugh):
+ *   - Pre-op risk assessment (esp. major abdominal surgery)
+ *   - Variceal bleeding mortality risk
+ *   - Drug dosing (avoid certain drugs Class C)
+ *
+ * Use cases (MELD):
+ *   - Liver transplant waitlist priority (UNOS / Eurotransplant)
+ *   - TIPS candidacy (MELD ≥18 = caution)
+ *
+ * Tool implementation: select Child-Pugh OR MELD OR both (composite view).
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *

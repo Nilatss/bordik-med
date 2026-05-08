@@ -1,5 +1,50 @@
 // @ts-nocheck
-/** Runner: kdigo */
+/**
+ * Runner: kdigo — KDIGO Acute Kidney Injury (AKI) Staging
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    KDIGO AKI Work Group. KDIGO clinical practice guideline
+ *               for acute kidney injury. Kidney Int Suppl. 2012;2:1-138.
+ *               https://kdigo.org/guidelines/acute-kidney-injury/
+ *   GUIDELINE:  KDIGO 2024 (forthcoming) — incorporates new biomarkers
+ *               (cystatin C, NGAL, TIMP-2*IGFBP7).
+ *
+ * AKI Definition (any of):
+ *   - ↑ Cr ≥0.3 mg/dL (≥26.5 μmol/L) within 48h, OR
+ *   - ↑ Cr ≥1.5× baseline within 7 days, OR
+ *   - Urine output <0.5 mL/kg/h × 6h
+ *
+ * Staging (worse criterion wins):
+ *
+ *   Stage 1:
+ *     Cr 1.5-1.9× baseline OR ↑ ≥0.3 mg/dL
+ *     OR urine output <0.5 mL/kg/h × 6-12h
+ *
+ *   Stage 2:
+ *     Cr 2.0-2.9× baseline
+ *     OR urine output <0.5 mL/kg/h × ≥12h
+ *
+ *   Stage 3:
+ *     Cr ≥3.0× baseline OR ≥4.0 mg/dL OR initiation of RRT
+ *     OR (in <18yr) eGFR <35 mL/min/1.73 m²
+ *     OR urine output <0.3 mL/kg/h × ≥24h OR anuria ≥12h
+ *
+ * Mortality (KDIGO data):
+ *   Stage 1 → 6.7%
+ *   Stage 2 → 11.4%
+ *   Stage 3 → 26.3%
+ *
+ * Caveats:
+ *   - Baseline Cr — known pre-admission OR estimate (MDRD with assumed
+ *     normal eGFR 75 mL/min/1.73 m²)
+ *   - Urine output requires accurate Foley catheter measurement
+ *   - Modify pediatric (KDIGO 2012 separate criteria)
+ *
+ * Recovery / nomenclature:
+ *   - AKD (Acute Kidney Disease): persists 7-90 days
+ *   - CKD: ≥90 days
+ *   - "AKI на CKD" — pre-existing CKD acutely worsened
+ */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,
   CalculatorResult, ResultExtras, ResultScaleSegment,

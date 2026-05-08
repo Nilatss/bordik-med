@@ -1,6 +1,48 @@
 // @ts-nocheck
 /**
- * Runner: cam-icu - Confusion Assessment Method for ICU (Ely 2001)
+ * Runner: cam-icu — Confusion Assessment Method for ICU (Ely 2001)
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    Ely EW, Inouye SK, Bernard GR, et al. Delirium in
+ *               mechanically ventilated patients: validity and reliability
+ *               of the confusion assessment method for the intensive care
+ *               unit (CAM-ICU). JAMA. 2001;286(21):2703-2710.
+ *               doi:10.1001/jama.286.21.2703
+ *   GUIDELINE:  SCCM 2018 Pain/Agitation/Delirium/Immobility/Sleep (PADIS)
+ *               Guidelines — CAM-ICU OR ICDSC рутинная delirium screening
+ *               на каждой смене в ICU.
+ *               doi:10.1097/CCM.0000000000003299
+ *
+ * Algorithm (positive если 1+2 + либо 3 либо 4):
+ *
+ *   Feature 1 — Acute change OR fluctuating course mental status
+ *     ↓
+ *     ↓ если присутствует, продолжай к Feature 2
+ *
+ *   Feature 2 — Inattention (tested через ASE Letters: «Раз когда я
+ *     назову букву "А", сожми мою руку». Дать 10 букв "SAVEAHAART".
+ *     ≥3 ошибок = positive)
+ *     ↓
+ *     ↓ если ≥3 errors, либо 3 либо 4 → CAM-ICU positive
+ *
+ *   Feature 3 — Altered LOC (current RASS ≠ 0)
+ *     OR
+ *   Feature 4 — Disorganised thinking (4 yes/no questions: камень в воде
+ *     плавает? рыба в море? один фунт = 2 фунта? молотком гвоздь забивают?
+ *     + 1 command «покажи 2 пальца / другая рука 2 пальца»). >1 ошибка
+ *
+ *   Если оба Features 1+2 присутствуют + Feature 3 OR 4 → DELIRIUM
+ *
+ * Use cases:
+ *   - Pre-extubation delirium check (impacts ABCDEF bundle)
+ *   - Outcome metric для ICU sedation protocols
+ *   - Monitor recovery после weaning
+ *
+ * Caveats:
+ *   - Requires RASS ≥-3 (not appropriate to test deeply sedated)
+ *   - Pre-existing dementia complicates "acute change" baseline
+ *   - Sensitivity ~80%, specificity ~96% (high false-negatives в hypoactive
+ *     delirium — quiet patients missed)
  */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult,
