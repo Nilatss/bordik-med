@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: 4s-af
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
@@ -124,14 +123,14 @@ const runner: CalculatorTool = {
             // Interpret each domain (4S-AF is NOT summed - it describes the patient).
             const anticoag = !female && stroke >= 2 || female && stroke >= 3 || stroke >= 2;
             const anticoagBorderline = !female && stroke === 1 || female && stroke === 2;
-            const ehraLabel = {
+            const ehraLabel: Record<string, string> = {
                 '1': 'I - нет симптомов',
                 '2a': 'IIa - лёгкие',
                 '2b': 'IIb - умеренные',
                 '3': 'III - тяжёлые',
                 '4': 'IV - инвалидизирующие'
             };
-            const burdenLabel = {
+            const burdenLabel: Record<string, string> = {
                 first: 'Впервые диагностированная',
                 parox: 'Пароксизмальная',
                 pers: 'Персистирующая',

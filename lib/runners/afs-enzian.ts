@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: afs-enzian - классификация эндометриоза (rASRM 1996 + ENZIAN / #Enzian 2021) */
 import type {
   ScoreTool,
@@ -30,10 +29,10 @@ const runner: ScoreTool = {
     { id: 'enzianF', label: '#Enzian F - экстрагенитальные очаги (FA аденомиоз / FU мочевой пузырь / FI кишечник)', type: 'checkbox', points: 0 },
   ],
   bands: [
-    { min: 0, max: 5, label: 'rASRM I - минимальный', color: '#22C55E', interpretation: '1-5 баллов.', actions: ['Симптоматическая терапия (НПВС, КОК)', 'Мониторинг фертильности'] },
-    { min: 6, max: 15, label: 'rASRM II - лёгкий', color: '#86EFAC', interpretation: '6-15 баллов.', actions: ['Гормональная супрессия', 'Лапароскопическая аблация/эксцизия при симптомах'] },
-    { min: 16, max: 40, label: 'rASRM III - умеренный', color: '#F59E0B', interpretation: '16-40 баллов.', actions: ['Хирургическая эксцизия эндометриом', 'Обсудить ВРТ при бесплодии (EFI, AMH)'] },
-    { min: 41, max: 150, label: 'rASRM IV - тяжёлый', color: '#DC2626', interpretation: '> 40 баллов - включает DIE.', actions: ['Мультидисциплинарная команда (ENZIAN обязателен)', 'Хирургия высокого уровня ± сегментарная резекция кишки', 'ВРТ при бесплодии'] },
+    { min: 0, max: 5, label: 'rASRM I - минимальный', color: '#22C55E', description: '1-5 баллов.', actions: ['Симптоматическая терапия (НПВС, КОК)', 'Мониторинг фертильности'] },
+    { min: 6, max: 15, label: 'rASRM II - лёгкий', color: '#86EFAC', description: '6-15 баллов.', actions: ['Гормональная супрессия', 'Лапароскопическая аблация/эксцизия при симптомах'] },
+    { min: 16, max: 40, label: 'rASRM III - умеренный', color: '#F59E0B', description: '16-40 баллов.', actions: ['Хирургическая эксцизия эндометриом', 'Обсудить ВРТ при бесплодии (EFI, AMH)'] },
+    { min: 41, max: 150, label: 'rASRM IV - тяжёлый', color: '#DC2626', description: '> 40 баллов - включает DIE.', actions: ['Мультидисциплинарная команда (ENZIAN обязателен)', 'Хирургия высокого уровня ± сегментарная резекция кишки', 'ВРТ при бесплодии'] },
   ],
   reference:
     'Revised American Society for Reproductive Medicine classification of endometriosis: 1996. Fertil Steril 1997;67:817-21. Keckstein J et al. #Enzian classification 2021. Acta Obstet Gynecol Scand 2021;100:1165-1175.',

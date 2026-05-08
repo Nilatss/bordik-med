@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: tumor-markers - Tumor marker interpretation (CEA, AFP, CA 19-9, CA 125, PSA, HCG) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -27,7 +26,8 @@ hint: 'Возраст в годах', label: 'Возраст', type: 'number', u
     const val = Number(v.value);
     const age = Number(v.age);
 
-    const data = {
+    type MarkerData = { unit: string; norm: number; abnormal: number; veryHigh: number; uses: string; falses: string; smoker?: number };
+    const data: Record<string, MarkerData> = {
       cea: { unit: 'нг/мл', norm: 5, abnormal: 10, veryHigh: 50, smoker: 10,
         uses: 'Мониторинг КРР, метастазы, прогрессия. Не для скрининга.',
         falses: 'Курение (≤10 норма), ХОБЛ, цирроз, панкреатит, ВЗК, доброк.' },

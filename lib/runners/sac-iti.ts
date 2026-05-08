@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: sac-iti - ITI SAC (Straightforward/Advanced/Complex) implant difficulty */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -36,8 +35,8 @@ const runner: CalculatorTool = {
 
     return {
       value: complexity, unit: 'SAC',
-      interpretation: map.band, color: map.color,
-      details: map.details,
+      interpretation: map?.band ?? '', color: map?.color ?? '#6B7280',
+      details: map?.details ?? '',
       actions: [
         complexity === 'S' ? 'Стандартное планирование имплантации' : 'КТ планирование + хирургический шаблон',
         complexity !== 'S' ? 'Консультация смежных специалистов' : 'Наблюдение 3/6/12 мес',

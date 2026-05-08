@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: pdq39
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
@@ -143,7 +142,7 @@ const runner: CalculatorTool = {
       }
     ],
     compute: (v)=>{
-            const raw = {
+            const raw: Record<string, number> = {
                 mobility: Number(v.mobility) || 0,
                 adl: Number(v.adl) || 0,
                 emotional: Number(v.emotional) || 0,
@@ -153,7 +152,7 @@ const runner: CalculatorTool = {
                 communication: Number(v.communication) || 0,
                 bodily: Number(v.bodily) || 0
             };
-            const maxes = {
+            const maxes: Record<string, number> = {
                 mobility: 40,
                 adl: 24,
                 emotional: 24,
@@ -164,9 +163,9 @@ const runner: CalculatorTool = {
                 bodily: 12
             };
             // Transform each subscale to 0-100
-            const scaled = {};
+            const scaled: Record<string, number> = {};
             for (const k of Object.keys(raw)){
-                scaled[k] = raw[k] / maxes[k] * 100;
+                scaled[k] = (raw[k] ?? 0) / (maxes[k] ?? 1) * 100;
             }
             // Summary Index (PDQ-39 SI) = average of 8 subscale scores
             const si = Object.values(scaled).reduce((a, b)=>a + b, 0) / 8;
@@ -208,7 +207,7 @@ const runner: CalculatorTool = {
                 actions,
                 differential: Object.keys(scaled).map((k)=>({
                         term: k,
-                        desc: `${scaled[k].toFixed(0)}/100 (сырой ${raw[k]}/${maxes[k]})`
+                        desc: `${(scaled[k] ?? 0).toFixed(0)}/100 (сырой ${raw[k] ?? 0}/${maxes[k] ?? 0})`
                     })),
                 caveats: [
                     'Higher = worse: PDQ-39 SI 0 - идеально, 100 - худшее состояние',

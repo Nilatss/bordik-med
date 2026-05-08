@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: ctcae */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,
@@ -37,7 +36,7 @@ const runner: CalculatorTool = {
     const system = String(v.system);
     const grade = Number(v.grade);
 
-    const systemNames = {
+    const systemNames: Record<string, string> = {
       gi: 'ЖКТ',
       heme: 'Гематологический',
       skin: 'Кожный',
@@ -45,7 +44,7 @@ const runner: CalculatorTool = {
       hepatic: 'Печёночный',
     };
 
-    const gradeDesc = {
+    const gradeDesc: Record<number, string> = {
       1: 'Лёгкий — бессимптомный или минимальные проявления; вмешательство не требуется',
       2: 'Умеренный — требуется минимальное/локальное/неинвазивное вмешательство; ограничение инструментальной ADL',
       3: 'Тяжёлый — значимое клинически, но не жизнеугрожающее; госпитализация или её продление; ограничение самообслуживания',

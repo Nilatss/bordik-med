@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: rotterdam - диагностика СПКЯ (Rotterdam 2003 / AE-PCOS 2006) */
 import type {
   ScoreTool,
@@ -19,8 +18,8 @@ const runner: ScoreTool = {
     { id: 'pco', label: 'Поликистозные яичники по УЗИ (≥ 20 фолликулов 2-9 мм и/или объём > 10 мл по TVS ≥ 8 МГц)', type: 'checkbox', points: 1 },
   ],
   bands: [
-    { min: 0, max: 1, label: 'Диагноз СПКЯ не подтверждён', color: '#22C55E', interpretation: 'Нет достаточных критериев (< 2).', actions: ['Искать альтернативные причины олигоменореи/гиперандрогении'] },
-    { min: 2, max: 3, label: 'СПКЯ по Rotterdam (≥ 2 критериев)', color: '#F59E0B', interpretation: 'Диагноз СПКЯ установлен после исключения иных причин.', actions: ['Исключить ТТГ, пролактин, 17-OHP (CAH), кортизол', 'Оценить метаболический риск: BMI, OGTT, липиды, АД', 'Вести по международному гайдлайну PCOS 2023 (Teede)'] },
+    { min: 0, max: 1, label: 'Диагноз СПКЯ не подтверждён', color: '#22C55E', description: 'Нет достаточных критериев (< 2).', actions: ['Искать альтернативные причины олигоменореи/гиперандрогении'] },
+    { min: 2, max: 3, label: 'СПКЯ по Rotterdam (≥ 2 критериев)', color: '#F59E0B', description: 'Диагноз СПКЯ установлен после исключения иных причин.', actions: ['Исключить ТТГ, пролактин, 17-OHP (CAH), кортизол', 'Оценить метаболический риск: BMI, OGTT, липиды, АД', 'Вести по международному гайдлайну PCOS 2023 (Teede)'] },
   ],
   reference:
     'Rotterdam ESHRE/ASRM-Sponsored PCOS Consensus Workshop Group. Fertil Steril 2004;81:19-25. Azziz R et al. AE-PCOS Society criteria 2006. Teede HJ et al. International PCOS Guideline 2023.',

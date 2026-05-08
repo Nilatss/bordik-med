@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: cdr
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
@@ -221,10 +220,10 @@ const runner: CalculatorTool = {
                 if (above >= 3) {
                     // move up one step
                     const idx = levels.indexOf(M);
-                    global = levels[Math.min(idx + 1, levels.length - 1)];
+                    global = levels[Math.min(idx + 1, levels.length - 1)] ?? M;
                 } else if (below >= 3) {
                     const idx = levels.indexOf(M);
-                    global = levels[Math.max(idx - 1, 0)];
+                    global = levels[Math.max(idx - 1, 0)] ?? M;
                 } else {
                     global = M;
                 }
@@ -240,14 +239,14 @@ const runner: CalculatorTool = {
                 global = ge1 >= 3 ? 1 : 0.5;
             }
             const sumBoxes = M + O + J + C + H + P;
-            const labels = {
+            const labels: Record<string, string> = {
                 '0': 'Норма (CDR 0)',
                 '0.5': 'Сомнительная деменция / MCI (CDR 0.5)',
                 '1': 'Лёгкая деменция (CDR 1)',
                 '2': 'Умеренная деменция (CDR 2)',
                 '3': 'Тяжёлая деменция (CDR 3)'
             };
-            const colors = {
+            const colors: Record<string, string> = {
                 '0': '#22C55E',
                 '0.5': '#F59E0B',
                 '1': '#EF4444',
@@ -296,8 +295,8 @@ const runner: CalculatorTool = {
             return {
                 value: String(global),
                 unit: `CDR (SOB ${sumBoxes.toFixed(1)})`,
-                interpretation: labels[String(global)],
-                color: colors[String(global)],
+                interpretation: labels[String(global)] ?? '',
+                color: colors[String(global)] ?? '#6B7280',
                 details,
                 actions,
                 caveats: [

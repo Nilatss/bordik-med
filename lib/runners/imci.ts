@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: imci
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
@@ -73,7 +72,7 @@ const runner: CalculatorTool = {
             const danger = v.danger === true;
             const severe = v.severe === true;
             const moderate = v.moderate === true;
-            const labels = {
+            const labels: Record<string, string> = {
                 cough: 'Кашель / дыхание',
                 diarrhoea: 'Диарея',
                 fever: 'Лихорадка',
@@ -88,7 +87,7 @@ const runner: CalculatorTool = {
                 value = `${labels[problem]} - КРАСНЫЙ (тяжёлая)`;
                 interpretation = 'Срочный перевод в стационар';
                 color = '#991B1B';
-                const cause = {
+                const cause: Record<string, string> = {
                     cough: 'Тяжёлая пневмония или очень тяжёлое заболевание',
                     diarrhoea: 'Тяжёлое обезвоживание / тяжёлая персистирующая диарея / дизентерия',
                     fever: 'Очень тяжёлое фебрильное заболевание / тяжёлая малярия / менингит',
@@ -108,7 +107,7 @@ const runner: CalculatorTool = {
                 value = `${labels[problem]} - ЖЁЛТЫЙ (умеренная)`;
                 interpretation = 'Лечение амбулаторно + контроль 2-5 дней';
                 color = '#F59E0B';
-                const tx = {
+                const tx: Record<string, string> = {
                     cough: 'Пневмония: амоксициллин 40 мг/кг 2× в день × 5 дней',
                     diarrhoea: 'Некоторое обезвоживание: План B - ОРС 75 мл/кг за 4 ч, цинк 20 мг × 10-14 дн',
                     fever: 'Малярия (в эндем. зоне) или вирусная инфекция: жаропонижающие, поиск очага',
@@ -116,7 +115,7 @@ const runner: CalculatorTool = {
                     malnutrition: 'Умеренное истощение: RUTF (ready-to-use therapeutic food), контроль веса еженедельно',
                     anaemia: 'Железо 3 мг/кг/сут × 14 дней, дегельминтизация (альбендазол если ≥1 года)'
                 };
-                details = tx[problem];
+                details = tx[problem] ?? '';
                 actions = [
                     details,
                     'Цинк 10-20 мг × 10-14 дн (при диарее)',
@@ -127,7 +126,7 @@ const runner: CalculatorTool = {
                 value = `${labels[problem]} - ЗЕЛЁНЫЙ (лёгкая)`;
                 interpretation = 'Домашнее ведение + рекомендации матери';
                 color = '#22C55E';
-                const home = {
+                const home: Record<string, string> = {
                     cough: 'Кашель/простуда: безопасный домашний леч., без АБ',
                     diarrhoea: 'План A: больше жидкости, ОРС, продолжить кормление, цинк',
                     fever: 'Лихорадка без признаков: жаропонижающее, наблюдение, поиск очага',
@@ -135,7 +134,7 @@ const runner: CalculatorTool = {
                     malnutrition: 'Нет истощения: консультация по питанию',
                     anaemia: 'Нет анемии: профилактика, диета богатая железом'
                 };
-                details = home[problem];
+                details = home[problem] ?? '';
                 actions = [
                     details,
                     'Продолжать грудное вскармливание',

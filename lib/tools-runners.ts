@@ -76,6 +76,12 @@ export interface ScoreTool {
    * `id` matches a course id from `lib/curriculum.ts` (e.g. "100.2").
    */
   relatedCourses?: { id: string; title: string }[];
+  /**
+   * Optional custom compute — overrides band-based default. Used by hybrid
+   * tools (e.g. POP-Q) that derive a stage from non-trivial geometry rather
+   * than summing band points. UI prefers compute() result when present.
+   */
+  compute?: (values: Record<string, number | boolean | string>) => CalculatorResult;
 }
 
 /**

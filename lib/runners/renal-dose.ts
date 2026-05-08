@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: renal-dose — Коррекция доз препаратов при ХБП/ХПБ.
  *
@@ -144,8 +143,8 @@ const runner: CalculatorTool = {
     const renalUnit = drug.use_crcl ? 'мл/мин (CrCl)' : 'мл/мин/1.73м² (eGFR)';
 
     // Найти стадию: первый интервал, где renalFn попадает [min, max)
-    const stage = drug.stages.find((s) => renalFn >= s.egfr_min && renalFn < s.egfr_max)
-                ?? drug.stages[drug.stages.length - 1];
+    const stage = (drug.stages.find((s) => renalFn >= s.egfr_min && renalFn < s.egfr_max)
+                ?? drug.stages[drug.stages.length - 1])!;
 
     const stageActions = drug.stages.map((s) => `${s.label}: ${s.dose}`);
 

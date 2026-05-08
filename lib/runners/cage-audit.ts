@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: cage-audit — AUDIT (Alcohol Use Disorders Identification Test, 10-item) */
 import type {
   ScoreTool,
@@ -7,7 +6,7 @@ import type {
   Preset,
 } from '../tools-runners';
 
-const opts = (labels: string[]): ToolInput['options'] =>
+const opts = (labels: string[]): NonNullable<ToolInput['options']> =>
   labels.map((label, i) => ({ value: String(i), label, points: i }));
 
 const runner: ScoreTool = {

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: broselow
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
@@ -136,16 +135,16 @@ const runner: CalculatorTool = {
                     hex: '#22C55E'
                 }
             ];
-            let zone = zones[0];
-            if (len >= 130) zone = zones[8];
-            else if (len >= 116) zone = zones[7];
-            else if (len >= 105) zone = zones[6];
-            else if (len >= 90) zone = zones[5];
-            else if (len >= 80) zone = zones[4];
-            else if (len >= 70) zone = zones[3];
-            else if (len >= 62) zone = zones[2];
-            else if (len >= 54) zone = zones[1];
-            else zone = zones[0];
+            let zone = zones[0]!;
+            if (len >= 130) zone = zones[8]!;
+            else if (len >= 116) zone = zones[7]!;
+            else if (len >= 105) zone = zones[6]!;
+            else if (len >= 90) zone = zones[5]!;
+            else if (len >= 80) zone = zones[4]!;
+            else if (len >= 70) zone = zones[3]!;
+            else if (len >= 62) zone = zones[2]!;
+            else if (len >= 54) zone = zones[1]!;
+            else zone = zones[0]!;
             const w = zone.weight;
             const details = `**Зона ${zone.name}** (${zone.lenRange}). Расчётный вес ≈ **${w} кг**.
 

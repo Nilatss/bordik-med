@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: frankl - Frankl Behavior Rating Scale (pediatric dentistry) */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -31,8 +30,8 @@ const runner: CalculatorTool = {
 
     return {
       value: String(r), unit: '/ 4',
-      interpretation: map.band, color: map.color,
-      details: map.details, actions: map.actions,
+      interpretation: map?.band ?? '', color: map?.color ?? '#6B7280',
+      details: map?.details ?? '', actions: map?.actions ?? [],
       caveats: [
         'Frankl - субъективная шкала, оценка врача',
         'Поведение может меняться между визитами',

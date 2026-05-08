@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: aor-ru */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,
@@ -88,7 +87,7 @@ const runner: CalculatorTool = {
     };
 
     const siteKey = pathways[site] ? site : 'other';
-    const entry = pathways[siteKey][stage] || pathways.other[stage] || pathways.other['I'];
+    const entry = (pathways[siteKey]?.[stage] || pathways.other?.[stage] || pathways.other?.['I'])!;
 
     const colorMap: Record<string, string> = { '0': '#22C55E', 'I': '#84CC16', 'II': '#F59E0B', 'III': '#EF4444', 'IV': '#7F1D1D' };
     const color = colorMap[stage] || '#94A3B8';

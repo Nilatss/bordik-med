@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: pell-gregory — Pell & Gregory classification of impacted 3rd molars */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -40,7 +39,7 @@ const runner: CalculatorTool = {
     const rScore: Record<string, number> = { I: 1, II: 2, III: 3 };
     const dScore: Record<string, number> = { A: 1, B: 2, C: 3 };
     const wScore: Record<string, number> = { mesio: 1, verti: 2, hori: 3, bucco: 2, disto: 4, inv: 4 };
-    const score = rScore[r] + dScore[d] + wScore[w];
+    const score = (rScore[r] ?? 0) + (dScore[d] ?? 0) + (wScore[w] ?? 0);
     let label = 'Лёгкое удаление', color = '#22C55E';
     if (score >= 8) { label = 'Крайне сложное (OMFS, возм. остеотомия)'; color = '#B91C1C'; }
     else if (score >= 6) { label = 'Сложное'; color = '#EF4444'; }

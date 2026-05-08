@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: npsi
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
@@ -196,11 +195,11 @@ const runner: CalculatorTool = {
                 'q10'
             ].map((k)=>Number(v[k] ?? 0));
             const total = items.reduce((a, b)=>a + b, 0);
-            const burning = items[0]!;
-            const pressing = (items[1] + items[2]) / 2;
-            const paroxysmal = (items[3] + items[4]) / 2;
-            const evoked = (items[5] + items[6] + items[7]) / 3;
-            const paresth = (items[8] + items[9]) / 2;
+            const burning = items[0] ?? 0;
+            const pressing = ((items[1] ?? 0) + (items[2] ?? 0)) / 2;
+            const paroxysmal = ((items[3] ?? 0) + (items[4] ?? 0)) / 2;
+            const evoked = ((items[5] ?? 0) + (items[6] ?? 0) + (items[7] ?? 0)) / 3;
+            const paresth = ((items[8] ?? 0) + (items[9] ?? 0)) / 2;
             let interpretation = '', color = '', details = '';
             let actions: string[] = [];
             if (total < 20) {

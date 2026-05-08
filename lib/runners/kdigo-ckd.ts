@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: kdigo-ckd */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,
@@ -39,9 +38,9 @@ hint: 'Креатинин сыворотки. Норма: М 62-115, Ж 53-97 м
       [4, 4, 4], // G4
       [4, 4, 4], // G5
     ];
-    const risk = map[gIdx - 1][aIdx - 1];
-    const riskLabel = ['Низкий', 'Умеренный', 'Высокий', 'Оч. высокий'][risk - 1];
-    const color = ['#22C55E', '#F59E0B', '#EF4444', '#991B1B'][risk - 1];
+    const risk = map[gIdx - 1]?.[aIdx - 1] ?? 1;
+    const riskLabel = ['Низкий', 'Умеренный', 'Высокий', 'Оч. высокий'][risk - 1] ?? 'Низкий';
+    const color = ['#22C55E', '#F59E0B', '#EF4444', '#991B1B'][risk - 1] ?? '#22C55E';
 
     const details = `ХБП: ${gStage}${aStage} (СКФ ${gfr}, ACR ${acr} мг/г). Риск прогрессии и ССО: ${riskLabel.toLowerCase()}.`;
 

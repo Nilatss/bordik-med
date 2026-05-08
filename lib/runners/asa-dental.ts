@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: asa-dental — ASA Physical Status for dental anesthesia */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -16,9 +15,9 @@ const runner: CalculatorTool = {
       { value: '4', label: 'ASA IV — угрожающее жизни (нестабильная ИБС, MI <3 мес)' },
       { value: '5', label: 'ASA V — моренд (не выживет без операции)' },
     ]},
-    { id: 'emergency', label: 'Экстренность', type: 'checkbox', default: false },
-    { id: 'bisphosphonates', label: 'Бисфосфонаты (IV или >3 лет PO)', type: 'checkbox', default: false },
-    { id: 'anticoag', label: 'Антикоагулянты (Варфарин / DOAC)', type: 'checkbox', default: false },
+    { id: 'emergency', label: 'Экстренность', type: 'checkbox' },
+    { id: 'bisphosphonates', label: 'Бисфосфонаты (IV или >3 лет PO)', type: 'checkbox' },
+    { id: 'anticoag', label: 'Антикоагулянты (Варфарин / DOAC)', type: 'checkbox' },
   ],
   presets: [
     { label: 'Здоровый (ASA I)', values: { class: '1', emergency: false, bisphosphonates: false, anticoag: false } },

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: gail */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,
@@ -74,10 +73,10 @@ const runner: CalculatorTool = {
 
     // Упрощённая аппроксимация BCRAT (Gail). Базовый 5-летний риск ~ 1.3%.
     let rr = 1.0;
-    rr *= [1.0, 1.10, 1.21][menarche];
-    rr *= [1.0, 1.24, 1.55, 1.93][firstbirth];
-    rr *= [1.0, 2.1, 3.9][relatives];
-    rr *= [1.0, 1.70, 2.88][biopsies];
+    rr *= [1.0, 1.10, 1.21][menarche] ?? 1.0;
+    rr *= [1.0, 1.24, 1.55, 1.93][firstbirth] ?? 1.0;
+    rr *= [1.0, 2.1, 3.9][relatives] ?? 1.0;
+    rr *= [1.0, 1.70, 2.88][biopsies] ?? 1.0;
     if (atypia) rr *= 1.82;
 
     const base5 = 0.013 + Math.max(0, (age - 50)) * 0.0004;

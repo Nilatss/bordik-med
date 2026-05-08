@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: popq - количественная оценка пролапса тазовых органов (Bump 1996) */
 import type {
   ScoreTool,
@@ -25,13 +24,13 @@ const runner: ScoreTool = {
     { id: 'tvl', label: 'TVL (общая длина влагалища), см', type: 'number', min: 4, max: 14, step: 0.5 },
   ],
   bands: [
-    { min: 0, max: 0, label: 'Стадия 0 - пролапса нет', color: '#22C55E', interpretation: 'Все точки Aa/Ba/Ap/Bp = −3; C/D не ниже (TVL − 2) см.', actions: ['Наблюдение', 'Упражнения Кегеля профилактически'] },
-    { min: 1, max: 1, label: 'Стадия I', color: '#86EFAC', interpretation: 'Наиболее выступающая точка > 1 см выше hymen.', actions: ['Поведенческая терапия, тренировка мышц тазового дна'] },
-    { min: 2, max: 2, label: 'Стадия II', color: '#F59E0B', interpretation: 'Точка в пределах ± 1 см от hymen.', actions: ['Пессарий при симптомах', 'PT тазового дна'] },
-    { min: 3, max: 3, label: 'Стадия III', color: '#EF4444', interpretation: 'Точка > 1 см ниже hymen, но не достигает (TVL − 2) см.', actions: ['Хирургическая коррекция обсуждается', 'Пессарий как альтернатива'] },
-    { min: 4, max: 4, label: 'Стадия IV - полная эверсия', color: '#DC2626', interpretation: 'Полное выворачивание; выступает (TVL − 2) см.', actions: ['Хирургия (кольпопексия, коррекция цистоцеле/ректоцеле)', 'Пессарий при противопоказаниях к хирургии'] },
+    { min: 0, max: 0, label: 'Стадия 0 - пролапса нет', color: '#22C55E', description: 'Все точки Aa/Ba/Ap/Bp = −3; C/D не ниже (TVL − 2) см.', actions: ['Наблюдение', 'Упражнения Кегеля профилактически'] },
+    { min: 1, max: 1, label: 'Стадия I', color: '#86EFAC', description: 'Наиболее выступающая точка > 1 см выше hymen.', actions: ['Поведенческая терапия, тренировка мышц тазового дна'] },
+    { min: 2, max: 2, label: 'Стадия II', color: '#F59E0B', description: 'Точка в пределах ± 1 см от hymen.', actions: ['Пессарий при симптомах', 'PT тазового дна'] },
+    { min: 3, max: 3, label: 'Стадия III', color: '#EF4444', description: 'Точка > 1 см ниже hymen, но не достигает (TVL − 2) см.', actions: ['Хирургическая коррекция обсуждается', 'Пессарий как альтернатива'] },
+    { min: 4, max: 4, label: 'Стадия IV - полная эверсия', color: '#DC2626', description: 'Полное выворачивание; выступает (TVL − 2) см.', actions: ['Хирургия (кольпопексия, коррекция цистоцеле/ректоцеле)', 'Пессарий при противопоказаниях к хирургии'] },
   ],
-  compute: (v) => {
+  compute: (v: Record<string, number | boolean | string>) => {
     const points = [Number(v.aa), Number(v.ba), Number(v.c), Number(v.ap), Number(v.bp)].filter((n) => !isNaN(n));
     const d = Number(v.d);
     const tvl = Number(v.tvl) || 8;
