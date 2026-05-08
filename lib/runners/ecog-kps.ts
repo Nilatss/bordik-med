@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: ecog-kps */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,
@@ -24,7 +23,7 @@ const runner: CalculatorTool = {
   compute: (v) => {
     const ecog = Number(v.ecog);
 
-    const kpsMap = {
+    const kpsMap: Record<number, { range: string; label: string }> = {
       0: { range: '100-90', label: 'нормальная активность' },
       1: { range: '80-70', label: 'лёгкие симптомы' },
       2: { range: '60-50', label: 'требуется периодическая помощь' },

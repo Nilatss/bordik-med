@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: o2-cylinder
  *
@@ -19,7 +18,7 @@ import type { CalculatorTool } from '../tools-runners';
 
 // US-стандарт (NFPA / CGA): cylinder factor = объём газа на 1 psi.
 // Таблица из CGA P-7 (Compressed Gas Association). Полное давление баллона ~2000 psi.
-const US_CYLINDERS = {
+const US_CYLINDERS: Record<string, { factor: number; label: string }> = {
   d:  { factor: 0.16, label: 'D (~425 л при 2000 psi, портативный)' },
   e:  { factor: 0.28, label: 'E (~680 л при 2000 psi, переносной)' },
   m:  { factor: 1.56, label: 'M (~3450 л при 2200 psi, стационарный)' },
@@ -64,7 +63,7 @@ const runner: CalculatorTool = {
       const cylKey = String(v.cylinder || 'e');
       const cyl = US_CYLINDERS[cylKey]!;
       const psi = Math.max(0, (Number(v.pressure_psi) || 0) - (safety ? 200 : 0));
-      totalLiters = psi * (cyl?.factor ?? US_CYLINDERS.e.factor);
+      totalLiters = psi * (cyl?.factor ?? US_CYLINDERS.e!.factor);
       detailLine = `Баллон: ${cyl?.label}. Доступное давление: ${psi} psi (резерв ${safety ? '200 psi учтён' : 'не учтён'}).
 Cylinder factor = ${cyl?.factor} л/psi → ${totalLiters.toFixed(0)} л газа доступно.`;
     } else {

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: hinchey
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
@@ -46,7 +45,7 @@ const runner: CalculatorTool = {
       }
     ],
     compute: (v)=>{
-            const map = {
+            const map: Record<string, { tx: string; color: string }> = {
                 'I': {
                     tx: 'Антибиотики, наблюдение; чрескожный дренаж при > 4 см.',
                     color: '#10B981'

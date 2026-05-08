@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: diamond-forrester
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
@@ -84,7 +83,7 @@ const runner: CalculatorTool = {
             // ESC 2019 pretest probability table (CAD Consortium, Juarez-Orozco 2019)
             // Rows: age bands 30-39, 40-49, 50-59, 60-69, ≥70
             // Values: % pretest probability
-            const table = {
+            const table: Record<string, Record<string, number[]>> = {
                 typical: {
                     m: [
                         3,

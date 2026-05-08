@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: forrest
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
@@ -54,7 +53,7 @@ const runner: CalculatorTool = {
       }
     ],
     compute: (v)=>{
-            const map = {
+            const map: Record<string, { risk: string; color: string; tx: string }> = {
                 'Ia': {
                     risk: 'Очень высокий риск рецидива (~55 %)',
                     color: '#EF4444',
