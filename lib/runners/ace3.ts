@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: ace3 - Addenbrooke's Cognitive Examination-III */
 import type { CalculatorTool } from '../tools-runners';
 

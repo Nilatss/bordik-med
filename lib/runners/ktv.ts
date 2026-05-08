@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: ktv */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

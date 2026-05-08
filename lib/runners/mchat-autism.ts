@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: mchat-autism — Modified Checklist for Autism in Toddlers, Revised with Follow-up (M-CHAT-R/F) */
 import type {
   CalculatorTool,

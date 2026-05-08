@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: barthel — Barthel Index of Activities of Daily Living
  *

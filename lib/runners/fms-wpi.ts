@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: fms-wpi — ACR 2016 Fibromyalgia diagnostic criteria (WPI + SSS) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,

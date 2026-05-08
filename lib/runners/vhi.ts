@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: vhi - Voice Handicap Index (VHI-30) */
 import type { CalculatorTool } from '../tools-runners';
 

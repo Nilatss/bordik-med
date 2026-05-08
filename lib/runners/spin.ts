@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: spin — Social Phobia Inventory */
 import type {
   CalculatorTool,

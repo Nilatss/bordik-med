@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: ikdc - IKDC / Lysholm / Tegner / KOOS / WOMAC - knee outcome scores */
 import type { CalculatorTool } from '../tools-runners';
 

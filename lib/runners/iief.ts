@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: iief */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: rts - Revised Trauma Score (Champion 1989) */
 import type { CalculatorTool } from '../tools-runners';
 

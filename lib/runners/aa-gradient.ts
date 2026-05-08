@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: aa-gradient — Alveolar-arterial (A-a) Oxygen Gradient
  *

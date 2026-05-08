@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: masi - MASI (Melasma Area and Severity Index) */
 import type { CalculatorTool } from '../tools-runners';
 

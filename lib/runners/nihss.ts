@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: nihss — NIH Stroke Scale
  *

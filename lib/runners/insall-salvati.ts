@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: insall-salvati - Insall-Salvati & Caton-Deschamps ratio (patellar height) */
 import type { CalculatorTool } from '../tools-runners';
 

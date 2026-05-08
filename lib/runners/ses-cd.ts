@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: ses-cd - Simple Endoscopic Score for Crohn's Disease */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: harris-hip - Harris Hip Score / Oxford Hip / Oxford Knee */
 import type { CalculatorTool } from '../tools-runners';
 

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: beck-ssi — Beck Scale for Suicide Ideation */
 import type {
   CalculatorTool,

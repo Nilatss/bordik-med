@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: rockwood - Rockwood classification of acromioclavicular joint injuries */
 import type { ScoreTool } from '../tools-runners';
 

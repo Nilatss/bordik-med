@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: pecarn-head
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.

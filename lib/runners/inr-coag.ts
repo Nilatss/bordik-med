@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: inr-coag - INR interpretation (warfarin / DOAC / liver / DIC) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,

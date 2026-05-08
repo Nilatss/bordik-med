@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: rtog-eortc */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

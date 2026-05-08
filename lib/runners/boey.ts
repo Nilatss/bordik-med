@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: boey - Boey score при перфоративной язве (1982) */
 import type { ScoreTool } from '../tools-runners';
 

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: neer - Neer 4-part classification of proximal humerus fractures (1970) */
 import type { ScoreTool } from '../tools-runners';
 

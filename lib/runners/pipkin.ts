@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: pipkin - Pipkin classification of femoral head fracture-dislocation (1957) */
 import type { ScoreTool } from '../tools-runners';
 

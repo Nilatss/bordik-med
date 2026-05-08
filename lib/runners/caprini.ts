@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: caprini — Caprini Score for Surgical VTE Risk
  *

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: vidal */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: ymrs — Young Mania Rating Scale */
 import type {
   CalculatorTool,

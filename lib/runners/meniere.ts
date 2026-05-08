@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: meniere - Meniere's disease diagnostic criteria (Barany 2015) */
 import type { CalculatorTool } from '../tools-runners';
 

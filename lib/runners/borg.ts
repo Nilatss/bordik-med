@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: borg — Borg RPE (6-20) and modified CR-10 */
 import type { CalculatorTool } from '../tools-runners';
 

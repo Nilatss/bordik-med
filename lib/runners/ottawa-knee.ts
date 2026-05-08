@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: ottawa-knee
  * Ottawa Knee Rule (Stiell 1995) — клинические критерии для решения о

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: hics - Hospital Incident Command System */
 import type { CalculatorTool } from '../tools-runners';
 

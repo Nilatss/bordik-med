@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: gcs — Glasgow Coma Scale
  *

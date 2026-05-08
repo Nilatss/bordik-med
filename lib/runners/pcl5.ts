@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: pcl5 — PTSD Checklist for DSM-5 */
 import type {
   CalculatorTool,

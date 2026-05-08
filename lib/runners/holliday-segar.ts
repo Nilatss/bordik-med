@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: holliday-segar — Holliday-Segar Pediatric Maintenance Fluid (4-2-1 rule)
  *

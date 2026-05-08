@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: geneva — Revised Geneva Score for Pulmonary Embolism (объективная альтернатива Wells)
  *

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: ham-d — Hamilton Depression Rating Scale (17-item) */
 import type {
   CalculatorTool,

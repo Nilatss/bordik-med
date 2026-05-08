@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: calcium-pth - Calcium + PTH + Vit D differential */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: colorado-pain */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,

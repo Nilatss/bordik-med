@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: bsa-mosteller — Body Surface Area (Mosteller formula)
  *

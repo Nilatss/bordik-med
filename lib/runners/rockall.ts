@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: rockall — Rockall Risk Score for UGI Bleeding
  *

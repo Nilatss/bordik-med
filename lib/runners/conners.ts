@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: conners — Conners-3 / Conners ADHD Rating Scales */
 import type {
   CalculatorTool,

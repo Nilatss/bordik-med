@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: berg-balance — Berg Balance Scale (BBS) */
 import type { CalculatorTool } from '../tools-runners';
 

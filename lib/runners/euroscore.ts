@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: euroscore — EuroSCORE II Cardiac Surgery Risk
  *

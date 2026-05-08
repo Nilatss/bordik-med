@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: ralph (RALE score) */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: tonnis - Tönnis classification of hip osteoarthritis (1987) */
 import type { ScoreTool } from '../tools-runners';
 

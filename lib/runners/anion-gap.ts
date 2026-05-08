@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: anion-gap — Serum Anion Gap (with albumin correction)
  *

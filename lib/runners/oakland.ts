@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: oakland - Oakland score for lower GI bleeding */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,

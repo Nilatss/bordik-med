@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: code-stemi - STEMI Alert Protocol */
 import type { CalculatorTool } from '../tools-runners';
 

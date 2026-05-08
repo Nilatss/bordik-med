@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: garden - Garden classification of femoral neck fractures (1961) */
 import type { ScoreTool } from '../tools-runners';
 

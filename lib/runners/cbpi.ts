@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: cbpi */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,

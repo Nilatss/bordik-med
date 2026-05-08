@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: triss - TRISS (Boyd 1987) probability of survival */
 import type { CalculatorTool } from '../tools-runners';
 

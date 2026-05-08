@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: beers */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: gmsps — Glasgow Meningococcal Septicaemia Prognostic Score */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

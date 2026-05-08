@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: eat26 — Eating Attitudes Test (EAT-26) */
 import type {
   CalculatorTool,

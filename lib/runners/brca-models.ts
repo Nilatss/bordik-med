@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: brca-models */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: rop - Retinopathy of Prematurity (ICROP) classification */
 import type { CalculatorTool } from '../tools-runners';
 

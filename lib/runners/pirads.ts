@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: pirads */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

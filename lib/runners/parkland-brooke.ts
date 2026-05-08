@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: parkland-brooke
  * Parkland vs Modified Brooke vs Galveston pediatric burn fluid resuscitation.

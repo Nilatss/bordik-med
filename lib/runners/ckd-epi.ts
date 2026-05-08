@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: ckd-epi — CKD-EPI 2021 race-free Creatinine GFR
  *

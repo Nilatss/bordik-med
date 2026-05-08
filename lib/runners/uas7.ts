@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: uas7 - Urticaria Activity Score over 7 days */
 import type { CalculatorTool } from '../tools-runners';
 

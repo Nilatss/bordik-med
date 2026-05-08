@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: bmi — Body Mass Index
  *

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: tnm */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

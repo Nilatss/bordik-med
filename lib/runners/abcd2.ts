@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: abcd2 — ABCD² Score for TIA → Stroke Risk
  *

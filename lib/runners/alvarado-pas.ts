@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: alvarado-pas — Pediatric Appendicitis Score (Samuel)
  *

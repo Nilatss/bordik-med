@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: phq9 — Patient Health Questionnaire 9 (Depression)
  *

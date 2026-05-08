@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: russe - Russe classification of scaphoid fractures (1960) */
 import type { ScoreTool } from '../tools-runners';
 

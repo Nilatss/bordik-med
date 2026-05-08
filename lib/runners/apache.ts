@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: apache — APACHE II Acute Physiology And Chronic Health Evaluation
  *

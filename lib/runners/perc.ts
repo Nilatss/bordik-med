@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: perc — Pulmonary Embolism Rule-Out Criteria (Kline)
  *

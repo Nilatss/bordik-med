@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: mims */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

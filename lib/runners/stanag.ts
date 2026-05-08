@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: stanag - NATO STANAG 2879 military triage */
 import type {
   ScoreTool,

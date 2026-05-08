@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: grbas - GRBAS perceptual voice evaluation */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,

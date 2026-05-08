@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: ao-ota - AO/OTA Fracture and Dislocation Classification Compendium (2018) */
 import type { CalculatorTool } from '../tools-runners';
 

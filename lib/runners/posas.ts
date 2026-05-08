@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: posas - POSAS (Patient and Observer Scar Assessment Scale) */
 import type { CalculatorTool } from '../tools-runners';
 

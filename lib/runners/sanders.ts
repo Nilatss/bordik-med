@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: sanders - Sanders CT classification of calcaneus fractures (1993) */
 import type { ScoreTool } from '../tools-runners';
 

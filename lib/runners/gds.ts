@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: gds — Geriatric Depression Scale (15-item short) */
 import type {
   ScoreTool,

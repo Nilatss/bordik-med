@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: seidel - Seidel test for aqueous leak */
 import type { CalculatorTool } from '../tools-runners';
 

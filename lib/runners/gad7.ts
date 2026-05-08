@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: gad7 — Generalised Anxiety Disorder 7-item scale
  *

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: npi-breast */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: mdrd — MDRD-4 GFR (legacy formula)
  *

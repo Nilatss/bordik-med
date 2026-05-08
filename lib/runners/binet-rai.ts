@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: binet-rai */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

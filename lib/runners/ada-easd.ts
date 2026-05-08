@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: ada-easd — ADA/EASD 2023 consensus T2DM management decision */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,

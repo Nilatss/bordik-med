@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: who-ladder */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

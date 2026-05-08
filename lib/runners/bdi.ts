@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: bdi — Beck Depression Inventory (BDI-II) */
 import type {
   CalculatorTool,

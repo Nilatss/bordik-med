@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: audit-c — AUDIT-C 3-question Alcohol Use Screen
  *

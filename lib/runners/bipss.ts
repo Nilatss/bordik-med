@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: bipss - Bilateral Inferior Petrosal Sinus Sampling (Cushing) */
 import type { CalculatorTool } from '../tools-runners';
 

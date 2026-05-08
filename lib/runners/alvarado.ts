@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: alvarado — Alvarado Score (MANTRELS) for Appendicitis
  *

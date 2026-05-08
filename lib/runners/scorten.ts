@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: scorten — SCORTEN (SJS/TEN mortality) */
 import type { CalculatorTool } from '../tools-runners';
 

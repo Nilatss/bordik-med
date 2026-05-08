@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: kfre */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

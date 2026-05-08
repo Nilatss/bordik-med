@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: sirs — Systemic Inflammatory Response Syndrome (Bone 1992)
  *

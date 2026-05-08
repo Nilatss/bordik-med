@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: tokyo - Tokyo Guidelines TG18/TG24 acute cholecystitis / cholangitis */
 import type { CalculatorTool } from '../tools-runners';
 

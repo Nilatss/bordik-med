@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: cdai - Harvey-Bradshaw / CDAI для болезни Крона */
 import type { CalculatorTool } from '../tools-runners';
 

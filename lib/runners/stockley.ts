@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: stockley */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

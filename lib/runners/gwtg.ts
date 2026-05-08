@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: gwtg - AHA Get With The Guidelines */
 import type { CalculatorTool } from '../tools-runners';
 

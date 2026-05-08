@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: ascvd — ASCVD 2013 Pooled Cohort Equations (10-year risk)
  *

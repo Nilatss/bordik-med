@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: epds — Edinburgh Postnatal Depression Scale
  *

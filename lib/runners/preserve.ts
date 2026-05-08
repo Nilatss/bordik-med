@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: preserve - PRESERVE Score (Schmidt 2013) для post-ICU инвалидности после VV-ECMO
  */

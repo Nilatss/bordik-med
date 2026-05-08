@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: grace — GRACE Risk Score 2.0 for ACS in-hospital + 6-month mortality
  *

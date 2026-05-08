@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: kdigo — KDIGO Acute Kidney Injury (AKI) Staging
  *

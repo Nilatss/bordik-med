@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: mathews — Pediatric tonsillectomy/adenoidectomy indications (AAO-HNS 2019 + Mathews criteria) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,

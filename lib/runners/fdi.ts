@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: fdi — FDI World Dental Federation tooth numbering */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,

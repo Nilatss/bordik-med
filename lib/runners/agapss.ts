@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: agapss — Adjusted Global Antiphospholipid Syndrome Score (aGAPSS) */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

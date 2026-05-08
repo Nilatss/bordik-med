@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: aast - AAST Organ Injury Scale (OIS) */
 import type { CalculatorTool } from '../tools-runners';
 

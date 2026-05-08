@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: pvr */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

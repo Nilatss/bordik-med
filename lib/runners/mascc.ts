@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: mascc */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

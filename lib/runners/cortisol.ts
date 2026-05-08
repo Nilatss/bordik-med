@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: cortisol - Cortisol screening (AI/Cushing) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: la-grade - Los Angeles classification of reflux esophagitis */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,

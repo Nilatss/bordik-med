@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: pcne - Pharmaceutical Care Network Europe DRP Classification v9.1 */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,

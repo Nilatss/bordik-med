@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: acne — GAGS (Global Acne Grading Scale) */
 import type { CalculatorTool } from '../tools-runners';
 

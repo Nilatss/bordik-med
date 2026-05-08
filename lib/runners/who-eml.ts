@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: who-eml */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

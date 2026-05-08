@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: enneking */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

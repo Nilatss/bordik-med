@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: chads-vasc — CHA₂DS₂-VASc Score for AF Stroke Risk
  *

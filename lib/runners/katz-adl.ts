@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: katz-adl
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.

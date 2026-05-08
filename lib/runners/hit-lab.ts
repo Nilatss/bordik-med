@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: hit-lab — HIT laboratory diagnostics integration (4T + PF4 ELISA OD + SRA) */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

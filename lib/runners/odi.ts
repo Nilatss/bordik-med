@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: odi — Oswestry Disability Index */
 import type { CalculatorTool } from '../tools-runners';
 

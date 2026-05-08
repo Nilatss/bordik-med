@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: framingham — Framingham 10-year CVD Risk (D'Agostino 2008 general)
  *

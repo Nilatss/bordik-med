@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: gleason */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

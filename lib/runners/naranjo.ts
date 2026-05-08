@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: naranjo - Naranjo ADR Probability Scale */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,

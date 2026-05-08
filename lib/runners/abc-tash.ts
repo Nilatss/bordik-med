@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: abc-tash - ABC score (Nunez 2009) for MTP activation */
 import type { ScoreTool } from '../tools-runners';
 

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: wells-dvt — Wells Score for DVT (deep vein thrombosis)
  *

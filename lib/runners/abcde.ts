@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: abcde - ABCDE melanoma screening criteria */
 import type { CalculatorTool } from '../tools-runners';
 

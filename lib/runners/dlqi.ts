@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: dlqi — Dermatology Life Quality Index */
 import type { CalculatorTool } from '../tools-runners';
 

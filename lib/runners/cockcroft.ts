@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: cockcroft — Cockcroft-Gault Creatinine Clearance estimate
  *

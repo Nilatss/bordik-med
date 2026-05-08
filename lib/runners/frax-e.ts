@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: frax-e — FRAX 10-year fracture risk (simplified English tool) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,

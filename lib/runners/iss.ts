@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: iss - Injury Severity Score (Baker 1974) */
 import type { CalculatorTool } from '../tools-runners';
 

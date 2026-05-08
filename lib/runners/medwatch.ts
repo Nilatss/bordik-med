@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: medwatch - FDA MedWatch 3500 reporting */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,

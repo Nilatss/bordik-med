@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: lund-mackay - Lund-Mackay CT score for chronic rhinosinusitis */
 import type { CalculatorTool } from '../tools-runners';
 

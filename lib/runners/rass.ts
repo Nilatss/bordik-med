@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: rass - Richmond Agitation-Sedation Scale (Sessler 2002)
  */

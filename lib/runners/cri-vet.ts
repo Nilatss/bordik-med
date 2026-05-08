@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: cri-vet */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,

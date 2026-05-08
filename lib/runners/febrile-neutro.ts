@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: febrile-neutro */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

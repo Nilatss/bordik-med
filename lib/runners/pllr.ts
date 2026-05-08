@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: pllr */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

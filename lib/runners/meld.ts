@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: meld — Model for End-Stage Liver Disease (original 6-40)
  *

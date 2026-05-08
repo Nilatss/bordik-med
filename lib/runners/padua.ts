@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: padua
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: bnf */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

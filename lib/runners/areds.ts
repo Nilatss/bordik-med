@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: areds - AREDS simplified 5-year risk of advanced AMD */
 import type { CalculatorTool } from '../tools-runners';
 

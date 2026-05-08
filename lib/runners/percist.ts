@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: percist */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

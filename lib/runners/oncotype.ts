@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: oncotype */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

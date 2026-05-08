@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: dast — Drug Abuse Screening Test (DAST-10) */
 import type {
   CalculatorTool,

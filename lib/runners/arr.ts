@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: arr - Aldosterone/Renin Ratio for primary aldosteronism */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,

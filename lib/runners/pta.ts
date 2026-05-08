@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: pta - Pure Tone Average / hearing loss grading */
 import type { CalculatorTool } from '../tools-runners';
 

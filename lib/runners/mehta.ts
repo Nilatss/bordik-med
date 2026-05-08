@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: mehta - Thakar/Mehta Cleveland Clinic AKI score (кардиохирургия)
  */

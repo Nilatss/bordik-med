@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: plasmic — PLASMIC score for TTP probability (ADAMTS13 deficiency) */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

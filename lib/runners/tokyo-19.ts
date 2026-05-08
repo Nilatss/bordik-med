@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: tokyo-19 — Tokyo Guidelines 2018 (TG18/TG19) for acute cholangitis and cholecystitis */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,

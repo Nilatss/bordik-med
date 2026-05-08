@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: hacor - HACOR Score (Duan 2017) for NIV failure at 1 hour
  */

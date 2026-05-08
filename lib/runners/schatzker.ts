@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: schatzker - Schatzker classification of tibial plateau fractures (1979) */
 import type { ScoreTool } from '../tools-runners';
 

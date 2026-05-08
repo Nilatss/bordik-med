@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: curb65 — CURB-65 Pneumonia Severity Score
  *

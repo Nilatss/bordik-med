@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: henderson-lab - Henderson-Hasselbalch lab-centric view */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,

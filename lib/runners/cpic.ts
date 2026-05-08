@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: cpic */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

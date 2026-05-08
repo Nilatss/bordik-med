@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: casi — Cutaneous ALL Severity Index (psoriasis subtypes) */
 import type { CalculatorTool } from '../tools-runners';
 

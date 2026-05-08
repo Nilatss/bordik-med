@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: hcr20 — Historical Clinical Risk Management-20 (HCR-20 V3) */
 import type {
   CalculatorTool,

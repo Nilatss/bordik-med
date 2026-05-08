@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: fitzpatrick - Fitzpatrick skin phototype I-VI */
 import type { CalculatorTool } from '../tools-runners';
 

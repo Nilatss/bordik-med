@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: ssc — Surviving Sepsis Campaign 2021 Hour-1 Bundle */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

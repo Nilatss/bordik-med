@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: nmibc */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

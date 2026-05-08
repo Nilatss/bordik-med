@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: parkland — Parkland Formula for burn fluid resuscitation
  *

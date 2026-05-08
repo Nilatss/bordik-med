@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: cmps-sf */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: amsler - Amsler grid screening for macular disease */
 import type { CalculatorTool } from '../tools-runners';
 

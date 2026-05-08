@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: mmpi — Minnesota Multiphasic Personality Inventory (MMPI-2 / MMPI-2-RF) */
 import type {
   CalculatorTool,

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: absi
  * ABSI / Baux / Revised Baux / BOBI - burn mortality prediction.

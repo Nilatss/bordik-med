@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: gap-ild */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: kellgren - Kellgren-Lawrence radiographic classification of osteoarthritis (1957) */
 import type { ScoreTool } from '../tools-runners';
 

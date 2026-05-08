@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: ao-cmf — AO CMF (Craniomaxillofacial) fracture classification */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,

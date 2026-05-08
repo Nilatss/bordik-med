@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: khorana-onco */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

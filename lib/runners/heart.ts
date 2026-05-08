@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: heart — HEART Score for chest pain in ED
  *

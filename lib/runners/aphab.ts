@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: aphab - Abbreviated Profile of Hearing Aid Benefit */
 import type { CalculatorTool } from '../tools-runners';
 

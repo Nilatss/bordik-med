@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: snot22 - Sino-Nasal Outcome Test 22 */
 import type { CalculatorTool } from '../tools-runners';
 

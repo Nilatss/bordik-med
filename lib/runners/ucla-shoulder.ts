@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: ucla-shoulder - UCLA / ASES / Constant-Murley / DASH / QuickDASH */
 import type { CalculatorTool } from '../tools-runners';
 

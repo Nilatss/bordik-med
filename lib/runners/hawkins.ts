@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: hawkins - Hawkins classification of talar neck fractures (1970) */
 import type { ScoreTool } from '../tools-runners';
 

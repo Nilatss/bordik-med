@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: dix-hallpike - BPPV diagnostic tests & treatment selection */
 import type { CalculatorTool } from '../tools-runners';
 

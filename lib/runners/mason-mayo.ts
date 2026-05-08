@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: mason-mayo - Mason (1954) + Mayo/Broberg-Morrey radial head fracture classification */
 import type { ScoreTool } from '../tools-runners';
 

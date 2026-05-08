@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: dhi - Dizziness Handicap Inventory (Jacobson & Newman 1990) */
 import type { CalculatorTool } from '../tools-runners';
 

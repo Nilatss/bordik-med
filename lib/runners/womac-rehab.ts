@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: womac-rehab — WOMAC (OA of knee/hip) */
 import type { CalculatorTool } from '../tools-runners';
 

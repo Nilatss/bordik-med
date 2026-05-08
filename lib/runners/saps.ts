@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: saps
  * SAPS II - Simplified Acute Physiology Score (Le Gall 1993).

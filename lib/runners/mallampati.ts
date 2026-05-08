@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: mallampati
  * Composite difficult airway assessment - Mallampati + Cormack-Lehane + LEMON + MACOCHA.

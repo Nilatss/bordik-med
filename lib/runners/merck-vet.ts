@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: merck-vet */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,

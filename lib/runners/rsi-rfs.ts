@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: rsi-rfs - Reflux Symptom Index + Reflux Finding Score for LPR */
 import type { CalculatorTool } from '../tools-runners';
 

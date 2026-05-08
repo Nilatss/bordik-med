@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: ham-a — Hamilton Anxiety Rating Scale */
 import type {
   CalculatorTool,

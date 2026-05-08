@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: tscherne - Tscherne-Oestern classification of soft tissue injury (1982) */
 import type { ScoreTool } from '../tools-runners';
 

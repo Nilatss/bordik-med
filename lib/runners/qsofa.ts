@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: qsofa — quick Sequential Organ Failure Assessment
  *

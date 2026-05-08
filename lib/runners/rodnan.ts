@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: rodnan — Modified Rodnan Skin Score (systemic sclerosis) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,

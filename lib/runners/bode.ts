@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: bode — BODE Index for COPD Survival Prognosis
  *

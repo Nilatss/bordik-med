@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: niss - New Injury Severity Score (Osler 1997) */
 import type { CalculatorTool } from '../tools-runners';
 

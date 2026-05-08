@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: bromage
  * Bromage scale for epidural/spinal motor block (Bromage 1965).

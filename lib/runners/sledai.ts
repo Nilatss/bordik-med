@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: sledai — SLEDAI-2K Disease Activity Index */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: ahls - Advanced Hazmat Life Support (AACT) */
 import type { CalculatorTool } from '../tools-runners';
 

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: etdrs-dr - ETDRS Diabetic Retinopathy + DME grading */
 import type { CalculatorTool } from '../tools-runners';
 

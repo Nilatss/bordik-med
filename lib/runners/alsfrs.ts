@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: alsfrs - ALSFRS-R (ALS Functional Rating Scale Revised) */
 import type { CalculatorTool } from '../tools-runners';
 

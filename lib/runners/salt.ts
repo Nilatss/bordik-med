@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: salt - SALT (Severity of Alopecia Tool) */
 import type { CalculatorTool } from '../tools-runners';
 

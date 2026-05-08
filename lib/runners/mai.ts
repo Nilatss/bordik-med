@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: mai - Medication Appropriateness Index */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,

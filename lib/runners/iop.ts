@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: iop - Intraocular Pressure with CCT correction */
 import type { CalculatorTool } from '../tools-runners';
 

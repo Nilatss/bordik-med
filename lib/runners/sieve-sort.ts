@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: sieve-sort - UK Triage SIEVE + SORT + MPTT-24 */
 import type {
   CalculatorTool,

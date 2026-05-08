@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: fdi-dent — FDI two-digit tooth numbering (dental expanded) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,

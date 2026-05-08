@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: kts - Kampala Trauma Score (Kobusingye 2000) */
 import type { ScoreTool } from '../tools-runners';
 

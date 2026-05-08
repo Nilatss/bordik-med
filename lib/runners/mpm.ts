@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: mpm
  * MPM II - Mortality Probability Model (Lemeshow 1993).

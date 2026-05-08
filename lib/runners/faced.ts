@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: faced */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

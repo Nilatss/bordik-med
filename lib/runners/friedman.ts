@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: friedman - Friedman staging for OSA surgery candidacy */
 import type { CalculatorTool } from '../tools-runners';
 

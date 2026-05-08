@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: panss — Positive and Negative Syndrome Scale */
 import type {
   CalculatorTool,

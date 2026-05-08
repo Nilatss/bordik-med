@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: renal */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

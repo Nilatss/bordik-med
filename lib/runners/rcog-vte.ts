@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: rcog-vte
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.

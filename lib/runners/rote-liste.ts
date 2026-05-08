@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: rote-liste */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

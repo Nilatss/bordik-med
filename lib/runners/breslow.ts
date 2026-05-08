@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: breslow - Breslow thickness + T stage for melanoma */
 import type { CalculatorTool } from '../tools-runners';
 

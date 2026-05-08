@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: ciwa — Clinical Institute Withdrawal Assessment for Alcohol (CIWA-Ar) */
 import type {
   CalculatorTool,

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: anaphylaxis - NIAID / WAO / EAACI 2020 */
 import type { CalculatorTool } from '../tools-runners';
 

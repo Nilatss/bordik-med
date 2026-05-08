@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: aldrete
  * Modified Aldrete PACU discharge score (Aldrete 1995).

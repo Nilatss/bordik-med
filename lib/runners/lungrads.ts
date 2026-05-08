@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: lungrads */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

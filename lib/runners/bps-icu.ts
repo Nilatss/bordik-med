@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: bps-icu - Behavioral Pain Scale (Payen 2001)
  */

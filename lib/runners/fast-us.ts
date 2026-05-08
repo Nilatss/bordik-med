@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: fast-us - FAST / eFAST ultrasound for trauma */
 import type { CalculatorTool } from '../tools-runners';
 

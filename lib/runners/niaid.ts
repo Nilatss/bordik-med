@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: niaid — NIAID/WAO Anaphylaxis clinical criteria (2006/2020) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,

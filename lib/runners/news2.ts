@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: news2 — National Early Warning Score 2 (RCP UK)
  *

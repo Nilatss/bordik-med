@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: lexicomp */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

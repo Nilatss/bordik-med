@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: uceis - Ulcerative Colitis Endoscopic Index of Severity */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: frykman - Frykman classification of distal radius fractures (1967) */
 import type { ScoreTool } from '../tools-runners';
 

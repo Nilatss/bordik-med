@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: lirads */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

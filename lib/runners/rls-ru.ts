@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: rls-ru */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

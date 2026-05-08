@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: poisindex - POISINDEX / Micromedex Toxicology */
 import type { CalculatorTool } from '../tools-runners';
 

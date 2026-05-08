@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: ranson — Ranson Criteria / Glasgow-Imrie / HAPS for Acute Pancreatitis
  *

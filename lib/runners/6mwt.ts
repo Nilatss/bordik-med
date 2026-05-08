@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: 6mwt — 6-Minute Walk Test (Enright 1998) */
 import type { CalculatorTool } from '../tools-runners';
 

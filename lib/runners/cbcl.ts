@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: cbcl — Child Behavior Checklist (Achenbach CBCL/1.5-5 & 6-18) */
 import type {
   CalculatorTool,

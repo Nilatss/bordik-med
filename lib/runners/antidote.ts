@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: antidote - Antidote dosing reference */
 import type { CalculatorTool } from '../tools-runners';
 

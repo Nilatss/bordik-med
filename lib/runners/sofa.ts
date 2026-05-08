@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: sofa — Sequential Organ Failure Assessment Score
  *

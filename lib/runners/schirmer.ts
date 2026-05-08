@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: schirmer - Schirmer test for dry eye */
 import type { CalculatorTool } from '../tools-runners';
 

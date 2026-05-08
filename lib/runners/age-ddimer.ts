@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: age-ddimer - Age-adjusted D-dimer cut-off for PE/DVT exclusion */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,

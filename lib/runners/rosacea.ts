@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: rosacea — Rosacea phenotypic classification */
 import type { CalculatorTool } from '../tools-runners';
 

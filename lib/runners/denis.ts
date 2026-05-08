@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: denis - Denis three-column classification of thoracolumbar spine injuries (1983) */
 import type { ScoreTool } from '../tools-runners';
 

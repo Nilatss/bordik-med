@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: acr-eular — ACR/EULAR 2010 RA classification criteria */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,

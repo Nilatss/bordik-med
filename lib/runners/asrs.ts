@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: asrs — Adult ADHD Self-Report Scale (ASRS v1.1 Part A) */
 import type {
   CalculatorTool,

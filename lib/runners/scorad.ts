@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: scorad - SCORAD (SCORing Atopic Dermatitis) */
 import type { CalculatorTool } from '../tools-runners';
 

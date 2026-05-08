@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: young-burgess - Young-Burgess (1990) + Tile (1988) classification of pelvic ring injuries */
 import type { ScoreTool } from '../tools-runners';
 

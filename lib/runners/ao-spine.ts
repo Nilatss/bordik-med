@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: ao-spine - TLICS (Vaccaro 2005) + AO Spine thoracolumbar (Vaccaro 2013) */
 import type { CalculatorTool } from '../tools-runners';
 

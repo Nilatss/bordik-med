@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: crafft — CRAFFT adolescent substance abuse screening */
 import type {
   CalculatorTool,

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: hodapp - Hodapp-Parrish-Anderson glaucoma VF severity */
 import type { CalculatorTool } from '../tools-runners';
 

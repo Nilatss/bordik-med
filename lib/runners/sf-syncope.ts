@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: sf-syncope
  * San Francisco Syncope Rule (Quinn 2004) — прогноз серьёзных событий

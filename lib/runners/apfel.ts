@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: apfel
  * Apfel simplified PONV score (Apfel 1999).

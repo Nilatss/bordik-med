@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: martindale */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

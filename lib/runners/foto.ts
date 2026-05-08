@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: foto — FOTO Functional Staging (rehab outcome) */
 import type { CalculatorTool } from '../tools-runners';
 

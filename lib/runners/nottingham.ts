@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: nottingham */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

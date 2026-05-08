@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: outerbridge - Outerbridge (1961) + ICRS (2000) chondral defect classification */
 import type { ScoreTool } from '../tools-runners';
 

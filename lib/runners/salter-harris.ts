@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: salter-harris - Salter-Harris classification of paediatric physeal fractures (1963) */
 import type { ScoreTool } from '../tools-runners';
 

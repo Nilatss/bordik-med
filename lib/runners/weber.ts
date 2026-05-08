@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: weber - Weber / Danis-Weber classification of ankle fractures */
 import type { ScoreTool } from '../tools-runners';
 

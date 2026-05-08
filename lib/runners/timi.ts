@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: timi — TIMI Risk Score for UA / NSTEMI
  *

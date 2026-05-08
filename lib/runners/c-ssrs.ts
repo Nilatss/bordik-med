@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: c-ssrs — Columbia Suicide Severity Rating Scale */
 import type {
   CalculatorTool,

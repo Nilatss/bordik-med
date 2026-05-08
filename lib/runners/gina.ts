@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: gina */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

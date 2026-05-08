@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: cheson */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

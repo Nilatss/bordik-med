@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: whodas — WHO Disability Assessment Schedule 2.0 (WHODAS 2.0) */
 import type {
   CalculatorTool,

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: mpi - Mannheim Peritonitis Index (Wacha 1987) */
 import type { ScoreTool } from '../tools-runners';
 

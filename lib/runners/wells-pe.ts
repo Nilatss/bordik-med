@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: wells-pe — Wells Score for Pulmonary Embolism
  *

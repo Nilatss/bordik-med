@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: big - BIG score (Borgman 2011) pediatric trauma mortality */
 import type { CalculatorTool } from '../tools-runners';
 

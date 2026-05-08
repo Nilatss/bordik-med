@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: vcog */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,

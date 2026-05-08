@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: dic — ISTH DIC score (overt DIC) */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

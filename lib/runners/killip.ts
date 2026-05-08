@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: killip — Killip Classification of Heart Failure in MI
  *

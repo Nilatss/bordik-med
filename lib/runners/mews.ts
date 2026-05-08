@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: mews — Modified Early Warning Score (Subbe 2001)
  *

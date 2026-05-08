@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: rule-9
  * Rule of Nines / Wallace + Lund-Browder pediatric TBSA calculator.

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: cows — Clinical Opiate Withdrawal Scale */
 import type {
   CalculatorTool,

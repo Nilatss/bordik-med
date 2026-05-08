@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: mods-lods
  * MODS - Multiple Organ Dysfunction Score (Marshall 1995).

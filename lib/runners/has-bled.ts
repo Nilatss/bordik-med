@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: has-bled — HAS-BLED Bleeding Risk in AF on Anticoagulation
  *

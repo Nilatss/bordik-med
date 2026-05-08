@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: iss-mm */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: asa-e
  * ASA extended preoperative risk (ASA-PS + RCRI + METs + age + emergency).

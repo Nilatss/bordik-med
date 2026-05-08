@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: bishop — Bishop Score for Cervical Ripening / Induction Readiness
  *

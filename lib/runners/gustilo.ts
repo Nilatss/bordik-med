@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: gustilo - Gustilo-Anderson open fracture classification (1976) */
 import type { ScoreTool } from '../tools-runners';
 

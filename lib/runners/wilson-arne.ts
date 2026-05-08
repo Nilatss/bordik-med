@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: wilson-arne
  * Wilson risk sum score for difficult tracheal intubation (Wilson 1988).

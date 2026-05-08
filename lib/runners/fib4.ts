@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: fib4 — FIB-4 / APRI / NAFLD FS / FibroTest / FibroScan composite
  *

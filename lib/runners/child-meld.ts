@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: child-meld — Child-Pugh + MELD composite (cirrhosis prognosis)
  *

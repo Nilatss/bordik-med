@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: oct-normative - OCT RNFL normative database interpretation */
 import type { CalculatorTool } from '../tools-runners';
 

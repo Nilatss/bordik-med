@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: ballard
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
