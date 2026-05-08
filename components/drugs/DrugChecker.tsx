@@ -107,10 +107,14 @@ export default function DrugChecker() {
   const [showPoisonCodes, setShowPoisonCodes] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  // P2-PERF-NEW-2 — drug-interactions JSON (~2.5MB) парсим в Web Worker
-  // через lib/json-worker, чтобы JSON.parse не блокировал UI на 100-200ms
+  // P2-PERF-NEW-2 — drug-interactions JSON (~15MB) парсим в Web Worker
+  // через lib/json-worker, чтобы JSON.parse не блокировал UI на ~500ms
   // (заметно на mid-range mobile при cold load). Fallback на main-thread
   // если Worker недоступен (SSR / older browsers).
+  //
+  // FIX 2026-05-08: реальный размер файла 15.4MB (не 2.5MB как я
+  // ошибочно предположил по устаревшему комментарию). Полагаемся на
+  // worker default DEFAULT_MAX_BYTES = 50MB — даёт запас на 3x growth.
   useEffect(() => {
     let cancelled = false;
     void (async () => {
@@ -119,8 +123,7 @@ export default function DrugChecker() {
         let json: unknown;
         if (typeof Worker !== 'undefined') {
           const { fetchJsonInWorker } = await import('@/lib/json-worker/client');
-          // maxBytes 5MB — текущий файл 2.5MB, есть запас на growth до 2x
-          json = await fetchJsonInWorker(url, { maxBytes: 5_000_000 });
+          json = await fetchJsonInWorker(url);
         } else {
           const { fetchJsonOnMain } = await import('@/lib/json-worker/client');
           json = await fetchJsonOnMain(url);
