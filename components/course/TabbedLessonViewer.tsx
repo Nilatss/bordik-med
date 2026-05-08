@@ -12,7 +12,6 @@ import { safeUrlTransform, sanitizeSchema } from '@/lib/safe-markdown';
 // компонент с 890 LOC до ~600. См. также lesson-tabs.ts (Tab + splitIntoTabs).
 import {
   preprocessContent,
-  parseGlossary,
   stripLeadingEmoji,
   extractText,
 } from '@/lib/course/lesson-utils';
@@ -24,57 +23,12 @@ import InlineQuiz from './InlineQuiz';
 import DownloadableTable from './DownloadableTable';
 import CourseProgressBar from './CourseProgressBar';
 import { TabIcon } from './lesson/TabIcon';
+import { GlossaryView } from './lesson/GlossaryView';
 
 // Re-export для backward compatibility — CoursePage.tsx импортирует
 // { splitIntoTabs, type Tab } отсюда.
 export { splitIntoTabs, type Tab } from '@/lib/course/lesson-tabs';
 export { parseGlossary } from '@/lib/course/lesson-utils';
-
-function GlossaryView({ body }: { body: string }) {
-  const { intro, terms } = parseGlossary(body);
-  return (
-    <div>
-      {intro && (
-        <p style={{
-          fontFamily: 'var(--font-body)', fontSize: 14, color: '#555',
-          lineHeight: 1.65, marginBottom: 18,
-        }}>
-          {intro}
-        </p>
-      )}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
-        gap: 10,
-      }}>
-        {terms.map(({ term, def }, i) => (
-          <div
-            key={i}
-            style={{
-              background: '#F5F6F8',
-              borderRadius: 12,
-              padding: '14px 16px',
-              display: 'flex', flexDirection: 'column', gap: 4,
-            }}
-          >
-            <p style={{
-              fontFamily: 'var(--font-display)', fontSize: 14, fontWeight: 700,
-              color: '#1A1A1A', letterSpacing: '-0.01em', lineHeight: 1.3,
-            }}>
-              {term}
-            </p>
-            <p style={{
-              fontFamily: 'var(--font-body)', fontSize: 13, color: '#4B5563',
-              lineHeight: 1.55,
-            }}>
-              {def}
-            </p>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
 
 interface Props {
   content: string | null;
