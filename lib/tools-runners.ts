@@ -34,8 +34,15 @@ export interface ScoreBand {
   description: string;
   /** Longer narrative shown under the headline when this band is hit */
   details?: string;
-  /** Recommended clinical actions for this band */
-  actions?: string[];
+  /** Recommended clinical actions for this band — допускаем null/undefined items
+   *  для consistency с CalculatorResult.actions; consumers фильтруют. */
+  actions?: (string | null | undefined)[];
+  /** P0-CR-1 widening: альтернативный ярлык для interpretation
+   *  (некоторые runners использовали оба). UI приоритезирует interpretation,
+   *  иначе fallback на label. */
+  interpretation?: string;
+  /** Tool-band-level caveats — встречается во многих runners */
+  caveats?: string[];
 }
 
 export interface Preset {
