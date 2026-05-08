@@ -1,6 +1,38 @@
 // @ts-nocheck
 /**
- * Runner: chads-vasc
+ * Runner: chads-vasc — CHA₂DS₂-VASc Score for AF Stroke Risk
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    Lip GY, Nieuwlaat R, Pisters R, Lane DA, Crijns HJ.
+ *               Refining clinical risk stratification for predicting stroke
+ *               and thromboembolism in atrial fibrillation using a novel
+ *               risk factor-based approach: the euro heart survey on
+ *               atrial fibrillation. Chest. 2010;137(2):263-272.
+ *               doi:10.1378/chest.09-1584
+ *   GUIDELINE:  ESC 2024 AF Guidelines — recommend CHA₂DS₂-VASc для всех
+ *               пациентов с non-valvular AF; OAC при ≥2 у мужчин / ≥3 у женщин.
+ *               https://academic.oup.com/eurheartj/article/45/36/3314/7720094
+ *   GUIDELINE:  AHA/ACC/HRS 2023 AF Guideline.
+ *               doi:10.1161/CIR.0000000000001193
+ *
+ * Items + points (1 балл если не указано):
+ *   1 — Congestive HF (LVEF≤40% OR HFrEF / HFpEF symptoms)
+ *   1 — Hypertension (BP ≥140/90 OR на терапии)
+ *   2 — Age ≥75 years
+ *   1 — Diabetes mellitus
+ *   2 — Stroke / TIA / thromboembolism in past
+ *   1 — Vascular disease (prior MI, peripheral artery, aortic plaque)
+ *   1 — Age 65-74 years
+ *   1 — Sex category (female)
+ *
+ * Annual stroke risk (validated cohort):
+ *   0  → 0.2%
+ *   1  → 0.6%
+ *   2  → 2.2%
+ *   3  → 3.2%
+ *   4  → 4.8%
+ *   ≥5 → ≥7%
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *

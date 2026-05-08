@@ -1,6 +1,37 @@
 // @ts-nocheck
 /**
- * Runner: wells-pe
+ * Runner: wells-pe — Wells Score for Pulmonary Embolism
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    Wells PS, Anderson DR, Rodger M, et al. Derivation of a
+ *               simple clinical model to categorize patients probability
+ *               of pulmonary embolism: increasing the models utility with
+ *               the SimpliRED D-dimer. Thromb Haemost. 2000;83(3):416-420.
+ *               PMID: 10744147
+ *   GUIDELINE:  ESC 2019 Pulmonary Embolism Guidelines (recommend Wells +
+ *               D-dimer for outpatient triage).
+ *               https://academic.oup.com/eurheartj/article/41/4/543/5556136
+ *   GUIDELINE:  ACEP 2018 Clinical Policy on PE (low-risk Wells <2 + neg
+ *               D-dimer = no imaging needed).
+ *               doi:10.1016/j.annemergmed.2018.05.040
+ *
+ * Score interpretation (3-tier, original):
+ *   <2     → low probability       (≈3% PE prevalence)
+ *   2-6    → moderate probability  (≈21%)
+ *   ≥6     → high probability      (≈67%)
+ *
+ * Items + points (replicated 1:1 in `inputs[]` below):
+ *   3.0 — Clinical signs/symptoms of DVT
+ *   3.0 — PE most likely diagnosis (subjective)
+ *   1.5 — Heart rate >100 bpm
+ *   1.5 — Immobilisation ≥3 days OR surgery within 4 weeks
+ *   1.5 — Previous DVT/PE
+ *   1.0 — Haemoptysis
+ *   1.0 — Active malignancy (treatment within 6 months / palliative)
+ *
+ * Validation tests: tests/calculators/wells-pe.test.ts (12 golden cases
+ * covering tier boundaries and missing-input safety).
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *

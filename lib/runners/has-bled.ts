@@ -1,6 +1,35 @@
 // @ts-nocheck
 /**
- * Runner: has-bled
+ * Runner: has-bled — HAS-BLED Bleeding Risk in AF on Anticoagulation
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    Pisters R, Lane DA, Nieuwlaat R, de Vos CB, Crijns HJ,
+ *               Lip GY. A novel user-friendly score (HAS-BLED) to assess
+ *               1-year risk of major bleeding in patients with atrial
+ *               fibrillation: the Euro Heart Survey. Chest. 2010;138(5):1093-1100.
+ *               doi:10.1378/chest.10-0134
+ *   GUIDELINE:  ESC 2024 AF Guidelines — HAS-BLED ≥3 = high bleed risk,
+ *               НЕ противопоказание к OAC, а сигнал устранять modifiable
+ *               факторы (BP control, NSAIDs, alcohol).
+ *               https://academic.oup.com/eurheartj/article/45/36/3314/7720094
+ *
+ * Mnemonic + items (1 балл каждый):
+ *   H — Hypertension (uncontrolled, SBP >160)
+ *   A — Abnormal renal/liver function (1 балл за каждый, max 2)
+ *   S — Stroke (history)
+ *   B — Bleeding history or predisposition
+ *   L — Labile INR (TTR <60% if on VKA)
+ *   E — Elderly (age >65)
+ *   D — Drugs/alcohol (1 балл за каждый, max 2)
+ *
+ * Risk interpretation (% bleeds/year):
+ *   0   → 1.13%
+ *   1   → 1.02%
+ *   2   → 1.88%
+ *   3   → 3.74%
+ *   4   → 8.70%
+ *   ≥5  → ≥12%
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *
