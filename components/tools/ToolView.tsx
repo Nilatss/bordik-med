@@ -3,7 +3,7 @@
 import React, { useState, useMemo, useEffect, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCatalog, type CatalogMetaItem } from '@/lib/catalog-client';
-import { findBand, type ToolInput, type Preset, type CalculatorResult, type ToolRunner } from '@/lib/tools-runners';
+import { findBand, type CalculatorResult, type ToolRunner } from '@/lib/tools-runners';
 import { loadRunner } from '@/lib/runners';
 import { useAppStore } from '@/lib/store';
 import { reportToolTimeToResult } from '@/lib/analytics/tool-time-to-result';
@@ -11,13 +11,12 @@ import { useT } from '@/lib/i18n';
 import type { Tab } from '@/lib/tool-view/types';
 import { URL_REGEX, slugify, shortenTitle, iconKeyForTitle, buildInfoTabs } from '@/lib/tool-view/utils';
 import { MemoisedMarkdown } from './view/Markdown';
-import { InputField } from './view/InputField';
-import { ResultCard } from './view/Result';
 import { linkify } from './view/linkify';
 import { TabIcon } from './view/TabIcon';
 import { NavButton, BackButton } from './view/Nav';
 import { cleanReference, shortRef } from '@/lib/tool-view/refs';
 import { Header, InfoPill, IconBolt, IconTag, IconBook, IconGlobe } from './view/Header';
+import { CalculatorBody } from './view/CalculatorBody';
 
 /* slugify, URL_REGEX, shortenTitle, iconKeyForTitle, buildInfoTabs, Tab → lib/tool-view/ (P1-CR-3 step 1). */
 /* linkify → ./view/linkify.tsx (P1-CR-3 step 4). */
@@ -397,68 +396,7 @@ export default function ToolView({ toolId }: { toolId: string }) {
 /* MemoisedMarkdown, withSexBadges, preprocessToolContent, mdComponents, callout helpers
    → ./view/Markdown.tsx (P1-CR-3 step 2). */
 
-/* ════════════════ Calculator body ════════════════ */
-
-function CalculatorBody({ inputs, values, setValues, result }: {
-  inputs: ToolInput[];
-  values: Record<string, number | boolean | string>;
-  setValues: React.Dispatch<React.SetStateAction<Record<string, number | boolean | string>>>;
-  result: CalculatorResult | null;
-  presets?: Preset[]; // kept in signature for back-compat (unused)
-}) {
-  // Group checkboxes visually at the bottom — otherwise a single checkbox
-  // sandwiched between number/select inputs blends in and is easy to miss.
-  // Stable: we DO NOT reshuffle when all inputs are checkboxes or when
-  // there are none (leave as-is).
-  const { nonCheckboxes, checkboxes } = useMemo(() => {
-    const nc: ToolInput[] = [];
-    const cb: ToolInput[] = [];
-    for (const inp of inputs) {
-      if (inp.type === 'checkbox') cb.push(inp);
-      else nc.push(inp);
-    }
-    return { nonCheckboxes: nc, checkboxes: cb };
-  }, [inputs]);
-
-  const renderInput = (inp: ToolInput) => (
-    <InputField
-      key={inp.id}
-      input={inp}
-      value={values[inp.id]}
-      onChange={(v) => setValues((prev) => ({ ...prev, [inp.id]: v }))}
-    />
-  );
-
-  return (
-    <div>
-      {/* Rhythm rules:
-          – Between inputs of the same type (number↔number, select↔select,
-            checkbox↔checkbox)                                             6 px
-          – Between sections (non-checkbox group ↔ separator ↔ checkbox)   24 px
-          – Internal offsets inside a single number block (label/field/
-            chips)                                                         8 px
-          Groups each have their own flex column; the outer layout stitches
-          them with 24 px. */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-        {nonCheckboxes.length > 0 && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-            {nonCheckboxes.map(renderInput)}
-          </div>
-        )}
-        {checkboxes.length > 0 && nonCheckboxes.length > 0 && (
-          <div style={{ borderTop: '1px dashed #E2E4EA' }} />
-        )}
-        {checkboxes.length > 0 && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-            {checkboxes.map(renderInput)}
-          </div>
-        )}
-      </div>
-
-      {result && <ResultCard result={result} />}
-    </div>
-  );
-}
+/* CalculatorBody → ./view/CalculatorBody.tsx (P1-CR-3 step 7). */
 
 /* ResultCard, ResultSection, ResultScale → ./view/Result.tsx (P1-CR-3 step 4). */
 /* NavButton, BackButton → ./view/Nav.tsx (P1-CR-3 step 5). */
