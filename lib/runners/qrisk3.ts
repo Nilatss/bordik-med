@@ -211,7 +211,7 @@ const runner: CalculatorTool = {
             const risk = 1 - Math.pow(0.9776, Math.exp(xb));
             const r = Math.max(0, Math.min(99, risk * 100));
             let interpretation = '', color = '', details = '';
-            let actions = [];
+            let actions: string[] = [];
             if (r < 10) {
                 interpretation = 'Низкий 10-летний риск (QRISK3)';
                 color = '#22C55E';

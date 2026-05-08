@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: homa-ir
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
@@ -61,7 +60,7 @@ const runner: CalculatorTool = {
             const homa = Number(v.glu) * Number(v.ins) / 22.5;
             let interpretation = '', color = '#1A1A1A';
             let details = '';
-            let actions = [];
+            let actions: string[] = [];
             if (homa < 2.0) {
                 interpretation = 'Норма. Инсулинорезистентности нет.';
                 color = '#22C55E';

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: qtc
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
@@ -66,7 +65,7 @@ const runner: CalculatorTool = {
             const threshold = v.female === true ? 470 : 450;
             let interpretation = '', color = '#1A1A1A';
             let details = '';
-            let actions = [];
+            let actions: string[] = [];
             if (qtc_bazett <= threshold) {
                 interpretation = `Нормальный QTc (порог ${threshold} мс)`;
                 color = '#22C55E';

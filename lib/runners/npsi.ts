@@ -202,7 +202,7 @@ const runner: CalculatorTool = {
             const evoked = (items[5] + items[6] + items[7]) / 3;
             const paresth = (items[8] + items[9]) / 2;
             let interpretation = '', color = '', details = '';
-            let actions = [];
+            let actions: string[] = [];
             if (total < 20) {
                 interpretation = 'Лёгкая нейропатическая боль';
                 color = '#22C55E';

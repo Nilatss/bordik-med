@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: rochester
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
@@ -100,7 +99,7 @@ const runner: CalculatorTool = {
             const fever = temp >= 38.0;
             let interpretation = '', color = '#22C55E', value = '';
             let details = '';
-            let actions = [];
+            let actions: string[] = [];
             if (!fever) {
                 value = 'Без лихорадки';
                 interpretation = 'Шкала не применяется: T <38,0 °C';

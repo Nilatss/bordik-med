@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: unit-bili
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
@@ -44,7 +43,7 @@ const runner: CalculatorTool = {
             const umol = mgdl * 17.1;
             let interpretation = '', color = '#1A1A1A';
             let details = '';
-            let actions = [];
+            let actions: string[] = [];
             if (mgdl < 1.2) {
                 interpretation = 'Норма';
                 color = '#22C55E';

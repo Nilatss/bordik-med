@@ -245,7 +245,7 @@ const runner: CalculatorTool = {
             };
             let interpretation = '', color = '#22C55E';
             let details = '';
-            let actions = [];
+            let actions: string[] = [];
             const minZ = Math.min(zW, zH);
             if (minZ < -3) {
                 interpretation = 'Тяжёлое отклонение (Z < −3)';

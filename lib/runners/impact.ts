@@ -223,7 +223,7 @@ const runner: CalculatorTool = {
             // Unfavourable (mRS 4-6 ≈ GOSE 1-4) typically ~ 1.5-2× mortality, capped
             const unfavPct = Math.min(99, Math.round(mortalityPct * 1.7));
             let interpretation = '', color = '', details = '';
-            let actions = [];
+            let actions: string[] = [];
             if (mortalityPct < 10) {
                 interpretation = 'Низкий риск';
                 color = '#22C55E';

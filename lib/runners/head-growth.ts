@@ -156,7 +156,7 @@ const runner: CalculatorTool = {
             const z = (hc - mean) / ref.sd;
             let interpretation = '', color = '#22C55E';
             let details = '';
-            let actions = [];
+            let actions: string[] = [];
             if (z < -2) {
                 interpretation = 'Микроцефалия (Z < −2 SD)';
                 color = '#EF4444';

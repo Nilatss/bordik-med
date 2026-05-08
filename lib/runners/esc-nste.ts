@@ -171,7 +171,7 @@ const runner: CalculatorTool = {
             const c = table[assay][algo];
             let zone;
             let interpretation = '', color = '', details = '';
-            let actions = [];
+            let actions: string[] = [];
             if (t0 < c.roSingle || t0 < c.roAny && delta < c.roDelta) {
                 zone = 'rule-out';
                 interpretation = 'Rule-out: ОИМ исключён';

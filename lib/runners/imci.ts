@@ -83,7 +83,7 @@ const runner: CalculatorTool = {
             };
             let value = '', interpretation = '', color = '#22C55E';
             let details = '';
-            let actions = [];
+            let actions: string[] = [];
             if (danger || severe) {
                 value = `${labels[problem]} - КРАСНЫЙ (тяжёлая)`;
                 interpretation = 'Срочный перевод в стационар';

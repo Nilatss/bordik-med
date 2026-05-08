@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: whr
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
@@ -70,7 +69,7 @@ const runner: CalculatorTool = {
             const highCut = female ? 0.85 : 0.90;
             let interpretation = '', color = '#1A1A1A';
             let details = '';
-            let actions = [];
+            let actions: string[] = [];
             if (whr < moderateCut) {
                 interpretation = 'Низкий риск';
                 color = '#22C55E';

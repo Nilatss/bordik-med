@@ -41,7 +41,7 @@ const runner: CalculatorTool = {
     let title = '';
     let desc = '';
     let color = '';
-    let actions = [];
+    let actions: string[] = [];
     const palette = { I: '#22C55E', II: '#F59E0B', III: '#EF4444', IV: '#7F1D1D' };
     color = palette[s] || '#1A1A1A';
     if (c === 'cervix') {

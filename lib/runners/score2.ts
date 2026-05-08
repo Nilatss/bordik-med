@@ -233,7 +233,7 @@ const runner: CalculatorTool = {
                 highT = 15.0;
             }
             let interpretation = '', color = '', details = '';
-            let actions = [];
+            let actions: string[] = [];
             if (r < lowT) {
                 interpretation = 'Низкий-умеренный риск (возраст-адаптированный)';
                 color = '#22C55E';

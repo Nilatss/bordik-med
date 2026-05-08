@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: abw
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
@@ -74,7 +73,7 @@ const runner: CalculatorTool = {
             const ratio = tbw / ibw;
             let interpretation = '', color = '#1A1A1A';
             let details = '';
-            let actions = [];
+            let actions: string[] = [];
             if (ratio < 1.2) {
                 interpretation = 'ABW не требуется';
                 color = '#22C55E';

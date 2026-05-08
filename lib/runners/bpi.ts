@@ -209,7 +209,7 @@ const runner: CalculatorTool = {
             const combined = (sev + intScore) / 2;
             let interpretation = '', color = '#22C55E';
             let details = '';
-            let actions = [];
+            let actions: string[] = [];
             if (combined < 4) {
                 interpretation = 'Лёгкий болевой профиль';
                 color = '#84CC16';

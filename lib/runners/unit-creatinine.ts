@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: unit-creatinine
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
@@ -45,7 +44,7 @@ const runner: CalculatorTool = {
             const umol = mgdl * 88.4;
             let interpretation = '', color = '#1A1A1A';
             let details = '';
-            let actions = [];
+            let actions: string[] = [];
             if (mgdl < 0.6) {
                 interpretation = 'Сниженный креатинин';
                 color = '#3B82F6';

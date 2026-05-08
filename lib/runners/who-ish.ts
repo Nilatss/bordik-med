@@ -196,7 +196,7 @@ const runner: CalculatorTool = {
             else if (pts >= 3) r = 7;
             else r = 3;
             let interpretation = '', color = '', details = '';
-            let actions = [];
+            let actions: string[] = [];
             if (r < 10) {
                 interpretation = '< 10 % - низкий риск';
                 color = '#22C55E';

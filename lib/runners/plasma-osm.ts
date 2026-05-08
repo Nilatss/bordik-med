@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: plasma-osm
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
@@ -77,7 +76,7 @@ const runner: CalculatorTool = {
             const osm = 2 * Number(v.na) + Number(v.glu) + Number(v.urea);
             let interpretation = '', color = '#1A1A1A';
             let details = '';
-            let actions = [];
+            let actions: string[] = [];
             if (osm < 275) {
                 interpretation = 'Гипоосмолярность';
                 color = '#3B82F6';

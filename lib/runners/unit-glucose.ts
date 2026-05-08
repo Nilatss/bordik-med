@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: unit-glucose
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
@@ -44,7 +43,7 @@ const runner: CalculatorTool = {
             const mmol = mgdl / 18.0182;
             let interpretation = '', color = '#1A1A1A';
             let details = '';
-            let actions = [];
+            let actions: string[] = [];
             if (mgdl < 70) {
                 interpretation = 'Гипогликемия';
                 color = '#3B82F6';

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: unit-hb
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
@@ -51,7 +50,7 @@ const runner: CalculatorTool = {
             const female = v.female === true;
             let interpretation = '', color = '#1A1A1A';
             let details = '';
-            let actions = [];
+            let actions: string[] = [];
             const lowerNorm = female ? 12 : 13;
             if (gdl < 7) {
                 interpretation = 'Тяжёлая анемия';
