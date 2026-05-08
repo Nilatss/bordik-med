@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getFaceLandmarker } from '@/lib/proctoring/face';
 import { getObjectDetector, findForbiddenObjects } from '@/lib/proctoring/objects';
+import { log } from '@/lib/log';
 
 interface TestStartConsentProps {
   testLabel: string;
@@ -93,7 +94,11 @@ function MediaCheck({ onReady, onCalibrated }: {
       .then(() => { if (!cancelled) setAiModelStatus('ready'); })
       .catch((err: any) => {
         if (cancelled) return;
-        console.error('[proctoring] AI model load failed:', err);
+        // P2-NEW-12 — структурный лог через lib/log с redaction.
+        log.error({
+          event: 'proctoring_model_load_failed',
+          message: (err as Error)?.message ?? String(err).slice(0, 200),
+        });
         setAiModelStatus('error');
 
         // Pull a usable diagnostic string out of whatever was rejected.

@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useState, type ReactNode } from 'react';
+import { log } from '@/lib/log';
 
 interface Props {
   children: ReactNode;
@@ -216,7 +217,11 @@ export default function DownloadableTable({ children, title = 'Таблица' }
           .slice(0, 80) || 'table');
       pdf.save(`${safeName}.pdf`);
     } catch (err) {
-      console.error('PDF generation failed', err);
+      // P2-NEW-12 — структурный лог через lib/log с redaction.
+      log.error({
+        event: 'pdf_generation_failed',
+        message: (err as Error)?.message ?? String(err).slice(0, 200),
+      });
       alert('Не удалось сгенерировать PDF');
     } finally {
       setBusy(false);

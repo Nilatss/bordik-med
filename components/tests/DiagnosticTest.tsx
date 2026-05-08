@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { modules } from '@/lib/curriculum';
 import { useAppStore } from '@/lib/store';
+import { log } from '@/lib/log';
 
 interface Turn {
   question: string;
@@ -133,7 +134,8 @@ export default function DiagnosticTest({ onClose }: { onClose: () => void }) {
           await new Promise((res) => setTimeout(res, 2500));
           continue;
         }
-        console.error('[diagnostic] /next failed:', code, json);
+        // P2-NEW-12 — структурный лог через lib/log с redaction.
+        log.error({ event: 'diagnostic_next_failed', code });
         setErrorMsg(f.msg);
         setPhase('error');
         return;
@@ -143,7 +145,10 @@ export default function DiagnosticTest({ onClose }: { onClose: () => void }) {
           await new Promise((res) => setTimeout(res, 2500));
           continue;
         }
-        console.error('[diagnostic] /next threw:', err);
+        log.error({
+          event: 'diagnostic_next_threw',
+          message: (err as Error)?.message ?? String(err).slice(0, 200),
+        });
         setErrorMsg('Нет связи с сервером. Проверьте интернет.');
         setPhase('error');
         return;
