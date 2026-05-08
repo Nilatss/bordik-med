@@ -23,158 +23,19 @@ import RecentToolsWidget from './RecentToolsWidget';
 
 import { useAppStore } from '@/lib/store';
 import type { CatalogTool, FilterKey, Row } from '@/lib/tools-page/types';
-import { stripCategoryNumber, EMPTY_CATALOG, getToolCountries } from '@/lib/tools-page/helpers';
+import { stripCategoryNumber, EMPTY_CATALOG } from '@/lib/tools-page/helpers';
 import { FilterDropdown } from './page/FilterDropdown';
 import { ToolCardContext } from './page/ToolCardContext';
-import { ToolCard } from './page/ToolCard';
+import { useResponsiveCols } from './page/useResponsiveCols';
+import { buildRows } from './page/buildRows';
+import { RenderedRow } from './page/RenderedRow';
 
 /* FilterDropdown → ./page/FilterDropdown.tsx (P1-CR-3 step 2). */
 
 /* ToolCardContext, CardFavButton, ToolCard → ./page/ (P1-CR-3 step 3). */
 /* stripCategoryNumber, EMPTY_CATALOG, getToolCountries → lib/tools-page/helpers.ts (P1-CR-3 step 1). */
 
-/* ════════════════════════════════════════════════════════════════
-   Build a flat row model from the filtered/grouped tools.
-   One row of up to 3 cards → matches the visual 3-col grid.
-   ════════════════════════════════════════════════════════════════ */
-
-/* Responsive column count. Hook below tracks viewport width and returns:
-     3  → wide desktop (≥ 1400 px)   — big screens breathe
-     2  → standard desktop / tablet  — cards stay comfortably wide
-     1  → mobile (≤ 620 px)          — single column */
-function useResponsiveCols(): number {
-  const [cols, setCols] = React.useState(2);
-  React.useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const compute = () => {
-      const w = window.innerWidth;
-      if (w >= 1400) return 3;
-      if (w >= 620) return 2;
-      return 1;
-    };
-    setCols(compute());
-    const onResize = () => setCols(compute());
-    window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
-  }, []);
-  return cols;
-}
-
-function buildRows(
-  byCategory: { category: string; tools: CatalogTool[] }[],
-  COLS: number
-): Row[] {
-  const rows: Row[] = [];
-  for (const { category, tools } of byCategory) {
-    rows.push({ kind: 'category', category, count: tools.length, key: `c:${category}` });
-
-    // Group by subcategory, preserving first-seen order (for stable UI).
-    const order: string[] = [];
-    const groups = new Map<string, CatalogTool[]>();
-    for (const t of tools) {
-      let arr = groups.get(t.subcategory);
-      if (!arr) {
-        arr = [];
-        groups.set(t.subcategory, arr);
-        order.push(t.subcategory);
-      }
-      arr.push(t);
-    }
-
-    for (const sub of order) {
-      const arr = groups.get(sub)!;
-      rows.push({ kind: 'subcategory', category, subcategory: sub, count: arr.length, key: `s:${category}:${sub}` });
-      for (let i = 0; i < arr.length; i += COLS) {
-        const slice = arr.slice(i, i + COLS);
-        // Key includes first tool id + count — stable while filter result
-        // order is stable. Avoids per-render .map().join() in computeItemKey.
-        const key = `r:${category}:${sub}:${slice[0]?.id ?? ''}:${slice.length}`;
-        rows.push({ kind: 'cards', category, subcategory: sub, tools: slice, key });
-      }
-    }
-  }
-  return rows;
-}
-
-/* ════════════════════════════════════════════════════════════════
-   Row renderer for Virtuoso.
-   ════════════════════════════════════════════════════════════════ */
-
-// Memoised so identical rows aren't reconciled on every parent re-render.
-// Custom equality: same row reference + same cols = no work.
-const RenderedRow = React.memo(function RenderedRow({ row, cols }: { row: Row; cols: number }) {
-  if (row.kind === 'empty') return null;
-
-  if (row.kind === 'category') {
-    return (
-      <div style={{ paddingTop: 14, paddingBottom: 2 }}>
-        <h2 style={{
-          fontFamily: 'var(--font-display)', fontSize: 17, fontWeight: 700,
-          color: '#1A1A1A', marginBottom: 18, letterSpacing: '-0.01em',
-          display: 'flex', alignItems: 'baseline', gap: 8,
-        }}>
-          {stripCategoryNumber(row.category)}
-          <span style={{
-            fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 600,
-            color: '#9CA3AF',
-          }}>
-            {row.count}
-          </span>
-        </h2>
-      </div>
-    );
-  }
-
-  if (row.kind === 'subcategory') {
-    return (
-      <div style={{ paddingTop: 4 }}>
-        <h3 style={{
-          fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700,
-          color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
-          marginBottom: 12,
-        }}>
-          {row.subcategory}
-          <span style={{ marginLeft: 8, color: '#D1D5DB' }}>· {row.count}</span>
-        </h3>
-      </div>
-    );
-  }
-
-  // Cards row - pad with invisible slots so the grid layout stays consistent.
-  const padded = [...row.tools];
-  while (padded.length < cols) padded.push(null as unknown as CatalogTool);
-  return (
-    <div className="tools-row-grid" style={{
-      display: 'grid',
-      gridTemplateColumns: `repeat(${cols}, 1fr)`,
-      gap: 'var(--space-3)',
-      marginBottom: 12,
-    }}>
-      {padded.map((tool, idx) =>
-        tool ? (
-          // Plain <div> with a CSS cascade keyframe instead of motion.div.
-          // Virtuoso recycles rows on scroll - per-card framer-motion was
-          // running 4-5 cards × per-row × per-scroll-step. CSS animation
-          // runs on the compositor and is GC'd by the browser.
-          <div
-            key={tool.id}
-            className="tools-card-cascade"
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              minWidth: 0,
-              animationDelay: `${idx * 40}ms`,
-            }}
-          >
-            <ToolCard tool={tool} />
-          </div>
-        ) : (
-          <div key={`ph-${idx}`} />
-        )
-      )}
-    </div>
-  );
-});
+/* useResponsiveCols, buildRows, RenderedRow → ./page/ (P1-CR-3 step 4). */
 
 /* ════════════════════════════════════════════════════════════════
    Main page
