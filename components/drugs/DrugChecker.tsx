@@ -517,7 +517,7 @@ export default function DrugChecker() {
                   margin: '4px 0 0',
                   fontSize: 13, color: '#6B7280', lineHeight: 1.5,
                 }}>
-                  Stockley's, UpToDate Lexidrug, ESC/AHA Guidelines, FDA.
+                  Stockley&apos;s, UpToDate Lexidrug, ESC/AHA Guidelines, FDA.
                 </p>
               </div>
             </div>

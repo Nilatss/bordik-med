@@ -20,14 +20,14 @@
     "ai:questions": "node scripts/ai-generate-questions.mjs",
     "validate:scales": "npx tsx scripts/validate-scales.mjs",
     "validate:runners": "npx tsx scripts/smoke-runners.mjs",
-    "lint": "next lint",
-    "lint:fix": "next lint --fix",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "prepare": "husky",
     "prebuild": "node scripts/sync-mediapipe.mjs && node scripts/sync-mediapipe-models.mjs && node scripts/build-curriculum-stats.mjs && node scripts/build-tool-meta.mjs && node scripts/build-content.mjs"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
-      "next lint --fix --file"
+      "eslint --fix"
     ]
   },
   "dependencies": {

@@ -1237,7 +1237,7 @@ function SectionHex({ rows }: { rows: SectionProgressRow[] }) {
                 style={{ overflow: 'visible' }}
               >
                 <div
-                  // @ts-ignore - xmlns required for foreignObject HTML content
+                  // @ts-expect-error — xmlns required for foreignObject HTML content (React-DOM types don't include it on div)
                   xmlns="http://www.w3.org/1999/xhtml"
                   className={`stats-hex-tip${showAsUnavailable ? ' stats-hex-tip--off' : ''}`}
                 >
