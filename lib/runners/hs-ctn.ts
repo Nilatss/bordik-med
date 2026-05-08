@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: hs-ctn - High-sensitivity cardiac troponin interpretation */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -35,7 +34,7 @@ hint: 'Концентрация в нг/л', label: '1 ч (или 3 ч) знач
     const interval = String(v.interval);
 
     // URLs (99th percentile) and ruleout/rulein thresholds (0/1 h algorithm ESC 2020)
-    const thresholds = {
+    const thresholds: Record<string, { rule_out: number; low: number; rule_in_single: number; delta1: number; delta3: number }> = {
       't-roche': { rule_out: 5, low: 12, rule_in_single: 52, delta1: 5, delta3: 5 },
       'i-abbott': { rule_out: 4, low: sex === 'F' ? 16 : 34, rule_in_single: 64, delta1: 6, delta3: 12 },
       'i-siemens': { rule_out: 3, low: 45, rule_in_single: 120, delta1: 6, delta3: 12 },

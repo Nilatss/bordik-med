@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: andreasen - Andreasen dental trauma classification */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -33,7 +32,7 @@ const runner: CalculatorTool = {
     const perm = v.tooth === 'permanent';
     const time = String(v.time);
 
-    const map = {
+    const map: Record<string, { band: string; color: string; details: string; actions: string[] }> = {
       'enamel-fx': { band: 'Перелом эмали', color: '#22C55E',
         details: 'Поверхностный перелом только эмали без обнажения дентина.',
         actions: ['Сглаживание острых краёв', 'Композитная реставрация если эстетика важна', 'Контроль пульпы: 6-8 нед, 1 год'] },

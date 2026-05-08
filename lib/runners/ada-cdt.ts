@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: ada-cdt - ADA CDT procedure codes reference */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -21,7 +20,7 @@ const runner: CalculatorTool = {
   compute: (v) => {
     const cat = String(v.category);
 
-    const map = {
+    const map: Record<string, { title: string; examples: string[] }> = {
       D0: { title: 'Диагностические',
         examples: ['D0120 - Периодический осмотр', 'D0150 - Первичный осмотр', 'D0210 - Полный набор снимков', 'D0220 - Интраорально перипикальный', 'D0330 - Панорама'] },
       D1: { title: 'Профилактические',

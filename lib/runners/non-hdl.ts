@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: non-hdl - Non-HDL cholesterol & atherogenic risk */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -24,7 +23,7 @@ hint: 'ЛПВП. Норма: М ≥1.0, Ж ≥1.3 ммоль/л', label: 'HDL-C'
     const risk = String(v.risk);
     const nonHdl = tc - hdl;
 
-    const targets = { vhigh: 2.2, high: 2.6, moderate: 3.4, low: 3.8 };
+    const targets: Record<string, number> = { vhigh: 2.2, high: 2.6, moderate: 3.4, low: 3.8 };
     const target = targets[risk]!;
 
     let band = '', color = '#22C55E', details = '';
