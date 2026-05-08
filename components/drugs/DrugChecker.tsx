@@ -107,14 +107,24 @@ export default function DrugChecker() {
   const [showPoisonCodes, setShowPoisonCodes] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  // Грузим базу с ?v= cache-bust для обхода SW precache.
+  // P2-PERF-NEW-2 — drug-interactions JSON (~2.5MB) парсим в Web Worker
+  // через lib/json-worker, чтобы JSON.parse не блокировал UI на 100-200ms
+  // (заметно на mid-range mobile при cold load). Fallback на main-thread
+  // если Worker недоступен (SSR / older browsers).
   useEffect(() => {
     let cancelled = false;
     void (async () => {
       try {
-        const r = await fetch('/drug-interactions.json?v=0.9.0', { cache: 'no-cache' });
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        const json = await r.json();
+        const url = '/drug-interactions.json?v=0.9.0';
+        let json: unknown;
+        if (typeof Worker !== 'undefined') {
+          const { fetchJsonInWorker } = await import('@/lib/json-worker/client');
+          // maxBytes 5MB — текущий файл 2.5MB, есть запас на growth до 2x
+          json = await fetchJsonInWorker(url, { maxBytes: 5_000_000 });
+        } else {
+          const { fetchJsonOnMain } = await import('@/lib/json-worker/client');
+          json = await fetchJsonOnMain(url);
+        }
         if (!cancelled) setData(json as DrugInteractionData);
       } catch (e) {
         if (!cancelled) setLoadError((e as Error).message ?? 'load failed');
