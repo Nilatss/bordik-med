@@ -1,6 +1,34 @@
 // @ts-nocheck
 /**
- * Runner: heart
+ * Runner: heart — HEART Score for chest pain in ED
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    Six AJ, Backus BE, Kelder JC. Chest pain in the emergency
+ *               room: value of the HEART score. Neth Heart J. 2008;16(6):191-196.
+ *               doi:10.1007/BF03086144
+ *   VALIDATION: Backus BE, Six AJ, Kelder JC, et al. A prospective
+ *               validation of the HEART score for chest pain patients at
+ *               the emergency department. Int J Cardiol. 2013;168(3):2153-2158.
+ *               doi:10.1016/j.ijcard.2013.01.255
+ *   GUIDELINE:  ESC 2023 Acute Coronary Syndromes — HEART как один из
+ *               accepted ED triage tools для chest pain risk stratification.
+ *               doi:10.1093/eurheartj/ehad191
+ *
+ * Mnemonic + items (0-2 each, max 10):
+ *   H — History (slightly suspicious / moderately / highly suspicious)
+ *   E — ECG (normal / non-specific repol changes / significant ST-deviation)
+ *   A — Age (<45 / 45-64 / ≥65)
+ *   R — Risk factors (0 / 1-2 / ≥3 OR atherosclerotic disease)
+ *           Risk factors: HTN, DM, hyperlipid, smoking, family hx, obesity (BMI ≥30)
+ *   T — Troponin (≤normal / 1-3× normal / >3× normal)
+ *
+ * 6-week MACE risk (validated):
+ *   0-3   → 1.7%   discharge с outpatient follow-up
+ *   4-6   → 16.6%  admit для observation + serial troponins
+ *   7-10  → 50.1%  early invasive strategy (cath lab)
+ *
+ * Caveat: only validated в ED chest-pain population, НЕ для inpatient.
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *

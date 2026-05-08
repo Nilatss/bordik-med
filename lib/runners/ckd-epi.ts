@@ -1,6 +1,45 @@
 // @ts-nocheck
 /**
- * Runner: ckd-epi
+ * Runner: ckd-epi — CKD-EPI 2021 race-free Creatinine GFR
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    Inker LA, Eneanya ND, Coresh J, et al. New Creatinine- and
+ *               Cystatin C-Based Equations to Estimate GFR without Race.
+ *               N Engl J Med. 2021;385(19):1737-1749.
+ *               doi:10.1056/NEJMoa2102953
+ *   GUIDELINE:  NKF-ASN Task Force on Reassessing the Inclusion of Race in
+ *               Diagnosing Kidney Disease. Final Report (2021) —
+ *               рекомендует CKD-EPI 2021 (без race) для всех взрослых.
+ *               https://www.kidney.org/news/nkf-asn-task-force-reassessing-inclusion-race-diagnosing-kidney-diseases
+ *   GUIDELINE:  KDIGO 2024 CKD Guideline (предполагается, draft 2023) —
+ *               CKD-EPI 2021 default; cystatin-based для confirmation в
+ *               borderline случаях.
+ *
+ * Formula (race-free, 2021):
+ *   eGFR = 142 × min(Cr/κ, 1)^α × max(Cr/κ, 1)^(-1.200)
+ *               × 0.9938^age × 1.012 (if female)
+ *   κ:   0.7 (female) / 0.9 (male)
+ *   α:  -0.241 (female) / -0.302 (male)
+ *   Result: mL/min/1.73 m²
+ *
+ * Старая 2009 версия (с race-coefficient) НЕ используется — replaced 2021.
+ *
+ * CKD stages (KDIGO):
+ *   G1   ≥90    — normal/high (нужны структурные изменения для CKD)
+ *   G2   60-89  — mildly decreased
+ *   G3a  45-59  — mildly to moderately
+ *   G3b  30-44  — moderately to severely
+ *   G4   15-29  — severely decreased
+ *   G5   <15    — kidney failure (renal replacement therapy)
+ *
+ * Caveats:
+ *   - Inaccurate в AKI (steady-state required)
+ *   - Underestimates eGFR в healthy young / high muscle mass
+ *   - Cystatin-based variant более reliable в edge cases (amputations,
+ *     malnutrition, body composition extremes)
+ *
+ * P0-CR closure (2026-05-06): добавлен guard на creatinine ≤0 / NaN.
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *

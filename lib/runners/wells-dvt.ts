@@ -1,6 +1,40 @@
 // @ts-nocheck
 /**
- * Runner: wells-dvt
+ * Runner: wells-dvt — Wells Score for DVT (deep vein thrombosis)
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    Wells PS, Anderson DR, Bormanis J, et al. Value of
+ *               assessment of pretest probability of deep-vein thrombosis
+ *               in clinical management. Lancet. 1997;350(9094):1795-1798.
+ *               doi:10.1016/S0140-6736(97)08140-3
+ *   UPDATE:     Wells PS, Anderson DR, Rodger M, et al. Evaluation of
+ *               D-dimer in the diagnosis of suspected deep-vein
+ *               thrombosis. N Engl J Med. 2003;349(13):1227-1235.
+ *               doi:10.1056/NEJMoa023153
+ *   GUIDELINE:  ACEP 2018 Clinical Policy on VTE (low Wells + neg D-dimer
+ *               sufficient для DVT exclusion в outpatient setting).
+ *
+ * Items + points:
+ *   1 — Active cancer (treatment/palliative within 6 months)
+ *   1 — Paralysis, paresis, or recent plaster immobilisation of leg
+ *   1 — Recently bedridden ≥3 days OR major surgery <12 weeks
+ *   1 — Localised tenderness along deep venous system
+ *   1 — Entire leg swollen
+ *   1 — Calf swelling ≥3 cm vs asymptomatic side (10 cm below tib tuber)
+ *   1 — Pitting oedema на symptomatic leg только
+ *   1 — Collateral superficial veins (non-varicose)
+ *   1 — Previously documented DVT
+ *  -2 — Alternative diagnosis ≥ likely than DVT
+ *
+ * Bands (3-tier original) → modified 2-tier (used clinically):
+ *   ≤0      → unlikely DVT (5% prevalence)        — D-dimer; if neg, exclude
+ *   1-2     → moderate DVT (17%)
+ *   ≥3      → likely DVT (53%)                    — proceed direct к US
+ *
+ * Two-tier:
+ *   <2  → DVT unlikely
+ *   ≥2  → DVT likely
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *

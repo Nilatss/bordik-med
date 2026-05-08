@@ -1,6 +1,36 @@
 // @ts-nocheck
 /**
- * Runner: meld
+ * Runner: meld — Model for End-Stage Liver Disease (original 6-40)
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    Kamath PS, Wiesner RH, Malinchoc M, et al. A model to
+ *               predict survival in patients with end-stage liver disease.
+ *               Hepatology. 2001;33(2):464-470.
+ *               doi:10.1053/jhep.2001.22172
+ *   UPDATE:     UNOS Policy 9 (Allocation of Livers and Liver-Intestines).
+ *               OPTN/UNOS — MELD-Na since 2016, MELD 3.0 since July 2023.
+ *               https://optn.transplant.hrsa.gov/policies-bylaws/policies/
+ *
+ * Formula:
+ *   MELD = 9.57 × ln(creatinine mg/dL) + 3.78 × ln(bilirubin mg/dL)
+ *        + 11.20 × ln(INR) + 6.43
+ *
+ * Каждое значение clamped к ≥ 1.0 (lower bound).
+ * Креатинин max 4.0; >4.0 → 4.0 (или dialysis ≥2x/week → 4.0).
+ * Round к целому, диапазон 6-40.
+ *
+ * 3-month mortality (waitlist data):
+ *   ≤9      → 1.9%
+ *   10-19   → 6.0%
+ *   20-29   → 19.6%
+ *   30-39   → 52.6%
+ *   ≥40     → 71.3%
+ *
+ * Variants (НЕ реализованы здесь, отдельные runners):
+ *   - MELD-Na — добавляет sodium (UNOS uses since 2016)
+ *   - MELD 3.0 — добавляет albumin, female-correction (UNOS since 2023)
+ *   - PELD — pediatric version (<12 yr)
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *

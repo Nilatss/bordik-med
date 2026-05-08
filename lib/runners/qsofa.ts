@@ -1,6 +1,30 @@
 // @ts-nocheck
 /**
- * Runner: qsofa
+ * Runner: qsofa — quick Sequential Organ Failure Assessment
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    Singer M, Deutschman CS, Seymour CW, et al. The Third
+ *               International Consensus Definitions for Sepsis and Septic
+ *               Shock (Sepsis-3). JAMA. 2016;315(8):801-810.
+ *               doi:10.1001/jama.2016.0287
+ *   GUIDELINE:  Surviving Sepsis Campaign 2021 — qSOFA остаётся bedside
+ *               screening tool, но НЕ замена SOFA или clinical judgement.
+ *               doi:10.1097/CCM.0000000000005337
+ *
+ * Items (1 балл каждый, max 3):
+ *   1 — Respiratory rate ≥22/min
+ *   1 — Altered mentation (GCS <15)
+ *   1 — Systolic BP ≤100 mmHg
+ *
+ * Interpretation:
+ *   0-1 → unlikely sepsis (low specificity, high sensitivity)
+ *   ≥2  → high risk for poor outcome / sepsis — escalate care, full SOFA
+ *
+ * Caveats:
+ *   - НЕ диагноз сепсиса, а триггер для full work-up
+ *   - low sensitivity для early sepsis vs NEWS2 (предпочтителен NEWS2)
+ *   - применяется ТОЛЬКО при подозрении на инфекцию
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *

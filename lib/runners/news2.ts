@@ -1,6 +1,33 @@
 // @ts-nocheck
 /**
- * Runner: news2
+ * Runner: news2 — National Early Warning Score 2 (RCP UK)
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    Royal College of Physicians. National Early Warning Score
+ *               (NEWS) 2: Standardising the assessment of acute-illness
+ *               severity in the NHS. December 2017.
+ *               https://www.rcplondon.ac.uk/projects/outputs/national-early-warning-score-news-2
+ *   GUIDELINE:  NHS England — NEWS2 mandated for all NHS trusts since 2019
+ *               для early sepsis recognition.
+ *   GUIDELINE:  NICE NG51 (Sepsis) — NEWS2 ≥5 = "Red Flag" sepsis trigger.
+ *
+ * Items + points (max 20):
+ *   Respiratory rate    — 0-3
+ *   SpO2 Scale 1        — 0-3
+ *   SpO2 Scale 2 (COPD) — 0-3
+ *   Air or oxygen       — 0-2
+ *   Systolic BP         — 0-3
+ *   Heart rate          — 0-3
+ *   Consciousness (ACVPU) — 0-3
+ *   Temperature         — 0-3
+ *
+ * Risk bands (RCP guidance):
+ *   0      → low — min 12-hourly obs
+ *   1-4    → low-medium — escalation, 4-6h obs
+ *   5-6    → medium — urgent clinician review, possible HDU
+ *   ≥7     → high — emergency assessment, ICU activation
+ *   3 in any single param → medium (single-organ derangement)
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *

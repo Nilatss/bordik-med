@@ -1,6 +1,37 @@
 // @ts-nocheck
 /**
- * Runner: bmi
+ * Runner: bmi — Body Mass Index
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   ORIGIN:     Quetelet, A. Sur l'homme et le développement de ses
+ *               facultés (1835) — original "Quetelet index".
+ *               Renamed BMI by Ancel Keys (1972).
+ *   GUIDELINE:  WHO 2000 Obesity classification (TRS 894).
+ *               https://www.who.int/publications/i/item/9241208945
+ *   GUIDELINE:  NIH NHLBI Clinical Guidelines on Identification, Evaluation
+ *               and Treatment of Overweight and Obesity in Adults (1998).
+ *
+ * Formula:
+ *   BMI = weight (kg) / height² (m²)
+ *
+ * WHO classification (adults, не для children/pregnancy/athletes):
+ *   <16        — severe thinness (severe undernutrition)
+ *   16-16.9    — moderate thinness
+ *   17-18.4    — mild thinness
+ *   18.5-24.9  — normal range
+ *   25-29.9    — overweight (pre-obese)
+ *   30-34.9    — obesity class I
+ *   35-39.9    — obesity class II
+ *   ≥40        — obesity class III (morbid)
+ *
+ * Caveats:
+ *   - Не учитывает muscle mass (sportsmen с high muscle мог иметь high BMI)
+ *   - Asian-specific cut-offs (WHO Expert Consultation 2004): overweight
+ *     ≥23, obesity ≥27.5 (lower CVD/DM risk threshold)
+ *   - Pediatric → BMI percentiles по CDC/WHO growth charts (НЕ adult cutoffs)
+ *   - Pregnancy / athletic populations требуют alternative metrics
+ *     (waist circumference, body composition)
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *

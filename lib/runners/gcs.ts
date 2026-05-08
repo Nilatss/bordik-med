@@ -1,6 +1,49 @@
 // @ts-nocheck
 /**
- * Runner: gcs
+ * Runner: gcs — Glasgow Coma Scale
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    Teasdale G, Jennett B. Assessment of coma and impaired
+ *               consciousness. A practical scale. Lancet. 1974;2(7872):81-84.
+ *               doi:10.1016/s0140-6736(74)91639-0
+ *   UPDATE:     Teasdale G, Maas A, Lecky F, et al. The Glasgow Coma Scale
+ *               at 40 years: standing the test of time. Lancet Neurol.
+ *               2014;13(8):844-854. doi:10.1016/S1474-4422(14)70120-8
+ *               (formal "GCS Aid" + structured assessment instructions)
+ *   GUIDELINE:  ATLS 10th Edition — GCS как primary neuro assessment в
+ *               trauma. ≤8 = «coma», typically intubation indication.
+ *
+ * Components (sum = 3-15):
+ *   Eye opening (E)         — 1-4
+ *     1 — none
+ *     2 — to pressure (sternum/nail)
+ *     3 — to sound
+ *     4 — spontaneous
+ *   Verbal response (V)     — 1-5
+ *     1 — none
+ *     2 — sounds (incomprehensible)
+ *     3 — words (inappropriate)
+ *     4 — confused conversation
+ *     5 — orientated
+ *     T — intubated/tracheostomy (record как «E?V[T]M?»)
+ *   Motor response (M)      — 1-6
+ *     1 — none
+ *     2 — extension (decerebrate)
+ *     3 — flexion abnormal (decorticate)
+ *     4 — flexion normal (withdrawal from pain)
+ *     5 — localising (purposeful movement to pain)
+ *     6 — obeys commands
+ *
+ * Severity bands:
+ *   13-15 → mild head injury
+ *   9-12  → moderate
+ *   3-8   → severe (consider airway protection, ICU)
+ *
+ * Caveats:
+ *   - Не валидирован для intubated patients (используй FOUR Score)
+ *   - Sedated patient → record pre-sedation GCS если возможно
+ *   - Component scores (E, V, M) клинически информативнее total
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *

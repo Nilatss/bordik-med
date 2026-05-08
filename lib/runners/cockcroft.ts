@@ -1,6 +1,36 @@
 // @ts-nocheck
 /**
- * Runner: cockcroft
+ * Runner: cockcroft — Cockcroft-Gault Creatinine Clearance estimate
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    Cockcroft DW, Gault MH. Prediction of creatinine clearance
+ *               from serum creatinine. Nephron. 1976;16(1):31-41.
+ *               doi:10.1159/000180580
+ *   GUIDELINE:  KDIGO 2012 CKD Guideline — Cockcroft-Gault сохраняется как
+ *               primary tool для drug dosing (FDA-approved labels), хотя
+ *               CKD-EPI 2021 (без race) предпочтителен для CKD staging.
+ *               https://kdigo.org/guidelines/ckd-evaluation-and-management/
+ *
+ * Formula (males):
+ *   CrCl (mL/min) = ((140 - age) × weight kg) / (72 × Cr mg/dL)
+ *
+ * Formula (females):
+ *   CrCl × 0.85 (15% reduction для меньшей muscle mass)
+ *
+ * Convert SI:
+ *   Cr μmol/L → mg/dL = / 88.4
+ *
+ * Caveats:
+ *   - Использует actual body weight; в obesity → IBW или AdjBW
+ *     (FDA labels: dosing в obesity controversial, см. specific drug)
+ *   - НЕ корректирован к BSA (1.73 m²) — для CKD staging используй CKD-EPI
+ *   - Inaccurate в acute kidney injury (steady-state assumption нарушена)
+ *   - У pediatric pacientов → Schwartz formula
+ *   - НЕ применяй при amputations / extreme muscle wasting (estimates LOW)
+ *
+ * P0-CR closure (2026-05-06): добавлен guard на creatinine ≤0 / NaN
+ * (raise → throw 'invalid-creatinine' вместо Infinity результата).
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *

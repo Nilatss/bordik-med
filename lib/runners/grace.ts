@@ -1,6 +1,42 @@
 // @ts-nocheck
 /**
- * Runner: grace
+ * Runner: grace — GRACE Risk Score 2.0 for ACS in-hospital + 6-month mortality
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    Granger CB, Goldberg RJ, Dabbous O, et al. Predictors of
+ *               hospital mortality in the global registry of acute coronary
+ *               events. Arch Intern Med. 2003;163(19):2345-2353.
+ *               doi:10.1001/archinte.163.19.2345
+ *   UPDATE:     Fox KA, Fitzgerald G, Puymirat E, et al. Should patients
+ *               with acute coronary disease be stratified for management
+ *               according to their risk? Derivation, external validation
+ *               and outcomes using the updated GRACE risk score. BMJ Open.
+ *               2014;4(2):e004425. doi:10.1136/bmjopen-2013-004425
+ *   GUIDELINE:  ESC 2023 ACS Guidelines — GRACE для disposition / timing
+ *               of invasive strategy в NSTE-ACS:
+ *                 Score >140 → immediate (<24h) invasive
+ *                 109-140    → early (<72h) invasive
+ *                 ≤108       → selective invasive
+ *               doi:10.1093/eurheartj/ehad191
+ *
+ * Variables (8):
+ *   - Age
+ *   - Heart rate
+ *   - Systolic BP
+ *   - Creatinine (mg/dL or μmol/L)
+ *   - Killip class (I / II / III / IV)
+ *   - Cardiac arrest at admission (yes/no)
+ *   - ST-segment deviation на ECG (yes/no)
+ *   - Elevated cardiac biomarkers (yes/no)
+ *
+ * Output: integer score (1-263 typical range), maps к:
+ *   - In-hospital mortality (%)
+ *   - 6-month mortality (%)
+ *   - 1-year, 3-year mortality (GRACE 2.0 extended)
+ *
+ * Implementation: piecewise scoring tables (см. inputs[]/computeBands в runner'е).
+ * Высокая accuracy на validation (C-statistic ~0.83 для in-hospital death).
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *

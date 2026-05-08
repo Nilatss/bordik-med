@@ -1,6 +1,49 @@
 // @ts-nocheck
 /**
- * Runner: apgar
+ * Runner: apgar — APGAR Score for Newborns
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    Apgar V. A proposal for a new method of evaluation of the
+ *               newborn infant. Curr Res Anesth Analg. 1953;32(4):260-267.
+ *               PMID: 13083014
+ *   GUIDELINE:  AAP / ACOG 2015 The Apgar Score (Committee Opinion #644).
+ *               Pediatrics. 2015;136(4):819-822.
+ *               doi:10.1542/peds.2015-2651
+ *               — Apgar НЕ предсказывает long-term outcome / asphyxia,
+ *                 это только rapid status snapshot at 1, 5, 10 min.
+ *
+ * Components (0-2 each, sum 0-10):
+ *   A — Activity / muscle tone
+ *     0 — limp
+ *     1 — some flexion
+ *     2 — active motion
+ *   P — Pulse / heart rate
+ *     0 — absent
+ *     1 — <100/min
+ *     2 — ≥100/min
+ *   G — Grimace / reflex irritability
+ *     0 — no response
+ *     1 — grimace / weak cry
+ *     2 — sneeze / cough / pulls away
+ *   A — Appearance / colour
+ *     0 — blue / pale всё тело
+ *     1 — body pink, extremities blue (acrocyanosis)
+ *     2 — completely pink
+ *   R — Respiration / respiratory effort
+ *     0 — absent
+ *     1 — slow / irregular
+ *     2 — good cry
+ *
+ * Timing:
+ *   1 min  — initial response к extrauterine adaptation
+ *   5 min  — primary marker of resuscitation effectiveness
+ *   10 min — required если 5-min ≤7 (продолжать каждые 5 мин до 20)
+ *
+ * Caveats:
+ *   - Не используется для решения о начале реанимации (это AHA NRP алгоритм)
+ *   - Низкий 5-min Apgar (≤3) ассоциирован с risk of CP, но НЕ диагноз
+ *   - Subjective scoring может различаться между observers
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *

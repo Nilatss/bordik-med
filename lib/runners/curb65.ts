@@ -1,6 +1,35 @@
 // @ts-nocheck
 /**
- * Runner: curb65
+ * Runner: curb65 — CURB-65 Pneumonia Severity Score
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    Lim WS, van der Eerden MM, Laing R, et al. Defining
+ *               community acquired pneumonia severity on presentation to
+ *               hospital: an international derivation and validation study.
+ *               Thorax. 2003;58(5):377-382.
+ *               doi:10.1136/thorax.58.5.377
+ *   GUIDELINE:  BTS 2009 Guidelines for management of CAP, updated 2015.
+ *               https://thorax.bmj.com/content/64/Suppl_3/iii1
+ *   GUIDELINE:  ATS/IDSA 2019 CAP — рекомендуют CURB-65 ИЛИ PSI/PORT для
+ *               disposition decision (outpatient vs ward vs ICU).
+ *               doi:10.1164/rccm.201908-1581ST
+ *
+ * Mnemonic + items (1 балл каждый):
+ *   C — Confusion (new disorientation in person/place/time, AMT ≤8)
+ *   U — Urea >7 mmol/L (BUN >19 mg/dL)
+ *   R — Respiratory rate ≥30/min
+ *   B — Blood pressure (SBP <90 OR DBP ≤60)
+ *   65 — Age ≥65 years
+ *
+ * 30-day mortality + disposition (validated):
+ *   0-1  → 1.5%  outpatient management
+ *   2    → 9.2%  short hospital stay / supervised outpatient
+ *   3-5  → 22%+  hospital admission, consider ICU at ≥4
+ *
+ * Variants:
+ *   - CRB-65 — без urea (для primary care без labs)
+ *   - PSI / PORT — более детальная альтернатива (20 переменных)
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *
