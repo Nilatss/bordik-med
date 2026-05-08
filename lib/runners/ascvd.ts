@@ -1,6 +1,50 @@
 // @ts-nocheck
 /**
- * Runner: ascvd
+ * Runner: ascvd — ASCVD 2013 Pooled Cohort Equations (10-year risk)
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    Goff DC, Lloyd-Jones DM, Bennett G, et al. 2013 ACC/AHA
+ *               guideline on the assessment of cardiovascular risk: a
+ *               report of the American College of Cardiology / American
+ *               Heart Association Task Force on Practice Guidelines.
+ *               Circulation. 2014;129(25 Suppl 2):S49-73.
+ *               doi:10.1161/01.cir.0000437741.48606.98
+ *   GUIDELINE:  AHA/ACC 2018 Cholesterol Guideline (Grundy SM, et al.)
+ *               использует ASCVD для statin therapy decisions:
+ *                 ≥20%   → high-intensity statin (LDL goal <70)
+ *                 7.5-20% → moderate-to-high (LDL goal <100)
+ *                 5-7.5%  → moderate (LDL goal <100, обсудить shared decision)
+ *                 <5%     → no statin unless risk-enhancers
+ *               doi:10.1161/CIR.0000000000000625
+ *
+ * Variables (PCE 2013):
+ *   - Age (40-79; calculator clamp at extremes)
+ *   - Sex (M / F)
+ *   - Race (White / African American — separate equations)
+ *     Bordik НЕ применяет race-specific separate equations
+ *     (current trend → race-free, similar к CKD-EPI 2021)
+ *   - Total cholesterol (mg/dL)
+ *   - HDL (mg/dL)
+ *   - Systolic BP
+ *   - On BP-lowering medication (yes/no)
+ *   - Diabetes (yes/no)
+ *   - Current smoker (yes/no)
+ *
+ * Output: 10-year risk hard ASCVD (MI + stroke + CVD death) %.
+ *
+ * Bands (AHA/ACC 2018):
+ *   <5%      → low — lifestyle modification
+ *   5-7.5%   → borderline — consider statin if risk-enhancers (LDL
+ *                ≥160, family hx premature ASCVD, CRP, и т.д.)
+ *   7.5-20%  → intermediate — moderate-intensity statin
+ *   ≥20%     → high — high-intensity statin
+ *
+ * Region applicability:
+ *   - PCE 2013 derived from US cohorts → over-estimates в European /
+ *     Asian populations
+ *   - For RU/UZ — лучше использовать SCORE2 (ESC 2021) с very-high-
+ *     risk region calibration
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *

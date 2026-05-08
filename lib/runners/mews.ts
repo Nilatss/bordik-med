@@ -1,6 +1,34 @@
 // @ts-nocheck
 /**
- * Runner: mews
+ * Runner: mews — Modified Early Warning Score (Subbe 2001)
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    Subbe CP, Kruger M, Rutherford P, Gemmel L. Validation of
+ *               a modified Early Warning Score in medical admissions.
+ *               QJM. 2001;94(10):521-526. doi:10.1093/qjmed/94.10.521
+ *   NOTE:       NEWS2 (RCP 2017) — current standard для UK NHS,
+ *               replaces MEWS в большинстве setting. MEWS остаётся в
+ *               older protocols / некоторых non-UK hospitals.
+ *
+ * Items + points (max 14):
+ *   Systolic BP (≤70 / 71-80 / 81-100 / 101-199 / ≥200)        — 0-3
+ *   Heart rate  (≤40 / 41-50 / 51-100 / 101-110 / 111-129 / ≥130) — 0-3
+ *   Resp rate   (<9 / 9-14 / 15-20 / 21-29 / ≥30)               — 0-3
+ *   Temp        (<35.0 / 35-38.4 / ≥38.5)                       — 0-2
+ *   AVPU        (Alert / Voice / Pain / Unresponsive)            — 0-3
+ *
+ * Risk bands:
+ *   ≤2  → low — routine monitoring
+ *   3-4 → medium — increase obs frequency, junior review
+ *   ≥5  → high — senior clinician review, consider HDU/ICU
+ *
+ * MEWS vs NEWS2:
+ *   - NEWS2 добавляет SpO2 + supplemental O2 → лучше для
+ *     respiratory deterioration / sepsis early signs
+ *   - NEWS2 mandatory в NHS England с 2019
+ *   - MEWS остаётся valid для pacientов где SpO2 unreliable
+ *     (severe peripheral shutdown, dye interference)
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *

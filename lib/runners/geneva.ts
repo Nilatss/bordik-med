@@ -1,6 +1,46 @@
 // @ts-nocheck
 /**
- * Runner: geneva
+ * Runner: geneva — Revised Geneva Score for Pulmonary Embolism (объективная альтернатива Wells)
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    Le Gal G, Righini M, Roy PM, et al. Prediction of pulmonary
+ *               embolism in the emergency department: the revised Geneva score.
+ *               Ann Intern Med. 2006;144(3):165-171.
+ *               doi:10.7326/0003-4819-144-3-200602070-00004
+ *   GUIDELINE:  ESC 2019 Pulmonary Embolism Guidelines — Geneva как
+ *               objective alternative к Wells (без subjective "PE most
+ *               likely diagnosis"). Используется при low clinical gestalt.
+ *               https://academic.oup.com/eurheartj/article/41/4/543/5556136
+ *
+ * Items + points:
+ *   3 — Age >65
+ *   3 — Previous DVT/PE
+ *   2 — Surgery (under GA) или fracture в past month
+ *   2 — Active malignancy (treatment последние 12 months)
+ *   3 — Unilateral leg pain
+ *   2 — Hemoptysis
+ *   1 — Heart rate 75-94
+ *   2 — Heart rate ≥95
+ *   1 — Pain on lower limb deep palpation + unilateral oedema
+ *
+ * Bands (3-tier original):
+ *   0-3   → low probability     (8% PE prevalence)
+ *   4-10  → intermediate         (29%)
+ *   ≥11   → high                (74%)
+ *
+ * Bands (2-tier simplified):
+ *   ≤4   → PE unlikely          → D-dimer first
+ *   ≥5   → PE likely             → CTPA direct
+ *
+ * Преимущество над Wells:
+ *   - НЕТ subjective "PE most likely" item — applicable незавитимо от
+ *     clinician experience / setting
+ *   - Better в junior ED workflows
+ *
+ * Caveats:
+ *   - Geneva slightly inferior к Wells по AUC в multi-centre meta-
+ *     analyses, но advantage — reproducibility
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *

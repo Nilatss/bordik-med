@@ -1,6 +1,41 @@
 // @ts-nocheck
 /**
- * Runner: sirs - Systemic Inflammatory Response Syndrome (Bone 1992)
+ * Runner: sirs — Systemic Inflammatory Response Syndrome (Bone 1992)
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    Bone RC, Balk RA, Cerra FB, et al. Definitions for sepsis
+ *               and organ failure and guidelines for the use of innovative
+ *               therapies in sepsis. The ACCP/SCCM Consensus Conference
+ *               Committee. Chest. 1992;101(6):1644-1655.
+ *               doi:10.1378/chest.101.6.1644
+ *   UPDATE:     Sepsis-3 (Singer 2016) — DEPRECATED SIRS-based sepsis
+ *               definition; sepsis теперь = «life-threatening organ
+ *               dysfunction caused by dysregulated host response», измеряется
+ *               через ΔSOFA ≥2. SIRS остаётся screening / generic
+ *               inflammation marker.
+ *               doi:10.1001/jama.2016.0287
+ *
+ * Items (1 балл каждый, max 4):
+ *   1 — Temperature >38°C OR <36°C
+ *   1 — Heart rate >90/min
+ *   1 — Respiratory rate >20/min OR PaCO2 <32 mmHg
+ *   1 — WBC >12 ×10⁹/L OR <4 ×10⁹/L OR >10% bands
+ *
+ * Interpretation:
+ *   ≥2 = SIRS positive — generic non-specific inflammation
+ *   + suspected infection → исторически "sepsis" (Sepsis-1/-2 definition)
+ *   + organ dysfunction → "severe sepsis" (DEPRECATED)
+ *   + hypotension не отвечающая fluids → "septic shock" (DEPRECATED)
+ *
+ * Современное использование (post Sepsis-3):
+ *   - Screening tool в low-acuity settings (ED triage, ward)
+ *   - НЕ замена SOFA / qSOFA для sepsis diagnosis
+ *   - Sensitive (catches много non-infection causes too: trauma, burn,
+ *     pancreatitis, SLE flare) но low specificity
+ *
+ * Использование per Surviving Sepsis Campaign 2021:
+ *   - NEWS2 / qSOFA preferred над SIRS для sepsis screening
+ *   - SIRS остаётся в pediatric definitions (Goldstein 2005)
  */
 import type { ScoreTool } from '../tools-runners';
 

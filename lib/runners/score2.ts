@@ -1,6 +1,48 @@
 // @ts-nocheck
 /**
- * Runner: score2
+ * Runner: score2 — SCORE2 ESC 2021 Cardiovascular Risk
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    SCORE2 working group and ESC Cardiovascular risk
+ *               collaboration. SCORE2 risk prediction algorithms: new
+ *               models to estimate 10-year risk of cardiovascular
+ *               disease in Europe. Eur Heart J. 2021;42(25):2439-2454.
+ *               doi:10.1093/eurheartj/ehab309
+ *   COMPANION:  SCORE2-OP (≥70 yrs) — de Vries et al. SCORE2-OP. Eur
+ *               Heart J. 2021;42(25):2455-2467. doi:10.1093/eurheartj/ehab312
+ *   GUIDELINE:  ESC 2021 Guidelines on cardiovascular disease prevention
+ *               in clinical practice (Visseren). Использует SCORE2 для
+ *               primary prevention >40 yrs.
+ *               doi:10.1093/eurheartj/ehab484
+ *
+ * Variables (5 для adults 40-69, SCORE2-OP отдельный для ≥70):
+ *   - Age (40-69 для SCORE2, ≥70 для SCORE2-OP)
+ *   - Sex (M / F)
+ *   - Smoking status (current vs not)
+ *   - Systolic BP
+ *   - Non-HDL cholesterol
+ *
+ * Region calibration (4 risk regions Europe):
+ *   - Low-risk (Belgium, France, Ireland, и т.д.)
+ *   - Moderate-risk (Czech Republic, Italy, и т.д.)
+ *   - High-risk (Albania, Bosnia, Romania, и т.д.)
+ *   - Very high-risk (Bulgaria, Russia, Ukraine, Belarus, Egypt, и т.д.)
+ *
+ * Bordik primary audience (RU/UZ) → very high-risk region калькуляция.
+ * См. score2-ru.ts для RU-specific calibration.
+ *
+ * Output: 10-year risk fatal + non-fatal CVD events (%).
+ *
+ * Bands (ESC 2021):
+ *   <50 yrs:
+ *     <2.5%  → low → lifestyle advice
+ *     2.5-7.5% → moderate → consider statin if other risk factors
+ *     ≥7.5%  → high → statin therapy recommended
+ *   50-69 yrs:
+ *     <5%    → low
+ *     5-10%  → moderate
+ *     ≥10%   → high → statin therapy
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *

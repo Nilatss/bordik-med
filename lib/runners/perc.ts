@@ -1,6 +1,38 @@
 // @ts-nocheck
 /**
- * Runner: perc
+ * Runner: perc — Pulmonary Embolism Rule-Out Criteria (Kline)
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    Kline JA, Mitchell AM, Kabrhel C, Richman PB, Courtney DM.
+ *               Clinical criteria to prevent unnecessary diagnostic
+ *               testing in emergency department patients with suspected
+ *               pulmonary embolism. J Thromb Haemost. 2004;2(8):1247-1255.
+ *               doi:10.1111/j.1538-7836.2004.00790.x
+ *   VALIDATION: Singh B, et al. Diagnostic accuracy of the PERC rule:
+ *               systematic review and meta-analysis. Ann Emerg Med.
+ *               2012;59(6):517-520.e1-4. doi:10.1016/j.annemergmed.2011.10.022
+ *
+ * 8 criteria (ALL must be NO для rule-out):
+ *   1. Age <50
+ *   2. Heart rate <100
+ *   3. SpO2 ≥95% on room air
+ *   4. No hemoptysis
+ *   5. No estrogen use (OCP, HRT, pregnancy)
+ *   6. No prior DVT/PE
+ *   7. No unilateral leg swelling
+ *   8. No surgery / trauma в past 4 weeks requiring hospitalisation
+ *
+ * Interpretation:
+ *   ALL 8 negative → PERC negative → PE prevalence <2% — НЕ нужен
+ *     D-dimer / CTPA, безопасно discharge с outpatient follow-up
+ *   ANY 1 positive → PERC positive → продолжай evaluation (D-dimer +
+ *     возможно imaging based on Wells/Geneva)
+ *
+ * Применять ТОЛЬКО при:
+ *   - Low pre-test probability PE (Wells <2 OR Geneva <4)
+ *   - Адекватная clinical gestalt (clinician уверенность <15%)
+ * НЕ ПРИМЕНЯТЬ при high-risk patients (age >50, oncology, и т.д.).
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *
