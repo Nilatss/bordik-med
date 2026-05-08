@@ -1347,6 +1347,15 @@ main:has(.stats-page) {
  * AnimatePresence-mount'ящегося компонента инъектировался не вовремя).
  * Цвет — фирменный синий #2563EB вместо чёрного. */
 @keyframes bordik-spin { to { transform: rotate(360deg); } }
+
+/* P2-PERF-NEW-5 — Skeleton-pulse для loading.tsx route boundaries.
+ * Лёгкая alpha-pulse на ~1.6s — менее агрессивная, чем sk-shimmer
+ * (ICD-10 grid использует shimmer для row-rows, чтобы их визуально
+ * отличать от route-skeleton'ов). */
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
 .bordik-spinner {
   width: 36px;
   height: 36px;
