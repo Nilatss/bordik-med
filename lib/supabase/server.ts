@@ -1,5 +1,12 @@
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
+// P1-CR-5 — Database type определён в lib/database.types.ts (hand-typed,
+// неполный). НЕ применяем как generic к createServerClient, потому что
+// текущий typed scope покрывает только public.* core таблицы;
+// audit.record_version, consent_records, tools_versions ещё не описаны
+// и сломали бы admin/audit, lib/consent. Generic применять прицельно
+// per-call: sb.from<Profile>('profiles'). См. database.types.ts header
+// для plan'а full migration через `supabase gen types`.
 
 /**
  * Server-side Supabase client. Returns `null` when env vars are missing

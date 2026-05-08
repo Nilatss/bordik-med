@@ -1,6 +1,10 @@
 'use client';
 
 import { createBrowserClient } from '@supabase/ssr';
+// P1-CR-5 — Database type доступен в lib/database.types.ts для opt-in
+// per-query типизации (sb.from<Profile>('profiles')). Не применяем как
+// generic ко всему клиенту, чтобы не ломать неописанные таблицы
+// (audit.record_version, consent_records, tools_versions).
 
 /**
  * Browser-side Supabase client.
