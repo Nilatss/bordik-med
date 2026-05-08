@@ -270,6 +270,22 @@ async function geminiCall(prompt: string, expectArray = false): Promise<unknown>
 
   const start = Date.now();
   let lastErr: Error | null = null;
+  // P2-PERF-NEW-13 — DECIDED NOT TO FIX (закрыто 2026-05-09).
+  // Audit предлагал заменить sequential fallback на Promise.race поверх
+  // всех GEMINI_MODELS, чтобы выиграть ~3 s на 429-quota-exhaustion path.
+  // НО конфликтует с P2-NEW-9 (gemini-quota.ts daily cap):
+  //   - sequential: 1 модель = 1 quota tick (success) или 0 + retry (fail).
+  //     Worst case за reservation: 1 reserve + 4 fallback retries = 5 fetch'ей,
+  //     но reserve один раз → 1 quota unit / запрос.
+  //   - parallel race: ВСЕ N моделей дёргаются одновременно. Каждая
+  //     успешная (даже игнорируемая) дает +1 quota unit. На N=4 это
+  //     **×4 daily cap burn** → 50k cap иссякнет за ~12.5k реальных
+  //     запросов вместо 50k.
+  //   - Coordinated abuse через ботнет (см. lib/gemini-quota.ts:5-7)
+  //     при ×4 multiplier пробивает paid tier за часы вместо суток.
+  // Sequential fallback остаётся by design. 3 s регрессия на 429-path
+  // приемлема — это редкий fallback-сценарий, а не hot path.
+  // См.: docs/performance-audit-2026-05.md (Decided NOT to fix table).
   for (const model of GEMINI_MODELS) {
     // Hard total-budget gate: if the next call would push us past the
     // budget, bail with a synthetic 503 instead of risking a 504.
