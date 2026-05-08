@@ -305,9 +305,52 @@ async function geminiCall(prompt: string, expectArray = false): Promise<unknown>
       try {
         parsed = JSON.parse(text);
       } catch {
-        const m = text.match(/```(?:json)?\s*([\s\S]*?)```/);
-        if (m && m[1]) parsed = JSON.parse(m[1]);
-        else throw new Error('gemini-bad-json');
+        // P2-CR-10 — robust dirty-JSON parsing для Gemini.
+        // Прежний код умел только ```json``` fence. Реальные ошибки
+        // моделей включают:
+        //   1. Bare ```...```  без `json` ярлыка
+        //   2. Обрамление JSON pre/postамбулой ("Here is the JSON: {...}")
+        //   3. Лишние смайлы/тильды до/после JSON (cyrillic prompts ловят это часто)
+        //   4. Trailing comma в массивах/объектах (модели любят их генерить)
+        //   5. Single-quoted ключи (заметно реже, но бывает)
+        //
+        // Пробуем по очереди, fail-soft: бросаем 'gemini-bad-json'
+        // только если ВСЕ попытки провалились. log.warn перед throw'ом
+        // чтобы видеть, какой именно паттерн пришёл.
+        const candidates: string[] = [];
+        // 1) fenced block (любой язык-тег)
+        const fenceMatch = text.match(/```(?:[a-zA-Z0-9_-]+)?\s*([\s\S]*?)```/);
+        if (fenceMatch && fenceMatch[1]) candidates.push(fenceMatch[1]);
+        // 2) первый balanced {...} или [...] в строке
+        const objStart = text.search(/[{[]/);
+        if (objStart >= 0) {
+          const objEnd = Math.max(text.lastIndexOf('}'), text.lastIndexOf(']'));
+          if (objEnd > objStart) candidates.push(text.slice(objStart, objEnd + 1));
+        }
+        // 3) raw text как есть (если 1+2 не сработали — иногда parse
+        //    падает только из-за trailing comma)
+        candidates.push(text);
+
+        let success = false;
+        for (const c of candidates) {
+          const cleaned = c
+            // trailing commas: `,]` `,}` → `]` `}` (в array/object)
+            .replace(/,(\s*[}\]])/g, '$1')
+            .trim();
+          try {
+            parsed = JSON.parse(cleaned);
+            success = true;
+            break;
+          } catch { /* try next candidate */ }
+        }
+        if (!success) {
+          log.warn({
+            event: 'gemini_dirty_json',
+            model,
+            preview: text.slice(0, 200).replace(/\s+/g, ' '),
+          });
+          throw new Error('gemini-bad-json');
+        }
       }
       if (expectArray && !Array.isArray(parsed)) {
         throw new Error('gemini-expected-array');

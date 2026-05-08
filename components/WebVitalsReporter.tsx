@@ -49,9 +49,20 @@ import { onLCP, onCLS, onINP, onFCP, onTTFB, type Metric } from 'web-vitals';
 // the actionable signal.
 const HEALTHY_SAMPLE_RATE = 0.05;
 
-function deviceCategory(): 'mobile' | 'desktop' {
+// P3-PERF-NEW-2 — 3-tier device breakpoint вместо binary mobile/desktop.
+// Раньше в Sentry смешивались маленькие телефоны (iPhone SE) и большие
+// планшеты (iPad Pro) под "mobile". p75-LCP на этих устройствах
+// различается в 2-3 раза → агрегированный график даёт fake regression
+// signal. Делим на:
+//   - mobile  (<= 600px) — телефоны
+//   - tablet  (601-1024px) — планшеты, foldables
+//   - desktop (>= 1025px)
+// Breakpoint'ы выровнены с Tailwind sm/md → позже sliceability.
+function deviceCategory(): 'mobile' | 'tablet' | 'desktop' {
   if (typeof window === 'undefined') return 'desktop';
-  return window.matchMedia('(max-width: 768px)').matches ? 'mobile' : 'desktop';
+  if (window.matchMedia('(max-width: 600px)').matches) return 'mobile';
+  if (window.matchMedia('(max-width: 1024px)').matches) return 'tablet';
+  return 'desktop';
 }
 
 function effectiveConnection(): string {
