@@ -11,13 +11,12 @@ import { Virtuoso } from 'react-virtuoso';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight } from '@/components/icons';
 import { useT } from '@/lib/i18n';
-import { useCatalog, type CatalogMetaItem } from '@/lib/catalog-client';
+import { useCatalog } from '@/lib/catalog-client';
 import {
   buildCategoryCounts,
   buildSubcategoryCounts,
   buildCountryCounts,
   countryMatches,
-  primaryCountriesFor,
 } from '@/lib/tool-meta-helpers';
 import { useToolSearch } from '@/lib/use-tool-search';
 import { BulkOfflineDownload } from './BulkOfflineDownload';
@@ -27,51 +26,8 @@ import Highlight from '@/components/ui/Highlight';
 
 import { useAppStore } from '@/lib/store';
 import EmojiOrFlag from '@/components/ui/EmojiOrFlag';
-
-/** Drop-in alias - was imported from lib/tools-catalog. New shape served via JSON. */
-type CatalogTool = CatalogMetaItem;
-
-/* ════════════════════════════════════════════════════════════════
-   Types
-   ════════════════════════════════════════════════════════════════ */
-
-type FilterKey = 'cat' | 'sub' | 'cou' | null;
-
-// Module-scope precomputes (CATEGORY_SORT_KEY, TOOL_SORT_KEY, READY_COUNT)
-// used to live here. They're now derived inside the component via useMemo
-// because the catalog is fetched async via useCatalog() - no module-scope
-// access to the data is possible.
-const EMPTY_CATALOG: readonly CatalogMetaItem[] = Object.freeze([]);
-
-interface FilterOption {
-  value: string;
-  count: number;
-  /** Optional leading glyph (e.g. country flag emoji) rendered before the label. */
-  flag?: string;
-  /** Optional pretty label shown to the user (defaults to `value`). Used to
-      strip internal "N. " numeric prefixes from categories without breaking
-      filter identity. */
-  label?: string;
-}
-
-/** Strips the leading "N. " numeric prefix from a category string. */
-function stripCategoryNumber(label: string): string {
-  return label.replace(/^\d+\.\s*/, '');
-}
-
-/** One logical row in the virtualised list. Three kinds:
- *  - category header  (h2 "Кардиология 42")
- *  - subcategory header (small uppercase pill "ШКАЛЫ · 8")
- *  - row of up to 3 cards
- *
- *  Rows also carry the enclosing category so we can build unique keys even
- *  when the same subcategory name ("Депрессия") occurs in multiple categories.
- */
-type Row =
-  | { kind: 'category'; category: string; count: number; key: string }
-  | { kind: 'subcategory'; category: string; subcategory: string; count: number; key: string }
-  | { kind: 'cards'; category: string; subcategory: string; tools: CatalogTool[]; key: string }
-  | { kind: 'empty'; key: string };
+import type { CatalogTool, FilterKey, FilterOption, Row } from '@/lib/tools-page/types';
+import { stripCategoryNumber, EMPTY_CATALOG, getToolCountries } from '@/lib/tools-page/helpers';
 
 /* ════════════════════════════════════════════════════════════════
    Filter popover - memoised
@@ -312,17 +268,7 @@ interface ToolCardContextValue {
 }
 const ToolCardContext = React.createContext<ToolCardContextValue | null>(null);
 
-// Cache per-tool country tags - parsed once per catalogue entry, reused
-// on every ToolCard re-render. The raw countries string is immutable
-// metadata; no need to re-parse on every render.
-const toolCountriesCache: Record<string, { name: string; flag: string }[]> = Object.create(null);
-function getToolCountries(tool: CatalogTool): { name: string; flag: string }[] {
-  const cached = toolCountriesCache[tool.id];
-  if (cached) return cached;
-  const result = primaryCountriesFor(tool.countries);
-  toolCountriesCache[tool.id] = result;
-  return result;
-}
+// stripCategoryNumber, EMPTY_CATALOG, getToolCountries → lib/tools-page/helpers.ts (P1-CR-3 step 1).
 
 /**
  * Compact favourite-toggle for the card grid. Shares the amber/gold palette
