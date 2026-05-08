@@ -15,75 +15,9 @@ import Dropdown from '@/components/ui/Dropdown';
 // компонента с общей color-логикой для метрик профиля.
 import { ScoreGauge, MetricCard } from './ScoreWidgets';
 import { Row } from './Row';
+import { EditableName } from './EditableName';
 
-/* ═══ Editable display name ═══ */
-function EditableName({ value, onSave }: { value: string; onSave: (v: string) => void }) {
-  const [isEditing, setIsEditing] = useState(false);
-  const [draft, setDraft] = useState(value);
-  const ref = useRef<HTMLInputElement | null>(null);
-
-  useEffect(() => {
-    if (isEditing && ref.current) {
-      ref.current.focus();
-      ref.current.select();
-    }
-  }, [isEditing]);
-
-  const commit = () => {
-    const trimmed = draft.trim();
-    if (trimmed && trimmed !== value) onSave(trimmed);
-    setIsEditing(false);
-  };
-
-  if (isEditing) {
-    return (
-      <input
-        ref={ref}
-        value={draft}
-        onChange={(e) => setDraft(e.target.value)}
-        onBlur={commit}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') commit();
-          if (e.key === 'Escape') { setDraft(value); setIsEditing(false); }
-        }}
-        style={{
-          fontFamily: 'var(--font-display)', fontSize: 16, fontWeight: 600,
-          color: '#1A1A1A',
-          background: '#DFE2E8',
-          border: 'none',
-          borderRadius: 8,
-          padding: '6px 14px',
-          marginBottom: 6,
-          textAlign: 'center',
-          outline: 'none',
-          minWidth: 180,
-          maxWidth: '80%',
-        }}
-      />
-    );
-  }
-
-  return (
-    <button
-      onClick={() => { setDraft(value); setIsEditing(true); }}
-      style={{
-        fontFamily: 'var(--font-display)', fontSize: 16, fontWeight: 600,
-        color: '#1A1A1A', marginBottom: 6,
-        background: 'transparent', border: 'none', padding: '2px 8px',
-        borderRadius: 6, cursor: 'pointer',
-        display: 'inline-flex', alignItems: 'center', gap: 6,
-      }}
-      onMouseEnter={(e) => { e.currentTarget.style.background = '#EEF0F3'; }}
-      onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
-    >
-      {value}
-      <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="#BBB" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
-        <path d="M17 3a2.828 2.828 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
-      </svg>
-    </button>
-  );
-}
-
+// EditableName вынесен в ./EditableName.tsx
 // ICONS + Row вынесены в ./Row.tsx
 
 /* ═══ Email row with validation ═══ */
