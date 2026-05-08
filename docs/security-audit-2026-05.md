@@ -256,7 +256,7 @@ expected schema (валидно через valibot после парсинга J
 | **P2-NEW-5** | `lib/output-guard.ts:84` хранит regex как сырые NUL-байты | `lib/output-guard.ts:84` | Bytes `5B 00 2D 1F 5D` = `[\x00-\x1f]` — функционально работает, но grep видит файл как binary, IDE может ломать, future-merge может «оптимизировать» в `[ -]`. Заменить на ` -` escape. |
 | **P2-NEW-6** | `check-bundle-leaks` не покрывает `GEMINI_API_KEY`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` | `scripts/check-bundle-leaks.mjs` | Прошлый pass 4 P2-SEC-2 — частично сделан. Добавить эти три. |
 | **P2-NEW-7** | Bank questions returned without output-guard | `app/api/diagnostic/route.ts:586-595` | `action='next'` достаёт вопрос из заранее-сгенерированного банка и возвращает без `checkOutput`. Если банк когда-нибудь будет user-editable (admin tool?) — мгновенный stored XSS. Сейчас банк offline-generated → defense-in-depth gap. |
-| **P2-NEW-8** | `next@16.2.3` тянет уязвимый `postcss <8.5.10` (XSS via `</style>`) | `package.json:45` | `npm audit` moderate. `fixAvailable: next@9.3.3` (downgrade — не вариант). Дождаться next 16.x patch с обновлённым postcss. Добавить в backlog с напоминанием через 2 недели. |
+| **P2-NEW-8** | ~~`next@16.2.3` тянет уязвимый `postcss <8.5.10` (XSS via `</style>`)~~ | `package.json:45` | **CLOSED 2026-05-09 — PASSIVE.** Dependabot уже настроен (`.github/dependabot.yml`, weekly schedule, security advisories immediately, groups `next*+react*` PR'ы). Когда Next 16.x patch с обновлённым postcss появится — Dependabot откроет PR автоматически. Manual reminder через 2 недели не нужен; активного monitor'а в backlog не требуется. На дату закрытия `npm audit` показывает: 1 moderate (postcss via next) + 1 high (`fast-uri` — отдельный fix через `npm audit fix`) + 1 high (`xlsx` — см. P1-NEW-4). |
 | **P2-NEW-9** | Нет daily quota counter на Gemini | — | Текущий per-IP/user rate limit — sliding window 1 min. Атакующий с 100 fresh IP = 3000 req/min × 1440 min/day = 4M req/day. Backstop counter в Redis (key: `gemini:daily`, TTL 24h, hard cap 50k) — 30 строк кода. |
 | **P2-NEW-10** | CSP содержит `'unsafe-inline'` в style-src + script-src fallback | `proxy.ts:90-108` | Acknowledged trade-off: nonce не применяется к React inline-styles. Real Google-tier (`strict-dynamic` + nonce-only) требует миграции на CSS-in-JS-with-nonce или внешний CSS only. Большой rewrite — ставить в долгосрочный roadmap. |
 | **P2-NEW-11** | `editor_role_of()` без `STABLE`, ряд RLS-policies используют bare `auth.uid()` | `supabase/schema.sql:81,85,90,95,100; content-schema.sql:181-183` | Pass 4 P1-SEC-5 / P2-SEC-3 — статус ❌. Подтвердить, применён ли `rls-hardening.sql` в prod (см. P1-NEW-3). Если нет — производительность RLS x2-x5 хуже + кэш-misses. |
@@ -349,13 +349,13 @@ expected schema (валидно через valibot после парсинга J
 
 **+ итого: ~1-2 рабочих дня.**
 
-### Этот месяц (P2-NEW-1, P2-NEW-7, P2-NEW-8, P3, инфра)
+### Этот месяц (P2-NEW-1, P2-NEW-7, ~~P2-NEW-8~~, P3, инфра)
 
 15. **P2-NEW-1** `/api/feedback`: добавить `assertSameOrigin` +
     Content-Length pre-check + соображения о добавлении auth gate /
     Cloudflare Turnstile для file-uploads.
 16. **P2-NEW-7** defensive `checkOutput` на bank questions.
-17. **P2-NEW-8** мониторить релизы Next, обновить когда patch выйдет.
+17. ~~**P2-NEW-8** мониторить релизы Next, обновить когда patch выйдет.~~ **CLOSED 2026-05-09 — PASSIVE** (Dependabot weekly + security-advisory PR делают это сами; см. §4 таблица).
 18. **P3-NEW-2** `audit.events` таблица + триггеры.
 19. **P3-NEW-4** `set search_path = ''` во всех SECURITY DEFINER.
 20. **OWASP ZAP baseline** в CI на preview URL.
