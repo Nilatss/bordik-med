@@ -44,6 +44,10 @@ export const ERR = {
 
   // Domain
   bank_corrupted: 'bank-corrupted',
+  bank_unavailable: 'bank-unavailable',
+  test_complete: 'test-complete',
+  empty_input: 'empty-input',
+  invalid_input: 'invalid-input',
   not_found: 'not-found',
   conflict: 'conflict',
 

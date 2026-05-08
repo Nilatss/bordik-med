@@ -1,5 +1,4 @@
-import { NextResponse } from 'next/server';
-import { withSameOrigin, apiError } from '@/lib/api-helpers';
+import { withSameOrigin, apiError, apiOk } from '@/lib/api-helpers';
 import { log } from '@/lib/log';
 
 /**
@@ -44,25 +43,22 @@ export async function POST(req: Request) {
   try {
     form = await req.formData();
   } catch {
-    return NextResponse.json({ ok: false, error: 'bad-form' }, { status: 400 });
+    return apiError('bad-form', 400);
   }
 
   const rawText = String(form.get('text') ?? '').trim();
   if (!rawText) {
-    return NextResponse.json({ ok: false, error: 'empty-text' }, { status: 400 });
+    return apiError('empty-text', 400);
   }
   const text = rawText.slice(0, MAX_TEXT_LEN);
 
   const files = form.getAll('file').filter((f): f is File => f instanceof File);
   if (files.length > MAX_FILES) {
-    return NextResponse.json({ ok: false, error: 'too-many-files' }, { status: 400 });
+    return apiError('too-many-files', 400);
   }
   for (const f of files) {
     if (f.size > MAX_FILE_BYTES) {
-      return NextResponse.json(
-        { ok: false, error: 'file-too-large', name: f.name },
-        { status: 400 },
-      );
+      return apiError('file-too-large', 400, { name: f.name });
     }
   }
 
@@ -103,17 +99,14 @@ export async function POST(req: Request) {
         status: r.status,
         // body НЕ логируем — может содержать sensitive bot-state
       });
-      return NextResponse.json(
-        { ok: false, error: 'tg-send-failed', status: r.status },
-        { status: 502 },
-      );
+      return apiError('tg-send-failed', 502, { status: r.status });
     }
   } catch (err) {
     log.error({
       event: 'feedback_tg_send_threw',
       message: (err as Error).message ?? 'unknown',
     });
-    return NextResponse.json({ ok: false, error: 'tg-network' }, { status: 502 });
+    return apiError('tg-network', 502);
   }
 
   // 2. Attach each file as a separate Telegram document (simpler and more
@@ -147,7 +140,7 @@ export async function POST(req: Request) {
     }
   }
 
-    return NextResponse.json({ ok: true });
+    return apiOk();
   });
 }
 

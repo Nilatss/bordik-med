@@ -8,6 +8,7 @@ import { getSupabaseServerClient } from '@/lib/supabase/server';
 import { isOutputSafe as isOutputSafeStrict } from '@/lib/output-guard';
 import { assertSameOrigin } from '@/lib/origin-check';
 import { log } from '@/lib/log';
+import { apiError, apiOk } from '@/lib/api-errors';
 
 // Rate limits are enforced via lib/rate-limit.identifyAndLimit, which
 // uses Upstash sliding-window when UPSTASH_REDIS_REST_URL is set and
@@ -605,6 +606,8 @@ async function postImpl(req: Request): Promise<NextResponse> {
 
   const decision = await identifyAndLimit(req, userId);
   if (!decision.ok) {
+    // P1-CR-8 — rate-limited использует custom headers, поэтому
+    // оставляем raw NextResponse (apiError не принимает headers).
     return NextResponse.json(
       { ok: false, error: 'rate-limited', retryAfter: decision.retryAfter },
       { status: 429, headers: decision.headers },
@@ -615,21 +618,20 @@ async function postImpl(req: Request): Promise<NextResponse> {
   try {
     raw = await req.json();
   } catch {
-    return NextResponse.json({ ok: false, error: 'bad-json' }, { status: 400 });
+    return apiError('bad-json', 400);
   }
   const parsed = v.safeParse(PostBodySchema, raw);
   if (!parsed.success) {
-    return NextResponse.json(
-      { ok: false, error: 'invalid-input', issues: parsed.issues.slice(0, 3).map((i) => i.message) },
-      { status: 400 },
-    );
+    return apiError('invalid-input', 400, {
+      issues: parsed.issues.slice(0, 3).map((i) => i.message),
+    });
   }
   const action = parsed.output.action;
   const history = parsed.output.history;
 
   if (action === 'next') {
     if (history.length >= TOTAL_QUESTIONS) {
-      return NextResponse.json({ ok: false, error: 'test-complete' }, { status: 400 });
+      return apiError('test-complete', 400);
     }
     // Pick from the pre-generated question bank instead of calling
     // Gemini per question. Eliminates the runtime API dependency that
@@ -641,10 +643,9 @@ async function postImpl(req: Request): Promise<NextResponse> {
       // re-introduce the rate-limit failure mode we're trying to
       // eliminate, so we return an honest error instead.
       log.error({ event: 'question_bank_empty' });
-      return NextResponse.json({ ok: false, error: 'bank-unavailable' }, { status: 503 });
+      return apiError('bank-unavailable', 503);
     }
-    return NextResponse.json({
-      ok: true,
+    return apiOk({
       question: picked.question,
       options: picked.options,
       correctIndex: picked.correctIndex,
@@ -658,7 +659,7 @@ async function postImpl(req: Request): Promise<NextResponse> {
   if (action === 'finalize') {
     const modules = parsed.output.modules ?? [];
     if (history.length === 0 || modules.length === 0) {
-      return NextResponse.json({ ok: false, error: 'empty-input' }, { status: 400 });
+      return apiError('empty-input', 400);
     }
     // Try Gemini first for the personalised recommendation. If it's
     // down / over quota / wrong shape, fall through to a rule-based
@@ -678,12 +679,11 @@ async function postImpl(req: Request): Promise<NextResponse> {
       };
       if (!f.profession || !Array.isArray(f.recommendedModuleIds)) {
         log.warn({ event: 'finalize_invalid_shape_falling_back' });
-        return NextResponse.json({ ok: true, ...ruleBasedFinalize(history, modules) });
+        return apiOk(ruleBasedFinalize(history, modules));
       }
       const validIds = new Set(modules.map((m) => m.id));
       const cleanIds = f.recommendedModuleIds.filter((id) => validIds.has(id)).slice(0, 6);
-      return NextResponse.json({
-        ok: true,
+      return apiOk({
         profession: f.profession,
         professionRationale: f.professionRationale ?? '',
         level: (f.level === 'basic' || f.level === 'advanced') ? f.level : 'intermediate',
@@ -697,9 +697,9 @@ async function postImpl(req: Request): Promise<NextResponse> {
       log.warn({ event: 'finalize_ai_failed_falling_back', message: msg.slice(0, 200) });
       // Never leak the AI failure to the user — synthesise a
       // reasonable recommendation from the answer history.
-      return NextResponse.json({ ok: true, ...ruleBasedFinalize(history, modules) });
+      return apiOk(ruleBasedFinalize(history, modules));
     }
   }
 
-  return NextResponse.json({ ok: false, error: 'unknown-action' }, { status: 400 });
+  return apiError('unknown-action', 400);
 }
