@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: pediatric-dose — Педиатрические дозы препаратов.
  *
@@ -106,7 +105,7 @@ const runner: CalculatorTool = {
 
     const [drugId, indIdxStr] = drugInd.split('|');
     const drug = data.drugs.find((d) => d.id === drugId);
-    const indIdx = parseInt(indIdxStr, 10);
+    const indIdx = parseInt(indIdxStr ?? '0', 10);
     const ind = drug?.indications[indIdx];
 
     if (!drug || !ind) {

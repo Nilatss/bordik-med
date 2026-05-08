@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: cochrane — Cochrane Library (systematic reviews) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -65,11 +64,11 @@ const runner: CalculatorTool = {
       overview: 'Overview of reviews — synthesis of existing systematic reviews (often for clinical guidelines).',
     };
     return {
-      value: groups[t],
+      value: groups[t]!,
       unit: 'Cochrane',
       color: '#6B7280',
-      interpretation: `Cochrane ${r}: ${groups[t]}`,
-      details: `Cochrane Review Group: ${groups[t]}\n\nТип обзора: ${r}\n${types[r]}\n\nPICO framework (для intervention reviews):\n- Population — пациенты/участники\n- Intervention — вмешательство\n- Comparator — контроль (placebo / standard care / other intervention)\n- Outcome — primary / secondary исходы\n\nGRADE certainty of evidence: High / Moderate / Low / Very Low — на основе risk of bias, inconsistency, indirectness, imprecision, publication bias.\n\nФормат Cochrane review:\n1. Plain language summary\n2. Abstract (structured)\n3. Background\n4. Objectives\n5. Methods (+ protocol pre-registered)\n6. Results (PRISMA flow, forest plots)\n7. Discussion\n8. Authors' conclusions\n9. Summary of findings (SoF) tables с GRADE`,
+      interpretation: `Cochrane ${r}: ${groups[t]!}`,
+      details: `Cochrane Review Group: ${groups[t]!}\n\nТип обзора: ${r}\n${types[r] ?? ''}\n\nPICO framework (для intervention reviews):\n- Population — пациенты/участники\n- Intervention — вмешательство\n- Comparator — контроль (placebo / standard care / other intervention)\n- Outcome — primary / secondary исходы\n\nGRADE certainty of evidence: High / Moderate / Low / Very Low — на основе risk of bias, inconsistency, indirectness, imprecision, publication bias.\n\nФормат Cochrane review:\n1. Plain language summary\n2. Abstract (structured)\n3. Background\n4. Objectives\n5. Methods (+ protocol pre-registered)\n6. Results (PRISMA flow, forest plots)\n7. Discussion\n8. Authors' conclusions\n9. Summary of findings (SoF) tables с GRADE`,
       actions: [
         'Открыть https://www.cochranelibrary.com/ (CDSR = Cochrane Database of Systematic Reviews)',
         'Поиск по термину + filter Topic / Review Group',

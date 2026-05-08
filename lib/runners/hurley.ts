@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: hurley - Hurley staging for hidradenitis suppurativa */
 import type { CalculatorTool } from '../tools-runners';
 
@@ -37,9 +36,9 @@ const runner: CalculatorTool = {
     return {
       value: `Stage ${stage}`,
       unit: '',
-      interpretation: bands[s - 1],
-      color: colors[s - 1],
-      details: descriptions[s - 1],
+      interpretation: bands[s - 1] ?? '',
+      color: colors[s - 1] ?? '#1A1A1A',
+      details: descriptions[s - 1] ?? '',
       actions,
       caveats: [
         'Hurley — статическая шкала, не подходит для мониторинга ответа на терапию',

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: esc-nste
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
@@ -102,7 +101,7 @@ const runner: CalculatorTool = {
             const t0 = Number(v.baseline);
             const t1 = Number(v.repeat);
             const delta = Math.abs(t1 - t0);
-            const table = {
+            const table: Record<string, Record<string, { roSingle: number; roAny: number; roDelta: number; riSingle: number; riDelta: number }>> = {
                 elecsys: {
                     '1h': {
                         roSingle: 5,
@@ -168,7 +167,7 @@ const runner: CalculatorTool = {
                     }
                 }
             };
-            const c = table[assay][algo];
+            const c = table[assay]![algo]!;
             let zone;
             let interpretation = '', color = '', details = '';
             let actions: string[] = [];

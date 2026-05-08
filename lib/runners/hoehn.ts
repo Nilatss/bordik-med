@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: hoehn
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
@@ -108,8 +107,8 @@ const runner: CalculatorTool = {
             return {
                 value: String(s),
                 unit: 'H&Y',
-                interpretation: map[s],
-                color: colors[s],
+                interpretation: map[s] ?? '',
+                color: colors[s] ?? '#1A1A1A',
                 details,
                 actions,
                 caveats: [

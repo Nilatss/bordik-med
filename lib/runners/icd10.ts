@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: icd10 — WHO ICD-10 */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -46,7 +45,7 @@ const runner: CalculatorTool = {
     };
     const e = map[ch]!;
     return {
-      value: e.title.split(' ')[0],
+      value: e.title.split(' ')[0] ?? '',
       unit: 'ICD-10',
       color: '#6B7280',
       interpretation: `ICD-10: ${e.title}`,

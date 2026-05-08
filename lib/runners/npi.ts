@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: npi
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
@@ -1011,7 +1010,7 @@ const runner: CalculatorTool = {
             ];
             let total = 0, distress = 0;
             const breakdown = [];
-            const nameMap = {
+            const nameMap: Record<string, string> = {
                 delusions: 'Бред',
                 hallucinations: 'Галлюцинации',
                 agitation: 'Ажитация',
@@ -1034,7 +1033,7 @@ const runner: CalculatorTool = {
                 distress += di;
                 if (sub > 0) {
                     breakdown.push({
-                        term: nameMap[d],
+                        term: nameMap[d] ?? '',
                         desc: `F×S = ${sub} · дистресс ${di}`
                     });
                 }

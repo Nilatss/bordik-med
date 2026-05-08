@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: mrs — Modified Rankin Scale (Stroke Disability)
  *
@@ -138,8 +137,8 @@ const runner: CalculatorTool = {
             return {
                 value: String(s),
                 unit: 'mRS',
-                interpretation: desc[s],
-                color: colors[s],
+                interpretation: desc[s] ?? '',
+                color: colors[s] ?? '#1A1A1A',
                 details,
                 actions,
                 caveats: [

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: bpi
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
@@ -190,7 +189,7 @@ const runner: CalculatorTool = {
       }
     ],
     compute: (v)=>{
-            const clamp = (x)=>Math.max(0, Math.min(10, Number(x) || 0));
+            const clamp = (x: number)=>Math.max(0, Math.min(10, Number(x) || 0));
             const worst = clamp(Number(v.worst));
             const least = clamp(Number(v.least));
             const avg = clamp(Number(v.average));

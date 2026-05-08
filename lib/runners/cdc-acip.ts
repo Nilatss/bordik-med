@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: cdc-acip
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
@@ -47,7 +46,7 @@ const runner: CalculatorTool = {
     ],
     compute: (v)=>{
             const cohort = String(v.cohort);
-            const schedules = {
+            const schedules: Record<string, { value: string; details: string; actions: string[] }> = {
                 infant: {
                     value: 'Младенцы 0-18 мес',
                     details: 'Рутинный график иммунизации младенцев согласно ACIP 2024. Плюс гриппозная вакцина ежегодно с 6 мес; COVID-19 по возрастным рекомендациям.',

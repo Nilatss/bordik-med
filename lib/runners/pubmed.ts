@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: pubmed — PubMed / MEDLINE search syntax */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -40,7 +39,7 @@ const runner: CalculatorTool = {
     };
     const e = map[t]!;
     return {
-      value: e.syntax.split(' · ')[0] || e.syntax.split('.')[0],
+      value: (e.syntax.split(' · ')[0] || e.syntax.split('.')[0]) ?? '',
       unit: 'PubMed',
       color: '#6B7280',
       interpretation: `PubMed: ${t}`,

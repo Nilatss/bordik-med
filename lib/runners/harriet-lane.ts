@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: harriet-lane */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,
@@ -31,7 +30,7 @@ const runner: CalculatorTool = {
       hint: 'Вес в кг (без одежды)',
       label: 'Масса тела (кг)',
       type: 'number',
-      placeholder: 'кг',
+      unit: 'кг',
     },
     {
       id: 'indication',

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: icd10-pcs — ICD-10-PCS (Procedure Coding System, USA) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -70,7 +69,7 @@ const runner: CalculatorTool = {
     };
     const e = map[s]!;
     return {
-      value: e.example.split(' — ')[0],
+      value: e.example.split(' — ')[0] ?? '',
       unit: 'ICD-10-PCS',
       color: '#6B7280',
       interpretation: `ICD-10-PCS раздел ${s}: ${e.name}`,

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: lefort — Le Fort classification of maxillary fractures */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -50,11 +49,11 @@ const runner: CalculatorTool = {
     const severity = severityMap[level]!;
     const color = severity === 1 ? '#F59E0B' : severity === 2 ? '#EF4444' : '#B91C1C';
     return {
-      value: names[level],
+      value: names[level]!,
       unit: 'Le Fort',
       color,
-      interpretation: `${names[level]} — ${displacement === 'severe' ? 'ORIF показан' : 'оценить ORIF vs closed reduction'}`,
-      details: `Уровень: ${names[level]}\nХирургический доступ: ${approaches[level]}\n\nLe Fort I — горизонт через верхнечелюстную пазуху, отделяет альвеолярный отросток.\nLe Fort II — пирамидальный, через нос, медиальную стенку орбиты, Zm-sutures.\nLe Fort III — полное разобщение лица от черепа через nasofrontal + zygomaticofrontal.`,
+      interpretation: `${names[level]!} — ${displacement === 'severe' ? 'ORIF показан' : 'оценить ORIF vs closed reduction'}`,
+      details: `Уровень: ${names[level]!}\nХирургический доступ: ${approaches[level]!}\n\nLe Fort I — горизонт через верхнечелюстную пазуху, отделяет альвеолярный отросток.\nLe Fort II — пирамидальный, через нос, медиальную стенку орбиты, Zm-sutures.\nLe Fort III — полное разобщение лица от черепа через nasofrontal + zygomaticofrontal.`,
       actions: [
         'CT с 3D reconstruction (тонкие срезы 1 мм)',
         'Проверка прикуса до и после ORIF (MMF intraop)',

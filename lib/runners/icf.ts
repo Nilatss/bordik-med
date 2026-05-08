@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: icf — WHO International Classification of Functioning */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,
@@ -60,7 +59,7 @@ const runner: CalculatorTool = {
     };
     const e = map[d]!;
     return {
-      value: e.example.split(' ')[0],
+      value: e.example.split(' ')[0] ?? '',
       unit: 'ICF',
       color: '#6B7280',
       interpretation: `ICF component ${d}: ${e.name}`,

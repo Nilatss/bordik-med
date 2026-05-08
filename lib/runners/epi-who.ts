@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: epi-who
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
@@ -47,7 +46,7 @@ const runner: CalculatorTool = {
     ],
     compute: (v)=>{
             const country = String(v.country);
-            const schedules = {
+            const schedules: Record<string, { value: string; details: string; actions: string[] }> = {
                 who: {
                     value: 'WHO EPI (базовая схема)',
                     details: 'Expanded Programme on Immunization (WHO, с 1974). Минимальный базовый набор для всех стран-членов ВОЗ. Конкретные возрастные интервалы адаптируются национально.',
