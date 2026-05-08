@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: hiv-who — WHO HIV clinical staging 1-4 + CD4 */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

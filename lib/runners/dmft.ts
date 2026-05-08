@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: dmft — DMFT/dmft index (WHO caries severity) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,

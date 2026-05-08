@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: nafld-fs — NAFLD Fibrosis Score */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

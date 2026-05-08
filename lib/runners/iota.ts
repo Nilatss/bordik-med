@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: iota - оценка придаточных образований (IOTA Simple Rules, ADNEX, RMI, ROMA) */
 import type {
   CalculatorTool,

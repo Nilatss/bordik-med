@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: trali - TRALI / TACO (ISBT 2019) differential diagnosis */
 import type { CalculatorTool } from '../tools-runners';
 

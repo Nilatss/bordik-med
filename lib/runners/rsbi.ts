@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: rsbi - Rapid Shallow Breathing Index (Yang-Tobin 1991)
  */

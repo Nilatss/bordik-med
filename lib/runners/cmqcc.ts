@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: cmqcc - CMQCC / AWHONN PPH risk assessment */
 import type {
   CalculatorTool,

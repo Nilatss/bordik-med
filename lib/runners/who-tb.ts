@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: who-tb — WHO TB treatment regimens */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

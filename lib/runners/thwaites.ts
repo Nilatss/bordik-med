@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: thwaites — TB meningitis vs bacterial meningitis */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: start-civ - START / JumpSTART / SALT civilian MCI triage */
 import type {
   CalculatorTool,

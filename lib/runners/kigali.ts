@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: kigali - Kigali modification of the Berlin ARDS definition (Riviello 2016)
  * Низкоресурсный вариант: SpO₂/FiO₂ вместо PaO₂/FiO₂, УЗИ лёгких + рентген, без PEEP.

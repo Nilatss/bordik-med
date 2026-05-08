@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: stan - STAN ST-analysis плодовой ЭКГ (Neoventa; Amer-Wåhlin 2001) */
 import type {
   CalculatorTool,

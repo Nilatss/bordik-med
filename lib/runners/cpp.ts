@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: cpp - Cerebral Perfusion Pressure (BTF 2016) */
 import type { CalculatorTool } from '../tools-runners';
 

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: hellp - HELLP Mississippi / Tennessee */
 import type {
   CalculatorTool,

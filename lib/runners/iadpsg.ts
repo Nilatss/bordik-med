@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: iadpsg - диагностика ГСД (IADPSG / WHO 2013 / Carpenter-Coustan / NICE / РОАГ) */
 import type {
   CalculatorTool,

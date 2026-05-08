@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: who-malaria — WHO Severe Malaria criteria (2015) */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: fib4-lab — FIB-4 laboratory view */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

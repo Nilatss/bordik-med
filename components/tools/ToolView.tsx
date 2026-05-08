@@ -219,8 +219,10 @@ export default function ToolView({ toolId }: { toolId: string }) {
         // числовую строку, которая не finite (Infinity/-Infinity/NaN), —
         // подменяем на N/A. Это страховка для раннеров, у которых ещё нет
         // явного guard'а в compute() (см. AUDIT_REPORT P0-1, GFR-формулы).
-        if (r?.value && /^-?(?:\d|Infinity|NaN)/i.test(r.value)) {
-          const n = parseFloat(r.value);
+        // value теперь может быть string|number (interface widening, P0-CR-1)
+        const valueStr = typeof r?.value === 'number' ? String(r.value) : r?.value;
+        if (valueStr && /^-?(?:\d|Infinity|NaN)/i.test(valueStr)) {
+          const n = parseFloat(valueStr);
           if (!Number.isFinite(n)) {
             return {
               ...r,
@@ -781,7 +783,13 @@ function ResultCard({ result }: { result: CalculatorResult }) {
       {/* Visual band scale */}
       {scale && scale.segments.length > 0 && (
         <div style={{ marginTop: 20 }}>
-          <ResultScale segments={scale.segments} current={scale.current} unit={scale.unit ?? unit} />
+          {/* P0-CR-1 interface widening — scale.current опционально, fallback
+              на scale.value (legacy alias некоторых runners) или 0. */}
+          <ResultScale
+            segments={scale.segments}
+            current={scale.current ?? scale.value ?? 0}
+            unit={scale.unit ?? unit}
+          />
         </div>
       )}
 
@@ -794,11 +802,14 @@ function ResultCard({ result }: { result: CalculatorResult }) {
         </ResultSection>
       )}
 
-      {/* Recommended next actions */}
-      {actions && actions.length > 0 && (
+      {/* Recommended next actions. P0-CR-1: filter null/undefined items
+          (interface widening разрешает (string|null|undefined)[]). */}
+      {actions && actions.filter((a): a is string => typeof a === 'string' && a.length > 0).length > 0 && (
         <ResultSection title={t('tool.section.actions')} icon="arrow">
           <ul style={{ margin: 0, paddingLeft: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 6 }}>
-            {actions.map((a, i) => (
+            {actions
+              .filter((a): a is string => typeof a === 'string' && a.length > 0)
+              .map((a, i) => (
               <li key={i} style={{
                 display: 'flex', gap: 8, alignItems: 'flex-start',
                 color: '#374151', fontSize: 13.5, lineHeight: 1.5,

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: can-cspine - Canadian C-Spine Rule (Stiell 2001) + NEXUS (Hoffman 2000) */
 import type { CalculatorTool } from '../tools-runners';
 

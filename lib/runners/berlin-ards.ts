@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: berlin-ards - Berlin Definition of ARDS (Ranieri 2012) + Global 2023
  */

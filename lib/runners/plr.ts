@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: plr - Passive Leg Raise (Monnet 2016) */
 import type { CalculatorTool } from '../tools-runners';
 

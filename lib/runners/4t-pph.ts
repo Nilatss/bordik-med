@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: 4t-pph - 4 T причины послеродового кровотечения */
 import type {
   CalculatorTool,

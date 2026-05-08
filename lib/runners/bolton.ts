@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: bolton — Bolton tooth-size analysis (anterior + overall ratio) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,

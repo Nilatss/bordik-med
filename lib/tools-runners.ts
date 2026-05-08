@@ -100,16 +100,25 @@ export interface ResultScaleSegment {
 export interface ResultExtras {
   /** Longer narrative shown under the headline */
   details?: string | undefined;
-  /** Bulleted next steps / clinical recommendations */
-  actions?: string[] | undefined;
+  /**
+   * Bulleted next steps / clinical recommendations.
+   * Allow `null | undefined` items — many runners conditionally include
+   * actions and may emit null for "skip this slot". Consumers filter.
+   */
+  actions?: (string | null | undefined)[] | undefined;
   /** Free-form differential / mnemonic unpack (e.g. MUDPILES) */
   differential?: { term: string; desc: string }[] | undefined;
   /** Caveats, pitfalls, when the number is unreliable */
   caveats?: string[] | undefined;
-  /** Horizontal band scale. `current` is the numeric position for the marker. */
+  /**
+   * Horizontal band scale. `current` is the numeric position for the marker.
+   * `value` is an alias accepted as backward-compat — некоторые runners
+   * исторически писали `value` вместо `current`.
+   */
   scale?: {
     segments: ResultScaleSegment[];
-    current: number;
+    current?: number | undefined;
+    value?: number | undefined;
     unit?: string | undefined;
   } | undefined;
   /** Related tools shown as small navigation chips */
@@ -122,10 +131,18 @@ export interface ResultExtras {
 }
 
 export interface CalculatorResult extends ResultExtras {
-  value: string;
+  /**
+   * Headline value. Most runners emit string ("12.4 mg/dL"), but некоторые
+   * emit raw number — interface accepts both. UI coerces к string.
+   */
+  value: string | number;
   unit?: string | undefined;
   interpretation: string;
-  color: string;
+  /**
+   * Result tint colour. Optional — некоторые runners опускают, UI имеет
+   * default neutral.
+   */
+  color?: string | undefined;
 }
 
 export interface CalculatorTool {
@@ -140,6 +157,14 @@ export interface CalculatorTool {
   presets?: Preset[];
   /** Countries / regions where the tool is commonly used */
   countries?: string;
+  /** Tool-level caveats shown в результате regardless of band */
+  caveats?: string[];
+  /** Related tool IDs shown as navigation chips */
+  related?: { id: string; title: string }[];
+  /**
+   * Related courses. Mirror of ScoreTool.relatedCourses. Max 3.
+   */
+  relatedCourses?: { id: string; title: string }[];
 }
 
 export type ToolRunner = ScoreTool | CalculatorTool;

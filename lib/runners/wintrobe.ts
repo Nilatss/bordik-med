@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: wintrobe — Wintrobe indices (MCV, MCH, MCHC) */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

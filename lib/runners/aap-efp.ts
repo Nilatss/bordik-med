@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: aap-efp — AAP/EFP 2017/2018 periodontitis classification */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,

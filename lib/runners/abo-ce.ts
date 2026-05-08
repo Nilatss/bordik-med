@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: abo-ce — ABO Cast-Radiograph Evaluation (CR-Eval) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,

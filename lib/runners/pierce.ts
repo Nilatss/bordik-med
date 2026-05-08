@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: pierce - fullPIERS / miniPIERS (Payne 2011/2014) */
 import type {
   CalculatorTool,

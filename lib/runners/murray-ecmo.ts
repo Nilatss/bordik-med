@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: murray-ecmo - Murray LIS в контексте показаний к VV-ECMO (CESAR / EOLIA)
  * Базовая шкала повторяет Murray 1988; здесь - интерпретация отбора на ECMO.

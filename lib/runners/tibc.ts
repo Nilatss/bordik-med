@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: tibc — Iron study panel (Iron + TIBC + Ferritin + TSAT) */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

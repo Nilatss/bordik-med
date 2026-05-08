@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: cap-scores — PSI/PORT + ATS minor + SCAP for CAP */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

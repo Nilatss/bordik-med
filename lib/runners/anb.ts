@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: anb — ANB cephalometric angle (Steiner) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,

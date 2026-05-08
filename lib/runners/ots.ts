@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: ots - Ocular Trauma Score (6-month visual prognosis) */
 import type { CalculatorTool } from '../tools-runners';
 

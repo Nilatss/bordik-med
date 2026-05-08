@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: rox - ROX Index (Roca 2019) for HFNC failure prediction
  */

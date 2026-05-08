@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: angle — Angle's malocclusion classification */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,

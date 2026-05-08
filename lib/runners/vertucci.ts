@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: vertucci — Vertucci root canal classification */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,

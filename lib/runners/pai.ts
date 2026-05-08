@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: pai — Periapical Index (PAI) for apical periodontitis */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,

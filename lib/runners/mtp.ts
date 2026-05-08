@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: mtp - Massive Transfusion Protocol 1:1:1 (PROPPR 2015) */
 import type { CalculatorTool } from '../tools-runners';
 

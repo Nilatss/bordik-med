@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: bis - Multimodal neuroprognostication post-cardiac-arrest (ERC/ESICM 2021) */
 import type { CalculatorTool } from '../tools-runners';
 

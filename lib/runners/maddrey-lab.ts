@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: maddrey-lab — Maddrey DF laboratory panel for alcoholic hepatitis */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

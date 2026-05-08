@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: guci — Göteborg University Cirrhosis Index
  *

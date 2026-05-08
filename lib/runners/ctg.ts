@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: ctg - интерпретация КТГ (FIGO 2015 / NICHD 2008) */
 import type {
   CalculatorTool,

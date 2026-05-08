@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: acog-preeclampsia - критерии преэклампсии (ACOG 2020, ISSHP 2018/2021) */
 import type {
   CalculatorTool,

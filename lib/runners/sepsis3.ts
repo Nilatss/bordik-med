@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: sepsis3 — Sepsis-3 Definition (Singer 2016) screening tool
  *

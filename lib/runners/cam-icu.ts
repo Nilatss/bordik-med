@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: cam-icu — Confusion Assessment Method for ICU (Ely 2001)
  *

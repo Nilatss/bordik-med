@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: bop — Bleeding on Probing (%) */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: fibrotest — FibroTest / ActiTest (BioPredictive) */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

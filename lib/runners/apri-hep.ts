@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: apri-hep — APRI + FIB-4 + NAFLD Fibrosis Score */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: rap-prx - PRx/RAP autoregulation index (Czosnyka 1997) */
 import type { CalculatorTool } from '../tools-runners';
 

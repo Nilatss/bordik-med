@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: nigrovic — Bacterial Meningitis Score for children */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

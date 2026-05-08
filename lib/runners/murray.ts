@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: murray - Murray Lung Injury Score (1988)
  */

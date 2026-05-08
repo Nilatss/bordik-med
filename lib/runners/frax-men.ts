@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: frax-men - 10-летний риск остеопоротического перелома (FRAX, Kanis 2008) */
 import type {
   CalculatorTool,

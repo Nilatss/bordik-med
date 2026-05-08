@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: sflt - sFlt-1/PlGF ratio (Verlohren 2010, PROGNOSIS 2016) */
 import type {
   CalculatorTool,

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: lund-rosner - Lund vs Rosner vs BTF neurointensive protocols */
 import type { CalculatorTool } from '../tools-runners';
 

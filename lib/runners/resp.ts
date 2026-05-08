@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: resp - RESP Score (Schmidt 2014) для VV-ECMO при тяжёлом ARDS
  */

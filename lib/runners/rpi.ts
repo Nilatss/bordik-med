@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: rpi — Reticulocyte Production Index */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

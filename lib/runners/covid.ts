@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: covid — 4C Mortality + ISARIC + WHO clinical progression */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

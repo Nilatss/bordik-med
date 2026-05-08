@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: vacs — Veterans Aging Cohort Study index (HIV) */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

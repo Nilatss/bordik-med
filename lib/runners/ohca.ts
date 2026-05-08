@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: ohca - OHCA score (Adrie 2006) for post-cardiac-arrest neuroprognosis */
 import type { CalculatorTool } from '../tools-runners';
 

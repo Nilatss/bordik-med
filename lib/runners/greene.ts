@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: greene - шкалы климактерия (Greene / Kupperman / MRS) */
 import type {
   CalculatorTool,

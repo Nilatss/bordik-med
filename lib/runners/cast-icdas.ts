@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: cast-icdas — ICDAS II + CAST caries assessment */
 import type {
   CalculatorTool, ToolInput, Preset, CalculatorResult, ResultExtras, ResultScaleSegment,

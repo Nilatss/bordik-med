@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Runner: rifle - RIFLE / AKIN / KDIGO 2012 для острого повреждения почек (AKI)
  */

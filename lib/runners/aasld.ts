@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: aasld — AASLD HCC surveillance recommendations */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

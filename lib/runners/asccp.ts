@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: asccp - риск-ориентированное ведение (ASCCP 2019, Perkins) */
 import type {
   CalculatorTool,

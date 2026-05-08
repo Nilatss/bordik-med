@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: mccabe — McCabe-Jackson prognosis classification */
 import type {
   CalculatorTool, ToolInput, ScoreBand, Preset,

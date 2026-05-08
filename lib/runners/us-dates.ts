@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Runner: us-dates - УЗИ-датировка беременности (Hadlock) */
 import type {
   CalculatorTool,
