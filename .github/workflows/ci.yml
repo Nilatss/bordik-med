@@ -47,9 +47,11 @@ jobs:
 
       - name: ESLint
         # P1-CR-1 — flat-config (eslint.config.mjs), Next 16 + ESLint 9.
-        # max-warnings 200 — текущий бэклог ~114 warnings, снижаем
-        # планомерно. На каждом коммите CI не даёт расти выше потолка.
-        run: npx eslint . --max-warnings 200
+        # max-warnings 2000 — потолок поднят после P1-CR-4 forbid-dom-props
+        # включения (ловит 1112 inline-style случаев + ~100 legacy
+        # warnings). По мере миграции inline → Tailwind потолок снижается.
+        # Цель: 200 после полной P1-CR-4 миграции.
+        run: npx eslint . --max-warnings 2000
 
       - name: Run unit + golden tests
         run: npm test

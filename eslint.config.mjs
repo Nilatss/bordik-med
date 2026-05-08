@@ -83,6 +83,22 @@ const config = [
       // admin, error.tsx). Конверсия в next/link + проверка корректности
       // routing'а — отдельная задача. Downgrade в warn для transition.
       '@next/next/no-html-link-for-pages': 'warn',
+
+      // P1-CR-4 — guard против NEW inline-styles. Существующие 1112
+      // случаев в components/ — legacy debt (требует визуальной
+      // регрессии для каждого), мигрируются incrementally на Tailwind.
+      // Эта rule warn'ит на любой новый style={{}} jsx-attribute,
+      // чтобы тех-долг не рос параллельно с миграцией. Downgrade в
+      // warn (не error) для transition периода.
+      'react/forbid-dom-props': ['warn', {
+        forbid: [{
+          propName: 'style',
+          message:
+            'P1-CR-4: предпочитай Tailwind классы (className=) вместо inline style. ' +
+            'Если стиль динамический (зависит от state), используй conditional className. ' +
+            'Существующие 1112 inline-styles мигрируются постепенно — не плодим новые.',
+        }],
+      }],
     },
   },
 ];
