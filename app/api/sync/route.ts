@@ -1,6 +1,22 @@
 import * as v from 'valibot';
 import { withAuthedSupabase, parseJsonBody, apiError, apiOk } from '@/lib/api-helpers';
 
+// P1-PERF-NEW-4 — sync route на Edge runtime.
+// /api/sync делает 4 параллельных Supabase-чтения (GET) и до 4
+// upsert'ов (POST). Все операции — pure HTTP к Supabase REST,
+// без node:fs / node:crypto / process.cwd. Edge runtime даёт ~50-150ms
+// меньше cold-start vs Node, и регион выбирается ближайший к юзеру.
+//
+// Каверты:
+// - withAuthedSupabase + getSupabaseServerClient импортируют
+//   `@supabase/ssr` который сам Edge-compat
+// - cookies() из next/headers работает в Edge
+// - valibot schemas — pure JS, без Node API
+// - Промежуточная отладка: если появятся node-only ошибки, откати
+//   на 'nodejs' (worst case теряем латентность, не корректность)
+export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
+
 /**
  * GET  /api/sync — pull all server-side state for the signed-in user.
  * POST /api/sync — push client state back to the server.
