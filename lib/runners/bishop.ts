@@ -1,6 +1,52 @@
 // @ts-nocheck
 /**
- * Runner: bishop
+ * Runner: bishop — Bishop Score for Cervical Ripening / Induction Readiness
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    Bishop EH. Pelvic scoring for elective induction.
+ *               Obstet Gynecol. 1964;24:266-268. PMID: 14199536
+ *   GUIDELINE:  ACOG Practice Bulletin №107 (Induction of Labor) +
+ *               WHO Recommendations Induction of Labour (2018) — Bishop
+ *               score primary tool для cervical readiness assessment.
+ *               Score ≤6 = unfavourable (consider cervical ripening agents
+ *               перед oxytocin).
+ *
+ * Items + points (max 13):
+ *   Cervical dilation (cm):
+ *     0     0
+ *     1-2   1
+ *     3-4   2
+ *     5+    3
+ *   Cervical effacement (%):
+ *     0-30   0
+ *     40-50  1
+ *     60-70  2
+ *     80+    3
+ *   Cervical position:
+ *     posterior     0
+ *     mid           1
+ *     anterior      2
+ *   Cervical consistency:
+ *     firm          0
+ *     medium        1
+ *     soft          2
+ *   Fetal station (-3 to +3, ischial spines = 0):
+ *     -3            0
+ *     -2            1
+ *     -1, 0         2
+ *     +1, +2        3
+ *
+ * Bands:
+ *   ≤6   → unfavourable cervix → cervical ripening (PGE2 / mechanical)
+ *   7-9  → intermediate / proceed cautiously
+ *   ≥10  → favourable → oxytocin induction high success rate
+ *
+ * Caveats:
+ *   - Subjective digital exam → interrater variability ~25%
+ *   - Modified Bishop adds parity, gestational age, и т.д.
+ *   - Не predicts time-to-delivery cleanly; only readiness for active
+ *     induction
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *

@@ -1,6 +1,38 @@
 // @ts-nocheck
 /**
- * Runner: sepsis3 - Sepsis-3 Definition (Singer 2016)
+ * Runner: sepsis3 — Sepsis-3 Definition (Singer 2016) screening tool
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    Singer M, Deutschman CS, Seymour CW, et al. The Third
+ *               International Consensus Definitions for Sepsis and Septic
+ *               Shock (Sepsis-3). JAMA. 2016;315(8):801-810.
+ *               doi:10.1001/jama.2016.0287
+ *   GUIDELINE:  Surviving Sepsis Campaign 2021 Guidelines — bundle:
+ *               1-hour bundle (lactate, blood culture, broad-spectrum
+ *               antibiotics, fluid resuscitation, vasopressors).
+ *               doi:10.1097/CCM.0000000000005337
+ *
+ * Sepsis-3 hierarchy:
+ *   1) Suspected infection
+ *   2) Sepsis = infection + ΔSOFA ≥2 (см. sofa.ts)
+ *   3) Septic shock = sepsis + vasopressors для MAP ≥65 + lactate >2 mmol/L
+ *
+ * Screening: qSOFA (см. qsofa.ts) — bedside trigger, НЕ диагноз.
+ *
+ * SIRS criteria (см. sirs.ts) — DEPRECATED for sepsis (Sepsis-1/-2 era),
+ *   но остаются valid pediatric definitions (Goldstein 2005).
+ *
+ * Mortality (Singer 2016):
+ *   Sepsis        → 10-20%
+ *   Septic shock  → 40-50%
+ *
+ * Bundle compliance (CMS SEP-1):
+ *   1h: lactate measured, blood cultures pre-antibiotic, broad-spectrum
+ *        antibiotics started, ≥30 mL/kg crystalloid for hypotension
+ *   3h: re-measure lactate если initial >2, vasopressors если refractory
+ *
+ * Tool implementation here: combined SOFA / qSOFA workflow
+ * с auto-determination categorisation (sepsis vs septic shock).
  */
 import type { CalculatorTool } from '../tools-runners';
 

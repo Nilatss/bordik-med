@@ -1,6 +1,37 @@
 // @ts-nocheck
 /**
- * Runner: alvarado-pas
+ * Runner: alvarado-pas — Pediatric Appendicitis Score (Samuel)
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    Samuel M. Pediatric appendicitis score. J Pediatr Surg.
+ *               2002;37(6):877-881.
+ *               doi:10.1053/jpsu.2002.32893
+ *   VALIDATION: Bhatt M, Joseph L, Ducharme FM, Dougherty G, McGillivray D.
+ *               Prospective validation of the pediatric appendicitis score
+ *               in a Canadian pediatric emergency department. Acad Emerg
+ *               Med. 2009;16(7):591-596.
+ *               doi:10.1111/j.1553-2712.2009.00445.x
+ *
+ * Items + points (max 10):
+ *   2 — RLQ tenderness on cough/percussion/hopping
+ *   2 — Anorexia
+ *   1 — Pyrexia (T ≥38°C)
+ *   1 — Nausea / emesis
+ *   2 — Tenderness over RLQ
+ *   1 — Leukocytosis (WBC ≥10 ×10⁹/L)
+ *   1 — Polymorphonuclear neutrophilia (≥7.5 ×10⁹/L)
+ *   1 — Migration of pain to RLQ
+ *
+ * Bands (Bhatt 2009):
+ *   ≤3   → low risk        — discharge с follow-up
+ *   4-6  → equivocal       — observation, repeat exam, imaging
+ *   ≥7   → high risk       — surgical consult / appendectomy
+ *
+ * Caveats vs adult Alvarado:
+ *   - Replaces "rebound" (subjective in young children) with cough/hop test
+ *   - Pediatric-specific WBC cut-offs
+ *   - Sensitivity 92%, specificity 50% при cut-off ≥7
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *

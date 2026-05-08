@@ -1,7 +1,53 @@
 // @ts-nocheck
 /**
- * Runner: apache
- * APACHE II - Acute Physiology And Chronic Health Evaluation (Knaus 1985).
+ * Runner: apache — APACHE II Acute Physiology And Chronic Health Evaluation
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    Knaus WA, Draper EA, Wagner DP, Zimmerman JE. APACHE II:
+ *               a severity of disease classification system. Crit Care Med.
+ *               1985;13(10):818-829. PMID: 3928249
+ *   GUIDELINE:  Используется как ICU benchmarking standard worldwide;
+ *               входит в SAPS / MPM / SOFA сравнительные studies.
+ *
+ * 12 physiological variables (worst 24h values, 0-4 each):
+ *   1. Temperature (rectal)
+ *   2. Mean arterial pressure
+ *   3. Heart rate
+ *   4. Respiratory rate
+ *   5. Oxygenation: PaO2 (если FiO2 <0.5) OR A-a gradient (если ≥0.5)
+ *   6. Arterial pH
+ *   7. Sodium
+ *   8. Potassium
+ *   9. Creatinine (×2 если acute renal failure)
+ *  10. Hematocrit
+ *  11. WBC count
+ *  12. GCS (15 - actual GCS)
+ *
+ * Plus age points:
+ *   <44 → 0       45-54 → 2     55-64 → 3     65-74 → 5     ≥75 → 6
+ *
+ * Plus chronic health points (severe organ insufficiency / immunocompromised):
+ *   2 — elective post-op
+ *   5 — emergency post-op OR non-op patient
+ *
+ * Total: max 71. Mortality bands (1985 cohort, Modern adjusted lower):
+ *   0-4   → ~4%
+ *   5-9   → ~8%
+ *   10-14 → ~15%
+ *   15-19 → ~25%
+ *   20-24 → ~40%
+ *   25-29 → ~55%
+ *   30-34 → ~75%
+ *   ≥35   → ~85%
+ *
+ * Caveats:
+ *   - Designed для ICU admission scoring (within 24h)
+ *   - Calculated ONCE — не для serial trends (для этого SOFA)
+ *   - Modern alternatives: APACHE III (1991), APACHE IV (2006), SAPS II,
+ *     SAPS 3, MPM-III. APACHE-IV more accurate но proprietary.
+ *
+ * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
+ * Do not edit by hand - regenerate via `npm run split:runners`.
  */
 
 import type {

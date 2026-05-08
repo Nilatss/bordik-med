@@ -1,6 +1,57 @@
 // @ts-nocheck
 /**
- * Runner: sofa
+ * Runner: sofa — Sequential Organ Failure Assessment Score
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    Vincent JL, Moreno R, Takala J, et al. The SOFA (Sepsis-
+ *               related Organ Failure Assessment) score to describe organ
+ *               dysfunction/failure. On behalf of the Working Group on
+ *               Sepsis-Related Problems of the European Society of
+ *               Intensive Care Medicine. Intensive Care Med.
+ *               1996;22(7):707-710. doi:10.1007/BF01709751
+ *   GUIDELINE:  Sepsis-3 (Singer 2016) — sepsis = ΔSOFA ≥2 + suspected
+ *               infection. Mandatory ICU score worldwide.
+ *               doi:10.1001/jama.2016.0287
+ *
+ * 6 organ systems (0-4 each, max 24):
+ *
+ *   Respiratory (PaO2/FiO2):
+ *     0: ≥400      1: <400      2: <300
+ *     3: <200 + mechanical ventilation
+ *     4: <100 + mechanical ventilation
+ *
+ *   Coagulation (Platelets ×10⁹/L):
+ *     0: ≥150      1: <150      2: <100      3: <50      4: <20
+ *
+ *   Liver (Bilirubin mg/dL / μmol/L):
+ *     0: <1.2 / <20      1: 1.2-1.9 / 20-32      2: 2.0-5.9 / 33-101
+ *     3: 6.0-11.9 / 102-204      4: ≥12.0 / ≥204
+ *
+ *   Cardiovascular:
+ *     0: MAP ≥70
+ *     1: MAP <70
+ *     2: dopamine ≤5 OR dobutamine (any dose)
+ *     3: dopamine >5, OR epi/norepi ≤0.1
+ *     4: dopamine >15, OR epi/norepi >0.1
+ *     (μg/kg/min, doses ≥1h)
+ *
+ *   CNS (GCS):
+ *     0: 15      1: 13-14      2: 10-12      3: 6-9      4: <6
+ *
+ *   Renal (Creatinine mg/dL / urine output):
+ *     0: <1.2 / <110           1: 1.2-1.9 / 110-170
+ *     2: 2.0-3.4 / 171-299     3: 3.5-4.9 / 300-440 OR <500 mL/day
+ *     4: ≥5.0 / ≥441 OR <200 mL/day
+ *
+ * Sepsis-3 (Singer 2016):
+ *   Sepsis = ΔSOFA ≥2 from baseline + suspected/confirmed infection
+ *   Septic shock = sepsis + vasopressors needed для MAP ≥65 + lactate >2
+ *   ICU mortality:
+ *     SOFA <6   → ~10%
+ *     SOFA 6-9  → ~20%
+ *     SOFA 10-12 → ~50%
+ *     SOFA ≥13  → ~80%
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *

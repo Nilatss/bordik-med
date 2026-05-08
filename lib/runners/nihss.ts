@@ -1,6 +1,55 @@
 // @ts-nocheck
 /**
- * Runner: nihss
+ * Runner: nihss — NIH Stroke Scale
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    Brott T, Adams HP Jr, Olinger CP, et al. Measurements of
+ *               acute cerebral infarction: a clinical examination scale.
+ *               Stroke. 1989;20(7):864-870. doi:10.1161/01.STR.20.7.864
+ *   GUIDELINE:  AHA/ASA 2019 Guidelines for the Early Management of
+ *               Patients with Acute Ischemic Stroke — NIHSS standard
+ *               severity tool, требуется для tPA / mechanical
+ *               thrombectomy decision-making.
+ *               doi:10.1161/STR.0000000000000211
+ *
+ * 11 items (max 42):
+ *   1a — Level of consciousness (LOC)             0-3
+ *   1b — LOC questions (month, age)               0-2
+ *   1c — LOC commands (open/close eyes, grip)     0-2
+ *   2  — Best gaze                                0-2
+ *   3  — Visual fields                            0-3
+ *   4  — Facial palsy                             0-3
+ *   5a — Motor arm (left)                         0-4
+ *   5b — Motor arm (right)                        0-4
+ *   6a — Motor leg (left)                         0-4
+ *   6b — Motor leg (right)                        0-4
+ *   7  — Limb ataxia                              0-2
+ *   8  — Sensory                                  0-2
+ *   9  — Best language                            0-3
+ *   10 — Dysarthria                               0-2
+ *   11 — Extinction / inattention (neglect)       0-2
+ *
+ * Severity:
+ *   0     → no stroke symptoms
+ *   1-4   → minor stroke
+ *   5-15  → moderate stroke
+ *   16-20 → moderate-severe
+ *   21-42 → severe stroke
+ *
+ * tPA eligibility (within 4.5h onset):
+ *   ✓ NIHSS <25 (relative — ≥25 высокий риск ICH)
+ *   ✓ Age ≥18, BP <185/110
+ *   ✗ Active bleeding, recent surgery, INR >1.7, и т.д.
+ *
+ * Mechanical thrombectomy (within 6h, до 24h в LATE WINDOW):
+ *   ✓ NIHSS ≥6 + LVO (M1, ICA terminus, basilar) на CT-A / MR-A
+ *   ✓ ASPECTS ≥6 (или RAPID software perfusion mismatch)
+ *
+ * Caveats:
+ *   - Поверхностные left-hemisphere strokes overscored (language items
+ *     dominate); right-hemisphere underscored (no neglect = miss)
+ *   - НЕ trends rapid improvement — repeat at 24h, 7d
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *

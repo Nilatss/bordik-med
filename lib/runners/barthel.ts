@@ -1,6 +1,47 @@
 // @ts-nocheck
 /**
- * Runner: barthel
+ * Runner: barthel — Barthel Index of Activities of Daily Living
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    Mahoney FI, Barthel DW. Functional Evaluation: The Barthel
+ *               Index. Md State Med J. 1965;14:61-65. PMID: 14258950
+ *   MODIFIED:   Shah S, Vanclay F, Cooper B. Improving the sensitivity of
+ *               the Barthel Index for stroke rehabilitation. J Clin
+ *               Epidemiol. 1989;42(8):703-709.
+ *               doi:10.1016/0895-4356(89)90065-6
+ *   GUIDELINE:  AHA/ASA 2016 Stroke Rehabilitation Guidelines — Barthel
+ *               как standard ADL outcome measure в rehab.
+ *
+ * 10 items (0/5/10 or 0/5/10/15 — original 100-point scale):
+ *   - Feeding                    0/5/10
+ *   - Bathing                    0/5
+ *   - Grooming                   0/5
+ *   - Dressing                   0/5/10
+ *   - Bowels                     0/5/10
+ *   - Bladder                    0/5/10
+ *   - Toilet use                 0/5/10
+ *   - Transfers (bed-chair)      0/5/10/15
+ *   - Mobility (level surfaces)  0/5/10/15
+ *   - Stairs                     0/5/10
+ *
+ *   Total: 0-100 (higher = more independent)
+ *
+ * Bands (clinical interpretation):
+ *   0-20    → totally dependent
+ *   21-40   → severely dependent
+ *   41-60   → moderate dependence
+ *   61-80   → mild dependence
+ *   81-99   → minimally dependent
+ *   100     → fully independent
+ *
+ * Use cases:
+ *   - Pre/post rehab functional measurement
+ *   - Discharge planning (home vs SNF vs LTC)
+ *   - Insurance / payer authorization
+ *
+ * Modified Barthel (Shah 1989): expanded к 5-point per item для
+ * лучше sensitivity к small functional changes.
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *

@@ -1,6 +1,38 @@
 // @ts-nocheck
 /**
- * Runner: alvarado
+ * Runner: alvarado — Alvarado Score (MANTRELS) for Appendicitis
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    Alvarado A. A practical score for the early diagnosis of
+ *               acute appendicitis. Ann Emerg Med. 1986;15(5):557-564.
+ *               doi:10.1016/S0196-0644(86)80993-3
+ *   GUIDELINE:  WSES 2020 Jerusalem Guidelines for diagnosis & treatment
+ *               of acute appendicitis — Alvarado as triage tool;
+ *               Imaging (CT / US) для borderline 5-6.
+ *               doi:10.1186/s13017-020-00306-3
+ *
+ * MANTRELS mnemonic + points (max 10):
+ *   M — Migration of pain to RLQ                 1
+ *   A — Anorexia                                  1
+ *   N — Nausea / vomiting                          1
+ *   T — Tenderness in RLQ                          2
+ *   R — Rebound tenderness                         1
+ *   E — Elevated temperature (≥37.3°C)             1
+ *   L — Leukocytosis (>10 ×10⁹/L)                  2
+ *   S — Shift to left (>75% neutrophils)           1
+ *
+ * Bands:
+ *   1-4   → unlikely appendicitis — discharge с safety-net
+ *   5-6   → equivocal — observation OR imaging (CT preferred adults,
+ *          US in pregnant / pediatric)
+ *   7-8   → probable — surgical consult / appendectomy
+ *   9-10  → very probable — emergent surgical consult
+ *
+ * Caveats:
+ *   - Sensitivity ↓ в women (gynae differential)
+ *   - PAS (Pediatric Appendicitis Score, см. alvarado-pas.ts) — для детей
+ *   - Не заменяет clinical judgement / imaging в borderline cases
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *

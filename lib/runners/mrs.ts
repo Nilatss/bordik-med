@@ -1,6 +1,47 @@
 // @ts-nocheck
 /**
- * Runner: mrs
+ * Runner: mrs — Modified Rankin Scale (Stroke Disability)
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   ORIGIN:     Rankin J. Cerebral vascular accidents in patients over the
+ *               age of 60. II. Prognosis. Scott Med J. 1957;2(5):200-215.
+ *               PMID: 13432835
+ *   MODIFIED:   van Swieten JC, Koudstaal PJ, Visser MC, Schouten HJ,
+ *               van Gijn J. Interobserver agreement for the assessment of
+ *               handicap in stroke patients. Stroke. 1988;19(5):604-607.
+ *               doi:10.1161/01.STR.19.5.604
+ *   GUIDELINE:  AHA/ASA 2018 Stroke Guidelines — mRS primary outcome
+ *               measure в всех stroke trials. mRS-shift analysis рутинно
+ *               в meta-analyses (favouring vs ordinal regression).
+ *
+ * 7-point ordinal scale (0-6):
+ *   0 — No symptoms at all
+ *   1 — No significant disability despite symptoms; able to carry out
+ *       all usual duties and activities
+ *   2 — Slight disability; unable to carry out all previous activities
+ *       but able to look after own affairs without assistance
+ *   3 — Moderate disability; requiring some help, but able to walk
+ *       without assistance
+ *   4 — Moderately severe disability; unable to walk without assistance
+ *       and unable to attend to own bodily needs without assistance
+ *   5 — Severe disability; bedridden, incontinent, requiring constant
+ *       nursing care and attention
+ *   6 — Dead
+ *
+ * Common dichotomies:
+ *   "Good outcome" = mRS 0-1 OR 0-2 (depending on study endpoint)
+ *   "Functional independence" = mRS ≤2
+ *
+ * Use cases:
+ *   - 90-day primary endpoint в всех ischemic stroke trials
+ *   - tPA / thrombectomy efficacy (mRS shift / dichotomised)
+ *   - Long-term rehab outcome
+ *
+ * Caveats:
+ *   - Subjective scoring — interrater agreement variable
+ *   - Structured Interview версия (Wilson 2002) — improved reliability
+ *   - НЕ chains rehabilitation progress — useful как outcome, не process
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *

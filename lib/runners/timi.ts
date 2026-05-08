@@ -1,6 +1,43 @@
 // @ts-nocheck
 /**
- * Runner: timi
+ * Runner: timi — TIMI Risk Score for UA / NSTEMI
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    Antman EM, Cohen M, Bernink PJ, et al. The TIMI risk score
+ *               for unstable angina/non-ST elevation MI: A method for
+ *               prognostication and therapeutic decision making. JAMA.
+ *               2000;284(7):835-842. doi:10.1001/jama.284.7.835
+ *   GUIDELINE:  ESC 2023 ACS Guidelines / AHA 2014 NSTE-ACS — TIMI
+ *               complementary к GRACE. TIMI ≥3 favours invasive
+ *               strategy.
+ *
+ * Items (1 балл каждый, max 7):
+ *   1. Age ≥65
+ *   2. ≥3 CAD risk factors (HTN, smoking, DM, hypercholesterol, family hx)
+ *   3. Known CAD (≥50% stenosis на prior cath)
+ *   4. ASA use в past 7 days
+ *   5. Severe angina (≥2 episodes за 24h)
+ *   6. ST-deviation ≥0.5 mm
+ *   7. Positive cardiac biomarkers (troponin)
+ *
+ * 14-day MACE (composite death + MI + urgent revascularisation):
+ *   0-1 → 4.7%
+ *   2   → 8.3%
+ *   3   → 13.2%
+ *   4   → 19.9%
+ *   5   → 26.2%
+ *   6-7 → 40.9%
+ *
+ * Caveats:
+ *   - Validated в TIMI 11B and ESSENCE cohorts (UA/NSTEMI era)
+ *   - GRACE 2.0 (см. grace.ts) предпочтителен для current ESC guidelines
+ *     (continuous variables → finer granularity)
+ *   - TIMI остаётся popular bedside score (быстро, no calculator)
+ *
+ * Variants:
+ *   - TIMI-STEMI (max 14) — separate score для ST-elevation MI
+ *   - HEART score (см. heart.ts) — для ED chest-pain triage (broader population)
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *

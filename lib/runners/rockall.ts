@@ -1,6 +1,39 @@
 // @ts-nocheck
 /**
- * Runner: rockall
+ * Runner: rockall — Rockall Risk Score for UGI Bleeding
+ *
+ * P1-CR-10 — Formula source attribution:
+ *   PRIMARY:    Rockall TA, Logan RF, Devlin HB, Northfield TC. Risk
+ *               assessment after acute upper gastrointestinal haemorrhage.
+ *               Gut. 1996;38(3):316-321. doi:10.1136/gut.38.3.316
+ *   GUIDELINE:  NICE CG141 (2012) Acute upper GI bleeding — Rockall
+ *               после endoscopy для re-bleeding / mortality risk.
+ *               Glasgow-Blatchford score (admission) — отдельный
+ *               complementary tool для discharge decision.
+ *               https://www.nice.org.uk/guidance/cg141
+ *
+ * Items + points:
+ *   Age:                <60 (0) / 60-79 (1) / ≥80 (2)
+ *   Shock:              none (0) / HR ≥100 (1) / SBP <100 (2)
+ *   Comorbidity:        none (0) / IHD/CHF/major (2) / renal/liver/met (3)
+ *   Endoscopic dx:      Mallory-Weiss/no lesion (0) / all other (1) /
+ *                       upper GI malignancy (2)
+ *   Stigmata of bleed:  clean base (0) / blood, clot, vessel/active (2)
+ *
+ * Bands:
+ *   Pre-endoscopy (max 7) — NOT для discharge, только risk-stratification
+ *   Full Rockall (max 11):
+ *     ≤2  → low risk — outpatient management possible (если другие
+ *           critera met)
+ *     3-7 → moderate
+ *     ≥8  → high risk — consider ICU admission
+ *
+ * Caveats:
+ *   - Pre-endoscopy version inferior к Glasgow-Blatchford для
+ *     discharge decisions (GBS 0 → safe outpatient management)
+ *   - Designed pre-PPI / pre-endoscopic-therapy era — modern
+ *     mortality numbers ниже original cohort
+ *
  * AUTO-GENERATED from lib/tools-runners.ts by scripts/split-runners.mjs.
  * Do not edit by hand - regenerate via `npm run split:runners`.
  *
