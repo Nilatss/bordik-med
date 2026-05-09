@@ -1,0 +1,130 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2026-05-09",
+  "source": "Gomella's Neonatology 8th ed. + AAP / Avery's Diseases of the Newborn 11th ed. + КР МЗ РФ",
+  "license": "Reference values combined from standard neonatology references",
+  "groups": [
+    {
+      "id": "blood_gas",
+      "title_ru": "Газы крови (артериальные)",
+      "title_en": "Arterial blood gas",
+      "values": [
+        {"name_ru": "pH", "name_en": "pH", "term": "7.30-7.45", "preterm": "7.25-7.40", "unit": "—", "notes": "Капиллярная кровь — допустимый сдвиг pH ниже на 0.05; PaCO₂ выше на ~5 мм рт ст"},
+        {"name_ru": "PaO₂", "name_en": "PaO₂", "term": "60-80", "preterm": "50-80", "unit": "мм рт ст", "notes": "Аккуратно интерпретировать капиллярные значения"},
+        {"name_ru": "PaCO₂", "name_en": "PaCO₂", "term": "35-45", "preterm": "35-45 (permissive 45-55)", "unit": "мм рт ст", "notes": "Permissive hypercapnia (pH ≥ 7.25) — стратегия для VLBW"},
+        {"name_ru": "HCO₃⁻", "name_en": "Bicarbonate", "term": "18-24", "preterm": "16-22", "unit": "ммоль/л", "notes": "Compensatory metabolic response"},
+        {"name_ru": "BE / SBE", "name_en": "Base excess", "term": "±5", "preterm": "±5", "unit": "ммоль/л", "notes": "Cord BE ≤ -12 — критерий асфиксии (P21 МКБ-10)"},
+        {"name_ru": "Anion gap", "name_en": "Anion gap", "term": "8-16", "preterm": "8-16", "unit": "ммоль/л", "notes": "Na − (Cl + HCO₃); high AG → lactate/ketones/IEM"},
+        {"name_ru": "SpO₂ target preterm", "name_en": "SpO₂ target preterm", "term": "90-95 %", "preterm": "90-95 %", "unit": "%", "notes": "NeOProM 2018: 91-95 % vs 85-89 % — higher target снижает mortality + NEC"}
+      ]
+    },
+    {
+      "id": "electrolytes",
+      "title_ru": "Электролиты",
+      "title_en": "Electrolytes",
+      "values": [
+        {"name_ru": "Натрий (Na)", "name_en": "Sodium", "term": "135-145", "preterm": "133-145 (early days), 135-145 (after)", "unit": "ммоль/л", "notes": "Hyponatremia — late onset у preterm с TPN; Na restriction первые 4-7 d"},
+        {"name_ru": "Калий (K)", "name_en": "Potassium", "term": "3.5-5.5", "preterm": "3.5-6.0 (early), 3.5-5.5 (after)", "unit": "ммоль/л", "notes": "NOHK (non-oliguric hyperkalemia) у extremely preterm < 24-48 h"},
+        {"name_ru": "Хлор (Cl)", "name_en": "Chloride", "term": "97-107", "preterm": "97-110", "unit": "ммоль/л", "notes": "Hypochloremic alkalosis при diuretics"},
+        {"name_ru": "Кальций общий", "name_en": "Total calcium", "term": "2.0-2.6", "preterm": "1.75-2.6", "unit": "ммоль/л", "notes": "1 мг/дл = 0.25 ммоль/л; ionized — better marker"},
+        {"name_ru": "Кальций ионизированный", "name_en": "Ionized calcium", "term": "1.0-1.4", "preterm": "0.9-1.4", "unit": "ммоль/л", "notes": "Гипокальциемия: term < 1.0; preterm < 0.9; severe < 0.8 + sympt"},
+        {"name_ru": "Магний (Mg)", "name_en": "Magnesium", "term": "0.7-1.0", "preterm": "0.7-1.0", "unit": "ммоль/л", "notes": "Hypomagnesemia < 0.66 ммоль/л; severe < 0.5"},
+        {"name_ru": "Фосфор (PO₄)", "name_en": "Phosphate", "term": "1.4-2.7", "preterm": "1.6-3.1", "unit": "ммоль/л", "notes": "Гипофосфатемия в osteopenia of prematurity"}
+      ]
+    },
+    {
+      "id": "glucose_metabolic",
+      "title_ru": "Глюкоза и метаболиты",
+      "title_en": "Glucose & metabolites",
+      "values": [
+        {"name_ru": "Глюкоза (term, > 24 ч)", "name_en": "Glucose (term, > 24 ч)", "term": "≥ 2.6 ммоль/л (≥ 47 мг/дл)", "preterm": "≥ 2.6 ммоль/л", "unit": "ммоль/л", "notes": "PES 2015 thresholds: < 1.8 first 4 h; < 2.0 4-24 h; < 2.6 > 24 h; target > 4.0 после 48 h"},
+        {"name_ru": "Лактат", "name_en": "Lactate", "term": "< 2.5", "preterm": "< 3.0", "unit": "ммоль/л", "notes": "↑ При asphyxia, sepsis, IEM, shock"},
+        {"name_ru": "Аммиак", "name_en": "Ammonia", "term": "< 110", "preterm": "< 150", "unit": "мкмоль/л", "notes": "↑ В urea cycle defects, organic acidemias, liver failure"},
+        {"name_ru": "Креатинин (term, > 7 d)", "name_en": "Creatinine (term, > 7 d)", "term": "20-50", "preterm": "30-100 (decreasing)", "unit": "мкмоль/л", "notes": "Высокий первые дни от maternal Cr; снижается в течение 2-3 нед"},
+        {"name_ru": "Урея (BUN)", "name_en": "Urea", "term": "1.4-7.1", "preterm": "1.4-7.1", "unit": "ммоль/л", "notes": "1 мг/дл = 0.357 ммоль/л; ↑ при dehydration, acute kidney injury"}
+      ]
+    },
+    {
+      "id": "bilirubin",
+      "title_ru": "Билирубин",
+      "title_en": "Bilirubin",
+      "values": [
+        {"name_ru": "Total bilirubin (cord)", "name_en": "Total bilirubin (cord)", "term": "< 35 мкмоль/л (< 2 мг/дл)", "preterm": "< 35 мкмоль/л", "unit": "мкмоль/л", "notes": "1 мг/дл = 17.1 мкмоль/л"},
+        {"name_ru": "Total bilirubin (Day 3-5 peak)", "name_en": "Total bilirubin (Day 3-5)", "term": "< 200 мкмоль/л (< 12 мг/дл)", "preterm": "< 170 мкмоль/л", "unit": "мкмоль/л", "notes": "Phototherapy threshold AAP 2022 / NICE CG98 / КР РФ ГБН — см. neo-bili-2022 calc"},
+        {"name_ru": "Conjugated bilirubin", "name_en": "Conjugated bilirubin", "term": "< 17 мкмоль/л (< 1 мг/дл)", "preterm": "< 17 мкмоль/л", "unit": "мкмоль/л", "notes": "> 1 мг/дл (если total ≤ 5) или > 20 % total — cholestasis (NASPGHAN 2017)"},
+        {"name_ru": "Альбумин", "name_en": "Albumin", "term": "30-40 г/л", "preterm": "20-35 г/л", "unit": "г/л", "notes": "B/A ratio ≥ 8 у term (≥ 7 у late preterm) — DVET indication"}
+      ]
+    },
+    {
+      "id": "cbc_term",
+      "title_ru": "CBC term newborn",
+      "title_en": "CBC term newborn",
+      "values": [
+        {"name_ru": "Hemoglobin (Day 1)", "name_en": "Hemoglobin Day 1", "term": "150-220 г/л", "preterm": "140-200 г/л", "unit": "г/л", "notes": "Wide range; cord blood lower than capillary"},
+        {"name_ru": "Hemoglobin (Day 30)", "name_en": "Hemoglobin Day 30", "term": "120-180 г/л", "preterm": "100-150 г/л (physiologic nadir)", "unit": "г/л", "notes": "Anemia of prematurity nadir 4-6 нед age"},
+        {"name_ru": "Hematocrit (Day 1)", "name_en": "Hematocrit Day 1", "term": "0.50-0.65", "preterm": "0.45-0.60", "unit": "—", "notes": "Polycythemia ≥ 0.65 — partial exchange threshold"},
+        {"name_ru": "Reticulocytes (Day 1)", "name_en": "Reticulocytes Day 1", "term": "3-7 %", "preterm": "5-10 %", "unit": "%", "notes": "Падают через 3-5 дней до < 1 % term"},
+        {"name_ru": "WBC", "name_en": "WBC", "term": "9-30 × 10⁹/л (Day 1)", "preterm": "5-25 × 10⁹/л", "unit": "× 10⁹/л", "notes": "Leukocytosis normal; sepsis: bands > 20 % или I/T ratio > 0.2"},
+        {"name_ru": "Platelets", "name_en": "Platelets", "term": "150-450 × 10⁹/л", "preterm": "150-450 × 10⁹/л", "unit": "× 10⁹/л", "notes": "Thrombocytopenia: < 150 mild, < 50 severe (transfusion threshold с bleeding)"},
+        {"name_ru": "MCV", "name_en": "MCV", "term": "100-110 fL", "preterm": "108-118 fL", "unit": "fL", "notes": "Macrocytic у newborn"}
+      ]
+    },
+    {
+      "id": "coagulation",
+      "title_ru": "Коагуляция",
+      "title_en": "Coagulation",
+      "values": [
+        {"name_ru": "PT", "name_en": "PT", "term": "13-21 sec", "preterm": "14-24 sec", "unit": "sec", "notes": "Prolonged у preterm (low vit K-dependent factors)"},
+        {"name_ru": "PTT (aPTT)", "name_en": "aPTT", "term": "30-60 sec", "preterm": "35-80 sec", "unit": "sec", "notes": "Higher variability у preterm"},
+        {"name_ru": "INR", "name_en": "INR", "term": "1.0-1.6", "preterm": "1.0-2.0", "unit": "—", "notes": "VKDB if INR > 4 + bleeding (give vit K)"},
+        {"name_ru": "Fibrinogen", "name_en": "Fibrinogen", "term": "1.5-3.0 г/л", "preterm": "1.5-3.0 г/л", "unit": "г/л", "notes": "DIC: ↓ fibrinogen + ↑ D-dimer + thrombocytopenia"},
+        {"name_ru": "D-dimer", "name_en": "D-dimer", "term": "< 0.5 мг/л", "preterm": "Higher baseline 0.7-1.5", "unit": "мг/л", "notes": "Limited utility в neonates due to physiologic elevation"}
+      ]
+    },
+    {
+      "id": "csf",
+      "title_ru": "CSF (ликвор)",
+      "title_en": "CSF (lumbar puncture)",
+      "values": [
+        {"name_ru": "WBC", "name_en": "WBC", "term": "0-22 cells/мкл (90 % < 25)", "preterm": "0-29 cells/мкл", "unit": "cells/мкл", "notes": "Higher у preterm; Bacterial meningitis: usually > 200 PMN-predominant"},
+        {"name_ru": "Protein", "name_en": "Protein", "term": "0.2-1.5 г/л", "preterm": "0.65-1.5 г/л (> 32 нед); 0.65-2.4 (< 32 нед)", "unit": "г/л", "notes": "Higher у preterm; meningitis: > 2 г/л"},
+        {"name_ru": "Glucose", "name_en": "Glucose", "term": "1.5-4.4 ммоль/л (≥ 2/3 serum)", "preterm": "1.4-3.9 ммоль/л (≥ 1/2 serum)", "unit": "ммоль/л", "notes": "↓ В bacterial meningitis; CSF/serum ratio < 0.4 suggests bacterial"},
+        {"name_ru": "RBC", "name_en": "RBC", "term": "0-50 cells/мкл (traumatic)", "preterm": "0-100 cells/мкл", "unit": "cells/мкл", "notes": "Traumatic tap может confound interpretation; correction: subtract 1 WBC per 500 RBC"}
+      ]
+    },
+    {
+      "id": "renal_urine",
+      "title_ru": "Моча и почки",
+      "title_en": "Urine & renal",
+      "values": [
+        {"name_ru": "Urine output", "name_en": "Urine output", "term": "≥ 1-3 мл/кг/ч", "preterm": "≥ 1-3 мл/кг/ч", "unit": "мл/кг/ч", "notes": "< 1 — oliguria (acute kidney injury); 0 — anuria"},
+        {"name_ru": "FENa", "name_en": "FENa", "term": "< 1 %", "preterm": "< 3 %", "unit": "%", "notes": "Higher у preterm (immature tubules); > 3 % у term — intrinsic AKI vs prerenal"},
+        {"name_ru": "Specific gravity", "name_en": "Specific gravity", "term": "1.005-1.020", "preterm": "1.005-1.015", "unit": "—", "notes": "Concentrating ability limited у preterm"},
+        {"name_ru": "Urine Ca:Cr ratio", "name_en": "Urine Ca:Cr ratio", "term": "< 0.86 ммоль/ммоль", "preterm": "< 1.0 ммоль/ммоль", "unit": "ммоль/ммоль", "notes": "Nephrocalcinosis screen у chronic furosemide"}
+      ]
+    },
+    {
+      "id": "liver_function",
+      "title_ru": "Печёночные пробы",
+      "title_en": "Liver function",
+      "values": [
+        {"name_ru": "AST (SGOT)", "name_en": "AST", "term": "20-65 ед/л", "preterm": "20-65 ед/л", "unit": "ед/л", "notes": "Elevated в asphyxia, sepsis, IEM"},
+        {"name_ru": "ALT (SGPT)", "name_en": "ALT", "term": "5-25 ед/л", "preterm": "5-30 ед/л", "unit": "ед/л", "notes": "Liver-specific; ↑ в hepatitis, cholestasis"},
+        {"name_ru": "GGT", "name_en": "GGT", "term": "30-200 ед/л", "preterm": "30-280 ед/л", "unit": "ед/л", "notes": "↑ В biliary atresia, cholestasis"},
+        {"name_ru": "Alkaline phosphatase", "name_en": "Alkaline phosphatase", "term": "150-420 ед/л", "preterm": "200-500 ед/л", "unit": "ед/л", "notes": "Higher baseline в neonates; ↑ rickets, BPD"}
+      ]
+    },
+    {
+      "id": "thyroid_endocrine",
+      "title_ru": "Щитовидная железа и эндокрин",
+      "title_en": "Thyroid & endocrine",
+      "values": [
+        {"name_ru": "TSH (Day 1-3)", "name_en": "TSH Day 1-3", "term": "1-39 мЕд/л (peak Day 1)", "preterm": "1-30 мЕд/л", "unit": "мЕд/л", "notes": "Newborn screen TSH > 50 — likely CH; < 20 normal; 20-50 repeat"},
+        {"name_ru": "Free T4", "name_en": "Free T4", "term": "20-50 пмоль/л", "preterm": "10-40 пмоль/л", "unit": "пмоль/л", "notes": "Goal CH treatment: upper half normal (20-30 пмоль/л = 1.4-2.3 нг/дл)"},
+        {"name_ru": "Cortisol", "name_en": "Cortisol", "term": "70-700 нмоль/л (variable)", "preterm": "70-700 нмоль/л", "unit": "нмоль/л", "notes": "Adrenal insufficiency: random < 70 + clinical signs"},
+        {"name_ru": "17-OH progesterone (CAH screen)", "name_en": "17-OH progesterone (CAH screen)", "term": "< 30 нмоль/л", "preterm": "< 60 нмоль/л", "unit": "нмоль/л", "notes": "↑ В congenital adrenal hyperplasia (newborn screening)"},
+        {"name_ru": "25-OH-Vitamin D", "name_en": "25-OH-Vitamin D", "term": "> 75 нмоль/л (> 30 нг/мл)", "preterm": "> 75 нмоль/л", "unit": "нмоль/л", "notes": "Sufficient > 30 нг/мл; deficient < 20 нг/мл; severe < 10 нг/мл"}
+      ]
+    }
+  ]
+}

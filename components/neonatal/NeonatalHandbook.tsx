@@ -81,12 +81,37 @@ interface CalculatorsBank {
   groups: CalculatorGroup[];
 }
 
-type Tab = 'drugs' | 'guidelines' | 'calculators' | 'growth' | 'bilirubin';
+interface LabValue {
+  name_ru: string;
+  name_en: string;
+  term: string;
+  preterm: string;
+  unit: string;
+  notes: string;
+}
+
+interface LabGroup {
+  id: string;
+  title_ru: string;
+  title_en: string;
+  values: LabValue[];
+}
+
+interface LabBank {
+  version: string;
+  lastUpdated: string;
+  source: string;
+  license: string;
+  groups: LabGroup[];
+}
+
+type Tab = 'drugs' | 'guidelines' | 'calculators' | 'labs' | 'growth' | 'bilirubin';
 
 export default function NeonatalHandbook() {
   const [bank, setBank] = useState<Bank | null>(null);
   const [guidelines, setGuidelines] = useState<GuidelinesBank | null>(null);
   const [calculators, setCalculators] = useState<CalculatorsBank | null>(null);
+  const [labs, setLabs] = useState<LabBank | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [q, setQ] = useState('');
   const [openId, setOpenId] = useState<string | null>(null);
@@ -96,19 +121,22 @@ export default function NeonatalHandbook() {
     let cancelled = false;
     void (async () => {
       try {
-        const [drugsR, guidelinesR, calcR] = await Promise.all([
-          fetch('/neonatal-monographs.json?v=2.2.0', { cache: 'force-cache' }),
-          fetch('/neonatal-guidelines.json?v=1.0.0', { cache: 'force-cache' }),
+        const [drugsR, guidelinesR, calcR, labsR] = await Promise.all([
+          fetch('/neonatal-monographs.json?v=2.4.0', { cache: 'force-cache' }),
+          fetch('/neonatal-guidelines.json?v=1.3.0', { cache: 'force-cache' }),
           fetch('/neonatal-calculators.json?v=1.0.0', { cache: 'force-cache' }),
+          fetch('/neonatal-lab-norms.json?v=1.0.0', { cache: 'force-cache' }),
         ]);
         if (!drugsR.ok) throw new Error(`monographs ${drugsR.status}`);
         const drugsJson = await drugsR.json();
         const guidesJson = guidelinesR.ok ? await guidelinesR.json() : null;
         const calcJson = calcR.ok ? await calcR.json() : null;
+        const labsJson = labsR.ok ? await labsR.json() : null;
         if (!cancelled) {
           setBank(drugsJson as Bank);
           if (guidesJson) setGuidelines(guidesJson as GuidelinesBank);
           if (calcJson) setCalculators(calcJson as CalculatorsBank);
+          if (labsJson) setLabs(labsJson as LabBank);
         }
       } catch (e) {
         if (!cancelled) setError((e as Error).message ?? 'load failed');
@@ -167,6 +195,32 @@ export default function NeonatalHandbook() {
     [filteredCalculators]
   );
 
+  const filteredLabs = useMemo(() => {
+    if (!labs) return [];
+    const query = q.trim().toLowerCase();
+    if (!query) return labs.groups;
+    return labs.groups
+      .map((g) => ({
+        ...g,
+        values: g.values.filter((v) =>
+          v.name_ru.toLowerCase().includes(query)
+          || v.name_en.toLowerCase().includes(query)
+          || v.notes.toLowerCase().includes(query)
+        ),
+      }))
+      .filter((g) => g.values.length > 0);
+  }, [labs, q]);
+
+  const totalLabs = useMemo(
+    () => labs?.groups.reduce((s, g) => s + g.values.length, 0) ?? 0,
+    [labs]
+  );
+
+  const filteredLabsCount = useMemo(
+    () => filteredLabs.reduce((s, g) => s + g.values.length, 0),
+    [filteredLabs]
+  );
+
   if (error) {
     return (
       <main style={{ padding: '24px', maxWidth: 980, margin: '0 auto' }}>
@@ -217,8 +271,8 @@ export default function NeonatalHandbook() {
         </p>
       </motion.div>
 
-      {/* Search — только для табов с поиском (drugs/guidelines/calculators); на growth/bilirubin не нужен */}
-      {(tab === 'drugs' || tab === 'guidelines' || tab === 'calculators') && (
+      {/* Search — для табов с поиском (drugs/guidelines/calculators/labs); на growth/bilirubin не нужен */}
+      {(tab === 'drugs' || tab === 'guidelines' || tab === 'calculators' || tab === 'labs') && (
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
@@ -274,6 +328,7 @@ export default function NeonatalHandbook() {
           { id: 'drugs' as const, label: 'Препараты', count: bank.drugs.length },
           { id: 'calculators' as const, label: 'Калькуляторы', count: totalCalculators },
           { id: 'guidelines' as const, label: 'Протоколы NICU', count: guidelines?.guidelines.length ?? 0 },
+          { id: 'labs' as const, label: 'Лаб. нормы', count: totalLabs },
           { id: 'growth' as const, label: 'Графики роста', count: null as number | null },
           { id: 'bilirubin' as const, label: 'Билирубин', count: null as number | null },
         ]).map((t) => {
@@ -460,6 +515,82 @@ export default function NeonatalHandbook() {
               </div>
             ))}
             {filteredCalcCount === 0 && (
+              <div style={{
+                padding: '32px 16px', background: '#F5F6F8', borderRadius: 12,
+                textAlign: 'center', color: '#6B7280', fontSize: 14,
+              }}>
+                Ничего не найдено.
+              </div>
+            )}
+          </motion.div>
+        </>
+      ) : tab === 'labs' ? (
+        <>
+          <p style={{ fontSize: 13, color: '#6B7280', margin: '0 0 14px' }}>
+            Показано: <strong style={{ color: '#1A1A1A' }}>{filteredLabsCount}</strong> из {totalLabs} показателей
+            {' · '}
+            <span style={{ color: '#9CA3AF' }}>
+              normal ranges: term + preterm columns
+            </span>
+          </p>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+            style={{ display: 'flex', flexDirection: 'column', gap: 24 }}
+          >
+            {filteredLabs.map((group) => (
+              <div key={group.id}>
+                <h3 style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: 16,
+                  fontWeight: 700,
+                  color: '#1F2937',
+                  margin: '0 0 10px',
+                  letterSpacing: '-0.01em',
+                }}>
+                  {group.title_ru}
+                </h3>
+                <div style={{
+                  background: '#F5F6F8',
+                  borderRadius: 10,
+                  overflow: 'hidden',
+                }}>
+                  <table style={{
+                    width: '100%',
+                    borderCollapse: 'collapse',
+                    fontSize: 12.5,
+                  }}>
+                    <thead>
+                      <tr style={{ background: '#E5E7EB' }}>
+                        <th style={{ padding: '8px 10px', textAlign: 'left', fontWeight: 600, color: '#374151' }}>Показатель</th>
+                        <th style={{ padding: '8px 10px', textAlign: 'left', fontWeight: 600, color: '#374151' }}>Term</th>
+                        <th style={{ padding: '8px 10px', textAlign: 'left', fontWeight: 600, color: '#374151' }}>Preterm</th>
+                        <th style={{ padding: '8px 10px', textAlign: 'left', fontWeight: 600, color: '#374151' }}>Ед.</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {group.values.map((v, i) => (
+                        <tr key={i} style={{ borderTop: '1px solid #E5E7EB' }}>
+                          <td style={{ padding: '8px 10px', color: '#1A1A1A', fontWeight: 500 }}>
+                            {v.name_ru}
+                            {v.notes && (
+                              <div style={{ fontSize: 11, color: '#6B7280', marginTop: 2, lineHeight: 1.35 }}>
+                                {v.notes}
+                              </div>
+                            )}
+                          </td>
+                          <td style={{ padding: '8px 10px', color: '#1A1A1A' }}>{v.term}</td>
+                          <td style={{ padding: '8px 10px', color: '#1A1A1A' }}>{v.preterm}</td>
+                          <td style={{ padding: '8px 10px', color: '#6B7280', fontFamily: 'var(--font-mono, monospace)', fontSize: 11.5 }}>{v.unit}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            ))}
+            {filteredLabsCount === 0 && (
               <div style={{
                 padding: '32px 16px', background: '#F5F6F8', borderRadius: 12,
                 textAlign: 'center', color: '#6B7280', fontSize: 14,
