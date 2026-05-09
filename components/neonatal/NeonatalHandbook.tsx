@@ -17,6 +17,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Highlight from '@/components/ui/Highlight';
 import GrowthCharts from '@/components/neonatal/GrowthCharts';
 import BilirubinNomogram from '@/components/neonatal/BilirubinNomogram';
+import ResuscitationFlowchart from '@/components/neonatal/ResuscitationFlowchart';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface Drug {
@@ -126,7 +127,7 @@ interface ArticlesBank {
   articles: Article[];
 }
 
-type Tab = 'drugs' | 'guidelines' | 'calculators' | 'labs' | 'articles' | 'growth' | 'bilirubin';
+type Tab = 'drugs' | 'guidelines' | 'calculators' | 'labs' | 'articles' | 'resuscitation' | 'growth' | 'bilirubin';
 
 export default function NeonatalHandbook() {
   const [bank, setBank] = useState<Bank | null>(null);
@@ -366,6 +367,7 @@ export default function NeonatalHandbook() {
           { id: 'drugs' as const, label: 'Препараты', count: bank.drugs.length },
           { id: 'calculators' as const, label: 'Калькуляторы', count: totalCalculators },
           { id: 'guidelines' as const, label: 'Протоколы NICU', count: guidelines?.guidelines.length ?? 0 },
+          { id: 'resuscitation' as const, label: 'Реанимация (4 региона)', count: 4 as number | null },
           { id: 'articles' as const, label: 'Статьи', count: articles?.articles.length ?? 0 },
           { id: 'labs' as const, label: 'Лаб. нормы', count: totalLabs },
           { id: 'growth' as const, label: 'Графики роста', count: null as number | null },
@@ -673,6 +675,14 @@ export default function NeonatalHandbook() {
             )}
           </motion.div>
         </>
+      ) : tab === 'resuscitation' ? (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3 }}
+        >
+          <ResuscitationFlowchart />
+        </motion.div>
       ) : tab === 'growth' ? (
         <motion.div
           initial={{ opacity: 0 }}
