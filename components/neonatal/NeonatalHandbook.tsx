@@ -105,13 +105,35 @@ interface LabBank {
   groups: LabGroup[];
 }
 
-type Tab = 'drugs' | 'guidelines' | 'calculators' | 'labs' | 'growth' | 'bilirubin';
+interface Article {
+  id: string;
+  title_ru: string;
+  title_en: string;
+  topic: string;
+  audience: string;
+  level: string;
+  summary: string;
+  content: string;
+  references: string[];
+  related_calculators: string[];
+}
+
+interface ArticlesBank {
+  version: string;
+  lastUpdated: string;
+  source: string;
+  license: string;
+  articles: Article[];
+}
+
+type Tab = 'drugs' | 'guidelines' | 'calculators' | 'labs' | 'articles' | 'growth' | 'bilirubin';
 
 export default function NeonatalHandbook() {
   const [bank, setBank] = useState<Bank | null>(null);
   const [guidelines, setGuidelines] = useState<GuidelinesBank | null>(null);
   const [calculators, setCalculators] = useState<CalculatorsBank | null>(null);
   const [labs, setLabs] = useState<LabBank | null>(null);
+  const [articles, setArticles] = useState<ArticlesBank | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [q, setQ] = useState('');
   const [openId, setOpenId] = useState<string | null>(null);
@@ -121,22 +143,25 @@ export default function NeonatalHandbook() {
     let cancelled = false;
     void (async () => {
       try {
-        const [drugsR, guidelinesR, calcR, labsR] = await Promise.all([
-          fetch('/neonatal-monographs.json?v=2.4.0', { cache: 'force-cache' }),
+        const [drugsR, guidelinesR, calcR, labsR, articlesR] = await Promise.all([
+          fetch('/neonatal-monographs.json?v=2.5.0', { cache: 'force-cache' }),
           fetch('/neonatal-guidelines.json?v=1.3.0', { cache: 'force-cache' }),
           fetch('/neonatal-calculators.json?v=1.0.0', { cache: 'force-cache' }),
           fetch('/neonatal-lab-norms.json?v=1.0.0', { cache: 'force-cache' }),
+          fetch('/neonatal-articles.json?v=1.0.0', { cache: 'force-cache' }),
         ]);
         if (!drugsR.ok) throw new Error(`monographs ${drugsR.status}`);
         const drugsJson = await drugsR.json();
         const guidesJson = guidelinesR.ok ? await guidelinesR.json() : null;
         const calcJson = calcR.ok ? await calcR.json() : null;
         const labsJson = labsR.ok ? await labsR.json() : null;
+        const articlesJson = articlesR.ok ? await articlesR.json() : null;
         if (!cancelled) {
           setBank(drugsJson as Bank);
           if (guidesJson) setGuidelines(guidesJson as GuidelinesBank);
           if (calcJson) setCalculators(calcJson as CalculatorsBank);
           if (labsJson) setLabs(labsJson as LabBank);
+          if (articlesJson) setArticles(articlesJson as ArticlesBank);
         }
       } catch (e) {
         if (!cancelled) setError((e as Error).message ?? 'load failed');
@@ -221,6 +246,19 @@ export default function NeonatalHandbook() {
     [filteredLabs]
   );
 
+  const filteredArticles = useMemo(() => {
+    if (!articles) return [];
+    const query = q.trim().toLowerCase();
+    if (!query) return articles.articles;
+    return articles.articles.filter((a) =>
+      a.title_ru.toLowerCase().includes(query)
+      || a.title_en.toLowerCase().includes(query)
+      || a.summary.toLowerCase().includes(query)
+      || a.content.toLowerCase().includes(query)
+      || a.topic.toLowerCase().includes(query)
+    );
+  }, [articles, q]);
+
   if (error) {
     return (
       <main style={{ padding: '24px', maxWidth: 980, margin: '0 auto' }}>
@@ -271,8 +309,8 @@ export default function NeonatalHandbook() {
         </p>
       </motion.div>
 
-      {/* Search — для табов с поиском (drugs/guidelines/calculators/labs); на growth/bilirubin не нужен */}
-      {(tab === 'drugs' || tab === 'guidelines' || tab === 'calculators' || tab === 'labs') && (
+      {/* Search — для табов с поиском (drugs/guidelines/calculators/labs/articles); на growth/bilirubin не нужен */}
+      {(tab === 'drugs' || tab === 'guidelines' || tab === 'calculators' || tab === 'labs' || tab === 'articles') && (
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
@@ -328,6 +366,7 @@ export default function NeonatalHandbook() {
           { id: 'drugs' as const, label: 'Препараты', count: bank.drugs.length },
           { id: 'calculators' as const, label: 'Калькуляторы', count: totalCalculators },
           { id: 'guidelines' as const, label: 'Протоколы NICU', count: guidelines?.guidelines.length ?? 0 },
+          { id: 'articles' as const, label: 'Статьи', count: articles?.articles.length ?? 0 },
           { id: 'labs' as const, label: 'Лаб. нормы', count: totalLabs },
           { id: 'growth' as const, label: 'Графики роста', count: null as number | null },
           { id: 'bilirubin' as const, label: 'Билирубин', count: null as number | null },
@@ -591,6 +630,40 @@ export default function NeonatalHandbook() {
               </div>
             ))}
             {filteredLabsCount === 0 && (
+              <div style={{
+                padding: '32px 16px', background: '#F5F6F8', borderRadius: 12,
+                textAlign: 'center', color: '#6B7280', fontSize: 14,
+              }}>
+                Ничего не найдено.
+              </div>
+            )}
+          </motion.div>
+        </>
+      ) : tab === 'articles' ? (
+        <>
+          <p style={{ fontSize: 13, color: '#6B7280', margin: '0 0 14px' }}>
+            Показано: <strong style={{ color: '#1A1A1A' }}>{filteredArticles.length}</strong> из {articles?.articles.length ?? 0} статей
+            {' · '}
+            <span style={{ color: '#9CA3AF' }}>
+              кликните чтобы открыть полный текст
+            </span>
+          </p>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+            style={{ display: 'flex', flexDirection: 'column', gap: 8 }}
+          >
+            {filteredArticles.map((a) => (
+              <ArticleCard
+                key={a.id}
+                article={a}
+                query={q}
+                isOpen={openId === a.id}
+                onToggle={() => setOpenId(openId === a.id ? null : a.id)}
+              />
+            ))}
+            {filteredArticles.length === 0 && (
               <div style={{
                 padding: '32px 16px', background: '#F5F6F8', borderRadius: 12,
                 textAlign: 'center', color: '#6B7280', fontSize: 14,
@@ -1234,6 +1307,304 @@ function GuidelineCard({
         )}
       </AnimatePresence>
     </div>
+  );
+}
+
+function ArticleCard({
+  article, query, isOpen, onToggle,
+}: {
+  article: Article;
+  query: string;
+  isOpen: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <div style={{
+      background: '#F5F6F8',
+      border: isOpen ? '1px solid #E5E7EB' : 'none',
+      borderRadius: 14,
+      overflow: 'hidden',
+      transition: 'border-color 150ms ease',
+    }}>
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={isOpen}
+        style={{
+          width: '100%',
+          display: 'flex', alignItems: 'flex-start', gap: 14,
+          padding: '14px 18px',
+          background: 'transparent', border: 'none',
+          cursor: 'pointer', textAlign: 'left',
+          fontFamily: 'inherit',
+          transition: 'background 150ms',
+        }}
+        onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
+        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+      >
+        <span style={{ flex: 1, minWidth: 0 }}>
+          <span style={{
+            display: 'flex', alignItems: 'baseline', gap: 8, flexWrap: 'wrap',
+          }}>
+            <span style={{
+              fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 600,
+              color: '#111827', letterSpacing: '-0.01em', lineHeight: 1.35,
+            }}>
+              <Highlight text={article.title_ru} query={query} />
+            </span>
+            <span style={{
+              fontSize: 10, fontWeight: 700, letterSpacing: '0.04em',
+              textTransform: 'uppercase', color: '#9CA3AF',
+              padding: '2px 6px', background: '#FFFFFF', borderRadius: 4,
+              border: '1px solid #E5E7EB',
+            }}>
+              {article.topic}
+            </span>
+          </span>
+          <span style={{
+            display: 'block', marginTop: 4, fontSize: 12, color: '#6B7280', lineHeight: 1.5,
+          }}>
+            <Highlight text={article.summary} query={query} />
+          </span>
+        </span>
+        <span style={{
+          flexShrink: 0,
+          color: '#9CA3AF',
+          transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+          transition: 'transform 200ms',
+          marginTop: 4,
+        }}>
+          <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </span>
+      </button>
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{
+              height: { duration: 0.25, ease: [0.05, 0.7, 0.1, 1] },
+              opacity: { duration: 0.18 },
+            }}
+            style={{ overflow: 'hidden' }}
+          >
+            <div style={{
+              padding: '18px 20px 20px',
+              background: '#FFFFFF',
+              borderTop: '1px solid #E5E7EB',
+            }}>
+              <ArticleContent content={article.content} />
+              {article.related_calculators.length > 0 && (
+                <div style={{ marginTop: 18, paddingTop: 14, borderTop: '1px solid #E5E7EB' }}>
+                  <div style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
+                    textTransform: 'uppercase', color: '#9CA3AF', marginBottom: 8,
+                  }}>
+                    Связанные калькуляторы
+                  </div>
+                  <ul style={{
+                    margin: 0, padding: 0, listStyle: 'none',
+                    display: 'flex', flexWrap: 'wrap', gap: 6,
+                  }}>
+                    {article.related_calculators.map((calcId) => (
+                      <li key={calcId}>
+                        <a href={`/tools/${calcId}`} style={{
+                          display: 'inline-block', padding: '4px 10px',
+                          background: '#EEF2FF', color: '#4338CA',
+                          borderRadius: 6, fontSize: 12, fontWeight: 500,
+                          textDecoration: 'none',
+                          border: '1px solid #E0E7FF',
+                        }}>
+                          {calcId}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {article.references.length > 0 && (
+                <div style={{ marginTop: 18, paddingTop: 14, borderTop: '1px solid #E5E7EB' }}>
+                  <div style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
+                    textTransform: 'uppercase', color: '#9CA3AF', marginBottom: 8,
+                  }}>
+                    References
+                  </div>
+                  <ol style={{ margin: 0, paddingLeft: 20, fontSize: 12, color: '#6B7280', lineHeight: 1.55 }}>
+                    {article.references.map((ref, i) => (
+                      <li key={i} style={{ marginBottom: 4 }}>{ref}</li>
+                    ))}
+                  </ol>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+/**
+ * ArticleContent — render markdown-like text for articles.
+ * Supports: ## headings, ### subheadings, **bold**, lists, tables, paragraphs.
+ */
+function ArticleContent({ content }: { content: string }) {
+  const blocks = content.split(/\n\n+/).map((block) => block.trim()).filter(Boolean);
+  return (
+    <div style={{ fontSize: 13.5, lineHeight: 1.65, color: '#1F2937' }}>
+      {blocks.map((block, idx) => {
+        if (block.startsWith('## ')) {
+          return (
+            <h3 key={idx} style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 16, fontWeight: 700,
+              color: '#111827', margin: '20px 0 8px',
+              letterSpacing: '-0.01em',
+            }}>
+              {block.slice(3)}
+            </h3>
+          );
+        }
+        if (block.startsWith('### ')) {
+          return (
+            <h4 key={idx} style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 14, fontWeight: 700,
+              color: '#1F2937', margin: '16px 0 6px',
+              letterSpacing: '-0.005em',
+            }}>
+              {block.slice(4)}
+            </h4>
+          );
+        }
+        if (block.startsWith('- ') || block.startsWith('* ')) {
+          const items = block.split('\n').map((l) => l.replace(/^[-*]\s+/, ''));
+          return (
+            <ul key={idx} style={{ margin: '6px 0', paddingLeft: 22 }}>
+              {items.map((it, i) => (
+                <li key={i} style={{ marginBottom: 3 }}>
+                  <FormattedText text={it} />
+                </li>
+              ))}
+            </ul>
+          );
+        }
+        if (/^\d+\.\s/.test(block)) {
+          const items = block.split('\n').map((l) => l.replace(/^\d+\.\s+/, ''));
+          return (
+            <ol key={idx} style={{ margin: '6px 0', paddingLeft: 22 }}>
+              {items.map((it, i) => (
+                <li key={i} style={{ marginBottom: 3 }}>
+                  <FormattedText text={it} />
+                </li>
+              ))}
+            </ol>
+          );
+        }
+        if (block.startsWith('| ')) {
+          const rows = block.split('\n').filter((l) => l.startsWith('|'));
+          if (rows.length < 2) {
+            return <p key={idx} style={{ margin: '8px 0' }}><FormattedText text={block} /></p>;
+          }
+          const headerCells = rows[0]?.split('|').map((c) => c.trim()).filter(Boolean) ?? [];
+          const bodyRows = rows.slice(2).map((r) => r.split('|').map((c) => c.trim()).filter(Boolean));
+          return (
+            <div key={idx} style={{
+              overflowX: 'auto', margin: '12px 0',
+              borderRadius: 8, border: '1px solid #E5E7EB',
+            }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12.5 }}>
+                <thead>
+                  <tr style={{ background: '#F3F4F6' }}>
+                    {headerCells.map((h, i) => (
+                      <th key={i} style={{
+                        padding: '8px 10px', textAlign: 'left',
+                        fontWeight: 600, color: '#374151',
+                        borderBottom: '1px solid #E5E7EB',
+                      }}>
+                        <FormattedText text={h} />
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {bodyRows.map((row, ri) => (
+                    <tr key={ri} style={{ borderTop: ri > 0 ? '1px solid #F3F4F6' : 'none' }}>
+                      {row.map((c, ci) => (
+                        <td key={ci} style={{ padding: '6px 10px', color: '#1F2937' }}>
+                          <FormattedText text={c} />
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          );
+        }
+        return (
+          <p key={idx} style={{ margin: '8px 0' }}>
+            <FormattedText text={block} />
+          </p>
+        );
+      })}
+    </div>
+  );
+}
+
+/**
+ * FormattedText — handles inline **bold** and `code` formatting.
+ */
+function FormattedText({ text }: { text: string }) {
+  const parts: Array<{ type: 'text' | 'bold' | 'code'; value: string }> = [];
+  let buffer = text;
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    const boldMatch = /\*\*([^*]+)\*\*/.exec(buffer);
+    const codeMatch = /`([^`]+)`/.exec(buffer);
+    let nextMatch: RegExpExecArray | null = null;
+    let kind: 'bold' | 'code' = 'bold';
+    if (boldMatch && (!codeMatch || boldMatch.index < codeMatch.index)) {
+      nextMatch = boldMatch;
+      kind = 'bold';
+    } else if (codeMatch) {
+      nextMatch = codeMatch;
+      kind = 'code';
+    }
+    if (!nextMatch) {
+      if (buffer) parts.push({ type: 'text', value: buffer });
+      break;
+    }
+    if (nextMatch.index > 0) {
+      parts.push({ type: 'text', value: buffer.slice(0, nextMatch.index) });
+    }
+    parts.push({ type: kind, value: nextMatch[1] ?? '' });
+    buffer = buffer.slice(nextMatch.index + nextMatch[0].length);
+  }
+  return (
+    <>
+      {parts.map((p, i) => {
+        if (p.type === 'bold') return <strong key={i} style={{ fontWeight: 600, color: '#111827' }}>{p.value}</strong>;
+        if (p.type === 'code') return (
+          <code key={i} style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: '0.9em',
+            background: '#F3F4F6',
+            padding: '1px 4px',
+            borderRadius: 3,
+            color: '#7C2D12',
+          }}>{p.value}</code>
+        );
+        return <span key={i}>{p.value}</span>;
+      })}
+    </>
   );
 }
 
