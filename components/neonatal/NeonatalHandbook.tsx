@@ -58,11 +58,35 @@ interface GuidelinesBank {
   guidelines: Guideline[];
 }
 
-type Tab = 'drugs' | 'guidelines' | 'growth' | 'bilirubin';
+interface Calculator {
+  id: string;
+  title_ru: string;
+  title_en: string;
+  source: string;
+  audit_id: string;
+}
+
+interface CalculatorGroup {
+  id: string;
+  title_ru: string;
+  title_en: string;
+  calculators: Calculator[];
+}
+
+interface CalculatorsBank {
+  version: string;
+  lastUpdated: string;
+  source: string;
+  license: string;
+  groups: CalculatorGroup[];
+}
+
+type Tab = 'drugs' | 'guidelines' | 'calculators' | 'growth' | 'bilirubin';
 
 export default function NeonatalHandbook() {
   const [bank, setBank] = useState<Bank | null>(null);
   const [guidelines, setGuidelines] = useState<GuidelinesBank | null>(null);
+  const [calculators, setCalculators] = useState<CalculatorsBank | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [q, setQ] = useState('');
   const [openId, setOpenId] = useState<string | null>(null);
@@ -72,16 +96,19 @@ export default function NeonatalHandbook() {
     let cancelled = false;
     void (async () => {
       try {
-        const [drugsR, guidelinesR] = await Promise.all([
+        const [drugsR, guidelinesR, calcR] = await Promise.all([
           fetch('/neonatal-monographs.json?v=2.2.0', { cache: 'force-cache' }),
           fetch('/neonatal-guidelines.json?v=1.0.0', { cache: 'force-cache' }),
+          fetch('/neonatal-calculators.json?v=1.0.0', { cache: 'force-cache' }),
         ]);
         if (!drugsR.ok) throw new Error(`monographs ${drugsR.status}`);
         const drugsJson = await drugsR.json();
         const guidesJson = guidelinesR.ok ? await guidelinesR.json() : null;
+        const calcJson = calcR.ok ? await calcR.json() : null;
         if (!cancelled) {
           setBank(drugsJson as Bank);
           if (guidesJson) setGuidelines(guidesJson as GuidelinesBank);
+          if (calcJson) setCalculators(calcJson as CalculatorsBank);
         }
       } catch (e) {
         if (!cancelled) setError((e as Error).message ?? 'load failed');
@@ -112,6 +139,33 @@ export default function NeonatalHandbook() {
       || g.content.toLowerCase().includes(query)
     );
   }, [guidelines, q]);
+
+  const filteredCalculators = useMemo(() => {
+    if (!calculators) return [];
+    const query = q.trim().toLowerCase();
+    if (!query) return calculators.groups;
+    return calculators.groups
+      .map((g) => ({
+        ...g,
+        calculators: g.calculators.filter((c) =>
+          c.title_ru.toLowerCase().includes(query)
+          || c.title_en.toLowerCase().includes(query)
+          || c.id.toLowerCase().includes(query)
+          || c.source.toLowerCase().includes(query)
+        ),
+      }))
+      .filter((g) => g.calculators.length > 0);
+  }, [calculators, q]);
+
+  const totalCalculators = useMemo(
+    () => calculators?.groups.reduce((s, g) => s + g.calculators.length, 0) ?? 0,
+    [calculators]
+  );
+
+  const filteredCalcCount = useMemo(
+    () => filteredCalculators.reduce((s, g) => s + g.calculators.length, 0),
+    [filteredCalculators]
+  );
 
   if (error) {
     return (
@@ -163,8 +217,8 @@ export default function NeonatalHandbook() {
         </p>
       </motion.div>
 
-      {/* Search — только для табов с поиском (drugs/guidelines); на growth/bilirubin не нужен */}
-      {(tab === 'drugs' || tab === 'guidelines') && (
+      {/* Search — только для табов с поиском (drugs/guidelines/calculators); на growth/bilirubin не нужен */}
+      {(tab === 'drugs' || tab === 'guidelines' || tab === 'calculators') && (
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
@@ -218,6 +272,7 @@ export default function NeonatalHandbook() {
       }}>
         {([
           { id: 'drugs' as const, label: 'Препараты', count: bank.drugs.length },
+          { id: 'calculators' as const, label: 'Калькуляторы', count: totalCalculators },
           { id: 'guidelines' as const, label: 'Протоколы NICU', count: guidelines?.guidelines.length ?? 0 },
           { id: 'growth' as const, label: 'Графики роста', count: null as number | null },
           { id: 'bilirubin' as const, label: 'Билирубин', count: null as number | null },
@@ -311,6 +366,100 @@ export default function NeonatalHandbook() {
               />
             ))}
             {filteredGuidelines.length === 0 && (
+              <div style={{
+                padding: '32px 16px', background: '#F5F6F8', borderRadius: 12,
+                textAlign: 'center', color: '#6B7280', fontSize: 14,
+              }}>
+                Ничего не найдено.
+              </div>
+            )}
+          </motion.div>
+        </>
+      ) : tab === 'calculators' ? (
+        <>
+          <p style={{ fontSize: 13, color: '#6B7280', margin: '0 0 14px' }}>
+            Показано: <strong style={{ color: '#1A1A1A' }}>{filteredCalcCount}</strong> из {totalCalculators} калькуляторов
+            {' · '}
+            <span style={{ color: '#9CA3AF' }}>
+              нажмите на карточку чтобы открыть калькулятор
+            </span>
+          </p>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+            style={{ display: 'flex', flexDirection: 'column', gap: 24 }}
+          >
+            {filteredCalculators.map((group) => (
+              <div key={group.id}>
+                <h3 style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: 16,
+                  fontWeight: 700,
+                  color: '#1F2937',
+                  margin: '0 0 10px',
+                  letterSpacing: '-0.01em',
+                }}>
+                  {group.title_ru}
+                </h3>
+                <ul style={{
+                  listStyle: 'none',
+                  padding: 0,
+                  margin: 0,
+                  display: 'grid',
+                  gap: 8,
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                }}>
+                  {group.calculators.map((calc) => (
+                    <li key={calc.id}>
+                      <a
+                        href={`/tools/${calc.id}`}
+                        style={{
+                          display: 'block',
+                          padding: '12px 14px',
+                          background: '#F5F6F8',
+                          borderRadius: 10,
+                          textDecoration: 'none',
+                          color: '#1A1A1A',
+                          border: '1px solid transparent',
+                          transition: 'border-color 150ms, background 150ms',
+                        }}
+                      >
+                        <div style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'baseline',
+                          marginBottom: 4,
+                          gap: 8,
+                        }}>
+                          <strong style={{ fontSize: 14, lineHeight: 1.3 }}>
+                            {calc.title_ru}
+                          </strong>
+                          <span style={{
+                            fontFamily: 'var(--font-mono, monospace)',
+                            fontSize: 10.5,
+                            color: '#9CA3AF',
+                            fontWeight: 600,
+                            whiteSpace: 'nowrap',
+                          }}>
+                            {calc.audit_id}
+                          </span>
+                        </div>
+                        <p style={{
+                          fontSize: 11.5,
+                          color: '#6B7280',
+                          margin: '4px 0 0',
+                          lineHeight: 1.4,
+                        }}>
+                          {calc.source}
+                        </p>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+            {filteredCalcCount === 0 && (
               <div style={{
                 padding: '32px 16px', background: '#F5F6F8', borderRadius: 12,
                 textAlign: 'center', color: '#6B7280', fontSize: 14,
