@@ -244,6 +244,11 @@ export const CATALOG_TOOLS: CatalogTool[] = [
   T('neo-hydrocortisone-dose', 'Гидрокортизон н/р', 'Refractory hypotension 1 мг/кг q8h × 5 дней; CAH replacement 15 мг/м²/сут; BPD prevention controversial. PRINCETON-2; NICHD 2022.', '3. Педиатрические инструменты', 'Дозирование', true),
   T('neo-ibuprofen-pda-dose', 'Ибупрофен PDA closure', 'Standard 10/5/5 мг/кг q24h × 3 дня; high-dose 20/10/10 для < 27 нед. Mitra JAMA 2018; Cochrane 2020. Альтернатива indomethacin.', '3. Педиатрические инструменты', 'Дозирование', true),
   T('neo-furosemide-dose', 'Фуросемид н/р (loop diuretic)', '1-2 мг/кг IV q12-24h (acute) или 1-4 мг/кг PO q12h (BPD chronic). Combine с spironolactone + KCl. Cochrane Diuretics BPD 2017.', '3. Педиатрические инструменты', 'Дозирование', true),
+  T('neo-epinephrine-infusion', 'Адреналин continuous infusion н/р', '0.05-1 мкг/кг/мин IV continuous для refractory shock. β1+β2+α1 dose-dependent. Switch к vasopressin > 1 мкг/кг/мин. AAP CFN 2018; SSC Pediatric 2020.', '3. Педиатрические инструменты', 'Дозирование', true),
+  T('neo-phenobarbital-dose', 'Фенобарбитал н/р (anticonvulsant + NAS)', 'Loading 20 мг/кг IV (max 40); maintenance 3-5 мг/кг q24h. NAS adjunct 5 мг/кг q12h PO. WHO 2011; NeoLEV2 2020.', '3. Педиатрические инструменты', 'Дозирование', true),
+  T('neo-vitk-dose', 'Витамин K profilaxis (VKDB prevention)', '1 мг IM term ≥ 1500 г; 0.5 мг IM преэрм < 1500 г. PO option 3 doses (NICE). Treatment 1-2 мг IV. AAP COFN 2022.', '3. Педиатрические инструменты', 'Дозирование', true),
+  T('neo-prematurity-class', 'Классификация недоношенности (GA + weight)', 'Late/moderate/very/extremely preterm + LBW/VLBW/ELBW. Combined risk score. WHO ICD-11 P07; AAP/Engle 2009; КР МЗ РФ.', '3. Педиатрические инструменты', 'Новорождённые', true),
+  T('neo-asphyxia-criteria', 'Критерии асфиксии (P21 МКБ-10)', '4 critirium AAP/ACOG 2014: pH/BE + Apgar + encephalopathy + multi-organ. P21.0 (severe) — критерий для TH. КР МЗ РФ ХИЭ.', '3. Педиатрические инструменты', 'Новорождённые', true),
 
   // Дозирование
   T('pediatric-dose', 'Педиатрические дозы (mg/кг)', 'Расчёт безопасных доз 30 препаратов для детей по mg/кг с проверкой максимума. WHO · BNFc · AAP · APLS.', '3. Педиатрические инструменты', 'Дозирование', true),
