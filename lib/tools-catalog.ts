@@ -219,6 +219,12 @@ export const CATALOG_TOOLS: CatalogTool[] = [
   T('neo-enteral', 'Enteral feed advancement (VLBW/ELBW)', 'Темпы продвижения энтерального питания по массе и фазе (трофическое / advance / full): 15-40 мл/кг/сут. ESPGHAN 2022 EN Position.', '3. Педиатрические инструменты', 'Новорождённые', true),
   T('neo-tpn', 'TPN macronutrient calculator (ESPGHAN PN 2018)', 'Расчёт белка, липидов, GIR, ккал/кг/сут с ramp-up по дням. ESPGHAN/ESPEN/ESPR/CSPEN 2018 (Clin Nutr 37:2306-2308).', '3. Педиатрические инструменты', 'Новорождённые', true),
   T('neo-who-growth', 'WHO Growth Standards 0-24 мес (term)', 'Перцентили и Z-scores массы по возрасту 0-24 мес для доношенных. WHO Multicentre Growth Reference 2006. Cut-offs −3 / −2 / +2 / +3 SD.', '3. Педиатрические инструменты', 'Рост и развитие', true),
+  T('neo-downes', 'Downes Score (RDS severity)', 'Шкала тяжести синдрома дыхательных расстройств у новорождённого. 5 параметров × 0-2, max 10. Lab бэнды: ≤3 лёгкая / 4-6 умеренная / ≥7 тяжёлая. Downes 1970.', '3. Педиатрические инструменты', 'Новорождённые', true),
+  T('neo-finnegan', 'Modified Finnegan (NAS)', 'Modified Finnegan Score — оценка неонатального абстинентного синдрома. 22 признака, max 47. Триггер фармакотерапии: 3 ≥8 ИЛИ 2 ≥12.', '3. Педиатрические инструменты', 'Новорождённые', true),
+  T('neo-nips', 'NIPS (Neonatal Infant Pain Scale)', 'Шкала боли у доношенных новорождённых: 6 индикаторов (face/cry/breathing/arms/legs/state), диапазон 0-7. Lawrence 1993.', '3. Педиатрические инструменты', 'Новорождённые', true),
+  T('neo-partial-exchange', 'Partial Exchange (полицитемия)', 'Расчёт объёма частичного обменного переливания 0.9 % NaCl при симптомной полицитемии (Hct ≥ 65 %). Rawlings 1982.', '3. Педиатрические инструменты', 'Новорождённые', true),
+  T('neo-resp-indices', 'Респираторные индексы (OI / OSI / A-aDO₂ / P/F)', 'A-aDO₂, OI, OSI, SF, P/F ratio. Decision-making по iNO, HFOV, ECMO. ELSO criteria (OI ≥ 40).', '3. Педиатрические инструменты', 'Новорождённые', true),
+  T('neo-tcb-conversion', 'TcB → TSB конверсия + скрининг', 'Конверсия транскутанного билирубина в TSB и оценка необходимости подтверждения серологически. Maisels 2006; NICE CG98; AAP 2022.', '3. Педиатрические инструменты', 'Новорождённые', true),
 
   // Дозирование
   T('pediatric-dose', 'Педиатрические дозы (mg/кг)', 'Расчёт безопасных доз 30 препаратов для детей по mg/кг с проверкой максимума. WHO · BNFc · AAP · APLS.', '3. Педиатрические инструменты', 'Дозирование', true),
