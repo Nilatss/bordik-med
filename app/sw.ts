@@ -135,6 +135,12 @@ const serwist = new Serwist({
     // -mms, -mms-ext, -starter, -slim, -details, -search.
     // CacheFirst после первой загрузки = instant + offline.
     // Cache bust через query string ?v=X.Y.Z в коде клиента.
+    //
+    // Также покрывает все Neonatology Module JSONs (audit issue 1.11):
+    //   neonatal-monographs, -guidelines, -growth, -bilirubin (existing)
+    //   neonatal-calculators, -lab-norms, -articles, -lactmed (added 2026-05-09)
+    // Полная offline-поддержка раздела Неонатология — данные кэшируются
+    // CacheFirst, через query ?v=X.Y.Z bust для invalidation на deploy.
     {
       matcher: ({ url }) => (
         /^\/icd1[01](?:cm|pcs|ca|gm|am)?(-(?:mms(?:-ext)?|starter|slim|details|search|drug-table|neoplasm|index))?\.json$/.test(url.pathname)
@@ -142,12 +148,16 @@ const serwist = new Serwist({
         || url.pathname === '/neonatal-guidelines.json'
         || url.pathname === '/neonatal-growth.json'
         || url.pathname === '/neonatal-bilirubin.json'
+        || url.pathname === '/neonatal-calculators.json'
+        || url.pathname === '/neonatal-lab-norms.json'
+        || url.pathname === '/neonatal-articles.json'
+        || url.pathname === '/neonatal-lactmed.json'
       ),
       handler: new CacheFirst({
         cacheName: 'bordik-icd',
         plugins: [
           new ExpirationPlugin({
-            maxEntries: 30,
+            maxEntries: 50,
             maxAgeSeconds: 180 * 24 * 60 * 60, // 180 days
             purgeOnQuotaError: true,
           }),
