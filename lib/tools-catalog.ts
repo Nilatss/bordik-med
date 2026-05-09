@@ -274,6 +274,11 @@ export const CATALOG_TOOLS: CatalogTool[] = [
   T('neo-iron-dose', 'Железо (preterm + AOP supplementation)', 'Preterm 2-4 мг/кг/сут elemental PO с 2-4 нед age. AOP+Epo 6 мг/кг/сут obligatory. Term breastfed 1 мг/кг с 4-6 мес. AAP COFN 2010; ESPGHAN 2014.', '3. Педиатрические инструменты', 'Дозирование', true),
   T('neo-vitamin-d-dose', 'Витамин D (rickets prevention / deficiency)', 'Profilaxis term 400 ед/сут; preterm 800-1000 ед/сут. Deficiency treatment 2000-10000 ед/сут × 4-12 нед. AAP COFN 2008; ESPGHAN 2013.', '3. Педиатрические инструменты', 'Дозирование', true),
   T('neo-rop-screen-timing', 'ROP screening timing (когда первый осмотр)', 'GA ≤ 27: 31 нед PMA. GA 28-32: 4 нед chronologic age. Whichever LATER. AAP/AAO/AAPOS 2018. Treatment threshold (Type 1) — laser/anti-VEGF в 72 ч.', '3. Педиатрические инструменты', 'Новорождённые', true),
+  T('neo-omeprazole-dose', 'Омепразол (GERD у preterm)', '0.5-1.5 мг/кг q24h PO/IV. Use selectively — большинство GERD у preterm physiologic. ⚠️ NEC risk у preterm. NASPGHAN/ESPGHAN 2018.', '3. Педиатрические инструменты', 'Дозирование', true),
+  T('neo-folic-acid-dose', 'Фолиевая кислота (preterm + AOP)', '50 мкг/кг/сут PO preterm supplementation; 100-300 мкг/сут treatment megaloblastic. Co-administration с iron + Epo. AAP COFN; ESPGHAN 2010.', '3. Педиатрические инструменты', 'Дозирование', true),
+  T('neo-cholestasis-criteria', 'Cholestasis у н/р (criteria + workup)', 'Conjugated bili > 1.0 мг/дл — cholestasis. ⚠️ Biliary atresia — most urgent (Kasai в 30-60 d). NASPGHAN/ESPGHAN 2017 (Fawaz JPGN).', '3. Педиатрические инструменты', 'Новорождённые', true),
+  T('neo-pphn-screen', 'PPHN screening / criteria', 'Differential cyanosis (pre>post по 5-10%) + OI ≥ 15 + echo. iNO 20 ppm trial first; escalation милринон/sildenafil/ECMO. AHA 2019.', '3. Педиатрические инструменты', 'Новорождённые', true),
+  T('neo-vaccination-calendar', 'Календарь вакцинации (РФ/UZ/Intl)', 'HepB-1 + БЦЖ в 24 ч; DTP/IPV/Hib/PCV/Rotavirus по schedule по региону. Приказ МЗ РФ № 1122н; UZ нацкалендарь; WHO/CDC.', '3. Педиатрические инструменты', 'Новорождённые', true),
 
   // Дозирование
   T('pediatric-dose', 'Педиатрические дозы (mg/кг)', 'Расчёт безопасных доз 30 препаратов для детей по mg/кг с проверкой максимума. WHO · BNFc · AAP · APLS.', '3. Педиатрические инструменты', 'Дозирование', true),
