@@ -284,6 +284,11 @@ export const CATALOG_TOOLS: CatalogTool[] = [
   T('neo-levothyroxine-dose', 'Левотироксин (congenital hypothyroidism)', 'Initial 10-15 мкг/кг/сут PO term. ⚠️ Start в первые 2 нед — IQ critical. AAP/ESPGHAN 2014; ATA 2014.', '3. Педиатрические инструменты', 'Дозирование', true),
   T('neo-rsv-palivizumab', 'Palivizumab (RSV passive immunization)', '15 мг/кг IM monthly RSV season; max 5 doses. AAP COFN 2014/2023: GA < 29 нед, CLD/BPD, CHD. ⚠️ Nirsevimab (FDA 2023) replacing.', '3. Педиатрические инструменты', 'Дозирование', true),
   T('neo-cchd-pulse-oximetry', 'CCHD pulse oximetry screening', 'Pre/post-ductal SpO₂ в 24-48 ч. Pass: ≥ 95 % + diff < 3 %. Fail: < 90 % или persistent abnormalities → echo обязательно. AAP/AHA 2018.', '3. Педиатрические инструменты', 'Новорождённые', true),
+  T('neo-acyclovir-dose', 'Ацикловир (neonatal HSV)', '20 мг/кг IV q8h × 14-21 d (SEM 14, CNS/disseminated 21). PO suppression 300 мг/м² q8h × 6 мес. ⚠️ EMERGENCY — start empirically. CASG-103 NEJM 2011.', '3. Педиатрические инструменты', 'Дозирование', true),
+  T('neo-meropenem-dose', 'Меропенем (broad-spectrum / MDR)', '20-40 мг/кг IV q8-12h по PMA + PNA + indication. Reserve antibiotic для MDR / NEC perforation / meningitis. AAP Red Book.', '3. Педиатрические инструменты', 'Дозирование', true),
+  T('neo-immunoglobulin-ivig-dose', 'IVIG (HDN / NAIT / PID)', 'HDN 0.5-1 г/кг IV; NAIT 1 г/кг q24h × 1-3; PID replacement 400-600 мг/кг q3-4 нед. ⚠️ INIS 2011: NOT routine для sepsis.', '3. Педиатрические инструменты', 'Дозирование', true),
+  T('neo-feeding-readiness', 'Oral Feeding Readiness (preterm)', '5-criteria PIOFRAS-style: physiologic + behavioral + oral motor + sucking + swallow safety. PMA 32-38 нед transition. Lau / Howe.', '3. Педиатрические инструменты', 'Новорождённые', true),
+  T('neo-newborn-screening', 'Newborn Metabolic Screening (timing)', 'Heel-prick blood spot 24-72 ч (optimal 48-72). РФ расширенный с 2023: 36 заболеваний (PKU, CH, CAH, galactosemia, CF, MCAD, MSUD, и др).', '3. Педиатрические инструменты', 'Новорождённые', true),
 
   // Дозирование
   T('pediatric-dose', 'Педиатрические дозы (mg/кг)', 'Расчёт безопасных доз 30 препаратов для детей по mg/кг с проверкой максимума. WHO · BNFc · AAP · APLS.', '3. Педиатрические инструменты', 'Дозирование', true),
