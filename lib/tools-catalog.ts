@@ -269,6 +269,11 @@ export const CATALOG_TOOLS: CatalogTool[] = [
   T('neo-erythropoietin-dose', 'Эритропоэтин (AOP / neuroprotection)', 'AOP rhEpo 250-500 ед/кг 3×/нед SC ИЛИ darbepoetin 10 мкг/кг/нед. Neuroprotection PENUT 1000 ед/кг IV q48h × 6. Iron OBLIGATORY.', '3. Педиатрические инструменты', 'Дозирование', true),
   T('neo-erythromycin-dose', 'Эритромицин (prokinetic + abx)', 'Prokinetic 12.5 мг/кг q6h PO для feeding intolerance (Cochrane 2014). Antibiotic для pertussis/chlamydia 14 дней. ⚠️ IHPS risk у < 2 нед / ELBW.', '3. Педиатрические инструменты', 'Дозирование', true),
   T('neo-discharge-criteria', 'Критерии выписки н/р из NICU', 'AAP COFN 2008 5-criteria: physiologic stability + feeding + thermoregulation + routine care + parental readiness. Все обязательны.', '3. Педиатрические инструменты', 'Новорождённые', true),
+  T('neo-indomethacin-pda-dose', 'Индометацин (PDA / IVH prophy)', 'PDA closure age-adjusted (Heymann); IVH prophy 0.1 мг/кг q24h × 3 (TIPP). Vs ибупрофен: больше renal/NEC effects (Mitra JAMA 2018).', '3. Педиатрические инструменты', 'Дозирование', true),
+  T('neo-glucagon-dose', 'Глюкагон (CHI emergency)', '0.1-0.3 мг/кг IM/IV emergency; 0.005-0.02 мг/кг/ч infusion bridge to diazoxide. Refractory hypoglycemia с GIR ≥ 12. PES 2015.', '3. Педиатрические инструменты', 'Дозирование', true),
+  T('neo-iron-dose', 'Железо (preterm + AOP supplementation)', 'Preterm 2-4 мг/кг/сут elemental PO с 2-4 нед age. AOP+Epo 6 мг/кг/сут obligatory. Term breastfed 1 мг/кг с 4-6 мес. AAP COFN 2010; ESPGHAN 2014.', '3. Педиатрические инструменты', 'Дозирование', true),
+  T('neo-vitamin-d-dose', 'Витамин D (rickets prevention / deficiency)', 'Profilaxis term 400 ед/сут; preterm 800-1000 ед/сут. Deficiency treatment 2000-10000 ед/сут × 4-12 нед. AAP COFN 2008; ESPGHAN 2013.', '3. Педиатрические инструменты', 'Дозирование', true),
+  T('neo-rop-screen-timing', 'ROP screening timing (когда первый осмотр)', 'GA ≤ 27: 31 нед PMA. GA 28-32: 4 нед chronologic age. Whichever LATER. AAP/AAO/AAPOS 2018. Treatment threshold (Type 1) — laser/anti-VEGF в 72 ч.', '3. Педиатрические инструменты', 'Новорождённые', true),
 
   // Дозирование
   T('pediatric-dose', 'Педиатрические дозы (mg/кг)', 'Расчёт безопасных доз 30 препаратов для детей по mg/кг с проверкой максимума. WHO · BNFc · AAP · APLS.', '3. Педиатрические инструменты', 'Дозирование', true),
