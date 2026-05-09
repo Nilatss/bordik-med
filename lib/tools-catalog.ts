@@ -264,6 +264,11 @@ export const CATALOG_TOOLS: CatalogTool[] = [
   T('neo-cagluconate-dose', 'Кальций глюконат (hypocalcemia)', 'Acute 1-2 мл/кг 10% IV slow push 5-10 мин; maintenance 200-800 мг/кг/сут TPN. AAP CFN; Demarini neonatal Ca homeostasis.', '3. Педиатрические инструменты', 'Дозирование', true),
   T('neo-insulin-dose', 'Инсулин (hyperglycemia of prematurity)', '0.01-0.2 ед/кг/ч continuous; first-line ↓ GIR. ⚠️ NIRTURE 2008 — routine early insulin no benefit, ↑ hypoglycemia. Pre-prime tubing critical.', '3. Педиатрические инструменты', 'Дозирование', true),
   T('neo-ino-dose', 'Inhaled NO (PPHN)', '20 ppm initial, wean к 5-10 ppm, off ≥ 1 ppm. PPHN term/late preterm с OI ≥ 15-25. Methemoglobinemia + NO₂ monitoring. NINOS 1997.', '3. Педиатрические инструменты', 'Дозирование', true),
+  T('neo-mgso4-dose', 'Магний сульфат (hypoMg + neuroprotection)', 'Hypomagnesemia 25-50 мг/кг IV slow 30 мин; HIE neuroprotection 250 мг/кг (controversial). Maternal antenatal 4 г + 1 г/ч (Doyle Cochrane 2009 evidence-based).', '3. Педиатрические инструменты', 'Дозирование', true),
+  T('neo-sildenafil-dose', 'Силденафил (PPHN PO/IV)', 'PO 0.5-3 мг/кг q6-8h; IV LOAD-SUSTAIN 0.4 мг/кг loading + 1.6 мг/кг/сут. PDE5 inhibitor — alternative/adjunct iNO. Baquero Pediatrics 2006.', '3. Педиатрические инструменты', 'Дозирование', true),
+  T('neo-erythropoietin-dose', 'Эритропоэтин (AOP / neuroprotection)', 'AOP rhEpo 250-500 ед/кг 3×/нед SC ИЛИ darbepoetin 10 мкг/кг/нед. Neuroprotection PENUT 1000 ед/кг IV q48h × 6. Iron OBLIGATORY.', '3. Педиатрические инструменты', 'Дозирование', true),
+  T('neo-erythromycin-dose', 'Эритромицин (prokinetic + abx)', 'Prokinetic 12.5 мг/кг q6h PO для feeding intolerance (Cochrane 2014). Antibiotic для pertussis/chlamydia 14 дней. ⚠️ IHPS risk у < 2 нед / ELBW.', '3. Педиатрические инструменты', 'Дозирование', true),
+  T('neo-discharge-criteria', 'Критерии выписки н/р из NICU', 'AAP COFN 2008 5-criteria: physiologic stability + feeding + thermoregulation + routine care + parental readiness. Все обязательны.', '3. Педиатрические инструменты', 'Новорождённые', true),
 
   // Дозирование
   T('pediatric-dose', 'Педиатрические дозы (mg/кг)', 'Расчёт безопасных доз 30 препаратов для детей по mg/кг с проверкой максимума. WHO · BNFc · AAP · APLS.', '3. Педиатрические инструменты', 'Дозирование', true),
