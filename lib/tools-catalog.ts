@@ -289,6 +289,11 @@ export const CATALOG_TOOLS: CatalogTool[] = [
   T('neo-immunoglobulin-ivig-dose', 'IVIG (HDN / NAIT / PID)', 'HDN 0.5-1 г/кг IV; NAIT 1 г/кг q24h × 1-3; PID replacement 400-600 мг/кг q3-4 нед. ⚠️ INIS 2011: NOT routine для sepsis.', '3. Педиатрические инструменты', 'Дозирование', true),
   T('neo-feeding-readiness', 'Oral Feeding Readiness (preterm)', '5-criteria PIOFRAS-style: physiologic + behavioral + oral motor + sucking + swallow safety. PMA 32-38 нед transition. Lau / Howe.', '3. Педиатрические инструменты', 'Новорождённые', true),
   T('neo-newborn-screening', 'Newborn Metabolic Screening (timing)', 'Heel-prick blood spot 24-72 ч (optimal 48-72). РФ расширенный с 2023: 36 заболеваний (PKU, CH, CAH, galactosemia, CF, MCAD, MSUD, и др).', '3. Педиатрические инструменты', 'Новорождённые', true),
+  T('neo-octreotide-dose', 'Октреотид (CHI KATP-resistant)', '5-25 мкг/кг/сут SC q6-8h (после diazoxide failure). Synthetic somatostatin → suppresses insulin. Long-acting LAR for chronic. Arnoux CHI guidelines.', '3. Педиатрические инструменты', 'Дозирование', true),
+  T('neo-diazoxide-dose', 'Диазоксид (CHI maintenance)', '5-15 мг/кг/сут PO q8h + chlorothiazide 7-10 мг/кг q12h. KATP channel opener. Trial × 5-7 дней. Stanley Pediatrics 122:1124.', '3. Педиатрические инструменты', 'Дозирование', true),
+  T('neo-paracetamol-dose', 'Парацетамол (analgesia + alt PDA closure)', '10-15 мг/кг q6-8h PO/IV/PR analgesia; PDA closure 15 мг/кг q6h × 3-7 дней (3-я линия). Allegaert Pediatrics 2014;134:e253.', '3. Педиатрические инструменты', 'Дозирование', true),
+  T('neo-tof-spell-management', 'TOF tet spell management (cyanotic spell)', 'Step-wise: knee-to-chest → O₂ → calm → morphine → volume → bicarb → phenylephrine → esmolol → surgery. Park\'s; AHA/AAP.', '3. Педиатрические инструменты', 'Новорождённые', true),
+  T('neo-thermal-management', 'Thermal management (Golden hour)', 'QI bundle: OR temp ≥ 25 °C + polyethylene wrap (<32 нед без drying) + cap + chemical mattress + servo-controlled. Goal admission 36.5-37.5 °C. WHO/NRP/HBS.', '3. Педиатрические инструменты', 'Новорождённые', true),
 
   // Дозирование
   T('pediatric-dose', 'Педиатрические дозы (mg/кг)', 'Расчёт безопасных доз 30 препаратов для детей по mg/кг с проверкой максимума. WHO · BNFc · AAP · APLS.', '3. Педиатрические инструменты', 'Дозирование', true),
