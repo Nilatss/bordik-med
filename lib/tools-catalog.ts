@@ -234,6 +234,11 @@ export const CATALOG_TOOLS: CatalogTool[] = [
   T('neo-petrussa', 'Petrussa Score (упрощ. GA)', 'Упрощённая оценка GA по 5 morphologic критериям. Альтернатива Ballard в условиях ограниченных ресурсов. GA ≈ score + 30. Точность ± 2 нед.', '3. Педиатрические инструменты', 'Новорождённые', true),
   T('neo-surfactant-dose', 'Сурфактант — расчёт дозы', 'Curosurf 100-200 мг/кг; Survanta 100 мг/кг (4 мл/кг); Infasurf 105 мг/кг (3 мл/кг). LISA / INSURE / bolus. European Consensus 2022.', '3. Педиатрические инструменты', 'Дозирование', true),
   T('neo-caffeine-dose', 'Кофеин цитрат (AOP)', 'Loading 20-40 мг/кг + maintenance 5-10 мг/кг q24h. Стандарт у GA < 32 нед. CAP trial (Schmidt NEJM 2007). Therapeutic 5-25 мкг/мл.', '3. Педиатрические инструменты', 'Дозирование', true),
+  T('neo-ampicillin-dose', 'Ампициллин н/р (sepsis / meningitis)', '50 мг/кг (sepsis) / 100 мг/кг (meningitis), q12h-q8h по PMA + PNA. First-line с гентамицином для EOS. AAP Red Book; NeoFax; КР РФ.', '3. Педиатрические инструменты', 'Дозирование', true),
+  T('neo-gentamicin-dose', 'Гентамицин н/р (extended-interval)', '4-5 мг/кг q24-48h по PMA + PNA. Pair с ампициллином для EOS/LOS. TDM: trough < 1, peak 5-12 мг/л. AAP; NeoFax; Cochrane EID 2011.', '3. Педиатрические инструменты', 'Дозирование', true),
+  T('neo-vancomycin-dose', 'Ванкомицин н/р (CONS / MRSA)', '10-15 мг/кг q6-24h по PMA + PNA. Loading 20 мг/кг при meningitis. AUC₂₄/MIC 400-600 (ASHP/IDSA 2020); trough 10-20 мг/л.', '3. Педиатрические инструменты', 'Дозирование', true),
+  T('neo-fentanyl-dose', 'Фентанил н/р (анальгезия / седация)', 'Болюс 0.5-2 мкг/кг IV; инфузия 0.5-4 мкг/кг/ч. ~75-125× potency morphine. NEOPAIN trial; AAP CFN 2016.', '3. Педиатрические инструменты', 'Дозирование', true),
+  T('neo-pge1-dose', 'PGE1 (alprostadil) — duct-dependent ВПС', '0.01-0.1 мкг/кг/мин IV continuous для поддержания PDA при cyanotic CHD / left-sided obstructive. AAP/AHA 2018; Cochrane 2018.', '3. Педиатрические инструменты', 'Дозирование', true),
 
   // Дозирование
   T('pediatric-dose', 'Педиатрические дозы (mg/кг)', 'Расчёт безопасных доз 30 препаратов для детей по mg/кг с проверкой максимума. WHO · BNFc · AAP · APLS.', '3. Педиатрические инструменты', 'Дозирование', true),
