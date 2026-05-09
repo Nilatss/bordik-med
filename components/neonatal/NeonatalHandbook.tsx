@@ -18,6 +18,7 @@ import Highlight from '@/components/ui/Highlight';
 import GrowthCharts from '@/components/neonatal/GrowthCharts';
 import BilirubinNomogram from '@/components/neonatal/BilirubinNomogram';
 import ResuscitationFlowchart from '@/components/neonatal/ResuscitationFlowchart';
+import ApgarTimer from '@/components/neonatal/ApgarTimer';
 import { ArrowRight } from '@/components/icons';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore } from '@/lib/store';
@@ -198,6 +199,9 @@ export default function NeonatalHandbook() {
   // showNeonatal=true so closeTool returns user back here.
   const openTool = useAppStore((s) => s.openTool);
 
+  // ApgarTimer fullscreen modal state — audit 1.9 closes timer UI gap.
+  const [apgarTimerOpen, setApgarTimerOpen] = useState(false);
+
   useEffect(() => {
     let cancelled = false;
     void (async () => {
@@ -206,8 +210,8 @@ export default function NeonatalHandbook() {
           fetch('/neonatal-monographs.json?v=2.6.0', { cache: 'force-cache' }),
           fetch('/neonatal-guidelines.json?v=1.4.0', { cache: 'force-cache' }),
           fetch('/neonatal-calculators.json?v=1.0.0', { cache: 'force-cache' }),
-          fetch('/neonatal-lab-norms.json?v=1.0.0', { cache: 'force-cache' }),
-          fetch('/neonatal-articles.json?v=1.1.0', { cache: 'force-cache' }),
+          fetch('/neonatal-lab-norms.json?v=1.1.0', { cache: 'force-cache' }),
+          fetch('/neonatal-articles.json?v=1.4.0', { cache: 'force-cache' }),
           fetch('/neonatal-lactmed.json?v=1.0.0', { cache: 'force-cache' }),
         ]);
         if (!drugsR.ok) throw new Error(`monographs ${drugsR.status}`);
@@ -626,6 +630,33 @@ export default function NeonatalHandbook() {
               нажмите на карточку чтобы открыть калькулятор
             </span>
           </p>
+
+          {/* Apgar Timer launcher — fullscreen timer для родзала, audit 1.9 */}
+          <button
+            onClick={() => setApgarTimerOpen(true)}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 8,
+              padding: '10px 14px',
+              marginBottom: 16,
+              background: '#0F172A',
+              color: '#FFFFFF',
+              border: 'none',
+              borderRadius: 10,
+              cursor: 'pointer',
+              fontSize: 13,
+              fontWeight: 600,
+              fontFamily: 'inherit',
+            }}
+          >
+            <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg>
+            Запустить Apgar Timer (родзал)
+          </button>
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -947,6 +978,11 @@ export default function NeonatalHandbook() {
           врач/клин-фармаколог/неонатолог.
         </p>
       </section>
+
+      {/* ApgarTimer fullscreen modal — audit 1.9 */}
+      {apgarTimerOpen && (
+        <ApgarTimer onClose={() => setApgarTimerOpen(false)} />
+      )}
     </main>
   );
 }
