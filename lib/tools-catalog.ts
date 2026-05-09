@@ -249,6 +249,11 @@ export const CATALOG_TOOLS: CatalogTool[] = [
   T('neo-vitk-dose', 'Витамин K profilaxis (VKDB prevention)', '1 мг IM term ≥ 1500 г; 0.5 мг IM преэрм < 1500 г. PO option 3 doses (NICE). Treatment 1-2 мг IV. AAP COFN 2022.', '3. Педиатрические инструменты', 'Дозирование', true),
   T('neo-prematurity-class', 'Классификация недоношенности (GA + weight)', 'Late/moderate/very/extremely preterm + LBW/VLBW/ELBW. Combined risk score. WHO ICD-11 P07; AAP/Engle 2009; КР МЗ РФ.', '3. Педиатрические инструменты', 'Новорождённые', true),
   T('neo-asphyxia-criteria', 'Критерии асфиксии (P21 МКБ-10)', '4 critirium AAP/ACOG 2014: pH/BE + Apgar + encephalopathy + multi-organ. P21.0 (severe) — критерий для TH. КР МЗ РФ ХИЭ.', '3. Педиатрические инструменты', 'Новорождённые', true),
+  T('neo-glucose-bolus-dose', 'Глюкоза болюс (гипогликемия)', '2 мл/кг D10W IV slow + start GIR 6-8 мг/кг/мин. PES 2015 thresholds: < 1.8 / 2.0 / 2.6 ммоль/л по часам жизни. AAP CFN 2011; BAPM 2017.', '3. Педиатрические инструменты', 'Дозирование', true),
+  T('neo-milrinone-dose', 'Милринон (PDE3i для PPHN)', 'Loading 50 мкг/кг IV (controversial у н/р); maintenance 0.25-0.75 мкг/кг/мин. Inodilator: ↑contractility + ↓SVR/PVR. AHA 2019 PPHN; Khanna CHEST 2017.', '3. Педиатрические инструменты', 'Дозирование', true),
+  T('neo-vasopressin-dose', 'Вазопрессин (refractory shock)', '0.0001-0.001 ед/кг/мин IV continuous. V1 vasoconstriction для catecholamine-resistant warm shock. SSC Pediatric 2020; Choong NEJM 2009.', '3. Педиатрические инструменты', 'Дозирование', true),
+  T('neo-zvur-class', 'ЗВУР / SGA / AGA / LGA (Fenton/Olsen/IG-21)', 'Перцентили массы для GA. Symmetric vs asymmetric IUGR. SGA severe < 3-й — high-risk. ACOG Committee 800 (2020); КР МЗ РФ.', '3. Педиатрические инструменты', 'Новорождённые', true),
+  T('neo-rds-class', 'RDS classification (X-ray + FiO₂)', 'Радиологические степени I-IV: ретикулогранулярный → confluent → "white lung". Combined с FiO₂ для tactic. КР МЗ РФ; Sweet European Consensus 2022.', '3. Педиатрические инструменты', 'Новорождённые', true),
 
   // Дозирование
   T('pediatric-dose', 'Педиатрические дозы (mg/кг)', 'Расчёт безопасных доз 30 препаратов для детей по mg/кг с проверкой максимума. WHO · BNFc · AAP · APLS.', '3. Педиатрические инструменты', 'Дозирование', true),
