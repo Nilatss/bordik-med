@@ -389,10 +389,12 @@ export const useAppStore = create<AppState>()(
 
       toggleProfile: () => set({ showProfile: true, showLearning: false, showTools: false, showStats: false, showTests: false, activeSection: null, activeModuleId: null, currentCourseId: null, activeToolId: null }),
 
-      // Open a specific tool — also flip into the Tools view + clear other
-       // top-level flags so navigation from search works from anywhere.
+      // Open a specific tool — flip into appropriate view + clear other
+      // top-level flags. If user is currently on Neonatology page (showNeonatal=true),
+      // KEEP that flag and don't override to showTools — so Back from ToolView
+      // returns to Neonatology Calculators tab instead of /tools list.
       openTool: (id) => {
-        const { toolUsage, recentToolIds } = get();
+        const { toolUsage, recentToolIds, showNeonatal } = get();
         // MRU обновление: убираем id из текущей позиции, ставим в начало,
         // обрезаем до 10 элементов. Это даёт ленту «последние 5–10 инструментов»
         // под виджет на странице /tools без отдельного timestamp-словаря.
@@ -407,15 +409,32 @@ export const useAppStore = create<AppState>()(
             t: performance.now(),
           };
         }
-        set({
-          activeToolId: id,
-          showTools: true,
-          showProfile: false, showStats: false, showTests: false, showLearning: false,
-          activeSection: null, activeModuleId: null, currentCourseId: null,
-          toolUsage: { ...toolUsage, [id]: (toolUsage[id] ?? 0) + 1 },
-          recentToolIds: nextRecent,
-        });
+        // If opened from Neonatology — keep showNeonatal=true so close brings
+        // user back. Otherwise standard tools-flow.
+        if (showNeonatal) {
+          set({
+            activeToolId: id,
+            // showNeonatal stays true; HomeApp view-decider treats
+            // (activeToolId && showNeonatal) as 'tool' precedence.
+            showProfile: false, showStats: false, showTests: false, showLearning: false,
+            activeSection: null, activeModuleId: null, currentCourseId: null,
+            toolUsage: { ...toolUsage, [id]: (toolUsage[id] ?? 0) + 1 },
+            recentToolIds: nextRecent,
+          });
+        } else {
+          set({
+            activeToolId: id,
+            showTools: true,
+            showProfile: false, showStats: false, showTests: false, showLearning: false,
+            activeSection: null, activeModuleId: null, currentCourseId: null,
+            toolUsage: { ...toolUsage, [id]: (toolUsage[id] ?? 0) + 1 },
+            recentToolIds: nextRecent,
+          });
+        }
       },
+      // closeTool — clears activeToolId only. View-decider falls back to
+      // remaining flag (showNeonatal stays true if entered from there;
+      // showTools stays true if entered from /tools).
       closeTool: () => set({ activeToolId: null }),
 
       addStudyTime: (courseId, seconds) => {
