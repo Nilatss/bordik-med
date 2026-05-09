@@ -239,6 +239,11 @@ export const CATALOG_TOOLS: CatalogTool[] = [
   T('neo-vancomycin-dose', 'Ванкомицин н/р (CONS / MRSA)', '10-15 мг/кг q6-24h по PMA + PNA. Loading 20 мг/кг при meningitis. AUC₂₄/MIC 400-600 (ASHP/IDSA 2020); trough 10-20 мг/л.', '3. Педиатрические инструменты', 'Дозирование', true),
   T('neo-fentanyl-dose', 'Фентанил н/р (анальгезия / седация)', 'Болюс 0.5-2 мкг/кг IV; инфузия 0.5-4 мкг/кг/ч. ~75-125× potency morphine. NEOPAIN trial; AAP CFN 2016.', '3. Педиатрические инструменты', 'Дозирование', true),
   T('neo-pge1-dose', 'PGE1 (alprostadil) — duct-dependent ВПС', '0.01-0.1 мкг/кг/мин IV continuous для поддержания PDA при cyanotic CHD / left-sided obstructive. AAP/AHA 2018; Cochrane 2018.', '3. Педиатрические инструменты', 'Дозирование', true),
+  T('neo-morphine-dose', 'Морфин н/р (analgesia / NAS)', 'IV болюс 0.05-0.1 мг/кг q4-6h; инфузия 10-30 мкг/кг/ч; PO 0.04-0.16 мг/кг q3-4h для NAS. NEOPAIN; AAP CFN 2016; Hudak/Tan AAP 2012.', '3. Педиатрические инструменты', 'Дозирование', true),
+  T('neo-dopamine-dose', 'Допамин н/р (inotrope / vasopressor)', 'Dose-dependent: dopa 1-3 → β1 4-10 → α1 10-20 мкг/кг/мин. First-line shock. AAP CFN 2018; Saugstad Acta Paediatr 2018.', '3. Педиатрические инструменты', 'Дозирование', true),
+  T('neo-hydrocortisone-dose', 'Гидрокортизон н/р', 'Refractory hypotension 1 мг/кг q8h × 5 дней; CAH replacement 15 мг/м²/сут; BPD prevention controversial. PRINCETON-2; NICHD 2022.', '3. Педиатрические инструменты', 'Дозирование', true),
+  T('neo-ibuprofen-pda-dose', 'Ибупрофен PDA closure', 'Standard 10/5/5 мг/кг q24h × 3 дня; high-dose 20/10/10 для < 27 нед. Mitra JAMA 2018; Cochrane 2020. Альтернатива indomethacin.', '3. Педиатрические инструменты', 'Дозирование', true),
+  T('neo-furosemide-dose', 'Фуросемид н/р (loop diuretic)', '1-2 мг/кг IV q12-24h (acute) или 1-4 мг/кг PO q12h (BPD chronic). Combine с spironolactone + KCl. Cochrane Diuretics BPD 2017.', '3. Педиатрические инструменты', 'Дозирование', true),
 
   // Дозирование
   T('pediatric-dose', 'Педиатрические дозы (mg/кг)', 'Расчёт безопасных доз 30 препаратов для детей по mg/кг с проверкой максимума. WHO · BNFc · AAP · APLS.', '3. Педиатрические инструменты', 'Дозирование', true),
