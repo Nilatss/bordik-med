@@ -124,6 +124,7 @@ export const RUNNER_LOADERS: Record<string, RunnerLoader> = {
   "neo-azithromycin-dose": () => import('./neo-azithromycin-dose'),
   "neo-pyridoxine-dose": () => import('./neo-pyridoxine-dose'),
   "neo-extubation-readiness": () => import('./neo-extubation-readiness'),
+  "neo-perinatal-infections-class": () => import('./neo-perinatal-infections-class'),
   "aa-gradient": () => import('./aa-gradient'),
   "chads-vasc": () => import('./chads-vasc'),
   "has-bled": () => import('./has-bled'),
