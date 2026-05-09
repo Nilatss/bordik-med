@@ -453,10 +453,14 @@ export default function HomeApp() {
     : null;
 
   // views: profile | stats | tests | tool | tools | icd10 | home | learning (sections) → section (modules) → module (courses) → course
+  // Note: activeToolId+showNeonatal renders 'tool' view; closeTool clears
+  // activeToolId, falling through to 'neonatal' view → user returns to
+  // Neonatology Calculators tab where they came from.
   const view = showProfile ? 'profile'
     : showStats ? 'stats'
     : showTests ? 'tests'
     : (showTools && activeToolId) ? 'tool'
+    : (showNeonatal && activeToolId) ? 'tool'
     : showTools ? 'tools'
     : showIcd10 ? 'icd10'
     : showDrugs ? 'drugs'
@@ -559,8 +563,18 @@ export default function HomeApp() {
             <DrugChecker />
           )}
 
-          {view === 'neonatal' && (
-            <NeonatalHandbook />
+          {/*
+            NeonatalHandbook stays mounted while a tool from its Calculators
+            tab is open (view === 'tool' with showNeonatal=true) — same
+            pattern as ToolsPage. This preserves the active tab + scroll
+            position so closing the tool returns the user exactly where
+            they were (e.g., on Калькуляторы tab scrolled to a specific
+            calc).
+          */}
+          {(view === 'neonatal' || (view === 'tool' && showNeonatal)) && (
+            <div style={{ display: view === 'tool' ? 'none' : 'block' }} aria-hidden={view === 'tool'}>
+              <NeonatalHandbook />
+            </div>
           )}
 
           {view === 'course' && (

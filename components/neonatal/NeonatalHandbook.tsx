@@ -13,11 +13,14 @@
  * UI gracefully показывает то что есть + fallback на full raw text.
  */
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 import Highlight from '@/components/ui/Highlight';
 import GrowthCharts from '@/components/neonatal/GrowthCharts';
 import BilirubinNomogram from '@/components/neonatal/BilirubinNomogram';
+import ResuscitationFlowchart from '@/components/neonatal/ResuscitationFlowchart';
+import { ArrowRight } from '@/components/icons';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAppStore } from '@/lib/store';
 
 interface Drug {
   id: string;
@@ -49,6 +52,14 @@ interface Guideline {
   title_ru: string;
   content: string;
   references: string[];
+  category?: string;
+}
+
+interface GuidelineCategory {
+  id: string;
+  title_ru: string;
+  title_en: string;
+  order: number;
 }
 
 interface GuidelinesBank {
@@ -56,6 +67,7 @@ interface GuidelinesBank {
   lastUpdated: string;
   source: string;
   guidelines: Guideline[];
+  categories?: GuidelineCategory[];
 }
 
 interface Calculator {
@@ -105,38 +117,82 @@ interface LabBank {
   groups: LabGroup[];
 }
 
-type Tab = 'drugs' | 'guidelines' | 'calculators' | 'labs' | 'growth' | 'bilirubin';
+interface Article {
+  id: string;
+  title_ru: string;
+  title_en: string;
+  topic: string;
+  audience: string;
+  level: string;
+  summary: string;
+  content: string;
+  references: string[];
+  related_calculators: string[];
+}
+
+interface ArticlesBank {
+  version: string;
+  lastUpdated: string;
+  source: string;
+  license: string;
+  articles: Article[];
+}
+
+type Tab = 'drugs' | 'guidelines' | 'calculators' | 'labs' | 'articles' | 'resuscitation' | 'growth' | 'bilirubin';
 
 export default function NeonatalHandbook() {
   const [bank, setBank] = useState<Bank | null>(null);
   const [guidelines, setGuidelines] = useState<GuidelinesBank | null>(null);
   const [calculators, setCalculators] = useState<CalculatorsBank | null>(null);
   const [labs, setLabs] = useState<LabBank | null>(null);
+  const [articles, setArticles] = useState<ArticlesBank | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [q, setQ] = useState('');
   const [openId, setOpenId] = useState<string | null>(null);
-  const [tab, setTab] = useState<Tab>('drugs');
+  // Tab state — persisted to sessionStorage so closing a calculator that
+  // was opened from this page returns to the same tab (e.g., Калькуляторы).
+  const [tab, setTab] = useState<Tab>(() => {
+    if (typeof window === 'undefined') return 'drugs';
+    try {
+      const saved = window.sessionStorage.getItem('bordik-neonatal-tab');
+      if (saved && ['drugs', 'guidelines', 'calculators', 'labs', 'articles', 'resuscitation', 'growth', 'bilirubin'].includes(saved)) {
+        return saved as Tab;
+      }
+    } catch { /* sessionStorage unavailable — ignore */ }
+    return 'drugs';
+  });
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    try { window.sessionStorage.setItem('bordik-neonatal-tab', tab); } catch { /* ignore */ }
+  }, [tab]);
+
+  // openTool from store — flips the app into ToolView while keeping
+  // showNeonatal=true so closeTool returns user back here.
+  const openTool = useAppStore((s) => s.openTool);
 
   useEffect(() => {
     let cancelled = false;
     void (async () => {
       try {
-        const [drugsR, guidelinesR, calcR, labsR] = await Promise.all([
-          fetch('/neonatal-monographs.json?v=2.4.0', { cache: 'force-cache' }),
-          fetch('/neonatal-guidelines.json?v=1.3.0', { cache: 'force-cache' }),
+        const [drugsR, guidelinesR, calcR, labsR, articlesR] = await Promise.all([
+          fetch('/neonatal-monographs.json?v=2.5.0', { cache: 'force-cache' }),
+          fetch('/neonatal-guidelines.json?v=1.4.0', { cache: 'force-cache' }),
           fetch('/neonatal-calculators.json?v=1.0.0', { cache: 'force-cache' }),
           fetch('/neonatal-lab-norms.json?v=1.0.0', { cache: 'force-cache' }),
+          fetch('/neonatal-articles.json?v=1.0.0', { cache: 'force-cache' }),
         ]);
         if (!drugsR.ok) throw new Error(`monographs ${drugsR.status}`);
         const drugsJson = await drugsR.json();
         const guidesJson = guidelinesR.ok ? await guidelinesR.json() : null;
         const calcJson = calcR.ok ? await calcR.json() : null;
         const labsJson = labsR.ok ? await labsR.json() : null;
+        const articlesJson = articlesR.ok ? await articlesR.json() : null;
         if (!cancelled) {
           setBank(drugsJson as Bank);
           if (guidesJson) setGuidelines(guidesJson as GuidelinesBank);
           if (calcJson) setCalculators(calcJson as CalculatorsBank);
           if (labsJson) setLabs(labsJson as LabBank);
+          if (articlesJson) setArticles(articlesJson as ArticlesBank);
         }
       } catch (e) {
         if (!cancelled) setError((e as Error).message ?? 'load failed');
@@ -167,6 +223,36 @@ export default function NeonatalHandbook() {
       || g.content.toLowerCase().includes(query)
     );
   }, [guidelines, q]);
+
+  /**
+   * Group filtered guidelines by category. Keeps category order from
+   * `categories` map (order field). Empty groups are dropped. Anything
+   * without a known category falls into 'other' bucket at the end.
+   */
+  const groupedGuidelines = useMemo(() => {
+    if (!guidelines) return [];
+    const cats = guidelines.categories ?? [];
+    const sortedCats = [...cats].sort((a, b) => a.order - b.order);
+
+    const buckets = new Map<string, { meta: GuidelineCategory; items: Guideline[] }>();
+    for (const cat of sortedCats) {
+      buckets.set(cat.id, { meta: cat, items: [] });
+    }
+    const otherMeta: GuidelineCategory = {
+      id: 'other',
+      title_ru: 'Прочие',
+      title_en: 'Other',
+      order: 99,
+    };
+    buckets.set('other', { meta: otherMeta, items: [] });
+
+    for (const g of filteredGuidelines) {
+      const catId = g.category && buckets.has(g.category) ? g.category : 'other';
+      buckets.get(catId)?.items.push(g);
+    }
+
+    return Array.from(buckets.values()).filter((b) => b.items.length > 0);
+  }, [guidelines, filteredGuidelines]);
 
   const filteredCalculators = useMemo(() => {
     if (!calculators) return [];
@@ -221,6 +307,19 @@ export default function NeonatalHandbook() {
     [filteredLabs]
   );
 
+  const filteredArticles = useMemo(() => {
+    if (!articles) return [];
+    const query = q.trim().toLowerCase();
+    if (!query) return articles.articles;
+    return articles.articles.filter((a) =>
+      a.title_ru.toLowerCase().includes(query)
+      || a.title_en.toLowerCase().includes(query)
+      || a.summary.toLowerCase().includes(query)
+      || a.content.toLowerCase().includes(query)
+      || a.topic.toLowerCase().includes(query)
+    );
+  }, [articles, q]);
+
   if (error) {
     return (
       <main style={{ padding: '24px', maxWidth: 980, margin: '0 auto' }}>
@@ -271,8 +370,8 @@ export default function NeonatalHandbook() {
         </p>
       </motion.div>
 
-      {/* Search — для табов с поиском (drugs/guidelines/calculators/labs); на growth/bilirubin не нужен */}
-      {(tab === 'drugs' || tab === 'guidelines' || tab === 'calculators' || tab === 'labs') && (
+      {/* Search — для табов с поиском (drugs/guidelines/calculators/labs/articles); на growth/bilirubin не нужен */}
+      {(tab === 'drugs' || tab === 'guidelines' || tab === 'calculators' || tab === 'labs' || tab === 'articles') && (
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
@@ -327,7 +426,9 @@ export default function NeonatalHandbook() {
         {([
           { id: 'drugs' as const, label: 'Препараты', count: bank.drugs.length },
           { id: 'calculators' as const, label: 'Калькуляторы', count: totalCalculators },
-          { id: 'guidelines' as const, label: 'Протоколы NICU', count: guidelines?.guidelines.length ?? 0 },
+          { id: 'guidelines' as const, label: 'Протоколы', count: guidelines?.guidelines.length ?? 0 },
+          { id: 'resuscitation' as const, label: 'Реанимация (4 региона)', count: 4 as number | null },
+          { id: 'articles' as const, label: 'Статьи', count: articles?.articles.length ?? 0 },
           { id: 'labs' as const, label: 'Лаб. нормы', count: totalLabs },
           { id: 'growth' as const, label: 'Графики роста', count: null as number | null },
           { id: 'bilirubin' as const, label: 'Билирубин', count: null as number | null },
@@ -404,23 +505,51 @@ export default function NeonatalHandbook() {
         <>
           <p style={{ fontSize: 13, color: '#6B7280', margin: '0 0 14px' }}>
             Показано: <strong style={{ color: '#1A1A1A' }}>{filteredGuidelines.length}</strong> из {guidelines?.guidelines.length ?? 0}
+            {' · '}
+            <span style={{ color: '#9CA3AF' }}>
+              сгруппированы по разделам
+            </span>
           </p>
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3 }}
-            style={{ display: 'flex', flexDirection: 'column', gap: 8 }}
+            style={{ display: 'flex', flexDirection: 'column', gap: 24 }}
           >
-            {filteredGuidelines.map((g) => (
-              <GuidelineCard
-                key={g.id}
-                guideline={g}
-                query={q}
-                isOpen={openId === g.id}
-                onToggle={() => setOpenId(openId === g.id ? null : g.id)}
-              />
+            {groupedGuidelines.map((group) => (
+              <div key={group.meta.id}>
+                <h3 style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: 16,
+                  fontWeight: 700,
+                  color: '#1F2937',
+                  margin: '0 0 12px',
+                  letterSpacing: '-0.01em',
+                  display: 'flex', alignItems: 'baseline', gap: 8,
+                }}>
+                  <span>{group.meta.title_ru}</span>
+                  <span style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
+                    color: '#9CA3AF',
+                  }}>
+                    {group.items.length}
+                  </span>
+                </h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {group.items.map((g) => (
+                    <GuidelineCard
+                      key={g.id}
+                      guideline={g}
+                      query={q}
+                      isOpen={openId === g.id}
+                      onToggle={() => setOpenId(openId === g.id ? null : g.id)}
+                    />
+                  ))}
+                </div>
+              </div>
             ))}
-            {filteredGuidelines.length === 0 && (
+            {groupedGuidelines.length === 0 && (
               <div style={{
                 padding: '32px 16px', background: '#F5F6F8', borderRadius: 12,
                 textAlign: 'center', color: '#6B7280', fontSize: 14,
@@ -452,66 +581,28 @@ export default function NeonatalHandbook() {
                   fontSize: 16,
                   fontWeight: 700,
                   color: '#1F2937',
-                  margin: '0 0 10px',
+                  margin: '0 0 12px',
                   letterSpacing: '-0.01em',
                 }}>
                   {group.title_ru}
                 </h3>
-                <ul style={{
-                  listStyle: 'none',
-                  padding: 0,
-                  margin: 0,
-                  display: 'grid',
-                  gap: 8,
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-                }}>
+                <div
+                  style={{
+                    display: 'grid',
+                    gap: 'var(--space-3)',
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+                  }}
+                >
                   {group.calculators.map((calc) => (
-                    <li key={calc.id}>
-                      <a
-                        href={`/tools/${calc.id}`}
-                        style={{
-                          display: 'block',
-                          padding: '12px 14px',
-                          background: '#F5F6F8',
-                          borderRadius: 10,
-                          textDecoration: 'none',
-                          color: '#1A1A1A',
-                          border: '1px solid transparent',
-                          transition: 'border-color 150ms, background 150ms',
-                        }}
-                      >
-                        <div style={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          alignItems: 'baseline',
-                          marginBottom: 4,
-                          gap: 8,
-                        }}>
-                          <strong style={{ fontSize: 14, lineHeight: 1.3 }}>
-                            {calc.title_ru}
-                          </strong>
-                          <span style={{
-                            fontFamily: 'var(--font-mono, monospace)',
-                            fontSize: 10.5,
-                            color: '#9CA3AF',
-                            fontWeight: 600,
-                            whiteSpace: 'nowrap',
-                          }}>
-                            {calc.audit_id}
-                          </span>
-                        </div>
-                        <p style={{
-                          fontSize: 11.5,
-                          color: '#6B7280',
-                          margin: '4px 0 0',
-                          lineHeight: 1.4,
-                        }}>
-                          {calc.source}
-                        </p>
-                      </a>
-                    </li>
+                    <NeonatalCalcCard
+                      key={calc.id}
+                      calc={calc}
+                      query={q}
+                      subcategoryLabel={group.title_ru}
+                      onOpen={openTool}
+                    />
                   ))}
-                </ul>
+                </div>
               </div>
             ))}
             {filteredCalcCount === 0 && (
@@ -556,11 +647,24 @@ export default function NeonatalHandbook() {
                   borderRadius: 10,
                   overflow: 'hidden',
                 }}>
+                  {/*
+                    Fixed column widths via <colgroup> + table-layout: fixed —
+                    обеспечивает identical layout across all groups (без
+                    "skating" колонок при разной длине контента в строках).
+                    Total = 100 % (40 + 22 + 22 + 16).
+                  */}
                   <table style={{
                     width: '100%',
                     borderCollapse: 'collapse',
                     fontSize: 12.5,
+                    tableLayout: 'fixed',
                   }}>
+                    <colgroup>
+                      <col style={{ width: '40%' }} />
+                      <col style={{ width: '22%' }} />
+                      <col style={{ width: '22%' }} />
+                      <col style={{ width: '16%' }} />
+                    </colgroup>
                     <thead>
                       <tr style={{ background: '#E5E7EB' }}>
                         <th style={{ padding: '8px 10px', textAlign: 'left', fontWeight: 600, color: '#374151' }}>Показатель</th>
@@ -572,7 +676,7 @@ export default function NeonatalHandbook() {
                     <tbody>
                       {group.values.map((v, i) => (
                         <tr key={i} style={{ borderTop: '1px solid #E5E7EB' }}>
-                          <td style={{ padding: '8px 10px', color: '#1A1A1A', fontWeight: 500 }}>
+                          <td style={{ padding: '8px 10px', color: '#1A1A1A', fontWeight: 500, wordBreak: 'break-word' }}>
                             {v.name_ru}
                             {v.notes && (
                               <div style={{ fontSize: 11, color: '#6B7280', marginTop: 2, lineHeight: 1.35 }}>
@@ -580,9 +684,9 @@ export default function NeonatalHandbook() {
                               </div>
                             )}
                           </td>
-                          <td style={{ padding: '8px 10px', color: '#1A1A1A' }}>{v.term}</td>
-                          <td style={{ padding: '8px 10px', color: '#1A1A1A' }}>{v.preterm}</td>
-                          <td style={{ padding: '8px 10px', color: '#6B7280', fontFamily: 'var(--font-mono, monospace)', fontSize: 11.5 }}>{v.unit}</td>
+                          <td style={{ padding: '8px 10px', color: '#1A1A1A', wordBreak: 'break-word' }}>{v.term}</td>
+                          <td style={{ padding: '8px 10px', color: '#1A1A1A', wordBreak: 'break-word' }}>{v.preterm}</td>
+                          <td style={{ padding: '8px 10px', color: '#6B7280', fontFamily: 'var(--font-mono, monospace)', fontSize: 11.5, wordBreak: 'break-word' }}>{v.unit}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -600,6 +704,48 @@ export default function NeonatalHandbook() {
             )}
           </motion.div>
         </>
+      ) : tab === 'articles' ? (
+        <>
+          <p style={{ fontSize: 13, color: '#6B7280', margin: '0 0 14px' }}>
+            Показано: <strong style={{ color: '#1A1A1A' }}>{filteredArticles.length}</strong> из {articles?.articles.length ?? 0} статей
+            {' · '}
+            <span style={{ color: '#9CA3AF' }}>
+              кликните чтобы открыть полный текст
+            </span>
+          </p>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+            style={{ display: 'flex', flexDirection: 'column', gap: 8 }}
+          >
+            {filteredArticles.map((a) => (
+              <ArticleCard
+                key={a.id}
+                article={a}
+                query={q}
+                isOpen={openId === a.id}
+                onToggle={() => setOpenId(openId === a.id ? null : a.id)}
+              />
+            ))}
+            {filteredArticles.length === 0 && (
+              <div style={{
+                padding: '32px 16px', background: '#F5F6F8', borderRadius: 12,
+                textAlign: 'center', color: '#6B7280', fontSize: 14,
+              }}>
+                Ничего не найдено.
+              </div>
+            )}
+          </motion.div>
+        </>
+      ) : tab === 'resuscitation' ? (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3 }}
+        >
+          <ResuscitationFlowchart />
+        </motion.div>
       ) : tab === 'growth' ? (
         <motion.div
           initial={{ opacity: 0 }}
@@ -1234,6 +1380,427 @@ function GuidelineCard({
         )}
       </AnimatePresence>
     </div>
+  );
+}
+
+/**
+ * NeonatalCalcCard — карточка калькулятора, визуально 1:1 с ToolCard
+ * (см. components/tools/page/ToolCard.tsx). Клик вызывает store.openTool(id),
+ * что переключает app в ToolView, сохраняя showNeonatal=true. После закрытия
+ * пользователь возвращается на этот же таб «Калькуляторы».
+ */
+function NeonatalCalcCard({
+  calc, subcategoryLabel, onOpen,
+}: {
+  calc: Calculator;
+  query: string;
+  subcategoryLabel: string;
+  onOpen: (id: string) => void;
+}) {
+  const handleClick = useCallback(() => onOpen(calc.id), [onOpen, calc.id]);
+
+  // Prefetch на hover/focus — same pattern как ToolCard. Тёплые chunks
+  // (ToolView + tools-runners + per-tool runner) скрывают latency 150-300 ms.
+  const handlePrefetch = useCallback(() => {
+    import('@/components/tools/ToolView').catch(() => {});
+    import('@/lib/tools-runners').catch(() => {});
+    import('@/lib/runners')
+      .then((m) => m.loadRunner(calc.id))
+      .catch(() => { /* silent */ });
+  }, [calc.id]);
+
+  return (
+    <button
+      onClick={handleClick}
+      onMouseEnter={(e) => {
+        handlePrefetch();
+        e.currentTarget.style.background = '#F0F2F5';
+      }}
+      onFocus={handlePrefetch}
+      onMouseLeave={(e) => { e.currentTarget.style.background = '#F5F6F8'; }}
+      style={{
+        background: '#F5F6F8',
+        borderRadius: 'var(--md-sys-shape-corner-extra-large)',
+        border: 'none',
+        padding: 'var(--space-5)',
+        textAlign: 'left',
+        cursor: 'pointer',
+        position: 'relative',
+        overflow: 'hidden',
+        minHeight: 160,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        transition: 'background 300ms cubic-bezier(0.22,1,0.36,1)',
+        contentVisibility: 'auto',
+        containIntrinsicSize: '160px 220px',
+      } as React.CSSProperties}
+    >
+      <div style={{
+        marginBottom: 'var(--space-3)', position: 'relative', zIndex: 1,
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8,
+      }}>
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: 4, flex: 1, minWidth: 0,
+          flexWrap: 'wrap',
+        }}>
+          <span style={{
+            display: 'inline-flex', alignItems: 'center', gap: 'var(--space-1)',
+            padding: '4px var(--space-2)', borderRadius: 'var(--md-sys-shape-corner-full)',
+            background: '#FFFFFF',
+            boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
+            fontFamily: 'var(--font-mono)',
+            fontSize: '0.625rem', fontWeight: 500,
+            color: 'var(--md-sys-color-on-surface-variant)',
+          }}>
+            {subcategoryLabel}
+          </span>
+          {calc.audit_id && (
+            <span style={{
+              display: 'inline-flex', alignItems: 'center',
+              padding: '4px var(--space-2)', borderRadius: 'var(--md-sys-shape-corner-full)',
+              background: '#FFFFFF',
+              boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.625rem', fontWeight: 600,
+              color: '#6B7280',
+              whiteSpace: 'nowrap',
+            }}>
+              {calc.audit_id}
+            </span>
+          )}
+        </div>
+      </div>
+
+      <div style={{ position: 'relative', zIndex: 1, flex: 1 }}>
+        <h3 style={{
+          fontFamily: 'var(--font-display)', fontSize: 'var(--text-base)', fontWeight: 700,
+          color: 'var(--md-sys-color-on-surface)',
+          marginBottom: 'var(--space-1)', lineHeight: 1.25,
+        }}>
+          {calc.title_ru}
+        </h3>
+        <p style={{
+          fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)',
+          color: 'var(--md-sys-color-on-surface-variant)', lineHeight: 1.4,
+          display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical',
+          overflow: 'hidden',
+        }}>
+          {calc.source}
+        </p>
+      </div>
+
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: 'var(--space-1)',
+        marginTop: 'var(--space-3)', position: 'relative', zIndex: 1,
+      }}>
+        <span style={{
+          fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', fontWeight: 500,
+          color: 'var(--md-sys-color-on-surface)',
+        }}>
+          Открыть калькулятор
+        </span>
+        <ArrowRight size={14} color="var(--md-sys-color-on-surface)" />
+      </div>
+    </button>
+  );
+}
+
+function ArticleCard({
+  article, query, isOpen, onToggle,
+}: {
+  article: Article;
+  query: string;
+  isOpen: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <div style={{
+      background: '#F5F6F8',
+      border: isOpen ? '1px solid #E5E7EB' : 'none',
+      borderRadius: 14,
+      overflow: 'hidden',
+      transition: 'border-color 150ms ease',
+    }}>
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={isOpen}
+        style={{
+          width: '100%',
+          display: 'flex', alignItems: 'flex-start', gap: 14,
+          padding: '14px 18px',
+          background: 'transparent', border: 'none',
+          cursor: 'pointer', textAlign: 'left',
+          fontFamily: 'inherit',
+          transition: 'background 150ms',
+        }}
+        onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
+        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+      >
+        <span style={{ flex: 1, minWidth: 0 }}>
+          <span style={{
+            display: 'flex', alignItems: 'baseline', gap: 8, flexWrap: 'wrap',
+          }}>
+            <span style={{
+              fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 600,
+              color: '#111827', letterSpacing: '-0.01em', lineHeight: 1.35,
+            }}>
+              <Highlight text={article.title_ru} query={query} />
+            </span>
+            <span style={{
+              fontSize: 10, fontWeight: 700, letterSpacing: '0.04em',
+              textTransform: 'uppercase', color: '#9CA3AF',
+              padding: '2px 6px', background: '#FFFFFF', borderRadius: 4,
+              border: '1px solid #E5E7EB',
+            }}>
+              {article.topic}
+            </span>
+          </span>
+          <span style={{
+            display: 'block', marginTop: 4, fontSize: 12, color: '#6B7280', lineHeight: 1.5,
+          }}>
+            <Highlight text={article.summary} query={query} />
+          </span>
+        </span>
+        <span style={{
+          flexShrink: 0,
+          color: '#9CA3AF',
+          transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+          transition: 'transform 200ms',
+          marginTop: 4,
+        }}>
+          <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </span>
+      </button>
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{
+              height: { duration: 0.25, ease: [0.05, 0.7, 0.1, 1] },
+              opacity: { duration: 0.18 },
+            }}
+            style={{ overflow: 'hidden' }}
+          >
+            <div style={{
+              padding: '18px 20px 20px',
+              background: '#FFFFFF',
+              borderTop: '1px solid #E5E7EB',
+            }}>
+              <ArticleContent content={article.content} />
+              {article.related_calculators.length > 0 && (
+                <div style={{ marginTop: 18, paddingTop: 14, borderTop: '1px solid #E5E7EB' }}>
+                  <div style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
+                    textTransform: 'uppercase', color: '#9CA3AF', marginBottom: 8,
+                  }}>
+                    Связанные калькуляторы
+                  </div>
+                  <ul style={{
+                    margin: 0, padding: 0, listStyle: 'none',
+                    display: 'flex', flexWrap: 'wrap', gap: 6,
+                  }}>
+                    {article.related_calculators.map((calcId) => (
+                      <li key={calcId}>
+                        <a href={`/tools/${calcId}`} style={{
+                          display: 'inline-block', padding: '4px 10px',
+                          background: '#EEF2FF', color: '#4338CA',
+                          borderRadius: 6, fontSize: 12, fontWeight: 500,
+                          textDecoration: 'none',
+                          border: '1px solid #E0E7FF',
+                        }}>
+                          {calcId}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {article.references.length > 0 && (
+                <div style={{ marginTop: 18, paddingTop: 14, borderTop: '1px solid #E5E7EB' }}>
+                  <div style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
+                    textTransform: 'uppercase', color: '#9CA3AF', marginBottom: 8,
+                  }}>
+                    References
+                  </div>
+                  <ol style={{ margin: 0, paddingLeft: 20, fontSize: 12, color: '#6B7280', lineHeight: 1.55 }}>
+                    {article.references.map((ref, i) => (
+                      <li key={i} style={{ marginBottom: 4 }}>{ref}</li>
+                    ))}
+                  </ol>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+/**
+ * ArticleContent — render markdown-like text for articles.
+ * Supports: ## headings, ### subheadings, **bold**, lists, tables, paragraphs.
+ */
+function ArticleContent({ content }: { content: string }) {
+  const blocks = content.split(/\n\n+/).map((block) => block.trim()).filter(Boolean);
+  return (
+    <div style={{ fontSize: 13.5, lineHeight: 1.65, color: '#1F2937' }}>
+      {blocks.map((block, idx) => {
+        if (block.startsWith('## ')) {
+          return (
+            <h3 key={idx} style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 16, fontWeight: 700,
+              color: '#111827', margin: '20px 0 8px',
+              letterSpacing: '-0.01em',
+            }}>
+              {block.slice(3)}
+            </h3>
+          );
+        }
+        if (block.startsWith('### ')) {
+          return (
+            <h4 key={idx} style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 14, fontWeight: 700,
+              color: '#1F2937', margin: '16px 0 6px',
+              letterSpacing: '-0.005em',
+            }}>
+              {block.slice(4)}
+            </h4>
+          );
+        }
+        if (block.startsWith('- ') || block.startsWith('* ')) {
+          const items = block.split('\n').map((l) => l.replace(/^[-*]\s+/, ''));
+          return (
+            <ul key={idx} style={{ margin: '6px 0', paddingLeft: 22 }}>
+              {items.map((it, i) => (
+                <li key={i} style={{ marginBottom: 3 }}>
+                  <FormattedText text={it} />
+                </li>
+              ))}
+            </ul>
+          );
+        }
+        if (/^\d+\.\s/.test(block)) {
+          const items = block.split('\n').map((l) => l.replace(/^\d+\.\s+/, ''));
+          return (
+            <ol key={idx} style={{ margin: '6px 0', paddingLeft: 22 }}>
+              {items.map((it, i) => (
+                <li key={i} style={{ marginBottom: 3 }}>
+                  <FormattedText text={it} />
+                </li>
+              ))}
+            </ol>
+          );
+        }
+        if (block.startsWith('| ')) {
+          const rows = block.split('\n').filter((l) => l.startsWith('|'));
+          if (rows.length < 2) {
+            return <p key={idx} style={{ margin: '8px 0' }}><FormattedText text={block} /></p>;
+          }
+          const headerCells = rows[0]?.split('|').map((c) => c.trim()).filter(Boolean) ?? [];
+          const bodyRows = rows.slice(2).map((r) => r.split('|').map((c) => c.trim()).filter(Boolean));
+          return (
+            <div key={idx} style={{
+              overflowX: 'auto', margin: '12px 0',
+              borderRadius: 8, border: '1px solid #E5E7EB',
+            }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12.5 }}>
+                <thead>
+                  <tr style={{ background: '#F3F4F6' }}>
+                    {headerCells.map((h, i) => (
+                      <th key={i} style={{
+                        padding: '8px 10px', textAlign: 'left',
+                        fontWeight: 600, color: '#374151',
+                        borderBottom: '1px solid #E5E7EB',
+                      }}>
+                        <FormattedText text={h} />
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {bodyRows.map((row, ri) => (
+                    <tr key={ri} style={{ borderTop: ri > 0 ? '1px solid #F3F4F6' : 'none' }}>
+                      {row.map((c, ci) => (
+                        <td key={ci} style={{ padding: '6px 10px', color: '#1F2937' }}>
+                          <FormattedText text={c} />
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          );
+        }
+        return (
+          <p key={idx} style={{ margin: '8px 0' }}>
+            <FormattedText text={block} />
+          </p>
+        );
+      })}
+    </div>
+  );
+}
+
+/**
+ * FormattedText — handles inline **bold** and `code` formatting.
+ */
+function FormattedText({ text }: { text: string }) {
+  const parts: Array<{ type: 'text' | 'bold' | 'code'; value: string }> = [];
+  let buffer = text;
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    const boldMatch = /\*\*([^*]+)\*\*/.exec(buffer);
+    const codeMatch = /`([^`]+)`/.exec(buffer);
+    let nextMatch: RegExpExecArray | null = null;
+    let kind: 'bold' | 'code' = 'bold';
+    if (boldMatch && (!codeMatch || boldMatch.index < codeMatch.index)) {
+      nextMatch = boldMatch;
+      kind = 'bold';
+    } else if (codeMatch) {
+      nextMatch = codeMatch;
+      kind = 'code';
+    }
+    if (!nextMatch) {
+      if (buffer) parts.push({ type: 'text', value: buffer });
+      break;
+    }
+    if (nextMatch.index > 0) {
+      parts.push({ type: 'text', value: buffer.slice(0, nextMatch.index) });
+    }
+    parts.push({ type: kind, value: nextMatch[1] ?? '' });
+    buffer = buffer.slice(nextMatch.index + nextMatch[0].length);
+  }
+  return (
+    <>
+      {parts.map((p, i) => {
+        if (p.type === 'bold') return <strong key={i} style={{ fontWeight: 600, color: '#111827' }}>{p.value}</strong>;
+        if (p.type === 'code') return (
+          <code key={i} style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: '0.9em',
+            background: '#F3F4F6',
+            padding: '1px 4px',
+            borderRadius: 3,
+            color: '#7C2D12',
+          }}>{p.value}</code>
+        );
+        return <span key={i}>{p.value}</span>;
+      })}
+    </>
   );
 }
 
