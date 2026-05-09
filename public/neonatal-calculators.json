@@ -143,7 +143,8 @@
         { "id": "neo-prematurity-class", "title_ru": "Классификация недоношенности", "title_en": "Prematurity Classification", "source": "WHO ICD-11 P07; AAP/Engle 2009", "audit_id": "Б1" },
         { "id": "neo-zvur-class", "title_ru": "ЗВУР / SGA / AGA / LGA", "title_en": "IUGR / SGA Classification", "source": "ACOG Committee Opinion 800 (2020)", "audit_id": "Б2" },
         { "id": "neo-cholestasis-criteria", "title_ru": "Cholestasis у н/р (criteria + workup)", "title_en": "Cholestasis Criteria + Workup", "source": "NASPGHAN/ESPGHAN 2017 (Fawaz JPGN 64:154)", "audit_id": "Холестаз" },
-        { "id": "neo-perinatal-infections-class", "title_ru": "Перинатальные инфекции (P35-P39 МКБ-10)", "title_en": "Perinatal Infections Classification", "source": "WHO ICD-10 P35-P39; AAP Red Book 2024-2027; КР МЗ РФ", "audit_id": "Б10" }
+        { "id": "neo-perinatal-infections-class", "title_ru": "Перинатальные инфекции (P35-P39 МКБ-10)", "title_en": "Perinatal Infections Classification", "source": "WHO ICD-10 P35-P39; AAP Red Book 2024-2027; КР МЗ РФ", "audit_id": "Б10" },
+        { "id": "neo-hdn-class", "title_ru": "ГБН — тяжесть", "title_en": "HDN Severity", "source": "КР МЗ РФ ГБН 2024; AAP 2022; NICE CG98", "audit_id": "Б11" }
       ]
     },
     {

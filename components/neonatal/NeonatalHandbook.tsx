@@ -138,7 +138,34 @@ interface ArticlesBank {
   articles: Article[];
 }
 
-type Tab = 'drugs' | 'guidelines' | 'calculators' | 'labs' | 'articles' | 'resuscitation' | 'growth' | 'bilirubin';
+interface LactDrug {
+  id: string;
+  name_ru: string;
+  name_en: string;
+  category: string;
+  compatibility: 'compatible' | 'use_with_caution' | 'avoid';
+  summary: string;
+  details: string;
+  monitoring: string;
+  lactmed_url: string;
+}
+
+interface LactCategory {
+  id: string;
+  title_ru: string;
+  title_en: string;
+}
+
+interface LactBank {
+  version: string;
+  lastUpdated: string;
+  source: string;
+  license: string;
+  categories: LactCategory[];
+  drugs: LactDrug[];
+}
+
+type Tab = 'drugs' | 'guidelines' | 'calculators' | 'labs' | 'articles' | 'resuscitation' | 'lactmed' | 'growth' | 'bilirubin';
 
 export default function NeonatalHandbook() {
   const [bank, setBank] = useState<Bank | null>(null);
@@ -146,6 +173,7 @@ export default function NeonatalHandbook() {
   const [calculators, setCalculators] = useState<CalculatorsBank | null>(null);
   const [labs, setLabs] = useState<LabBank | null>(null);
   const [articles, setArticles] = useState<ArticlesBank | null>(null);
+  const [lactmed, setLactmed] = useState<LactBank | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [q, setQ] = useState('');
   const [openId, setOpenId] = useState<string | null>(null);
@@ -155,7 +183,7 @@ export default function NeonatalHandbook() {
     if (typeof window === 'undefined') return 'drugs';
     try {
       const saved = window.sessionStorage.getItem('bordik-neonatal-tab');
-      if (saved && ['drugs', 'guidelines', 'calculators', 'labs', 'articles', 'resuscitation', 'growth', 'bilirubin'].includes(saved)) {
+      if (saved && ['drugs', 'guidelines', 'calculators', 'labs', 'articles', 'resuscitation', 'lactmed', 'growth', 'bilirubin'].includes(saved)) {
         return saved as Tab;
       }
     } catch { /* sessionStorage unavailable — ignore */ }
@@ -174,12 +202,13 @@ export default function NeonatalHandbook() {
     let cancelled = false;
     void (async () => {
       try {
-        const [drugsR, guidelinesR, calcR, labsR, articlesR] = await Promise.all([
-          fetch('/neonatal-monographs.json?v=2.5.0', { cache: 'force-cache' }),
+        const [drugsR, guidelinesR, calcR, labsR, articlesR, lactR] = await Promise.all([
+          fetch('/neonatal-monographs.json?v=2.6.0', { cache: 'force-cache' }),
           fetch('/neonatal-guidelines.json?v=1.4.0', { cache: 'force-cache' }),
           fetch('/neonatal-calculators.json?v=1.0.0', { cache: 'force-cache' }),
           fetch('/neonatal-lab-norms.json?v=1.0.0', { cache: 'force-cache' }),
-          fetch('/neonatal-articles.json?v=1.0.0', { cache: 'force-cache' }),
+          fetch('/neonatal-articles.json?v=1.1.0', { cache: 'force-cache' }),
+          fetch('/neonatal-lactmed.json?v=1.0.0', { cache: 'force-cache' }),
         ]);
         if (!drugsR.ok) throw new Error(`monographs ${drugsR.status}`);
         const drugsJson = await drugsR.json();
@@ -187,12 +216,14 @@ export default function NeonatalHandbook() {
         const calcJson = calcR.ok ? await calcR.json() : null;
         const labsJson = labsR.ok ? await labsR.json() : null;
         const articlesJson = articlesR.ok ? await articlesR.json() : null;
+        const lactJson = lactR.ok ? await lactR.json() : null;
         if (!cancelled) {
           setBank(drugsJson as Bank);
           if (guidesJson) setGuidelines(guidesJson as GuidelinesBank);
           if (calcJson) setCalculators(calcJson as CalculatorsBank);
           if (labsJson) setLabs(labsJson as LabBank);
           if (articlesJson) setArticles(articlesJson as ArticlesBank);
+          if (lactJson) setLactmed(lactJson as LactBank);
         }
       } catch (e) {
         if (!cancelled) setError((e as Error).message ?? 'load failed');
@@ -320,6 +351,32 @@ export default function NeonatalHandbook() {
     );
   }, [articles, q]);
 
+  const filteredLactmed = useMemo(() => {
+    if (!lactmed) return [];
+    const query = q.trim().toLowerCase();
+    if (!query) return lactmed.drugs;
+    return lactmed.drugs.filter((d) =>
+      d.name_ru.toLowerCase().includes(query)
+      || d.name_en.toLowerCase().includes(query)
+      || d.summary.toLowerCase().includes(query)
+      || d.details.toLowerCase().includes(query)
+    );
+  }, [lactmed, q]);
+
+  /**
+   * Group lactmed drugs by category in display order. Empty groups dropped.
+   */
+  const groupedLactmed = useMemo(() => {
+    if (!lactmed) return [];
+    const cats = lactmed.categories;
+    const buckets = new Map<string, { meta: LactCategory; items: LactDrug[] }>();
+    for (const cat of cats) buckets.set(cat.id, { meta: cat, items: [] });
+    for (const drug of filteredLactmed) {
+      buckets.get(drug.category)?.items.push(drug);
+    }
+    return Array.from(buckets.values()).filter((b) => b.items.length > 0);
+  }, [lactmed, filteredLactmed]);
+
   if (error) {
     return (
       <main style={{ padding: '24px', maxWidth: 980, margin: '0 auto' }}>
@@ -370,8 +427,8 @@ export default function NeonatalHandbook() {
         </p>
       </motion.div>
 
-      {/* Search — для табов с поиском (drugs/guidelines/calculators/labs/articles); на growth/bilirubin не нужен */}
-      {(tab === 'drugs' || tab === 'guidelines' || tab === 'calculators' || tab === 'labs' || tab === 'articles') && (
+      {/* Search — для табов с поиском; на growth/bilirubin/resuscitation не нужен */}
+      {(tab === 'drugs' || tab === 'guidelines' || tab === 'calculators' || tab === 'labs' || tab === 'articles' || tab === 'lactmed') && (
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
@@ -429,6 +486,7 @@ export default function NeonatalHandbook() {
           { id: 'guidelines' as const, label: 'Протоколы', count: guidelines?.guidelines.length ?? 0 },
           { id: 'resuscitation' as const, label: 'Реанимация (4 региона)', count: 4 as number | null },
           { id: 'articles' as const, label: 'Статьи', count: articles?.articles.length ?? 0 },
+          { id: 'lactmed' as const, label: 'ГВ / LactMed', count: lactmed?.drugs.length ?? 0 },
           { id: 'labs' as const, label: 'Лаб. нормы', count: totalLabs },
           { id: 'growth' as const, label: 'Графики роста', count: null as number | null },
           { id: 'bilirubin' as const, label: 'Билирубин', count: null as number | null },
@@ -746,6 +804,64 @@ export default function NeonatalHandbook() {
         >
           <ResuscitationFlowchart />
         </motion.div>
+      ) : tab === 'lactmed' ? (
+        <>
+          <p style={{ fontSize: 13, color: '#6B7280', margin: '0 0 14px' }}>
+            Показано: <strong style={{ color: '#1A1A1A' }}>{filteredLactmed.length}</strong> из {lactmed?.drugs.length ?? 0} препаратов
+            {' · '}
+            <span style={{ color: '#9CA3AF' }}>
+              совместимость с грудным вскармливанием (LactMed NCBI)
+            </span>
+          </p>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+            style={{ display: 'flex', flexDirection: 'column', gap: 24 }}
+          >
+            {groupedLactmed.map((group) => (
+              <div key={group.meta.id}>
+                <h3 style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: 16,
+                  fontWeight: 700,
+                  color: '#1F2937',
+                  margin: '0 0 12px',
+                  letterSpacing: '-0.01em',
+                  display: 'flex', alignItems: 'baseline', gap: 8,
+                }}>
+                  <span>{group.meta.title_ru}</span>
+                  <span style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
+                    color: '#9CA3AF',
+                  }}>
+                    {group.items.length}
+                  </span>
+                </h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {group.items.map((d) => (
+                    <LactCard
+                      key={d.id}
+                      drug={d}
+                      query={q}
+                      isOpen={openId === d.id}
+                      onToggle={() => setOpenId(openId === d.id ? null : d.id)}
+                    />
+                  ))}
+                </div>
+              </div>
+            ))}
+            {groupedLactmed.length === 0 && (
+              <div style={{
+                padding: '32px 16px', background: '#F5F6F8', borderRadius: 12,
+                textAlign: 'center', color: '#6B7280', fontSize: 14,
+              }}>
+                Ничего не найдено.
+              </div>
+            )}
+          </motion.div>
+        </>
       ) : tab === 'growth' ? (
         <motion.div
           initial={{ opacity: 0 }}
@@ -1801,6 +1917,163 @@ function FormattedText({ text }: { text: string }) {
         return <span key={i}>{p.value}</span>;
       })}
     </>
+  );
+}
+
+/**
+ * LactCard — карточка LactMed-препарата с совместимостью грудного
+ * вскармливания. 3 уровня compatibility: compatible (зелёный),
+ * use_with_caution (жёлтый), avoid (красный).
+ */
+function LactCard({
+  drug, query, isOpen, onToggle,
+}: {
+  drug: LactDrug;
+  query: string;
+  isOpen: boolean;
+  onToggle: () => void;
+}) {
+  const compatColors = {
+    compatible: { bg: '#ECFDF5', border: '#A7F3D0', text: '#065F46', label: 'Совместим' },
+    use_with_caution: { bg: '#FFFBEB', border: '#FDE68A', text: '#92400E', label: 'С осторожностью' },
+    avoid: { bg: '#FEF2F2', border: '#FECACA', text: '#991B1B', label: 'Избегать' },
+  } as const;
+  const colors = compatColors[drug.compatibility];
+
+  return (
+    <div style={{
+      background: '#F5F6F8',
+      border: isOpen ? '1px solid #E5E7EB' : 'none',
+      borderRadius: 14,
+      overflow: 'hidden',
+      transition: 'border-color 150ms ease',
+    }}>
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={isOpen}
+        style={{
+          width: '100%',
+          display: 'flex', alignItems: 'flex-start', gap: 14,
+          padding: '14px 18px',
+          background: 'transparent', border: 'none',
+          cursor: 'pointer', textAlign: 'left',
+          fontFamily: 'inherit',
+          transition: 'background 150ms',
+        }}
+        onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
+        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+      >
+        <span style={{ flex: 1, minWidth: 0 }}>
+          <span style={{
+            display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 4,
+          }}>
+            <span style={{
+              fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 600,
+              color: '#111827', letterSpacing: '-0.01em', lineHeight: 1.35,
+            }}>
+              <Highlight text={drug.name_ru} query={query} />
+            </span>
+            <span style={{
+              fontSize: 11, fontWeight: 700,
+              color: colors.text,
+              background: colors.bg,
+              padding: '2px 8px',
+              borderRadius: 4,
+              border: `1px solid ${colors.border}`,
+            }}>
+              {colors.label}
+            </span>
+          </span>
+          <span style={{
+            display: 'block', fontSize: 12, color: '#6B7280', lineHeight: 1.5,
+          }}>
+            <Highlight text={drug.summary} query={query} />
+          </span>
+        </span>
+        <span style={{
+          flexShrink: 0,
+          color: '#9CA3AF',
+          transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+          transition: 'transform 200ms',
+          marginTop: 4,
+        }}>
+          <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </span>
+      </button>
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{
+              height: { duration: 0.25, ease: [0.05, 0.7, 0.1, 1] },
+              opacity: { duration: 0.18 },
+            }}
+            style={{ overflow: 'hidden' }}
+          >
+            <div style={{
+              padding: '14px 20px 18px',
+              background: '#FFFFFF',
+              borderTop: '1px solid #E5E7EB',
+              fontSize: 13.5, lineHeight: 1.55, color: '#1F2937',
+            }}>
+              <div style={{ marginBottom: 10 }}>
+                <span style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
+                  textTransform: 'uppercase', color: '#9CA3AF',
+                }}>
+                  Детали
+                </span>
+                <p style={{ margin: '4px 0 0' }}>{drug.details}</p>
+              </div>
+              {drug.monitoring && (
+                <div style={{ marginBottom: 10 }}>
+                  <span style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
+                    textTransform: 'uppercase', color: '#9CA3AF',
+                  }}>
+                    Мониторинг
+                  </span>
+                  <p style={{ margin: '4px 0 0' }}>{drug.monitoring}</p>
+                </div>
+              )}
+              <div>
+                <a
+                  href={drug.lactmed_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: 'inline-flex', alignItems: 'center', gap: 6,
+                    padding: '6px 12px',
+                    background: '#EEF2FF',
+                    color: '#4338CA',
+                    borderRadius: 6,
+                    fontSize: 12, fontWeight: 600,
+                    textDecoration: 'none',
+                    border: '1px solid #E0E7FF',
+                  }}
+                >
+                  Открыть LactMed (NCBI)
+                  <svg width={12} height={12} viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" />
+                    <polyline points="15 3 21 3 21 9" />
+                    <line x1="10" y1="14" x2="21" y2="3" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }
 
