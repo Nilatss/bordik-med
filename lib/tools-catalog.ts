@@ -259,6 +259,11 @@ export const CATALOG_TOOLS: CatalogTool[] = [
   T('neo-levetiracetam-dose', 'Леветирацетам (anticonvulsant)', 'Loading 40-100 мг/кг IV; maintenance 20-40 мг/кг q12h. SV2A binder; alternative phenobarb с лучшим side-effect profile. NeoLEV2 trial 2020.', '3. Педиатрические инструменты', 'Дозирование', true),
   T('neo-midazolam-dose', 'Мидазолам (sedation + refractory seizures)', 'Bolus 0.05-0.15 мг/кг IV; infusion 0.06-0.4 мг/кг/ч. Benzodiazepine. ⚠️ Anand 2004 — adverse neurodev в preterm. AAP CFN 2016.', '3. Педиатрические инструменты', 'Дозирование', true),
   T('neo-metronidazole-dose', 'Метронидазол (anaerobic / NEC)', '7.5 мг/кг IV q8-24h по PMA+PNA. Triple-therapy для NEC IIB+ (с ампициллином + гентамицином). AAP Red Book; Cochrane NEC 2017.', '3. Педиатрические инструменты', 'Дозирование', true),
+  T('neo-low-flow-o2', 'Low-flow O₂ → Effective FiO₂', 'Расчёт effective FiO₂ при low-flow nasal cannula у новорождённого. Finer 1996; NICUtools. Wean strategy + SpO₂ targets (NeOProM 2018).', '3. Педиатрические инструменты', 'Новорождённые', true),
+  T('neo-naloxone-dose', 'Налоксон (opioid antagonist)', '0.1 мг/кг IV/IM/IO/ETT для opioid reversal. ⚠️ NRP 8 ed. removed from routine. CONTRAINDICATED у opioid-dependent matери.', '3. Педиатрические инструменты', 'Дозирование', true),
+  T('neo-cagluconate-dose', 'Кальций глюконат (hypocalcemia)', 'Acute 1-2 мл/кг 10% IV slow push 5-10 мин; maintenance 200-800 мг/кг/сут TPN. AAP CFN; Demarini neonatal Ca homeostasis.', '3. Педиатрические инструменты', 'Дозирование', true),
+  T('neo-insulin-dose', 'Инсулин (hyperglycemia of prematurity)', '0.01-0.2 ед/кг/ч continuous; first-line ↓ GIR. ⚠️ NIRTURE 2008 — routine early insulin no benefit, ↑ hypoglycemia. Pre-prime tubing critical.', '3. Педиатрические инструменты', 'Дозирование', true),
+  T('neo-ino-dose', 'Inhaled NO (PPHN)', '20 ppm initial, wean к 5-10 ppm, off ≥ 1 ppm. PPHN term/late preterm с OI ≥ 15-25. Methemoglobinemia + NO₂ monitoring. NINOS 1997.', '3. Педиатрические инструменты', 'Дозирование', true),
 
   // Дозирование
   T('pediatric-dose', 'Педиатрические дозы (mg/кг)', 'Расчёт безопасных доз 30 препаратов для детей по mg/кг с проверкой максимума. WHO · BNFc · AAP · APLS.', '3. Педиатрические инструменты', 'Дозирование', true),
