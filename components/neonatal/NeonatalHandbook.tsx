@@ -224,6 +224,11 @@ export default function NeonatalHandbook() {
   // ApgarTimer fullscreen modal state — audit 1.9 closes timer UI gap.
   const [apgarTimerOpen, setApgarTimerOpen] = useState(false);
 
+  // Quiz active flag — when QuizRunner enters fullscreen takeover (user
+  // clicks a test card), we hide the page header / search / breadcrumb
+  // for a clean exam-like UI. QuizRunner notifies via onActiveChange.
+  const [quizActive, setQuizActive] = useState(false);
+
   useEffect(() => {
     let cancelled = false;
     void (async () => {
@@ -450,6 +455,12 @@ export default function NeonatalHandbook() {
       fontFamily: 'var(--font-body, system-ui)',
       color: 'var(--md-sys-color-on-surface, #1A1A1A)',
     }}>
+      {/*
+        Page header — скрывается когда tab='quizzes' и user открыл конкретный
+        quiz (fullscreen exam-like takeover). QuizRunner notifies parent через
+        onActiveChange callback → setQuizActive(true).
+      */}
+      {!(tab === 'quizzes' && quizActive) && (
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
@@ -467,9 +478,11 @@ export default function NeonatalHandbook() {
           путём введения, метаболизмом и предостережениями.
         </p>
       </motion.div>
+      )}
 
-      {/* Search — для табов с поиском; на growth/bilirubin/resuscitation не нужен */}
-      {(tab === 'drugs' || tab === 'guidelines' || tab === 'calculators' || tab === 'labs' || tab === 'articles' || tab === 'lactmed' || tab === 'quizzes' || tab === 'nurse') && (
+      {/* Search — для табов с поиском; на growth/bilirubin/resuscitation не нужен.
+          Также скрывается когда quiz active (clean exam UI). */}
+      {!(tab === 'quizzes' && quizActive) && (tab === 'drugs' || tab === 'guidelines' || tab === 'calculators' || tab === 'labs' || tab === 'articles' || tab === 'lactmed' || tab === 'quizzes' || tab === 'nurse') && (
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
@@ -520,8 +533,9 @@ export default function NeonatalHandbook() {
         (раскрывающийся submenu под "Неонатология"). Здесь показываем
         текущий активный раздел + count для оrientation. Tabs strip
         DELETED — see git history before 2026-05-09 PR #30.
+        Скрывается когда quiz active (exam UI takeover).
       */}
-      {(() => {
+      {!(tab === 'quizzes' && quizActive) && (() => {
         const SECTION_META: Record<Tab, { label: string; count: number | null }> = {
           drugs: { label: 'Препараты', count: bank.drugs.length },
           calculators: { label: 'Калькуляторы', count: totalCalculators },
@@ -930,7 +944,7 @@ export default function NeonatalHandbook() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3 }}
         >
-          <QuizRunner query={q} />
+          <QuizRunner query={q} onActiveChange={setQuizActive} />
         </motion.div>
       ) : tab === 'nurse' ? (
         <>

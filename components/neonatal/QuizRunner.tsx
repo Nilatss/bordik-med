@@ -80,7 +80,16 @@ function estimateDuration(questionCount: number): string {
   return `${min} мин`;
 }
 
-export default function QuizRunner({ query }: { query: string }) {
+export default function QuizRunner({
+  query,
+  onActiveChange,
+}: {
+  query: string;
+  /** Notifies parent when an individual quiz is opened/closed (fullscreen
+   *  takeover mode). Parent uses it to hide page header + search + breadcrumb
+   *  while taking the test. */
+  onActiveChange?: (isActive: boolean) => void;
+}) {
   const [bank, setBank] = useState<QuizBank | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [activeQuiz, setActiveQuiz] = useState<string | null>(null);
@@ -97,6 +106,12 @@ export default function QuizRunner({ query }: { query: string }) {
     if (typeof window === 'undefined') return;
     try { window.localStorage.setItem('bordik-neonatal-quiz-state', JSON.stringify(state)); } catch { /* ignore */ }
   }, [state]);
+
+  // Notify parent (NeonatalHandbook) when active quiz changes — used
+  // to hide page header / search / breadcrumb during the takeover.
+  useEffect(() => {
+    onActiveChange?.(activeQuiz !== null);
+  }, [activeQuiz, onActiveChange]);
 
   useEffect(() => {
     let cancelled = false;
