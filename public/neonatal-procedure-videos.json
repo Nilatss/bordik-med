@@ -1,5 +1,5 @@
 {
-  "version": "1.2.0",
+  "version": "1.3.0",
   "lastUpdated": "2026-05-10",
   "source": "Bordik Med — curated procedure video linkouts (audit Table 3.Д3)",
   "license": "External linkouts to authoritative sources (AAP, WHO, NEJM, Stanford, NIDCAP, EFCNI, UNICEF). Не размещаем встраиваемое видео — только linkouts с уважением к copyright.",
@@ -50,16 +50,33 @@
       "id": "video-nrp-overview",
       "title_ru": "NRP 8 ed. — обзор алгоритма реанимации",
       "title_en": "NRP 8th ed. — Algorithm Overview",
-      "description": "Официальный обучающий обзор NRP 8 ed. (2021) — initial steps, MR SOPA, компрессии, эпинефрин. Канал AAP.",
+      "description": "Официальные NRP-материалы (8 ed. 2021) — initial steps, MR SOPA, компрессии, эпинефрин. Выберите формат: видео-курс, страница AAP NRP или официальный YouTube-канал AAP.",
       "source": "American Academy of Pediatrics (AAP)",
       "source_type": "youtube_official",
-      "url": "https://www.youtube.com/results?search_query=NRP+8th+edition+algorithm+AAP",
+      "url": "https://www.aap.org/en/learning/neonatal-resuscitation-program/",
       "category": "resuscitation",
       "duration_min": 15,
       "tags": [
         "NRP",
         "реанимация",
         "AAP"
+      ],
+      "videos": [
+        {
+          "title": "AAP NRP — официальная страница программы",
+          "url": "https://www.aap.org/en/learning/neonatal-resuscitation-program/",
+          "duration_min": 15
+        },
+        {
+          "title": "AAP NRP — официальный YouTube канал (видео-материалы)",
+          "url": "https://www.youtube.com/@AmerAcadPediatrics",
+          "duration_min": 20
+        },
+        {
+          "title": "AHA — Neonatal Resuscitation Guidelines 2020",
+          "url": "https://www.heart.org/en/affiliates/get-with-the-guidelines-resuscitation",
+          "duration_min": 12
+        }
       ]
     },
     {
@@ -86,13 +103,30 @@
       "description": "Демонстрация интубации с лярингоскопом Miller blade size 0/1. Включает positioning, premedication, MR SOPA при затруднениях.",
       "source": "Stanford Newborn Nursery / NEJM",
       "source_type": "youtube_official",
-      "url": "https://www.youtube.com/results?search_query=neonatal+intubation+Stanford+newborn",
+      "url": "https://newborns.stanford.edu/PhotoGallery/index.html",
       "category": "respiratory",
       "duration_min": 10,
       "tags": [
         "интубация",
         "ETT",
         "Stanford"
+      ],
+      "videos": [
+        {
+          "title": "Stanford Newborn Nursery — образовательные ресурсы",
+          "url": "https://newborns.stanford.edu/PhotoGallery/index.html",
+          "duration_min": 10
+        },
+        {
+          "title": "NEJM — Neonatal Intubation (Procedural Video)",
+          "url": "https://www.nejm.org/multimedia/medical-videos",
+          "duration_min": 8
+        },
+        {
+          "title": "AAP NRP — Endotracheal Intubation Skills",
+          "url": "https://www.aap.org/en/learning/neonatal-resuscitation-program/",
+          "duration_min": 12
+        }
       ]
     },
     {
@@ -102,7 +136,7 @@
       "description": "Видео-демонстрация LISA (less invasive surfactant administration) у preterm на CPAP. Показ техники с тонким катетером и Magill forceps.",
       "source": "European Foundation for the Care of Newborn Infants (EFCNI)",
       "source_type": "youtube_official",
-      "url": "https://www.youtube.com/results?search_query=LISA+surfactant+EFCNI+preterm",
+      "url": "https://www.efcni.org/",
       "category": "respiratory",
       "duration_min": 8,
       "tags": [
@@ -110,6 +144,23 @@
         "surfactant",
         "preterm",
         "EFCNI"
+      ],
+      "videos": [
+        {
+          "title": "EFCNI — главная (раздел Education / RDS / surfactant)",
+          "url": "https://www.efcni.org/",
+          "duration_min": 8
+        },
+        {
+          "title": "ESPNIC — European Society of Paediatric & Neonatal Intensive Care",
+          "url": "https://espnic-online.org/",
+          "duration_min": 12
+        },
+        {
+          "title": "European Consensus Guidelines on RDS — 2022 update",
+          "url": "https://www.karger.com/Article/FullText/528914",
+          "duration_min": 15
+        }
       ]
     },
     {
@@ -152,7 +203,7 @@
       "description": "Демонстрация two-thumb encircling техники, 3:1 ratio (90 + 30 = 120/min), глубина 1/3 переднезаднего диаметра.",
       "source": "American Heart Association (AHA) / NRP",
       "source_type": "youtube_official",
-      "url": "https://www.youtube.com/results?search_query=neonatal+chest+compressions+NRP+two+thumb",
+      "url": "https://www.aap.org/en/learning/neonatal-resuscitation-program/",
       "category": "resuscitation",
       "duration_min": 7,
       "tags": [
@@ -169,7 +220,7 @@
       "description": "Demonstration правильной техники pulse oximetry screening для critical congenital heart disease. Pre/post-ductal sites, fail criteria.",
       "source": "American Academy of Pediatrics (AAP)",
       "source_type": "youtube_official",
-      "url": "https://www.youtube.com/results?search_query=CCHD+pulse+oximetry+screening+AAP",
+      "url": "https://www.cdc.gov/heart-defects/screening.html",
       "category": "screening",
       "duration_min": 6,
       "tags": [
@@ -186,7 +237,7 @@
       "description": "Indirect ophthalmoscopy + RetCam imaging для ROP screening у preterm. Демонстрация speculum placement, scleral depression, классификация ICROP3.",
       "source": "American Academy of Ophthalmology (AAO)",
       "source_type": "youtube_official",
-      "url": "https://www.youtube.com/results?search_query=ROP+screening+indirect+ophthalmoscopy+RetCam",
+      "url": "https://www.aao.org/eye-health/diseases/retinopathy-prematurity-rop-treatment",
       "category": "screening",
       "duration_min": 10,
       "tags": [
@@ -202,7 +253,7 @@
       "description": "Демонстрация TH protocol: eligibility, equipment setup, target 33-34°C, monitoring throughout 72-hour cooling.",
       "source": "Children's Hospital of Philadelphia (CHOP)",
       "source_type": "youtube_official",
-      "url": "https://www.youtube.com/results?search_query=therapeutic+hypothermia+neonatal+CHOP+cooling",
+      "url": "https://www.chop.edu/conditions-diseases/hypoxic-ischemic-encephalopathy-hie",
       "category": "neuro",
       "duration_min": 15,
       "tags": [

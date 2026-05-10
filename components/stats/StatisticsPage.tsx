@@ -8,6 +8,7 @@ import { MAX_TEST_LEVELS } from '@/lib/quiz';
 import { RUNNER_KINDS } from '@/lib/tool-meta-data';
 import { useCatalog, type CatalogMetaItem } from '@/lib/catalog-client';
 import { content as courseContent } from '@/lib/content';
+import { ProgressDashboard } from '@/components/neonatal/NeonatalHandbook';
 // BodyMap is kept in the codebase (./BodyMap.tsx) but not surfaced — backlog.
 
 /* ════════════════════════════════════════════════════════════════
@@ -309,6 +310,16 @@ export default function StatisticsPage() {
         subtitle="Счётчик открытий по типу инструмента"
       >
         <ToolKindsPanel stats={toolKindStats} />
+      </Section>
+
+      {/* Neonatology quiz progress — moved here from /neonatology tab (audit H2). */}
+      <Section
+        delay={480}
+        title="Прогресс по тестам неонатологии"
+        tip="Сводка по 22 неонатологическим тестам: сколько пройдено хоть раз, сколько сдано (≥70 %), средний балл и рекомендации что повторить."
+        subtitle="Самопроверка по разделу /neonatology"
+      >
+        <ProgressDashboard bank={null} quizzesBank={null} />
       </Section>
     </div>
   );

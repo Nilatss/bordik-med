@@ -510,165 +510,248 @@ export default function ResuscitationFlowchart() {
     if (step) setCurrentStep(stepId);
   };
 
+  // Design tokens
+  const PILL_SHADOW = '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)';
+
+  // Region flags
+  const FLAGS: Record<RegionId, string> = {
+    nrp: '🇺🇸',
+    erc: '🇪🇺',
+    hbb: '🌍',
+    rf: '🇷🇺',
+  };
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-      {/* Region selector */}
-      <div role="tablist" aria-label="Выбор протокола" style={{
-        display: 'flex', gap: 6, flexWrap: 'wrap',
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+      {/* Intro card — explains what this is */}
+      <div style={{
+        padding: '14px 18px',
+        background: '#F5F6F8',
+        borderRadius: 14,
       }}>
-        {PROTOCOLS.map((p) => {
-          const isActive = region === p.id;
-          return (
-            <button
-              key={p.id}
-              role="tab"
-              aria-selected={isActive}
-              onClick={() => {
-                setRegion(p.id);
-                handleReset();
-              }}
-              style={{
-                padding: '8px 14px',
-                background: isActive ? '#2563EB' : '#F5F6F8',
-                color: isActive ? '#FFFFFF' : '#374151',
-                border: 'none',
-                borderRadius: 8,
-                cursor: 'pointer',
-                fontFamily: 'inherit',
-                fontSize: 13,
-                fontWeight: isActive ? 600 : 500,
-                transition: 'background 150ms',
-              }}
-            >
-              {p.name_ru}
-            </button>
-          );
-        })}
+        <div style={{
+          fontFamily: 'var(--font-mono)',
+          fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
+          textTransform: 'uppercase', color: '#9CA3AF', marginBottom: 6,
+        }}>
+          Алгоритм первичной реанимации н/р
+        </div>
+        <p style={{
+          margin: 0, fontSize: 13.5, lineHeight: 1.55, color: '#4B5563',
+        }}>
+          Пошаговый протокол с таймером и тактильной обратной связью на 30/60/300/600 секунд.
+          Выберите регион, нажмите Старт и следуйте подсказкам.
+        </p>
       </div>
 
-      {/* Timer + step counter */}
+      {/* Region selector — design-system pills */}
+      <div>
+        <div style={{
+          fontFamily: 'var(--font-mono)',
+          fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
+          textTransform: 'uppercase', color: '#9CA3AF', marginBottom: 10,
+        }}>
+          Регион / протокол
+        </div>
+        <div role="tablist" aria-label="Выбор протокола" style={{
+          display: 'flex', gap: 8, flexWrap: 'wrap',
+        }}>
+          {PROTOCOLS.map((p) => {
+            const isActive = region === p.id;
+            return (
+              <button
+                key={p.id}
+                role="tab"
+                aria-selected={isActive}
+                onClick={() => {
+                  setRegion(p.id);
+                  handleReset();
+                }}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 6,
+                  padding: '8px 14px',
+                  borderRadius: 'var(--md-sys-shape-corner-full)',
+                  background: isActive ? '#0F172A' : '#FFFFFF',
+                  color: isActive ? '#FFFFFF' : 'var(--md-sys-color-on-surface-variant)',
+                  border: 'none',
+                  boxShadow: isActive ? 'none' : PILL_SHADOW,
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '0.7rem', fontWeight: 500,
+                  cursor: 'pointer',
+                  transition: 'all 200ms cubic-bezier(0.22,1,0.36,1)',
+                  textTransform: 'uppercase', letterSpacing: '0.04em',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                <span aria-hidden="true">{FLAGS[p.id]}</span>
+                {p.name_ru}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Timer card — clean white with subtle shadow */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        gap: 14,
-        padding: '14px 18px',
-        background: '#0F172A',
-        borderRadius: 12,
-        color: '#FFFFFF',
+        gap: 16,
+        padding: '18px 22px',
+        background: '#FFFFFF',
+        borderRadius: 16,
+        boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 4px 12px rgba(16,24,40,0.08)',
         flexWrap: 'wrap',
       }}>
-        <div>
-          <div style={{ fontSize: 11, opacity: 0.7, fontFamily: 'var(--font-mono)', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+        <div style={{ minWidth: 120 }}>
+          <div style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
+            textTransform: 'uppercase', color: '#9CA3AF',
+            marginBottom: 4,
+          }}>
             Прошло времени
           </div>
-          <div style={{ fontSize: 36, fontWeight: 700, fontFamily: 'var(--font-mono)', lineHeight: 1, marginTop: 4 }}>
+          <div style={{
+            fontSize: 40, fontWeight: 700,
+            fontFamily: 'var(--font-mono)',
+            lineHeight: 1, color: '#0F172A',
+            letterSpacing: '-0.02em',
+          }}>
             {formatTime(elapsedSec)}
+          </div>
+          <div style={{
+            marginTop: 6,
+            fontFamily: 'var(--font-mono)',
+            fontSize: 11, fontWeight: 500,
+            color: '#9CA3AF', letterSpacing: '0.04em',
+            textTransform: 'uppercase',
+          }}>
+            Шаг {currentIndex + 1} из {protocol.steps.length}
           </div>
         </div>
         <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
           <button
             onClick={handleStart}
+            aria-label={isRunning ? 'Пауза таймера' : (elapsedSec === 0 ? 'Старт таймера' : 'Продолжить таймер')}
             style={{
+              display: 'inline-flex', alignItems: 'center', gap: 6,
               padding: '10px 18px',
-              background: isRunning ? '#EF4444' : '#10B981',
-              color: '#FFFFFF',
+              borderRadius: 'var(--md-sys-shape-corner-full)',
+              background: isRunning ? '#FEF2F2' : '#ECFDF5',
+              color: isRunning ? '#991B1B' : '#065F46',
               border: 'none',
-              borderRadius: 8,
+              boxShadow: PILL_SHADOW,
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.75rem', fontWeight: 600,
               cursor: 'pointer',
-              fontSize: 14,
-              fontWeight: 600,
-              fontFamily: 'inherit',
+              textTransform: 'uppercase', letterSpacing: '0.04em',
+              transition: 'background 200ms cubic-bezier(0.22,1,0.36,1)',
             }}
           >
-            {isRunning ? 'Пауза' : (elapsedSec === 0 ? 'Старт' : 'Продолжить')}
+            {isRunning ? '⏸ Пауза' : (elapsedSec === 0 ? '▶ Старт' : '▶ Продолжить')}
           </button>
           <button
             onClick={handleReset}
+            aria-label="Сбросить таймер"
             style={{
+              display: 'inline-flex', alignItems: 'center', gap: 6,
               padding: '10px 18px',
-              background: '#374151',
-              color: '#FFFFFF',
+              borderRadius: 'var(--md-sys-shape-corner-full)',
+              background: '#FFFFFF',
+              color: 'var(--md-sys-color-on-surface-variant)',
               border: 'none',
-              borderRadius: 8,
+              boxShadow: PILL_SHADOW,
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.75rem', fontWeight: 500,
               cursor: 'pointer',
-              fontSize: 14,
-              fontWeight: 600,
-              fontFamily: 'inherit',
+              textTransform: 'uppercase', letterSpacing: '0.04em',
+              transition: 'background 200ms cubic-bezier(0.22,1,0.36,1)',
             }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = '#F8F9FA'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = '#FFFFFF'; }}
           >
-            Сброс
+            ⟲ Сброс
           </button>
-        </div>
-        <div style={{ fontSize: 12, opacity: 0.6, fontFamily: 'var(--font-mono)' }}>
-          Шаг {currentIndex + 1} / {protocol.steps.length}
         </div>
       </div>
 
-      {/* Current step card */}
+      {/* Current step card — softer accent than the old "red box" */}
       <AnimatePresence mode="wait">
         <motion.div
           key={currentStepObj.id}
-          initial={{ opacity: 0, y: 12 }}
+          initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -12 }}
-          transition={{ duration: 0.25 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.22 }}
           style={{
-            padding: '20px 22px',
-            background: currentStepObj.is_critical ? '#FEF2F2' : '#FFFFFF',
-            borderRadius: 14,
-            border: `2px solid ${currentStepObj.is_critical ? '#DC2626' : '#E5E7EB'}`,
+            padding: '22px 24px',
+            background: '#FFFFFF',
+            borderRadius: 16,
+            boxShadow: currentStepObj.is_critical
+              ? '0 1px 2px rgba(220,38,38,0.08), 0 4px 16px rgba(220,38,38,0.10), inset 4px 0 0 #DC2626'
+              : '0 1px 2px rgba(16,24,40,0.06), 0 4px 12px rgba(16,24,40,0.08)',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: 12, flexWrap: 'wrap', marginBottom: 10 }}>
+          {/* Pills row — current time + status pills */}
+          <div style={{
+            display: 'flex', alignItems: 'center', flexWrap: 'wrap',
+            gap: 8, marginBottom: 14,
+          }}>
             <span style={{
+              display: 'inline-flex', alignItems: 'center',
+              padding: '4px 10px',
+              borderRadius: 'var(--md-sys-shape-corner-full)',
+              background: '#FFFFFF',
+              boxShadow: PILL_SHADOW,
               fontFamily: 'var(--font-mono)',
-              fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
-              textTransform: 'uppercase',
-              color: currentStepObj.is_critical ? '#991B1B' : '#9CA3AF',
+              fontSize: '0.625rem', fontWeight: 500,
+              color: 'var(--md-sys-color-on-surface-variant)',
+              textTransform: 'uppercase', letterSpacing: '0.04em',
+              whiteSpace: 'nowrap',
             }}>
               {currentStepObj.time_sec >= 0
-                ? `~ ${formatTime(currentStepObj.time_sec)}`
-                : 'до родов'}
+                ? `T+${formatTime(currentStepObj.time_sec)}`
+                : 'До родов'}
             </span>
             {currentStepObj.is_critical && (
               <span style={{
-                display: 'inline-flex', alignItems: 'center',
-                padding: '4px var(--space-2)',
+                display: 'inline-flex', alignItems: 'center', gap: 4,
+                padding: '4px 10px',
                 borderRadius: 'var(--md-sys-shape-corner-full)',
                 background: '#FFFFFF',
-                boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
+                boxShadow: PILL_SHADOW,
                 fontFamily: 'var(--font-mono)',
                 fontSize: '0.625rem', fontWeight: 700,
                 color: '#DC2626',
                 textTransform: 'uppercase', letterSpacing: '0.04em',
                 whiteSpace: 'nowrap',
               }}>
-                КРИТИЧНО
+                ⚡ Критично
               </span>
             )}
             {currentStepObj.is_decision && (
               <span style={{
-                display: 'inline-flex', alignItems: 'center',
-                padding: '4px var(--space-2)',
+                display: 'inline-flex', alignItems: 'center', gap: 4,
+                padding: '4px 10px',
                 borderRadius: 'var(--md-sys-shape-corner-full)',
                 background: '#FFFFFF',
-                boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
+                boxShadow: PILL_SHADOW,
                 fontFamily: 'var(--font-mono)',
                 fontSize: '0.625rem', fontWeight: 700,
                 color: '#1D4ED8',
                 textTransform: 'uppercase', letterSpacing: '0.04em',
                 whiteSpace: 'nowrap',
               }}>
-                РЕШЕНИЕ
+                ◇ Решение
               </span>
             )}
           </div>
           <h3 style={{
             fontFamily: 'var(--font-display)',
-            fontSize: 18, fontWeight: 700,
-            color: '#111827', margin: '0 0 12px',
-            letterSpacing: '-0.01em',
+            fontSize: 20, fontWeight: 700,
+            color: '#0F172A', margin: '0 0 14px',
+            letterSpacing: '-0.015em', lineHeight: 1.25,
           }}>
             {currentStepObj.title_ru}
           </h3>
@@ -679,60 +762,75 @@ export default function ResuscitationFlowchart() {
             {currentStepObj.body}
           </p>
 
-          {/* Navigation buttons */}
-          <div style={{ display: 'flex', gap: 8, marginTop: 18, flexWrap: 'wrap' }}>
+          {/* Navigation row — design-system pills (white BG + colored stroke) */}
+          <div style={{
+            display: 'flex', gap: 8, marginTop: 22, flexWrap: 'wrap',
+            paddingTop: 18, borderTop: '1px solid #F0F1F5',
+          }}>
             {currentStepObj.is_decision && currentStepObj.next_yes && (
               <button
                 onClick={() => goToStep(currentStepObj.next_yes!)}
                 style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 6,
                   padding: '10px 18px',
-                  background: '#10B981',
-                  color: '#FFFFFF',
+                  borderRadius: 'var(--md-sys-shape-corner-full)',
+                  background: '#FFFFFF',
+                  color: '#065F46',
                   border: 'none',
-                  borderRadius: 8,
+                  boxShadow: '0 0 0 1.5px #10B981, 0 1px 3px rgba(16,185,129,0.15)',
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '0.7rem', fontWeight: 600,
                   cursor: 'pointer',
-                  fontSize: 13,
-                  fontWeight: 600,
-                  fontFamily: 'inherit',
+                  textTransform: 'uppercase', letterSpacing: '0.04em',
+                  transition: 'background 200ms cubic-bezier(0.22,1,0.36,1)',
                 }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = '#ECFDF5'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = '#FFFFFF'; }}
               >
-                Да → {protocol.steps.find((s) => s.id === currentStepObj.next_yes)?.title_ru.slice(0, 30) ?? 'Далее'}…
+                ✓ Да → {protocol.steps.find((s) => s.id === currentStepObj.next_yes)?.title_ru.slice(0, 28) ?? 'Далее'}…
               </button>
             )}
             {currentStepObj.is_decision && currentStepObj.next_no && (
               <button
                 onClick={() => goToStep(currentStepObj.next_no!)}
                 style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 6,
                   padding: '10px 18px',
-                  background: '#DC2626',
-                  color: '#FFFFFF',
+                  borderRadius: 'var(--md-sys-shape-corner-full)',
+                  background: '#FFFFFF',
+                  color: '#991B1B',
                   border: 'none',
-                  borderRadius: 8,
+                  boxShadow: '0 0 0 1.5px #DC2626, 0 1px 3px rgba(220,38,38,0.15)',
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '0.7rem', fontWeight: 600,
                   cursor: 'pointer',
-                  fontSize: 13,
-                  fontWeight: 600,
-                  fontFamily: 'inherit',
+                  textTransform: 'uppercase', letterSpacing: '0.04em',
+                  transition: 'background 200ms cubic-bezier(0.22,1,0.36,1)',
                 }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = '#FEF2F2'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = '#FFFFFF'; }}
               >
-                Нет → {protocol.steps.find((s) => s.id === currentStepObj.next_no)?.title_ru.slice(0, 30) ?? 'Далее'}…
+                ✗ Нет → {protocol.steps.find((s) => s.id === currentStepObj.next_no)?.title_ru.slice(0, 28) ?? 'Далее'}…
               </button>
             )}
             {!currentStepObj.is_decision && currentStepObj.next_yes && (
               <button
                 onClick={() => goToStep(currentStepObj.next_yes!)}
                 style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 6,
                   padding: '10px 18px',
-                  background: '#2563EB',
+                  borderRadius: 'var(--md-sys-shape-corner-full)',
+                  background: '#0F172A',
                   color: '#FFFFFF',
                   border: 'none',
-                  borderRadius: 8,
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '0.7rem', fontWeight: 600,
                   cursor: 'pointer',
-                  fontSize: 13,
-                  fontWeight: 600,
-                  fontFamily: 'inherit',
+                  textTransform: 'uppercase', letterSpacing: '0.04em',
+                  transition: 'background 200ms cubic-bezier(0.22,1,0.36,1)',
                 }}
               >
-                Далее: {protocol.steps.find((s) => s.id === currentStepObj.next_yes)?.title_ru.slice(0, 30) ?? ''}…
+                {protocol.steps.find((s) => s.id === currentStepObj.next_yes)?.title_ru.slice(0, 32) ?? 'Далее'} →
               </button>
             )}
             {currentIndex > 0 && (
@@ -742,16 +840,21 @@ export default function ResuscitationFlowchart() {
                   if (prev) goToStep(prev.id);
                 }}
                 style={{
-                  padding: '10px 14px',
-                  background: '#F5F6F8',
-                  color: '#374151',
+                  display: 'inline-flex', alignItems: 'center', gap: 6,
+                  padding: '10px 16px',
+                  borderRadius: 'var(--md-sys-shape-corner-full)',
+                  background: '#FFFFFF',
+                  color: 'var(--md-sys-color-on-surface-variant)',
                   border: 'none',
-                  borderRadius: 8,
+                  boxShadow: PILL_SHADOW,
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '0.7rem', fontWeight: 500,
                   cursor: 'pointer',
-                  fontSize: 13,
-                  fontWeight: 500,
-                  fontFamily: 'inherit',
+                  textTransform: 'uppercase', letterSpacing: '0.04em',
+                  transition: 'background 200ms cubic-bezier(0.22,1,0.36,1)',
                 }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = '#F8F9FA'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = '#FFFFFF'; }}
               >
                 ← Назад
               </button>
@@ -760,75 +863,135 @@ export default function ResuscitationFlowchart() {
         </motion.div>
       </AnimatePresence>
 
-      {/* Compact step list — for navigation overview */}
-      <details style={{
+      {/* Step roadmap — replaces the old <details> with a richer card */}
+      <div style={{
         background: '#F5F6F8',
-        borderRadius: 10,
-        padding: '8px 14px',
-      }}>
-        <summary style={{
-          cursor: 'pointer', fontSize: 13, fontWeight: 600,
-          color: '#374151', padding: '4px 0',
-        }}>
-          Все шаги протокола ({protocol.steps.length})
-        </summary>
-        <ol style={{ margin: '10px 0 0', paddingLeft: 22, fontSize: 12.5 }}>
-          {protocol.steps.map((s, i) => (
-            <li key={s.id} style={{
-              padding: '4px 0',
-              color: s.id === currentStep ? '#2563EB' : '#374151',
-              fontWeight: s.id === currentStep ? 600 : 400,
-            }}>
-              <button
-                onClick={() => goToStep(s.id)}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  padding: 0,
-                  color: 'inherit',
-                  fontWeight: 'inherit',
-                  fontSize: 'inherit',
-                  fontFamily: 'inherit',
-                  cursor: 'pointer',
-                  textAlign: 'left',
-                }}
-              >
-                {s.time_sec >= 0 ? `${formatTime(s.time_sec)} — ` : ''}{s.title_ru}
-                {s.is_critical && <span style={{ color: '#DC2626', marginLeft: 6 }}>⚡</span>}
-              </button>
-            </li>
-          ))}
-        </ol>
-      </details>
-
-      {/* Sources */}
-      <section style={{
+        borderRadius: 14,
         padding: '16px 18px',
-        background: '#F5F6F8',
-        borderRadius: 12,
-        fontSize: 12, color: '#4B5563', lineHeight: 1.55,
       }}>
         <div style={{
+          display: 'flex', alignItems: 'baseline', gap: 8,
+          marginBottom: 12,
+        }}>
+          <span style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
+            textTransform: 'uppercase', color: '#9CA3AF',
+          }}>
+            Карта шагов
+          </span>
+          <span style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: 11, fontWeight: 500, color: '#9CA3AF',
+          }}>
+            {protocol.steps.length}
+          </span>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+          {protocol.steps.map((s, i) => {
+            const isCurrent = s.id === currentStep;
+            const isPast = i < currentIndex;
+            return (
+              <button
+                key={s.id}
+                onClick={() => goToStep(s.id)}
+                aria-current={isCurrent ? 'step' : undefined}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 12,
+                  padding: '8px 12px',
+                  background: isCurrent ? '#FFFFFF' : 'transparent',
+                  boxShadow: isCurrent ? PILL_SHADOW : 'none',
+                  border: 'none',
+                  borderRadius: 10,
+                  cursor: 'pointer',
+                  fontFamily: 'inherit',
+                  textAlign: 'left',
+                  transition: 'background 200ms',
+                }}
+                onMouseEnter={(e) => {
+                  if (!isCurrent) e.currentTarget.style.background = 'rgba(255,255,255,0.5)';
+                }}
+                onMouseLeave={(e) => {
+                  if (!isCurrent) e.currentTarget.style.background = 'transparent';
+                }}
+              >
+                <span style={{
+                  flexShrink: 0,
+                  width: 22, height: 22,
+                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                  borderRadius: '50%',
+                  background: isPast ? '#10B981' : isCurrent ? '#0F172A' : '#FFFFFF',
+                  color: isPast || isCurrent ? '#FFFFFF' : '#9CA3AF',
+                  boxShadow: isCurrent || isPast ? 'none' : PILL_SHADOW,
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 10, fontWeight: 700,
+                }}>
+                  {isPast ? '✓' : i + 1}
+                </span>
+                <span style={{
+                  flex: 1, minWidth: 0,
+                  fontSize: 13, fontWeight: isCurrent ? 600 : 400,
+                  color: isCurrent ? '#0F172A' : '#374151',
+                  lineHeight: 1.4,
+                }}>
+                  {s.title_ru}
+                </span>
+                {s.time_sec >= 0 && (
+                  <span style={{
+                    flexShrink: 0,
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 11, fontWeight: 500,
+                    color: '#9CA3AF',
+                  }}>
+                    {formatTime(s.time_sec)}
+                  </span>
+                )}
+                {s.is_critical && (
+                  <span aria-label="критичный шаг" style={{
+                    flexShrink: 0,
+                    color: '#DC2626', fontSize: 12,
+                  }}>
+                    ⚡
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Sources — design-system style (matches other ref cards) */}
+      <section
+        aria-labelledby="resus-sources"
+        style={{
+          padding: '18px 20px',
+          background: '#F5F6F8',
+          borderRadius: 14,
+          fontSize: 12.5, color: '#4B5563', lineHeight: 1.55,
+        }}
+      >
+        <div id="resus-sources" style={{
           fontFamily: 'var(--font-mono)',
           fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
           textTransform: 'uppercase', color: '#9CA3AF', marginBottom: 8,
         }}>
           Источник: {protocol.source}
         </div>
-        <ol style={{ margin: 0, paddingLeft: 18 }}>
+        <ol style={{ margin: 0, paddingLeft: 20 }}>
           {protocol.references.map((ref, i) => (
             <li key={i} style={{ marginBottom: 4 }}>{ref}</li>
           ))}
         </ol>
         <p style={{
-          marginTop: 12, paddingTop: 12,
+          marginTop: 14, paddingTop: 12,
           borderTop: '1px solid #E5E7EB',
-          fontSize: 11, color: '#6B7280',
-          margin: '12px 0 0',
+          fontSize: 12, color: '#6B7280',
+          margin: '14px 0 0',
         }}>
-          <strong style={{ color: '#1A1A1A' }}>Внимание:</strong> данный flowchart — образовательный
-          tool. Не заменяет полный курс NRP / ERC NLS / HBB / российской программы реанимационной
-          подготовки. Для практической работы — пройти certified course и иметь bedside helper card.
+          <strong style={{ color: '#1A1A1A' }}>Внимание:</strong> образовательный
+          инструмент. Не заменяет certified course по NRP / ERC NLS / HBB / российской
+          программе реанимационной подготовки. Для bedside работы — иметь институциональный
+          helper card.
         </p>
       </section>
     </div>

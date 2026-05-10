@@ -285,6 +285,8 @@ interface ProcedureVideo {
   category: string;
   duration_min: number;
   tags: string[];
+  /** Optional list of specific videos. If provided, card opens picker modal instead of going straight to url. */
+  videos?: { title: string; url: string; duration_min?: number }[];
 }
 
 interface ProcedureVideosBank {
@@ -317,7 +319,7 @@ interface AtlasBank {
   atlas: AtlasEntry[];
 }
 
-type Tab ='drugs' | 'guidelines' | 'calculators' | 'labs' | 'articles' | 'resuscitation' | 'lactmed' | 'quizzes' | 'nurse' | 'growth' | 'bilirubin' | 'cases' | 'mistakes' | 'checklists' | 'videos' | 'atlas' | 'progress' | 'favorites' | 'drugcalc' | 'search' | 'notes';
+type Tab ='drugs' | 'guidelines' | 'calculators' | 'labs' | 'articles' | 'resuscitation' | 'lactmed' | 'quizzes' | 'nurse' | 'growth' | 'bilirubin' | 'cases' | 'mistakes' | 'checklists' | 'videos' | 'atlas' | 'drugcalc' | 'search' | 'notes';
 
 export default function NeonatalHandbook() {
   const [bank, setBank] = useState<Bank | null>(null);
@@ -369,6 +371,23 @@ export default function NeonatalHandbook() {
   // for a clean exam-like UI. QuizRunner notifies via onActiveChange.
   const [quizActive, setQuizActive] = useState(false);
 
+  // Per-section favorites filter — toggle chip in each view shows only
+  // favorited items. Subscribes to bordik-favs-changed so star toggles
+  // anywhere keep favsSet in sync. Replaces the centralized "Избранное"
+  // tab — favorites now live within their own section.
+  const [showFavOnly, setShowFavOnly] = useState(false);
+  const [favsSet, setFavsSet] = useState<Set<string>>(() =>
+    typeof window === 'undefined' ? new Set() : new Set(loadFavorites().map((f) => f.id))
+  );
+  useEffect(() => {
+    const handler = () => setFavsSet(new Set(loadFavorites().map((f) => f.id)));
+    if (typeof window === 'undefined') return;
+    window.addEventListener('bordik-favs-changed', handler);
+    return () => window.removeEventListener('bordik-favs-changed', handler);
+  }, []);
+  // Reset filter when switching tabs so user always starts fresh.
+  useEffect(() => { setShowFavOnly(false); }, [tab]);
+
   useEffect(() => {
     let cancelled = false;
     void (async () => {
@@ -384,7 +403,7 @@ export default function NeonatalHandbook() {
           fetch('/neonatal-clinical-cases.json?v=1.3.0', { cache: 'force-cache' }),
           fetch('/neonatal-common-mistakes.json?v=1.3.0', { cache: 'force-cache' }),
           fetch('/neonatal-procedure-checklists.json?v=1.2.0', { cache: 'force-cache' }),
-          fetch('/neonatal-procedure-videos.json?v=1.2.0', { cache: 'force-cache' }),
+          fetch('/neonatal-procedure-videos.json?v=1.3.0', { cache: 'force-cache' }),
           fetch('/neonatal-atlas.json?v=1.3.0', { cache: 'force-cache' }),
         ]);
         if (!drugsR.ok) throw new Error(`monographs ${drugsR.status}`);
@@ -424,14 +443,18 @@ export default function NeonatalHandbook() {
   const filteredDrugs = useMemo(() => {
     if (!bank) return [];
     const query = q.trim().toLowerCase();
-    if (!query) return bank.drugs;
-    return bank.drugs.filter((d) =>
-      d.name_en.toLowerCase().includes(query)
-      || d.name_ru.toLowerCase().includes(query)
-      || d.brand.toLowerCase().includes(query)
-      || d.fullText.toLowerCase().includes(query)
-    );
-  }, [bank, q]);
+    let result = bank.drugs;
+    if (query) {
+      result = result.filter((d) =>
+        d.name_en.toLowerCase().includes(query)
+        || d.name_ru.toLowerCase().includes(query)
+        || d.brand.toLowerCase().includes(query)
+        || d.fullText.toLowerCase().includes(query)
+      );
+    }
+    if (showFavOnly) result = result.filter((d) => favsSet.has(`drug:${d.id}`));
+    return result;
+  }, [bank, q, showFavOnly, favsSet]);
 
   const filteredGuidelines = useMemo(() => {
     if (!guidelines) return [];
@@ -449,9 +472,11 @@ export default function NeonatalHandbook() {
         const hit = selectedRegions.some((sel) => protoRegions.includes(sel));
         if (!hit) return false;
       }
+      // Favorites filter
+      if (showFavOnly && !favsSet.has(`guideline:${g.id}`)) return false;
       return true;
     });
-  }, [guidelines, q, selectedRegions]);
+  }, [guidelines, q, selectedRegions, showFavOnly, favsSet]);
 
   // Region counts — derived from ALL protocols (не отфильтрованные),
   // чтобы dropdown показывал full picture сколько в каждом регионе.
@@ -536,11 +561,13 @@ export default function NeonatalHandbook() {
             const hit = selectedCountries.some((sel) => countryMatches(c.source, sel));
             if (!hit) return false;
           }
+          // Favorites filter
+          if (showFavOnly && !favsSet.has(`calc:${c.id}`)) return false;
           return true;
         }),
       }))
       .filter((g) => g.calculators.length > 0);
-  }, [calculators, q, selectedCountries]);
+  }, [calculators, q, selectedCountries, showFavOnly, favsSet]);
 
   // Country counts — derived from all calculators, not the filtered set, чтобы
   // user видел сколько калькуляторов из каждой страны (а не сколько прошло
@@ -623,27 +650,35 @@ export default function NeonatalHandbook() {
   const filteredArticles = useMemo(() => {
     if (!articles) return [];
     const query = q.trim().toLowerCase();
-    if (!query) return articles.articles;
-    return articles.articles.filter((a) =>
-      a.title_ru.toLowerCase().includes(query)
-      || a.title_en.toLowerCase().includes(query)
-      || a.summary.toLowerCase().includes(query)
-      || a.content.toLowerCase().includes(query)
-      || a.topic.toLowerCase().includes(query)
-    );
-  }, [articles, q]);
+    let result = articles.articles;
+    if (query) {
+      result = result.filter((a) =>
+        a.title_ru.toLowerCase().includes(query)
+        || a.title_en.toLowerCase().includes(query)
+        || a.summary.toLowerCase().includes(query)
+        || a.content.toLowerCase().includes(query)
+        || a.topic.toLowerCase().includes(query)
+      );
+    }
+    if (showFavOnly) result = result.filter((a) => favsSet.has(`article:${a.id}`));
+    return result;
+  }, [articles, q, showFavOnly, favsSet]);
 
   const filteredLactmed = useMemo(() => {
     if (!lactmed) return [];
     const query = q.trim().toLowerCase();
-    if (!query) return lactmed.drugs;
-    return lactmed.drugs.filter((d) =>
-      d.name_ru.toLowerCase().includes(query)
-      || d.name_en.toLowerCase().includes(query)
-      || d.summary.toLowerCase().includes(query)
-      || d.details.toLowerCase().includes(query)
-    );
-  }, [lactmed, q]);
+    let result = lactmed.drugs;
+    if (query) {
+      result = result.filter((d) =>
+        d.name_ru.toLowerCase().includes(query)
+        || d.name_en.toLowerCase().includes(query)
+        || d.summary.toLowerCase().includes(query)
+        || d.details.toLowerCase().includes(query)
+      );
+    }
+    if (showFavOnly) result = result.filter((d) => favsSet.has(`lactmed:${d.id}`));
+    return result;
+  }, [lactmed, q, showFavOnly, favsSet]);
 
   /**
    * Group lactmed drugs by category in display order. Empty groups dropped.
@@ -826,9 +861,7 @@ export default function NeonatalHandbook() {
           checklists: { label: 'Чек-листы процедур', count: checklists?.checklists.length ?? null },
           videos: { label: 'Видео процедур', count: videos?.videos.length ?? null },
           atlas: { label: 'Атласы', count: atlas?.atlas.length ?? null },
-          // Personal / progress tabs (PR #45 — F1, F2, F3)
-          progress: { label: 'Прогресс обучения', count: null },
-          favorites: { label: 'Избранное', count: null },
+          // Personal / progress tabs (PR #45 — F1, F2, F3 + PR #47 cleanup)
           drugcalc: { label: 'Дозы по весу', count: null },
           search: { label: 'Глобальный поиск', count: null },
           notes: { label: 'Мои заметки', count: null },
@@ -877,6 +910,13 @@ export default function NeonatalHandbook() {
           <p style={{ fontSize: 13, color: '#6B7280', margin: '0 0 14px' }}>
             Показано: <strong style={{ color: '#1A1A1A' }}>{filteredDrugs.length}</strong> из {bank.drugs.length}
           </p>
+          <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 10, marginBottom: 16 }}>
+            <FavoritesToggleChip
+              active={showFavOnly}
+              onToggle={() => setShowFavOnly(!showFavOnly)}
+              count={bank.drugs.filter((d) => favsSet.has(`drug:${d.id}`)).length}
+            />
+          </div>
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -929,6 +969,11 @@ export default function NeonatalHandbook() {
               open={regionFilterOpen}
               onOpen={setRegionFilterOpen}
               searchable
+            />
+            <FavoritesToggleChip
+              active={showFavOnly}
+              onToggle={() => setShowFavOnly(!showFavOnly)}
+              count={(guidelines?.guidelines ?? []).filter((g) => favsSet.has(`guideline:${g.id}`)).length}
             />
             {selectedRegions.length > 0 && (
               <span style={{ fontSize: 12, color: '#9CA3AF' }}>
@@ -1011,6 +1056,14 @@ export default function NeonatalHandbook() {
               open={countryFilterOpen}
               onOpen={setCountryFilterOpen}
               searchable
+            />
+            <FavoritesToggleChip
+              active={showFavOnly}
+              onToggle={() => setShowFavOnly(!showFavOnly)}
+              count={(calculators?.groups ?? []).reduce(
+                (s, g) => s + g.calculators.filter((c) => favsSet.has(`calc:${c.id}`)).length,
+                0
+              )}
             />
             <button
               type="button"
@@ -1196,6 +1249,13 @@ export default function NeonatalHandbook() {
               кликните чтобы открыть полный текст
             </span>
           </p>
+          <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 10, marginBottom: 16 }}>
+            <FavoritesToggleChip
+              active={showFavOnly}
+              onToggle={() => setShowFavOnly(!showFavOnly)}
+              count={(articles?.articles ?? []).filter((a) => favsSet.has(`article:${a.id}`)).length}
+            />
+          </div>
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -1238,6 +1298,13 @@ export default function NeonatalHandbook() {
               совместимость с грудным вскармливанием (LactMed NCBI)
             </span>
           </p>
+          <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 10, marginBottom: 16 }}>
+            <FavoritesToggleChip
+              active={showFavOnly}
+              onToggle={() => setShowFavOnly(!showFavOnly)}
+              count={(lactmed?.drugs ?? []).filter((d) => favsSet.has(`lactmed:${d.id}`)).length}
+            />
+          </div>
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -1354,10 +1421,6 @@ export default function NeonatalHandbook() {
         <VideosView bank={videos} query={q} />
       ) : tab === 'atlas' ? (
         <AtlasView bank={atlas} query={q} openId={openId} setOpenId={setOpenId} />
-      ) : tab === 'progress' ? (
-        <ProgressDashboard bank={null /* will read localStorage */} quizzesBank={null} />
-      ) : tab === 'favorites' ? (
-        <FavoritesView />
       ) : tab === 'drugcalc' ? (
         <DrugDoseCalculator />
       ) : tab === 'search' ? (
@@ -1479,7 +1542,11 @@ function DrugCard({
       borderRadius: 14,
       overflow: 'hidden',
       transition: 'border-color 150ms ease',
+      position: 'relative',
     }}>
+      <div style={{ position: 'absolute', top: 8, right: 8, zIndex: 2 }}>
+        <FavoriteStarButton id={`drug:${drug.id}`} type="drug" title={drug.name_ru} />
+      </div>
       <button
         type="button"
         onClick={onToggle}
@@ -1489,7 +1556,7 @@ function DrugCard({
         style={{
           width: '100%',
           display: 'flex', alignItems: 'center', gap: 14,
-          padding: '14px 18px',
+          padding: '14px 40px 14px 18px',
           background: 'transparent', border: 'none',
           cursor: 'pointer', textAlign: 'left',
           fontFamily: 'inherit',
@@ -1941,7 +2008,11 @@ function GuidelineCard({
       borderRadius: 14,
       overflow: 'hidden',
       transition: 'border-color 150ms ease',
+      position: 'relative',
     }}>
+      <div style={{ position: 'absolute', top: 8, right: 8, zIndex: 2 }}>
+        <FavoriteStarButton id={`guideline:${guideline.id}`} type="guideline" title={guideline.title_ru} />
+      </div>
       <button
         type="button"
         onClick={onToggle}
@@ -1951,7 +2022,7 @@ function GuidelineCard({
         style={{
           width: '100%',
           display: 'flex', alignItems: 'flex-start', gap: 14,
-          padding: '14px 18px',
+          padding: '14px 40px 14px 18px',
           background: 'transparent', border: 'none',
           cursor: 'pointer', textAlign: 'left',
           fontFamily: 'inherit',
@@ -2131,7 +2202,12 @@ function NeonatalCalcCard({
   }, [calc.id]);
 
   return (
-    <button
+    <div style={{ position: 'relative' }}>
+      {/* Favorite star — absolute pos, sibling of button (avoids nested-button HTML invalid) */}
+      <div style={{ position: 'absolute', top: 12, right: 12, zIndex: 2 }}>
+        <FavoriteStarButton id={`calc:${calc.id}`} type="calc" title={calc.title_ru} />
+      </div>
+      <button
       type="button"
       onClick={handleClick}
       onMouseEnter={(e) => {
@@ -2152,6 +2228,7 @@ function NeonatalCalcCard({
         overflow: 'hidden',
         minHeight: 160,
         display: 'flex',
+        width: '100%',
         flexDirection: 'column',
         justifyContent: 'space-between',
         transition: 'background 300ms cubic-bezier(0.22,1,0.36,1)',
@@ -2258,6 +2335,7 @@ function NeonatalCalcCard({
         <ArrowRight size={14} color="var(--md-sys-color-on-surface)" />
       </div>
     </button>
+    </div>
   );
 }
 
@@ -2626,7 +2704,11 @@ function LactCard({
       borderRadius: 14,
       overflow: 'hidden',
       transition: 'border-color 150ms ease',
+      position: 'relative',
     }}>
+      <div style={{ position: 'absolute', top: 8, right: 8, zIndex: 2 }}>
+        <FavoriteStarButton id={`lactmed:${drug.id}`} type="lactmed" title={drug.name_ru} />
+      </div>
       <button
         type="button"
         onClick={onToggle}
@@ -2636,7 +2718,7 @@ function LactCard({
         style={{
           width: '100%',
           display: 'flex', alignItems: 'flex-start', gap: 14,
-          padding: '14px 18px',
+          padding: '14px 40px 14px 18px',
           background: 'transparent', border: 'none',
           cursor: 'pointer', textAlign: 'left',
           fontFamily: 'inherit',
@@ -2739,40 +2821,18 @@ function LactCard({
                 </NeonatalDetailBlock>
               )}
 
-              {/* Footer: link на LactMed + disclaimer. Кнопка теперь
-                  design-system-style (white BG + soft shadow). */}
+              {/* Footer: link button — design-system pill (white BG + soft
+                  shadow + mono uppercase, matching all other pills). */}
               <div style={{
                 marginTop: 16,
                 display: 'flex', alignItems: 'center',
                 flexWrap: 'wrap', gap: 12,
               }}>
-                <a
+                <DesignSystemLinkButton
                   href={drug.lactmed_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={`Открыть статью LactMed (NCBI) по препарату ${drug.name_ru}`}
-                  style={{
-                    display: 'inline-flex', alignItems: 'center', gap: 6,
-                    padding: '8px 14px',
-                    borderRadius: 'var(--md-sys-shape-corner-full)',
-                    background: '#FFFFFF',
-                    boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-                    fontFamily: 'var(--font-body)',
-                    fontSize: 12.5, fontWeight: 600,
-                    color: '#1A1A1A',
-                    textDecoration: 'none',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  Открыть статью на LactMed (NCBI)
-                  <svg width={12} height={12} viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
-                    aria-hidden="true" focusable="false">
-                    <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" />
-                    <polyline points="15 3 21 3 21 9" />
-                    <line x1="10" y1="14" x2="21" y2="3" />
-                  </svg>
-                </a>
+                  ariaLabel={`Открыть статью LactMed (NCBI) по препарату ${drug.name_ru}`}
+                  label="Открыть на LactMed"
+                />
                 <span style={{
                   fontSize: 11, color: '#9CA3AF', lineHeight: 1.4,
                   flex: 1, minWidth: 200,
@@ -3068,17 +3128,26 @@ function ClinicalCasesView({
   openId: string | null;
   setOpenId: (id: string | null) => void;
 }) {
+  const { showFavOnly, setShowFavOnly, favsSet } = useFavoritesFilter();
   const filtered = useMemo(() => {
     if (!bank) return [];
     const q = query.trim().toLowerCase();
-    if (!q) return bank.cases;
-    return bank.cases.filter((c) =>
-      c.title_ru.toLowerCase().includes(q)
-      || c.title_en.toLowerCase().includes(q)
-      || c.vignette.toLowerCase().includes(q)
-      || c.topic.toLowerCase().includes(q)
-    );
-  }, [bank, query]);
+    let result = bank.cases;
+    if (q) {
+      result = result.filter((c) =>
+        c.title_ru.toLowerCase().includes(q)
+        || c.title_en.toLowerCase().includes(q)
+        || c.vignette.toLowerCase().includes(q)
+        || c.topic.toLowerCase().includes(q)
+      );
+    }
+    if (showFavOnly) result = result.filter((c) => favsSet.has(`case:${c.id}`));
+    return result;
+  }, [bank, query, showFavOnly, favsSet]);
+  const favCount = useMemo(
+    () => bank ? bank.cases.filter((c) => favsSet.has(`case:${c.id}`)).length : 0,
+    [bank, favsSet]
+  );
 
   const grouped = useMemo(() => {
     const map = new Map<string, ClinicalCase[]>();
@@ -3107,6 +3176,14 @@ function ClinicalCasesView({
         {' · '}
         <span style={{ color: '#9CA3AF' }}>сгруппированы по системе</span>
       </p>
+
+      <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 10, marginBottom: 16 }}>
+        <FavoritesToggleChip
+          active={showFavOnly}
+          onToggle={() => setShowFavOnly(!showFavOnly)}
+          count={favCount}
+        />
+      </div>
 
       <motion.div
         initial={{ opacity: 0 }}
@@ -3384,18 +3461,27 @@ function CommonMistakesView({
   openId: string | null;
   setOpenId: (id: string | null) => void;
 }) {
+  const { showFavOnly, setShowFavOnly, favsSet } = useFavoritesFilter();
   const filtered = useMemo(() => {
     if (!bank) return [];
     const q = query.trim().toLowerCase();
-    if (!q) return bank.mistakes;
-    return bank.mistakes.filter((m) =>
-      m.title_ru.toLowerCase().includes(q)
-      || m.title_en.toLowerCase().includes(q)
-      || m.mistake.toLowerCase().includes(q)
-      || m.correct_approach.toLowerCase().includes(q)
-      || m.category.toLowerCase().includes(q)
-    );
-  }, [bank, query]);
+    let result = bank.mistakes;
+    if (q) {
+      result = result.filter((m) =>
+        m.title_ru.toLowerCase().includes(q)
+        || m.title_en.toLowerCase().includes(q)
+        || m.mistake.toLowerCase().includes(q)
+        || m.correct_approach.toLowerCase().includes(q)
+        || m.category.toLowerCase().includes(q)
+      );
+    }
+    if (showFavOnly) result = result.filter((m) => favsSet.has(`mistake:${m.id}`));
+    return result;
+  }, [bank, query, showFavOnly, favsSet]);
+  const favCount = useMemo(
+    () => bank ? bank.mistakes.filter((m) => favsSet.has(`mistake:${m.id}`)).length : 0,
+    [bank, favsSet]
+  );
 
   const grouped = useMemo(() => {
     const map = new Map<string, CommonMistake[]>();
@@ -3424,6 +3510,14 @@ function CommonMistakesView({
         {' · '}
         <span style={{ color: '#9CA3AF' }}>сгруппированы по системе</span>
       </p>
+
+      <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 10, marginBottom: 16 }}>
+        <FavoritesToggleChip
+          active={showFavOnly}
+          onToggle={() => setShowFavOnly(!showFavOnly)}
+          count={favCount}
+        />
+      </div>
 
       <motion.div
         initial={{ opacity: 0 }}
@@ -3696,17 +3790,26 @@ function ChecklistsView({
   openId: string | null;
   setOpenId: (id: string | null) => void;
 }) {
+  const { showFavOnly, setShowFavOnly, favsSet } = useFavoritesFilter();
   const filtered = useMemo(() => {
     if (!bank) return [];
     const q = query.trim().toLowerCase();
-    if (!q) return bank.checklists;
-    return bank.checklists.filter((c) =>
-      c.title_ru.toLowerCase().includes(q)
-      || c.title_en.toLowerCase().includes(q)
-      || c.indications.some((i) => i.toLowerCase().includes(q))
-      || c.category.toLowerCase().includes(q)
-    );
-  }, [bank, query]);
+    let result = bank.checklists;
+    if (q) {
+      result = result.filter((c) =>
+        c.title_ru.toLowerCase().includes(q)
+        || c.title_en.toLowerCase().includes(q)
+        || c.indications.some((i) => i.toLowerCase().includes(q))
+        || c.category.toLowerCase().includes(q)
+      );
+    }
+    if (showFavOnly) result = result.filter((c) => favsSet.has(`checklist:${c.id}`));
+    return result;
+  }, [bank, query, showFavOnly, favsSet]);
+  const favCount = useMemo(
+    () => bank ? bank.checklists.filter((c) => favsSet.has(`checklist:${c.id}`)).length : 0,
+    [bank, favsSet]
+  );
 
   const grouped = useMemo(() => {
     const map = new Map<string, ProcedureChecklist[]>();
@@ -3735,6 +3838,13 @@ function ChecklistsView({
         {' · '}
         <span style={{ color: '#9CA3AF' }}>прогресс сохраняется на устройстве</span>
       </p>
+      <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 10, marginBottom: 16 }}>
+        <FavoritesToggleChip
+          active={showFavOnly}
+          onToggle={() => setShowFavOnly(!showFavOnly)}
+          count={favCount}
+        />
+      </div>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -3830,7 +3940,11 @@ function ChecklistCard({
       borderRadius: 14,
       overflow: 'hidden',
       transition: 'border-color 150ms ease',
+      position: 'relative',
     }}>
+      <div style={{ position: 'absolute', top: 8, right: 8, zIndex: 2 }}>
+        <FavoriteStarButton id={`checklist:${c.id}`} type="checklist" title={c.title_ru} />
+      </div>
       <button
         type="button"
         onClick={onToggle}
@@ -3840,7 +3954,7 @@ function ChecklistCard({
         style={{
           width: '100%',
           display: 'flex', alignItems: 'flex-start', gap: 14,
-          padding: '14px 18px',
+          padding: '14px 40px 14px 18px',
           background: 'transparent', border: 'none',
           cursor: 'pointer', textAlign: 'left',
           fontFamily: 'inherit',
@@ -4084,18 +4198,27 @@ function VideosView({
   bank: ProcedureVideosBank | null;
   query: string;
 }) {
+  const { showFavOnly, setShowFavOnly, favsSet } = useFavoritesFilter();
   const filtered = useMemo(() => {
     if (!bank) return [];
     const q = query.trim().toLowerCase();
-    if (!q) return bank.videos;
-    return bank.videos.filter((v) =>
-      v.title_ru.toLowerCase().includes(q)
-      || v.title_en.toLowerCase().includes(q)
-      || v.description.toLowerCase().includes(q)
-      || v.tags.some((t) => t.toLowerCase().includes(q))
-      || v.source.toLowerCase().includes(q)
-    );
-  }, [bank, query]);
+    let result = bank.videos;
+    if (q) {
+      result = result.filter((v) =>
+        v.title_ru.toLowerCase().includes(q)
+        || v.title_en.toLowerCase().includes(q)
+        || v.description.toLowerCase().includes(q)
+        || v.tags.some((t) => t.toLowerCase().includes(q))
+        || v.source.toLowerCase().includes(q)
+      );
+    }
+    if (showFavOnly) result = result.filter((v) => favsSet.has(`video:${v.id}`));
+    return result;
+  }, [bank, query, showFavOnly, favsSet]);
+  const favCount = useMemo(
+    () => bank ? bank.videos.filter((v) => favsSet.has(`video:${v.id}`)).length : 0,
+    [bank, favsSet]
+  );
 
   const grouped = useMemo(() => {
     const map = new Map<string, ProcedureVideo[]>();
@@ -4124,6 +4247,13 @@ function VideosView({
         {' · '}
         <span style={{ color: '#9CA3AF' }}>линки на authoritative источники (AAP, WHO, NEJM, EFCNI и др.)</span>
       </p>
+      <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 10, marginBottom: 16 }}>
+        <FavoritesToggleChip
+          active={showFavOnly}
+          onToggle={() => setShowFavOnly(!showFavOnly)}
+          count={favCount}
+        />
+      </div>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -4172,12 +4302,30 @@ function VideosView({
 function ProcedureVideoCard({ video }: { video: ProcedureVideo }) {
   const v = video;
   const sourceLabel = VIDEO_SOURCE_TYPE_LABELS[v.source_type] ?? v.source_type;
+  // Multi-video: if videos[] array provided, prefer it; fall back to single url.
+  const videoList: { title: string; url: string; duration_min?: number }[] | null =
+    Array.isArray(v.videos) && v.videos.length > 0 ? v.videos : null;
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const handleClick = (e: React.MouseEvent) => {
+    if (videoList) {
+      e.preventDefault();
+      setPickerOpen(true);
+    }
+    // single-url: native link behavior
+  };
   return (
+    <div style={{ position: 'relative' }}>
+      <div style={{ position: 'absolute', top: 8, right: 8, zIndex: 2 }}>
+        <FavoriteStarButton id={`video:${v.id}`} type="video" title={v.title_ru} />
+      </div>
     <a
-      href={v.url}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label={`Открыть видео: ${v.title_ru}. Источник: ${v.source}. Длительность ~${v.duration_min} минут.`}
+      href={videoList ? '#' : v.url}
+      target={videoList ? undefined : '_blank'}
+      rel={videoList ? undefined : 'noopener noreferrer'}
+      onClick={handleClick}
+      aria-label={videoList
+        ? `Открыть список видео: ${v.title_ru} (${videoList.length} ${videoList.length === 1 ? 'видео' : 'видео'})`
+        : `Открыть видео: ${v.title_ru}. Источник: ${v.source}. Длительность ~${v.duration_min} минут.`}
       style={{
         display: 'flex', flexDirection: 'column',
         background: '#F5F6F8',
@@ -4268,6 +4416,123 @@ function ProcedureVideoCard({ video }: { video: ProcedureVideo }) {
         </svg>
       </div>
     </a>
+    {videoList && pickerOpen && (
+      <VideoPickerModal
+        title={v.title_ru}
+        videos={videoList}
+        onClose={() => setPickerOpen(false)}
+      />
+    )}
+    </div>
+  );
+}
+
+function VideoPickerModal({
+  title, videos, onClose,
+}: {
+  title: string;
+  videos: { title: string; url: string; duration_min?: number }[];
+  onClose: () => void;
+}) {
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [onClose]);
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label={`Выбор видео: ${title}`}
+      onClick={onClose}
+      style={{
+        position: 'fixed', inset: 0, zIndex: 9999,
+        background: 'rgba(0,0,0,0.5)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        padding: 16,
+      }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          background: '#FFFFFF',
+          borderRadius: 16,
+          padding: 24,
+          maxWidth: 480, width: '100%', maxHeight: '80vh', overflow: 'auto',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.25)',
+        }}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 16, marginBottom: 16 }}>
+          <h3 style={{
+            margin: 0,
+            fontFamily: 'var(--font-display)',
+            fontSize: 18, fontWeight: 700, color: '#111827', lineHeight: 1.3,
+          }}>
+            {title}
+          </h3>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Закрыть"
+            style={{
+              flexShrink: 0,
+              background: 'transparent', border: 'none', cursor: 'pointer',
+              padding: 4, color: '#6B7280',
+            }}
+          >
+            <svg width={20} height={20} viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
+              aria-hidden="true" focusable="false">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {videos.map((video, idx) => (
+            <a
+              key={idx}
+              href={video.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                gap: 12,
+                padding: '12px 14px',
+                background: '#F5F6F8',
+                borderRadius: 12,
+                textDecoration: 'none',
+                color: 'inherit',
+                transition: 'background 150ms',
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = '#F5F6F8'; }}
+            >
+              <span style={{
+                flex: 1, fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: 500,
+                color: '#111827', lineHeight: 1.4,
+              }}>
+                {video.title}
+              </span>
+              {video.duration_min && (
+                <span style={{
+                  flexShrink: 0,
+                  display: 'inline-flex', alignItems: 'center',
+                  padding: '4px 10px', borderRadius: 'var(--md-sys-shape-corner-full)',
+                  background: '#FFFFFF',
+                  boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
+                  fontFamily: 'var(--font-mono)', fontSize: '0.625rem', fontWeight: 500,
+                  color: 'var(--md-sys-color-on-surface-variant)',
+                  whiteSpace: 'nowrap',
+                }}>
+                  ~{video.duration_min} мин
+                </span>
+              )}
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -4302,18 +4567,27 @@ function AtlasView({
   openId: string | null;
   setOpenId: (id: string | null) => void;
 }) {
+  const { showFavOnly, setShowFavOnly, favsSet } = useFavoritesFilter();
   const filtered = useMemo(() => {
     if (!bank) return [];
     const q = query.trim().toLowerCase();
-    if (!q) return bank.atlas;
-    return bank.atlas.filter((a) =>
-      a.title_ru.toLowerCase().includes(q)
-      || a.title_en.toLowerCase().includes(q)
-      || a.description.toLowerCase().includes(q)
-      || a.key_findings.some((k) => k.toLowerCase().includes(q))
-      || a.source.toLowerCase().includes(q)
-    );
-  }, [bank, query]);
+    let result = bank.atlas;
+    if (q) {
+      result = result.filter((a) =>
+        a.title_ru.toLowerCase().includes(q)
+        || a.title_en.toLowerCase().includes(q)
+        || a.description.toLowerCase().includes(q)
+        || a.key_findings.some((k) => k.toLowerCase().includes(q))
+        || a.source.toLowerCase().includes(q)
+      );
+    }
+    if (showFavOnly) result = result.filter((a) => favsSet.has(`atlas:${a.id}`));
+    return result;
+  }, [bank, query, showFavOnly, favsSet]);
+  const favCount = useMemo(
+    () => bank ? bank.atlas.filter((a) => favsSet.has(`atlas:${a.id}`)).length : 0,
+    [bank, favsSet]
+  );
 
   const grouped = useMemo(() => {
     const map = new Map<string, AtlasEntry[]>();
@@ -4342,6 +4616,13 @@ function AtlasView({
         {' · '}
         <span style={{ color: '#9CA3AF' }}>линки на authoritative источники (Radiopaedia, NEJM, AAP)</span>
       </p>
+      <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 10, marginBottom: 16 }}>
+        <FavoritesToggleChip
+          active={showFavOnly}
+          onToggle={() => setShowFavOnly(!showFavOnly)}
+          count={favCount}
+        />
+      </div>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -4411,7 +4692,11 @@ function AtlasCard({
       borderRadius: 14,
       overflow: 'hidden',
       transition: 'border-color 150ms ease',
+      position: 'relative',
     }}>
+      <div style={{ position: 'absolute', top: 8, right: 8, zIndex: 2 }}>
+        <FavoriteStarButton id={`atlas:${a.id}`} type="atlas" title={a.title_ru} />
+      </div>
       <button
         type="button"
         onClick={onToggle}
@@ -4421,7 +4706,7 @@ function AtlasCard({
         style={{
           width: '100%',
           display: 'flex', alignItems: 'flex-start', gap: 14,
-          padding: '14px 18px',
+          padding: '14px 40px 14px 18px',
           background: 'transparent', border: 'none',
           cursor: 'pointer', textAlign: 'left',
           fontFamily: 'inherit',
@@ -4527,33 +4812,11 @@ function AtlasCard({
                 marginTop: 16,
                 display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 12,
               }}>
-                <a
+                <DesignSystemLinkButton
                   href={a.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={`Открыть атлас: ${a.title_ru} на ${a.source}`}
-                  style={{
-                    display: 'inline-flex', alignItems: 'center', gap: 6,
-                    padding: '8px 14px',
-                    borderRadius: 'var(--md-sys-shape-corner-full)',
-                    background: '#FFFFFF',
-                    boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-                    fontFamily: 'var(--font-body)',
-                    fontSize: 12.5, fontWeight: 600,
-                    color: '#1A1A1A',
-                    textDecoration: 'none',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  Открыть на {a.source}
-                  <svg width={12} height={12} viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
-                    aria-hidden="true" focusable="false">
-                    <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" />
-                    <polyline points="15 3 21 3 21 9" />
-                    <line x1="10" y1="14" x2="21" y2="3" />
-                  </svg>
-                </a>
+                  ariaLabel={`Открыть атлас: ${a.title_ru} на ${a.source}`}
+                  label={`Открыть на ${a.source}`}
+                />
                 <span style={{
                   fontSize: 11, color: '#9CA3AF', flex: 1,
                   lineHeight: 1.4, minWidth: 200,
@@ -4600,7 +4863,8 @@ const TOPIC_LABELS_DASHBOARD: Record<string, string> = {
   screening: 'Скрининги',
 };
 
-function ProgressDashboard({ bank: _bank, quizzesBank: _quizzesBank }: { bank: unknown; quizzesBank: unknown }) {
+/** Neonatal quiz progress dashboard — exported for reuse in /stats page (audit H2). */
+export function ProgressDashboard({ bank: _bank, quizzesBank: _quizzesBank }: { bank: unknown; quizzesBank: unknown }) {
   void _bank; void _quizzesBank;
   const [quizzes, setQuizzes] = useState<{ id: string; title_ru: string; topic: string; level: string; questions: unknown[] }[] | null>(null);
   const [progress, setProgress] = useState<Record<string, { selected: Record<number, number>; submitted: boolean; score: number; playOrder?: number[]; seenIndices?: number[] }>>({});
@@ -5143,7 +5407,7 @@ function DrugDoseCalculator() {
 
 interface FavoriteEntry {
   id: string;
-  type: 'drug' | 'guideline' | 'article' | 'case' | 'mistake' | 'checklist' | 'video' | 'atlas';
+  type: 'drug' | 'guideline' | 'article' | 'case' | 'mistake' | 'checklist' | 'video' | 'atlas' | 'lactmed' | 'calc';
   title: string;
   added: number;
 }
@@ -5157,6 +5421,8 @@ const TYPE_LABELS: Record<FavoriteEntry['type'], string> = {
   checklist: 'Чек-лист',
   video: 'Видео',
   atlas: 'Атлас',
+  lactmed: 'LactMed',
+  calc: 'Калькулятор',
 };
 
 function loadFavorites(): FavoriteEntry[] {
@@ -5179,132 +5445,108 @@ function saveFavorites(favs: FavoriteEntry[]): void {
   } catch { /* ignore */ }
 }
 
-function FavoritesView() {
-  const [favs, setFavs] = useState<FavoriteEntry[]>(() => loadFavorites());
+/** Reusable external-link button — design-system pill (white BG + soft shadow
+ *  + mono uppercase). Used in Atlas + LactMed expanded panels. */
+function DesignSystemLinkButton({
+  href, label, ariaLabel,
+}: {
+  href: string;
+  label: string;
+  ariaLabel: string;
+}) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={ariaLabel}
+      style={{
+        display: 'inline-flex', alignItems: 'center', gap: 6,
+        padding: '8px 14px',
+        borderRadius: 'var(--md-sys-shape-corner-full)',
+        background: '#FFFFFF',
+        boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
+        fontFamily: 'var(--font-mono)',
+        fontSize: '0.7rem', fontWeight: 500,
+        color: 'var(--md-sys-color-on-surface-variant)',
+        textDecoration: 'none',
+        whiteSpace: 'nowrap',
+        textTransform: 'uppercase', letterSpacing: '0.04em',
+        transition: 'background 200ms cubic-bezier(0.22,1,0.36,1)',
+      }}
+      onMouseEnter={(e) => { e.currentTarget.style.background = '#F8F9FA'; }}
+      onMouseLeave={(e) => { e.currentTarget.style.background = '#FFFFFF'; }}
+    >
+      {label}
+      <svg width={12} height={12} viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
+        aria-hidden="true" focusable="false">
+        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" />
+        <polyline points="15 3 21 3 21 9" />
+        <line x1="10" y1="14" x2="21" y2="3" />
+      </svg>
+    </a>
+  );
+}
 
+/** Hook — subscribes to favorites changes; returns togglable filter state + favsSet. */
+function useFavoritesFilter() {
+  const [showFavOnly, setShowFavOnly] = useState(false);
+  const [favsSet, setFavsSet] = useState<Set<string>>(() =>
+    typeof window === 'undefined' ? new Set() : new Set(loadFavorites().map((f) => f.id))
+  );
   useEffect(() => {
-    const handler = () => setFavs(loadFavorites());
+    const handler = () => setFavsSet(new Set(loadFavorites().map((f) => f.id)));
     if (typeof window === 'undefined') return;
     window.addEventListener('bordik-favs-changed', handler);
-    window.addEventListener('storage', handler);
-    return () => {
-      window.removeEventListener('bordik-favs-changed', handler);
-      window.removeEventListener('storage', handler);
-    };
+    return () => window.removeEventListener('bordik-favs-changed', handler);
   }, []);
+  return { showFavOnly, setShowFavOnly, favsSet };
+}
 
-  const grouped = useMemo(() => {
-    const map = new Map<FavoriteEntry['type'], FavoriteEntry[]>();
-    for (const f of favs) {
-      const arr = map.get(f.type) ?? [];
-      arr.push(f);
-      map.set(f.type, arr);
-    }
-    return Array.from(map.entries()).sort((a, b) => b[1].length - a[1].length);
-  }, [favs]);
-
-  const handleRemove = (id: string) => {
-    const next = favs.filter((f) => f.id !== id);
-    setFavs(next);
-    saveFavorites(next);
-  };
-  const handleClearAll = () => {
-    setFavs([]);
-    saveFavorites([]);
-  };
-
-  if (favs.length === 0) {
-    return (
-      <div style={{
-        padding: '32px 20px',
-        background: '#F5F6F8',
-        borderRadius: 14,
-        textAlign: 'center',
-        color: '#6B7280',
-      }}>
-        <div style={{
-          fontFamily: 'var(--font-display)',
-          fontSize: 17, fontWeight: 700,
-          color: '#1A1A1A',
-          marginBottom: 8,
-        }}>
-          Пока пусто
-        </div>
-        <p style={{ margin: '0 auto', maxWidth: 460, fontSize: 13.5, lineHeight: 1.55 }}>
-          Нажмите на иконку звезды у любой карточки (статьи, кейса, ошибки),
-          чтобы добавить её в избранное. Здесь будут собраны все ваши закладки
-          для быстрого доступа.
-        </p>
-      </div>
-    );
-  }
-
+/** Reusable toggle chip — "⋆ только избранные". Used at top of each section. */
+function FavoritesToggleChip({
+  active, onToggle, count,
+}: {
+  active: boolean;
+  onToggle: () => void;
+  count: number;
+}) {
   return (
-    <div style={{ width: '100%' }}>
-      <p style={{ fontSize: 13, color: '#6B7280', margin: '0 0 14px' }}>
-        Показано: <strong style={{ color: '#1A1A1A' }}>{favs.length}</strong> избранных
-        {' · '}
-        <button
-          type="button"
-          onClick={handleClearAll}
-          style={{
-            background: 'none', border: 'none', cursor: 'pointer',
-            color: '#DC2626', fontSize: 13, padding: 0, textDecoration: 'underline',
-          }}
-        >
-          Очистить всё
-        </button>
-      </p>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-        {grouped.map(([type, items]) => (
-          <div key={type}>
-            <h3 style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: 17, fontWeight: 700,
-              color: '#1A1A1A',
-              margin: '0 0 12px',
-              letterSpacing: '-0.01em',
-              display: 'flex', alignItems: 'baseline', gap: 8,
-            }}>
-              {TYPE_LABELS[type]}
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 600, color: '#9CA3AF' }}>
-                {items.length}
-              </span>
-            </h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-              {items.map((f) => (
-                <div key={f.id} style={{
-                  display: 'flex', alignItems: 'center', gap: 10,
-                  padding: '12px 14px',
-                  background: '#F5F6F8',
-                  borderRadius: 10,
-                }}>
-                  <span style={{ flex: 1, fontSize: 13.5, color: '#1A1A1A', fontWeight: 500 }}>
-                    {f.title}
-                  </span>
-                  <span style={{ fontSize: 11, color: '#9CA3AF' }}>
-                    {new Date(f.added).toLocaleDateString('ru-RU')}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => handleRemove(f.id)}
-                    aria-label={`Удалить из избранного: ${f.title}`}
-                    style={{
-                      background: 'none', border: 'none', cursor: 'pointer',
-                      color: '#9CA3AF', fontSize: 18, padding: '4px 8px',
-                      display: 'inline-flex', alignItems: 'center',
-                      borderRadius: 6,
-                    }}
-                  >
-                    ×
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-pressed={active}
+      aria-label={active ? 'Показать все' : `Показать только избранные (${count})`}
+      style={{
+        display: 'inline-flex', alignItems: 'center', gap: 6,
+        padding: '6px 12px',
+        borderRadius: 'var(--md-sys-shape-corner-full)',
+        background: active ? '#FEF3C7' : '#FFFFFF',
+        border: 'none',
+        boxShadow: active
+          ? '0 0 0 1px #F59E0B, 0 1px 2px rgba(245,158,11,0.12)'
+          : '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
+        fontFamily: 'var(--font-mono)',
+        fontSize: '0.7rem', fontWeight: 500,
+        color: active ? '#92400E' : 'var(--md-sys-color-on-surface-variant)',
+        cursor: 'pointer',
+        transition: 'all 200ms cubic-bezier(0.22,1,0.36,1)',
+        textTransform: 'uppercase', letterSpacing: '0.04em',
+        whiteSpace: 'nowrap',
+      }}
+    >
+      <svg width={12} height={12} viewBox="0 0 24 24"
+        fill={active ? 'currentColor' : 'none'}
+        stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
+        aria-hidden="true" focusable="false">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+      </svg>
+      Только избранные
+      {count > 0 && (
+        <span style={{ opacity: 0.6 }}>({count})</span>
+      )}
+    </button>
   );
 }
 
