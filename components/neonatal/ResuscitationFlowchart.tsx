@@ -633,23 +633,32 @@ export default function ResuscitationFlowchart() {
             </span>
             {currentStepObj.is_critical && (
               <span style={{
-                fontSize: 11, fontWeight: 700,
-                color: '#DC2626',
+                display: 'inline-flex', alignItems: 'center',
+                padding: '4px var(--space-2)',
+                borderRadius: 'var(--md-sys-shape-corner-full)',
                 background: '#FFFFFF',
-                padding: '2px 8px',
-                borderRadius: 4,
-                border: '1px solid #FECACA',
+                boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06), inset 0 0 0 1px #FECACA',
+                fontFamily: 'var(--font-mono)',
+                fontSize: '0.625rem', fontWeight: 700,
+                color: '#DC2626',
+                textTransform: 'uppercase', letterSpacing: '0.04em',
+                whiteSpace: 'nowrap',
               }}>
                 КРИТИЧНО
               </span>
             )}
             {currentStepObj.is_decision && (
               <span style={{
-                fontSize: 11, fontWeight: 700,
+                display: 'inline-flex', alignItems: 'center',
+                padding: '4px var(--space-2)',
+                borderRadius: 'var(--md-sys-shape-corner-full)',
+                background: '#FFFFFF',
+                boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
+                fontFamily: 'var(--font-mono)',
+                fontSize: '0.625rem', fontWeight: 700,
                 color: '#1D4ED8',
-                background: '#EFF6FF',
-                padding: '2px 8px',
-                borderRadius: 4,
+                textTransform: 'uppercase', letterSpacing: '0.04em',
+                whiteSpace: 'nowrap',
               }}>
                 РЕШЕНИЕ
               </span>

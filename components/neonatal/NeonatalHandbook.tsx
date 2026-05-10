@@ -1849,10 +1849,16 @@ function ArticleCard({
               <Highlight text={article.title_ru} query={query} />
             </span>
             <span style={{
-              fontSize: 10, fontWeight: 700, letterSpacing: '0.04em',
-              textTransform: 'uppercase', color: '#9CA3AF',
-              padding: '2px 6px', background: '#FFFFFF', borderRadius: 4,
-              border: '1px solid #E5E7EB',
+              display: 'inline-flex', alignItems: 'center',
+              padding: '4px var(--space-2)',
+              borderRadius: 'var(--md-sys-shape-corner-full)',
+              background: '#FFFFFF',
+              boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.625rem', fontWeight: 500,
+              color: 'var(--md-sys-color-on-surface-variant)',
+              textTransform: 'uppercase', letterSpacing: '0.04em',
+              whiteSpace: 'nowrap',
             }}>
               {article.topic}
             </span>
@@ -2166,12 +2172,16 @@ function LactCard({
               <Highlight text={drug.name_ru} query={query} />
             </span>
             <span style={{
-              fontSize: 11, fontWeight: 700,
-              color: colors.text,
+              display: 'inline-flex', alignItems: 'center',
+              padding: '4px var(--space-2)',
+              borderRadius: 'var(--md-sys-shape-corner-full)',
               background: colors.bg,
-              padding: '2px 8px',
-              borderRadius: 4,
-              border: `1px solid ${colors.border}`,
+              boxShadow: `0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06), inset 0 0 0 1px ${colors.border}`,
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.625rem', fontWeight: 600,
+              color: colors.text,
+              textTransform: 'uppercase', letterSpacing: '0.04em',
+              whiteSpace: 'nowrap',
             }}>
               {colors.label}
             </span>
@@ -2321,10 +2331,16 @@ function NurseProcedureCard({
               {procedure.title_ru}
             </span>
             <span style={{
-              fontSize: 10, fontWeight: 700, letterSpacing: '0.04em',
-              textTransform: 'uppercase', color: '#9CA3AF',
-              padding: '2px 6px', background: '#FFFFFF', borderRadius: 4,
-              border: '1px solid #E5E7EB',
+              display: 'inline-flex', alignItems: 'center',
+              padding: '4px var(--space-2)',
+              borderRadius: 'var(--md-sys-shape-corner-full)',
+              background: '#FFFFFF',
+              boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.625rem', fontWeight: 500,
+              color: 'var(--md-sys-color-on-surface-variant)',
+              textTransform: 'uppercase', letterSpacing: '0.04em',
+              whiteSpace: 'nowrap',
             }}>
               {procedure.category}
             </span>
