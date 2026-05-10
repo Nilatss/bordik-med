@@ -738,30 +738,10 @@ export default function NeonatalHandbook() {
       fontFamily: 'var(--font-body, system-ui)',
       color: 'var(--md-sys-color-on-surface, #1A1A1A)',
     }}>
-      {/*
-        Page header — скрывается когда tab='quizzes' и user открыл конкретный
-        quiz (fullscreen exam-like takeover). QuizRunner notifies parent через
-        onActiveChange callback → setQuizActive(true).
-      */}
-      {!(tab === 'quizzes' && quizActive) && (
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1] }}
-        style={{ marginBottom: 24 }}
-      >
-        <h1 style={{
-          fontFamily: 'var(--font-display)', fontSize: 32, fontWeight: 700,
-          color: '#101010', margin: '0 0 8px', letterSpacing: '-0.02em',
-        }}>
-          Неонатология — справочник доз
-        </h1>
-        <p style={{ fontSize: 14, color: '#6B7280', margin: 0, maxWidth: 720, lineHeight: 1.55 }}>
-          {bank.drugs.length} препаратов NICU с дозированием по гестационному возрасту,
-          путём введения, метаболизмом и предостережениями.
-        </p>
-      </motion.div>
-      )}
+      {/* Page header removed (PR #50, fix G3) — each tab has its own H1
+          via SECTION_META and breadcrumb-style title. The repeated
+          «Неонатология — справочник доз» banner was redundant and ate
+          vertical space. Fired by user feedback. */}
 
       {/* Search — для табов с поиском; на growth/bilirubin/resuscitation не нужен.
           Также скрывается когда quiz active (clean exam UI). */}
@@ -1423,10 +1403,11 @@ export default function NeonatalHandbook() {
         <DrugDoseCalculator />
       ) : null}
 
-      {/* Source / disclaimer panel — единый стиль с DrugChecker provenance.
-          Скрывается на табе Тесты (panel описывает источники препаратов /
-          графиков / билирубина — не релевантно для тестового раздела). */}
-      {tab !== 'quizzes' && (
+      {/* Source / disclaimer panel — теперь tab-specific (G4 fix).
+          На табах где нет одной канонической ссылки (calculators / guidelines /
+          articles / lactmed и т.д.) панель скрыта; там ссылки находятся
+          внутри каждой карточки. */}
+      {(tab === 'drugs' || tab === 'growth' || tab === 'bilirubin') && (
       <section
         aria-labelledby="neonatal-provenance"
         style={{
@@ -1453,29 +1434,41 @@ export default function NeonatalHandbook() {
           margin: 0, display: 'grid',
           gridTemplateColumns: 'auto 1fr', columnGap: 18, rowGap: 10,
         }}>
-          <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Препараты + протоколы</dt>
-          <dd style={{ margin: 0, color: '#1A1A1A' }}>
-            {bank.source} — {bank.drugs.length} препаратов NICU + 13 практических протоколов.
-            <span style={{ color: '#6B7280', display: 'block', marginTop: 2, fontSize: 12 }}>
-              Авторы: {bank.authors.join('; ')}
-            </span>
-          </dd>
+          {tab === 'drugs' && (
+            <>
+              <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Препараты + протоколы</dt>
+              <dd style={{ margin: 0, color: '#1A1A1A' }}>
+                {bank.source} — {bank.drugs.length} препаратов NICU + 13 практических протоколов.
+                <span style={{ color: '#6B7280', display: 'block', marginTop: 2, fontSize: 12 }}>
+                  Авторы: {bank.authors.join('; ')}
+                </span>
+              </dd>
+            </>
+          )}
 
-          <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Графики роста</dt>
-          <dd style={{ margin: 0, color: '#1A1A1A' }}>
-            Fenton TR, Kim JH. BMC Pediatrics 2013;13:59 — кривые для недоношенных 22–50 нед PMA.
-            <span style={{ color: '#6B7280', display: 'block', marginTop: 2, fontSize: 12 }}>
-              Лицензия: CC-BY 2.0 (open access)
-            </span>
-          </dd>
+          {tab === 'growth' && (
+            <>
+              <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Графики роста</dt>
+              <dd style={{ margin: 0, color: '#1A1A1A' }}>
+                Fenton TR, Kim JH. BMC Pediatrics 2013;13:59 — кривые для недоношенных 22–50 нед PMA.
+                <span style={{ color: '#6B7280', display: 'block', marginTop: 2, fontSize: 12 }}>
+                  Лицензия: CC-BY 2.0 (open access)
+                </span>
+              </dd>
+            </>
+          )}
 
-          <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Билирубин</dt>
-          <dd style={{ margin: 0, color: '#1A1A1A' }}>
-            AAP 2022 — Kemper AR, Newman TB, Slaughter JL, et al. Pediatrics 2022;150(3):e2022058859. Пороги фототерапии и обменного переливания.
-            <span style={{ color: '#6B7280', display: 'block', marginTop: 2, fontSize: 12 }}>
-              Лицензия: AAP Clinical Practice Guideline (открыт для клинического использования)
-            </span>
-          </dd>
+          {tab === 'bilirubin' && (
+            <>
+              <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Билирубин</dt>
+              <dd style={{ margin: 0, color: '#1A1A1A' }}>
+                AAP 2022 — Kemper AR, Newman TB, Slaughter JL, et al. Pediatrics 2022;150(3):e2022058859. Пороги фототерапии и обменного переливания.
+                <span style={{ color: '#6B7280', display: 'block', marginTop: 2, fontSize: 12 }}>
+                  Лицензия: AAP Clinical Practice Guideline (открыт для клинического использования)
+                </span>
+              </dd>
+            </>
+          )}
         </dl>
 
         <p role="note" style={{
@@ -1485,12 +1478,19 @@ export default function NeonatalHandbook() {
           margin: '18px 0 0',
         }}>
           <strong style={{ color: '#1A1A1A' }}>Не заменяет клиническое решение.</strong>{' '}
-          Дозы у новорождённых критически зависят от гестационного возраста, дней жизни, веса,
-          функции почек и печени. Графики роста — для пограничных случаев сверяйтесь с официальными
-          LMS-таблицами производителя стандарта. Билирубин — для GA &lt; 35 нед, при острой
-          энцефалопатии или пограничных значениях TSB сверяйтесь с локальными протоколами и
-          руководством AAP 2022 в полном виде. Решение по конкретному пациенту принимает
-          врач/клин-фармаколог/неонатолог.
+          {tab === 'drugs' && (
+            <>Дозы у новорождённых критически зависят от гестационного возраста, дней жизни, веса,
+            функции почек и печени. Решение по конкретному пациенту принимает
+            врач/клин-фармаколог/неонатолог.</>
+          )}
+          {tab === 'growth' && (
+            <>Графики роста — для пограничных случаев сверяйтесь с официальными
+            LMS-таблицами производителя стандарта.</>
+          )}
+          {tab === 'bilirubin' && (
+            <>Для GA &lt; 35 нед, при острой энцефалопатии или пограничных значениях TSB
+            сверяйтесь с локальными протоколами и руководством AAP 2022 в полном виде.</>
+          )}
         </p>
       </section>
       )}
@@ -1825,9 +1825,13 @@ function NeonatalDetailBlock({
 
 type Block =
   | { kind: 'step'; text: string }
+  | { kind: 'h1'; text: string }
+  | { kind: 'h2'; text: string }
+  | { kind: 'h3'; text: string }
   | { kind: 'heading'; text: string }
   | { kind: 'list'; items: string[] }
   | { kind: 'formula'; text: string }
+  | { kind: 'table'; headers: string[]; rows: string[][] }
   | { kind: 'para'; text: string };
 
 // Replace broken PDF glyphs (U+FFFD and similar) with a neutral placeholder.
@@ -1846,48 +1850,91 @@ function isFormulaLine(s: string): boolean {
 }
 
 function parseGuidelineContent(raw: string): Block[] {
-  const lines = raw.split('\n').map((l) => sanitizePdfText(l));
-  const chunks: string[][] = [];
-  let cur: string[] = [];
-  for (const line of lines) {
-    if (!line) {
-      if (cur.length) { chunks.push(cur); cur = []; }
-    } else {
-      cur.push(line);
-    }
-  }
-  if (cur.length) chunks.push(cur);
-
+  const rawLines = raw.split('\n');
+  const lines = rawLines.map((l) => l.replace(/\u0000/g, '').replace(/[ \t]+$/g, ''));
   const blocks: Block[] = [];
   const bulletRe = /^\s*(?:[-•*·]|\d+[.)]|[a-z][.)])\s+/i;
   const stepRe = /^STEP\s+(ONE|TWO|THREE|FOUR|FIVE|SIX|SEVEN|EIGHT|NINE|TEN|\d+)\b/i;
+  const tableLineRe = /^\s*\|.*\|\s*$/;
+  const tableSepRe = /^\s*\|[\s|:-]+\|\s*$/;
+  const splitRow = (l: string): string[] =>
+    l.trim().replace(/^\||\|$/g, '').split('|').map((c) => c.trim());
 
-  for (const chunk of chunks) {
-    // Step heading like "STEP ONE" possibly with trailing words.
-    if (chunk.length === 1 && chunk[0] && stepRe.test(chunk[0])) {
-      blocks.push({ kind: 'step', text: chunk[0] });
+  let i = 0;
+  while (i < lines.length) {
+    const line = lines[i] ?? '';
+    if (!line.trim()) { i++; continue; }
+
+    // Markdown headings (#, ##, ###, ####+).
+    const hMatch = /^(#{1,6})\s+(.+?)\s*$/.exec(line);
+    if (hMatch && hMatch[1] && hMatch[2]) {
+      const level = hMatch[1].length;
+      const text = hMatch[2].trim();
+      if (level === 1) blocks.push({ kind: 'h1', text });
+      else if (level === 2) blocks.push({ kind: 'h2', text });
+      else blocks.push({ kind: 'h3', text });
+      i++;
       continue;
     }
 
+    // Markdown table — header row + separator + body rows.
+    if (
+      tableLineRe.test(line)
+      && i + 1 < lines.length
+      && tableSepRe.test(lines[i + 1] ?? '')
+    ) {
+      const headers = splitRow(line);
+      const rows: string[][] = [];
+      i += 2;
+      while (
+        i < lines.length
+        && tableLineRe.test(lines[i] ?? '')
+        && !tableSepRe.test(lines[i] ?? '')
+      ) {
+        rows.push(splitRow(lines[i] ?? ''));
+        i++;
+      }
+      blocks.push({ kind: 'table', headers, rows });
+      continue;
+    }
+
+    if (stepRe.test(line)) {
+      blocks.push({ kind: 'step', text: sanitizePdfText(line) });
+      i++;
+      continue;
+    }
+
+    // Collect paragraph chunk until blank/heading/table/step boundary.
+    const chunk: string[] = [];
+    while (i < lines.length) {
+      const cur = lines[i] ?? '';
+      if (!cur.trim()) break;
+      if (/^#{1,6}\s+/.test(cur)) break;
+      if (tableLineRe.test(cur)) break;
+      if (stepRe.test(cur)) break;
+      chunk.push(sanitizePdfText(cur));
+      i++;
+    }
+    if (chunk.length === 0) { i++; continue; }
+
     const allBullet = chunk.every((l) => bulletRe.test(l));
-    if (allBullet && chunk.length >= 2) {
+    if (allBullet && chunk.length >= 1) {
       blocks.push({ kind: 'list', items: chunk.map((l) => l.replace(bulletRe, '').trim()) });
       continue;
     }
 
-    // Multi-line formula block: every line looks like a formula.
-    if (chunk.length >= 1 && chunk.every(isFormulaLine)) {
+    if (chunk.every(isFormulaLine)) {
       blocks.push({ kind: 'formula', text: chunk.join('\n') });
       continue;
     }
 
     const joined = chunk.join(' ').replace(/\s+/g, ' ').trim();
-    const isHeading =
+    const isLegacyHeading =
       chunk.length === 1 &&
       joined.length <= 80 &&
       (joined === joined.toUpperCase() || /:$/.test(joined)) &&
       !isFormulaLine(joined);
-    if (isHeading) {
+    if (isLegacyHeading) {
       blocks.push({ kind: 'heading', text: joined.replace(/:$/, '') });
       continue;
     }
@@ -1895,6 +1942,17 @@ function parseGuidelineContent(raw: string): Block[] {
     blocks.push({ kind: 'para', text: joined });
   }
   return blocks;
+}
+
+/** Render inline markdown — currently just **bold**. */
+function renderInlineMd(text: string): React.ReactNode {
+  const parts = text.split(/(\*\*[^*]+\*\*)/g);
+  return parts.map((p, idx) => {
+    if (p.startsWith('**') && p.endsWith('**')) {
+      return <strong key={idx} style={{ fontWeight: 600, color: '#111827' }}>{p.slice(2, -2)}</strong>;
+    }
+    return <span key={idx}>{p}</span>;
+  });
 }
 
 function GuidelineContent({ content }: { content: string }) {
@@ -1920,6 +1978,42 @@ function GuidelineContent({ content }: { content: string }) {
             </div>
           );
         }
+        if (b.kind === 'h1') {
+          return (
+            <h2 key={i} style={{
+              marginTop: i === 0 ? 0 : 22, marginBottom: 10,
+              fontFamily: 'var(--font-display)',
+              fontSize: 18, fontWeight: 700, color: '#0F172A',
+              letterSpacing: '-0.015em', lineHeight: 1.3,
+            }}>
+              {renderInlineMd(b.text)}
+            </h2>
+          );
+        }
+        if (b.kind === 'h2') {
+          return (
+            <h3 key={i} style={{
+              marginTop: i === 0 ? 0 : 18, marginBottom: 8,
+              fontFamily: 'var(--font-display)',
+              fontSize: 15, fontWeight: 700, color: '#111827',
+              letterSpacing: '-0.01em', lineHeight: 1.35,
+            }}>
+              {renderInlineMd(b.text)}
+            </h3>
+          );
+        }
+        if (b.kind === 'h3') {
+          return (
+            <h4 key={i} style={{
+              marginTop: i === 0 ? 0 : 14, marginBottom: 6,
+              fontFamily: 'var(--font-display)',
+              fontSize: 13.5, fontWeight: 700, color: '#1F2937',
+              letterSpacing: '-0.005em', lineHeight: 1.4,
+            }}>
+              {renderInlineMd(b.text)}
+            </h4>
+          );
+        }
         if (b.kind === 'heading') {
           return (
             <div key={i} style={{
@@ -1939,9 +2033,59 @@ function GuidelineContent({ content }: { content: string }) {
               fontSize: 13, lineHeight: 1.6, color: '#374151',
             }}>
               {b.items.map((it, j) => (
-                <li key={j} style={{ marginBottom: 4 }}>{it}</li>
+                <li key={j} style={{ marginBottom: 4 }}>{renderInlineMd(it)}</li>
               ))}
             </ul>
+          );
+        }
+        if (b.kind === 'table') {
+          return (
+            <div key={i} style={{
+              margin: '0 0 14px',
+              overflowX: 'auto',
+              borderRadius: 10,
+              background: '#FFFFFF',
+              boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
+            }}>
+              <table style={{
+                width: '100%', borderCollapse: 'collapse',
+                fontSize: 12.5, lineHeight: 1.5,
+              }}>
+                <thead>
+                  <tr>
+                    {b.headers.map((h, j) => (
+                      <th key={j} style={{
+                        padding: '10px 12px',
+                        textAlign: 'left',
+                        fontFamily: 'var(--font-body)',
+                        fontWeight: 700, color: '#111827',
+                        borderBottom: '1px solid #E5E7EB',
+                        whiteSpace: 'nowrap',
+                      }}>
+                        {renderInlineMd(h)}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {b.rows.map((row, ri) => (
+                    <tr key={ri} style={{
+                      borderTop: ri === 0 ? 'none' : '1px solid #F0F1F5',
+                    }}>
+                      {row.map((cell, ci) => (
+                        <td key={ci} style={{
+                          padding: '10px 12px',
+                          color: '#374151',
+                          verticalAlign: 'top',
+                        }}>
+                          {renderInlineMd(cell)}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           );
         }
         if (b.kind === 'formula') {
@@ -1966,7 +2110,7 @@ function GuidelineContent({ content }: { content: string }) {
             margin: '0 0 10px',
             fontSize: 13, lineHeight: 1.6, color: '#374151',
           }}>
-            {b.text}
+            {renderInlineMd(b.text)}
           </p>
         );
       })}
@@ -3685,53 +3829,27 @@ function CommonMistakeCard({
 
 /**
  * MistakeBlock — uniform секция-блок внутри CommonMistakeCard expanded view.
- *   tone='ok' даёт green accent на label (correct approach).
- *   tone='warning' — amber accent + ⚠ icon (consequence).
+ *   tone parameter retained for backwards compatibility but no longer
+ *   produces colored accents — per user feedback the block matches the
+ *   neutral design system used elsewhere (no green/amber tints).
  */
 function MistakeBlock({
-  label, text, tone,
+  label, text,
 }: {
   label: string;
   text: string;
+  /** tone is kept in props for back-compat at call sites but visually unused. */
   tone?: 'ok' | 'warning';
 }) {
-  const labelColor = tone === 'ok' ? '#059669'
-    : tone === 'warning' ? '#B45309'
-    : '#9CA3AF';
   return (
     <div style={{ marginBottom: 14 }}>
       <div style={{
-        display: 'inline-flex', alignItems: 'center', gap: 6,
         fontFamily: 'var(--font-mono)',
         fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
         textTransform: 'uppercase',
-        color: labelColor,
+        color: '#9CA3AF',
         marginBottom: 6,
       }}>
-        {tone === 'warning' && (
-          <svg
-            aria-hidden="true" focusable="false"
-            width={11} height={11} viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" strokeWidth={2.4}
-            strokeLinecap="round" strokeLinejoin="round"
-            style={{ flexShrink: 0 }}
-          >
-            <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z" />
-            <line x1="12" y1="9" x2="12" y2="13" />
-            <line x1="12" y1="17" x2="12.01" y2="17" />
-          </svg>
-        )}
-        {tone === 'ok' && (
-          <svg
-            aria-hidden="true" focusable="false"
-            width={11} height={11} viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" strokeWidth={2.4}
-            strokeLinecap="round" strokeLinejoin="round"
-            style={{ flexShrink: 0 }}
-          >
-            <polyline points="20 6 9 17 4 12" />
-          </svg>
-        )}
         {label}
       </div>
       <p style={{
@@ -5280,34 +5398,39 @@ function DrugDoseCalculator() {
         )}
       </div>
 
-      {/* Category filter */}
+      {/* Category filter — design-system pills (mirrors ToolsPage favorites
+          + sidebar groups: dark-on-active, body-font, sentence-case, no CAPS). */}
       <div style={{
-        display: 'flex', flexWrap: 'wrap', gap: 6,
+        display: 'flex', flexWrap: 'wrap', gap: 8,
         marginBottom: 16,
       }}>
-        {(['all', 'resuscitation', 'metabolic', 'sedation', 'cardio'] as const).map((c) => (
-          <button
-            key={c}
-            type="button"
-            onClick={() => setFilterCategory(c)}
-            aria-pressed={filterCategory === c}
-            style={{
-              padding: '6px 12px',
-              background: filterCategory === c ? '#1A1A1A' : '#FFFFFF',
-              color: filterCategory === c ? '#FFFFFF' : '#1A1A1A',
-              border: 'none',
-              borderRadius: 'var(--md-sys-shape-corner-full)',
-              boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-              cursor: 'pointer',
-              fontFamily: 'var(--font-mono)',
-              fontSize: '0.625rem', fontWeight: 600,
-              textTransform: 'uppercase', letterSpacing: '0.04em',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            {c === 'all' ? 'Все' : DRUG_CATEGORY_LABELS[c]}
-          </button>
-        ))}
+        {(['all', 'resuscitation', 'metabolic', 'sedation', 'cardio'] as const).map((c) => {
+          const isActive = filterCategory === c;
+          return (
+            <button
+              key={c}
+              type="button"
+              onClick={() => setFilterCategory(c)}
+              aria-pressed={isActive}
+              style={{
+                padding: '7px 12px',
+                background: isActive ? '#1A1A1A' : '#F5F6F8',
+                color: isActive ? '#FFFFFF' : '#374151',
+                border: 'none',
+                borderRadius: 999,
+                cursor: 'pointer',
+                fontFamily: 'var(--font-body)',
+                fontSize: 12, fontWeight: 600,
+                whiteSpace: 'nowrap',
+                transition: 'background 180ms, color 180ms',
+              }}
+              onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.background = '#EFF1F4'; }}
+              onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.background = '#F5F6F8'; }}
+            >
+              {c === 'all' ? 'Все' : DRUG_CATEGORY_LABELS[c]}
+            </button>
+          );
+        })}
       </div>
 
       {/* Drug rows grouped */}
