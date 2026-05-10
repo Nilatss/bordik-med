@@ -22,7 +22,7 @@
  * вводит scores, в конце копирует summary в карту.
  */
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useId } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface ApgarScore {
@@ -55,6 +55,8 @@ export default function ApgarTimer({ onClose }: { onClose: () => void }) {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const lastBeepRef = useRef<number>(-1);
+  const titleId = useId();
+  const scoringTitleId = useId();
 
   // Initialize AudioContext on first user interaction
   const ensureAudioCtx = useCallback(() => {
@@ -103,6 +105,21 @@ export default function ApgarTimer({ onClose }: { onClose: () => void }) {
       setTimeout(() => beep(1100, 400), 250); // C#6 climbing
     }
   }, [beep, triggerHaptic]);
+
+  // Esc key closes the timer (or scoring modal first)
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      if (scoring) {
+        setScoring(null);
+      } else {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [onClose, scoring]);
 
   // Timer loop
   useEffect(() => {
@@ -179,17 +196,22 @@ export default function ApgarTimer({ onClose }: { onClose: () => void }) {
   };
 
   return (
-    <div style={{
-      position: 'fixed',
-      top: 0, left: 0, right: 0, bottom: 0,
-      background: '#0F172A',
-      color: '#FFFFFF',
-      zIndex: 9999,
-      display: 'flex',
-      flexDirection: 'column',
-      padding: '24px',
-      overflow: 'auto',
-    }}>
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby={titleId}
+      style={{
+        position: 'fixed',
+        top: 0, left: 0, right: 0, bottom: 0,
+        background: '#0F172A',
+        color: '#FFFFFF',
+        zIndex: 9999,
+        display: 'flex',
+        flexDirection: 'column',
+        padding: '24px',
+        overflow: 'auto',
+      }}
+    >
       {/* Top bar — close button + tab title */}
       <div style={{
         display: 'flex',
@@ -197,7 +219,7 @@ export default function ApgarTimer({ onClose }: { onClose: () => void }) {
         alignItems: 'center',
         marginBottom: 20,
       }}>
-        <h2 style={{
+        <h2 id={titleId} style={{
           fontFamily: 'var(--font-display)',
           fontSize: 18, fontWeight: 700,
           letterSpacing: '-0.01em',
@@ -206,7 +228,9 @@ export default function ApgarTimer({ onClose }: { onClose: () => void }) {
           Apgar Timer — оценка новорождённого
         </h2>
         <button
+          type="button"
           onClick={onClose}
+          aria-label="Закрыть Apgar Timer"
           style={{
             padding: '8px 14px',
             background: 'rgba(255,255,255,0.12)',
@@ -223,7 +247,8 @@ export default function ApgarTimer({ onClose }: { onClose: () => void }) {
           }}
         >
           <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+            stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
+            aria-hidden="true" focusable="false">
             <line x1={18} y1={6} x2={6} y2={18} />
             <line x1={6} y1={6} x2={18} y2={18} />
           </svg>
@@ -240,22 +265,31 @@ export default function ApgarTimer({ onClose }: { onClose: () => void }) {
         justifyContent: 'center',
         gap: 24,
       }}>
-        <div style={{
-          fontSize: 'clamp(96px, 25vw, 220px)',
-          fontWeight: 700,
-          fontFamily: 'var(--font-mono, monospace)',
-          lineHeight: 1,
-          letterSpacing: '-0.04em',
-          color: running ? '#FFFFFF' : '#94A3B8',
-          transition: 'color 200ms',
-        }}>
+        <div
+          role="timer"
+          aria-live="off"
+          aria-atomic="true"
+          aria-label={`Прошло ${Math.floor(elapsed / 60)} минут ${elapsed % 60} секунд`}
+          style={{
+            fontSize: 'clamp(96px, 25vw, 220px)',
+            fontWeight: 700,
+            fontFamily: 'var(--font-mono, monospace)',
+            lineHeight: 1,
+            letterSpacing: '-0.04em',
+            color: running ? '#FFFFFF' : '#94A3B8',
+            transition: 'color 200ms',
+          }}
+        >
           {formatTime(elapsed)}
         </div>
 
         {/* Controls */}
         <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
           <button
+            type="button"
             onClick={handleStart}
+            aria-pressed={running}
+            aria-label={running ? 'Пауза таймера' : (elapsed === 0 ? 'Старт таймера' : 'Продолжить таймер')}
             style={{
               padding: '14px 32px',
               background: running ? '#EF4444' : '#10B981',
@@ -272,7 +306,9 @@ export default function ApgarTimer({ onClose }: { onClose: () => void }) {
             {running ? 'Пауза' : (elapsed === 0 ? 'Старт' : 'Продолжить')}
           </button>
           <button
+            type="button"
             onClick={handleReset}
+            aria-label="Сбросить таймер и оценки"
             style={{
               padding: '14px 28px',
               background: 'rgba(255,255,255,0.12)',
@@ -290,23 +326,35 @@ export default function ApgarTimer({ onClose }: { onClose: () => void }) {
         </div>
 
         {/* Mark indicators */}
-        <div style={{
-          display: 'flex',
-          gap: 10,
-          flexWrap: 'wrap',
-          justifyContent: 'center',
-          marginTop: 12,
-        }}>
+        <div
+          role="group"
+          aria-label="Отметки оценки Apgar"
+          style={{
+            display: 'flex',
+            gap: 10,
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+            marginTop: 12,
+          }}
+        >
           {MARKS.map((m) => {
             const reached = elapsed >= m.sec;
             const active = elapsed === m.sec;
             const reading = m.minute ? readings.find((r) => r.minute === m.minute) : null;
             const intent = reading ? interpretApgar(reading.total) : null;
+            const ariaLabel = m.minute
+              ? (reading
+                ? `${m.label}: оценка ${reading.total} из 10, ${interpretApgar(reading.total).label}. Нажмите чтобы изменить.`
+                : `${m.label}: ввести оценку Apgar`)
+              : `${m.label}: повторная оценка состояния`;
             return (
               <button
                 key={m.sec}
+                type="button"
                 onClick={() => m.minute && openScoringForm(m.minute)}
                 disabled={!m.minute}
+                aria-label={ariaLabel}
+                aria-current={active ? 'time' : undefined}
                 style={{
                   padding: '12px 16px',
                   background: active ? '#FACC15' : (reached ? 'rgba(16,185,129,0.18)' : 'rgba(255,255,255,0.08)'),
@@ -324,11 +372,11 @@ export default function ApgarTimer({ onClose }: { onClose: () => void }) {
                   minWidth: 110,
                 }}
               >
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.05em', opacity: 0.7 }}>
+                <span aria-hidden="true" style={{ fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.05em', opacity: 0.7 }}>
                   {m.label.toUpperCase()}
                 </span>
                 {reading && intent ? (
-                  <span style={{
+                  <span aria-hidden="true" style={{
                     fontSize: 18,
                     color: intent.color,
                     fontWeight: 700,
@@ -336,7 +384,7 @@ export default function ApgarTimer({ onClose }: { onClose: () => void }) {
                     {reading.total}/10
                   </span>
                 ) : (
-                  <span style={{ fontSize: 13, opacity: 0.7 }}>
+                  <span aria-hidden="true" style={{ fontSize: 13, opacity: 0.7 }}>
                     {m.minute ? 'tap для ввода' : 're-eval'}
                   </span>
                 )}
@@ -347,13 +395,17 @@ export default function ApgarTimer({ onClose }: { onClose: () => void }) {
 
         {/* Apgar interpretation */}
         {readings.length > 0 && (
-          <div style={{
-            marginTop: 16,
-            padding: '14px 18px',
-            background: 'rgba(255,255,255,0.06)',
-            borderRadius: 10,
-            maxWidth: 600,
-          }}>
+          <section
+            aria-label="Сводка оценок Apgar"
+            aria-live="polite"
+            style={{
+              marginTop: 16,
+              padding: '14px 18px',
+              background: 'rgba(255,255,255,0.06)',
+              borderRadius: 10,
+              maxWidth: 600,
+            }}
+          >
             <div style={{
               fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
               textTransform: 'uppercase', color: '#94A3B8',
@@ -365,14 +417,18 @@ export default function ApgarTimer({ onClose }: { onClose: () => void }) {
             {readings.map((r) => {
               const intent = interpretApgar(r.total);
               return (
-                <div key={r.minute} style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  padding: '6px 0',
-                  fontSize: 14,
-                  borderTop: r.minute === readings[0]?.minute ? 'none' : '1px solid rgba(255,255,255,0.08)',
-                }}>
+                <div
+                  key={r.minute}
+                  role="status"
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    padding: '6px 0',
+                    fontSize: 14,
+                    borderTop: r.minute === readings[0]?.minute ? 'none' : '1px solid rgba(255,255,255,0.08)',
+                  }}
+                >
                   <span>
                     <strong>{r.minute} мин:</strong> {r.total}/10
                     <span style={{ marginLeft: 10, color: '#94A3B8' }}>
@@ -392,7 +448,9 @@ export default function ApgarTimer({ onClose }: { onClose: () => void }) {
               );
             })}
             <button
+              type="button"
               onClick={copySummary}
+              aria-label="Копировать сводку оценок Apgar в буфер обмена"
               style={{
                 marginTop: 10,
                 padding: '8px 14px',
@@ -408,7 +466,7 @@ export default function ApgarTimer({ onClose }: { onClose: () => void }) {
             >
               Копировать в буфер
             </button>
-          </div>
+          </section>
         )}
       </div>
 
@@ -444,6 +502,9 @@ export default function ApgarTimer({ onClose }: { onClose: () => void }) {
             onClick={() => setScoring(null)}
           >
             <motion.div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby={scoringTitleId}
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
@@ -459,7 +520,7 @@ export default function ApgarTimer({ onClose }: { onClose: () => void }) {
                 overflowY: 'auto',
               }}
             >
-              <h3 style={{
+              <h3 id={scoringTitleId} style={{
                 fontFamily: 'var(--font-display)',
                 fontSize: 18, fontWeight: 700,
                 margin: '0 0 4px',
@@ -479,59 +540,70 @@ export default function ApgarTimer({ onClose }: { onClose: () => void }) {
                 { key: 'grimace', label: 'Гримаса (реакция на стимуляцию)', options: ['Нет', 'Гримаса', 'Кашель / чихание / крик'] },
                 { key: 'activity', label: 'Активность (мышечный тонус)', options: ['Дряблый', 'Лёгкое сгибание', 'Активные движения'] },
                 { key: 'respiration', label: 'Дыхание', options: ['Отсутствует', 'Нерегулярное / слабый крик', 'Хороший громкий крик'] },
-              ] as const).map((row) => (
-                <div key={row.key} style={{ marginBottom: 14 }}>
-                  <div style={{
-                    fontSize: 13, fontWeight: 600,
-                    marginBottom: 6,
-                    color: '#374151',
-                  }}>
-                    {row.label}
+              ] as const).map((row) => {
+                const groupId = `apgar-${row.key}-group`;
+                return (
+                  <div key={row.key} style={{ marginBottom: 14 }} role="radiogroup" aria-labelledby={groupId}>
+                    <div id={groupId} style={{
+                      fontSize: 13, fontWeight: 600,
+                      marginBottom: 6,
+                      color: '#374151',
+                    }}>
+                      {row.label}
+                    </div>
+                    <div style={{ display: 'flex', gap: 6 }}>
+                      {[0, 1, 2].map((v) => {
+                        const selected = scoring.score[row.key] === v;
+                        return (
+                          <button
+                            key={v}
+                            type="button"
+                            role="radio"
+                            aria-checked={selected}
+                            aria-label={`${v} баллов: ${row.options[v]}`}
+                            onClick={() => setScoring({
+                              ...scoring,
+                              score: { ...scoring.score, [row.key]: v },
+                            })}
+                            style={{
+                              flex: 1,
+                              padding: '10px 8px',
+                              background: selected ? '#2563EB' : '#F5F6F8',
+                              color: selected ? '#FFFFFF' : '#374151',
+                              border: 'none',
+                              borderRadius: 8,
+                              cursor: 'pointer',
+                              fontSize: 12,
+                              fontWeight: 500,
+                              fontFamily: 'inherit',
+                              lineHeight: 1.3,
+                              textAlign: 'left',
+                            }}
+                          >
+                            <strong aria-hidden="true" style={{ fontSize: 18, display: 'block', marginBottom: 2 }}>{v}</strong>
+                            <span aria-hidden="true">{row.options[v]}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
-                  <div style={{ display: 'flex', gap: 6 }}>
-                    {[0, 1, 2].map((v) => {
-                      const selected = scoring.score[row.key] === v;
-                      return (
-                        <button
-                          key={v}
-                          onClick={() => setScoring({
-                            ...scoring,
-                            score: { ...scoring.score, [row.key]: v },
-                          })}
-                          style={{
-                            flex: 1,
-                            padding: '10px 8px',
-                            background: selected ? '#2563EB' : '#F5F6F8',
-                            color: selected ? '#FFFFFF' : '#374151',
-                            border: 'none',
-                            borderRadius: 8,
-                            cursor: 'pointer',
-                            fontSize: 12,
-                            fontWeight: 500,
-                            fontFamily: 'inherit',
-                            lineHeight: 1.3,
-                            textAlign: 'left',
-                          }}
-                        >
-                          <strong style={{ fontSize: 18, display: 'block', marginBottom: 2 }}>{v}</strong>
-                          {row.options[v]}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              ))}
+                );
+              })}
 
               {/* Total preview */}
-              <div style={{
-                padding: '12px 14px',
-                background: '#EFF6FF',
-                borderRadius: 10,
-                marginBottom: 16,
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}>
+              <div
+                role="status"
+                aria-live="polite"
+                style={{
+                  padding: '12px 14px',
+                  background: '#EFF6FF',
+                  borderRadius: 10,
+                  marginBottom: 16,
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}
+              >
                 <span style={{ fontSize: 13, color: '#1E40AF', fontWeight: 600 }}>
                   Итого: {scoring.score.appearance + scoring.score.pulse + scoring.score.grimace + scoring.score.activity + scoring.score.respiration} / 10
                 </span>
@@ -549,6 +621,7 @@ export default function ApgarTimer({ onClose }: { onClose: () => void }) {
 
               <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
                 <button
+                  type="button"
                   onClick={() => setScoring(null)}
                   style={{
                     padding: '10px 20px',
@@ -565,6 +638,7 @@ export default function ApgarTimer({ onClose }: { onClose: () => void }) {
                   Отмена
                 </button>
                 <button
+                  type="button"
                   onClick={submitScoring}
                   style={{
                     padding: '10px 20px',

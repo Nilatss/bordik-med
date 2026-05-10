@@ -484,6 +484,18 @@ export default function NeonatalHandbook() {
           Также скрывается когда quiz active (clean exam UI). */}
       {!(tab === 'quizzes' && quizActive) && (tab === 'drugs' || tab === 'guidelines' || tab === 'calculators' || tab === 'labs' || tab === 'articles' || tab === 'lactmed' || tab === 'quizzes' || tab === 'nurse') && (
       <motion.div
+        role="search"
+        aria-label={
+          tab === 'drugs' ? 'Поиск по препаратам'
+            : tab === 'guidelines' ? 'Поиск по протоколам'
+            : tab === 'calculators' ? 'Поиск по калькуляторам'
+            : tab === 'labs' ? 'Поиск по лабораторным нормам'
+            : tab === 'articles' ? 'Поиск по статьям'
+            : tab === 'lactmed' ? 'Поиск по LactMed'
+            : tab === 'quizzes' ? 'Поиск по тестам'
+            : tab === 'nurse' ? 'Поиск по процедурам'
+            : 'Поиск'
+        }
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1], delay: 0.06 }}
@@ -498,16 +510,27 @@ export default function NeonatalHandbook() {
         }}
       >
         <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
-          stroke="#9CA3AF" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+          stroke="#9CA3AF" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
+          aria-hidden="true" focusable="false">
           <circle cx="11" cy="11" r="8" />
           <line x1="21" y1="21" x2="16.65" y2="16.65" />
         </svg>
         <input
-          type="text"
+          type="search"
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder='Например: «Ампициллин», «Caffeine», «Surfactant»…'
-          aria-label="Поиск препарата"
+          aria-label={
+            tab === 'drugs' ? 'Поиск препарата'
+              : tab === 'guidelines' ? 'Поиск протокола'
+              : tab === 'calculators' ? 'Поиск калькулятора'
+              : tab === 'labs' ? 'Поиск лабораторной нормы'
+              : tab === 'articles' ? 'Поиск статьи'
+              : tab === 'lactmed' ? 'Поиск препарата LactMed'
+              : tab === 'quizzes' ? 'Поиск теста'
+              : tab === 'nurse' ? 'Поиск процедуры'
+              : 'Поиск'
+          }
           style={{
             flex: 1, background: 'transparent', border: 'none', outline: 'none',
             fontFamily: 'inherit', fontSize: 14, color: '#1A1A1A',
@@ -517,7 +540,7 @@ export default function NeonatalHandbook() {
           <button
             type="button"
             onClick={() => setQ('')}
-            aria-label="Очистить"
+            aria-label="Очистить поле поиска"
             style={{
               background: 'transparent', border: 'none', cursor: 'pointer',
               color: '#9CA3AF', fontSize: 16, padding: 0,
@@ -551,26 +574,36 @@ export default function NeonatalHandbook() {
         };
         const meta = SECTION_META[tab];
         return (
-          <div style={{
-            display: 'flex', alignItems: 'baseline', gap: 8,
-            paddingBottom: 14, marginBottom: 18,
-            borderBottom: '1px solid #E5E7EB',
-          }}>
-            <h2 style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: 22, fontWeight: 700,
-              letterSpacing: '-0.02em',
-              color: '#1A1A1A',
-              margin: 0,
-            }}>
+          <div
+            role="navigation"
+            aria-label="Текущий раздел"
+            style={{
+              display: 'flex', alignItems: 'baseline', gap: 8,
+              paddingBottom: 14, marginBottom: 18,
+              borderBottom: '1px solid #E5E7EB',
+            }}
+          >
+            <h2
+              aria-current="page"
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: 22, fontWeight: 700,
+                letterSpacing: '-0.02em',
+                color: '#1A1A1A',
+                margin: 0,
+              }}
+            >
               {meta.label}
             </h2>
             {meta.count !== null && (
-              <span style={{
-                fontFamily: 'var(--font-mono)',
-                fontSize: 14, fontWeight: 700,
-                color: '#9CA3AF',
-              }}>
+              <span
+                aria-label={`всего ${meta.count}`}
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 14, fontWeight: 700,
+                  color: '#9CA3AF',
+                }}
+              >
                 {meta.count}
               </span>
             )}
@@ -710,23 +743,31 @@ export default function NeonatalHandbook() {
           >
             {filteredCalculators.map((group) => (
               <div key={group.id}>
+                {/* Section header — visually 1:1 с RenderedRow.kind="category"
+                    из ToolsPage: display-font 17/700, маленький mono count
+                    справа цвета #9CA3AF. */}
                 <h3 style={{
                   fontFamily: 'var(--font-display)',
-                  fontSize: 16,
+                  fontSize: 17,
                   fontWeight: 700,
-                  color: '#1F2937',
-                  margin: '0 0 12px',
+                  color: '#1A1A1A',
+                  margin: '0 0 18px',
                   letterSpacing: '-0.01em',
+                  display: 'flex',
+                  alignItems: 'baseline',
+                  gap: 8,
                 }}>
                   {group.title_ru}
+                  <span style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 11,
+                    fontWeight: 600,
+                    color: '#9CA3AF',
+                  }}>
+                    {group.calculators.length}
+                  </span>
                 </h3>
-                <div
-                  style={{
-                    display: 'grid',
-                    gap: 'var(--space-3)',
-                    gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-                  }}
-                >
+                <div className="rg-3">
                   {group.calculators.map((calc) => (
                     <NeonatalCalcCard
                       key={calc.id}
@@ -1090,6 +1131,10 @@ function DrugCard({
   onToggle: () => void;
 }) {
   const showStructured = !!(drug.brand || drug.dose || drug.precautions);
+  const panelId = `drug-panel-${drug.id}`;
+  const labelText = drug.name_en !== drug.name_ru
+    ? `${drug.name_ru} (${drug.name_en})`
+    : drug.name_ru;
 
   return (
     <div style={{
@@ -1103,6 +1148,8 @@ function DrugCard({
         type="button"
         onClick={onToggle}
         aria-expanded={isOpen}
+        aria-controls={panelId}
+        aria-label={isOpen ? `Свернуть ${labelText}` : `Развернуть ${labelText}`}
         style={{
           width: '100%',
           display: 'flex', alignItems: 'center', gap: 14,
@@ -1115,7 +1162,7 @@ function DrugCard({
         onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
         onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
       >
-        <span style={{ flex: 1, minWidth: 0 }}>
+        <span aria-hidden="true" style={{ flex: 1, minWidth: 0 }}>
           <span style={{
             display: 'block', fontFamily: 'var(--font-display)',
             fontSize: 15, fontWeight: 600, color: '#1A1A1A',
@@ -1129,13 +1176,14 @@ function DrugCard({
             )}
           </span>
         </span>
-        <span style={{
+        <span aria-hidden="true" style={{
           color: '#6B7280',
           transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
           transition: 'transform 200ms',
         }}>
           <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+            stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
+            aria-hidden="true" focusable="false">
             <polyline points="6 9 12 15 18 9" />
           </svg>
         </span>
@@ -1143,6 +1191,9 @@ function DrugCard({
       <AnimatePresence initial={false}>
         {isOpen && (
           <motion.div
+            id={panelId}
+            role="region"
+            aria-label={`${labelText}: подробности`}
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
@@ -1534,6 +1585,7 @@ function GuidelineCard({
   isOpen: boolean;
   onToggle: () => void;
 }) {
+  const panelId = `guideline-panel-${guideline.id}`;
   return (
     <div style={{
       background: '#F5F6F8',
@@ -1546,6 +1598,8 @@ function GuidelineCard({
         type="button"
         onClick={onToggle}
         aria-expanded={isOpen}
+        aria-controls={panelId}
+        aria-label={isOpen ? `Свернуть протокол: ${guideline.title_ru}` : `Развернуть протокол: ${guideline.title_ru}`}
         style={{
           width: '100%',
           display: 'flex', alignItems: 'flex-start', gap: 14,
@@ -1558,7 +1612,7 @@ function GuidelineCard({
         onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
         onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
       >
-        <span style={{ flex: 1, minWidth: 0 }}>
+        <span aria-hidden="true" style={{ flex: 1, minWidth: 0 }}>
           <span style={{
             display: 'block',
             fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 600,
@@ -1574,7 +1628,7 @@ function GuidelineCard({
             </span>
           )}
         </span>
-        <span style={{
+        <span aria-hidden="true" style={{
           flexShrink: 0,
           color: '#9CA3AF',
           transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
@@ -1582,7 +1636,8 @@ function GuidelineCard({
           marginTop: 4,
         }}>
           <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+            stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
+            aria-hidden="true" focusable="false">
             <polyline points="6 9 12 15 18 9" />
           </svg>
         </span>
@@ -1590,6 +1645,9 @@ function GuidelineCard({
       <AnimatePresence initial={false}>
         {isOpen && (
           <motion.div
+            id={panelId}
+            role="region"
+            aria-label={`Протокол: ${guideline.title_ru}`}
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
@@ -1657,6 +1715,7 @@ function NeonatalCalcCard({
 
   return (
     <button
+      type="button"
       onClick={handleClick}
       onMouseEnter={(e) => {
         handlePrefetch();
@@ -1664,6 +1723,7 @@ function NeonatalCalcCard({
       }}
       onFocus={handlePrefetch}
       onMouseLeave={(e) => { e.currentTarget.style.background = '#F5F6F8'; }}
+      aria-label={`Открыть калькулятор: ${calc.title_ru}. Категория: ${subcategoryLabel}.${calc.audit_id ? ` Audit ID: ${calc.audit_id}.` : ''} Источник: ${calc.source}`}
       style={{
         background: '#F5F6F8',
         borderRadius: 'var(--md-sys-shape-corner-extra-large)',
@@ -1690,27 +1750,18 @@ function NeonatalCalcCard({
           display: 'flex', alignItems: 'center', gap: 4, flex: 1, minWidth: 0,
           flexWrap: 'wrap',
         }}>
-          <span style={{
-            display: 'inline-flex', alignItems: 'center', gap: 'var(--space-1)',
-            padding: '4px var(--space-2)', borderRadius: 'var(--md-sys-shape-corner-full)',
-            background: '#FFFFFF',
-            boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-            fontFamily: 'var(--font-mono)',
-            fontSize: '0.625rem', fontWeight: 500,
-            color: 'var(--md-sys-color-on-surface-variant)',
-          }}>
-            {subcategoryLabel}
-          </span>
+          {/* Single short pill (mirrors ToolCard subcategory chip).
+              audit_id (e.g. "A1", "A24/A25") is the natural short label;
+              full group title is already shown in the section heading above. */}
           {calc.audit_id && (
             <span style={{
-              display: 'inline-flex', alignItems: 'center',
+              display: 'inline-flex', alignItems: 'center', gap: 'var(--space-1)',
               padding: '4px var(--space-2)', borderRadius: 'var(--md-sys-shape-corner-full)',
               background: '#FFFFFF',
               boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
               fontFamily: 'var(--font-mono)',
-              fontSize: '0.625rem', fontWeight: 600,
-              color: '#6B7280',
-              whiteSpace: 'nowrap',
+              fontSize: '0.625rem', fontWeight: 500,
+              color: 'var(--md-sys-color-on-surface-variant)',
             }}>
               {calc.audit_id}
             </span>
@@ -1760,6 +1811,7 @@ function ArticleCard({
   isOpen: boolean;
   onToggle: () => void;
 }) {
+  const panelId = `article-panel-${article.id}`;
   return (
     <div style={{
       background: '#F5F6F8',
@@ -1772,6 +1824,8 @@ function ArticleCard({
         type="button"
         onClick={onToggle}
         aria-expanded={isOpen}
+        aria-controls={panelId}
+        aria-label={isOpen ? `Свернуть статью: ${article.title_ru}` : `Развернуть статью: ${article.title_ru}. Тема: ${article.topic}`}
         style={{
           width: '100%',
           display: 'flex', alignItems: 'flex-start', gap: 14,
@@ -1784,7 +1838,7 @@ function ArticleCard({
         onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
         onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
       >
-        <span style={{ flex: 1, minWidth: 0 }}>
+        <span aria-hidden="true" style={{ flex: 1, minWidth: 0 }}>
           <span style={{
             display: 'flex', alignItems: 'baseline', gap: 8, flexWrap: 'wrap',
           }}>
@@ -1809,7 +1863,7 @@ function ArticleCard({
             <Highlight text={article.summary} query={query} />
           </span>
         </span>
-        <span style={{
+        <span aria-hidden="true" style={{
           flexShrink: 0,
           color: '#9CA3AF',
           transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
@@ -1817,7 +1871,8 @@ function ArticleCard({
           marginTop: 4,
         }}>
           <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+            stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
+            aria-hidden="true" focusable="false">
             <polyline points="6 9 12 15 18 9" />
           </svg>
         </span>
@@ -1825,6 +1880,9 @@ function ArticleCard({
       <AnimatePresence initial={false}>
         {isOpen && (
           <motion.div
+            id={panelId}
+            role="region"
+            aria-label={`Статья: ${article.title_ru}`}
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
@@ -2069,6 +2127,7 @@ function LactCard({
     avoid: { bg: '#FEF2F2', border: '#FECACA', text: '#991B1B', label: 'Избегать' },
   } as const;
   const colors = compatColors[drug.compatibility];
+  const panelId = `lact-panel-${drug.id}`;
 
   return (
     <div style={{
@@ -2082,6 +2141,8 @@ function LactCard({
         type="button"
         onClick={onToggle}
         aria-expanded={isOpen}
+        aria-controls={panelId}
+        aria-label={isOpen ? `Свернуть LactMed: ${drug.name_ru}` : `Развернуть LactMed: ${drug.name_ru}. Совместимость с грудным вскармливанием: ${colors.label}.`}
         style={{
           width: '100%',
           display: 'flex', alignItems: 'flex-start', gap: 14,
@@ -2094,7 +2155,7 @@ function LactCard({
         onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
         onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
       >
-        <span style={{ flex: 1, minWidth: 0 }}>
+        <span aria-hidden="true" style={{ flex: 1, minWidth: 0 }}>
           <span style={{
             display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 4,
           }}>
@@ -2121,7 +2182,7 @@ function LactCard({
             <Highlight text={drug.summary} query={query} />
           </span>
         </span>
-        <span style={{
+        <span aria-hidden="true" style={{
           flexShrink: 0,
           color: '#9CA3AF',
           transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
@@ -2129,7 +2190,8 @@ function LactCard({
           marginTop: 4,
         }}>
           <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+            stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
+            aria-hidden="true" focusable="false">
             <polyline points="6 9 12 15 18 9" />
           </svg>
         </span>
@@ -2137,6 +2199,9 @@ function LactCard({
       <AnimatePresence initial={false}>
         {isOpen && (
           <motion.div
+            id={panelId}
+            role="region"
+            aria-label={`LactMed: ${drug.name_ru}`}
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
@@ -2218,6 +2283,7 @@ function NurseProcedureCard({
   isOpen: boolean;
   onToggle: () => void;
 }) {
+  const panelId = `nurse-panel-${procedure.id}`;
   return (
     <div style={{
       background: '#F5F6F8',
@@ -2230,6 +2296,11 @@ function NurseProcedureCard({
         type="button"
         onClick={onToggle}
         aria-expanded={isOpen}
+        aria-controls={panelId}
+        aria-label={isOpen
+          ? `Свернуть процедуру: ${procedure.title_ru}`
+          : `Развернуть процедуру: ${procedure.title_ru}. Категория: ${procedure.category}. Длительность около ${procedure.duration_min} минут.`
+        }
         style={{
           width: '100%',
           display: 'flex', alignItems: 'flex-start', gap: 14,
@@ -2239,7 +2310,7 @@ function NurseProcedureCard({
           fontFamily: 'inherit',
         }}
       >
-        <span style={{ flex: 1, minWidth: 0 }}>
+        <span aria-hidden="true" style={{ flex: 1, minWidth: 0 }}>
           <span style={{
             display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 4,
           }}>
@@ -2266,7 +2337,7 @@ function NurseProcedureCard({
             </span>
           </span>
         </span>
-        <span style={{
+        <span aria-hidden="true" style={{
           flexShrink: 0,
           color: '#9CA3AF',
           transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
@@ -2274,7 +2345,8 @@ function NurseProcedureCard({
           marginTop: 4,
         }}>
           <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+            stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
+            aria-hidden="true" focusable="false">
             <polyline points="6 9 12 15 18 9" />
           </svg>
         </span>
@@ -2282,6 +2354,9 @@ function NurseProcedureCard({
       <AnimatePresence initial={false}>
         {isOpen && (
           <motion.div
+            id={panelId}
+            role="region"
+            aria-label={`Процедура: ${procedure.title_ru}`}
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}

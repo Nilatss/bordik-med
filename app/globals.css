@@ -1417,6 +1417,41 @@ main:has(.stats-page) {
   }
 }
 
+/* Visually-hidden helper for screen-reader-only text (WCAG audit 1.16).
+   Keeps element in DOM and accessibility tree but hides from sighted users. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Skip-link visible only on focus (WCAG 2.4.1 Bypass Blocks). */
+.skip-link {
+  position: absolute;
+  left: 12px;
+  top: -40px;
+  z-index: 10000;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: #1A1A1A;
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: top 150ms;
+}
+.skip-link:focus {
+  top: 12px;
+  outline: 2px solid #2563EB;
+  outline-offset: 2px;
+}
+
 /* Tooltip графика — на узких экранах не overflow за viewport. */
 .neo-chart-tooltip {
   position: absolute;
