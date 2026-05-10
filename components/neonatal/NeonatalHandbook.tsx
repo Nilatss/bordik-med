@@ -234,13 +234,13 @@ export default function NeonatalHandbook() {
     void (async () => {
       try {
         const [drugsR, guidelinesR, calcR, labsR, articlesR, lactR, nurseR] = await Promise.all([
-          fetch('/neonatal-monographs.json?v=2.8.0', { cache: 'force-cache' }),
-          fetch('/neonatal-guidelines.json?v=1.6.0', { cache: 'force-cache' }),
+          fetch('/neonatal-monographs.json?v=2.9.0', { cache: 'force-cache' }),
+          fetch('/neonatal-guidelines.json?v=1.7.0', { cache: 'force-cache' }),
           fetch('/neonatal-calculators.json?v=1.0.0', { cache: 'force-cache' }),
           fetch('/neonatal-lab-norms.json?v=1.1.0', { cache: 'force-cache' }),
-          fetch('/neonatal-articles.json?v=1.7.0', { cache: 'force-cache' }),
+          fetch('/neonatal-articles.json?v=1.8.0', { cache: 'force-cache' }),
           fetch('/neonatal-lactmed.json?v=1.0.0', { cache: 'force-cache' }),
-          fetch('/neonatal-nurse-procedures.json?v=1.1.0', { cache: 'force-cache' }),
+          fetch('/neonatal-nurse-procedures.json?v=1.2.0', { cache: 'force-cache' }),
         ]);
         if (!drugsR.ok) throw new Error(`monographs ${drugsR.status}`);
         const drugsJson = await drugsR.json();

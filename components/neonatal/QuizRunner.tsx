@@ -79,6 +79,13 @@ const TOPIC_DESCRIPTIONS: Record<string, string> = {
   'quiz-eos-puopolo': 'Kaiser EOS calc, Puopolo Tiered, maternal risk factors, ABX duration.',
   'quiz-feeding-vlbw': 'Trophic feeds, advancement rate, HMF timing, ESPGHAN 2022.',
   'quiz-rop-treatment': 'Screening timing, Type 1 ETROP criteria, anti-VEGF preferred.',
+  'quiz-bpd-management': 'NIH 2018 grades, BPD prevention, postnatal steroids DART scheme.',
+  'quiz-glucose-thresholds': 'PES 2015 thresholds, critical sample workup, glucagon stim test.',
+  'quiz-coag-thrombocytopenia': 'VKDB prophylaxis, PlaNeT-2 thresholds, NAIT management.',
+  'quiz-cyanosis-shock': 'Hyperoxia test, cold/warm shock, reverse differential SpO₂ TGA.',
+  'quiz-extubation': 'Extubation readiness criteria, NIPPV post-extubation < 1000 g.',
+  'quiz-cardiac-defects-screening': 'CCHD pulse ox criteria, timing 24-48 h, fail thresholds.',
+  'quiz-nas-ess': 'Modified Finnegan ≥ 8 × 3, BBORN buprenorphine, ESC functional approach.',
 };
 
 function estimateDuration(questionCount: number): string {
@@ -124,7 +131,7 @@ export default function QuizRunner({
     let cancelled = false;
     void (async () => {
       try {
-        const r = await fetch('/neonatal-quizzes.json?v=1.1.0', { cache: 'force-cache' });
+        const r = await fetch('/neonatal-quizzes.json?v=1.2.0', { cache: 'force-cache' });
         if (!r.ok) throw new Error(`quizzes ${r.status}`);
         const json = await r.json();
         if (!cancelled) setBank(json as QuizBank);
