@@ -286,19 +286,45 @@ export default function Sidebar() {
   // sidebar when expanded. Clicking a sub-item sets showNeonatal=true +
   // selects the corresponding tab via store.neonatalActiveTab. The
   // NeonatalHandbook reads this store value and renders the matched view.
+  //
+  // Items grouped по логике использования (4 группы × 2-3 пункта):
+  //   1. Справочники   — быстрый lookup таблиц
+  //   2. Расчёты       — интерактивные калькуляторы и графики
+  //   3. Протоколы     — клинические алгоритмы и процедуры
+  //   4. Обучение      — статьи и тесты
   type NeonatalSubTab = 'drugs' | 'calculators' | 'guidelines' | 'resuscitation' | 'articles' | 'lactmed' | 'quizzes' | 'nurse' | 'labs' | 'growth' | 'bilirubin';
-  const neonatalSubItems: { id: NeonatalSubTab; label: string }[] = [
-    { id: 'drugs',         label: 'Препараты' },
-    { id: 'calculators',   label: 'Калькуляторы' },
-    { id: 'guidelines',    label: 'Протоколы' },
-    { id: 'resuscitation', label: 'Реанимация (4 региона)' },
-    { id: 'articles',      label: 'Статьи' },
-    { id: 'lactmed',       label: 'ГВ / LactMed' },
-    { id: 'quizzes',       label: 'Тесты' },
-    { id: 'nurse',         label: 'Процедуры медсестры' },
-    { id: 'labs',          label: 'Лаб. нормы' },
-    { id: 'growth',        label: 'Графики роста' },
-    { id: 'bilirubin',     label: 'Билирубин' },
+  const neonatalGroups: { title: string; items: { id: NeonatalSubTab; label: string }[] }[] = [
+    {
+      title: 'Справочники',
+      items: [
+        { id: 'drugs',    label: 'Препараты' },
+        { id: 'lactmed',  label: 'ГВ / LactMed' },
+        { id: 'labs',     label: 'Лаб. нормы' },
+      ],
+    },
+    {
+      title: 'Расчёты и шкалы',
+      items: [
+        { id: 'calculators', label: 'Калькуляторы' },
+        { id: 'growth',      label: 'Графики роста' },
+        { id: 'bilirubin',   label: 'Билирубин' },
+      ],
+    },
+    {
+      title: 'Протоколы и процедуры',
+      items: [
+        { id: 'guidelines',    label: 'Протоколы' },
+        { id: 'resuscitation', label: 'Реанимация (4 региона)' },
+        { id: 'nurse',         label: 'Процедуры медсестры' },
+      ],
+    },
+    {
+      title: 'Обучение',
+      items: [
+        { id: 'articles', label: 'Статьи' },
+        { id: 'quizzes',  label: 'Тесты' },
+      ],
+    },
   ];
 
   const handleNeonatalSubClick = (subTab: NeonatalSubTab) => {
@@ -642,50 +668,76 @@ export default function Sidebar() {
                             )}
                           </button>
 
-                          {/* Neonatology expandable submenu */}
+                          {/* Neonatology expandable submenu — grouped into 4
+                              logical sections с маленькими uppercase header'ами
+                              (mono, gray-9CA3AF) над каждой группой. */}
                           {isNeonatal && neonatalExpanded && (
                             <div
                               role="menu"
                               aria-label="Разделы неонатологии"
                               style={{
-                                display: 'flex', flexDirection: 'column', gap: 1,
-                                paddingLeft: 22, paddingTop: 4, paddingBottom: 4,
+                                display: 'flex', flexDirection: 'column', gap: 8,
+                                paddingLeft: 22, paddingTop: 6, paddingBottom: 6,
                                 marginLeft: 16,
                                 borderLeft: '2px solid #DCDFE5',
                               }}
                             >
-                              {neonatalSubItems.map((sub) => {
-                                const subActive = isActive && neonatalActiveTab === sub.id;
-                                return (
-                                  <button
-                                    key={sub.id}
-                                    role="menuitem"
-                                    onClick={() => handleNeonatalSubClick(sub.id)}
-                                    style={{
-                                      display: 'flex', alignItems: 'center',
-                                      padding: '7px 12px',
-                                      background: subActive ? '#E2E4EA' : 'transparent',
-                                      color: subActive ? '#1A1A1A' : '#666',
-                                      border: 'none',
-                                      borderRadius: 8,
-                                      cursor: 'pointer',
-                                      fontFamily: 'var(--font-body)',
-                                      fontSize: 13,
-                                      fontWeight: subActive ? 600 : 400,
-                                      textAlign: 'left',
-                                      transition: 'background 150ms ease',
-                                    }}
-                                    onMouseEnter={(e) => {
-                                      if (!subActive) e.currentTarget.style.background = '#E8E9ED';
-                                    }}
-                                    onMouseLeave={(e) => {
-                                      if (!subActive) e.currentTarget.style.background = 'transparent';
-                                    }}
-                                  >
-                                    {sub.label}
-                                  </button>
-                                );
-                              })}
+                              {neonatalGroups.map((group, gIdx) => (
+                                <div
+                                  key={group.title}
+                                  role="group"
+                                  aria-label={group.title}
+                                  style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: 1,
+                                  }}
+                                >
+                                  <div style={{
+                                    padding: gIdx === 0 ? '2px 12px 4px' : '6px 12px 4px',
+                                    fontFamily: 'var(--font-mono)',
+                                    fontSize: 10,
+                                    fontWeight: 700,
+                                    color: '#9CA3AF',
+                                    textTransform: 'uppercase',
+                                    letterSpacing: '0.08em',
+                                  }}>
+                                    {group.title}
+                                  </div>
+                                  {group.items.map((sub) => {
+                                    const subActive = isActive && neonatalActiveTab === sub.id;
+                                    return (
+                                      <button
+                                        key={sub.id}
+                                        role="menuitem"
+                                        onClick={() => handleNeonatalSubClick(sub.id)}
+                                        style={{
+                                          display: 'flex', alignItems: 'center',
+                                          padding: '7px 12px',
+                                          background: subActive ? '#E2E4EA' : 'transparent',
+                                          color: subActive ? '#1A1A1A' : '#666',
+                                          border: 'none',
+                                          borderRadius: 8,
+                                          cursor: 'pointer',
+                                          fontFamily: 'var(--font-body)',
+                                          fontSize: 13,
+                                          fontWeight: subActive ? 600 : 400,
+                                          textAlign: 'left',
+                                          transition: 'background 150ms ease',
+                                        }}
+                                        onMouseEnter={(e) => {
+                                          if (!subActive) e.currentTarget.style.background = '#E8E9ED';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                          if (!subActive) e.currentTarget.style.background = 'transparent';
+                                        }}
+                                      >
+                                        {sub.label}
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                              ))}
                             </div>
                           )}
                         </div>
