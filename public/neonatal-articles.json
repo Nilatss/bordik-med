@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0",
+  "version": "2.1.0",
   "lastUpdated": "2026-05-10",
   "source": "Bordik Med — клинические обзоры NICU (audit Д1)",
   "license": "Каждая статья цитирует первоисточники (AAP, NICE, ESPGHAN, КР МЗ РФ). Тексты — original synthesis на основе guidelines и landmark trials.",
@@ -2053,6 +2053,138 @@
       "related_calculators": [
         "neo-bpd-nih"
       ]
+    },
+    {
+      "id": "art-resus-room-org",
+      "title_ru": "Организация resuscitation room для newborn",
+      "title_en": "Newborn resuscitation room organization",
+      "topic": "neonatal",
+      "audience": "neonatologist",
+      "level": "basic",
+      "summary": "Layout, equipment checks, team roles, communication protocols. Pre-delivery briefing reduces resus errors substantially.",
+      "content": "## Equipment layout\n\n### Standard zones\n- Warmer table center\n- Equipment cart с airway, vascular access, medications\n- Suction wall connection\n- O₂/air blender\n- Monitor с pulse ox + ECG\n- Documentation area\n\n## Equipment checklist\n\n### Per warmer (verified daily)\n- T-piece resuscitator (preferred) tested\n- Bag-mask + multiple mask sizes (preterm/term)\n- Stethoscope\n- Suction catheters 5/8/10 Fr\n- ETT 2.5/3.0/3.5/4.0 mm\n- Laryngoscope blades 0/1, working batteries\n- Pulse oximeter, sensor working\n- Plastic bag/wrap для preterm\n- Hat, blankets pre-warmed\n\n### Per cart\n- IV/IO supplies\n- UVC kit\n- Medications в pre-calculated weight ranges\n- Naloxone (rare use)\n- D10W\n\n## Pre-delivery briefing\n\n- GA, weight estimate, any known anomalies\n- Maternal risk factors\n- Antenatal steroid status\n- Mode of delivery\n- Need for specialized care\n\n## Team roles (NRP framework)\n\n- Team leader (decides + directs)\n- Airway (PPV)\n- Compressions (если needed)\n- Vascular access\n- Documentation/timing\n- Supplies\n\n## Communication\n\n- Closed-loop (\"Adrenaline 0.5 мл\" — \"Adrenaline 0.5 мл given at 14:32\")\n- Standard NRP language\n- Avoid jargon\n\n## Quality metrics\n\n- Admission temperature ≥36.5°C\n- Time to first feed\n- Successful intubation на first attempt\n- Documentation completeness\n\n## Российская практика\n\nКР МЗ РФ — стандарты оснащения родзала Приказ № 119н 2020.",
+      "references": [
+        "Aziz K et al. Pediatrics 2021;147 — NRP 8 ed.",
+        "Liley HG et al. Pediatrics 2024"
+      ],
+      "related_calculators": []
+    },
+    {
+      "id": "art-late-preterm-care",
+      "title_ru": "Late preterm (34-36 нед) — особенности",
+      "title_en": "Late preterm (34-36 wk) — care",
+      "topic": "neonatal",
+      "audience": "neonatologist",
+      "level": "intermediate",
+      "summary": "Late preterm survival ≥99%, но higher morbidity vs term. Vulnerable к respiratory issues, hypoglycemia, hyperbili, feeding difficulties. Discharge readiness criteria stricter.",
+      "content": "## Background\n\nLate preterm (LPT, 34 0/7 — 36 6/7 нед) — largest preterm subgroup (75% всех preterm). Often assumed similar к term, но higher morbidity:\n- Respiratory difficulties 4-7×\n- Hypoglycemia 3×\n- Hyperbilirubinemia 2-4× requiring PT\n- Feeding difficulties 2-3×\n- Neurodevelopmental delays 1.5×\n\n## Common issues\n\n### Respiratory\n- TTN (transient tachypnea), surfactant deficiency mild\n- Apnea\n- Treatment: O₂ as needed, CPAP if escalating, surfactant rare\n\n### Hypoglycemia\n- Higher risk даже if AGA + healthy mother\n- Routine glucose monitoring 2-3-6-12-24 ч\n- Treatment per BAPM/PES protocols\n\n### Hyperbilirubinemia\n- Lower thresholds для phototherapy (по AAP 2022 chart)\n- Higher risk progression к kernicterus\n\n### Feeding difficulties\n- Immature suck-swallow-breathe coordination\n- Poor weight gain initially\n- Lactation support critical\n\n### Discharge readiness\n- Stricter criteria than term\n- Adequate feeding 24 ч\n- Hyperbili threshold check\n- Pediatrician follow-up 24-48 ч после discharge\n\n## Long-term outcomes\n\n### Educational\n- Late preterm — slightly higher rates of:\n  - ADHD (1.5-2×)\n  - Learning disabilities\n  - Special educational needs\n  - Lower test scores\n\n### Health\n- Asthma (1.5×)\n- Higher pediatric ER visits первый год\n\n## Counseling\n\n- Reassure mostly normal outcomes\n- Watch для feeding, jaundice, breathing\n- Pediatrician follow-up critical\n- Developmental screening at usual milestones\n\n## Российская практика\n\nLate preterm в РФ classified отдельно. Перинатальные центры имеют специальные late-preterm protocols.",
+      "references": [
+        "Engle WA et al. AAP. Pediatrics 2007;120:1390",
+        "Loftin RW et al. J Perinatol 2010;30:S33",
+        "Boyle EM et al. BMJ 2012;344:e896"
+      ],
+      "related_calculators": []
+    },
+    {
+      "id": "art-thrombocytopenia-eval",
+      "title_ru": "Тромбоцитопения новорождённого — diff",
+      "title_en": "Neonatal thrombocytopenia evaluation",
+      "topic": "metabolic",
+      "audience": "neonatologist",
+      "level": "intermediate",
+      "summary": "Common in NICU (20-35%). Differential: NAIT (severe, ICH risk), maternal ITP, sepsis, DIC, congenital, drug-induced. PlaNeT-2 thresholds для transfusion.",
+      "content": "## Definition\n\nPlatelets <150 × 10⁹/L. Severity:\n- Mild: 100-149\n- Moderate: 50-99\n- Severe: <50\n\n## Differential по timing\n\n### Early (<72 hr)\n- Maternal causes: ITP, preeclampsia, GBS sepsis\n- NAIT (alloimmune)\n- Congenital infection (TORCH)\n- Genetic syndromes (TAR, CAMT, Wiskott-Aldrich)\n- DIC\n- Asphyxia / hypoxia\n\n### Late (>72 hr)\n- LOS sepsis (most common)\n- NEC\n- Drug-induced (heparin, vancomycin)\n- DIC\n- Liver dysfunction\n\n## Workup\n\n### Initial\n- Repeat platelet count (verify, exclude clumping)\n- Maternal platelet count\n- Maternal hx (ITP, drugs, infections)\n- Hb, WBC, smear (schistocytes — DIC?)\n- CRP, blood culture\n- Coagulation panel\n- Ultrasound for ICH if severe\n\n### Specialized (selective)\n- HPA typing если NAIT suspected (delivery-time samples)\n- TORCH titers\n- Genetic panel (if congenital syndrome features)\n\n## Management\n\n### PlaNeT-2 thresholds (Curley NEJM 2019)\n- Stable infant: transfuse <25 × 10⁹/L (vs old <50)\n- Active bleeding: keep >50\n- Surgery: keep >100\n- Lower threshold reduces death/major bleeding в preterm\n\n### NAIT specifically\n- HPA-compatible platelets (HPA-1a-negative typical)\n- IVIG 1 г/кг IV q24h × 1-2 doses\n- Severe: methylpred 1 мг/кг q12h\n- ICH risk 10-20% — high vigilance\n\n### DIC\n- Treat underlying (sepsis primarily)\n- FFP 10-15 мл/кг\n- Cryo если fibrinogen <100\n- Platelets per PlaNeT-2 thresholds\n\n## Outcomes\n\n- Sepsis-related: usually recovers с treatment\n- NAIT: 5-7% mortality, 10-20% ICH\n- Genetic / congenital: long-term risks vary\n\n## Российская практика\n\nКР МЗ РФ — Тромбоцитопения новорождённого 2024 предполагает PlaNeT-2 thresholds.",
+      "references": [
+        "Curley A et al. NEJM 2019;380:242 — PlaNeT-2",
+        "Sola-Visner M, Sallmon H. Semin Perinatol 2018;42:11",
+        "Roberts I, Murray NA. Arch Dis Child Fetal Neonatal Ed 2003;88:F359"
+      ],
+      "related_calculators": []
+    },
+    {
+      "id": "art-nec-prevention-bundle",
+      "title_ru": "NEC prevention bundle",
+      "topic": "gastro",
+      "audience": "neonatologist",
+      "level": "intermediate",
+      "title_en": "NEC prevention bundle",
+      "summary": "Multifactorial approach: mother's milk preferred, probiotics, standardized feeding protocols, judicious ABX, hsPDA management. Reduces NEC by 30-50%.",
+      "content": "## Background\n\nNEC remains leading cause death + morbidity preterm. 5-10% VLBW develop NEC. Multifactorial bundle approach reduces incidence substantially.\n\n## Bundle components\n\n### 1. Mother's own milk (MOM) ≥ donor milk >> formula\n- Reduces NEC 6-10x vs formula в VLBW\n- Lactation support от Day 1\n- Donor breast milk if MOM unavailable\n\n### 2. Standardized feeding protocols\n- Early initiation trophic feeds (10-20 мл/кг/сут)\n- Standardized advancement rate (20-30 мл/кг/сут стабильный VLBW)\n- SIFT trial: faster (30) vs slower (18) — no NEC difference\n- Cautious с REDF / IUGR\n\n### 3. Probiotics (combo Lactobacillus + Bifidobacterium)\n- ProPrems trial + Cochrane meta-analysis\n- Reduces NEC, mortality, sepsis\n- Manufacturing variability remains concern\n\n### 4. Judicious antibiotic use\n- Stop empiric ABX 36-48 ч если cultures negative\n- Prolonged ABX (>5 days) increases NEC ~1.84×\n\n### 5. hsPDA management\n- Early closure when symptomatic\n- Reduces splanchnic hypoperfusion → NEC risk\n\n### 6. Avoid hyperosmolar agents\n- TPN осмолярность <800 mOsm/L\n- Concentrated medications через CVL only\n\n### 7. Adequate enteric feeding monitoring\n- НЕ routine residual measurement (ESPGHAN 2022)\n- Monitor concerning signs (bilious, blood, distention, hemodynamic change)\n\n### 8. Probiotics + prebiotics + lactoferrin\n- Synergistic effect possibly\n- Lactoferrin emerging adjuvant\n\n## Other interventions\n\n### Antenatal\n- Antenatal steroids\n- Magnesium sulfate <32 нед\n\n### Postnatal\n- Avoid ranitidine / H2 blockers (↑ NEC risk)\n- Limit transfusions (TANEC controversy — likely false)\n\n## Quality metrics\n\n- NEC incidence per 1000 VLBW patient-days\n- MOM rate at full feeds\n- Probiotic adherence\n- ABX days per VLBW\n\n## Российская практика\n\nКР МЗ РФ + ESPGHAN рекомендации — probiotics + MOM + standardized protocols стандарт в современных перинатальных центрах.",
+      "references": [
+        "Embleton ND et al. JPGN 2022 — ESPGHAN 2022",
+        "Cochrane 2017 — Probiotics NEC",
+        "Bertino E et al. JPGN 2009 — Donor milk"
+      ],
+      "related_calculators": [
+        "neo-bell-nec"
+      ]
+    },
+    {
+      "id": "art-rop-management",
+      "title_ru": "ROP — обновлённые подходы 2024",
+      "title_en": "ROP — updated approach 2024",
+      "topic": "ophthalmology",
+      "audience": "neonatologist",
+      "level": "intermediate",
+      "summary": "Anti-VEGF (BEAT-ROP, RAINBOW) для Zone I + A-ROP, laser для Zone II. Extended monitoring after anti-VEGF до full vascularization. New: faricimab being trialed.",
+      "content": "## Screening guidelines (AAP/AAO 2018)\n\n### Indications\n- GA <30 нед, OR\n- BW ≤1500 г, OR\n- Selected babies с unstable course\n\n### Timing first exam\n- GA <27 нед: 31 нед PMA\n- GA 27-30 нед: 31 нед PMA или 4 нед chronologic (later)\n- BW ≤1500 г, GA ≥31: 4-6 нед chronologic age\n\n### Frequency\n- Active disease: q1-2 нед\n- Plus disease: q1 нед\n- Stop: full vascularization Zone III × 2 exams OR post-treatment regression\n\n## ICROP3 (2021) classification\n\n### Zones\n- Zone I: posterior pole (high risk)\n- Zone II: mid-periphery\n- Zone III: anterior periphery (low risk)\n\n### Stages\n1: Demarcation line\n2: Ridge\n3: Extraretinal proliferation\n4A: Partial RD (extrafoveal)\n4B: Partial RD (foveal)\n5: Total RD\n\n### Plus disease\nDilated/tortuous vessels — major treatment criterion\n\n### Aggressive ROP (A-ROP)\nReplaces former AP-ROP. Rapid posterior pole disease — anti-VEGF first-line.\n\n## Treatment indications\n\n### Type 1 ROP (TREAT)\n- Zone I, любая stage с plus\n- Zone I, stage 3 без plus\n- Zone II, stage 2 или 3 с plus\n\nTreat в 48-72 ч.\n\n## Treatment options\n\n### Anti-VEGF (BEAT-ROP, RAINBOW)\n- **Bevacizumab (Avastin)**: 0.625 мг intravitreal\n- **Ranibizumab (Lucentis)**: 0.2 мг intravitreal\n- Preferred Zone I, A-ROP\n- Bedside в NICU (sterile prep, lid retractor, topical anesthetic)\n- Recurrence до 19% — extended monitoring до 50-60 нед PMA\n\n### Laser photocoagulation\n- Diode laser 810 нм\n- Ablation avascular retina anterior to ridge\n- Preferred Zone II\n- 1500-3000 spots typical\n- В OR под GA или conscious sedation\n\n### Surgery (Stage 4-5)\n- Vitrectomy для retinal detachment\n- Stage 4A — lens-sparing, decent outcomes\n- Stage 4B-5 — complex, often poor visual\n\n## Long-term\n\n- Refractive errors (myopia common)\n- Strabismus\n- Visual field defects (post-laser)\n- Retinal detachment risk\n\n## Российская практика\n\nКР МЗ РФ ROP 2024 + AAP/AAO 2018. Anti-VEGF widely available в перинатальных центрах. Telemedicine ROP screening developing.",
+      "references": [
+        "Mintz-Hittner HA et al. NEJM 2011;364:603 — BEAT-ROP",
+        "Stahl A et al. Lancet 2019;394:1551 — RAINBOW",
+        "Chiang MF et al. Ophthalmology 2021;128:e51 — ICROP3",
+        "AAP/AAO 2018"
+      ],
+      "related_calculators": [
+        "neo-icrop3",
+        "neo-rop-screen-timing"
+      ]
+    },
+    {
+      "id": "art-gerd-newborn",
+      "title_ru": "GERD у newborn — current approach",
+      "title_en": "GERD newborn — current approach",
+      "topic": "gastro",
+      "audience": "neonatologist",
+      "level": "basic",
+      "summary": "Reflux normal newborn — most don't need treatment. Pathologic GERD: vomiting + failure to thrive / aspiration / apnea. Lifestyle first; PPI selectively (overprescribed, side effects).",
+      "content": "## Background\n\nReflux эпизоды normal в newborns:\n- 40-65% spit up daily у term newborn\n- Resolves 80-90% к 12 мес\n- Pathologic ('GERD') = causes pain, FTT, aspiration, apnea\n\n## Diagnosis\n\n### Functional reflux (no treatment needed)\n- Effortless spitting up\n- Thriving (adequate weight gain)\n- Happy / unfussy\n- 'Happy spitter'\n\n### GERD requiring intervention\n- Vomiting + failure to thrive\n- Apparent pain (Sandifer sign — arching, dystonia)\n- Aspiration / recurrent pneumonia\n- Apnea / ALTE\n- Persistent feeding refusal\n\n## Diagnostics (selective)\n\n- pH/impedance monitoring (gold standard pathologic GERD)\n- Upper GI series (excludes anatomic causes — malrotation)\n- Endoscopy (rarely в newborn)\n\n## Management\n\n### Step 1: Lifestyle\n- Smaller more frequent feeds\n- Burping during/after feed\n- Upright position 30 мин after feed\n- Avoid overfeeding\n- Thicker formula trial (rice cereal, anti-reflux formula)\n- Side-lying / left-side sleep — careful (Back to Sleep)\n\n### Step 2: Medications (selective, NOT routine)\n\n#### H2 blockers (ranitidine — withdrawn, famotidine alternative)\n- 0.5 мг/кг/доза q12h IV/PO\n- Less effective than PPI\n\n#### PPI (omeprazole)\n- 1-2 мг/кг/сут\n- Most effective acid suppression\n- Increasing concerns: ↑ NEC, ↑ pneumonia, ↑ C. difficile, ↓ vit B12, fracture risk\n\n### Step 3: Specialty referral\n- Persistent symptoms despite optimization\n- Pediatric GI consultation\n- Surgery (Nissen) reserved для severe + failed medical\n\n## When NOT to treat\n\n- 'Happy spitter' — reassurance\n- Functional reflux в well-thriving infant\n- Mild fussiness без other concerning features\n\n## Российская практика\n\nКР МЗ РФ ГЭРБ у детей — similar approach. PPI overuse попугающая проблема в РФ как и в остальном мире.",
+      "references": [
+        "AAP-Section on Gastroenterology. Pediatrics 2018;131",
+        "Vandenplas Y et al. JPGN 2018;66:516"
+      ],
+      "related_calculators": []
+    },
+    {
+      "id": "art-osteopenia-prematurity",
+      "title_ru": "Остеопения / metabolic bone disease у preterm",
+      "title_en": "Osteopenia / metabolic bone disease preterm",
+      "topic": "metabolic",
+      "audience": "neonatologist",
+      "level": "intermediate",
+      "summary": "Common у VLBW (<1500 г). Risk factors: prematurity, poor mineral intake, prolonged TPN, diuretics. Diagnosis: ALP elevated + serum P low. Prevention: adequate Ca/P/vit D + early enteral nutrition.",
+      "content": "## Background\n\nMetabolic bone disease (MBD) of prematurity:\n- 30% VLBW (<1500 г)\n- 50% ELBW (<1000 г)\n- Result of insufficient calcium + phosphate transfer (occurs primarily 3rd trimester)\n- Plus postnatal factors: prolonged TPN, diuretics, steroids\n\n## Risk factors\n\n- GA <32 нед\n- BW <1500 г\n- Prolonged TPN (>4 нед)\n- Inadequate Ca/P/vit D supplementation\n- Furosemide (urinary Ca losses)\n- Postnatal steroids (DART)\n- Cholestasis (vit D malabsorption)\n- Severe BPD (immobility)\n\n## Diagnosis\n\n### Biochemical (most reliable)\n- Serum alkaline phosphatase (ALP) >900 U/L (≥5× adult upper limit)\n- Serum phosphorus <1.8 ммоль/л (<5.6 мг/дл)\n- ALP × P low ratio — best predictor MBD\n- Calcium often normal (regulated tightly)\n- 25-OH vit D <20 нг/мл deficiency\n\n### Imaging (if severe)\n- Wrist X-ray: rachitic changes (cupping, fraying, widening)\n- Long bone X-ray: subperiosteal resorption, fractures\n- DEXA: gold standard в research, less practical clinically\n\n## Prevention\n\n### Adequate enteral nutrition\n- Early initiation (Day 1-2 trophic)\n- Mother's milk + HMF when tolerated\n- Targeted fortification preferred over standard\n\n### Mineral supplementation\n- Ca: 100-220 мг/кг/сут\n- P: 60-140 мг/кг/сут\n- Vit D: 800-1000 IU/сут (ESPGHAN)\n\n### TPN composition\n- Ca:P ratio 1.7:1 (mass ratio 1.3:1)\n- Adequate energy + protein\n\n### Avoid contributing factors\n- Limit furosemide (use thiazide alternative if possible)\n- Minimize TPN duration\n- Treat cholestasis aggressively\n\n## Treatment\n\n### Biochemical MBD (no fractures)\n- Optimize Ca/P intake\n- Vit D supplementation\n- Recheck biochemistry q2-4 нед\n\n### Established disease (fractures)\n- Bisphosphonates rarely used (reserved for severe)\n- Mechanical loading (passive PT)\n- Long-term follow-up\n\n## Long-term outcomes\n\n- Most resolves постнатальный with adequate nutrition\n- Possible reduced peak bone mass adulthood (research)\n- Fracture risk normalizes by 1-2 года\n\n## Monitoring schedule\n\n- ALP, P weekly от 4 нед age у VLBW\n- 25-OH vit D monthly если concern\n- Wrist X-ray if ALP >1200 OR clinical concern\n\n## Российская практика\n\nКР МЗ РФ — preterm metabolic bone disease prevention align с ESPGHAN. Calcium glycerophosphate / phosphate buffers commonly used.",
+      "references": [
+        "Abrams SA. AAP CFN. Pediatrics 2013;131:e1676",
+        "Mihatsch WA et al. Clin Nutr 2018 — ESPGHAN PN 2018",
+        "Faienza MF et al. World J Pediatr 2018;14:432"
+      ],
+      "related_calculators": []
+    },
+    {
+      "id": "art-tof-management",
+      "title_ru": "Tetralogy of Fallot — neonatal management",
+      "title_en": "Tetralogy of Fallot — neonatal management",
+      "topic": "cardiopulmonary",
+      "audience": "neonatologist",
+      "level": "intermediate",
+      "summary": "Most common cyanotic CHD (10% of CHD). Spectrum от mild ('pink TOF') до severe (duct-dependent). Tet spells emergency. Surgical repair 3-6 мес typically.",
+      "content": "## Anatomy (4 components)\n\n1. **VSD** — large, malalignment type\n2. **Overriding aorta** — straddles VSD\n3. **RV outflow obstruction** — может be subvalvar (infundibular), valvar, supravalvar\n4. **RV hypertrophy** — secondary к obstruction\n\n## Spectrum\n\n### 'Pink' TOF\n- Mild RV outflow obstruction\n- Acyanotic at birth\n- Progresses к cyanosis as obstruction worsens\n\n### 'Blue' TOF\n- Severe RV outflow obstruction\n- Cyanosis at birth\n- Duct-dependent если pulmonary atresia\n\n### TOF + pulmonary atresia\n- Most severe variant\n- Duct-dependent obligately\n- Complete repair often complex\n\n## Presentation\n\n### At birth\n- Cyanosis severity varies\n- Single S2 (no pulmonary component)\n- Systolic ejection murmur (RV outflow)\n\n### Progressive cyanosis\n- RV outflow infundibular hypertrophy progresses\n- Tet spells приобретают prominence\n\n### Tet spells\n- Acute increase в R-to-L shunting\n- Triggered by crying, feeding, agitation\n- SpO₂ drops dramatically\n- Murmur DECREASES (more obstruction → less flow through RVOT)\n- See dedicated tet spell management article\n\n## Management\n\n### Acute neonatal\n- PGE1 if duct-dependent (TOF + PA)\n- Echo confirmation diagnosis\n- Stabilization для surgical planning\n- Cardiology + cardiac surgery consultation\n\n### Pre-surgical\n- Avoid hypoxia (high-flow O₂ available)\n- Treat anemia (limits O₂ delivery)\n- Iron supplementation (combat polycythemia compensation)\n- Beta-blocker prophylaxis tet spells (propranolol 2 мг/кг q6h PO)\n\n### Surgical repair\n\n#### Complete repair (preferred современный подход)\n- Usually 3-6 мес age\n- Closed VSD + relieve RV outflow + augment PA\n- Mortality <5% в experienced centers\n\n#### Palliative shunt (BT shunt)\n- Reserved для very young / unstable\n- Modified Blalock-Taussig (PTFE graft субclavian → PA)\n- Allows growth before complete repair\n\n#### TOF + PA + MAPCAs\n- Complex, multiple surgeries usually\n- Unifocalization MAPCAs\n\n## Long-term outcomes\n\n- Survival 90%+ к adulthood с modern repair\n- Late issues: pulmonary regurgitation (most common), arrhythmia, RV dysfunction\n- Pulmonary valve replacement often needed adult life\n- Lifelong cardiology follow-up\n\n## Российская практика\n\nFederal cardiac surgery centers (Bakulev, Almazov) выполняют ~1000 TOF surgeries/year. Outcome data align с международными. KOMS REGION centers — additional capacity.",
+      "references": [
+        "Apitz C et al. Lancet 2009;374:1462 — TOF review",
+        "AHA Pediatric Cardiac Guidelines",
+        "Bacha EA et al. Pediatr Cardiol 2014;35:1146"
+      ],
+      "related_calculators": []
     }
   ]
 }
