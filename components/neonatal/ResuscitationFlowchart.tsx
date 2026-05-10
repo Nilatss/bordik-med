@@ -571,17 +571,17 @@ export default function ResuscitationFlowchart() {
                   display: 'inline-flex', alignItems: 'center', gap: 6,
                   padding: '8px 14px',
                   borderRadius: 'var(--md-sys-shape-corner-full)',
-                  background: isActive ? '#0F172A' : '#FFFFFF',
-                  color: isActive ? '#FFFFFF' : 'var(--md-sys-color-on-surface-variant)',
+                  background: isActive ? '#1A1A1A' : '#F5F6F8',
+                  color: isActive ? '#FFFFFF' : '#374151',
                   border: 'none',
-                  boxShadow: isActive ? 'none' : PILL_SHADOW,
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '0.7rem', fontWeight: 500,
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 12, fontWeight: 600,
                   cursor: 'pointer',
-                  transition: 'all 200ms cubic-bezier(0.22,1,0.36,1)',
-                  textTransform: 'uppercase', letterSpacing: '0.04em',
+                  transition: 'background 180ms, color 180ms',
                   whiteSpace: 'nowrap',
                 }}
+                onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.background = '#EFF1F4'; }}
+                onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.background = '#F5F6F8'; }}
               >
                 <span aria-hidden="true">{FLAGS[p.id]}</span>
                 {p.name_ru}
@@ -615,7 +615,7 @@ export default function ResuscitationFlowchart() {
           <div style={{
             fontSize: 40, fontWeight: 700,
             fontFamily: 'var(--font-mono)',
-            lineHeight: 1, color: '#0F172A',
+            lineHeight: 1, color: '#1A1A1A',
             letterSpacing: '-0.02em',
           }}>
             {formatTime(elapsedSec)}
@@ -637,19 +637,19 @@ export default function ResuscitationFlowchart() {
             style={{
               display: 'inline-flex', alignItems: 'center', gap: 6,
               padding: '10px 18px',
-              borderRadius: 'var(--md-sys-shape-corner-full)',
-              background: isRunning ? '#FEF2F2' : '#ECFDF5',
-              color: isRunning ? '#991B1B' : '#065F46',
+              borderRadius: 999,
+              background: isRunning ? '#F5F6F8' : '#1A1A1A',
+              color: isRunning ? '#374151' : '#FFFFFF',
               border: 'none',
-              boxShadow: PILL_SHADOW,
-              fontFamily: 'var(--font-mono)',
-              fontSize: '0.75rem', fontWeight: 600,
+              fontFamily: 'var(--font-body)',
+              fontSize: 13, fontWeight: 600,
               cursor: 'pointer',
-              textTransform: 'uppercase', letterSpacing: '0.04em',
-              transition: 'background 200ms cubic-bezier(0.22,1,0.36,1)',
+              transition: 'background 180ms',
             }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = isRunning ? '#EFF1F4' : '#0F172A'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = isRunning ? '#F5F6F8' : '#1A1A1A'; }}
           >
-            {isRunning ? '⏸ Пауза' : (elapsedSec === 0 ? '▶ Старт' : '▶ Продолжить')}
+            {isRunning ? 'Пауза' : (elapsedSec === 0 ? 'Старт' : 'Продолжить')}
           </button>
           <button
             onClick={handleReset}
@@ -657,21 +657,19 @@ export default function ResuscitationFlowchart() {
             style={{
               display: 'inline-flex', alignItems: 'center', gap: 6,
               padding: '10px 18px',
-              borderRadius: 'var(--md-sys-shape-corner-full)',
-              background: '#FFFFFF',
-              color: 'var(--md-sys-color-on-surface-variant)',
+              borderRadius: 999,
+              background: '#F5F6F8',
+              color: '#374151',
               border: 'none',
-              boxShadow: PILL_SHADOW,
-              fontFamily: 'var(--font-mono)',
-              fontSize: '0.75rem', fontWeight: 500,
+              fontFamily: 'var(--font-body)',
+              fontSize: 13, fontWeight: 600,
               cursor: 'pointer',
-              textTransform: 'uppercase', letterSpacing: '0.04em',
-              transition: 'background 200ms cubic-bezier(0.22,1,0.36,1)',
+              transition: 'background 180ms',
             }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = '#F8F9FA'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = '#FFFFFF'; }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = '#F5F6F8'; }}
           >
-            ⟲ Сброс
+            Сброс
           </button>
         </div>
       </div>
@@ -688,12 +686,10 @@ export default function ResuscitationFlowchart() {
             padding: '22px 24px',
             background: '#FFFFFF',
             borderRadius: 16,
-            boxShadow: currentStepObj.is_critical
-              ? '0 1px 2px rgba(220,38,38,0.08), 0 4px 16px rgba(220,38,38,0.10), inset 4px 0 0 #DC2626'
-              : '0 1px 2px rgba(16,24,40,0.06), 0 4px 12px rgba(16,24,40,0.08)',
+            boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 4px 12px rgba(16,24,40,0.08)',
           }}
         >
-          {/* Pills row — current time + status pills */}
+          {/* Pills row — current time + status pills (neutral, no color/CAPS) */}
           <div style={{
             display: 'flex', alignItems: 'center', flexWrap: 'wrap',
             gap: 8, marginBottom: 14,
@@ -704,10 +700,9 @@ export default function ResuscitationFlowchart() {
               borderRadius: 'var(--md-sys-shape-corner-full)',
               background: '#FFFFFF',
               boxShadow: PILL_SHADOW,
-              fontFamily: 'var(--font-mono)',
-              fontSize: '0.625rem', fontWeight: 500,
+              fontFamily: 'var(--font-body)',
+              fontSize: 11, fontWeight: 500,
               color: 'var(--md-sys-color-on-surface-variant)',
-              textTransform: 'uppercase', letterSpacing: '0.04em',
               whiteSpace: 'nowrap',
             }}>
               {currentStepObj.time_sec >= 0
@@ -721,13 +716,12 @@ export default function ResuscitationFlowchart() {
                 borderRadius: 'var(--md-sys-shape-corner-full)',
                 background: '#FFFFFF',
                 boxShadow: PILL_SHADOW,
-                fontFamily: 'var(--font-mono)',
-                fontSize: '0.625rem', fontWeight: 700,
-                color: '#DC2626',
-                textTransform: 'uppercase', letterSpacing: '0.04em',
+                fontFamily: 'var(--font-body)',
+                fontSize: 11, fontWeight: 600,
+                color: 'var(--md-sys-color-on-surface-variant)',
                 whiteSpace: 'nowrap',
               }}>
-                ⚡ Критично
+                Критично
               </span>
             )}
             {currentStepObj.is_decision && (
@@ -737,20 +731,19 @@ export default function ResuscitationFlowchart() {
                 borderRadius: 'var(--md-sys-shape-corner-full)',
                 background: '#FFFFFF',
                 boxShadow: PILL_SHADOW,
-                fontFamily: 'var(--font-mono)',
-                fontSize: '0.625rem', fontWeight: 700,
-                color: '#1D4ED8',
-                textTransform: 'uppercase', letterSpacing: '0.04em',
+                fontFamily: 'var(--font-body)',
+                fontSize: 11, fontWeight: 600,
+                color: 'var(--md-sys-color-on-surface-variant)',
                 whiteSpace: 'nowrap',
               }}>
-                ◇ Решение
+                Решение
               </span>
             )}
           </div>
           <h3 style={{
             fontFamily: 'var(--font-display)',
             fontSize: 20, fontWeight: 700,
-            color: '#0F172A', margin: '0 0 14px',
+            color: '#1A1A1A', margin: '0 0 14px',
             letterSpacing: '-0.015em', lineHeight: 1.25,
           }}>
             {currentStepObj.title_ru}
@@ -762,7 +755,7 @@ export default function ResuscitationFlowchart() {
             {currentStepObj.body}
           </p>
 
-          {/* Navigation row — design-system pills (white BG + colored stroke) */}
+          {/* Navigation row — neutral design-system pills, sentence case. */}
           <div style={{
             display: 'flex', gap: 8, marginTop: 22, flexWrap: 'wrap',
             paddingTop: 18, borderTop: '1px solid #F0F1F5',
@@ -773,21 +766,19 @@ export default function ResuscitationFlowchart() {
                 style={{
                   display: 'inline-flex', alignItems: 'center', gap: 6,
                   padding: '10px 18px',
-                  borderRadius: 'var(--md-sys-shape-corner-full)',
-                  background: '#FFFFFF',
-                  color: '#065F46',
+                  borderRadius: 999,
+                  background: '#1A1A1A',
+                  color: '#FFFFFF',
                   border: 'none',
-                  boxShadow: '0 0 0 1.5px #10B981, 0 1px 3px rgba(16,185,129,0.15)',
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '0.7rem', fontWeight: 600,
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 13, fontWeight: 600,
                   cursor: 'pointer',
-                  textTransform: 'uppercase', letterSpacing: '0.04em',
-                  transition: 'background 200ms cubic-bezier(0.22,1,0.36,1)',
+                  transition: 'background 180ms',
                 }}
-                onMouseEnter={(e) => { e.currentTarget.style.background = '#ECFDF5'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = '#FFFFFF'; }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = '#0F172A'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = '#1A1A1A'; }}
               >
-                ✓ Да → {protocol.steps.find((s) => s.id === currentStepObj.next_yes)?.title_ru.slice(0, 28) ?? 'Далее'}…
+                Да → {protocol.steps.find((s) => s.id === currentStepObj.next_yes)?.title_ru.slice(0, 28) ?? 'Далее'}…
               </button>
             )}
             {currentStepObj.is_decision && currentStepObj.next_no && (
@@ -796,21 +787,19 @@ export default function ResuscitationFlowchart() {
                 style={{
                   display: 'inline-flex', alignItems: 'center', gap: 6,
                   padding: '10px 18px',
-                  borderRadius: 'var(--md-sys-shape-corner-full)',
-                  background: '#FFFFFF',
-                  color: '#991B1B',
+                  borderRadius: 999,
+                  background: '#F5F6F8',
+                  color: '#374151',
                   border: 'none',
-                  boxShadow: '0 0 0 1.5px #DC2626, 0 1px 3px rgba(220,38,38,0.15)',
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '0.7rem', fontWeight: 600,
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 13, fontWeight: 600,
                   cursor: 'pointer',
-                  textTransform: 'uppercase', letterSpacing: '0.04em',
-                  transition: 'background 200ms cubic-bezier(0.22,1,0.36,1)',
+                  transition: 'background 180ms',
                 }}
-                onMouseEnter={(e) => { e.currentTarget.style.background = '#FEF2F2'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = '#FFFFFF'; }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = '#F5F6F8'; }}
               >
-                ✗ Нет → {protocol.steps.find((s) => s.id === currentStepObj.next_no)?.title_ru.slice(0, 28) ?? 'Далее'}…
+                Нет → {protocol.steps.find((s) => s.id === currentStepObj.next_no)?.title_ru.slice(0, 28) ?? 'Далее'}…
               </button>
             )}
             {!currentStepObj.is_decision && currentStepObj.next_yes && (
@@ -819,16 +808,17 @@ export default function ResuscitationFlowchart() {
                 style={{
                   display: 'inline-flex', alignItems: 'center', gap: 6,
                   padding: '10px 18px',
-                  borderRadius: 'var(--md-sys-shape-corner-full)',
-                  background: '#0F172A',
+                  borderRadius: 999,
+                  background: '#1A1A1A',
                   color: '#FFFFFF',
                   border: 'none',
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '0.7rem', fontWeight: 600,
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 13, fontWeight: 600,
                   cursor: 'pointer',
-                  textTransform: 'uppercase', letterSpacing: '0.04em',
-                  transition: 'background 200ms cubic-bezier(0.22,1,0.36,1)',
+                  transition: 'background 180ms',
                 }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = '#0F172A'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = '#1A1A1A'; }}
               >
                 {protocol.steps.find((s) => s.id === currentStepObj.next_yes)?.title_ru.slice(0, 32) ?? 'Далее'} →
               </button>
@@ -842,19 +832,17 @@ export default function ResuscitationFlowchart() {
                 style={{
                   display: 'inline-flex', alignItems: 'center', gap: 6,
                   padding: '10px 16px',
-                  borderRadius: 'var(--md-sys-shape-corner-full)',
-                  background: '#FFFFFF',
-                  color: 'var(--md-sys-color-on-surface-variant)',
+                  borderRadius: 999,
+                  background: '#F5F6F8',
+                  color: '#374151',
                   border: 'none',
-                  boxShadow: PILL_SHADOW,
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '0.7rem', fontWeight: 500,
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 13, fontWeight: 500,
                   cursor: 'pointer',
-                  textTransform: 'uppercase', letterSpacing: '0.04em',
-                  transition: 'background 200ms cubic-bezier(0.22,1,0.36,1)',
+                  transition: 'background 180ms',
                 }}
-                onMouseEnter={(e) => { e.currentTarget.style.background = '#F8F9FA'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = '#FFFFFF'; }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = '#F5F6F8'; }}
               >
                 ← Назад
               </button>
@@ -920,7 +908,7 @@ export default function ResuscitationFlowchart() {
                   width: 22, height: 22,
                   display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
                   borderRadius: '50%',
-                  background: isPast ? '#10B981' : isCurrent ? '#0F172A' : '#FFFFFF',
+                  background: isPast || isCurrent ? '#1A1A1A' : '#FFFFFF',
                   color: isPast || isCurrent ? '#FFFFFF' : '#9CA3AF',
                   boxShadow: isCurrent || isPast ? 'none' : PILL_SHADOW,
                   fontFamily: 'var(--font-mono)',
@@ -931,7 +919,7 @@ export default function ResuscitationFlowchart() {
                 <span style={{
                   flex: 1, minWidth: 0,
                   fontSize: 13, fontWeight: isCurrent ? 600 : 400,
-                  color: isCurrent ? '#0F172A' : '#374151',
+                  color: isCurrent ? '#1A1A1A' : '#374151',
                   lineHeight: 1.4,
                 }}>
                   {s.title_ru}
@@ -939,19 +927,11 @@ export default function ResuscitationFlowchart() {
                 {s.time_sec >= 0 && (
                   <span style={{
                     flexShrink: 0,
-                    fontFamily: 'var(--font-mono)',
+                    fontFamily: 'var(--font-body)',
                     fontSize: 11, fontWeight: 500,
                     color: '#9CA3AF',
                   }}>
                     {formatTime(s.time_sec)}
-                  </span>
-                )}
-                {s.is_critical && (
-                  <span aria-label="критичный шаг" style={{
-                    flexShrink: 0,
-                    color: '#DC2626', fontSize: 12,
-                  }}>
-                    ⚡
                   </span>
                 )}
               </button>
