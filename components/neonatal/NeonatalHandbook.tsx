@@ -59,6 +59,9 @@ interface Guideline {
   content: string;
   references: string[];
   category?: string;
+  /** Регионы, к которым relevant протокол. Auto-derived из references
+   *  (см. scripts/tag-protocols-by-region.py). Используется для filter UI. */
+  regions?: string[];
 }
 
 interface GuidelineCategory {
@@ -233,6 +236,11 @@ export default function NeonatalHandbook() {
   const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
   const [countryFilterOpen, setCountryFilterOpen] = useState(false);
 
+  // Region filter на Протоколы tab — фильтрует по guideline.regions[]
+  // (auto-tagged from references). Mirror UI pattern.
+  const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
+  const [regionFilterOpen, setRegionFilterOpen] = useState(false);
+
   // Quiz active flag — when QuizRunner enters fullscreen takeover (user
   // clicks a test card), we hide the page header / search / breadcrumb
   // for a clean exam-like UI. QuizRunner notifies via onActiveChange.
@@ -244,7 +252,7 @@ export default function NeonatalHandbook() {
       try {
         const [drugsR, guidelinesR, calcR, labsR, articlesR, lactR, nurseR] = await Promise.all([
           fetch('/neonatal-monographs.json?v=2.9.0', { cache: 'force-cache' }),
-          fetch('/neonatal-guidelines.json?v=1.7.0', { cache: 'force-cache' }),
+          fetch('/neonatal-guidelines.json?v=1.9.0', { cache: 'force-cache' }),
           fetch('/neonatal-calculators.json?v=1.0.0', { cache: 'force-cache' }),
           fetch('/neonatal-lab-norms.json?v=1.1.0', { cache: 'force-cache' }),
           fetch('/neonatal-articles.json?v=1.8.0', { cache: 'force-cache' }),
@@ -290,13 +298,57 @@ export default function NeonatalHandbook() {
   const filteredGuidelines = useMemo(() => {
     if (!guidelines) return [];
     const query = q.trim().toLowerCase();
-    if (!query) return guidelines.guidelines;
-    return guidelines.guidelines.filter((g) =>
-      g.title_en.toLowerCase().includes(query)
-      || g.title_ru.toLowerCase().includes(query)
-      || g.content.toLowerCase().includes(query)
-    );
-  }, [guidelines, q]);
+    return guidelines.guidelines.filter((g) => {
+      // Search query фильтр
+      if (query
+        && !g.title_en.toLowerCase().includes(query)
+        && !g.title_ru.toLowerCase().includes(query)
+        && !g.content.toLowerCase().includes(query)) return false;
+      // Region фильтр — protocol должен пересекаться хотя бы с одним
+      // selected region. Если selectedRegions пусто — показываем всё.
+      if (selectedRegions.length > 0) {
+        const protoRegions = g.regions ?? ['Международный'];
+        const hit = selectedRegions.some((sel) => protoRegions.includes(sel));
+        if (!hit) return false;
+      }
+      return true;
+    });
+  }, [guidelines, q, selectedRegions]);
+
+  // Region counts — derived from ALL protocols (не отфильтрованные),
+  // чтобы dropdown показывал full picture сколько в каждом регионе.
+  const guidelineRegionCounts = useMemo<FilterOption[]>(() => {
+    if (!guidelines) return [];
+    const counts: Record<string, number> = Object.create(null);
+    const flags: Record<string, string> = {
+      'РФ': '🇷🇺',
+      'США': '🇺🇸',
+      'Европа': '🇪🇺',
+      'Узбекистан': '🇺🇿',
+      'Международный': '🌍',
+    };
+    const order: Record<string, number> = {
+      'Международный': 1,
+      'США': 2,
+      'Европа': 3,
+      'РФ': 4,
+      'Узбекистан': 5,
+    };
+    for (const g of guidelines.guidelines) {
+      const regions = g.regions ?? ['Международный'];
+      for (const r of regions) counts[r] = (counts[r] ?? 0) + 1;
+    }
+    return Object.entries(counts)
+      .map(([value, count]) => ({ value, count, flag: flags[value], _order: order[value] ?? 99 }))
+      .sort((a, b) => {
+        if (a._order !== b._order) return a._order - b._order;
+        return b.count - a.count;
+      })
+      .map(({ value, count, flag }) => ({
+        value, count,
+        ...(flag !== undefined && { flag }),
+      }));
+  }, [guidelines]);
 
   /**
    * Group filtered guidelines by category. Keeps category order from
@@ -708,6 +760,32 @@ export default function NeonatalHandbook() {
               сгруппированы по разделам
             </span>
           </p>
+
+          {/* Region filter — позволяет показать только протоколы РФ /
+              США / Европы / Узбекистана / Международные. Mirror UI
+              калькуляторов; теги region берутся из guideline.regions[]
+              auto-derived from references. */}
+          <div style={{
+            display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 10,
+            marginBottom: 16,
+          }}>
+            <FilterDropdown
+              label="Регионы"
+              icon={<svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><circle cx={12} cy={12} r={10}/><line x1={2} y1={12} x2={22} y2={12}/><path d="M12 2a15 15 0 014 10 15 15 0 01-4 10 15 15 0 01-4-10 15 15 0 014-10z"/></svg>}
+              options={guidelineRegionCounts}
+              selected={selectedRegions}
+              onChange={setSelectedRegions}
+              open={regionFilterOpen}
+              onOpen={setRegionFilterOpen}
+              searchable
+            />
+            {selectedRegions.length > 0 && (
+              <span style={{ fontSize: 12, color: '#9CA3AF' }}>
+                фильтр: {selectedRegions.join(', ')}
+              </span>
+            )}
+          </div>
+
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -1701,11 +1779,63 @@ function GuidelineCard({
       >
         <span aria-hidden="true" style={{ flex: 1, minWidth: 0 }}>
           <span style={{
-            display: 'block',
-            fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 600,
-            color: '#111827', letterSpacing: '-0.01em', lineHeight: 1.35,
+            display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap',
           }}>
-            <Highlight text={guideline.title_ru} query={query} />
+            <span style={{
+              fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 600,
+              color: '#111827', letterSpacing: '-0.01em', lineHeight: 1.35,
+            }}>
+              <Highlight text={guideline.title_ru} query={query} />
+            </span>
+            {/* Region chips — visualise каждый region из guideline.regions[].
+                Mirror NeonatalCalcCard: max 3 visible, +N overflow. */}
+            {guideline.regions && guideline.regions.length > 0 && (() => {
+              const flagMap: Record<string, string> = {
+                'РФ': '🇷🇺',
+                'США': '🇺🇸',
+                'Европа': '🇪🇺',
+                'Узбекистан': '🇺🇿',
+                'Международный': '🌍',
+              };
+              const visible = guideline.regions.slice(0, 3);
+              const extra = guideline.regions.length - visible.length;
+              return (
+                <>
+                  {visible.map((r) => (
+                    <span
+                      key={r}
+                      title={r}
+                      style={{
+                        display: 'inline-flex', alignItems: 'center', gap: 4,
+                        padding: '4px var(--space-2)', borderRadius: 'var(--md-sys-shape-corner-full)',
+                        background: '#FFFFFF',
+                        boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
+                        fontFamily: 'var(--font-mono)',
+                        fontSize: '0.625rem', fontWeight: 500,
+                        color: 'var(--md-sys-color-on-surface-variant)',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      <EmojiOrFlag emoji={flagMap[r] ?? '🏳️'} size={12} />
+                      {r}
+                    </span>
+                  ))}
+                  {extra > 0 && (
+                    <span style={{
+                      display: 'inline-flex', alignItems: 'center',
+                      padding: '4px 8px', borderRadius: 999,
+                      background: '#FFFFFF',
+                      boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: '0.625rem', fontWeight: 600,
+                      color: '#6B7280',
+                    }}>
+                      +{extra}
+                    </span>
+                  )}
+                </>
+              );
+            })()}
           </span>
           {guideline.title_en !== guideline.title_ru && (
             <span style={{
