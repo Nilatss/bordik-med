@@ -1,5 +1,5 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "lastUpdated": "2026-05-10",
   "source": "Bordik Med — curated image atlas linkouts (audit Table 3.Д4)",
   "license": "External linkouts to authoritative atlas sources (Radiopaedia CC BY, AAP, WHO, NEJM, Stanford). Не размещаем embedded изображения — только pointers.",
@@ -405,6 +405,97 @@
       "source_type": "radiopaedia",
       "url": "https://radiopaedia.org/articles/myelomeningocele",
       "category": "examination"
+    },
+    {
+      "id": "atlas-microcephaly-features",
+      "title_ru": "Микроцефалия — обследование и причины",
+      "title_en": "Microcephaly — examination + causes",
+      "description": "OFC < -2 SD для GA + sex. Symmetric vs asymmetric. Causes: genetic, infectious (TORCH, Zika), metabolic, hypoxic-ischemic. Workup includes neuroimaging, TORCH titres, genetic panel.",
+      "key_findings": [
+        "OFC measurement technique: largest occipitofrontal circumference, 3 measurements average",
+        "Plot на Fenton (preterm) или WHO/Intergrowth (term) curve",
+        "Microcephaly criteria: OFC < -2 SD for GA + sex",
+        "Severe: < -3 SD",
+        "Workup: HUS or MRI brain, TORCH (CMV most common), Zika serology, genetic chromosomal microarray",
+        "Causes: TORCH (CMV>>others), Zika, genetic syndromes (Down, trisomies), HIE, alcohol exposure"
+      ],
+      "source": "WHO / CDC / Stanford",
+      "source_type": "stanford",
+      "url": "https://stanfordmedicine25.stanford.edu/the25/newbornExam.html",
+      "category": "examination"
+    },
+    {
+      "id": "atlas-pulmonary-hypoplasia",
+      "title_ru": "Гипоплазия лёгких — рентгенологическая картина",
+      "title_en": "Pulmonary hypoplasia — radiographic picture",
+      "description": "Small bell-shaped chest, reduced lung volume, restrictive pattern. Causes: oligohydramnios sequence (renal anomalies), CDH, thoracic deformity. Severe форма often lethal в первые часы.",
+      "key_findings": [
+        "Bell-shaped narrow chest configuration",
+        "Reduced number of ribs visible",
+        "Small lung volumes на CXR",
+        "Often associated с CDH, oligohydramnios, renal anomalies (Potter sequence)",
+        "Mortality high if severe — depends on viable lung tissue",
+        "ECMO criteria for survival depend on lung development"
+      ],
+      "source": "Radiopaedia",
+      "source_type": "radiopaedia",
+      "url": "https://radiopaedia.org/articles/pulmonary-hypoplasia",
+      "category": "respiratory_imaging"
+    },
+    {
+      "id": "atlas-cdh-presentation",
+      "title_ru": "Врождённая диафрагмальная грыжа (CDH)",
+      "title_en": "Congenital diaphragmatic hernia (CDH)",
+      "description": "Bowel loops в thoracic cavity, mediastinal shift, scaphoid abdomen. 80% left-sided. Antenatal diagnosis ключевой для planning. Postnatal: immediate intubation, OG decompression.",
+      "key_findings": [
+        "Scaphoid abdomen (sunken, 'flat')",
+        "Decreased breath sounds affected side, heart sounds shifted contralateral",
+        "CXR: bowel loops в thoracic cavity, mediastinum shifted contralateral",
+        "Left-sided 80%, right-sided 20%",
+        "Pulmonary hypoplasia + PPHN — major morbidity",
+        "Immediate management: intubation (NO bag-mask — would distend bowel), OG decompression, transfer к pediatric surgical center"
+      ],
+      "source": "Radiopaedia / CDH International",
+      "source_type": "radiopaedia",
+      "url": "https://radiopaedia.org/articles/congenital-diaphragmatic-hernia",
+      "category": "respiratory_imaging"
+    },
+    {
+      "id": "atlas-erythema-toxicum",
+      "title_ru": "Erythema toxicum neonatorum",
+      "title_en": "Erythema toxicum neonatorum",
+      "description": "Most common newborn rash — 30-70% term newborns. Yellow-white pustules с erythematous halo. Self-resolving 3-5 days. Often mistaken for infection.",
+      "key_findings": [
+        "Yellow-white pustules surrounded by red halo",
+        "Often clustered, transient, multiple sites",
+        "Sparing palms/soles (helps differentiate from skin infection)",
+        "Onset 24-72 ч жизни typically",
+        "Resolution 3-5 дней без treatment",
+        "Wright stain пустулы — eosinophils predominant (vs neutrophils в bacterial)"
+      ],
+      "source": "Visual DX / NEJM",
+      "source_type": "nejm",
+      "url": "https://www.nejm.org/doi/full/10.1056/NEJMra1700351",
+      "category": "skin"
+    },
+    {
+      "id": "atlas-strawberry-hemangioma",
+      "title_ru": "Strawberry haemangiomas — infantile haemangiomas",
+      "title_en": "Strawberry hemangiomas — infantile hemangiomas",
+      "description": "Most common infant tumor. Small at birth, rapid growth первые 3-9 мес, then involution. Most не require treatment. Beta-blockers (propranolol) treatment of choice when intervention indicated.",
+      "key_findings": [
+        "Bright red, raised, well-demarcated lesions",
+        "Small at birth, rapid growth phase 0-9 мес",
+        "Involution phase from ~12 мес, complete by 5-9 лет",
+        "Treatment indications: airway / vision / functional impairment, ulceration, complicated location",
+        "Treatment: oral propranolol 1-3 мг/кг/сут — gold standard",
+        "Topical timolol для small superficial lesions",
+        "PHACE syndrome — large facial hemangioma + cardiac/cerebrovascular anomalies"
+      ],
+      "source": "Visual DX / AAP",
+      "source_type": "stanford",
+      "url": "https://stanfordmedicine25.stanford.edu/the25/newbornExam.html",
+      "category": "skin"
     }
   ]
 }

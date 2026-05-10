@@ -1,5 +1,5 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "lastUpdated": "2026-05-10",
   "source": "Bordik Med — Neonatology procedure checklists (audit Table 3.Д5)",
   "license": "Educational checklists adapted from public guidelines (AAP, NRP, NICE, AAP COFN, Cochrane).",
@@ -1289,6 +1289,232 @@
         "BAPM 2017 — Identification & Management Neonatal Hypoglycaemia",
         "Thornton PS et al. PES J Pediatr 2015;167:238",
         "Harris DL et al. Lancet 2013;382:2077 — SHIN trial"
+      ]
+    },
+    {
+      "id": "checklist-extubation-readiness",
+      "title_ru": "Оценка готовности к экстубации (preterm)",
+      "title_en": "Extubation readiness assessment preterm",
+      "category": "respiratory",
+      "estimated_minutes": 15,
+      "audience": "Врач + респираторный терапевт",
+      "indications": [
+        "ELBW preterm на ИВЛ ≥48 ч",
+        "Improving lung function",
+        "Considering switching to non-invasive support"
+      ],
+      "sections": [
+        {
+          "title": "Минимальные требования (necessary)",
+          "items": [
+            "MAP ≤7-8 cmH₂O",
+            "FiO₂ ≤0.30",
+            "RR <60 spontaneous",
+            "Hemodynamic stable (без active inotropes)",
+            "On caffeine (loading + maintenance) для preterm <32 нед",
+            "Glucose stable",
+            "Temperature normal"
+          ]
+        },
+        {
+          "title": "Дополнительные predictors",
+          "items": [
+            "Adequate weight gain trajectory",
+            "Receiving feeds (any volume) — gut perfusion intact",
+            "Hb ≥100 г/л (avoid anemia → apnea)",
+            "Electrolytes: K+ 3.5-5.0, Na+ 135-145",
+            "ABG: pH 7.25-7.45, PaCO₂ <55, base excess >-10",
+            "No active sepsis"
+          ]
+        },
+        {
+          "title": "Pre-extubation prep",
+          "items": [
+            "Caffeine loading 20 мг/кг IV (если ещё не on caffeine)",
+            "Pre-treat dexamethasone DART scheme если BPD risk + ventilator >7 days",
+            "Suction airway clean",
+            "NIPPV / NCPAP equipment ready (PEEP 5-6, RR 20-30, PIP 16-18)",
+            "Hand bag-mask + appropriate mask size ready",
+            "Re-intubation kit ready"
+          ]
+        },
+        {
+          "title": "Spontaneous breathing trial (optional)",
+          "items": [
+            "ETT-CPAP 5-6 cmH₂O × 30-60 минут",
+            "Watch для apnea, desaturation, increased WoB",
+            "Tolerated SBT predicts successful extubation",
+            "If failed SBT — return к prior settings"
+          ]
+        },
+        {
+          "title": "Extubation procedure",
+          "items": [
+            "Suction OG/NG tube + airway",
+            "Extubate at end of inspiration",
+            "Immediately apply NIPPV или NCPAP (preset to anticipated needs)",
+            "Monitor SpO₂, HR, RR, WoB closely",
+            "First 30-60 минут critical — most extubation failures occur"
+          ]
+        },
+        {
+          "title": "Post-extubation monitoring",
+          "items": [
+            "Continuous SpO₂ + ETCO₂ (если capnography available)",
+            "Watch for stridor (subglottic edema): racemic epinephrine PRN + dexamethasone",
+            "ABG at 1 hr, 4 hr, 8 hr",
+            "RR, retractions, O₂ requirement trends",
+            "Failure criteria: pH <7.20, PaCO₂ >65, FiO₂ >0.50, recurrent apnea"
+          ]
+        }
+      ],
+      "references": [
+        "Lemyre B et al. Cochrane 2017;CD003212",
+        "Sant'Anna GM, Keszler M. Clin Perinatol 2012;39:543"
+      ]
+    },
+    {
+      "id": "checklist-iv-fluid-mgmt-day1",
+      "title_ru": "IV fluid management — Day 1 ELBW",
+      "title_en": "Day 1 IV fluid management ELBW",
+      "category": "vascular_access",
+      "estimated_minutes": 10,
+      "audience": "Врач-неонатолог",
+      "indications": [
+        "ELBW preterm на стартовом TPN",
+        "Acute illness требующий IV fluids"
+      ],
+      "sections": [
+        {
+          "title": "Стартовый объём",
+          "items": [
+            "ELBW (<1000 г): 100-120 мл/кг/сут Day 1",
+            "VLBW (1000-1500 г): 80-100 мл/кг/сут",
+            "Term: 60-80 мл/кг/сут",
+            "Insensible loss particularly high у ELBW (radiant warmer 50-100 мл/кг/сут)"
+          ]
+        },
+        {
+          "title": "Composition",
+          "items": [
+            "D10W base (provides GIR 4-6 мг/кг/мин)",
+            "AA 1.5-3 г/кг/сут (early — start Day 1)",
+            "Lipids 1-2 г/кг/сут (start Day 1)",
+            "Без Na/K Day 1 (await physiologic diuresis)",
+            "Ca 1.5-2.5 ммоль/кг/сут (60-100 мг/кг)"
+          ]
+        },
+        {
+          "title": "Advancement Day 2-7",
+          "items": [
+            "Increase fluids 20 мл/кг/сут",
+            "Add Na 2-3 ммоль/кг/сут после physiologic weight loss / diuresis",
+            "Add K 1-3 ммоль/кг/сут после confirmed urination + normal renal function",
+            "Advance AA до 3.5-4.5 г/кг/сут by Day 2-3",
+            "Advance lipids до 3-4 г/кг/сут"
+          ]
+        },
+        {
+          "title": "Monitoring",
+          "items": [
+            "Daily weight (target 1-2% loss Day 1-3, then gain 15-30 г/сут)",
+            "Strict input/output (target UO 1-3 мл/кг/час)",
+            "Electrolytes q12-24h Day 1-3",
+            "Glucose q4-6h initially",
+            "Bilirubin daily при PT",
+            "PRN: BUN/Cr (renal function), albumin, phosphorus"
+          ]
+        },
+        {
+          "title": "Common adjustments",
+          "items": [
+            "Hyperglycemia (BG >10 ммоль/л): decrease GIR (not below 4), insulin if persistent",
+            "Hypoglycemia (BG <2.6): bolus D10 2 мл/кг + increase GIR",
+            "Hypernatremia (>150): increase free water (decrease Na) — common Day 1-3 у ELBW",
+            "Hyponatremia (<130): assess volume status; usually water excess in late preterm",
+            "Hyperkalemia: decrease K, treat per algorithm если symptomatic"
+          ]
+        },
+        {
+          "title": "Transition к full feeds",
+          "items": [
+            "When EN ≥120-140 мл/кг/сут — wean TPN",
+            "Wean lipids first → AA → glucose",
+            "Maintain CVL × 24-48 ч после TPN cessation",
+            "Reassess electrolytes, weight at full feeds"
+          ]
+        }
+      ],
+      "references": [
+        "Mihatsch WA et al. Clin Nutr 2018;37:2306 — ESPGHAN PN 2018",
+        "Embleton ND et al. JPGN 2022 — ESPGHAN EN 2022"
+      ]
+    },
+    {
+      "id": "checklist-pacifier-positioning",
+      "title_ru": "Позиционирование preterm + non-pharm comfort",
+      "title_en": "Preterm positioning + non-pharm comfort",
+      "category": "resuscitation",
+      "estimated_minutes": 5,
+      "audience": "Медсестра",
+      "indications": [
+        "Стабильный preterm ELBW/VLBW",
+        "Routine NICU positioning",
+        "Preventing positional plagiocephaly"
+      ],
+      "sections": [
+        {
+          "title": "Containment / boundaries",
+          "items": [
+            "Nesting blanket boundary (rolled blankets formed nest)",
+            "Maintains flexion (mimics womb)",
+            "Reduces motor stress, conserves energy",
+            "Promotes self-regulation"
+          ]
+        },
+        {
+          "title": "Position rotation",
+          "items": [
+            "Side-lying preferred preterm <34 нед",
+            "Alternate sides q3h (left ↔ right)",
+            "Prone supervised для quiet alert / awake",
+            "Supine for SLEEP (Back to Sleep) once stable, room air",
+            "Avoid prolonged head turn one direction (plagiocephaly)"
+          ]
+        },
+        {
+          "title": "Limb positioning",
+          "items": [
+            "Hands flexed mid-line, near face (self-touch comforting)",
+            "Hips flexed",
+            "Knees flexed",
+            "Avoid extreme abduction/extension (joint stress)"
+          ]
+        },
+        {
+          "title": "Comfort measures",
+          "items": [
+            "Pacifier offered before/during procedures",
+            "Sucrose 24% 0.1-0.5 мл PO 2 минут до procedure",
+            "Skin-to-skin contact (KMC) ≥4-8 ч/сут target",
+            "Swaddling (тщательный — avoid hyperflexion)",
+            "Soft music / parental voice",
+            "Dim lighting + low sound levels"
+          ]
+        },
+        {
+          "title": "Documentation",
+          "items": [
+            "Position changes q3h documented",
+            "Comfort measures provided",
+            "Pain assessment (PIPP-R / N-PASS) q4h",
+            "Family involvement (KMC time)"
+          ]
+        }
+      ],
+      "references": [
+        "Symington A, Pinelli J. Cochrane 2006;CD001814",
+        "Als H et al. Pediatrics 2004;113:846 — NIDCAP"
       ]
     }
   ]

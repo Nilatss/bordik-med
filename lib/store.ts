@@ -48,7 +48,7 @@ interface AppState {
    *  expanded submenu. Persists в localStorage через persist-middleware.
    *  Tabs cases/mistakes/checklists/videos/atlas covers Table 3.Д
    *  educational materials per neonatology audit. */
-  neonatalActiveTab: 'drugs' | 'calculators' | 'guidelines' | 'resuscitation' | 'articles' | 'lactmed' | 'quizzes' | 'nurse' | 'labs' | 'growth' | 'bilirubin' | 'cases' | 'mistakes' | 'checklists' | 'videos' | 'atlas';
+  neonatalActiveTab: 'drugs' | 'calculators' | 'guidelines' | 'resuscitation' | 'articles' | 'lactmed' | 'quizzes' | 'nurse' | 'labs' | 'growth' | 'bilirubin' | 'cases' | 'mistakes' | 'checklists' | 'videos' | 'atlas' | 'progress' | 'favorites' | 'drugcalc';
   activeToolId: string | null;
 
   /** Tools page persistent state — filters, scroll, favourites */

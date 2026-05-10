@@ -293,7 +293,7 @@ export default function Sidebar() {
   //   3. Протоколы     — клинические алгоритмы и процедуры
   //   4. Обучение      — статьи, тесты, кейсы, чек-листы, видео, атлас, ошибки
   // Educational extension реализует Таблицу 3.Д из аудита (Д1-Д6).
-  type NeonatalSubTab = 'drugs' | 'calculators' | 'guidelines' | 'resuscitation' | 'articles' | 'lactmed' | 'quizzes' | 'nurse' | 'labs' | 'growth' | 'bilirubin' | 'cases' | 'mistakes' | 'checklists' | 'videos' | 'atlas';
+  type NeonatalSubTab = 'drugs' | 'calculators' | 'guidelines' | 'resuscitation' | 'articles' | 'lactmed' | 'quizzes' | 'nurse' | 'labs' | 'growth' | 'bilirubin' | 'cases' | 'mistakes' | 'checklists' | 'videos' | 'atlas' | 'progress' | 'favorites' | 'drugcalc';
   const neonatalGroups: { title: string; items: { id: NeonatalSubTab; label: string }[] }[] = [
     {
       title: 'Справочники',
@@ -308,6 +308,7 @@ export default function Sidebar() {
       title: 'Расчёты и шкалы',
       items: [
         { id: 'calculators', label: 'Калькуляторы' },
+        { id: 'drugcalc',    label: 'Дозы по весу' },
         { id: 'growth',      label: 'Графики роста' },
         { id: 'bilirubin',   label: 'Билирубин' },
       ],
@@ -329,6 +330,13 @@ export default function Sidebar() {
         { id: 'cases',    label: 'Клинические случаи' },
         { id: 'mistakes', label: 'Типичные ошибки' },
         { id: 'quizzes',  label: 'Тесты' },
+        { id: 'progress', label: 'Прогресс обучения' },
+      ],
+    },
+    {
+      title: 'Личное',
+      items: [
+        { id: 'favorites', label: 'Избранное' },
       ],
     },
   ];

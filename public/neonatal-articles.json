@@ -1,5 +1,5 @@
 {
-  "version": "1.9.0",
+  "version": "2.0.0",
   "lastUpdated": "2026-05-10",
   "source": "Bordik Med — клинические обзоры NICU (audit Д1)",
   "license": "Каждая статья цитирует первоисточники (AAP, NICE, ESPGHAN, КР МЗ РФ). Тексты — original synthesis на основе guidelines и landmark trials.",
@@ -1969,6 +1969,89 @@
       "related_calculators": [
         "neo-newt",
         "neo-enteral"
+      ]
+    },
+    {
+      "id": "art-preterm-survival-statistics",
+      "title_ru": "Выживаемость недоношенных по GA — современная статистика",
+      "title_en": "Preterm survival by GA — current statistics",
+      "topic": "neonatal",
+      "audience": "neonatologist",
+      "level": "intermediate",
+      "summary": "Survival data preterm by GA в high-resource settings (NICHD) и LMIC. Critical для prenatal counseling, decision-making at threshold of viability.",
+      "content": "## Background\n\nOutcome counseling parents at threshold of viability (22-25 нед) — one of most challenging decisions in perinatal medicine. Data evolves rapidly.\n\n## NICHD Network Data (USA, high-resource)\n\n### Survival without major morbidity (2018-2020)\n\n| GA нед | Survival (%) | Survival без major morbidity |\n|---|---|---|\n| 22 | 30-50% (active intervention) | 5-10% |\n| 23 | 50-65% | 15-25% |\n| 24 | 70-80% | 35-50% |\n| 25 | 80-90% | 50-65% |\n| 26 | 85-92% | 65-75% |\n| 27 | 90-95% | 75-85% |\n| 28 | 93-96% | 80-88% |\n\n### Major morbidity (composite)\n- Severe IVH (grade III/IV)\n- Severe ROP requiring treatment\n- Cystic PVL\n- Severe BPD (grade III)\n- NEC requiring surgery\n\n## LMIC Data\n\nВ LMIC settings (limited NICU resources):\n- 22-23 нед: 0-15% survival\n- 24-25 нед: 30-50% survival\n- 26-28 нед: 60-80% survival\n- 29+ нед: similar to high-resource\n\nImprovements: WHO ENC, KMC programs, low-cost CPAP availability.\n\n## Long-term outcomes (NICHD follow-up к 18-24 мес)\n\n### 22-25 нед survivors\n- Major neurodevelopmental impairment 30-50%\n- Borderline NDI 25-40%\n- Normal development 15-30%\n\n### 26-28 нед survivors\n- Major NDI 10-20%\n- Borderline 20-30%\n- Normal 50-60%\n\n### 29-32 нед survivors\n- Major NDI 5-10%\n- Normal 75-85%\n\n## Counseling considerations\n\n### Joint decision-making\n- Parental values + autonomy\n- Best estimate of outcomes (not certainties)\n- Quality vs quantity of life discussion\n- Family/cultural/spiritual values\n\n### Documentation\n- Detailed prenatal counseling note\n- Birth plan options discussed\n- Active vs comfort care\n- Re-discussion possible after birth\n\n## Российская практика\n\nВ РФ современные перинатальные центры выхаживают newborns от 22 нед с активным management. Регулярные статистики из national registry МЗ РФ.",
+      "references": [
+        "Bell EF et al. JAMA 2022;327:248 — NICHD survival",
+        "Stoll BJ et al. JAMA 2015;314:1039",
+        "WHO Born Too Soon: Decade of Action 2023"
+      ],
+      "related_calculators": []
+    },
+    {
+      "id": "art-blood-pressure-newborn",
+      "title_ru": "Артериальное давление у newborn — норма + management",
+      "title_en": "Blood pressure в newborn — norms + management",
+      "topic": "cardiopulmonary",
+      "audience": "neonatologist",
+      "level": "intermediate",
+      "summary": "BP norms by GA + age. Hypotension definitions controversial. Treatment indication based on PERFUSION not just numbers. Vasopressors selectively.",
+      "content": "## Background\n\nNewborn BP targets remain controversial:\n- Numeric thresholds vary\n- 'Treat the patient, not the number'\n- Perfusion >> absolute BP\n\n## Reference ranges (mean BP)\n\n### Term newborn\n- Day 1: 50-65 мм рт. ст.\n- Day 3+: 60-75 мм рт. ст.\n\n### Preterm by GA\n- 22-26 нед, Day 1: ~25-35 мм рт. ст.\n- 27-32 нед, Day 1: ~30-45 мм рт. ст.\n- 33-37 нед, Day 1: ~40-55 мм рт. ст.\n\n### Rule of thumb\n- Mean BP ≥ GA in nedeli (e.g., 28 нед = МАР ≥28 мм рт. ст.) — rough lower threshold\n\n## Hypotension assessment\n\n### Don't treat numbers alone\n- Capillary refill <3 seconds\n- Adequate urine output (≥1 мл/кг/ч)\n- Normal lactate (<2.0 ммоль/л)\n- Stable HR\n- Pink mucous membranes\n\n### Concerning signs\n- Capillary refill >3-4 sec\n- Cool extremities (cold shock)\n- OR warm extremities + flash refill (warm shock — sepsis)\n- Lactate rising\n- Decreased urine output\n- Altered mental status\n\n## Treatment escalation\n\n### Volume bolus first (если evidence гиповолемии)\n- 10 мл/кг NaCl 0.9% over 5-10 мин\n- Repeat × 1 PRN\n- Не volume routinely (risk volume overload, IVH)\n\n### Inotrope/vasopressor (selectively)\n\n#### Cold shock (vasoconstricted, low CO)\n- Dopamine 5-10 мкг/кг/мин first-line\n- Add dobutamine 5-10 мкг/кг/мин если LV dysfunction\n- Epinephrine 0.05-0.5 мкг/кг/мин если refractory\n\n#### Warm shock (vasodilated, high CO, low SVR)\n- Norepinephrine 0.05-0.5 мкг/кг/мин — first-line\n- Vasopressin 0.0003-0.002 U/кг/мин (selective vasoconstrictor)\n\n### Hydrocortisone (catecholamine-resistant)\n- 1 мг/кг IV q6-8h\n- Relative adrenal insufficiency у septic preterm\n- Tapered over 5-7 дней\n\n## Special situations\n\n### HIE с TH\n- Target MAP ≥40 мм рт. ст. (despite cooling)\n- Dopamine first-line if hypotension\n\n### PPHN\n- Target BP normal-to-high (avoid systemic hypotension)\n- Norepinephrine + vasopressin для cardiac support\n\n### Sepsis\n- Aggressive fluid resus\n- Multiple inotropes if refractory\n- Hydrocortisone\n\n## Российская практика\n\nКР МЗ РФ — вышеупомянутые принципы соответствуют международным. Centers активно используют point-of-care echocardiography для tailoring inotropes к hemodynamic profile.",
+      "references": [
+        "Dempsey EM et al. Pediatrics 2014;133:1080",
+        "Stranak Z et al. Eur J Pediatr 2014;173:793",
+        "AAP CFN — Hemodynamic Support"
+      ],
+      "related_calculators": []
+    },
+    {
+      "id": "art-electrolyte-mgmt-elbw",
+      "title_ru": "Управление электролитами ELBW",
+      "title_en": "Electrolyte management ELBW",
+      "topic": "metabolic",
+      "audience": "neonatologist",
+      "level": "advanced",
+      "summary": "ELBW electrolyte abnormalities common: hypernatremia (insensible loss), hyperkalemia (NOHK), hypocalcemia. Avoid both extremes through careful titration.",
+      "content": "## Sodium\n\n### Day 1-3 (transitional)\n- Physiologic diuresis + 5-10% body water loss\n- Hold Na initially (concentration rises naturally)\n- Watch для hypernatremia (>150 ммоль/л) у ELBW\n\n### After diuresis\n- 2-5 ммоль/кг/сут maintenance\n- Higher если ↑ losses (drainage, polyuria)\n\n### Hypernatremia management\n- Increase free water (decrease Na concentration)\n- Slow correction (not >0.5 ммоль/л/час) — risk cerebral edema\n- Goal: normalize over 48-72 ч\n\n### Hyponatremia\n- Late onset usually water excess (SIADH, IVF dilution)\n- Restrict free water\n- Add Na PRN\n\n## Potassium\n\n### Non-Oliguric Hyperkalemia (NOHK) — ELBW phenomenon\n- K+ shifts from intracellular → extracellular в ELBW (immature Na/K ATPase)\n- Day 1-3 peak, K+ может reach 7-9 ммоль/л despite normal renal function\n- Self-resolving по Day 4-7 если supportive\n\n### Treatment severe hyperkalemia (K+ >7 ммоль/л)\n- Calcium gluconate 1-2 мл/кг 10% slow IV (cardioprotective)\n- Glucose + insulin: D10 2 мл/кг + insulin 0.05-0.1 ед/кг IV\n- NaHCO₃ 1-2 ммоль/кг IV (если acidosis)\n- Furosemide 1 мг/кг IV (if urine output adequate)\n- Potassium-binding resin (kayexalate) — not routinely used neonates\n- Continuous ECG monitoring\n\n### Hypokalemia\n- К+ 1-3 ммоль/кг/сут maintenance (after confirmed urination)\n- Increase для diuretic users (furosemide)\n- Recheck q12-24 h initially\n\n## Calcium\n\n### Early hypocalcemia (<24 ч)\n- Common у preterm, IDM, asphyxia\n- Often asymptomatic\n- Treatment if Ca²⁺ <0.9 ионизированный OR symptomatic\n- Calcium gluconate 1-2 мл/кг 10% slow IV (q6-8h)\n\n### Late hypocalcemia (>72 ч)\n- Phosphate-rich formula, vitamin D deficiency\n- Workup: PTH, Vitamin D, magnesium\n\n### Maintenance\n- 60-100 мг/кг/сут IV elemental Ca\n- Increase для bone disease prevention в preterm\n\n## Phosphorus\n\n### Bone health\n- Phosphorus 1-2 ммоль/кг/сут TPN\n- Calcium-phosphorus ratio 1.0-1.5:1 mass\n\n### Hypophosphatemia\n- Common in preterm с rapid growth\n- Treatment: oral or IV phosphate\n\n## Magnesium\n\n### Hypomagnesemia\n- Mg <1.5 мг/дл (<0.6 ммоль/л)\n- Refractory hypocalcemia clue\n- Treatment: MgSO₄ 25-50 мг/кг IV slow\n\n### Hypermagnesemia\n- Maternal MgSO₄ pre-delivery — transient в newborn\n- Hypotonia, respiratory depression\n- Self-resolving\n\n## Acid-base\n\n### Permissive hypercapnia (RDS)\n- pH 7.20-7.30 acceptable\n- Avoid bicarbonate routinely\n- Treat underlying cause\n\n### Metabolic acidosis\n- Investigate: hypoperfusion, sepsis, IEM, renal tubular acidosis\n- Bicarbonate reserved для severe (pH <7.0) + adequate ventilation",
+      "references": [
+        "ESPGHAN/ESPEN/ESPR/CSPEN PN Guidelines 2018",
+        "Vemgal P, Ohlsson A. Cochrane 2012 — Hyperkalemia",
+        "AAP CFN — Electrolyte Management"
+      ],
+      "related_calculators": []
+    },
+    {
+      "id": "art-iem-screening-management",
+      "title_ru": "Inborn Errors of Metabolism — screening + emergency",
+      "title_en": "IEM — screening + emergency management",
+      "topic": "metabolic",
+      "audience": "neonatologist",
+      "level": "advanced",
+      "summary": "Suspected IEM: high index suspicion + prompt action. STOP protein, start glucose, ammonia + critical sample. Time-to-treatment correlates с outcome.",
+      "content": "## When to suspect IEM\n\n### Clinical patterns\n- Sudden deterioration в previously well newborn (Day 2-7 типично)\n- Hypotonia / encephalopathy\n- Vomiting / poor feeding (особенно после feeds initiated)\n- Seizures\n- Acidosis с ↑ anion gap\n- Hypoglycemia (recurrent / severe)\n- Hyperammonemia\n- Unusual odor (maple syrup, sweaty feet, fishy)\n- Family history previous neonatal death без cause\n\n## Initial workup\n\n### Stat labs\n- Blood glucose\n- ABG\n- Lactate\n- Ammonia (urgent — N-fold increase)\n- Electrolytes\n- Liver function\n- Coagulation\n- Urine ketones, reducing substances, organic acids\n- Plasma amino acids\n- Acylcarnitines\n- Save sample для metabolic screen\n\n### Critical sample при event\nЕсли BG <2.6 OR symptomatic:\n- Insulin\n- C-peptide\n- Cortisol\n- Growth hormone\n- β-hydroxybutyrate\n- Free fatty acids\n- Lactate\n- Ammonia\n- Urine ketones\n- Urine reducing substances\n\n## Emergency management\n\n### STOP protein\n- Hold protein-containing nutrition (TPN amino acids, formula, breast milk)\n- Most important first step\n\n### START glucose\n- D10W IV at GIR 8-10 мг/кг/мин (anabolic switch)\n- Provides glucose for energy без protein breakdown\n- Reduces endogenous protein catabolism\n\n### Manage hyperammonemia\n- Sodium benzoate + sodium phenylacetate (Ammonul) IV bolus + infusion\n- L-arginine 200-600 мг/кг (urea cycle)\n- Carnitine 100 мг/кг/сут (adjuvant)\n- Dialysis criteria: NH3 >500 ммоль/л OR не снижается за 4-6 ч\n\n### Specific treatments\n\n#### Methylmalonic acidemia (MMA), B12-responsive\n- OH-cobalamin 1 мг IM × 3-5 дней trial\n- 50% B12-responsive (CblA, CblB, CblC)\n\n#### Maple Syrup Urine Disease (MSUD)\n- BCAA-restricted formula\n- Dialysis при leucine >1500 µmol/L\n\n#### Galactosemia\n- STOP lactose immediately (formula change to soy/elemental)\n- Start ABX (E. coli sepsis common)\n\n#### Tyrosinemia type I\n- NTBC (nitisinone) — life-saving\n- Liver transplant ultimate\n\n## Long-term\n\n### Genetic counseling\n- Most IEM autosomal recessive\n- 25% recurrence risk\n- Prenatal testing options\n\n### Multidisciplinary follow-up\n- Metabolic specialist\n- Genetic counselor\n- Dietitian (specialized formulas)\n- Pediatric subspecialists per system involved\n\n## Российская практика\n\nС 2023 расширенный neonatal screening на 36 заболеваний — early detection многих IEM. Centers metabolic с резервом emergency management.",
+      "references": [
+        "Häberle J et al. JIMD 2019;42:1",
+        "Saudubray JM et al. Inborn Metabolic Diseases 6th ed.",
+        "MZ RF Приказ № 274н 2022"
+      ],
+      "related_calculators": []
+    },
+    {
+      "id": "art-bpd-prevention-bundle",
+      "title_ru": "BPD prevention bundle 2024",
+      "title_en": "BPD prevention bundle 2024",
+      "topic": "respiratory",
+      "audience": "neonatologist",
+      "level": "intermediate",
+      "summary": "Multimodal BPD prevention: antenatal стероиды, gentle ventilation, early CPAP, surfactant LISA, caffeine universal, vit A, optimal nutrition, targeted SpO₂.",
+      "content": "## Background\n\nBPD остаётся most common chronic disease preterm survivors. Multimodal bundle approach снижает incidence + severity.\n\n## Bundle components\n\n### 1. Antenatal preparation\n- Antenatal corticosteroids 24-34 нед\n- Magnesium sulfate <32 нед (neuroprotection but may benefit lung)\n- Optimize gestational age at delivery\n\n### 2. Delivery room\n- Plastic bag/wrap для preterm <32 нед\n- DCC ≥60 секунд если stable\n- Initial FiO₂ 21-30%\n- Sustained inflation NOT recommended (after SAIL)\n- Avoid intubation if possible — early CPAP\n\n### 3. Surfactant — LISA preferred\n- Indication: FiO₂ >0.30 на CPAP\n- Curosurf 200 мг/кг (preferred — Cochrane outcomes)\n- LISA technique avoids volutrauma від IPPV\n\n### 4. Ventilation strategy\n- Volume-targeted ventilation (VTV)\n- VT 4-6 мл/кг\n- PEEP 5-7 cmH₂O\n- Permissive hypercapnia (PaCO₂ 45-55)\n- Wean aggressively\n\n### 5. Caffeine universal preterm <32 нед\n- Loading 20 мг/кг + maintenance 5-10 мг/кг q24h\n- Снижает BPD by 36% (CAP trial)\n- IQ improvement at 11 yr\n\n### 6. Targeted SpO₂\n- 90-95% optimal (BOOST/SUPPORT)\n- Avoid <88% (mortality, NEC)\n- Avoid >97% (BPD, ROP)\n\n### 7. Vitamin A 5000 IU IM 3×/нед × 4 нед\n- Cochrane: reduces BPD у ELBW\n- Underutilized in many NICUs\n\n### 8. Optimal nutrition\n- Early aggressive AA + lipids\n- 110-130 ккал/кг/сут стабильный VLBW\n- Mom's own milk preferred\n\n### 9. PDA management timely\n- hsPDA prolongs ventilation, edema\n- Early treatment (медикаментозный) при clinical signs\n\n### 10. Infection prevention\n- VAP bundle, CLABSI bundle\n- Reduce ABX duration when negative cultures\n\n## Established BPD treatment\n\n### Low-dose dexamethasone (DART scheme)\n- 0.075 мг/кг/сут × 3 days, taper 0.05 → 0.025 → 0.01, total 10 days\n- After Day 7-14 в ventilator-dependent\n- Снижает extubation failure без significant ↑ ДЦП\n\n### Diuretics PRN\n- Furosemide chronically — limited evidence\n- Reserved для severe BPD с edema\n\n### Inhaled corticosteroids\n- Budesonide 0.5-1 мг q12h (если on ventilator)\n- May benefit some but не universal\n\n### BPD-PHTN\n- Echo screen at 36 нед PMA\n- Sildenafil chronically\n- Bosentan для severe\n\n## Long-term care\n\n### Respiratory follow-up\n- Pulmonology specialist\n- Home O₂ if needed\n- Palivizumab eligibility (RSV season)\n\n### Growth + development\n- Specialized nutrition (extra calories)\n- Developmental clinic monitoring\n- Early intervention referral",
+      "references": [
+        "Jensen EA et al. JAMA Pediatr 2019;173:e190988",
+        "Schmidt B et al. NEJM 2007;357:1893 — CAP",
+        "Doyle LW et al. NEJM 2006;355:1304 — DART",
+        "Sweet DG et al. Neonatology 2023;120:3"
+      ],
+      "related_calculators": [
+        "neo-bpd-nih"
       ]
     }
   ]

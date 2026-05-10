@@ -317,7 +317,7 @@ interface AtlasBank {
   atlas: AtlasEntry[];
 }
 
-type Tab ='drugs' | 'guidelines' | 'calculators' | 'labs' | 'articles' | 'resuscitation' | 'lactmed' | 'quizzes' | 'nurse' | 'growth' | 'bilirubin' | 'cases' | 'mistakes' | 'checklists' | 'videos' | 'atlas';
+type Tab ='drugs' | 'guidelines' | 'calculators' | 'labs' | 'articles' | 'resuscitation' | 'lactmed' | 'quizzes' | 'nurse' | 'growth' | 'bilirubin' | 'cases' | 'mistakes' | 'checklists' | 'videos' | 'atlas' | 'progress' | 'favorites' | 'drugcalc';
 
 export default function NeonatalHandbook() {
   const [bank, setBank] = useState<Bank | null>(null);
@@ -378,14 +378,14 @@ export default function NeonatalHandbook() {
           fetch('/neonatal-guidelines.json?v=1.9.0', { cache: 'force-cache' }),
           fetch('/neonatal-calculators.json?v=1.0.0', { cache: 'force-cache' }),
           fetch('/neonatal-lab-norms.json?v=1.1.0', { cache: 'force-cache' }),
-          fetch('/neonatal-articles.json?v=1.9.0', { cache: 'force-cache' }),
+          fetch('/neonatal-articles.json?v=2.0.0', { cache: 'force-cache' }),
           fetch('/neonatal-lactmed.json?v=1.1.0', { cache: 'force-cache' }),
           fetch('/neonatal-nurse-procedures.json?v=1.2.0', { cache: 'force-cache' }),
-          fetch('/neonatal-clinical-cases.json?v=1.1.0', { cache: 'force-cache' }),
-          fetch('/neonatal-common-mistakes.json?v=1.1.0', { cache: 'force-cache' }),
-          fetch('/neonatal-procedure-checklists.json?v=1.1.0', { cache: 'force-cache' }),
-          fetch('/neonatal-procedure-videos.json?v=1.1.0', { cache: 'force-cache' }),
-          fetch('/neonatal-atlas.json?v=1.1.0', { cache: 'force-cache' }),
+          fetch('/neonatal-clinical-cases.json?v=1.2.0', { cache: 'force-cache' }),
+          fetch('/neonatal-common-mistakes.json?v=1.2.0', { cache: 'force-cache' }),
+          fetch('/neonatal-procedure-checklists.json?v=1.2.0', { cache: 'force-cache' }),
+          fetch('/neonatal-procedure-videos.json?v=1.2.0', { cache: 'force-cache' }),
+          fetch('/neonatal-atlas.json?v=1.2.0', { cache: 'force-cache' }),
         ]);
         if (!drugsR.ok) throw new Error(`monographs ${drugsR.status}`);
         const drugsJson = await drugsR.json();
@@ -826,6 +826,10 @@ export default function NeonatalHandbook() {
           checklists: { label: 'Чек-листы процедур', count: checklists?.checklists.length ?? null },
           videos: { label: 'Видео процедур', count: videos?.videos.length ?? null },
           atlas: { label: 'Атласы', count: atlas?.atlas.length ?? null },
+          // Personal / progress tabs (PR #45 — F1, F2, F3)
+          progress: { label: 'Прогресс обучения', count: null },
+          favorites: { label: 'Избранное', count: null },
+          drugcalc: { label: 'Дозы по весу', count: null },
         };
         const meta = SECTION_META[tab];
         return (
@@ -1348,6 +1352,12 @@ export default function NeonatalHandbook() {
         <VideosView bank={videos} query={q} />
       ) : tab === 'atlas' ? (
         <AtlasView bank={atlas} query={q} openId={openId} setOpenId={setOpenId} />
+      ) : tab === 'progress' ? (
+        <ProgressDashboard bank={null /* will read localStorage */} quizzesBank={null} />
+      ) : tab === 'favorites' ? (
+        <FavoritesView />
+      ) : tab === 'drugcalc' ? (
+        <DrugDoseCalculator />
       ) : null}
 
       {/* Source / disclaimer panel — единый стиль с DrugChecker provenance.
@@ -2249,7 +2259,13 @@ function ArticleCard({
       borderRadius: 14,
       overflow: 'hidden',
       transition: 'border-color 150ms ease',
+      position: 'relative',
     }}>
+      {/* Favorite star — absolutely positioned, sibling of toggle button (avoids nested-button HTML invalid).
+          Top-right above chevron. Click stopPropagation в самом StarButton. */}
+      <div style={{ position: 'absolute', top: 12, right: 50, zIndex: 2 }}>
+        <FavoriteStarButton id={`article:${article.id}`} type="article" title={article.title_ru} />
+      </div>
       <button
         type="button"
         onClick={onToggle}
@@ -3144,7 +3160,11 @@ function ClinicalCaseCard({
       borderRadius: 14,
       overflow: 'hidden',
       transition: 'border-color 150ms ease',
+      position: 'relative',
     }}>
+      <div style={{ position: 'absolute', top: 12, right: 50, zIndex: 2 }}>
+        <FavoriteStarButton id={`case:${c.id}`} type="case" title={c.title_ru} />
+      </div>
       <button
         type="button"
         onClick={onToggle}
@@ -3464,7 +3484,11 @@ function CommonMistakeCard({
       borderRadius: 14,
       overflow: 'hidden',
       transition: 'border-color 150ms ease',
+      position: 'relative',
     }}>
+      <div style={{ position: 'absolute', top: 12, right: 50, zIndex: 2 }}>
+        <FavoriteStarButton id={`mistake:${m.id}`} type="mistake" title={m.title_ru} />
+      </div>
       <button
         type="button"
         onClick={onToggle}
@@ -4525,5 +4549,785 @@ function AtlasCard({
         )}
       </AnimatePresence>
     </div>
+  );
+}
+
+
+// ============================================================================
+// F1 — Quiz Progress Dashboard (Таблица 3.Е3-Е4)
+// ============================================================================
+
+interface QuizSnapshot {
+  id: string;
+  title: string;
+  topic: string;
+  level: string;
+  bankSize: number;
+  attempts: number;
+  bestScore: number;
+  bestPercent: number;
+  passed: boolean;
+  seenIndices: number[];
+  lastAttempt?: number;
+}
+
+const TOPIC_LABELS_DASHBOARD: Record<string, string> = {
+  resuscitation: 'Реанимация',
+  respiratory: 'Респираторная',
+  hepatic: 'Гепатобилиарная',
+  infection: 'Инфекции',
+  neuro: 'Неврология',
+  gastro: 'ЖКТ + питание',
+  metabolic: 'Метаболизм',
+  screening: 'Скрининги',
+};
+
+function ProgressDashboard({ bank: _bank, quizzesBank: _quizzesBank }: { bank: unknown; quizzesBank: unknown }) {
+  void _bank; void _quizzesBank;
+  const [quizzes, setQuizzes] = useState<{ id: string; title_ru: string; topic: string; level: string; questions: unknown[] }[] | null>(null);
+  const [progress, setProgress] = useState<Record<string, { selected: Record<number, number>; submitted: boolean; score: number; playOrder?: number[]; seenIndices?: number[] }>>({});
+
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      try {
+        const r = await fetch('/neonatal-quizzes.json?v=1.3.0', { cache: 'force-cache' });
+        if (!r.ok) return;
+        const json = await r.json();
+        if (!cancelled) setQuizzes(json.quizzes);
+      } catch { /* ignore */ }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    try {
+      const raw = window.localStorage.getItem('bordik-neonatal-quiz-state');
+      if (raw) setProgress(JSON.parse(raw));
+    } catch { /* ignore */ }
+  }, []);
+
+  const snapshots: QuizSnapshot[] = useMemo(() => {
+    if (!quizzes) return [];
+    return quizzes.map((q) => {
+      const st = progress[q.id];
+      const bankSize = q.questions.length;
+      const seen = st?.seenIndices ?? [];
+      const score = st?.score ?? 0;
+      const displayCount = Math.min(10, bankSize);
+      const percent = displayCount > 0 ? Math.round((score / displayCount) * 100) : 0;
+      const passed = percent >= 70 && (st?.submitted ?? false);
+      return {
+        id: q.id,
+        title: q.title_ru,
+        topic: q.topic,
+        level: q.level,
+        bankSize,
+        attempts: seen.length > 0 || st?.submitted ? Math.max(1, Math.ceil(seen.length / displayCount)) : 0,
+        bestScore: score,
+        bestPercent: percent,
+        passed,
+        seenIndices: seen,
+      };
+    });
+  }, [quizzes, progress]);
+
+  const stats = useMemo(() => {
+    const attempted = snapshots.filter((s) => s.attempts > 0);
+    const passed = snapshots.filter((s) => s.passed);
+    const avgPercent = attempted.length > 0
+      ? Math.round(attempted.reduce((a, s) => a + s.bestPercent, 0) / attempted.length)
+      : 0;
+    return {
+      total: snapshots.length,
+      attempted: attempted.length,
+      passed: passed.length,
+      avgPercent,
+    };
+  }, [snapshots]);
+
+  const byTopic = useMemo(() => {
+    const map = new Map<string, { total: number; attempted: number; passed: number }>();
+    for (const s of snapshots) {
+      const cur = map.get(s.topic) ?? { total: 0, attempted: 0, passed: 0 };
+      cur.total += 1;
+      if (s.attempts > 0) cur.attempted += 1;
+      if (s.passed) cur.passed += 1;
+      map.set(s.topic, cur);
+    }
+    return Array.from(map.entries()).sort((a, b) => b[1].total - a[1].total);
+  }, [snapshots]);
+
+  const suggestions = useMemo(() => {
+    // Recommend up to 3: not-yet-attempted first, then lowest-scored, then unseen-questions remaining
+    const notAttempted = snapshots.filter((s) => s.attempts === 0);
+    const lowScored = snapshots.filter((s) => s.attempts > 0 && !s.passed).sort((a, b) => a.bestPercent - b.bestPercent);
+    const partialCoverage = snapshots.filter((s) => s.attempts > 0 && s.seenIndices.length < s.bankSize).sort((a, b) => (b.bankSize - b.seenIndices.length) - (a.bankSize - a.seenIndices.length));
+    const out = [...notAttempted, ...lowScored, ...partialCoverage];
+    const seen = new Set<string>();
+    return out.filter((s) => {
+      if (seen.has(s.id)) return false;
+      seen.add(s.id);
+      return true;
+    }).slice(0, 3);
+  }, [snapshots]);
+
+  if (!quizzes) {
+    return (
+      <div>
+        <div className="lc-shimmer" style={{ height: 120, width: '100%', borderRadius: 14, marginBottom: 12 }} />
+        <div className="lc-shimmer" style={{ height: 200, width: '100%', borderRadius: 14 }} />
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ width: '100%' }}>
+      {/* Aggregate stats — 4 KPI cards */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+        gap: 12,
+        marginBottom: 24,
+      }}>
+        <ProgressKpi label="Тестов всего" value={`${stats.total}`} />
+        <ProgressKpi label="Пройдено хоть раз" value={`${stats.attempted}`} sublabel={`${Math.round(stats.attempted / Math.max(1, stats.total) * 100)}%`} />
+        <ProgressKpi label="Сдано (≥70%)" value={`${stats.passed}`} sublabel={`${Math.round(stats.passed / Math.max(1, stats.total) * 100)}%`} accent="#059669" />
+        <ProgressKpi label="Средний балл" value={`${stats.avgPercent}%`} accent={stats.avgPercent >= 70 ? '#059669' : stats.avgPercent >= 50 ? '#B45309' : '#9CA3AF'} />
+      </div>
+
+      {/* Suggestions — what to do next */}
+      {suggestions.length > 0 && (
+        <div style={{ marginBottom: 24 }}>
+          <h3 style={{
+            fontFamily: 'var(--font-display)', fontSize: 17, fontWeight: 700,
+            color: '#1A1A1A', margin: '0 0 12px', letterSpacing: '-0.01em',
+            display: 'flex', alignItems: 'baseline', gap: 8,
+          }}>
+            Рекомендуем пройти
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 600, color: '#9CA3AF' }}>
+              {suggestions.length}
+            </span>
+          </h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {suggestions.map((s) => {
+              const reason = s.attempts === 0
+                ? 'Ещё не пробовали'
+                : !s.passed
+                ? `Текущий результат ${s.bestPercent}% — ниже 70%`
+                : `Bank ${s.bankSize}, видели ${s.seenIndices.length} — ещё ${s.bankSize - s.seenIndices.length} новых`;
+              return (
+                <div key={s.id} style={{
+                  display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap',
+                  padding: '14px 16px',
+                  background: '#F5F6F8',
+                  borderRadius: 12,
+                }}>
+                  <span style={{
+                    fontFamily: 'var(--font-display)', fontSize: 14, fontWeight: 600,
+                    color: '#1A1A1A', flex: 1, minWidth: 200,
+                  }}>{s.title}</span>
+                  <span style={{
+                    display: 'inline-flex', alignItems: 'center',
+                    padding: '4px var(--space-2)',
+                    borderRadius: 'var(--md-sys-shape-corner-full)',
+                    background: '#FFFFFF',
+                    boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '0.625rem', fontWeight: 500,
+                    color: 'var(--md-sys-color-on-surface-variant)',
+                    textTransform: 'uppercase', letterSpacing: '0.04em',
+                    whiteSpace: 'nowrap',
+                  }}>
+                    {TOPIC_LABELS_DASHBOARD[s.topic] ?? s.topic}
+                  </span>
+                  <span style={{ fontSize: 12, color: '#6B7280' }}>{reason}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Per-topic breakdown */}
+      <div style={{ marginBottom: 24 }}>
+        <h3 style={{
+          fontFamily: 'var(--font-display)', fontSize: 17, fontWeight: 700,
+          color: '#1A1A1A', margin: '0 0 12px', letterSpacing: '-0.01em',
+          display: 'flex', alignItems: 'baseline', gap: 8,
+        }}>
+          По темам
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 600, color: '#9CA3AF' }}>
+            {byTopic.length}
+          </span>
+        </h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          {byTopic.map(([topic, bucket]) => {
+            const passPct = Math.round(bucket.passed / Math.max(1, bucket.total) * 100);
+            return (
+              <div key={topic} style={{
+                display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap',
+                padding: '12px 16px',
+                background: '#F5F6F8',
+                borderRadius: 10,
+              }}>
+                <span style={{ fontWeight: 600, flex: 1, minWidth: 160, fontSize: 14 }}>
+                  {TOPIC_LABELS_DASHBOARD[topic] ?? topic}
+                </span>
+                <span style={{ fontSize: 12, color: '#6B7280' }}>
+                  {bucket.passed}/{bucket.total} сдано
+                </span>
+                <span style={{
+                  display: 'inline-flex', alignItems: 'center',
+                  padding: '4px var(--space-2)', borderRadius: 'var(--md-sys-shape-corner-full)',
+                  background: '#FFFFFF',
+                  boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
+                  fontFamily: 'var(--font-mono)', fontSize: '0.625rem', fontWeight: 600,
+                  color: passPct === 100 ? '#059669' : passPct >= 70 ? '#B45309' : '#9CA3AF',
+                  whiteSpace: 'nowrap',
+                }}>
+                  {passPct}%
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Per-quiz table */}
+      <div>
+        <h3 style={{
+          fontFamily: 'var(--font-display)', fontSize: 17, fontWeight: 700,
+          color: '#1A1A1A', margin: '0 0 12px', letterSpacing: '-0.01em',
+          display: 'flex', alignItems: 'baseline', gap: 8,
+        }}>
+          Все тесты
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 600, color: '#9CA3AF' }}>
+            {snapshots.length}
+          </span>
+        </h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          {snapshots.map((s) => (
+            <div key={s.id} style={{
+              display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap',
+              padding: '12px 16px',
+              background: s.passed ? '#ECFDF5' : '#F5F6F8',
+              borderRadius: 10,
+            }}>
+              <span style={{ fontWeight: 600, flex: 1, minWidth: 200, fontSize: 13.5 }}>
+                {s.title}
+              </span>
+              {s.attempts > 0 ? (
+                <>
+                  <span style={{
+                    display: 'inline-flex', alignItems: 'center',
+                    padding: '4px var(--space-2)', borderRadius: 'var(--md-sys-shape-corner-full)',
+                    background: '#FFFFFF',
+                    boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
+                    fontFamily: 'var(--font-mono)', fontSize: '0.625rem', fontWeight: 600,
+                    color: s.passed ? '#059669' : '#B45309',
+                    whiteSpace: 'nowrap',
+                  }}>
+                    {s.passed ? 'PASS' : 'FAIL'} {s.bestScore}/{Math.min(10, s.bankSize)}
+                  </span>
+                  <span style={{ fontSize: 11, color: '#9CA3AF' }}>
+                    Видели {s.seenIndices.length}/{s.bankSize}
+                  </span>
+                </>
+              ) : (
+                <span style={{ fontSize: 12, color: '#9CA3AF' }}>не пройден</span>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ProgressKpi({ label, value, sublabel, accent }: { label: string; value: string; sublabel?: string; accent?: string }) {
+  return (
+    <div style={{
+      padding: '16px 18px',
+      background: '#F5F6F8',
+      borderRadius: 14,
+    }}>
+      <div style={{
+        fontFamily: 'var(--font-mono)',
+        fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
+        textTransform: 'uppercase', color: '#9CA3AF',
+        marginBottom: 4,
+      }}>{label}</div>
+      <div style={{
+        fontFamily: 'var(--font-display)',
+        fontSize: 26, fontWeight: 700,
+        color: accent ?? '#1A1A1A',
+        letterSpacing: '-0.02em',
+        lineHeight: 1.1,
+      }}>{value}</div>
+      {sublabel && (
+        <div style={{ fontSize: 11, color: '#6B7280', marginTop: 4 }}>{sublabel}</div>
+      )}
+    </div>
+  );
+}
+
+// ============================================================================
+// F2 — Drug Quick Calculator (Дозы по весу)
+// ============================================================================
+
+interface EmergencyDrug {
+  id: string;
+  name_ru: string;
+  category: 'resuscitation' | 'metabolic' | 'sedation' | 'cardio';
+  dose_per_kg: number;
+  unit: string;
+  formula_text: string;
+  concentration?: string;
+  route: string;
+  max_total?: number;
+  notes: string;
+  reference: string;
+}
+
+const EMERGENCY_DRUGS: EmergencyDrug[] = [
+  { id: 'epi-iv', name_ru: 'Эпинефрин (адреналин) IV/IO', category: 'resuscitation', dose_per_kg: 0.02, unit: 'мг/кг', formula_text: '0.01-0.03 мг/кг', concentration: '1:10000 (0.1 мг/мл)', route: 'IV / IO push', notes: 'NRP 8 ed. Повторять q3-5 минут до ЧСС ≥60.', reference: 'Aziz K et al. Pediatrics 2021;147:e2020038505E' },
+  { id: 'epi-ett', name_ru: 'Эпинефрин эндотрахеально', category: 'resuscitation', dose_per_kg: 0.075, unit: 'мг/кг', formula_text: '0.05-0.1 мг/кг', concentration: '1:10000 (0.1 мг/мл)', route: 'ETT (только если IV не получен)', notes: 'Менее эффективен чем IV. Switch к IV ASAP.', reference: 'NRP 8 ed.' },
+  { id: 'naloxone', name_ru: 'Налоксон', category: 'resuscitation', dose_per_kg: 0.1, unit: 'мг/кг', formula_text: '0.1 мг/кг', concentration: '0.4 мг/мл', route: 'IV / IM / SC / ETT', notes: 'НЕ рутинно в реанимации (NRP 2010+). Только при confirmed maternal opioid use в delivery.', reference: 'AAP NRP 8 ed.' },
+  { id: 'atropine', name_ru: 'Атропин', category: 'sedation', dose_per_kg: 0.02, unit: 'мг/кг', formula_text: '0.02 мг/кг (min 0.1 мг)', concentration: '0.1 мг/мл', route: 'IV / IM', max_total: 0.5, notes: 'Премедикация интубации (анти-vagal). Не для рутинной brady — treat hypoxia first.', reference: 'AAP COFN' },
+  { id: 'glucose-bolus', name_ru: 'D10 болюс при гипогликемии', category: 'metabolic', dose_per_kg: 2, unit: 'мл/кг', formula_text: '2 мл/кг D10W (200 мг/кг dextrose)', concentration: 'D10W', route: 'IV slow push', notes: 'BG <2.6 ммоль/л symptomatic. Continuous GIR 6-8 мг/кг/мин после bolus.', reference: 'PES 2015 / BAPM 2017' },
+  { id: 'nacl-bolus', name_ru: 'NaCl 0.9% болюс (гиповолемия)', category: 'cardio', dose_per_kg: 10, unit: 'мл/кг', formula_text: '10 мл/кг за 5-10 минут', concentration: '0.9%', route: 'IV / IO', notes: 'Гиповолемия / шок. Repeat × 1 PRN. Если 30 мл/кг + persistent — inotropes.', reference: 'NRP 8 ed.' },
+  { id: 'ca-gluconate', name_ru: 'Кальций глюконат 10%', category: 'metabolic', dose_per_kg: 1, unit: 'мл/кг', formula_text: '1-2 мл/кг slow IV (over 5-10 мин)', concentration: '10%', route: 'IV slow', notes: 'Hypocalcemia при ionized Ca²⁺ <0.9. Slow push! Rapid → bradycardia/arrhythmia.', reference: 'AAP' },
+  { id: 'mg-sulfate', name_ru: 'Магнезия сульфат', category: 'metabolic', dose_per_kg: 25, unit: 'мг/кг', formula_text: '25-50 мг/кг IV slow (≥10 мин)', concentration: '50% (500 мг/мл)', route: 'IV slow', notes: 'Hypomagnesemia. Mg <1.5 мг/дл refractory hypocalcemia. Watch hypotension.', reference: 'AAP' },
+  { id: 'phenobarb-load', name_ru: 'Фенобарбитал loading (судороги)', category: 'sedation', dose_per_kg: 20, unit: 'мг/кг', formula_text: '20 мг/кг IV slow (over 10-20 мин)', concentration: '60 мг/мл', route: 'IV slow', notes: 'Neonatal seizures first-line. Repeat 10 мг/кг до total 40 мг/кг. Watch resp. depression.', reference: 'Sharpe C et al. Pediatrics 2020;145:e20193182' },
+  { id: 'morphine-bolus', name_ru: 'Морфин болюс (intubation/pain)', category: 'sedation', dose_per_kg: 0.05, unit: 'мг/кг', formula_text: '0.05-0.1 мг/кг IV slow', concentration: '1 мг/мл (diluted)', route: 'IV slow', notes: 'Premedication intubation OR severe pain. Watch apnea + hypotension. Have naloxone ready.', reference: 'AAP CFN 2016' },
+  { id: 'fentanyl-bolus', name_ru: 'Фентанил болюс', category: 'sedation', dose_per_kg: 1.5, unit: 'мкг/кг', formula_text: '1-2 мкг/кг IV slow', concentration: '50 мкг/мл', route: 'IV slow', notes: 'Premed intubation. Less hypotension vs morphine. Risk chest wall rigidity (push slow).', reference: 'AAP CFN' },
+  { id: 'midazolam', name_ru: 'Мидазолам continuous', category: 'sedation', dose_per_kg: 0.05, unit: 'мг/кг/час', formula_text: '0.05-0.5 мг/кг/час IV', concentration: '1 мг/мл', route: 'IV continuous', notes: 'Sedation на ИВЛ. Watch hypotension. Withdrawal при rapid taper.', reference: 'AAP CFN' },
+  { id: 'ino', name_ru: 'iNO (PPHN)', category: 'cardio', dose_per_kg: 0, unit: 'ppm', formula_text: '20 ppm стартово (NOT weight-based)', concentration: 'gas', route: 'inhaled', notes: 'PPHN с OI >15. Wean by 5 ppm каждые 4 часа. Monitor metHb, NO₂.', reference: 'AHA 2019 PPHN' },
+  { id: 'caffeine-load', name_ru: 'Кофеин loading', category: 'cardio', dose_per_kg: 20, unit: 'мг/кг', formula_text: '20 мг/кг loading IV/PO over 30 мин', concentration: '20 мг/мл', route: 'IV / PO', notes: 'Универсально preterm <32 нед. Maintenance 5-10 мг/кг q24h.', reference: 'CAP trial NEJM 2007;357:1893' },
+  { id: 'surfactant-curo', name_ru: 'Сурфактант (Curosurf)', category: 'cardio', dose_per_kg: 200, unit: 'мг/кг', formula_text: '200 мг/кг (2.5 мл/кг) первая доза', concentration: '80 мг/мл', route: 'ETT / LISA', notes: 'RDS preterm. Repeat 100 мг/кг q12h до 3 доз PRN.', reference: 'Sweet European Consensus 2022' },
+];
+
+const DRUG_CATEGORY_LABELS: Record<EmergencyDrug['category'], string> = {
+  resuscitation: 'Реанимация',
+  metabolic: 'Метаболизм',
+  sedation: 'Аналгезия / седация',
+  cardio: 'Кардио / респираторное',
+};
+
+function DrugDoseCalculator() {
+  const [weightStr, setWeightStr] = useState<string>('3.0');
+  const [filterCategory, setFilterCategory] = useState<EmergencyDrug['category'] | 'all'>('all');
+
+  const weight = useMemo(() => {
+    const n = parseFloat(weightStr.replace(',', '.'));
+    return isFinite(n) && n > 0 && n <= 10 ? n : null;
+  }, [weightStr]);
+
+  const visibleDrugs = useMemo(() => {
+    if (filterCategory === 'all') return EMERGENCY_DRUGS;
+    return EMERGENCY_DRUGS.filter((d) => d.category === filterCategory);
+  }, [filterCategory]);
+
+  const grouped = useMemo(() => {
+    const map = new Map<EmergencyDrug['category'], EmergencyDrug[]>();
+    for (const d of visibleDrugs) {
+      const arr = map.get(d.category) ?? [];
+      arr.push(d);
+      map.set(d.category, arr);
+    }
+    return Array.from(map.entries());
+  }, [visibleDrugs]);
+
+  return (
+    <div style={{ width: '100%' }}>
+      {/* Disclaimer */}
+      <div style={{
+        padding: '12px 14px',
+        background: '#FEF3C7',
+        border: '1px solid #FDE68A',
+        borderRadius: 10,
+        marginBottom: 16,
+        fontSize: 12.5,
+        color: '#78350F',
+        lineHeight: 1.5,
+      }}>
+        <strong>⚠ Только справочный инструмент.</strong> Расчёты по формуле doses × weight.
+        Перед применением проверьте индивидуально по протоколу учреждения и LCP/PALS дозам.
+        Не заменяет клиническое решение.
+      </div>
+
+      {/* Weight input */}
+      <div style={{
+        padding: '16px 18px',
+        background: '#F5F6F8',
+        borderRadius: 14,
+        marginBottom: 16,
+      }}>
+        <label style={{
+          display: 'block',
+          fontFamily: 'var(--font-mono)',
+          fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
+          textTransform: 'uppercase', color: '#9CA3AF',
+          marginBottom: 8,
+        }}>
+          Вес ребёнка (кг)
+        </label>
+        <input
+          type="number"
+          inputMode="decimal"
+          step="0.1"
+          min="0.4"
+          max="10"
+          value={weightStr}
+          onChange={(e) => setWeightStr(e.target.value)}
+          aria-label="Вес ребёнка в килограммах"
+          style={{
+            width: '100%',
+            padding: '12px 14px',
+            background: '#FFFFFF',
+            border: '1px solid #E5E7EB',
+            borderRadius: 10,
+            fontFamily: 'var(--font-mono)',
+            fontSize: 24, fontWeight: 700,
+            color: '#1A1A1A',
+            outline: 'none',
+          }}
+        />
+        {weight === null && (
+          <div style={{ marginTop: 8, fontSize: 12, color: '#DC2626' }}>
+            Введите вес 0.4 — 10.0 кг
+          </div>
+        )}
+      </div>
+
+      {/* Category filter */}
+      <div style={{
+        display: 'flex', flexWrap: 'wrap', gap: 6,
+        marginBottom: 16,
+      }}>
+        {(['all', 'resuscitation', 'metabolic', 'sedation', 'cardio'] as const).map((c) => (
+          <button
+            key={c}
+            type="button"
+            onClick={() => setFilterCategory(c)}
+            aria-pressed={filterCategory === c}
+            style={{
+              padding: '6px 12px',
+              background: filterCategory === c ? '#1A1A1A' : '#FFFFFF',
+              color: filterCategory === c ? '#FFFFFF' : '#1A1A1A',
+              border: 'none',
+              borderRadius: 'var(--md-sys-shape-corner-full)',
+              boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
+              cursor: 'pointer',
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.625rem', fontWeight: 600,
+              textTransform: 'uppercase', letterSpacing: '0.04em',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {c === 'all' ? 'Все' : DRUG_CATEGORY_LABELS[c]}
+          </button>
+        ))}
+      </div>
+
+      {/* Drug rows grouped */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+        {grouped.map(([cat, drugs]) => (
+          <div key={cat}>
+            <h3 style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 17, fontWeight: 700,
+              color: '#1A1A1A',
+              margin: '0 0 12px',
+              letterSpacing: '-0.01em',
+              display: 'flex', alignItems: 'baseline', gap: 8,
+            }}>
+              {DRUG_CATEGORY_LABELS[cat]}
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 600, color: '#9CA3AF' }}>
+                {drugs.length}
+              </span>
+            </h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              {drugs.map((d) => {
+                const calculated = weight !== null && d.dose_per_kg > 0 ? (d.dose_per_kg * weight) : null;
+                const capped = d.max_total !== undefined && calculated !== null && calculated > d.max_total ? d.max_total : calculated;
+                const calcText = capped !== null
+                  ? `${capped.toFixed(d.unit.includes('мкг') ? 0 : 2)} ${d.unit.replace('/кг', '')}`
+                  : (d.dose_per_kg === 0 ? d.formula_text : '—');
+                return (
+                  <div key={d.id} style={{
+                    padding: '14px 16px',
+                    background: '#F5F6F8',
+                    borderRadius: 12,
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: 12, flexWrap: 'wrap' }}>
+                      <span style={{
+                        fontFamily: 'var(--font-display)',
+                        fontSize: 14, fontWeight: 600,
+                        color: '#1A1A1A',
+                        flex: 1, minWidth: 200,
+                      }}>{d.name_ru}</span>
+                      {capped !== null && (
+                        <span style={{
+                          fontFamily: 'var(--font-mono)',
+                          fontSize: 18, fontWeight: 700,
+                          color: '#2563EB',
+                          letterSpacing: '-0.01em',
+                          whiteSpace: 'nowrap',
+                        }}>
+                          {calcText}
+                          {d.max_total !== undefined && calculated !== null && calculated > d.max_total && (
+                            <span style={{ fontSize: 11, color: '#B45309', marginLeft: 6 }}>
+                              (max)
+                            </span>
+                          )}
+                        </span>
+                      )}
+                    </div>
+                    <div style={{ marginTop: 6, fontSize: 12, color: '#6B7280' }}>
+                      {d.formula_text} · {d.route}
+                      {d.concentration && <> · {d.concentration}</>}
+                    </div>
+                    <div style={{ marginTop: 4, fontSize: 11, color: '#9CA3AF', lineHeight: 1.4 }}>
+                      {d.notes}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ============================================================================
+// F3 — Favorites system
+// ============================================================================
+
+interface FavoriteEntry {
+  id: string;
+  type: 'drug' | 'guideline' | 'article' | 'case' | 'mistake' | 'checklist' | 'video' | 'atlas';
+  title: string;
+  added: number;
+}
+
+const TYPE_LABELS: Record<FavoriteEntry['type'], string> = {
+  drug: 'Препарат',
+  guideline: 'Протокол',
+  article: 'Статья',
+  case: 'Кейс',
+  mistake: 'Ошибка',
+  checklist: 'Чек-лист',
+  video: 'Видео',
+  atlas: 'Атлас',
+};
+
+function loadFavorites(): FavoriteEntry[] {
+  if (typeof window === 'undefined') return [];
+  try {
+    const raw = window.localStorage.getItem('bordik-neonatal-favorites');
+    if (!raw) return [];
+    return JSON.parse(raw) as FavoriteEntry[];
+  } catch {
+    return [];
+  }
+}
+
+function saveFavorites(favs: FavoriteEntry[]): void {
+  if (typeof window === 'undefined') return;
+  try {
+    window.localStorage.setItem('bordik-neonatal-favorites', JSON.stringify(favs));
+    // Notify any other component listening for changes
+    window.dispatchEvent(new CustomEvent('bordik-favs-changed'));
+  } catch { /* ignore */ }
+}
+
+function FavoritesView() {
+  const [favs, setFavs] = useState<FavoriteEntry[]>(() => loadFavorites());
+
+  useEffect(() => {
+    const handler = () => setFavs(loadFavorites());
+    if (typeof window === 'undefined') return;
+    window.addEventListener('bordik-favs-changed', handler);
+    window.addEventListener('storage', handler);
+    return () => {
+      window.removeEventListener('bordik-favs-changed', handler);
+      window.removeEventListener('storage', handler);
+    };
+  }, []);
+
+  const grouped = useMemo(() => {
+    const map = new Map<FavoriteEntry['type'], FavoriteEntry[]>();
+    for (const f of favs) {
+      const arr = map.get(f.type) ?? [];
+      arr.push(f);
+      map.set(f.type, arr);
+    }
+    return Array.from(map.entries()).sort((a, b) => b[1].length - a[1].length);
+  }, [favs]);
+
+  const handleRemove = (id: string) => {
+    const next = favs.filter((f) => f.id !== id);
+    setFavs(next);
+    saveFavorites(next);
+  };
+  const handleClearAll = () => {
+    setFavs([]);
+    saveFavorites([]);
+  };
+
+  if (favs.length === 0) {
+    return (
+      <div style={{
+        padding: '32px 20px',
+        background: '#F5F6F8',
+        borderRadius: 14,
+        textAlign: 'center',
+        color: '#6B7280',
+      }}>
+        <div style={{
+          fontFamily: 'var(--font-display)',
+          fontSize: 17, fontWeight: 700,
+          color: '#1A1A1A',
+          marginBottom: 8,
+        }}>
+          Пока пусто
+        </div>
+        <p style={{ margin: '0 auto', maxWidth: 460, fontSize: 13.5, lineHeight: 1.55 }}>
+          Нажмите на иконку звезды у любой карточки (статьи, кейса, ошибки),
+          чтобы добавить её в избранное. Здесь будут собраны все ваши закладки
+          для быстрого доступа.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ width: '100%' }}>
+      <p style={{ fontSize: 13, color: '#6B7280', margin: '0 0 14px' }}>
+        Показано: <strong style={{ color: '#1A1A1A' }}>{favs.length}</strong> избранных
+        {' · '}
+        <button
+          type="button"
+          onClick={handleClearAll}
+          style={{
+            background: 'none', border: 'none', cursor: 'pointer',
+            color: '#DC2626', fontSize: 13, padding: 0, textDecoration: 'underline',
+          }}
+        >
+          Очистить всё
+        </button>
+      </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+        {grouped.map(([type, items]) => (
+          <div key={type}>
+            <h3 style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 17, fontWeight: 700,
+              color: '#1A1A1A',
+              margin: '0 0 12px',
+              letterSpacing: '-0.01em',
+              display: 'flex', alignItems: 'baseline', gap: 8,
+            }}>
+              {TYPE_LABELS[type]}
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 600, color: '#9CA3AF' }}>
+                {items.length}
+              </span>
+            </h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              {items.map((f) => (
+                <div key={f.id} style={{
+                  display: 'flex', alignItems: 'center', gap: 10,
+                  padding: '12px 14px',
+                  background: '#F5F6F8',
+                  borderRadius: 10,
+                }}>
+                  <span style={{ flex: 1, fontSize: 13.5, color: '#1A1A1A', fontWeight: 500 }}>
+                    {f.title}
+                  </span>
+                  <span style={{ fontSize: 11, color: '#9CA3AF' }}>
+                    {new Date(f.added).toLocaleDateString('ru-RU')}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => handleRemove(f.id)}
+                    aria-label={`Удалить из избранного: ${f.title}`}
+                    style={{
+                      background: 'none', border: 'none', cursor: 'pointer',
+                      color: '#9CA3AF', fontSize: 18, padding: '4px 8px',
+                      display: 'inline-flex', alignItems: 'center',
+                      borderRadius: 6,
+                    }}
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/** Reusable star button — toggles favorite state. Used inside cards. */
+function FavoriteStarButton({ id, type, title }: { id: string; type: FavoriteEntry['type']; title: string }) {
+  const [isFav, setIsFav] = useState<boolean>(() => {
+    const favs = loadFavorites();
+    return favs.some((f) => f.id === id);
+  });
+
+  useEffect(() => {
+    const handler = () => {
+      const favs = loadFavorites();
+      setIsFav(favs.some((f) => f.id === id));
+    };
+    if (typeof window === 'undefined') return;
+    window.addEventListener('bordik-favs-changed', handler);
+    return () => window.removeEventListener('bordik-favs-changed', handler);
+  }, [id]);
+
+  const toggle = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    const favs = loadFavorites();
+    if (favs.some((f) => f.id === id)) {
+      saveFavorites(favs.filter((f) => f.id !== id));
+      setIsFav(false);
+    } else {
+      saveFavorites([...favs, { id, type, title, added: Date.now() }]);
+      setIsFav(true);
+    }
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={toggle}
+      aria-label={isFav ? `Убрать из избранного: ${title}` : `Добавить в избранное: ${title}`}
+      aria-pressed={isFav}
+      style={{
+        flexShrink: 0,
+        background: 'transparent',
+        border: 'none',
+        cursor: 'pointer',
+        padding: 4,
+        display: 'inline-flex', alignItems: 'center',
+        color: isFav ? '#F59E0B' : '#9CA3AF',
+        transition: 'color 150ms',
+      }}
+    >
+      <svg width={16} height={16} viewBox="0 0 24 24"
+        fill={isFav ? 'currentColor' : 'none'}
+        stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
+        aria-hidden="true" focusable="false">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+      </svg>
+    </button>
   );
 }
