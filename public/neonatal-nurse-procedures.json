@@ -1,0 +1,547 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2026-05-10",
+  "source": "Bordik Med — bedside procedural reference для NICU nursing + feldsher (audit Ж1-3, З1-3)",
+  "license": "Образовательный материал. Каждое процедурное руководство ссылается на institutional NICU protocol.",
+  "procedures": [
+    {
+      "id": "proc-bag-mask",
+      "title_ru": "Bag-mask вентиляция (PPV) у новорождённого",
+      "title_en": "Bag-Mask Ventilation",
+      "category": "respiratory",
+      "duration_min": 5,
+      "audience": "nursing + feldsher",
+      "steps": [
+        {
+          "title": "Подготовка",
+          "items": [
+            "Newborn-size mask: правильный размер (cover nose + mouth, не глаза)",
+            "Self-inflating bag (Ambu) ИЛИ flow-inflating bag ИЛИ T-piece (Neopuff)",
+            "PEEP valve attached если flow-inflating / T-piece",
+            "Reservoir / corrugated tube для FiO₂ ≥ 90 %",
+            "Pressure gauge подсоединён",
+            "Suction готов"
+          ]
+        },
+        {
+          "title": "Position",
+          "items": [
+            "Newborn supine на flat surface",
+            "Sniffing position (нейтральная шея с лёгким разгибанием)",
+            "Shoulder roll если нужен (особенно у больших babies)"
+          ]
+        },
+        {
+          "title": "Mask fit",
+          "items": [
+            "C+E grip: thumb + index = C around mask, остальные 3 = E под jaw",
+            "Mask seal без leak (слышен hiss = поправить)",
+            "НЕ нажимать на eyes",
+            "НЕ нажимать сильно на trachea (compresses airway)"
+          ]
+        },
+        {
+          "title": "Ventilate",
+          "items": [
+            "Squeeze bag 40-60 раз/мин (count: \"breath - two - three\")",
+            "PIP 20-25 см H₂O (term) или 20-25 (preterm) — manometer",
+            "PEEP 5 см H₂O (если on PEEP valve)",
+            "FiO₂ 21 % (term) или 21-30 % (preterm) — start"
+          ]
+        },
+        {
+          "title": "Verify ventilation",
+          "items": [
+            "Visible chest rise (1-2 см max)",
+            "ЧСС ↑ к ≥ 100",
+            "Improving SpO₂",
+            "Если нет rise: M-R SOPA (mask, reposition, suction, open mouth, pressure ↑, alternative airway)"
+          ]
+        }
+      ],
+      "warnings": [
+        "Excessive pressure (> 30 см H₂O) — pneumothorax risk",
+        "Excessive volume — barotrauma",
+        "НЕ ventilate новорождённого при наличии активного withdrawal (например, DCC ≥ 60 sec у term)",
+        "Если apnea > 30 sec несмотря adequate PPV — call for help, prepare intubation"
+      ],
+      "references": [
+        "Aziz K et al. Pediatrics 2021;147:e2020038505E — NRP 8 ed.",
+        "WHO Basic Newborn Resuscitation 2012",
+        "AAP NRP Provider Manual 8 ed."
+      ]
+    },
+    {
+      "id": "proc-suction",
+      "title_ru": "Санация носо-ротоглотки",
+      "title_en": "Oral-Nasal Suction",
+      "category": "respiratory",
+      "duration_min": 2,
+      "audience": "nursing + feldsher",
+      "steps": [
+        {
+          "title": "Подготовка",
+          "items": [
+            "Suction catheter правильного размера: 6 Fr (preterm), 8 Fr (term), 10 Fr (large term)",
+            "Suction pressure: 80-100 мм рт ст",
+            "Sterile gloves, eyewear",
+            "Saline 0.9 % если irrigation needed"
+          ]
+        },
+        {
+          "title": "Indication только при obstruction",
+          "items": [
+            "Visible secretions блокирующие airway",
+            "Audible mucus / gurgle",
+            "Insufficient ventilation несмотря good mask seal",
+            "НЕ routine у asymptomatic newborn (даже после meconium staining у vigorous infant)"
+          ]
+        },
+        {
+          "title": "Procedure",
+          "items": [
+            "Mouth first, затем nose (avoid stimulating gag reflex first)",
+            "Insert catheter без suction (depth: к pharynx — около 5 см у term)",
+            "Apply suction только при withdrawal (rotating motion)",
+            "Не больше 5 sec / pass",
+            "Re-oxygenate между passes",
+            "Maximum 3 passes без re-evaluation"
+          ]
+        },
+        {
+          "title": "Меконий-staining (NRP 8 ed.)",
+          "items": [
+            "Vigorous (good cry/tone, HR > 100): НЕ tracheal suctioning routinely",
+            "Non-vigorous (apnea/poor tone/HR < 100): standard PPV first; intubate + tracheal suction только если PPV не effective"
+          ]
+        }
+      ],
+      "warnings": [
+        "Vagal stimulation → bradycardia при deep / aggressive suctioning",
+        "Mucosal trauma + nosebleed",
+        "Hypoxia от prolonged suction",
+        "НЕ routine deep tracheal suction (NRP 8 ed. изменено с 2015)"
+      ],
+      "references": [
+        "Aziz K et al. Pediatrics 2021;147:e2020038505E",
+        "AARC Clinical Practice Guideline — Endotracheal Suctioning"
+      ]
+    },
+    {
+      "id": "proc-iv-access",
+      "title_ru": "Установка периферической IV catheter",
+      "title_en": "Peripheral IV Catheter Insertion",
+      "category": "procedures",
+      "duration_min": 10,
+      "audience": "nursing + feldsher",
+      "steps": [
+        {
+          "title": "Подготовка",
+          "items": [
+            "24G ИЛИ 26G IV catheter (преtermin newborn)",
+            "Tourniquet (мини-резинка)",
+            "Chlorhexidine 0.5-2 % (НЕ alcohol-based < 32 нед — burning)",
+            "Sterile gauze, transparent dressing (Tegaderm)",
+            "Saline flush 1 мл NS",
+            "T-connector ИЛИ extension tubing",
+            "Sucrose 24 % oral 0.5 мл (analgesia)"
+          ]
+        },
+        {
+          "title": "Site selection",
+          "items": [
+            "Hand dorsum (preferred — visible, stable)",
+            "Antecubital fossa",
+            "Saphenous vein ankle",
+            "Scalp veins (если нет other access)",
+            "Avoid: feet (если crawling age), areas of skin damage"
+          ]
+        },
+        {
+          "title": "Position + comfort",
+          "items": [
+            "Skin-to-skin или held by parent если возможно",
+            "Pacifier + sucrose 0.5 мл oral 2 мин до procedure",
+            "Warm extremity (warm pack 1-2 мин — vasodilation)",
+            "Containment / facilitated tucking"
+          ]
+        },
+        {
+          "title": "Procedure",
+          "items": [
+            "Tourniquet above site (loose — preterm)",
+            "Skin prep с chlorhexidine, allow dry",
+            "Stretch skin distal к insertion site",
+            "Insert needle bevel up at 10-30° angle",
+            "Advance until flash of blood в hub",
+            "Reduce angle, advance catheter (NOT needle) over needle",
+            "Withdraw needle while securing catheter",
+            "Loosen tourniquet, attach extension",
+            "Flush с 0.5-1 мл NS slowly — verify patency (no swelling, no resistance)",
+            "Secure с transparent dressing"
+          ]
+        },
+        {
+          "title": "Documentation",
+          "items": [
+            "Site, catheter size, attempt #",
+            "Date + time inserted",
+            "Patency confirmed",
+            "Limb assessment hourly (color, warmth, swelling)"
+          ]
+        }
+      ],
+      "warnings": [
+        "Extravasation — frequent assessment q1h; severe agents (Ca gluconate, hyperosmolar TPN, vasopressors) НЕ peripheral",
+        "Air embolism при flush с воздухом",
+        "Phlebitis — early sign change site",
+        "Thrombosis — assess pulse distal к catheter daily"
+      ],
+      "references": [
+        "AAP / NANN Vascular Access Guidelines 2024",
+        "INS Standards of Practice 2021"
+      ]
+    },
+    {
+      "id": "proc-feeding-ng",
+      "title_ru": "Установка назогастрального зонда (NG)",
+      "title_en": "NG Tube Insertion",
+      "category": "feeding",
+      "duration_min": 5,
+      "audience": "nursing + feldsher",
+      "steps": [
+        {
+          "title": "Подготовка",
+          "items": [
+            "5 Fr (preterm < 1500 g) ИЛИ 6 Fr (term)",
+            "Polyurethane preferred (less trauma vs PVC, но более expensive)",
+            "Lubricant (water-based)",
+            "Tape для secure",
+            "10 мл syringe для verification",
+            "pH paper если available (verify gastric placement)"
+          ]
+        },
+        {
+          "title": "Measure depth",
+          "items": [
+            "NEX method: nose → earlobe → xiphoid + 1 cm",
+            "Mark depth с pen / sticker",
+            "У ELBW: NEMU (nose → ear → mid-umbilicus) более accurate (Ellett 2011)"
+          ]
+        },
+        {
+          "title": "Insertion",
+          "items": [
+            "Position: head slightly elevated 30°",
+            "Lubricate tip lightly",
+            "Insert в одну ноздрю slowly (не force)",
+            "Stop если resistance — try other ноздрю",
+            "Advance к marked depth",
+            "Watch for cyanosis / coughing / vomiting (withdraw if persistent)",
+            "Secure с tape (avoid pulling on cheek)"
+          ]
+        },
+        {
+          "title": "Verification — perform BEFORE feeding/medication",
+          "items": [
+            "Aspirate gastric contents — pH ≤ 5.5 (gastric); pH > 5.5 ambiguous",
+            "Auscultation НЕ reliable (false positives)",
+            "X-ray confirmation для feeding tube — gold standard, но не routine после first placement",
+            "Re-verify pH перед каждым feeding если bedside available"
+          ]
+        },
+        {
+          "title": "Maintenance",
+          "items": [
+            "Replace q72h ИЛИ per institutional protocol",
+            "Flush с 1-2 мл of водой between meds + feedings",
+            "Check residual q3-4h pre-feed",
+            "Aspirate slowly с 5-10 мл syringe (большие — vacuum trauma)"
+          ]
+        }
+      ],
+      "warnings": [
+        "Misplacement в trachea / lungs — dangerous (verify pH or X-ray)",
+        "Esophageal perforation rare но возможна",
+        "Vagal stimulation → bradycardia",
+        "Aspiration risk при wrong placement"
+      ],
+      "references": [
+        "Ellett ML et al. J Pediatr Nurs 2011;26:329 — NEMU method",
+        "AAP / NANN Feeding Tube Guidelines 2024"
+      ]
+    },
+    {
+      "id": "proc-vital-signs",
+      "title_ru": "Vital signs новорождённого",
+      "title_en": "Newborn Vital Signs",
+      "category": "monitoring",
+      "duration_min": 2,
+      "audience": "nursing + feldsher",
+      "steps": [
+        {
+          "title": "Frequency",
+          "items": [
+            "Stable term newborn: q4h первые 24 ч, затем q8h",
+            "NICU: q1-4h по acuity",
+            "Сritically ill: continuous monitoring",
+            "Pre/post-procedures: дополнительные измерения"
+          ]
+        },
+        {
+          "title": "Heart rate (HR)",
+          "items": [
+            "Auscultation (apex) × 1 минуту полной",
+            "Pulse oximetry continuous (preferred)",
+            "Normal: 110-160 у term; 120-170 у preterm",
+            "Bradycardia < 100 — assess for cause + inform physician",
+            "Tachycardia > 180 — fever, pain, dehydration, sepsis, CHF"
+          ]
+        },
+        {
+          "title": "Respiratory rate (RR)",
+          "items": [
+            "Count полную минуту (newborn — irregular)",
+            "Normal: 30-60 у term; 40-70 у preterm",
+            "Tachypnea > 60 sustained — RDS, sepsis, CHF, cold stress",
+            "Bradypnea < 30 — apnea risk, sedation, neuro injury",
+            "Periodic breathing (pauses < 10 sec без bradycardia/desat) — normal"
+          ]
+        },
+        {
+          "title": "Temperature",
+          "items": [
+            "Axillary (preferred, safest) ИЛИ rectal (если more accurate needed)",
+            "Skin probe servo-control когда in incubator",
+            "Normal axillary: 36.5-37.5 °C",
+            "Hypothermia < 36.5 — assess + warm",
+            "Hyperthermia > 37.5 — sepsis, environmental"
+          ]
+        },
+        {
+          "title": "Blood pressure",
+          "items": [
+            "NIBP cuff: правильный размер (cuff width = 1/2 окружности arm)",
+            "Routine: 1-2 раза/d у stable term; q4h у NICU; continuous arterial line у critical",
+            "Normal MAP ≈ GA в нед (e.g., 30 нед PMA → MAP ≥ 30)",
+            "Higher MAP target у HIE / cardiac issues"
+          ]
+        },
+        {
+          "title": "SpO₂ targets",
+          "items": [
+            "Target 90-95 % у preterm (NeOProM 2018)",
+            "Term: 95-100 %",
+            "Pre-ductal preferred (right hand) для CCHD screening",
+            "Continuous monitoring у all NICU patients"
+          ]
+        }
+      ],
+      "warnings": [
+        "Crying / agitation → falsely elevated HR / RR — recheck after settled",
+        "Cold extremity → SpO₂ probe poor signal — reposition или warm",
+        "Tight cuff → falsely high BP",
+        "Sepsis может presenting только subtle vital signs change — high index suspicion"
+      ],
+      "references": [
+        "AAP COFN — Newborn Care 2024",
+        "AWHONN Perinatal Nursing 5th ed."
+      ]
+    },
+    {
+      "id": "proc-glucose-stick",
+      "title_ru": "Капиллярный glucose check",
+      "title_en": "Heel Stick Glucose Check",
+      "category": "monitoring",
+      "duration_min": 3,
+      "audience": "nursing + feldsher",
+      "steps": [
+        {
+          "title": "Frequency (по риску)",
+          "items": [
+            "High risk (IDM, LGA, SGA, asphyxia): q30 мин first 2 ч, then q1-2h × 12 ч",
+            "Moderate risk (late preterm, no feed established): q1-2h × 12 ч, q3-4h до 48 ч",
+            "Low risk: q4-6h × 24 ч"
+          ]
+        },
+        {
+          "title": "Подготовка",
+          "items": [
+            "Glucometer + test strips (calibration check)",
+            "Sterile lancet (depth 1 mm preterm; 2 mm term)",
+            "Alcohol swab",
+            "Gauze, plaster",
+            "Sucrose 24 % 0.5 мл (analgesia если series stick)"
+          ]
+        },
+        {
+          "title": "Site selection",
+          "items": [
+            "Lateral or medial PLANTAR aspect heel (avoid posterior heel — calcaneus)",
+            "Alternate sides q3-4h",
+            "Warm heel × 3-5 мин (cloth) — vasodilation"
+          ]
+        },
+        {
+          "title": "Stick procedure",
+          "items": [
+            "Position infant comfortable (containment, sucrose, pacifier)",
+            "Clean site с alcohol — let dry",
+            "Brief, single, decisive stick at 90° к skin",
+            "Wipe first drop (tissue fluid contamination)",
+            "Allow large second drop без squeezing (squeeze contaminates with tissue fluid → falsely low)",
+            "Apply test strip к droplet",
+            "Direct pressure с gauze post-stick × 30 sec"
+          ]
+        },
+        {
+          "title": "Action thresholds",
+          "items": [
+            "< 1.7 ммоль/л symptomatic ИЛИ < 1.4 asymptomatic первые 4 ч → confirm + treat",
+            "< 2.2 ммоль/л 4-24 ч → confirm + treat",
+            "< 2.5 ммоль/л > 24 ч → confirm + treat",
+            "Always confirm POC < 2.5 with serum lab"
+          ]
+        }
+      ],
+      "warnings": [
+        "Squeeze foot — falsely low glucose (tissue fluid)",
+        "Repeated sticks same site — bruising, calcaneal injury",
+        "POC glucometers overestimate low values у polycythemia + дегидратации",
+        "Pain — use analgesia (sucrose ± skin-to-skin)"
+      ],
+      "references": [
+        "Thornton PS et al. J Pediatr 2015;167:238 — PES 2015",
+        "AAP CFN. Pediatrics 2011;127:575",
+        "BAPM Hypoglycemia Framework 2017"
+      ]
+    },
+    {
+      "id": "proc-phototherapy-care",
+      "title_ru": "Уход во время фототерапии",
+      "title_en": "Phototherapy Care",
+      "category": "monitoring",
+      "duration_min": 4,
+      "audience": "nursing + feldsher",
+      "steps": [
+        {
+          "title": "Equipment",
+          "items": [
+            "LED phototherapy unit (preferred — wavelength 460-490 nm, low heat)",
+            "Eye protection (eye shield Bili-Shield)",
+            "Diaper только (max skin exposure)",
+            "Continuous T monitoring",
+            "SpO₂ probe (если premature)"
+          ]
+        },
+        {
+          "title": "Setup",
+          "items": [
+            "Distance light source: 35-50 cm (LED) или 50 cm (conventional)",
+            "Cover eyes carefully (НЕ обмотать слишком туго — corneal abrasion risk)",
+            "Diaper только; всё остальное off",
+            "Reposition q2h: front, back, side для uniform exposure",
+            "Multi-light units (above + below) — faster ↓ TSB"
+          ]
+        },
+        {
+          "title": "Maintenance care",
+          "items": [
+            "Continue feeding — НЕ stop unless TSB > exchange threshold",
+            "Skin-to-skin OK для 30-60 мин при breaks (eye shields off briefly)",
+            "Monitor T core (overheating risk if not LED)",
+            "Hydration assessment — dry skin, fontanelle, urine output",
+            "Photo-isomerization → green-yellow stool (normal — bilirubin output)"
+          ]
+        },
+        {
+          "title": "Monitoring TSB",
+          "items": [
+            "Repeat TSB q4-6h в active phase",
+            "Goal: ↓ TSB ≥ 2 мг/дл under threshold",
+            "Stop когда TSB < 2 мг/дл below PT threshold",
+            "Recheck TSB в 12-24 ч after stop (rebound risk)"
+          ]
+        }
+      ],
+      "warnings": [
+        "Eye damage если shield слишком туго (corneal abrasion) или slips off (retinal damage)",
+        "Hyperthermia если не-LED + close distance",
+        "Dehydration — increased insensible water losses (IWL) ~10-20 % above baseline",
+        "НЕ phototherapy при cholestasis (direct hyperbilirubinemia) — \"bronze baby syndrome\"",
+        "Skin photo-darkening transient — не concerning"
+      ],
+      "references": [
+        "Kemper AR et al. Pediatrics 2022;150(3):e2022058859 — AAP 2022",
+        "NICE CG98 (2023 addendum)",
+        "Maisels MJ. Pediatrics 2012;130:e1463"
+      ]
+    },
+    {
+      "id": "proc-cpap-prongs",
+      "title_ru": "Уход за CPAP nasal prongs",
+      "title_en": "CPAP Nasal Prong Care",
+      "category": "respiratory",
+      "duration_min": 5,
+      "audience": "nursing + feldsher",
+      "steps": [
+        {
+          "title": "Prong sizing",
+          "items": [
+            "Правильный размер: prong fills nare без stretching skin",
+            "Manufacturer chart по weight + GA",
+            "Too small — leak (loss of pressure)",
+            "Too large — pressure necrosis nasal septum"
+          ]
+        },
+        {
+          "title": "Positioning",
+          "items": [
+            "Hat / cap securing CPAP circuit",
+            "Prongs angled slightly downward (follows nasal passage anatomy)",
+            "Tape / Tegaderm к cheeks для secure без traction",
+            "Avoid pulling prongs deep — septum trauma"
+          ]
+        },
+        {
+          "title": "Maintenance",
+          "items": [
+            "Inspect nares + septum q2-4h (rotate prong slightly)",
+            "Saline drops 1-2 капли q4-6h prn для secretions",
+            "Gentle suction prn (но не routine — irritates mucosa)",
+            "Reposition prongs если obvious malposition",
+            "Skin protective barrier (Mepilex Lite, Cavilon spray)"
+          ]
+        },
+        {
+          "title": "Skin checks",
+          "items": [
+            "Septum: redness, blanching, breakdown — early signs critical",
+            "Cheeks (tape areas): redness, abrasion",
+            "Nares: ulceration",
+            "При первых признаках — rotate prongs, change taping technique, reduce pressure if possible"
+          ]
+        },
+        {
+          "title": "Mask alternative",
+          "items": [
+            "Nasal mask заменяет prongs прерывисто (q2-4h)",
+            "Уменьшает septal pressure",
+            "Heated humidified flow через mask"
+          ]
+        }
+      ],
+      "warnings": [
+        "Septal necrosis / column deformity — common iatrogenic injury (5-25 % CPAP infants without rotation/protective)",
+        "Nasal obstruction → CPAP failure",
+        "Air leak from mouth → ineffective CPAP (consider chin strap, pacifier)",
+        "Gastric distention — vent G-tube или OG tube placed for decompression"
+      ],
+      "references": [
+        "Sweet DG et al. Neonatology 2023;120:3 — European Consensus RDS",
+        "AWHONN Perinatal Nursing 5th ed.",
+        "NANN — CPAP best practices 2024"
+      ]
+    }
+  ]
+}
