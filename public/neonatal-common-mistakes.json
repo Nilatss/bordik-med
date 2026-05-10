@@ -1,5 +1,5 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "lastUpdated": "2026-05-10",
   "source": "Bordik Med — Neonatology common pitfalls (audit Table 3.Д6)",
   "license": "Educational content adapted from public guidelines (AAP, NRP, NICE, ESPGHAN, BAPM, Cochrane).",
@@ -374,6 +374,81 @@
       "references": [
         "AAP CFN. Pediatrics 2011;127:575",
         "Adamkin DH. Pediatrics 2017;141:e20174112"
+      ]
+    },
+    {
+      "id": "mistake-routine-suction-vigorous",
+      "title_ru": "Routine endotracheal suction у vigorous newborn",
+      "title_en": "Routine ETT suction в vigorous newborn",
+      "category": "resuscitation",
+      "severity": "low",
+      "mistake": "Рутинная глубокая отсасывание трахеи через ЭТТ у newborn без obvious obstruction.",
+      "why_it_happens": "Старая практика. Mistaken belief 'sucking helps clear airway'. NRP guidelines updated 2015+ but slow adoption.",
+      "correct_approach": "Suction TOLKKO when obvious obstruction (visible meconium, blood). Routine deep ETT suction НЕ рекомендуется. Brief mouth/nose suction если visible debris OK.",
+      "consequence": "Bradycardia (vagal), hypoxia, mucosal trauma. Не improves outcomes. Fishing exam quality care.",
+      "references": [
+        "Aziz K et al. Pediatrics 2021;147:e2020038505E",
+        "Wiswell TE et al. Pediatrics 2000;105:1"
+      ]
+    },
+    {
+      "id": "mistake-late-pda-treatment",
+      "title_ru": "Поздняя tactика hsPDA — wait too long",
+      "title_en": "Delayed hsPDA treatment in ELBW",
+      "category": "cardiopulmonary",
+      "severity": "medium",
+      "mistake": "Затягивание medication closure hsPDA у ELBW до 3-4 недель надеясь на spontaneous closure.",
+      "why_it_happens": "60-90% PDAs close spontaneously у GA >28 нед, но ELBW (<28) significantly slower. Conservative bias.",
+      "correct_approach": "Early echo screen at 48-72 ч у ELBW. If hsPDA + clinical signs (failure to wean, oxygenation worsening) — early closure (1-2 cycles ibuprofen). Не wait until weeks 3-4.",
+      "consequence": "Prolonged ИВЛ → BPD, IVH, NEC, mortality. Delayed PDA closure ассоциирована с worse outcomes ELBW.",
+      "references": [
+        "Mitra S et al. JAMA 2018;319:1221",
+        "Sehgal A et al. Eur J Pediatr 2014;173:925"
+      ]
+    },
+    {
+      "id": "mistake-infant-pos-tummy-time-asleep",
+      "title_ru": "Тummy time во время sleep",
+      "title_en": "Tummy time during sleep — SIDS risk",
+      "category": "neonatal",
+      "severity": "high",
+      "mistake": "Allowing infant to sleep in prone (tummy down) position OR transferring к sleep после feeding в prone.",
+      "why_it_happens": "Confusion между awake supervised tummy time (good) и sleep prone (dangerous). Parental fatigue.",
+      "correct_approach": "ALWAYS Back to Sleep — supine для ALL sleep × first year. Tummy time только supervised + awake. AAP Safe Sleep 2022 strict policy.",
+      "consequence": "SIDS risk increased 5-7x. Sudden infant death.",
+      "references": [
+        "Moon RY et al. Pediatrics 2022;150:e2022057990",
+        "AAP Safe Sleep Policy 2022"
+      ]
+    },
+    {
+      "id": "mistake-iron-supplement-iv",
+      "title_ru": "IV iron у newborn",
+      "title_en": "IV iron supplementation в newborn",
+      "category": "metabolic",
+      "severity": "high",
+      "mistake": "Administering IV iron (sucrose / dextran) для anemia of prematurity.",
+      "why_it_happens": "Adult / older child practice extrapolation. Misunderstanding iron metabolism в newborn.",
+      "correct_approach": "Oral iron drops (2-4 мг/кг/сут elemental) от 4-8 недель age. Erythropoietin рассматривать у ELBW. Transfusion при threshold reached. NEVER IV iron у newborn — risk circulating free iron toxicity, oxidative stress, sepsis enhancement.",
+      "consequence": "Free iron в circulation → oxidative damage. Increased sepsis risk (bacteria use iron). Anaphylaxis-like reactions.",
+      "references": [
+        "AAP COFN 2010 — Diagnosis and Prevention of Iron Deficiency",
+        "Aher SM et al. Cochrane 2014 — Erythropoietin AOP"
+      ]
+    },
+    {
+      "id": "mistake-dna-skin-prep-iodine",
+      "title_ru": "Povidone-iodine skin prep у preterm <2 мес",
+      "title_en": "Povidone-iodine prep в preterm <2 months",
+      "category": "infection",
+      "severity": "medium",
+      "mistake": "Использование povidone-iodine для skin antisepsis перед procedures у preterm <2 мес жизни.",
+      "why_it_happens": "Standard practice in older patients. Not aware of preterm thyroid sensitivity к iodine absorption.",
+      "correct_approach": "Chlorhexidine 0.5% или 2% (не alcohol-based в neonate) preferred. Если povidone-iodine необходим — wash off after procedure (avoid prolonged contact). Monitor TFTs если repeated exposure.",
+      "consequence": "Transient hypothyroidism у preterm — affects neurodevelopment. Rare but documented с repeated exposure.",
+      "references": [
+        "CDC Guidelines for the Prevention of Intravascular Catheter-Related Infections 2017",
+        "AAP COFN 2017"
       ]
     }
   ]

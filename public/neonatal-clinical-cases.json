@@ -1,5 +1,5 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "lastUpdated": "2026-05-10",
   "source": "Bordik Med — Neonatology clinical cases (audit Table 3.Д2)",
   "license": "Educational content adapted from public clinical guidelines (AAP, NRP, NICE, ESPGHAN, BAPM, Cochrane). Not a substitute for clinical judgment.",
@@ -731,6 +731,210 @@
         "Laptook AR et al. Pediatrics 2007;119:e643",
         "WHO Thermal Control of the Newborn 1997",
         "McCall EM et al. Cochrane 2018;CD004210"
+      ]
+    },
+    {
+      "id": "case-hfov-rescue",
+      "title_ru": "HFOV-rescue при refractory MAS + PPHN",
+      "title_en": "HFOV rescue в refractory MAS + PPHN",
+      "topic": "respiratory",
+      "level": "advanced",
+      "vignette": "Мальчик 41 нед, BW 3500 г. После meconial aspiration на conventional ИВЛ PIP 32 PEEP 7 FiO₂ 1.0 — OI 28 после 2 ч. Echo: severe PPHN, RV dysfunction. Pneumothorax исключён.",
+      "presenting_features": [
+        "Refractory hypoxemia на conventional ventilation (OI >25)",
+        "Severe PPHN с RV dysfunction",
+        "Maximal conventional settings без response",
+        "Risk barotrauma при continued escalation"
+      ],
+      "differential": [
+        "Refractory MAS + PPHN (наиболее вероятно)",
+        "Surfactant deficiency secondary к meconium",
+        "Persistent pulmonary hypertension изолированная",
+        "Air leak / pneumothorax (исключить)"
+      ],
+      "management": [
+        "Switch на HFOV: MAP 1-2 cmH₂O выше CMV MAP, frequency 8-12 Hz, amplitude — start 2× MAP до visible chest wiggle.",
+        "iNO 20 ppm continuous — потенциирует HFOV для PPHN.",
+        "Surfactant via ETT (rescue 4 мл/кг bovine OR poractant 200 мг/кг).",
+        "Sedation + paralysis: morphine 30-50 мкг/кг/час + vecuronium 0.1 мг/кг q1-2h PRN.",
+        "Sildenafil 0.5-2 мг/кг q6h NG (adjuvant если refractory).",
+        "Echo monitoring: PA pressure, RV/LV function.",
+        "If OI >40 на full medical → ECMO criteria, pediatric cardiac surgery transfer."
+      ],
+      "pearls": [
+        "HFOV rescue criteria: OI >15 на conventional, escalating support, refractory hypoxemia.",
+        "iNO + HFOV synergy в PPHN — HFOV expands lung → improves V/Q matching → iNO works better.",
+        "ECMO criteria: OI >25-40 (institution-specific), GA ≥34 нед, BW ≥2 кг."
+      ],
+      "references": [
+        "Cools F et al. Cochrane 2015;CD000104 — HFOV elective vs rescue",
+        "Steurer MA et al. Pediatrics 2017;139:e20161165",
+        "Konduri GG. Pediatrics 2004;113:559"
+      ]
+    },
+    {
+      "id": "case-grade-3-ivh",
+      "title_ru": "ВЖК III степени — острая декомпенсация",
+      "title_en": "Grade III IVH — acute deterioration",
+      "topic": "neuro",
+      "level": "advanced",
+      "vignette": "Мальчик GA 24 5/7 нед, BW 680 г, day 3 жизни. Внезапно: bulging fontanelle, apnea, hypotension. Hb упал с 165 до 105 г/л. УЗИ ГМ: bilateral grade III IVH с ventricular dilation, blood в IV ventricle.",
+      "presenting_features": [
+        "Sudden cardiovascular instability у preterm 24-26 нед",
+        "Bulging anterior fontanelle",
+        "Acute drop в Hb",
+        "Apnea / bradycardia / desaturation",
+        "Sentinel signs возможны 24 ч до event (decreased activity)"
+      ],
+      "differential": [
+        "Acute IVH (наиболее вероятно при GA 24-25 нед — peak risk window)",
+        "Sepsis-related decompensation",
+        "Pneumothorax",
+        "Volume overload (hsPDA, fluid bolus)"
+      ],
+      "management": [
+        "Stabilize: ventilation support, FiO₂ 100%, fluid bolus 10 мл/кг для hypotension.",
+        "PRBC transfusion если Hb <100 г/л (target ≥130 при HIE-like presentation).",
+        "Stat cranial ultrasound — confirm + grade.",
+        "Avoid volume swings: tight blood pressure control (avoid hyper/hypotension).",
+        "Stop NSAID immediately (если на ibuprofen для PDA).",
+        "Magnesium sulfate continuation если уже started antenatally.",
+        "Coagulopathy correction: FFP 10-15 мл/кг если active bleeding + INR >1.5.",
+        "Sedation: low-dose morphine для minimize stress (5-10 мкг/кг/час).",
+        "Cluster care strict × 72 ч.",
+        "Daily HUS first week, then weekly до stable.",
+        "Monitor для post-hemorrhagic hydrocephalus (vent index, anterior horn width)."
+      ],
+      "pearls": [
+        "Peak IVH risk: first 72 ч жизни у GA 24-26 нед.",
+        "Sentinel signs (decreased activity, mild apnea) часто precede catastrophic IVH on 12-24h.",
+        "Kangaroo Mother Care в acute phase IVH — emerging evidence cardiopulmonary stability + neuroprotection."
+      ],
+      "references": [
+        "Papile LA et al. J Pediatr 1978;92:529",
+        "Volpe JJ. Neurology of the Newborn 6th ed.",
+        "Soraisham AS et al. Cochrane 2018 — Magnesium IVH prevention"
+      ]
+    },
+    {
+      "id": "case-eos-puopolo-borderline",
+      "title_ru": "EOS borderline у preterm 32 нед — Puopolo Tiered",
+      "title_en": "EOS borderline preterm 32 wk — Puopolo Tiered",
+      "topic": "infection",
+      "level": "intermediate",
+      "vignette": "Мальчик GA 32 1/7 нед, BW 1700 г. Мать GBS-positive, PROM 22 ч, intrapartum t° 37.9°C × 1, IAP penicillin 6 ч до родов (adequate). Newborn: well-appearing, RR 60-65, no retractions, feeds well. CBC normal, CRP 12 мг/л.",
+      "presenting_features": [
+        "GA <34 нед + multiple maternal risk factors",
+        "Adequate IAP completed",
+        "Well-appearing neonate",
+        "Borderline RR (60-65 — physiologic transition vs concerning)",
+        "Mildly elevated CRP (12 мг/л — borderline normal у newborn)"
+      ],
+      "differential": [
+        "Transient tachypnea of newborn (TTN — typical preterm late)",
+        "Early-onset GBS sepsis (lower risk при adequate IAP)",
+        "Subclinical sepsis (E. coli, Listeria) — less likely",
+        "Mild RDS (preterm — possible)"
+      ],
+      "management": [
+        "Use Puopolo Tiered approach <34 нед:",
+        "  - Maternal high risk + adequate IAP + well-appearing = Tier 2",
+        "  - Recommendation: enhanced observation × 36-48 ч",
+        "Не starting empiric ABX immediately (Puopolo Tiered Tier 2 logic).",
+        "Monitor vitals q1h × 4 ч, then q3-4h × 36-48 ч.",
+        "Repeat CRP at 24 ч (if rising trend → escalate).",
+        "Если any clinical deterioration: full work-up (BC + CBC + LP if signs) + start amp + gent.",
+        "Если clinical course favorable + CRP normalising: continue observation.",
+        "Document Puopolo Tier reasoning + decision."
+      ],
+      "pearls": [
+        "Puopolo Tiered (Pediatrics 2017) для preterm <34 нед — superior к категорическому подходу.",
+        "Adequate IAP сoзначает penicillin/амп/cefazolin ≥4 ч до родов.",
+        "Avoid unnecessary ABX exposure → reduces NEC, LOS, candidiasis risk."
+      ],
+      "references": [
+        "Puopolo KM et al. Pediatrics 2018;142:e20182894",
+        "Puopolo KM et al. Pediatrics 2019;144:e20191881"
+      ]
+    },
+    {
+      "id": "case-nas-buprenorphine",
+      "title_ru": "NAS у opioid-exposed: переход на buprenorphine",
+      "title_en": "NAS opioid-exposed: morphine → buprenorphine transition",
+      "topic": "neuro",
+      "level": "intermediate",
+      "vignette": "Мальчик 39 нед, BW 2950 г. Мать на methadone 80 мг/сут. Day 4 жизни — Modified Finnegan 13 stable, на morphine 0.1 мг/кг q3h × 12 доз. Trying to wean. Mother insists на breastfeeding (no contraindication).",
+      "presenting_features": [
+        "Methadone-exposed neonate с established NAS",
+        "Stable но prolonged morphine treatment",
+        "Family-friendly approach (KMC, breastfeeding) — supported",
+        "Considering medication switch для shorter LOS"
+      ],
+      "differential": [
+        "Continuing NAS (наиболее вероятно)",
+        "Subclinical infection",
+        "Underlying brain injury (HIE-related) — rare with methadone"
+      ],
+      "management": [
+        "Continue non-pharm: rooming-in 24/7, breastfeeding (methadone OK при maternal stable dose), low-stim environment, swaddling, KMC.",
+        "Convert от morphine → buprenorphine SL (BBORN trial protocol):",
+        "  - Calculate equivalent buprenorphine: 4-5 мкг/кг q8h SL (под язык)",
+        "  - Wean by 10% q1-2 days as tolerated",
+        "  - Monitor ESC criteria (Eat-Sleep-Console) instead of Finnegan",
+        "Adjunct clonidine 1 мкг/кг q3-4h PO если monotherapy недостаточно.",
+        "Re-assess Finnegan / ESC q3-4h initially, then less frequently.",
+        "Discharge criteria: off pharm 24-48 ч + adequate feeding + social work clearance.",
+        "Comprehensive follow-up: pediatric, developmental clinic, social work."
+      ],
+      "pearls": [
+        "BBORN trial (Kraft NEJM 2017): SL buprenorphine — median treatment 15 vs 28 days morphine.",
+        "ESC approach (Grossman 2017): function-based vs symptom-tally → shorter LOS, less pharm.",
+        "Methadone breastfeeding compatible at maternal stable dose; benefits outweigh risks."
+      ],
+      "references": [
+        "Kraft WK et al. NEJM 2017;376:2341 — BBORN",
+        "Grossman MR et al. Pediatrics 2017;139:e20163360 — ESC",
+        "Patrick SW et al. Pediatrics 2020;146:e2020029074 — AAP NAS"
+      ]
+    },
+    {
+      "id": "case-surfactant-failure",
+      "title_ru": "Surfactant non-response — congenital surfactant deficiency",
+      "title_en": "Surfactant non-response — congenital deficiency",
+      "topic": "respiratory",
+      "level": "advanced",
+      "vignette": "Девочка 38 нед, BW 3300 г, term-born. Severe respiratory failure от рождения, intubated, PIP 30 PEEP 8 FiO₂ 1.0. Получила 3 dose surfactant без улучшения. Family hx: sibling died на day 5 жизни от 'lung disease'.",
+      "presenting_features": [
+        "Severe respiratory failure у term newborn (atypical для idiopathic RDS)",
+        "Surfactant non-response despite multiple doses",
+        "Family history sibling neonatal death respiratory cause",
+        "OI rising despite all standard therapy"
+      ],
+      "differential": [
+        "Genetic surfactant deficiency: SP-B, SP-C, ABCA3, NKX2.1 (наиболее вероятно given family hx + non-response)",
+        "Alveolar capillary dysplasia (ACD/MPV) — rare, similar presentation",
+        "Pulmonary lymphangiectasia",
+        "Persistent fetal circulation severe",
+        "Cardiac shunt (исключить echo)"
+      ],
+      "management": [
+        "STAT echocardiogram — exclude cardiac etiology.",
+        "Genetic consultation + send blood для surfactant gene panel (SP-B, SP-C, ABCA3, NKX2.1).",
+        "ECMO consideration (criteria: OI >40, GA ≥34, BW ≥2 кг).",
+        "Lung biopsy через open thoracotomy если ECMO available + uncertain genetics — provides definitive diagnosis (PAS-positive material, abnormal lamellar bodies).",
+        "Family counseling: SP-B is autosomal recessive, lethal. SP-C variable. ABCA3 variable severity.",
+        "Lung transplantation evaluation если survives initial period — only definitive treatment SP-B.",
+        "Palliative care discussion — all SP-B 100% fatal без transplant; ABCA3 partial response sometimes."
+      ],
+      "pearls": [
+        "Surfactant non-response в term + family hx → genetic surfactant disorders.",
+        "SP-B deficiency 100% lethal без lung transplant. ABCA3 variable.",
+        "Genetic panel results 1-3 weeks — don't wait, parallel pursue ECMO/transplant eval."
+      ],
+      "references": [
+        "Whitsett JA et al. NEJM 2002;347:2141",
+        "Hamvas A et al. Semin Perinatol 2006;30:316",
+        "Doan ML et al. Thorax 2008;63:366"
       ]
     }
   ]

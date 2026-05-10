@@ -1,5 +1,5 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "lastUpdated": "2026-05-10",
   "source": "Bordik Med — curated procedure video linkouts (audit Table 3.Д3)",
   "license": "External linkouts to authoritative sources (AAP, WHO, NEJM, Stanford, NIDCAP, EFCNI, UNICEF). Не размещаем встраиваемое видео — только linkouts с уважением к copyright.",
@@ -394,6 +394,55 @@
         "AAP",
         "global health",
         "LMIC"
+      ]
+    },
+    {
+      "id": "video-pacifier-feeding-readiness",
+      "title_ru": "Pacifier + feeding readiness assessment",
+      "title_en": "Pacifier + oral feeding readiness assessment",
+      "description": "Demonstration assessing oral feeding readiness в preterm — non-nutritive sucking pattern, pacifier use, transition к bottle/breastfeeding.",
+      "source": "Stanford / Stanford Children's Health",
+      "source_type": "youtube_official",
+      "url": "https://www.stanfordchildrens.org/en/topic/default?id=premature-and-low-birth-weight-feeding-90-P02272",
+      "category": "feeding",
+      "duration_min": 9,
+      "tags": [
+        "feeding readiness",
+        "pacifier",
+        "preterm"
+      ]
+    },
+    {
+      "id": "video-newborn-eye-exam-rop",
+      "title_ru": "ROP exam с RetCam + indirect ophthalmoscopy",
+      "title_en": "ROP exam with RetCam + indirect ophthalmoscopy",
+      "description": "Demonstration ROP screening exam: pupil dilation, scleral depression, indirect ophthalmoscopy, RetCam imaging. Stage classification ICROP3 demonstrated.",
+      "source": "American Academy of Ophthalmology",
+      "source_type": "youtube_official",
+      "url": "https://www.aao.org/eye-health/diseases/retinopathy-prematurity-rop-treatment",
+      "category": "screening",
+      "duration_min": 12,
+      "tags": [
+        "ROP",
+        "RetCam",
+        "AAO",
+        "ICROP3"
+      ]
+    },
+    {
+      "id": "video-vap-prevention-bundle",
+      "title_ru": "VAP prevention bundle в NICU",
+      "title_en": "VAP prevention bundle в NICU",
+      "description": "Comprehensive VAP prevention bundle: hand hygiene, head-of-bed elevation, oral care, OG/NG suction, peptic ulcer prophylaxis, daily extubation readiness assessment.",
+      "source": "CDC / IHI",
+      "source_type": "who_official",
+      "url": "https://www.cdc.gov/infection-control/hcp/sepsis/index.html",
+      "category": "respiratory",
+      "duration_min": 11,
+      "tags": [
+        "VAP",
+        "infection control",
+        "CDC"
       ]
     }
   ]
