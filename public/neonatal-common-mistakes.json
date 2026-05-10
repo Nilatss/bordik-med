@@ -1,5 +1,5 @@
 {
-  "version": "1.3.0",
+  "version": "1.4.0",
   "lastUpdated": "2026-05-10",
   "source": "Bordik Med — Neonatology common pitfalls (audit Table 3.Д6)",
   "license": "Educational content adapted from public guidelines (AAP, NRP, NICE, ESPGHAN, BAPM, Cochrane).",
@@ -569,6 +569,66 @@
       "references": [
         "Stoll BJ et al. Pediatrics 2002;109:E27",
         "AAP COFN Sepsis Management"
+      ]
+    },
+    {
+      "id": "mistake-late-vit-k",
+      "title_ru": "Откладывание витамина K до 2-3 часа жизни",
+      "title_en": "Delaying vitamin K administration past 1 hour",
+      "category": "medication",
+      "severity": "medium",
+      "mistake": "Витамин K1 1 мг IM откладывается до 2-3 часов жизни (или до перевода в палату), вместо введения в первый час.",
+      "why_it_happens": "Приоритизация других задач (взвешивание, измерение, профилактика конъюнктивита). Командные опасения относительно «слишком много инъекций сразу».",
+      "correct_approach": "Vit K1 1 мг IM (0.5 мг при BW <1000 г) в первый час жизни — стандарт AAP/КР МЗ РФ. Можно одновременно с erythromycin eye prophylaxis, hep B vaccine.",
+      "consequence": "Без vit K в первый час: риск early VKDB (0-24 ч) у preterm выше; повышенная вероятность пропуска при выписке.",
+      "references": [
+        "AAP CFN 2003 (reaffirmed 2018) — Controversies concerning vitamin K and the newborn",
+        "КР МЗ РФ Приказ 921н — Профилактика геморрагической болезни новорождённых"
+      ]
+    },
+    {
+      "id": "mistake-fio2-100-resus",
+      "title_ru": "Использование 100% O₂ при реанимации термина",
+      "title_en": "Using 100% oxygen for term newborn resuscitation",
+      "category": "resuscitation",
+      "severity": "high",
+      "mistake": "Старт PPV у термин-новорождённого со 100% O₂ (вместо 21% room air).",
+      "why_it_happens": "«Чем больше O₂ — тем лучше». Старые гайдлайны (pre-2010) рекомендовали 100% O₂. Привычка персонала.",
+      "correct_approach": "NRP 8 ed. 2021: term + late-preterm (≥35 нед) — стартовать PPV с 21% O₂; preterm (<35 нед) — 21-30% O₂. Pulse ox правую руку. Титровать FiO₂ по target SpO₂ minute-of-life curve.",
+      "consequence": "100% O₂ в реанимации повышает 30-day mortality (Saugstad meta-analysis), вызывает oxidative stress, ROP risk у preterm.",
+      "references": [
+        "Aziz K et al. Pediatrics 2021;147:e2020038505E — NRP 8 ed.",
+        "Saugstad OD et al. Neonatology 2008;94:176 — Resuscitation of newly born infants with 21% or 100% oxygen"
+      ]
+    },
+    {
+      "id": "mistake-deep-suction-vigorous",
+      "title_ru": "Routine deep suction у vigorous newborn",
+      "title_en": "Routine deep suction in vigorous newborn",
+      "category": "resuscitation",
+      "severity": "medium",
+      "mistake": "Глубокое отсасывание полости рта/носа/глотки routine у всех новорождённых, включая vigorous + breathing baby.",
+      "why_it_happens": "«Очистить дыхательные пути». Старые ритуалы родзала. Особенно при мекониальных водах — старая рекомендация интубировать + suction любого MAS.",
+      "correct_approach": "NRP 2015+: НЕ рутинно suction у vigorous newborn (даже при мекониальных водах). Только при obstructive airway (poor breathing, no cry, signs of obstruction). Bulb syringe сначала, deep suction только при необходимости.",
+      "consequence": "Deep suction вызывает vagal bradycardia, мукозальное повреждение, может задержать первый вдох/skin-to-skin/DCC.",
+      "references": [
+        "Aziz K et al. Pediatrics 2021;147:e2020038505E — NRP 8 ed.",
+        "Vain NE et al. Lancet 2004;364:597 — Suctioning meconium-stained term infants"
+      ]
+    },
+    {
+      "id": "mistake-prolonged-empirical-abx",
+      "title_ru": "Пролонгированные empirical antibiotics при negative culture",
+      "title_en": "Prolonged empirical antibiotics with negative blood culture",
+      "category": "infection",
+      "severity": "medium",
+      "mistake": "Продолжение empirical antibiotics (амп + гент) >5-7 дней при negative blood culture + clinical improvement.",
+      "why_it_happens": "«На всякий случай». Опасения false-negative culture. Inertia.",
+      "correct_approach": "Discontinue antibiotics в 36-48 ч при: negative blood culture + clinical improvement + inflammatory markers normalising (CRP <10, normal CBC). Continue только при confirmed sepsis or strong clinical concern (perinatal risk + persistent symptoms).",
+      "consequence": "Пролонгированные антибиотики: NEC risk +3-fold (preterm), late-onset sepsis (Candida) risk +2-fold, microbiome disruption, antibiotic resistance в отделении.",
+      "references": [
+        "Cantey JB et al. J Pediatr 2015;167:1142 — Reducing antibiotic exposure in NICU",
+        "NICE NG195 (2021) — Neonatal infection: antibiotics for early-onset"
       ]
     }
   ]

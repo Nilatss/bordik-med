@@ -1,5 +1,5 @@
 {
-  "version": "1.3.0",
+  "version": "1.4.0",
   "lastUpdated": "2026-05-10",
   "source": "Bordik Med — Neonatology clinical cases (audit Table 3.Д2)",
   "license": "Educational content adapted from public clinical guidelines (AAP, NRP, NICE, ESPGHAN, BAPM, Cochrane). Not a substitute for clinical judgment.",
@@ -1280,6 +1280,176 @@
       "references": [
         "AHA Pediatric Cardiac Guidelines",
         "Apitz C et al. Lancet 2009;374:1462"
+      ]
+    },
+    {
+      "id": "case-vkdb-late",
+      "title_ru": "Late VKDB — внутричерепное кровоизлияние 6 нед",
+      "title_en": "Late vitamin K deficiency bleeding (VKDB)",
+      "topic": "neonatal",
+      "level": "advanced",
+      "vignette": "Мальчик 6 нед age, BW 3200 г при рождении. Доставлен ОП с focal seizures + lethargy с утра. Анамнез: домашние роды (без vit K), exclusive breastfeeding, mama veganka. Родничок full. SpO₂ 92%. CT: bilateral subdural hematomas + parenchymal hemorrhage.",
+      "presenting_features": [
+        "Возраст 2-12 нед (peak 3-8 нед) — late form VKDB",
+        "No vitamin K профилактика при рождении (риск 80%+)",
+        "Exclusive breastfeeding (cow milk и formula содержат больше vit K)",
+        "Внутричерепное кровоизлияние ≈50% случаев (mortality 15-25%)",
+        "Coagulopathy: PT/INR резко prolonged, normal platelets/fibrinogen"
+      ],
+      "differential": [
+        "Late VKDB (наиболее вероятно при анамнезе no vit K + breastfeeding)",
+        "Non-accidental trauma (NAT) — параллельно скрининг",
+        "Hemophilia (X-linked — мальчик)",
+        "Идиопатическое внутричерепное кровоизлияние",
+        "Liver disease с coagulopathy"
+      ],
+      "management": [
+        "Стабилизация: ABC, IV access, blood type/cross.",
+        "Vit K 1 мг IV (НЕ IM — coagulopathy!) — emergency dose.",
+        "FFP 10-15 мл/кг IV до коррекции PT/INR.",
+        "Cryoprecipitate если fibrinogen <100 мг/дл.",
+        "Neurosurgical consult: эвакуация hematoma при mass effect / herniation.",
+        "Anticonvulsant: phenobarb 20 мг/кг IV loading при судорогах.",
+        "After stabilization: full vit K replacement + ongoing replacement если breastfeeding продолжается.",
+        "Investigate: CBC, PT/aPTT, fibrinogen, liver function, head CT/MRI.",
+        "Counsel parents: future babies должны получать vit K при рождении."
+      ],
+      "pearls": [
+        "1 мг IM vit K при рождении предотвращает 99%+ VKDB. PO regimens менее эффективны.",
+        "Late VKDB peak 3-8 нед — внутричерепное кровоизлияние частое, mortality высокая.",
+        "Exclusive breastfeeding + no vit K = главный фактор риска (грудное молоко содержит мало vit K)."
+      ],
+      "references": [
+        "AAP CFN 2003 (reaffirmed 2018) — Controversies concerning vitamin K and the newborn",
+        "Shearer MJ. Blood Rev 2009;23:49 — Vitamin K deficiency bleeding"
+      ]
+    },
+    {
+      "id": "case-kernicterus-late",
+      "title_ru": "Билирубиновая энцефалопатия — late presentation",
+      "title_en": "Acute bilirubin encephalopathy / kernicterus",
+      "topic": "hepatic",
+      "level": "advanced",
+      "vignette": "Мальчик GA 38 нед, BW 3100 г, выписан в 36 ч age (TSB не проверена pre-discharge). Возвращается в 5 dni с poor feeding, lethargy, retrocollis, high-pitched cry. TSB 28 мг/дл (478 µмоль/л). Ребёнок A Rh+, mama O Rh+ — likely ABO incompatibility.",
+      "presenting_features": [
+        "Age 3-7 dni typical для acute bilirubin encephalopathy (ABE)",
+        "TSB >25 мг/дл (>425 µмоль/л) — критический уровень",
+        "Neuro signs: hypotonia → hypertonia (retrocollis, opisthotonos)",
+        "Poor feeding, lethargy, alternating с irritability",
+        "High-pitched cry",
+        "Risk factors: late preterm, ABO mismatch, breastfeeding insufficient, no pre-discharge bilirubin screen"
+      ],
+      "differential": [
+        "Acute bilirubin encephalopathy (наиболее вероятно — TSB+neuro signs)",
+        "Sepsis (параллельно cover — broad-spectrum antibiotics)",
+        "Hypoglycemia (check, treat)",
+        "Inborn error of metabolism",
+        "Внутричерепное кровоизлияние"
+      ],
+      "management": [
+        "EMERGENCY: intensive phototherapy (irradiance ≥30 µW/cm²/nm) с двух сторон.",
+        "Параллельно подготовить exchange transfusion — TSB >25 мг/дл = exchange criteria по AAP 2022.",
+        "IV fluids 1.5× maintenance (D10 + electrolytes) — улучшает hydration + bilirubin clearance.",
+        "IVIG 0.5-1 г/кг при alloimmune hemolysis (positive DAT).",
+        "Type and crossmatch для exchange — donor RBCs <7 dni старые.",
+        "Blood type + DAT (Coombs) test — confirm hemolysis cause.",
+        "CBC, retic, peripheral smear (spherocytes? schistocytes?), G6PD activity (if male).",
+        "EEG + brain MRI — assess basal ganglia injury (T2 hyperintense globus pallidus).",
+        "Neurodevelopmental follow-up длительный — chronic bilirubin encephalopathy в 60%+ выживших."
+      ],
+      "pearls": [
+        "Pre-discharge bilirubin screening (universal AAP 2022) предотвращает большинство случаев kernicterus.",
+        "Retrocollis + opisthotonos = late ABE — already neurologic damage.",
+        "Exchange transfusion должен быть готов при first sign neuro symptoms — нельзя ждать."
+      ],
+      "references": [
+        "Kemper AR et al. Pediatrics 2022;150:e2022058859 — AAP 2022 Hyperbili Guideline",
+        "Shapiro SM. J Perinatol 2005;25:54 — Definition kernicterus"
+      ]
+    },
+    {
+      "id": "case-cdh-stabilization",
+      "title_ru": "Конгенитальная диафрагмальная грыжа — стабилизация",
+      "title_en": "Congenital diaphragmatic hernia (CDH) — initial stabilization",
+      "topic": "respiratory",
+      "level": "advanced",
+      "vignette": "Мальчик GA 38 нед, BW 3000 г, antenatal diagnosed left CDH (LHR 1.2). Apgar 4/6. Scaphoid abdomen, bowel sounds в left chest. Severe respiratory distress, SpO₂ pre-ductal 60% на bag-mask. НЕ был интубирован при рождении (плановая стратегия).",
+      "presenting_features": [
+        "Antenatal diagnosis CDH (most по 20 нед US)",
+        "Scaphoid abdomen + barrel chest (bowel в thorax)",
+        "Bowel sounds в chest, displaced heart sounds",
+        "Severe respiratory distress сразу после рождения",
+        "PPHN almost universal у CDH — pre/post-ductal SpO₂ differential",
+        "Lung hypoplasia + pulmonary hypertension = главные patofизиологические проблемы"
+      ],
+      "differential": [
+        "CDH (наиболее вероятно при antenatal diagnosis + scaphoid abdomen)",
+        "Massive pneumothorax",
+        "Pulmonary sequestration",
+        "Cystic adenomatoid malformation",
+        "Eventration of diaphragm"
+      ],
+      "management": [
+        "Intubate immediately — НЕ bag-mask ventilation (раздувает intrathoracic bowel, ухудшает ventilation).",
+        "Orogastric tube large bore — decompress intrathoracic stomach/bowel.",
+        "Gentle ventilation: PIP <25 cmH₂O, PEEP 3-5, target preductal SpO₂ 85-95%, permissive hypercapnia (pCO₂ 50-65 acceptable).",
+        "HFOV early при PIP needs >25 — лучше protects pulmonary hypoplasia.",
+        "iNO 20 ppm при PPHN (echocardiographic confirmation: high RV pressures).",
+        "Hemodynamic support: dopamine 5-10 мкг/кг/мин для systemic BP, dobutamine для RV function.",
+        "Echo: assess pulmonary hypertension severity, RV function, exclude CHD.",
+        "Surgical repair — после physiologic stabilization (24-72 ч), не emergency.",
+        "ECMO criteria: OI >40 sustained, SpO₂ <85% sustained на maximal medical."
+      ],
+      "pearls": [
+        "НЕ делать bag-mask ventilation у CDH — раздувает bowel в chest.",
+        "Gentle ventilation strategy + permissive hypercapnia improves outcomes (CDH EURO Consortium).",
+        "Antenatal diagnosis позволяет планировать родоразрешение в tertiary center с ECMO."
+      ],
+      "references": [
+        "Snoek KG et al. Neonatology 2016;110:66 — CDH EURO Consortium",
+        "Puligandla PS et al. J Pediatr Surg 2015;50:1958 — Canadian CDH Collaborative"
+      ]
+    },
+    {
+      "id": "case-congenital-hypothyroidism",
+      "title_ru": "Врождённый гипотиреоз — positive newborn screen",
+      "title_en": "Congenital hypothyroidism — positive newborn screen",
+      "topic": "screening",
+      "level": "intermediate",
+      "vignette": "Девочка 10 dni, GA 39 нед, BW 3450 г. Newborn screen (на 3 dni): TSH 95 mIU/L (cutoff <20). Confirmatory: serum TSH 110 mIU/L, free T4 0.4 нг/дл (low). Клинически: prolonged jaundice, large posterior fontanelle, mild hypotonia, large tongue. Mother без anti-thyroid antibodies.",
+      "presenting_features": [
+        "Positive newborn screen TSH (universally screened в РФ + США + Узбекистан)",
+        "Часто asymptomatic при рождении — раннее лечение critical для нормального IQ",
+        "Subtle signs: prolonged jaundice (>14 дней), constipation, lethargy, hypotonia, macroglossia",
+        "Late signs (если untreated): coarse facies, umbilical hernia, growth/developmental delay",
+        "Etiology в РФ/США: thyroid dysgenesis (75%), dyshormonogenesis (15%), maternal antibodies (5%)"
+      ],
+      "differential": [
+        "Permanent congenital hypothyroidism (thyroid dysgenesis)",
+        "Transient hypothyroidism (maternal antibodies / iodine excess)",
+        "TBG deficiency (low T4 но normal free T4 + TSH)",
+        "Central hypothyroidism (low TSH + low T4 — different pattern)",
+        "Iodine deficiency (relevant в Узбекистане некоторых регионах)"
+      ],
+      "management": [
+        "Confirmatory testing: serum TSH + free T4 (НЕ ждать до 2 weeks).",
+        "Thyroid uptake/scan если возможно (differentiate dysgenesis vs dyshormonogenesis).",
+        "Initiate levothyroxine 10-15 мкг/кг/день PO immediately при confirmed CH.",
+        "Tablet crushed в небольшом количестве breast milk / water / formula (НЕ соевое — interferes absorption).",
+        "Recheck TSH + free T4 at 2 + 4 weeks → adjust dose.",
+        "Goal: free T4 в upper half normal range; TSH suppressed <5 в первые 6 месяцев.",
+        "Serial monitoring: TSH/T4 every 1-2 months × 6 месяцев, then every 3 месяца до 3 лет.",
+        "Reassessment at 3 лет: trial off thyroxine 30 dni → если TSH остаётся normal = transient.",
+        "Long-term follow-up endocrinologist + neurodevelopmental assessment."
+      ],
+      "pearls": [
+        "Treatment initiation в первые 2 недели жизни даёт нормальный IQ (Rovet 2014).",
+        "Soya formula significantly impairs levothyroxine absorption — switch на dairy/breast milk.",
+        "Maternal antibodies могут вызывать transient CH — recheck at 3 лет."
+      ],
+      "references": [
+        "AAP/ACOG/PES Joint statement 2023 — Newborn Screening for Congenital Hypothyroidism",
+        "Rovet JF. J Endocrinol Invest 2014;37:533 — Long-term cognitive outcomes treated CH"
       ]
     }
   ]
