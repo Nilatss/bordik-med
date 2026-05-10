@@ -5444,19 +5444,17 @@ function DesignSystemLinkButton({
       style={{
         display: 'inline-flex', alignItems: 'center', gap: 6,
         padding: '8px 14px',
-        borderRadius: 'var(--md-sys-shape-corner-full)',
-        background: '#FFFFFF',
-        boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-        fontFamily: 'var(--font-mono)',
-        fontSize: '0.7rem', fontWeight: 500,
-        color: 'var(--md-sys-color-on-surface-variant)',
+        borderRadius: 999,
+        background: '#F5F6F8',
+        color: '#374151',
+        fontFamily: 'var(--font-body)',
+        fontSize: 12, fontWeight: 600,
         textDecoration: 'none',
         whiteSpace: 'nowrap',
-        textTransform: 'uppercase', letterSpacing: '0.04em',
-        transition: 'background 200ms cubic-bezier(0.22,1,0.36,1)',
+        transition: 'background 180ms',
       }}
-      onMouseEnter={(e) => { e.currentTarget.style.background = '#F8F9FA'; }}
-      onMouseLeave={(e) => { e.currentTarget.style.background = '#FFFFFF'; }}
+      onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
+      onMouseLeave={(e) => { e.currentTarget.style.background = '#F5F6F8'; }}
     >
       {label}
       <svg width={12} height={12} viewBox="0 0 24 24" fill="none"
