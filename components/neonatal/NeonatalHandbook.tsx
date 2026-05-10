@@ -317,7 +317,7 @@ interface AtlasBank {
   atlas: AtlasEntry[];
 }
 
-type Tab ='drugs' | 'guidelines' | 'calculators' | 'labs' | 'articles' | 'resuscitation' | 'lactmed' | 'quizzes' | 'nurse' | 'growth' | 'bilirubin' | 'cases' | 'mistakes' | 'checklists' | 'videos' | 'atlas' | 'progress' | 'favorites' | 'drugcalc';
+type Tab ='drugs' | 'guidelines' | 'calculators' | 'labs' | 'articles' | 'resuscitation' | 'lactmed' | 'quizzes' | 'nurse' | 'growth' | 'bilirubin' | 'cases' | 'mistakes' | 'checklists' | 'videos' | 'atlas' | 'progress' | 'favorites' | 'drugcalc' | 'search' | 'notes';
 
 export default function NeonatalHandbook() {
   const [bank, setBank] = useState<Bank | null>(null);
@@ -378,14 +378,14 @@ export default function NeonatalHandbook() {
           fetch('/neonatal-guidelines.json?v=1.9.0', { cache: 'force-cache' }),
           fetch('/neonatal-calculators.json?v=1.0.0', { cache: 'force-cache' }),
           fetch('/neonatal-lab-norms.json?v=1.1.0', { cache: 'force-cache' }),
-          fetch('/neonatal-articles.json?v=2.0.0', { cache: 'force-cache' }),
+          fetch('/neonatal-articles.json?v=2.1.0', { cache: 'force-cache' }),
           fetch('/neonatal-lactmed.json?v=1.1.0', { cache: 'force-cache' }),
           fetch('/neonatal-nurse-procedures.json?v=1.2.0', { cache: 'force-cache' }),
-          fetch('/neonatal-clinical-cases.json?v=1.2.0', { cache: 'force-cache' }),
-          fetch('/neonatal-common-mistakes.json?v=1.2.0', { cache: 'force-cache' }),
+          fetch('/neonatal-clinical-cases.json?v=1.3.0', { cache: 'force-cache' }),
+          fetch('/neonatal-common-mistakes.json?v=1.3.0', { cache: 'force-cache' }),
           fetch('/neonatal-procedure-checklists.json?v=1.2.0', { cache: 'force-cache' }),
           fetch('/neonatal-procedure-videos.json?v=1.2.0', { cache: 'force-cache' }),
-          fetch('/neonatal-atlas.json?v=1.2.0', { cache: 'force-cache' }),
+          fetch('/neonatal-atlas.json?v=1.3.0', { cache: 'force-cache' }),
         ]);
         if (!drugsR.ok) throw new Error(`monographs ${drugsR.status}`);
         const drugsJson = await drugsR.json();
@@ -830,6 +830,8 @@ export default function NeonatalHandbook() {
           progress: { label: 'Прогресс обучения', count: null },
           favorites: { label: 'Избранное', count: null },
           drugcalc: { label: 'Дозы по весу', count: null },
+          search: { label: 'Глобальный поиск', count: null },
+          notes: { label: 'Мои заметки', count: null },
         };
         const meta = SECTION_META[tab];
         return (
@@ -1358,6 +1360,22 @@ export default function NeonatalHandbook() {
         <FavoritesView />
       ) : tab === 'drugcalc' ? (
         <DrugDoseCalculator />
+      ) : tab === 'search' ? (
+        <GlobalSearchView
+          drugs={bank?.drugs ?? []}
+          guidelines={guidelines?.guidelines ?? []}
+          articles={articles?.articles ?? []}
+          cases={cases?.cases ?? []}
+          mistakes={mistakes?.mistakes ?? []}
+          checklists={checklists?.checklists ?? []}
+          videos={videos?.videos ?? []}
+          atlas={atlas?.atlas ?? []}
+          lactmed={lactmed?.drugs ?? []}
+          nurse={nurse?.procedures ?? []}
+          onJumpToTab={setTab}
+        />
+      ) : tab === 'notes' ? (
+        <PersonalNotesView />
       ) : null}
 
       {/* Source / disclaimer panel — единый стиль с DrugChecker provenance.
@@ -4907,6 +4925,21 @@ const EMERGENCY_DRUGS: EmergencyDrug[] = [
   { id: 'ino', name_ru: 'iNO (PPHN)', category: 'cardio', dose_per_kg: 0, unit: 'ppm', formula_text: '20 ppm стартово (NOT weight-based)', concentration: 'gas', route: 'inhaled', notes: 'PPHN с OI >15. Wean by 5 ppm каждые 4 часа. Monitor metHb, NO₂.', reference: 'AHA 2019 PPHN' },
   { id: 'caffeine-load', name_ru: 'Кофеин loading', category: 'cardio', dose_per_kg: 20, unit: 'мг/кг', formula_text: '20 мг/кг loading IV/PO over 30 мин', concentration: '20 мг/мл', route: 'IV / PO', notes: 'Универсально preterm <32 нед. Maintenance 5-10 мг/кг q24h.', reference: 'CAP trial NEJM 2007;357:1893' },
   { id: 'surfactant-curo', name_ru: 'Сурфактант (Curosurf)', category: 'cardio', dose_per_kg: 200, unit: 'мг/кг', formula_text: '200 мг/кг (2.5 мл/кг) первая доза', concentration: '80 мг/мл', route: 'ETT / LISA', notes: 'RDS preterm. Repeat 100 мг/кг q12h до 3 доз PRN.', reference: 'Sweet European Consensus 2022' },
+  { id: 'amp-iv', name_ru: 'Ампициллин IV (EOS empiric)', category: 'cardio', dose_per_kg: 50, unit: 'мг/кг', formula_text: '50 мг/кг IV q8-12h', concentration: '100 мг/мл', route: 'IV', notes: 'EOS coverage GBS, E.coli, Listeria. q12h первые 7 days, q8h далее.', reference: 'AAP COFN 2017' },
+  { id: 'gent-iv', name_ru: 'Гентамицин IV (EOS empiric)', category: 'cardio', dose_per_kg: 4, unit: 'мг/кг', formula_text: '4-5 мг/кг IV q24h (q36h <30 нед)', concentration: '10 мг/мл', route: 'IV', notes: 'EOS coverage с амп. Monitor renal + ototoxicity. Trough <2 мг/л.', reference: 'AAP COFN' },
+  { id: 'vanco-iv', name_ru: 'Ванкомицин IV (LOS empiric)', category: 'cardio', dose_per_kg: 15, unit: 'мг/кг', formula_text: '15 мг/кг IV q12h slow', concentration: '5 мг/мл', route: 'IV slow (60 мин)', notes: 'LOS coverage CoNS, MRSA. Trough 10-15 мг/л. Risk red-man syndrome.', reference: 'AAP COFN' },
+  { id: 'cefepime-iv', name_ru: 'Цефепим IV (LOS broad)', category: 'cardio', dose_per_kg: 50, unit: 'мг/кг', formula_text: '50 мг/кг IV q12h', concentration: '100 мг/мл', route: 'IV', notes: 'LOS gram-negative coverage. Альтернатива гентамицину при resistance.', reference: 'AAP COFN' },
+  { id: 'meropenem-iv', name_ru: 'Меропенем IV', category: 'cardio', dose_per_kg: 20, unit: 'мг/кг', formula_text: '20 мг/кг IV q12h (40 для meningitis)', concentration: '50 мг/мл', route: 'IV', notes: 'Severe sepsis, MDR. Reserved для escalation.', reference: 'AAP COFN' },
+  { id: 'fluconazole', name_ru: 'Флуконазол (candida prophylaxis)', category: 'cardio', dose_per_kg: 3, unit: 'мг/кг', formula_text: '3-6 мг/кг IV/PO q72h × 6 нед', concentration: '2 мг/мл', route: 'IV / PO', notes: 'Candida prophylaxis ELBW <1000 г. Treatment 12 мг/кг q24h.', reference: 'AAP COFN 2014' },
+  { id: 'acyclovir', name_ru: 'Ацикловир (HSV)', category: 'cardio', dose_per_kg: 20, unit: 'мг/кг', formula_text: '20 мг/кг IV q8h × 14-21 days', concentration: '7 мг/мл', route: 'IV slow (1 hr)', notes: 'HSV neonatal — empirically pending PCR при clinical suspicion.', reference: 'AAP Red Book' },
+  { id: 'pgE1', name_ru: 'Простагландин E1 (PGE1)', category: 'cardio', dose_per_kg: 0.05, unit: 'мкг/кг/мин', formula_text: 'Старт 0.05 мкг/кг/мин IV, titrate 0.01-0.4', concentration: '0.5 мг/мл, dilute', route: 'IV continuous', notes: 'Duct-dependent CHD. Watch apnea (intubate готов), fever, jitters.', reference: 'AHA 2019 Pediatric Cardiac' },
+  { id: 'sildenafil', name_ru: 'Силденафил (PPHN)', category: 'cardio', dose_per_kg: 1, unit: 'мг/кг', formula_text: '0.5-2 мг/кг q6h PO/NG', concentration: '10 мг/мл oral susp', route: 'PO / NG', notes: 'PPHN adjuvant к iNO. Monitor systemic BP — hypotension risk.', reference: 'Cochrane 2017' },
+  { id: 'milrinone', name_ru: 'Милринон (cardiac inotrope)', category: 'cardio', dose_per_kg: 0.5, unit: 'мкг/кг/мин', formula_text: '0.25-0.75 мкг/кг/мин (no loading neonate)', concentration: '200 мкг/мл', route: 'IV continuous', notes: 'PDE-3 inhibitor. Inotrope + PVR vasodilator. PPHN с RV dysfunction.', reference: 'AHA 2019' },
+  { id: 'dopamine', name_ru: 'Допамин', category: 'cardio', dose_per_kg: 5, unit: 'мкг/кг/мин', formula_text: '5-15 мкг/кг/мин IV continuous', concentration: '1.6 мг/мл (40 мг в D5W 250)', route: 'IV continuous (CVL)', notes: 'First-line inotrope cold shock. Higher doses — vasoconstrictor.', reference: 'AAP CFN' },
+  { id: 'norepi', name_ru: 'Норэпинефрин (warm shock)', category: 'cardio', dose_per_kg: 0.05, unit: 'мкг/кг/мин', formula_text: '0.05-0.5 мкг/кг/мин IV continuous', concentration: '8 мкг/мл (4 мг + D5W 500)', route: 'IV continuous (CVL)', notes: 'Vasodilatory shock. Selective vasoconstrictor — raises SVR.', reference: 'AAP CFN' },
+  { id: 'vasopressin', name_ru: 'Вазопрессин (catecholamine-resistant)', category: 'cardio', dose_per_kg: 0.0005, unit: 'U/кг/мин', formula_text: '0.0003-0.002 U/кг/мин IV continuous', concentration: '20 U/мл, dilute', route: 'IV continuous (CVL)', notes: 'Catecholamine-resistant warm shock. V1 selective без ↑ PVR.', reference: 'PALS 2020' },
+  { id: 'hydrocort', name_ru: 'Гидрокортизон (refractory shock)', category: 'cardio', dose_per_kg: 1, unit: 'мг/кг', formula_text: '1 мг/кг IV q6-8h', concentration: '50 мг/мл', route: 'IV', notes: 'Catecholamine-resistant shock. Adrenal insufficiency. Taper 5-7 дней.', reference: 'PALS 2020' },
+  { id: 'levetiracetam', name_ru: 'Леветирацетам (seizures)', category: 'sedation', dose_per_kg: 30, unit: 'мг/кг', formula_text: '20-40 мг/кг IV loading, затем 20 мг/кг q12h', concentration: '100 мг/мл', route: 'IV / PO', notes: 'Emerging 1st-line у neonates. Better safety vs phenobarb (NeoLEV2).', reference: 'Sharpe C et al. Pediatrics 2020;145' },
 ];
 
 const DRUG_CATEGORY_LABELS: Record<EmergencyDrug['category'], string> = {
@@ -5329,5 +5362,634 @@ function FavoriteStarButton({ id, type, title }: { id: string; type: FavoriteEnt
         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
       </svg>
     </button>
+  );
+}
+
+
+// ============================================================================
+// G1 — Global Search across all banks
+// ============================================================================
+
+interface GlobalSearchHit {
+  id: string;
+  title: string;
+  snippet: string;
+  type: 'drug' | 'guideline' | 'article' | 'case' | 'mistake' | 'checklist' | 'video' | 'atlas' | 'lactmed' | 'nurse';
+  jumpTab: Tab;
+}
+
+const HIT_TYPE_LABELS: Record<GlobalSearchHit['type'], string> = {
+  drug: 'Препарат',
+  guideline: 'Протокол',
+  article: 'Статья',
+  case: 'Кейс',
+  mistake: 'Ошибка',
+  checklist: 'Чек-лист',
+  video: 'Видео',
+  atlas: 'Атлас',
+  lactmed: 'LactMed',
+  nurse: 'Процедура',
+};
+
+const HIT_TYPE_COLORS: Record<GlobalSearchHit['type'], string> = {
+  drug: '#2563EB',
+  guideline: '#7C3AED',
+  article: '#0891B2',
+  case: '#DC2626',
+  mistake: '#B45309',
+  checklist: '#059669',
+  video: '#DB2777',
+  atlas: '#65A30D',
+  lactmed: '#0D9488',
+  nurse: '#7C2D12',
+};
+
+interface GlobalSearchProps {
+  drugs: Array<{ id: string; name_ru: string; name_en: string; indications?: string; fullText: string }>;
+  guidelines: Array<{ id: string; title_ru: string; title_en: string; content: string }>;
+  articles: Array<{ id: string; title_ru: string; title_en: string; summary: string; content: string }>;
+  cases: Array<{ id: string; title_ru: string; title_en: string; vignette: string }>;
+  mistakes: Array<{ id: string; title_ru: string; title_en: string; mistake: string }>;
+  checklists: Array<{ id: string; title_ru: string; title_en: string; indications: string[] }>;
+  videos: Array<{ id: string; title_ru: string; title_en: string; description: string }>;
+  atlas: Array<{ id: string; title_ru: string; title_en: string; description: string }>;
+  lactmed: Array<{ id: string; name_ru: string; name_en: string; summary: string }>;
+  nurse: Array<{ id: string; title_ru: string; title_en: string; category: string }>;
+  onJumpToTab: (t: Tab) => void;
+}
+
+function GlobalSearchView({
+  drugs, guidelines, articles, cases, mistakes, checklists, videos, atlas, lactmed, nurse,
+  onJumpToTab,
+}: GlobalSearchProps) {
+  const [query, setQuery] = useState('');
+  const [enabledTypes, setEnabledTypes] = useState<Set<GlobalSearchHit['type']>>(
+    new Set(['drug', 'guideline', 'article', 'case', 'mistake', 'checklist', 'video', 'atlas', 'lactmed', 'nurse']),
+  );
+
+  const hits: GlobalSearchHit[] = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (q.length < 2) return [];
+    const out: GlobalSearchHit[] = [];
+
+    const trySnippet = (haystack: string, fallback: string): string => {
+      const idx = haystack.toLowerCase().indexOf(q);
+      if (idx === -1) return fallback.slice(0, 140);
+      const start = Math.max(0, idx - 40);
+      const end = Math.min(haystack.length, idx + q.length + 80);
+      const snip = haystack.slice(start, end);
+      return (start > 0 ? '…' : '') + snip + (end < haystack.length ? '…' : '');
+    };
+
+    if (enabledTypes.has('drug')) {
+      for (const d of drugs) {
+        const text = `${d.name_ru} ${d.name_en} ${d.indications ?? ''} ${d.fullText}`.toLowerCase();
+        if (text.includes(q)) {
+          out.push({ id: `drug-${d.id}`, title: d.name_ru, snippet: trySnippet(d.fullText || d.indications || '', d.indications ?? ''), type: 'drug', jumpTab: 'drugs' });
+        }
+      }
+    }
+    if (enabledTypes.has('guideline')) {
+      for (const g of guidelines) {
+        const text = `${g.title_ru} ${g.title_en} ${g.content}`.toLowerCase();
+        if (text.includes(q)) {
+          out.push({ id: `gd-${g.id}`, title: g.title_ru, snippet: trySnippet(g.content, g.content.slice(0, 140)), type: 'guideline', jumpTab: 'guidelines' });
+        }
+      }
+    }
+    if (enabledTypes.has('article')) {
+      for (const a of articles) {
+        const text = `${a.title_ru} ${a.title_en} ${a.summary} ${a.content}`.toLowerCase();
+        if (text.includes(q)) {
+          out.push({ id: `art-${a.id}`, title: a.title_ru, snippet: trySnippet(a.content, a.summary), type: 'article', jumpTab: 'articles' });
+        }
+      }
+    }
+    if (enabledTypes.has('case')) {
+      for (const c of cases) {
+        const text = `${c.title_ru} ${c.title_en} ${c.vignette}`.toLowerCase();
+        if (text.includes(q)) {
+          out.push({ id: `cs-${c.id}`, title: c.title_ru, snippet: trySnippet(c.vignette, c.vignette.slice(0, 140)), type: 'case', jumpTab: 'cases' });
+        }
+      }
+    }
+    if (enabledTypes.has('mistake')) {
+      for (const m of mistakes) {
+        const text = `${m.title_ru} ${m.title_en} ${m.mistake}`.toLowerCase();
+        if (text.includes(q)) {
+          out.push({ id: `mt-${m.id}`, title: m.title_ru, snippet: trySnippet(m.mistake, m.mistake.slice(0, 140)), type: 'mistake', jumpTab: 'mistakes' });
+        }
+      }
+    }
+    if (enabledTypes.has('checklist')) {
+      for (const ch of checklists) {
+        const text = `${ch.title_ru} ${ch.title_en} ${ch.indications.join(' ')}`.toLowerCase();
+        if (text.includes(q)) {
+          out.push({ id: `ck-${ch.id}`, title: ch.title_ru, snippet: ch.indications[0] ?? '', type: 'checklist', jumpTab: 'checklists' });
+        }
+      }
+    }
+    if (enabledTypes.has('video')) {
+      for (const v of videos) {
+        const text = `${v.title_ru} ${v.title_en} ${v.description}`.toLowerCase();
+        if (text.includes(q)) {
+          out.push({ id: `vd-${v.id}`, title: v.title_ru, snippet: trySnippet(v.description, v.description.slice(0, 140)), type: 'video', jumpTab: 'videos' });
+        }
+      }
+    }
+    if (enabledTypes.has('atlas')) {
+      for (const a of atlas) {
+        const text = `${a.title_ru} ${a.title_en} ${a.description}`.toLowerCase();
+        if (text.includes(q)) {
+          out.push({ id: `at-${a.id}`, title: a.title_ru, snippet: trySnippet(a.description, a.description.slice(0, 140)), type: 'atlas', jumpTab: 'atlas' });
+        }
+      }
+    }
+    if (enabledTypes.has('lactmed')) {
+      for (const l of lactmed) {
+        const text = `${l.name_ru} ${l.name_en} ${l.summary}`.toLowerCase();
+        if (text.includes(q)) {
+          out.push({ id: `lm-${l.id}`, title: l.name_ru, snippet: trySnippet(l.summary, l.summary.slice(0, 140)), type: 'lactmed', jumpTab: 'lactmed' });
+        }
+      }
+    }
+    if (enabledTypes.has('nurse')) {
+      for (const n of nurse) {
+        const text = `${n.title_ru} ${n.title_en} ${n.category}`.toLowerCase();
+        if (text.includes(q)) {
+          out.push({ id: `nu-${n.id}`, title: n.title_ru, snippet: n.category, type: 'nurse', jumpTab: 'nurse' });
+        }
+      }
+    }
+
+    return out.slice(0, 100);
+  }, [query, enabledTypes, drugs, guidelines, articles, cases, mistakes, checklists, videos, atlas, lactmed, nurse]);
+
+  const grouped = useMemo(() => {
+    const map = new Map<GlobalSearchHit['type'], GlobalSearchHit[]>();
+    for (const h of hits) {
+      const arr = map.get(h.type) ?? [];
+      arr.push(h);
+      map.set(h.type, arr);
+    }
+    return Array.from(map.entries()).sort((a, b) => b[1].length - a[1].length);
+  }, [hits]);
+
+  const toggleType = (t: GlobalSearchHit['type']) => {
+    setEnabledTypes((prev) => {
+      const next = new Set(prev);
+      if (next.has(t)) next.delete(t); else next.add(t);
+      return next;
+    });
+  };
+
+  const totalCorpus = drugs.length + guidelines.length + articles.length + cases.length + mistakes.length + checklists.length + videos.length + atlas.length + lactmed.length + nurse.length;
+
+  return (
+    <div style={{ width: '100%' }}>
+      {/* Search input */}
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: 10,
+        padding: '12px 16px',
+        background: '#F5F6F8',
+        borderRadius: 12,
+        marginBottom: 12,
+      }}>
+        <svg width={18} height={18} viewBox="0 0 24 24" fill="none"
+          stroke="#9CA3AF" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
+          aria-hidden="true" focusable="false">
+          <circle cx="11" cy="11" r="8" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+        <input
+          type="search"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          autoFocus
+          placeholder='Поиск по всем разделам: "сурфактант", "BPD", "гипогликемия"...'
+          aria-label="Глобальный поиск по разделу неонатологии"
+          style={{
+            flex: 1, background: 'transparent', border: 'none', outline: 'none',
+            fontFamily: 'inherit', fontSize: 15, color: '#1A1A1A',
+          }}
+        />
+        {query && (
+          <button
+            type="button"
+            onClick={() => setQuery('')}
+            aria-label="Очистить поиск"
+            style={{
+              background: 'transparent', border: 'none', cursor: 'pointer',
+              color: '#9CA3AF', fontSize: 18, padding: '4px 8px',
+            }}
+          >×</button>
+        )}
+      </div>
+
+      {/* Type filter chips */}
+      <div style={{
+        display: 'flex', flexWrap: 'wrap', gap: 6,
+        marginBottom: 16,
+      }}>
+        {(['drug', 'guideline', 'article', 'case', 'mistake', 'checklist', 'video', 'atlas', 'lactmed', 'nurse'] as const).map((t) => {
+          const enabled = enabledTypes.has(t);
+          return (
+            <button
+              key={t}
+              type="button"
+              onClick={() => toggleType(t)}
+              aria-pressed={enabled}
+              style={{
+                padding: '6px 12px',
+                background: enabled ? HIT_TYPE_COLORS[t] : '#FFFFFF',
+                color: enabled ? '#FFFFFF' : '#1A1A1A',
+                border: 'none',
+                borderRadius: 'var(--md-sys-shape-corner-full)',
+                boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
+                cursor: 'pointer',
+                fontFamily: 'var(--font-mono)',
+                fontSize: '0.625rem', fontWeight: 600,
+                textTransform: 'uppercase', letterSpacing: '0.04em',
+              }}
+            >
+              {HIT_TYPE_LABELS[t]}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Empty state */}
+      {query.trim().length < 2 && (
+        <div style={{
+          padding: '32px 20px', background: '#F5F6F8', borderRadius: 14,
+          textAlign: 'center', color: '#6B7280',
+        }}>
+          <div style={{ fontFamily: 'var(--font-display)', fontSize: 17, fontWeight: 700, color: '#1A1A1A', marginBottom: 6 }}>
+            Глобальный поиск
+          </div>
+          <p style={{ margin: '0 auto', maxWidth: 460, fontSize: 13.5, lineHeight: 1.55 }}>
+            Введите запрос (≥2 символов) для поиска в {totalCorpus} клинических и обучающих
+            документах. Можно фильтровать по типу через chips сверху.
+          </p>
+        </div>
+      )}
+
+      {/* No results */}
+      {query.trim().length >= 2 && hits.length === 0 && (
+        <div style={{
+          padding: '32px 16px', background: '#F5F6F8', borderRadius: 12,
+          textAlign: 'center', color: '#6B7280', fontSize: 14,
+        }}>
+          Ничего не найдено по запросу «{query}».
+        </div>
+      )}
+
+      {/* Results count + groups */}
+      {hits.length > 0 && (
+        <>
+          <p style={{ fontSize: 13, color: '#6B7280', margin: '0 0 14px' }}>
+            Найдено: <strong style={{ color: '#1A1A1A' }}>{hits.length}</strong> результатов
+            {hits.length === 100 && ' (показаны первые 100)'}
+            {' · '}
+            <span style={{ color: '#9CA3AF' }}>
+              из корпуса {totalCorpus} документов
+            </span>
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+            {grouped.map(([type, items]) => (
+              <div key={type}>
+                <h3 style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: 17, fontWeight: 700,
+                  color: '#1A1A1A',
+                  margin: '0 0 12px',
+                  letterSpacing: '-0.01em',
+                  display: 'flex', alignItems: 'baseline', gap: 8,
+                }}>
+                  {HIT_TYPE_LABELS[type]}
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 600, color: '#9CA3AF' }}>
+                    {items.length}
+                  </span>
+                </h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  {items.map((h) => (
+                    <button
+                      key={h.id}
+                      type="button"
+                      onClick={() => onJumpToTab(h.jumpTab)}
+                      aria-label={`Перейти к разделу ${HIT_TYPE_LABELS[type]}: ${h.title}`}
+                      style={{
+                        display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 4,
+                        padding: '12px 14px',
+                        background: '#F5F6F8',
+                        border: 'none',
+                        borderRadius: 10,
+                        cursor: 'pointer',
+                        textAlign: 'left',
+                        fontFamily: 'inherit',
+                        transition: 'background 150ms',
+                      }}
+                      onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.background = '#F5F6F8'; }}
+                    >
+                      <span style={{ fontWeight: 600, fontSize: 14, color: '#1A1A1A' }}>{h.title}</span>
+                      {h.snippet && (
+                        <span style={{ fontSize: 12, color: '#6B7280', lineHeight: 1.4 }}>{h.snippet}</span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+// ============================================================================
+// G2 — Personal Notes (markdown editor + localStorage)
+// ============================================================================
+
+interface PersonalNote {
+  id: string;
+  title: string;
+  body: string;
+  created: number;
+  updated: number;
+  tags: string[];
+}
+
+function loadNotes(): PersonalNote[] {
+  if (typeof window === 'undefined') return [];
+  try {
+    const raw = window.localStorage.getItem('bordik-neonatal-notes');
+    if (!raw) return [];
+    return JSON.parse(raw) as PersonalNote[];
+  } catch { return []; }
+}
+
+function saveNotes(notes: PersonalNote[]): void {
+  if (typeof window === 'undefined') return;
+  try { window.localStorage.setItem('bordik-neonatal-notes', JSON.stringify(notes)); } catch { /* ignore */ }
+}
+
+function PersonalNotesView() {
+  const [notes, setNotes] = useState<PersonalNote[]>(() => loadNotes());
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const [editingTitle, setEditingTitle] = useState('');
+  const [editingBody, setEditingBody] = useState('');
+
+  const activeNote = notes.find((n) => n.id === activeId);
+
+  useEffect(() => {
+    if (activeNote) {
+      setEditingTitle(activeNote.title);
+      setEditingBody(activeNote.body);
+    }
+  }, [activeId, activeNote]);
+
+  const createNew = () => {
+    const id = `note-${Date.now()}`;
+    const note: PersonalNote = {
+      id,
+      title: 'Новая заметка',
+      body: '',
+      created: Date.now(),
+      updated: Date.now(),
+      tags: [],
+    };
+    const next = [note, ...notes];
+    setNotes(next);
+    saveNotes(next);
+    setActiveId(id);
+    setEditingTitle(note.title);
+    setEditingBody(note.body);
+  };
+
+  const saveCurrent = () => {
+    if (!activeNote) return;
+    const updated = notes.map((n) =>
+      n.id === activeNote.id
+        ? { ...n, title: editingTitle, body: editingBody, updated: Date.now() }
+        : n,
+    );
+    setNotes(updated);
+    saveNotes(updated);
+  };
+
+  const deleteCurrent = () => {
+    if (!activeNote) return;
+    const filtered = notes.filter((n) => n.id !== activeNote.id);
+    setNotes(filtered);
+    saveNotes(filtered);
+    setActiveId(null);
+  };
+
+  // Auto-save on body/title change with debounce
+  useEffect(() => {
+    if (!activeNote) return;
+    const t = setTimeout(() => saveCurrent(), 500);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editingTitle, editingBody]);
+
+  if (notes.length === 0 && !activeId) {
+    return (
+      <div style={{
+        padding: '32px 20px',
+        background: '#F5F6F8',
+        borderRadius: 14,
+        textAlign: 'center',
+        color: '#6B7280',
+      }}>
+        <div style={{
+          fontFamily: 'var(--font-display)',
+          fontSize: 17, fontWeight: 700,
+          color: '#1A1A1A',
+          marginBottom: 8,
+        }}>
+          Пока нет заметок
+        </div>
+        <p style={{ margin: '0 auto 16px', maxWidth: 460, fontSize: 13.5, lineHeight: 1.55 }}>
+          Создайте заметку для записи клинических наблюдений, ссылок,
+          кастомных подсказок. Заметки хранятся локально в браузере.
+        </p>
+        <button
+          type="button"
+          onClick={createNew}
+          style={{
+            padding: '10px 20px',
+            background: '#1A1A1A',
+            color: '#FFFFFF',
+            border: 'none',
+            borderRadius: 10,
+            cursor: 'pointer',
+            fontSize: 13,
+            fontWeight: 600,
+          }}
+        >
+          Создать первую заметку
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ width: '100%' }}>
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        gap: 10, marginBottom: 14,
+      }}>
+        <p style={{ fontSize: 13, color: '#6B7280', margin: 0 }}>
+          Всего заметок: <strong style={{ color: '#1A1A1A' }}>{notes.length}</strong>
+          {' · '}
+          <span style={{ color: '#9CA3AF' }}>
+            хранятся локально в браузере, синхронизация скоро
+          </span>
+        </p>
+        <button
+          type="button"
+          onClick={createNew}
+          style={{
+            padding: '8px 14px',
+            background: '#1A1A1A',
+            color: '#FFFFFF',
+            border: 'none',
+            borderRadius: 'var(--md-sys-shape-corner-full)',
+            cursor: 'pointer',
+            fontFamily: 'var(--font-mono)',
+            fontSize: '0.625rem', fontWeight: 700,
+            textTransform: 'uppercase', letterSpacing: '0.04em',
+          }}
+        >
+          + Новая заметка
+        </button>
+      </div>
+
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: '260px 1fr',
+        gap: 14,
+        minHeight: 400,
+      }}>
+        {/* Notes list */}
+        <div style={{
+          background: '#F5F6F8',
+          borderRadius: 12,
+          padding: 8,
+          maxHeight: 600,
+          overflowY: 'auto',
+        }}>
+          {notes.map((n) => (
+            <button
+              key={n.id}
+              type="button"
+              onClick={() => setActiveId(n.id)}
+              style={{
+                display: 'block',
+                width: '100%',
+                padding: '10px 12px',
+                background: n.id === activeId ? '#FFFFFF' : 'transparent',
+                border: 'none',
+                borderRadius: 8,
+                cursor: 'pointer',
+                textAlign: 'left',
+                marginBottom: 2,
+                fontFamily: 'inherit',
+              }}
+            >
+              <div style={{
+                fontSize: 13, fontWeight: 600, color: '#1A1A1A',
+                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+              }}>
+                {n.title || '(без названия)'}
+              </div>
+              <div style={{ fontSize: 11, color: '#9CA3AF', marginTop: 2 }}>
+                {new Date(n.updated).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })}
+              </div>
+            </button>
+          ))}
+        </div>
+
+        {/* Editor */}
+        <div style={{
+          background: '#F5F6F8',
+          borderRadius: 12,
+          padding: 16,
+          display: 'flex', flexDirection: 'column', gap: 10,
+        }}>
+          {activeNote ? (
+            <>
+              <input
+                type="text"
+                value={editingTitle}
+                onChange={(e) => setEditingTitle(e.target.value)}
+                aria-label="Заголовок заметки"
+                style={{
+                  width: '100%',
+                  padding: '10px 12px',
+                  background: '#FFFFFF',
+                  border: 'none',
+                  borderRadius: 8,
+                  fontFamily: 'var(--font-display)',
+                  fontSize: 18, fontWeight: 700,
+                  color: '#1A1A1A',
+                  outline: 'none',
+                }}
+              />
+              <textarea
+                value={editingBody}
+                onChange={(e) => setEditingBody(e.target.value)}
+                aria-label="Содержимое заметки"
+                placeholder="Введите содержимое заметки. Поддерживается plain text + Markdown..."
+                style={{
+                  width: '100%',
+                  minHeight: 400,
+                  padding: '12px 14px',
+                  background: '#FFFFFF',
+                  border: 'none',
+                  borderRadius: 8,
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 14, lineHeight: 1.55,
+                  color: '#1F2937',
+                  resize: 'vertical',
+                  outline: 'none',
+                }}
+              />
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
+                <span style={{ fontSize: 11, color: '#9CA3AF' }}>
+                  {editingBody.length} символов · автосохранение
+                </span>
+                <button
+                  type="button"
+                  onClick={deleteCurrent}
+                  aria-label="Удалить заметку"
+                  style={{
+                    padding: '6px 12px',
+                    background: '#FEF2F2',
+                    color: '#991B1B',
+                    border: 'none',
+                    borderRadius: 8,
+                    cursor: 'pointer',
+                    fontSize: 12, fontWeight: 600,
+                  }}
+                >
+                  Удалить
+                </button>
+              </div>
+            </>
+          ) : (
+            <div style={{
+              padding: '40px 20px', textAlign: 'center', color: '#9CA3AF',
+              fontSize: 13.5,
+            }}>
+              Выберите заметку из списка или создайте новую.
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }

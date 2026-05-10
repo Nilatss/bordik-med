@@ -1,5 +1,5 @@
 {
-  "version": "1.2.0",
+  "version": "1.3.0",
   "lastUpdated": "2026-05-10",
   "source": "Bordik Med — Neonatology common pitfalls (audit Table 3.Д6)",
   "license": "Educational content adapted from public guidelines (AAP, NRP, NICE, ESPGHAN, BAPM, Cochrane).",
@@ -449,6 +449,126 @@
       "references": [
         "CDC Guidelines for the Prevention of Intravascular Catheter-Related Infections 2017",
         "AAP COFN 2017"
+      ]
+    },
+    {
+      "id": "mistake-routine-cradle-cap-treatment",
+      "title_ru": "Рутинное лечение cradle cap у term newborn",
+      "title_en": "Routine treatment cradle cap",
+      "category": "neonatal",
+      "severity": "low",
+      "mistake": "Назначение топических стероидов / противогрибковых для seborrheic dermatitis (cradle cap) у asymptomatic newborn.",
+      "why_it_happens": "Concerned parent + желание 'что-то делать'. Misperception что нужно treatment.",
+      "correct_approach": "Reassurance + gentle baby shampoo + soft brush. Mineral oil overnight + gentle wash. Self-resolving 2-3 мес. Topical hydrocortisone 1% only если severe inflammation.",
+      "consequence": "Unnecessary medication exposure, cost, parental anxiety.",
+      "references": [
+        "Naldi L. BMJ Clin Evid 2010;2010:1713",
+        "AAP Section on Dermatology"
+      ]
+    },
+    {
+      "id": "mistake-mistakenly-stopping-caffeine",
+      "title_ru": "Раннее прекращение кофеина у preterm",
+      "title_en": "Early caffeine discontinuation в preterm",
+      "category": "respiratory",
+      "severity": "medium",
+      "mistake": "Discontinuing caffeine после 1-2 weeks без apnea events, до 33-34 нед PMA.",
+      "why_it_happens": "Misperception что 'apnea решена'. Не учитывают BPD prevention effect persist.",
+      "correct_approach": "Continue caffeine до 33-34 нед PMA OR successful 7-day apnea-free period off respiratory support. CAP trial benefit persists в 11 yr cognitive outcomes.",
+      "consequence": "Recurrent apnea, ↓ extubation success, missed BPD prevention benefit.",
+      "references": [
+        "Schmidt B et al. NEJM 2007;357:1893",
+        "Schmidt B et al. NEJM 2017 11-yr follow-up"
+      ]
+    },
+    {
+      "id": "mistake-no-vit-d",
+      "title_ru": "Не назначать витамин D у breastfed newborn",
+      "title_en": "Failing to prescribe vit D в breastfed newborn",
+      "category": "metabolic",
+      "severity": "low",
+      "mistake": "Не назначать vitamin D supplementation у breastfed newborn.",
+      "why_it_happens": "Misperception что breast milk обеспечивает все нужные nutrients.",
+      "correct_approach": "Exclusively breastfed: 400 IU vit D daily от рождения до introduction fortified foods. Formula-fed receiving <1 L/day formula: also need 400 IU.",
+      "consequence": "Vitamin D deficiency rickets — radiological + biochemical changes 6-12 мес. Preventable disease.",
+      "references": [
+        "AAP CFN. Pediatrics 2008;122:1142",
+        "Wagner CL et al. Pediatrics 2008;122:1142"
+      ]
+    },
+    {
+      "id": "mistake-no-iron-preterm",
+      "title_ru": "Не начать iron у preterm в 4-8 нед",
+      "title_en": "Delaying iron supplementation в preterm",
+      "category": "metabolic",
+      "severity": "medium",
+      "mistake": "Откладывание iron supplementation в preterm до introduction solids OR при concern для transfusion.",
+      "why_it_happens": "Старая практика. Concern о возможном GI side effects.",
+      "correct_approach": "Iron supplementation 2-4 мг/кг/сут elemental от 4-8 нед age у preterm + LBW. Continue до 12 мес OR adequate dietary iron. Start earlier (2 нед) у ELBW при рapid growth.",
+      "consequence": "Iron deficiency anemia — neurodevelopmental impairment даже после correction. Preterm высокий риск.",
+      "references": [
+        "AAP CFN. Pediatrics 2010;126:1040 — Iron Deficiency",
+        "Cochrane 2014 — Iron supplementation preterm"
+      ]
+    },
+    {
+      "id": "mistake-late-cooling-decision",
+      "title_ru": "Затяжное решение о TH eligibility",
+      "title_en": "Delayed TH eligibility decision",
+      "category": "neuro",
+      "severity": "high",
+      "mistake": "Spending >2-3 часа на determining TH eligibility — passive deterioration в 6-час окне.",
+      "why_it_happens": "Hesitation, multiple consultants, missing clear criteria.",
+      "correct_approach": "TH eligibility decision в первые 2 ч жизни. Use NICHD criteria checklist:",
+      "consequence": "Delayed cooling = lost neuroprotection. After 6 ч — нет proven benefit.",
+      "references": [
+        "Shankaran S et al. NEJM 2005;353:1574",
+        "Azzopardi DV et al. NEJM 2009;361:1349"
+      ]
+    },
+    {
+      "id": "mistake-aggressive-resp-support-MAS",
+      "title_ru": "Aggressive ventilation в MAS-PPHN",
+      "title_en": "Aggressive ventilation в MAS-PPHN",
+      "category": "respiratory",
+      "severity": "high",
+      "mistake": "Escalating PIP / PEEP в MAS-PPHN до 35+ cmH₂O для maintaining oxygenation.",
+      "why_it_happens": "Reactive escalation для desperate hypoxemia.",
+      "correct_approach": "Gentle ventilation: VT 4-6 мл/кг, PEEP 5-7 cmH₂O, permissive hypercapnia (PaCO₂ 45-55), permissive hypoxemia (SpO₂ 90-95%). Switch к HFOV early if conventional fails. iNO + sildenafil + milrinone для PPHN.",
+      "consequence": "Pneumothorax, pulmonary hemorrhage, worsening PPHN от barotrauma.",
+      "references": [
+        "Steurer MA et al. Pediatrics 2017;139:e20161165",
+        "Konduri GG. Pediatrics 2004;113:559"
+      ]
+    },
+    {
+      "id": "mistake-homeopathy-jaundice",
+      "title_ru": "Народные средства при желтухе",
+      "title_en": "Folk remedies для jaundice",
+      "category": "hepatic",
+      "severity": "high",
+      "mistake": "Direct sunlight exposure, glucose water, herbal teas вместо phototherapy при значимой hyperbilirubinemia.",
+      "why_it_happens": "Cultural / family pressure, misinformation, unfamiliarity с modern PT.",
+      "correct_approach": "Modern intensive LED phototherapy (irradiance ≥30 мкВт/см²/нм). Не direct sunlight (UV burns + поверхностный). Continued breastfeeding (NOT glucose water которое снижает milk transfer).",
+      "consequence": "Kernicterus — irreversible brain injury, athetoid CP, hearing loss, sensory deficits.",
+      "references": [
+        "Kemper AR et al. Pediatrics 2022;150:e2022058859",
+        "AAP — bilirubin patient education"
+      ]
+    },
+    {
+      "id": "mistake-bacterial-meningitis-no-lp",
+      "title_ru": "Не делать LP при positive blood culture у newborn",
+      "title_en": "Skipping LP в positive blood culture",
+      "category": "infection",
+      "severity": "high",
+      "mistake": "Лечение sepsis ABX без LP при positive blood culture у newborn (особенно GBS, E. coli).",
+      "why_it_happens": "Concern о hemodynamic instability. Time pressure. Lab access barriers.",
+      "correct_approach": "Stable infant: LP within 24 hours of positive blood culture (or earlier если clinical signs meningitis). Up to 23-32% positive blood culture have concurrent meningitis. Different ABX duration / dosing if meningitis: 14-21 days vs 10 для bacteremia.",
+      "consequence": "Missed meningitis → inadequate ABX duration → relapse, neurodevelopmental sequelae, preventable mortality.",
+      "references": [
+        "Stoll BJ et al. Pediatrics 2002;109:E27",
+        "AAP COFN Sepsis Management"
       ]
     }
   ]

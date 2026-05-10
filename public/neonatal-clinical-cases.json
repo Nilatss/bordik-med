@@ -1,5 +1,5 @@
 {
-  "version": "1.2.0",
+  "version": "1.3.0",
   "lastUpdated": "2026-05-10",
   "source": "Bordik Med — Neonatology clinical cases (audit Table 3.Д2)",
   "license": "Educational content adapted from public clinical guidelines (AAP, NRP, NICE, ESPGHAN, BAPM, Cochrane). Not a substitute for clinical judgment.",
@@ -935,6 +935,351 @@
         "Whitsett JA et al. NEJM 2002;347:2141",
         "Hamvas A et al. Semin Perinatol 2006;30:316",
         "Doan ML et al. Thorax 2008;63:366"
+      ]
+    },
+    {
+      "id": "case-pphn-warm-shock",
+      "title_ru": "Warm shock у септического newborn",
+      "title_en": "Warm shock в septic newborn",
+      "topic": "cardiopulmonary",
+      "level": "advanced",
+      "vignette": "Девочка 38 нед, BW 3300 г, day 5 жизни. Начала отказываться от еды, t° 36.0°C. Через 6 ч: tachycardia 200, hypotension MAP 28, теплые конечности, bounding pulses, прыгающее давление, олигурия. Лактат 5.2.",
+      "presenting_features": [
+        "Late-onset sepsis presentation (day 3-7)",
+        "Vasodilated shock: warm extremities, bounding pulses",
+        "Wide pulse pressure (low SVR)",
+        "Oliguria + lactate elevation",
+        "Hypothermia переменная с tachycardia"
+      ],
+      "differential": [
+        "Septic shock с warm vasodilatory phase (наиболее вероятно — late onset)",
+        "Adrenal insufficiency (relative)",
+        "Hypothyroidism (rare)",
+        "Anaphylaxis"
+      ],
+      "management": [
+        "Stat blood culture + CBC + CRP/PCT + lactate + ABG.",
+        "Empiric ABX: ванкомицин + цефепим (LOS coverage CoNS, MRSA, gram-negative) в первый час.",
+        "Volume resuscitation: 10-20 мл/кг NaCl 0.9% bolus, repeat ×1 PRN. Avoid >60 мл/кг (overload risk).",
+        "Vasopressor: norepinephrine 0.05-0.5 мкг/кг/мин — selective vasoconstrictor. Raises SVR.",
+        "Adjunct vasopressin 0.0003-0.002 U/кг/мин если refractory к norepinephrine.",
+        "Hydrocortisone 1 мг/кг IV q6-8h (catecholamine-resistant — relative adrenal).",
+        "Echo: assess cardiac function, PPHN, septic cardiomyopathy.",
+        "Lactate trend (<2 ммоль/л — improving, persistent >4 — concerning).",
+        "Consider IVIG (Pentaglobin) при severe sepsis preterm DIC."
+      ],
+      "pearls": [
+        "Cold vs warm shock recognition critical — different vasopressor choice.",
+        "Norepinephrine 1st-line warm shock у newborn (vs dopamine для cold).",
+        "Hydrocortisone reserved для catecholamine-resistant — relative adrenal insufficiency 30-50% septic preterm."
+      ],
+      "references": [
+        "Davis AL et al. Crit Care Med 2017;45:1061",
+        "PALS Guidelines 2020",
+        "AAP CFN — Hemodynamic Support"
+      ]
+    },
+    {
+      "id": "case-poly-vlbw",
+      "title_ru": "Полицитемия у LGA-новорождённого",
+      "title_en": "Polycythemia в LGA newborn",
+      "topic": "metabolic",
+      "level": "intermediate",
+      "vignette": "Мальчик 41 нед, BW 4350 г (LGA), мать с GDM на инсулине. Лицо багрово-плеthorical. На 4 часе жизни — hypoglycemia BG 1.6, tachypnea 80/мин, jitteriness. Hct (heel) = 73%, venous Hct 71%.",
+      "presenting_features": [
+        "LGA infant of diabetic mother",
+        "Plethoric facial appearance",
+        "Symptoms hyperviscosity: tachypnea, jitteriness, hypoglycemia",
+        "Hct >65% venous (true polycythemia, NOT capillary artifact)",
+        "Risks: NEC, stroke, renal vein thrombosis"
+      ],
+      "differential": [
+        "Polycythemia neonatorum (наиболее вероятно — IDM + LGA)",
+        "Dehydration (Hct artifact) — exclude through repeat venous sample",
+        "Twin-twin transfusion syndrome (recipient)",
+        "Maternal-fetal transfusion"
+      ],
+      "management": [
+        "Confirm Hct via venous sample (NOT capillary — overestimates).",
+        "Asymptomatic Hct 65-70% — observe, hydrate.",
+        "Symptomatic OR Hct >70% — partial exchange transfusion (PET).",
+        "PET volume: blood volume × (current Hct - target Hct) / current Hct, target 55-60%.",
+        "Replace via UVC с NaCl 0.9% (NOT albumin — может cause NEC).",
+        "Treat hypoglycemia: D10 IV bolus + continuous GIR 6-8 мг/кг/мин.",
+        "Monitor для NEC × 48-72 часа после PET.",
+        "Long-term: most do well. Severe cases (Hct >75%, neurological symptoms) — consider neurodev follow-up."
+      ],
+      "pearls": [
+        "Capillary Hct overestimates by 5-15% — always confirm venous before treatment decisions.",
+        "Partial exchange с NaCl preferred over albumin (NEC risk lower).",
+        "Symptomatic + Hct 65-70% needs treatment; asymptomatic + Hct >70% controversial."
+      ],
+      "references": [
+        "Werner EJ. Clin Perinatol 1995;22:693",
+        "AAP COFN — Polycythemia",
+        "Ozek E et al. Cochrane 2010 — Partial exchange"
+      ]
+    },
+    {
+      "id": "case-hsv-disseminated",
+      "title_ru": "Диссеминированный HSV у newborn",
+      "title_en": "Disseminated HSV в newborn",
+      "topic": "infection",
+      "level": "advanced",
+      "vignette": "Мальчик 39 нед, BW 3100 г. Day 7 жизни — irritability, poor feeding, hepatomegaly, ALT 850, тромбоцитопения 45 000. Vesicular rash на mouth + scalp. Maternal hx: 'cold sores' active при родах, vaginal delivery.",
+      "presenting_features": [
+        "Day 5-12 жизни presentation (HSV typical)",
+        "Multi-system involvement: liver, CNS, skin",
+        "Hepatitis (very high ALT)",
+        "Thrombocytopenia",
+        "Vesicular rash (50% disseminated HSV)",
+        "Maternal hx active oral lesions (HSV-1 transmissible perinatally)"
+      ],
+      "differential": [
+        "Disseminated HSV (наиболее вероятно — classic triad rash + hepatitis + thrombocytopenia)",
+        "Bacterial sepsis с DIC",
+        "Enterovirus disseminated (similar presentation)",
+        "Other TORCH (CMV, syphilis)"
+      ],
+      "management": [
+        "STAT acyclovir 60 мг/кг/сут (20 мг/кг q8h) IV — empirically pending PCR.",
+        "Continue × 14-21 дней (21 для CNS / disseminated).",
+        "Stat workup: HSV PCR (blood, CSF, eye, mouth swabs), LFTs, coags, CBC, blood culture.",
+        "LP — every disseminated HSV needs CNS exclusion.",
+        "Monitor renal function (acyclovir nephrotoxicity, hydrate well).",
+        "Treat DIC: FFP, platelets, cryoprecipitate PRN.",
+        "Ophthalmology consult — HSV keratitis screen.",
+        "Long-term outcome guarded: CNS HSV mortality 4%, but 70%+ neurodevelopmental sequelae у survivors.",
+        "Maternal counseling — risks future pregnancies (recurrent vs primary HSV)."
+      ],
+      "pearls": [
+        "HSV mortality without treatment: 60-85%. With prompt acyclovir: <30%.",
+        "Vesicles в half of disseminated HSV — absence не excludes.",
+        "Empiric acyclovir при ANY suspect HSV — wait для PCR делает worse outcomes."
+      ],
+      "references": [
+        "Kimberlin DW et al. NEJM 2011;365:1284",
+        "AAP Red Book 2024",
+        "Pinninti SG, Kimberlin DW. Curr Opin Pediatr 2018;30:159"
+      ]
+    },
+    {
+      "id": "case-spontaneous-perforation",
+      "title_ru": "Spontaneous intestinal perforation (SIP) у ELBW",
+      "title_en": "Spontaneous intestinal perforation в ELBW",
+      "topic": "gastro",
+      "level": "advanced",
+      "vignette": "Девочка GA 25 нед, BW 720 г, day 4 жизни. На indomethacin для PDA + dexamethasone DART. Внезапно: blue abdomen, distention, hypotension. AXR: massive pneumoperitoneum. Hb stable 145.",
+      "presenting_features": [
+        "ELBW <26 нед within first 7-10 days",
+        "NSAID + steroid combination (high risk)",
+        "Sudden 'blue abdomen' (visible bowel loops через thin abdominal wall)",
+        "Massive pneumoperitoneum (often more than NEC perforation)",
+        "Hb stable (less hemorrhagic than NEC)"
+      ],
+      "differential": [
+        "SIP (наиболее вероятно — early, NSAID/steroid, no antecedent NEC)",
+        "Severe NEC IIIB с perforation",
+        "Volvulus (rare ELBW)"
+      ],
+      "management": [
+        "STAT: NPO, decompression NG, fluid resuscitation 10-20 мл/кг NaCl.",
+        "Surgical consultation immediately.",
+        "Triple ABX: ампициллин + гентамицин + метронидазол.",
+        "Choice: Primary peritoneal drainage (PPD) vs laparotomy.",
+        "  - NECSTEPS trial: similar mortality, less initial morbidity с PPD у ELBW",
+        "  - Many centers PPD first, escalate к laparotomy если no improvement.",
+        "Continue ABX 7-14 дней (longer if abscess).",
+        "STOP indomethacin/ibuprofen + steroid (causative).",
+        "Long-term: ileostomy may need закрытие 2-3 мес.",
+        "Follow growth + nutrition (TPN dependence weeks)."
+      ],
+      "pearls": [
+        "SIP vs NEC: SIP earlier (<7 days), no antecedent NEC, NSAID/steroid risk factor, less hemorrhagic.",
+        "PPD первая интервенция ELBW — similar outcomes к laparotomy, less initial morbidity (NECSTEPS).",
+        "NSAID + steroid combination в ELBW = especially high SIP risk."
+      ],
+      "references": [
+        "Moss RL et al. NEJM 2006;354:2225 — NECSTEPS",
+        "Holman RC et al. Pediatrics 2006;117:e188 — SIP epidemiology",
+        "Stark AR et al. Pediatrics 2001;108:1086 — dexamethasone"
+      ]
+    },
+    {
+      "id": "case-aki-elbw",
+      "title_ru": "Острая почечная недостаточность ELBW",
+      "title_en": "Acute kidney injury в ELBW",
+      "topic": "metabolic",
+      "level": "advanced",
+      "vignette": "Мальчик GA 24 нед, BW 580 г, day 3 жизни. Получил 2 cycle ibuprofen для PDA. Креатинин поднялся 0.6 → 1.4 мг/дл. Olиguria <0.5 мл/кг/час × 8 ч. K+ 6.2.",
+      "presenting_features": [
+        "Acute creatinine rise >0.3 мг/дл OR >50% from baseline (KDIGO criteria)",
+        "Oliguria <0.5 мл/кг/час × 6 ч (Stage 1)",
+        "Hyperkalemia 6.0+",
+        "NSAID exposure (ibuprofen for PDA)",
+        "Common у ELBW (30-50% incidence)"
+      ],
+      "differential": [
+        "NSAID-induced AKI (наиболее вероятно)",
+        "Pre-renal: dehydration, hypovolemia, hsPDA с decreased renal perfusion",
+        "Post-renal: bladder outlet obstruction (rare)",
+        "Intrinsic: ATN от ischemia / sepsis"
+      ],
+      "management": [
+        "STOP NSAID immediately + любые nephrotoxic drugs.",
+        "Volume status assessment: bedside echo, IVC, weight trends.",
+        "If hypovolemic — careful fluid bolus 10 мл/кг NaCl × 1.",
+        "If euvolemic / hypervolemic — restrict fluids к 60-70% maintenance.",
+        "Diuretic trial: furosemide 1 мг/кг IV; if response — continue PRN.",
+        "Treat hyperkalemia (K+ >7): Ca gluconate, glucose+insulin, NaHCO₃.",
+        "Phosphate binders if PO₄ ↑.",
+        "Avoid contrast, vancomycin nephrotoxic, gentamicin trough monitoring.",
+        "Adjust drug doses: vancomycin extended interval, no aminoglycoside if possible.",
+        "Renal consultation; CRRT criteria: severe oliguria + uremia OR refractory hyperkalemia.",
+        "Most preterm AKI recovers — long-term CKD risk slightly elevated."
+      ],
+      "pearls": [
+        "Neonatal AKI underrecognized — KDIGO Neonatal modified criteria 2018.",
+        "ELBW AKI common с NSAID PDA treatment — alternatives (paracetamol) preferred when high risk.",
+        "Long-term: AKI в neonatal period associated с CKD adult — follow up creatinine, BP, urine albumin annually."
+      ],
+      "references": [
+        "Jetton JG et al. Lancet Child Adolesc Health 2017;1:184 — AKI in neonates",
+        "Selewski DT et al. Pediatrics 2015;136:e463"
+      ]
+    },
+    {
+      "id": "case-cmv-congenital",
+      "title_ru": "Врождённая ЦМВ-инфекция",
+      "title_en": "Congenital CMV infection",
+      "topic": "infection",
+      "level": "advanced",
+      "vignette": "Девочка 38 нед, BW 2300 г (SGA <3-й перцентиль). Microcephaly OFC 28 см (-3 SD). Hepatosplenomegaly + jaundice (TSB direct elevated). Petechiae. Hearing screen failed. Urine CMV PCR positive 1.5 × 10⁶ копий/мл.",
+      "presenting_features": [
+        "SGA + microcephaly (TORCH triad including CMV)",
+        "Hepatosplenomegaly + cholestasis (direct hyperbili)",
+        "Thrombocytopenia + petechiae",
+        "Failed hearing screen (most common cCMV manifestation)",
+        "Urine PCR confirms congenital (если <3 нед после рождения)"
+      ],
+      "differential": [
+        "Congenital CMV (наиболее вероятно — symptomatic forms 10-15%, asymptomatic 85-90%)",
+        "Toxoplasmosis (TORCH — characteristic chorioretinitis, hydrocephalus)",
+        "Rubella (cataracts, cardiac, deafness)",
+        "Zika (microcephaly + brain calcifications)",
+        "Syphilis (snuffles, bone changes, hepatosplenomegaly)"
+      ],
+      "management": [
+        "Antiviral: valganciclovir 16 мг/кг q12h PO × 6 мес для symptomatic.",
+        "Indication: symptomatic cCMV с CNS involvement (hearing loss, microcephaly, intracranial calcifications).",
+        "Asymptomatic cCMV — treatment controversial (potential benefit hearing).",
+        "Monitor: weekly CBC (neutropenia), liver, urine CMV PCR.",
+        "Multidisciplinary follow-up:",
+        "  - Audiology q3-6 мес × 6 лет (progressive SNHL common)",
+        "  - Neurology + developmental",
+        "  - Ophthalmology (chorioretinitis screen)",
+        "Long-term outcomes:",
+        "  - Symptomatic: 40-58% sequelae (hearing loss, CP, cognitive impairment)",
+        "  - Asymptomatic: 10-15% develop late hearing loss",
+        "Maternal counseling: future pregnancies — primary CMV worse outcomes than reactivation. Preconception advice."
+      ],
+      "pearls": [
+        "cCMV — leading cause non-genetic SNHL (sensorineural hearing loss).",
+        "Universal newborn CMV screening не yet standard, но hearing-failed → CMV PCR cheap and high-yield.",
+        "Valganciclovir 6 мес (Kimberlin 2015): improved hearing + neurodevelopment vs 6 нед."
+      ],
+      "references": [
+        "Kimberlin DW et al. NEJM 2015;372:933",
+        "Rawlinson WD et al. Lancet Infect Dis 2017;17:e177",
+        "AAP Red Book 2024"
+      ]
+    },
+    {
+      "id": "case-feeding-aspiration",
+      "title_ru": "Аспирация при кормлении у preterm",
+      "title_en": "Feeding aspiration в preterm",
+      "topic": "respiratory",
+      "level": "intermediate",
+      "vignette": "Мальчик GA 33 нед PMA, на full feeds через NG. Сегодня утром во время bolus feed: внезапно desaturated 92→78%, цианоз, кашель. CXR: правосторонний нижнедолевой инфильтрат.",
+      "presenting_features": [
+        "Acute deterioration during/after feed",
+        "Desaturation + cough + cyanosis (witnessed event)",
+        "New infiltrate на CXR (often right lower lobe — gravity)",
+        "May indicate immature feeding skills OR misplaced NG tube"
+      ],
+      "differential": [
+        "Aspiration (наиболее вероятно — temporal с feed)",
+        "Sepsis с pneumonia",
+        "Pneumothorax",
+        "Atelectasis",
+        "Apnea of prematurity"
+      ],
+      "management": [
+        "Immediate: stop feed, suction airway, increase O₂ если desaturated.",
+        "Verify NG tube position (pH ≤5.0 OR confirmed по landmarks).",
+        "If NG misplaced — remove + reposition.",
+        "Antibiotic empirically: ампициллин + гентамицин 7-10 дней (suspected aspiration pneumonia).",
+        "Consider swallow study если recurrent — VFSS (video fluoroscopic swallow) by SLP.",
+        "Feeding strategy adjustment:",
+        "  - Slow advancement",
+        "  - Continuous feed vs bolus",
+        "  - Smaller volume more frequent",
+        "  - Position upright during/after feed",
+        "  - Side-lying on right after feed (limit aspiration)",
+        "Pacing during oral feeds (cue-based feeding).",
+        "Lactation consultant if breastfeeding.",
+        "If recurrent aspiration: consider G-tube vs surgical option (rare)."
+      ],
+      "pearls": [
+        "Witnessed aspiration event ≠ aspiration pneumonia (most resolve без infection).",
+        "Recurrent aspiration в preterm — concerning for neuromuscular incoordination, tracheoesophageal fistula, GERD.",
+        "Cue-based feeding (responsive к infant signals) vs schedule-driven — better outcomes preterm."
+      ],
+      "references": [
+        "Lau C, Smith EO. Acta Paediatr 2011;100:64",
+        "AAP COFN Feeding Premature Infants"
+      ]
+    },
+    {
+      "id": "case-tof-spell",
+      "title_ru": "Тет-spell у tetralogy of Fallot",
+      "title_en": "Tet spell в tetralogy of Fallot",
+      "topic": "cardiopulmonary",
+      "level": "advanced",
+      "vignette": "Мальчик 4 нед age с известным TOF (ожидающий surgery). Внезапно во время плача: severe cyanosis, decreased murmur, irritability → letargy. SpO₂ 60% на room air. Bag-mask ventilation +O₂ → 85%.",
+      "presenting_features": [
+        "Known TOF (or undiagnosed cyanotic CHD)",
+        "Acute cyanosis precipitated by crying / feed / agitation",
+        "Decreased intensity of murmur (RVOT obstruction worsens)",
+        "Tachypnea, lethargy, possible LOC",
+        "Mortality if not treated promptly"
+      ],
+      "differential": [
+        "Tet spell (RVOT spasm) — наиболее вероятно known TOF",
+        "Other cyanotic CHD acute event",
+        "Sepsis с decompensation",
+        "Pulmonary cause (pneumothorax)"
+      ],
+      "management": [
+        "Step 1: Knee-chest position (compression IVC raises SVR, reduces R-to-L shunt).",
+        "Step 2: 100% O₂ (limited efficacy в cyanotic CHD но useful).",
+        "Step 3: Calm environment — reduce anxiety/crying что worsens spell.",
+        "Step 4: Morphine 0.1 мг/кг IV/IM/SC — sedation + reduces hyperpnea.",
+        "Step 5: Volume bolus 10 мл/кг NaCl 0.9% (improves preload).",
+        "Step 6: NaHCO₃ 1 мэкв/кг IV если significant acidosis.",
+        "Step 7: Phenylephrine 0.5-5 мкг/кг/мин IV — α-agonist, raises SVR, decreases R-to-L shunt.",
+        "Step 8: Esmolol 0.5 мг/кг IV bolus then 50 мкг/кг/мин — relaxes RVOT spasm.",
+        "Step 9: Refractory: ECMO consideration, urgent surgical intervention.",
+        "Long-term: surgical repair TOF planned — likely accelerated по этому event."
+      ],
+      "pearls": [
+        "Knee-chest position = simplest, fastest intervention. Can be done by parent при home spell.",
+        "Avoid drugs that lower SVR (NTG, β-agonists) — worsen spell.",
+        "Spell escalation often signals need для earlier surgical repair."
+      ],
+      "references": [
+        "AHA Pediatric Cardiac Guidelines",
+        "Apitz C et al. Lancet 2009;374:1462"
       ]
     }
   ]
