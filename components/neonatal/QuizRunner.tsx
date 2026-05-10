@@ -4,16 +4,17 @@
  * QuizRunner — interactive multi-choice quiz UI для Neonatology Module.
  * Audit Е1-Е4 — closes тесты и оценка знаний gap.
  *
- * Features:
- *   - Per-quiz score tracking (correct / total + percent)
- *   - Per-question feedback (correct/incorrect + explanation reveal)
- *   - Topic + level metadata (filterable)
- *   - Reset / retry per quiz
- *   - localStorage persists last-attempt scores per quiz id
+ * UX (1:1 с TestsPage):
+ *   - List view: grid карточек (rg-3), grouped by topic
+ *   - Card: pill (вопросы + длительность), title, description, footer
+ *   - Click card → fullscreen quiz takeover
+ *   - Per-quiz score tracking + 70 % pass threshold
+ *   - localStorage persists last attempts
  */
 
 import { useState, useEffect, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
+import { ArrowRight } from '@/components/icons';
 
 interface QuizQuestion {
   q: string;
@@ -62,10 +63,27 @@ const LEVEL_LABELS: Record<string, { label: string; color: string }> = {
   advanced: { label: 'Продвинутый', color: '#DC2626' },
 };
 
+const TOPIC_DESCRIPTIONS: Record<string, string> = {
+  'quiz-resus-1': 'Положение, ЧСС, компрессии, адреналин, FiO₂ и SpO₂ цели по NRP 8 ed.',
+  'quiz-rds': 'Сурфактант, antenatal стероиды, LISA, сравнение препаратов, FiO₂ thresholds.',
+  'quiz-bili': 'Фототерапия, DVET volume, IVIG dose, формы ГБН и их частота.',
+  'quiz-sepsis': 'EOS vs LOS этиология, empiric ABX, threshold sample timing, GBS.',
+  'quiz-hie': 'Окно TH, целевая T core, критерии включения, antiконвульсанты.',
+  'quiz-nutrition': 'Aminoacids start, GIR ranges, lipid emulsions, trophic feeds.',
+  'quiz-iem': 'Принципы IEM rescue, hyperammonemia management, B12-responsive forms.',
+  'quiz-screening': 'Sample timing, CCHD pulse oximetry, ROP screen для preterm.',
+};
+
+function estimateDuration(questionCount: number): string {
+  // ~1.5 мин per question conservative
+  const min = Math.ceil(questionCount * 1.5);
+  return `${min} мин`;
+}
+
 export default function QuizRunner({ query }: { query: string }) {
   const [bank, setBank] = useState<QuizBank | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [openQuiz, setOpenQuiz] = useState<string | null>(null);
+  const [activeQuiz, setActiveQuiz] = useState<string | null>(null);
   const [state, setState] = useState<QuizState>(() => {
     if (typeof window === 'undefined') return {};
     try {
@@ -75,7 +93,6 @@ export default function QuizRunner({ query }: { query: string }) {
     return {};
   });
 
-  // Persist quiz state to localStorage so users see their previous attempts
   useEffect(() => {
     if (typeof window === 'undefined') return;
     try { window.localStorage.setItem('bordik-neonatal-quiz-state', JSON.stringify(state)); } catch { /* ignore */ }
@@ -108,10 +125,20 @@ export default function QuizRunner({ query }: { query: string }) {
     );
   }, [bank, query]);
 
+  const groupedByTopic = useMemo(() => {
+    const map = new Map<string, Quiz[]>();
+    for (const quiz of filteredQuizzes) {
+      const topic = TOPIC_LABELS[quiz.topic] ?? quiz.topic;
+      const arr = map.get(topic) ?? [];
+      arr.push(quiz);
+      map.set(topic, arr);
+    }
+    return Array.from(map.entries());
+  }, [filteredQuizzes]);
+
   const handleSelect = (quizId: string, qIdx: number, optionIdx: number) => {
     setState((prev) => {
       const cur = prev[quizId] ?? { selected: {}, submitted: false, score: 0 };
-      // Don't allow re-selection after submitted
       if (cur.submitted) return prev;
       return {
         ...prev,
@@ -161,303 +188,489 @@ export default function QuizRunner({ query }: { query: string }) {
     return (
       <div>
         <div className="lc-shimmer" style={{ height: 48, width: '100%', borderRadius: 12, marginBottom: 12 }} />
-        <div className="lc-shimmer" style={{ height: 48, width: '100%', borderRadius: 12, marginBottom: 12 }} />
-        <div className="lc-shimmer" style={{ height: 48, width: '100%', borderRadius: 12 }} />
+        <div className="lc-shimmer" style={{ height: 160, width: '100%', borderRadius: 24, marginBottom: 12 }} />
+        <div className="lc-shimmer" style={{ height: 160, width: '100%', borderRadius: 24 }} />
       </div>
     );
   }
 
-  const totalQuestions = bank.quizzes.reduce((s, q) => s + q.questions.length, 0);
+  // Active quiz view — full quiz interaction
+  if (activeQuiz) {
+    const quiz = bank.quizzes.find((qq) => qq.id === activeQuiz);
+    if (!quiz) {
+      setActiveQuiz(null);
+      return null;
+    }
+    return (
+      <ActiveQuizView
+        quiz={quiz}
+        state={state[quiz.id]}
+        onClose={() => setActiveQuiz(null)}
+        onSelect={(qIdx, optionIdx) => handleSelect(quiz.id, qIdx, optionIdx)}
+        onSubmit={() => handleSubmit(quiz)}
+        onReset={() => handleReset(quiz.id)}
+      />
+    );
+  }
 
+  // List view
   return (
-    <>
+    <div style={{ width: '100%' }}>
       <p style={{ fontSize: 13, color: '#6B7280', margin: '0 0 14px' }}>
-        Показано: <strong style={{ color: '#1A1A1A' }}>{filteredQuizzes.length}</strong> из {bank.quizzes.length} тестов · {totalQuestions} вопросов всего
+        Показано: <strong style={{ color: '#1A1A1A' }}>{filteredQuizzes.length}</strong> из {bank.quizzes.length} тестов
         {' · '}
         <span style={{ color: '#9CA3AF' }}>
-          выбирайте ответы, нажмите «Проверить», чтобы увидеть результат
+          выберите тест и нажмите карточку чтобы начать
         </span>
       </p>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-        {filteredQuizzes.map((quiz) => {
-          const qState = state[quiz.id];
-          const isOpen = openQuiz === quiz.id;
-          const submitted = qState?.submitted ?? false;
-          const score = qState?.score ?? 0;
-          const total = quiz.questions.length;
-          const passingScore = Math.ceil(total * 0.7); // 70 % to pass
-          const passed = submitted && score >= passingScore;
-          const lvl = LEVEL_LABELS[quiz.level];
-          const topicLabel = TOPIC_LABELS[quiz.topic] ?? quiz.topic;
-          return (
-            <div key={quiz.id} style={{
-              background: '#F5F6F8',
-              border: isOpen ? '1px solid #E5E7EB' : 'none',
-              borderRadius: 14,
-              overflow: 'hidden',
-              transition: 'border-color 150ms ease',
-            }}>
-              <button
-                type="button"
-                onClick={() => setOpenQuiz(isOpen ? null : quiz.id)}
-                aria-expanded={isOpen}
-                style={{
-                  width: '100%',
-                  display: 'flex', alignItems: 'flex-start', gap: 14,
-                  padding: '14px 18px',
-                  background: 'transparent', border: 'none',
-                  cursor: 'pointer', textAlign: 'left',
-                  fontFamily: 'inherit',
-                }}
-              >
-                <span style={{ flex: 1, minWidth: 0 }}>
-                  <span style={{
-                    display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 4,
+
+      {groupedByTopic.map(([topic, quizzes], catIdx) => (
+        <motion.section
+          key={topic}
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1], delay: 0.06 + catIdx * 0.06 }}
+          style={{ marginBottom: 28 }}
+        >
+          <h3 style={{
+            fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700,
+            color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
+            marginBottom: 12,
+          }}>
+            {topic}
+          </h3>
+          <div className="rg-3">
+            {quizzes.map((quiz, i) => {
+              const qState = state[quiz.id];
+              const submitted = qState?.submitted ?? false;
+              const score = qState?.score ?? 0;
+              const total = quiz.questions.length;
+              const passingScore = Math.ceil(total * 0.7);
+              const passed = submitted && score >= passingScore;
+              const lvl = LEVEL_LABELS[quiz.level];
+              const description = TOPIC_DESCRIPTIONS[quiz.id] ?? `Тест по теме ${TOPIC_LABELS[quiz.topic] ?? quiz.topic}`;
+              return (
+                <motion.button
+                  key={quiz.id}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.03, duration: 0.3, ease: [0.05, 0.7, 0.1, 1] }}
+                  onClick={() => setActiveQuiz(quiz.id)}
+                  style={{
+                    background: '#F5F6F8',
+                    borderRadius: 'var(--md-sys-shape-corner-extra-large)',
+                    border: 'none',
+                    padding: 'var(--space-5)',
+                    textAlign: 'left',
+                    cursor: 'pointer',
+                    position: 'relative',
+                    overflow: 'hidden',
+                    minHeight: 160,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    transition: 'background 400ms cubic-bezier(0.22,1,0.36,1), transform 400ms cubic-bezier(0.22,1,0.36,1)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = '#F0F2F5';
+                    e.currentTarget.style.transform = 'translateY(-1px)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = '#F5F6F8';
+                    e.currentTarget.style.transform = 'translateY(0)';
+                  }}
+                >
+                  {/* Status badge top-right (submitted score or level) */}
+                  {submitted ? (
+                    <div style={{
+                      position: 'absolute', top: 12, right: 12, zIndex: 2,
+                      display: 'inline-flex', alignItems: 'center', gap: 4,
+                      padding: '4px 10px',
+                      borderRadius: 999,
+                      background: passed ? '#059669' : '#B45309',
+                      color: '#FFFFFF',
+                      fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
+                      letterSpacing: '0.06em', textTransform: 'uppercase',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
+                    }}>
+                      {passed ? 'PASS' : 'FAIL'} {score}/{total}
+                    </div>
+                  ) : null}
+
+                  {/* Top pills - questions + duration + level */}
+                  <div style={{
+                    marginBottom: 'var(--space-3)', position: 'relative', zIndex: 1,
+                    display: 'flex', flexWrap: 'wrap', gap: 6,
                   }}>
                     <span style={{
-                      fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 600,
-                      color: '#111827', letterSpacing: '-0.01em', lineHeight: 1.35,
+                      display: 'inline-flex', alignItems: 'center', gap: 'var(--space-1)',
+                      padding: '4px var(--space-2)',
+                      borderRadius: 'var(--md-sys-shape-corner-full)',
+                      background: '#FFFFFF',
+                      boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
+                      fontFamily: 'var(--font-mono)', fontSize: '0.625rem', fontWeight: 500,
+                      color: 'var(--md-sys-color-on-surface-variant)',
                     }}>
-                      {quiz.title_ru}
+                      {total} вопросов · {estimateDuration(total)}
                     </span>
                     {lvl && (
                       <span style={{
-                        fontSize: 10, fontWeight: 700, letterSpacing: '0.04em',
-                        textTransform: 'uppercase',
-                        color: lvl.color,
+                        display: 'inline-flex', alignItems: 'center',
+                        padding: '4px var(--space-2)',
+                        borderRadius: 'var(--md-sys-shape-corner-full)',
                         background: '#FFFFFF',
-                        padding: '2px 6px', borderRadius: 4,
-                        border: `1px solid ${lvl.color}33`,
+                        boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
+                        fontFamily: 'var(--font-mono)', fontSize: '0.625rem', fontWeight: 600,
+                        color: lvl.color,
                       }}>
                         {lvl.label}
                       </span>
                     )}
-                    <span style={{
-                      fontSize: 10, fontWeight: 700, letterSpacing: '0.04em',
-                      textTransform: 'uppercase',
-                      color: '#9CA3AF',
-                      background: '#FFFFFF',
-                      padding: '2px 6px', borderRadius: 4,
-                      border: '1px solid #E5E7EB',
+                  </div>
+
+                  {/* Middle: title + description */}
+                  <div style={{ position: 'relative', zIndex: 1, flex: 1 }}>
+                    <h3 style={{
+                      fontFamily: 'var(--font-display)', fontSize: 'var(--text-base)', fontWeight: 700,
+                      color: 'var(--md-sys-color-on-surface)',
+                      marginBottom: 'var(--space-1)', lineHeight: 1.25,
                     }}>
-                      {topicLabel}
-                    </span>
-                  </span>
-                  <span style={{
-                    display: 'flex', gap: 12, fontSize: 12, color: '#6B7280',
+                      {quiz.title_ru}
+                    </h3>
+                    <p style={{
+                      fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)',
+                      color: 'var(--md-sys-color-on-surface-variant)', lineHeight: 1.4,
+                      display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden',
+                    }}>
+                      {description}
+                    </p>
+                  </div>
+
+                  {/* Footer */}
+                  <div style={{
+                    display: 'flex', alignItems: 'center', gap: 'var(--space-1)',
+                    marginTop: 'var(--space-3)', position: 'relative', zIndex: 1,
                   }}>
-                    <span>{total} вопросов</span>
-                    {submitted && (
-                      <span style={{
-                        fontWeight: 700,
-                        color: passed ? '#059669' : '#B45309',
-                      }}>
-                        Результат: {score}/{total} ({Math.round((score / total) * 100)}%) — {passed ? 'PASS' : 'FAIL'}
-                      </span>
-                    )}
-                  </span>
-                </span>
-                <span style={{
-                  flexShrink: 0,
-                  color: '#9CA3AF',
-                  transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-                  transition: 'transform 200ms',
-                  marginTop: 4,
-                }}>
-                  <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="6 9 12 15 18 9" />
-                  </svg>
-                </span>
-              </button>
-
-              <AnimatePresence initial={false}>
-                {isOpen && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{
-                      height: { duration: 0.25, ease: [0.05, 0.7, 0.1, 1] },
-                      opacity: { duration: 0.18 },
-                    }}
-                    style={{ overflow: 'hidden' }}
-                  >
-                    <div style={{
-                      padding: '14px 20px 18px',
-                      background: '#FFFFFF',
-                      borderTop: '1px solid #E5E7EB',
+                    <span style={{
+                      fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', fontWeight: 500,
+                      color: 'var(--md-sys-color-on-surface)',
                     }}>
-                      {quiz.questions.map((qu, qIdx) => {
-                        const selected = qState?.selected[qIdx];
-                        return (
-                          <div key={qIdx} style={{
-                            marginBottom: 18,
-                            paddingBottom: 14,
-                            borderBottom: qIdx < quiz.questions.length - 1 ? '1px solid #F3F4F6' : 'none',
-                          }}>
-                            <div style={{
-                              fontSize: 13.5, fontWeight: 600,
-                              color: '#1F2937',
-                              marginBottom: 10,
-                              lineHeight: 1.45,
-                            }}>
-                              <span style={{
-                                display: 'inline-block',
-                                background: '#EFF6FF',
-                                color: '#2563EB',
-                                fontFamily: 'var(--font-mono)',
-                                fontSize: 11, fontWeight: 700,
-                                padding: '2px 6px',
-                                borderRadius: 4,
-                                marginRight: 8,
-                              }}>
-                                Q{qIdx + 1}
-                              </span>
-                              {qu.q}
-                            </div>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                              {qu.options.map((opt, optIdx) => {
-                                const isSelected = selected === optIdx;
-                                const isCorrect = qu.answer === optIdx;
-                                let bg = '#F9FAFB';
-                                let border = '1px solid transparent';
-                                let color = '#374151';
-                                if (submitted) {
-                                  if (isCorrect) {
-                                    bg = '#ECFDF5';
-                                    border = '1px solid #A7F3D0';
-                                    color = '#065F46';
-                                  } else if (isSelected && !isCorrect) {
-                                    bg = '#FEF2F2';
-                                    border = '1px solid #FECACA';
-                                    color = '#991B1B';
-                                  }
-                                } else if (isSelected) {
-                                  bg = '#EFF6FF';
-                                  border = '1px solid #BFDBFE';
-                                  color = '#1E40AF';
-                                }
-                                return (
-                                  <button
-                                    key={optIdx}
-                                    onClick={() => handleSelect(quiz.id, qIdx, optIdx)}
-                                    disabled={submitted}
-                                    style={{
-                                      width: '100%',
-                                      display: 'flex', alignItems: 'flex-start', gap: 10,
-                                      padding: '10px 12px',
-                                      background: bg,
-                                      border: border,
-                                      borderRadius: 8,
-                                      cursor: submitted ? 'default' : 'pointer',
-                                      fontSize: 13,
-                                      fontFamily: 'inherit',
-                                      color: color,
-                                      textAlign: 'left',
-                                      transition: 'background 120ms',
-                                    }}
-                                  >
-                                    <span style={{
-                                      flexShrink: 0,
-                                      width: 20, height: 20,
-                                      borderRadius: '50%',
-                                      border: `2px solid ${isSelected ? '#2563EB' : '#D1D5DB'}`,
-                                      background: isSelected ? '#2563EB' : 'transparent',
-                                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                      color: '#FFFFFF',
-                                      fontSize: 11, fontWeight: 700,
-                                      marginTop: 1,
-                                    }}>
-                                      {String.fromCharCode(65 + optIdx)}
-                                    </span>
-                                    <span style={{ lineHeight: 1.4, flex: 1 }}>
-                                      {opt}
-                                      {submitted && isCorrect && (
-                                        <span style={{ marginLeft: 8, color: '#059669', fontWeight: 700 }}>✓</span>
-                                      )}
-                                      {submitted && isSelected && !isCorrect && (
-                                        <span style={{ marginLeft: 8, color: '#DC2626', fontWeight: 700 }}>✗</span>
-                                      )}
-                                    </span>
-                                  </button>
-                                );
-                              })}
-                            </div>
-                            {submitted && (
-                              <div style={{
-                                marginTop: 10,
-                                padding: '10px 14px',
-                                background: '#F9FAFB',
-                                borderRadius: 8,
-                                fontSize: 12.5,
-                                lineHeight: 1.55,
-                                color: '#374151',
-                                borderLeft: '3px solid #2563EB',
-                              }}>
-                                <strong>Объяснение:</strong> {qu.explanation}
-                              </div>
-                            )}
-                          </div>
-                        );
-                      })}
-
-                      {/* Submit / Reset */}
-                      <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
-                        {!submitted ? (
-                          <button
-                            onClick={() => handleSubmit(quiz)}
-                            disabled={Object.keys(qState?.selected ?? {}).length < total}
-                            style={{
-                              padding: '10px 20px',
-                              background: '#2563EB',
-                              color: '#FFFFFF',
-                              border: 'none',
-                              borderRadius: 8,
-                              cursor: Object.keys(qState?.selected ?? {}).length === total ? 'pointer' : 'not-allowed',
-                              opacity: Object.keys(qState?.selected ?? {}).length === total ? 1 : 0.5,
-                              fontSize: 13,
-                              fontWeight: 600,
-                              fontFamily: 'inherit',
-                            }}
-                          >
-                            Проверить ({Object.keys(qState?.selected ?? {}).length}/{total} ответов)
-                          </button>
-                        ) : (
-                          <button
-                            onClick={() => handleReset(quiz.id)}
-                            style={{
-                              padding: '10px 20px',
-                              background: '#F5F6F8',
-                              color: '#374151',
-                              border: 'none',
-                              borderRadius: 8,
-                              cursor: 'pointer',
-                              fontSize: 13,
-                              fontWeight: 500,
-                              fontFamily: 'inherit',
-                            }}
-                          >
-                            Пройти ещё раз
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          );
-        })}
-        {filteredQuizzes.length === 0 && (
-          <div style={{
-            padding: '32px 16px', background: '#F5F6F8', borderRadius: 12,
-            textAlign: 'center', color: '#6B7280', fontSize: 14,
-          }}>
-            Ничего не найдено.
+                      {submitted ? 'Пройти ещё раз' : 'Начать тест'}
+                    </span>
+                    <ArrowRight size={14} color="var(--md-sys-color-on-surface)" />
+                  </div>
+                </motion.button>
+              );
+            })}
           </div>
+        </motion.section>
+      ))}
+
+      {filteredQuizzes.length === 0 && (
+        <div style={{
+          padding: '32px 16px', background: '#F5F6F8', borderRadius: 12,
+          textAlign: 'center', color: '#6B7280', fontSize: 14,
+        }}>
+          Ничего не найдено.
+        </div>
+      )}
+    </div>
+  );
+}
+
+/**
+ * ActiveQuizView — fullscreen quiz interaction (когда test active).
+ * Mirrors DiagnosticTest takeover-pattern.
+ */
+function ActiveQuizView({
+  quiz, state, onClose, onSelect, onSubmit, onReset,
+}: {
+  quiz: Quiz;
+  state: { selected: Record<number, number>; submitted: boolean; score: number } | undefined;
+  onClose: () => void;
+  onSelect: (qIdx: number, optionIdx: number) => void;
+  onSubmit: () => void;
+  onReset: () => void;
+}) {
+  const submitted = state?.submitted ?? false;
+  const score = state?.score ?? 0;
+  const total = quiz.questions.length;
+  const passingScore = Math.ceil(total * 0.7);
+  const passed = submitted && score >= passingScore;
+  const answeredCount = Object.keys(state?.selected ?? {}).length;
+  const allAnswered = answeredCount === total;
+  const lvl = LEVEL_LABELS[quiz.level];
+
+  return (
+    <div style={{ width: '100%' }}>
+      {/* Back button + title */}
+      <button
+        onClick={onClose}
+        style={{
+          display: 'inline-flex', alignItems: 'center', gap: 8,
+          padding: '8px 14px',
+          marginBottom: 16,
+          background: '#F5F6F8',
+          color: '#374151',
+          border: 'none',
+          borderRadius: 10,
+          cursor: 'pointer',
+          fontSize: 13,
+          fontWeight: 500,
+          fontFamily: 'inherit',
+          transition: 'background 150ms',
+        }}
+        onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
+        onMouseLeave={(e) => { e.currentTarget.style.background = '#F5F6F8'; }}
+      >
+        <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="15 18 9 12 15 6" />
+        </svg>
+        К списку тестов
+      </button>
+
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1] }}
+        style={{ marginBottom: 24 }}
+      >
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 8,
+        }}>
+          <span style={{
+            fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
+            color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
+          }}>
+            {TOPIC_LABELS[quiz.topic] ?? quiz.topic}
+          </span>
+          {lvl && (
+            <span style={{
+              fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
+              color: lvl.color,
+              padding: '2px 8px',
+              background: '#FFFFFF',
+              border: `1px solid ${lvl.color}33`,
+              borderRadius: 4,
+              textTransform: 'uppercase',
+              letterSpacing: '0.04em',
+            }}>
+              {lvl.label}
+            </span>
+          )}
+        </div>
+        <h2 style={{
+          fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 700,
+          color: '#1A1A1A', marginBottom: 6, letterSpacing: '-0.02em',
+        }}>
+          {quiz.title_ru}
+        </h2>
+        <p style={{
+          fontFamily: 'var(--font-body)', fontSize: 14, color: '#6B7280',
+          lineHeight: 1.5,
+        }}>
+          {total} вопросов · {estimateDuration(total)} ·{' '}
+          {submitted ? (
+            <span style={{ color: passed ? '#059669' : '#B45309', fontWeight: 700 }}>
+              Результат: {score}/{total} ({Math.round((score / total) * 100)}%) — {passed ? 'PASS' : 'FAIL'}
+            </span>
+          ) : (
+            <span>Прогресс: {answeredCount}/{total} ответов</span>
+          )}
+        </p>
+      </motion.div>
+
+      {/* Questions */}
+      {quiz.questions.map((qu, qIdx) => {
+        const selected = state?.selected[qIdx];
+        return (
+          <motion.div
+            key={qIdx}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: qIdx * 0.05, duration: 0.3 }}
+            style={{
+              padding: '20px 22px',
+              background: '#F5F6F8',
+              borderRadius: 14,
+              marginBottom: 14,
+            }}
+          >
+            <div style={{
+              fontSize: 14.5, fontWeight: 600,
+              color: '#1F2937',
+              marginBottom: 14,
+              lineHeight: 1.45,
+              display: 'flex', alignItems: 'baseline', gap: 10,
+            }}>
+              <span style={{
+                flexShrink: 0,
+                background: '#EFF6FF',
+                color: '#2563EB',
+                fontFamily: 'var(--font-mono)',
+                fontSize: 11, fontWeight: 700,
+                padding: '3px 8px',
+                borderRadius: 5,
+              }}>
+                Q{qIdx + 1}
+              </span>
+              <span>{qu.q}</span>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              {qu.options.map((opt, optIdx) => {
+                const isSelected = selected === optIdx;
+                const isCorrect = qu.answer === optIdx;
+                let bg = '#FFFFFF';
+                let border = '1px solid transparent';
+                let color = '#374151';
+                if (submitted) {
+                  if (isCorrect) {
+                    bg = '#ECFDF5';
+                    border = '1px solid #A7F3D0';
+                    color = '#065F46';
+                  } else if (isSelected && !isCorrect) {
+                    bg = '#FEF2F2';
+                    border = '1px solid #FECACA';
+                    color = '#991B1B';
+                  }
+                } else if (isSelected) {
+                  bg = '#EFF6FF';
+                  border = '1px solid #BFDBFE';
+                  color = '#1E40AF';
+                }
+                return (
+                  <button
+                    key={optIdx}
+                    onClick={() => onSelect(qIdx, optIdx)}
+                    disabled={submitted}
+                    style={{
+                      width: '100%',
+                      display: 'flex', alignItems: 'flex-start', gap: 12,
+                      padding: '12px 14px',
+                      background: bg,
+                      border: border,
+                      borderRadius: 10,
+                      cursor: submitted ? 'default' : 'pointer',
+                      fontSize: 13.5,
+                      fontFamily: 'inherit',
+                      color: color,
+                      textAlign: 'left',
+                      transition: 'background 120ms',
+                    }}
+                  >
+                    <span style={{
+                      flexShrink: 0,
+                      width: 22, height: 22,
+                      borderRadius: '50%',
+                      border: `2px solid ${isSelected ? '#2563EB' : '#D1D5DB'}`,
+                      background: isSelected ? '#2563EB' : 'transparent',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      color: '#FFFFFF',
+                      fontSize: 11, fontWeight: 700,
+                      marginTop: 1,
+                    }}>
+                      {String.fromCharCode(65 + optIdx)}
+                    </span>
+                    <span style={{ lineHeight: 1.45, flex: 1 }}>
+                      {opt}
+                      {submitted && isCorrect && (
+                        <span style={{ marginLeft: 8, color: '#059669', fontWeight: 700 }}>✓</span>
+                      )}
+                      {submitted && isSelected && !isCorrect && (
+                        <span style={{ marginLeft: 8, color: '#DC2626', fontWeight: 700 }}>✗</span>
+                      )}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+            {submitted && (
+              <div style={{
+                marginTop: 12,
+                padding: '12px 14px',
+                background: '#FFFFFF',
+                borderRadius: 8,
+                fontSize: 12.5,
+                lineHeight: 1.55,
+                color: '#374151',
+                borderLeft: '3px solid #2563EB',
+              }}>
+                <strong>Объяснение:</strong> {qu.explanation}
+              </div>
+            )}
+          </motion.div>
+        );
+      })}
+
+      {/* Submit / reset */}
+      <div style={{
+        position: 'sticky',
+        bottom: 0,
+        marginTop: 20,
+        padding: '14px 0',
+        background: 'linear-gradient(to top, #FFFFFF 80%, transparent)',
+        display: 'flex',
+        gap: 10,
+        flexWrap: 'wrap',
+      }}>
+        {!submitted ? (
+          <button
+            onClick={onSubmit}
+            disabled={!allAnswered}
+            style={{
+              padding: '12px 24px',
+              background: allAnswered ? '#2563EB' : '#9CA3AF',
+              color: '#FFFFFF',
+              border: 'none',
+              borderRadius: 10,
+              cursor: allAnswered ? 'pointer' : 'not-allowed',
+              fontSize: 14,
+              fontWeight: 600,
+              fontFamily: 'inherit',
+              transition: 'background 150ms',
+            }}
+          >
+            Проверить ({answeredCount}/{total})
+          </button>
+        ) : (
+          <>
+            <button
+              onClick={onReset}
+              style={{
+                padding: '12px 24px',
+                background: '#F5F6F8',
+                color: '#374151',
+                border: 'none',
+                borderRadius: 10,
+                cursor: 'pointer',
+                fontSize: 14,
+                fontWeight: 500,
+                fontFamily: 'inherit',
+              }}
+            >
+              Пройти ещё раз
+            </button>
+            <button
+              onClick={onClose}
+              style={{
+                padding: '12px 24px',
+                background: '#2563EB',
+                color: '#FFFFFF',
+                border: 'none',
+                borderRadius: 10,
+                cursor: 'pointer',
+                fontSize: 14,
+                fontWeight: 600,
+                fontFamily: 'inherit',
+              }}
+            >
+              К списку тестов
+            </button>
+          </>
         )}
       </div>
-    </>
+    </div>
   );
 }
