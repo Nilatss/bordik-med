@@ -19,6 +19,7 @@ import GrowthCharts from '@/components/neonatal/GrowthCharts';
 import BilirubinNomogram from '@/components/neonatal/BilirubinNomogram';
 import ResuscitationFlowchart from '@/components/neonatal/ResuscitationFlowchart';
 import ApgarTimer from '@/components/neonatal/ApgarTimer';
+import QuizRunner from '@/components/neonatal/QuizRunner';
 import { ArrowRight } from '@/components/icons';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore } from '@/lib/store';
@@ -166,7 +167,32 @@ interface LactBank {
   drugs: LactDrug[];
 }
 
-type Tab = 'drugs' | 'guidelines' | 'calculators' | 'labs' | 'articles' | 'resuscitation' | 'lactmed' | 'growth' | 'bilirubin';
+interface NurseProcedureStep {
+  title: string;
+  items: string[];
+}
+
+interface NurseProcedure {
+  id: string;
+  title_ru: string;
+  title_en: string;
+  category: string;
+  duration_min: number;
+  audience: string;
+  steps: NurseProcedureStep[];
+  warnings: string[];
+  references: string[];
+}
+
+interface NurseProceduresBank {
+  version: string;
+  lastUpdated: string;
+  source: string;
+  license: string;
+  procedures: NurseProcedure[];
+}
+
+type Tab = 'drugs' | 'guidelines' | 'calculators' | 'labs' | 'articles' | 'resuscitation' | 'lactmed' | 'quizzes' | 'nurse' | 'growth' | 'bilirubin';
 
 export default function NeonatalHandbook() {
   const [bank, setBank] = useState<Bank | null>(null);
@@ -175,6 +201,7 @@ export default function NeonatalHandbook() {
   const [labs, setLabs] = useState<LabBank | null>(null);
   const [articles, setArticles] = useState<ArticlesBank | null>(null);
   const [lactmed, setLactmed] = useState<LactBank | null>(null);
+  const [nurse, setNurse] = useState<NurseProceduresBank | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [q, setQ] = useState('');
   const [openId, setOpenId] = useState<string | null>(null);
@@ -201,13 +228,14 @@ export default function NeonatalHandbook() {
     let cancelled = false;
     void (async () => {
       try {
-        const [drugsR, guidelinesR, calcR, labsR, articlesR, lactR] = await Promise.all([
-          fetch('/neonatal-monographs.json?v=2.6.0', { cache: 'force-cache' }),
-          fetch('/neonatal-guidelines.json?v=1.4.0', { cache: 'force-cache' }),
+        const [drugsR, guidelinesR, calcR, labsR, articlesR, lactR, nurseR] = await Promise.all([
+          fetch('/neonatal-monographs.json?v=2.7.0', { cache: 'force-cache' }),
+          fetch('/neonatal-guidelines.json?v=1.5.0', { cache: 'force-cache' }),
           fetch('/neonatal-calculators.json?v=1.0.0', { cache: 'force-cache' }),
           fetch('/neonatal-lab-norms.json?v=1.1.0', { cache: 'force-cache' }),
-          fetch('/neonatal-articles.json?v=1.4.0', { cache: 'force-cache' }),
+          fetch('/neonatal-articles.json?v=1.6.0', { cache: 'force-cache' }),
           fetch('/neonatal-lactmed.json?v=1.0.0', { cache: 'force-cache' }),
+          fetch('/neonatal-nurse-procedures.json?v=1.0.0', { cache: 'force-cache' }),
         ]);
         if (!drugsR.ok) throw new Error(`monographs ${drugsR.status}`);
         const drugsJson = await drugsR.json();
@@ -216,6 +244,7 @@ export default function NeonatalHandbook() {
         const labsJson = labsR.ok ? await labsR.json() : null;
         const articlesJson = articlesR.ok ? await articlesR.json() : null;
         const lactJson = lactR.ok ? await lactR.json() : null;
+        const nurseJson = nurseR.ok ? await nurseR.json() : null;
         if (!cancelled) {
           setBank(drugsJson as Bank);
           if (guidesJson) setGuidelines(guidesJson as GuidelinesBank);
@@ -223,6 +252,7 @@ export default function NeonatalHandbook() {
           if (labsJson) setLabs(labsJson as LabBank);
           if (articlesJson) setArticles(articlesJson as ArticlesBank);
           if (lactJson) setLactmed(lactJson as LactBank);
+          if (nurseJson) setNurse(nurseJson as NurseProceduresBank);
         }
       } catch (e) {
         if (!cancelled) setError((e as Error).message ?? 'load failed');
@@ -376,6 +406,18 @@ export default function NeonatalHandbook() {
     return Array.from(buckets.values()).filter((b) => b.items.length > 0);
   }, [lactmed, filteredLactmed]);
 
+  const filteredNurse = useMemo(() => {
+    if (!nurse) return [];
+    const query = q.trim().toLowerCase();
+    if (!query) return nurse.procedures;
+    return nurse.procedures.filter((p) =>
+      p.title_ru.toLowerCase().includes(query)
+      || p.title_en.toLowerCase().includes(query)
+      || p.category.toLowerCase().includes(query)
+      || p.steps.some((s) => s.title.toLowerCase().includes(query) || s.items.some((it) => it.toLowerCase().includes(query)))
+    );
+  }, [nurse, q]);
+
   if (error) {
     return (
       <main style={{ padding: '24px', maxWidth: 980, margin: '0 auto' }}>
@@ -427,7 +469,7 @@ export default function NeonatalHandbook() {
       </motion.div>
 
       {/* Search — для табов с поиском; на growth/bilirubin/resuscitation не нужен */}
-      {(tab === 'drugs' || tab === 'guidelines' || tab === 'calculators' || tab === 'labs' || tab === 'articles' || tab === 'lactmed') && (
+      {(tab === 'drugs' || tab === 'guidelines' || tab === 'calculators' || tab === 'labs' || tab === 'articles' || tab === 'lactmed' || tab === 'quizzes' || tab === 'nurse') && (
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
@@ -487,6 +529,8 @@ export default function NeonatalHandbook() {
           resuscitation: { label: 'Реанимация (4 региона)', count: 4 },
           articles: { label: 'Статьи', count: articles?.articles.length ?? 0 },
           lactmed: { label: 'ГВ / LactMed', count: lactmed?.drugs.length ?? 0 },
+          quizzes: { label: 'Тесты', count: null },
+          nurse: { label: 'Процедуры медсестры', count: nurse?.procedures.length ?? 0 },
           labs: { label: 'Лаб. нормы', count: totalLabs },
           growth: { label: 'Графики роста', count: null },
           bilirubin: { label: 'Билирубин', count: null },
@@ -871,6 +915,47 @@ export default function NeonatalHandbook() {
               </div>
             ))}
             {groupedLactmed.length === 0 && (
+              <div style={{
+                padding: '32px 16px', background: '#F5F6F8', borderRadius: 12,
+                textAlign: 'center', color: '#6B7280', fontSize: 14,
+              }}>
+                Ничего не найдено.
+              </div>
+            )}
+          </motion.div>
+        </>
+      ) : tab === 'quizzes' ? (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3 }}
+        >
+          <QuizRunner query={q} />
+        </motion.div>
+      ) : tab === 'nurse' ? (
+        <>
+          <p style={{ fontSize: 13, color: '#6B7280', margin: '0 0 14px' }}>
+            Показано: <strong style={{ color: '#1A1A1A' }}>{filteredNurse.length}</strong> из {nurse?.procedures.length ?? 0} процедур
+            {' · '}
+            <span style={{ color: '#9CA3AF' }}>
+              bedside reference для медсестёр и фельдшеров
+            </span>
+          </p>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+            style={{ display: 'flex', flexDirection: 'column', gap: 8 }}
+          >
+            {filteredNurse.map((proc) => (
+              <NurseProcedureCard
+                key={proc.id}
+                procedure={proc}
+                isOpen={openId === proc.id}
+                onToggle={() => setOpenId(openId === proc.id ? null : proc.id)}
+              />
+            ))}
+            {filteredNurse.length === 0 && (
               <div style={{
                 padding: '32px 16px', background: '#F5F6F8', borderRadius: 12,
                 textAlign: 'center', color: '#6B7280', fontSize: 14,
@@ -2092,6 +2177,172 @@ function LactCard({
                   </svg>
                 </a>
               </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+/**
+ * NurseProcedureCard — bedside procedural reference card.
+ * Audit Ж1-3 / З1-3 — closes nursing/feldsher content gap.
+ */
+function NurseProcedureCard({
+  procedure, isOpen, onToggle,
+}: {
+  procedure: NurseProcedure;
+  isOpen: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <div style={{
+      background: '#F5F6F8',
+      border: isOpen ? '1px solid #E5E7EB' : 'none',
+      borderRadius: 14,
+      overflow: 'hidden',
+      transition: 'border-color 150ms ease',
+    }}>
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={isOpen}
+        style={{
+          width: '100%',
+          display: 'flex', alignItems: 'flex-start', gap: 14,
+          padding: '14px 18px',
+          background: 'transparent', border: 'none',
+          cursor: 'pointer', textAlign: 'left',
+          fontFamily: 'inherit',
+        }}
+      >
+        <span style={{ flex: 1, minWidth: 0 }}>
+          <span style={{
+            display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 4,
+          }}>
+            <span style={{
+              fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 600,
+              color: '#111827', letterSpacing: '-0.01em', lineHeight: 1.35,
+            }}>
+              {procedure.title_ru}
+            </span>
+            <span style={{
+              fontSize: 10, fontWeight: 700, letterSpacing: '0.04em',
+              textTransform: 'uppercase', color: '#9CA3AF',
+              padding: '2px 6px', background: '#FFFFFF', borderRadius: 4,
+              border: '1px solid #E5E7EB',
+            }}>
+              {procedure.category}
+            </span>
+            <span style={{
+              fontSize: 11, fontWeight: 500,
+              color: '#6B7280',
+              fontFamily: 'var(--font-mono)',
+            }}>
+              ~{procedure.duration_min} мин
+            </span>
+          </span>
+        </span>
+        <span style={{
+          flexShrink: 0,
+          color: '#9CA3AF',
+          transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+          transition: 'transform 200ms',
+          marginTop: 4,
+        }}>
+          <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </span>
+      </button>
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{
+              height: { duration: 0.25, ease: [0.05, 0.7, 0.1, 1] },
+              opacity: { duration: 0.18 },
+            }}
+            style={{ overflow: 'hidden' }}
+          >
+            <div style={{
+              padding: '14px 20px 18px',
+              background: '#FFFFFF',
+              borderTop: '1px solid #E5E7EB',
+              fontSize: 13.5, lineHeight: 1.55, color: '#1F2937',
+            }}>
+              {procedure.steps.map((step, idx) => (
+                <div key={idx} style={{ marginBottom: 14 }}>
+                  <div style={{
+                    fontSize: 13, fontWeight: 700,
+                    color: '#1F2937',
+                    marginBottom: 6,
+                    display: 'flex', alignItems: 'center', gap: 8,
+                  }}>
+                    <span style={{
+                      display: 'inline-flex',
+                      alignItems: 'center', justifyContent: 'center',
+                      width: 22, height: 22,
+                      background: '#2563EB',
+                      color: '#FFFFFF',
+                      borderRadius: '50%',
+                      fontSize: 11, fontWeight: 700,
+                    }}>
+                      {idx + 1}
+                    </span>
+                    {step.title}
+                  </div>
+                  <ul style={{ margin: 0, paddingLeft: 32, fontSize: 12.5, lineHeight: 1.55, color: '#374151' }}>
+                    {step.items.map((it, i) => (
+                      <li key={i} style={{ marginBottom: 3 }}>{it}</li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+              {procedure.warnings.length > 0 && (
+                <div style={{
+                  marginTop: 10,
+                  padding: '12px 14px',
+                  background: '#FEF2F2',
+                  border: '1px solid #FECACA',
+                  borderRadius: 8,
+                }}>
+                  <div style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
+                    textTransform: 'uppercase', color: '#991B1B', marginBottom: 6,
+                  }}>
+                    ⚠️ Предупреждения
+                  </div>
+                  <ul style={{ margin: 0, paddingLeft: 18, fontSize: 12, color: '#991B1B', lineHeight: 1.55 }}>
+                    {procedure.warnings.map((w, i) => (
+                      <li key={i} style={{ marginBottom: 3 }}>{w}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {procedure.references.length > 0 && (
+                <div style={{
+                  marginTop: 14, paddingTop: 12, borderTop: '1px solid #E5E7EB',
+                }}>
+                  <div style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
+                    textTransform: 'uppercase', color: '#9CA3AF', marginBottom: 6,
+                  }}>
+                    References
+                  </div>
+                  <ol style={{ margin: 0, paddingLeft: 18, fontSize: 12, color: '#6B7280', lineHeight: 1.55 }}>
+                    {procedure.references.map((r, i) => (
+                      <li key={i} style={{ marginBottom: 3 }}>{r}</li>
+                    ))}
+                  </ol>
+                </div>
+              )}
             </div>
           </motion.div>
         )}

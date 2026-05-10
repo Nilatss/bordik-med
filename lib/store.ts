@@ -46,7 +46,7 @@ interface AppState {
   showNeonatal: boolean;
   /** Active tab inside NeonatalHandbook — controlled from Sidebar
    *  expanded submenu. Persists в localStorage через persist-middleware. */
-  neonatalActiveTab: 'drugs' | 'calculators' | 'guidelines' | 'resuscitation' | 'articles' | 'lactmed' | 'labs' | 'growth' | 'bilirubin';
+  neonatalActiveTab: 'drugs' | 'calculators' | 'guidelines' | 'resuscitation' | 'articles' | 'lactmed' | 'quizzes' | 'nurse' | 'labs' | 'growth' | 'bilirubin';
   activeToolId: string | null;
 
   /** Tools page persistent state — filters, scroll, favourites */

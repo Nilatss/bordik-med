@@ -286,7 +286,7 @@ export default function Sidebar() {
   // sidebar when expanded. Clicking a sub-item sets showNeonatal=true +
   // selects the corresponding tab via store.neonatalActiveTab. The
   // NeonatalHandbook reads this store value and renders the matched view.
-  type NeonatalSubTab = 'drugs' | 'calculators' | 'guidelines' | 'resuscitation' | 'articles' | 'lactmed' | 'labs' | 'growth' | 'bilirubin';
+  type NeonatalSubTab = 'drugs' | 'calculators' | 'guidelines' | 'resuscitation' | 'articles' | 'lactmed' | 'quizzes' | 'nurse' | 'labs' | 'growth' | 'bilirubin';
   const neonatalSubItems: { id: NeonatalSubTab; label: string }[] = [
     { id: 'drugs',         label: 'Препараты' },
     { id: 'calculators',   label: 'Калькуляторы' },
@@ -294,6 +294,8 @@ export default function Sidebar() {
     { id: 'resuscitation', label: 'Реанимация (4 региона)' },
     { id: 'articles',      label: 'Статьи' },
     { id: 'lactmed',       label: 'ГВ / LactMed' },
+    { id: 'quizzes',       label: 'Тесты' },
+    { id: 'nurse',         label: 'Процедуры медсестры' },
     { id: 'labs',          label: 'Лаб. нормы' },
     { id: 'growth',        label: 'Графики роста' },
     { id: 'bilirubin',     label: 'Билирубин' },

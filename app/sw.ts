@@ -152,6 +152,8 @@ const serwist = new Serwist({
         || url.pathname === '/neonatal-lab-norms.json'
         || url.pathname === '/neonatal-articles.json'
         || url.pathname === '/neonatal-lactmed.json'
+        || url.pathname === '/neonatal-quizzes.json'
+        || url.pathname === '/neonatal-nurse-procedures.json'
       ),
       handler: new CacheFirst({
         cacheName: 'bordik-icd',
