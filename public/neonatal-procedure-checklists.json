@@ -1,5 +1,5 @@
 {
-  "version": "1.2.0",
+  "version": "1.3.0",
   "lastUpdated": "2026-05-10",
   "source": "Bordik Med — Neonatology procedure checklists (audit Table 3.Д5)",
   "license": "Educational checklists adapted from public guidelines (AAP, NRP, NICE, AAP COFN, Cochrane).",
@@ -1515,6 +1515,283 @@
       "references": [
         "Symington A, Pinelli J. Cochrane 2006;CD001814",
         "Als H et al. Pediatrics 2004;113:846 — NIDCAP"
+      ]
+    },
+    {
+      "id": "checklist-phototherapy-init",
+      "title_ru": "Инициация фототерапии при гипербилирубинемии",
+      "title_en": "Phototherapy initiation for hyperbilirubinemia",
+      "category": "hepatic",
+      "estimated_minutes": 15,
+      "audience": "Медсестра + врач-неонатолог",
+      "indications": [
+        "TSB ≥ porog по AAP 2022 или КР МЗ РФ ГБН",
+        "Phototherapy nomogram TSB-vs-age intersection",
+        "Visible jaundice + risk factors (preterm, ABO/Rh incompatibility)",
+        "Cephalhematoma + bruising (increased bilirubin load)"
+      ],
+      "sections": [
+        {
+          "title": "Подготовка оборудования",
+          "items": [
+            "LED phototherapy device (irradiance ≥30 µW/cm²/nm для intensive)",
+            "Защита глаз: phototherapy goggles по размеру (не tight)",
+            "Защита гонад (мужчина): minimal diaper or genital cover",
+            "Termoneutralная среда: incubator или radiant warmer",
+            "Термометр для мониторинга температуры тела (q1-2h)",
+            "Доступ для IV fluids при dehydration risk",
+            "Калибровка устройства: проверить radiometer reading"
+          ]
+        },
+        {
+          "title": "Перед началом",
+          "items": [
+            "Подтвердить TSB значение и phototherapy threshold (AAP 2022 / КР РФ)",
+            "Документация baseline: вес, gestational age, hours of life, hydration status",
+            "Оценка дополнительных факторов риска: hemolysis (DAT, smear), sepsis, asphyxia",
+            "Проверить причины: ABO/Rh, G6PD, sepsis, breastfeeding insufficiency, метаболические болезни",
+            "Type and DAT (Coombs) если не сделано — особенно при early jaundice",
+            "Информировать родителей: что такое phototherapy, продолжительность, безопасность",
+            "Согласие на процедуру"
+          ]
+        },
+        {
+          "title": "Старт фототерапии",
+          "items": [
+            "Положение supine, exposure максимума площади тела (только diaper + eye shields)",
+            "Источник света 30-45 см над baby (verify per manufacturer)",
+            "Continuous irradiance verification (не <30 µW/cm²/nm)",
+            "Documentation: время начала, irradiance, position",
+            "Pulse oximetry continuous (фототерапия не interferes с reading у качественных устройств)"
+          ]
+        },
+        {
+          "title": "Мониторинг",
+          "items": [
+            "Temperature: q1-2h первый час, then q4h (overheating risk)",
+            "Hydration: оценка skin turgor, urine output (≥1 мл/кг/ч), feeding adequacy",
+            "TSB: recheck в 4-6 ч после старта (rate of decline goal: ≥0.5 мг/дл/ч)",
+            "Eye shields: проверка caждые 2 ч — нет смещения, нет corneal abrasion",
+            "Position changes: q2-3h для maximum body exposure",
+            "Skin: оценка bronze baby syndrome (неестественный темный оттенок) → stop phototherapy",
+            "Family interaction: брать на руки во время кормления (если короткие перерывы), continue phototherapy максимум"
+          ]
+        },
+        {
+          "title": "Корректирующие действия",
+          "items": [
+            "Если TSB rises despite phototherapy: intensive phototherapy (двусторонняя, irradiance ≥30) + preparation для exchange",
+            "Если TSB approaches exchange threshold: type/cross, IVIG 0.5-1 г/кг при alloimmune hemolysis",
+            "Hydration: IV fluids 1.5× maintenance при dehydration или TSB rising",
+            "Если bronze baby syndrome: discontinue phototherapy (cholestasis associated)"
+          ]
+        },
+        {
+          "title": "Discontinuation",
+          "items": [
+            "TSB drops 2-3 мг/дл below phototherapy threshold OR <12-14 мг/дл (term)",
+            "Recheck TSB 12-24 ч after discontinuation для rebound",
+            "Document: total phototherapy duration, peak TSB, treatment response, complications",
+            "Family education: jaundice can recur, follow-up TSB at 24-48 ч post-discharge"
+          ]
+        }
+      ],
+      "references": [
+        "Kemper AR et al. Pediatrics 2022;150:e2022058859 — AAP 2022 Hyperbili Guideline",
+        "Maisels MJ. Clin Perinatol 2016;43:215 — Phototherapy techniques",
+        "КР МЗ РФ ГБН (2024) — Гемолитическая болезнь новорождённых"
+      ]
+    },
+    {
+      "id": "checklist-breastfeeding-first-hour",
+      "title_ru": "Инициация грудного вскармливания в первый час",
+      "title_en": "Breastfeeding initiation within the first hour",
+      "category": "feeding",
+      "estimated_minutes": 30,
+      "audience": "Медсестра + педиатр-неонатолог",
+      "indications": [
+        "Здоровый термин-новорождённый (Apgar ≥7)",
+        "Stable preterm late (≥35 нед) с positive feeding cues",
+        "Часть Golden Hour care bundle (stabilization + thermal + skin-to-skin + breastfeeding)",
+        "WHO/UNICEF Baby-Friendly Hospital Initiative — first feed в первый час"
+      ],
+      "sections": [
+        {
+          "title": "Подготовка матери",
+          "items": [
+            "Поза: comfortable upright или reclined (semi-recumbent)",
+            "Информирование о signs of readiness: rooting, hand-to-mouth, smacking lips",
+            "Demonstration laid-back biological nurturing position",
+            "Освобождение от ограничивающей одежды (skin-to-skin)",
+            "Минимизация interruptions (постпеч routine procedures если возможно)"
+          ]
+        },
+        {
+          "title": "Skin-to-skin контакт",
+          "items": [
+            "Положить newborn на голую грудь матери сразу после рождения (если stable)",
+            "Накрыть child тёплым одеялом + cap",
+            "Минимум 60 минут непрерывного skin-to-skin (ВВО recommends ≥60 минут)",
+            "Continuous monitoring: HR, RR, color, tone, temperature",
+            "Если mama после CS — start skin-to-skin в OR if possible, или сразу после recovery"
+          ]
+        },
+        {
+          "title": "Первое прикладывание",
+          "items": [
+            "Распознать feeding cues: rooting, mouth opening, hand-to-mouth, alertness",
+            "НЕ форсировать — let baby crawl и find breast самостоятельно (breast crawl)",
+            "Поддержка матери: помочь align baby ear-shoulder-hip in line",
+            "Asymmetric latch: nose-to-nipple, wait for wide gape, latch с большим amount areola в bottom",
+            "Indicators of effective latch: wide gape, lips flanged out, chin touching breast, audible swallowing",
+            "Pain assessment: minimal/no pain после latch settles (initial discomfort 30 sec OK)"
+          ]
+        },
+        {
+          "title": "Оценка эффективности",
+          "items": [
+            "Audible swallowing (1 swallow per 1-3 sucks)",
+            "Visible jaw movement extending до ear",
+            "Ребёнок relaxed, hands open",
+            "After feed: settled, sleepy, relaxed (если все ещё голоден — repeat latch attempt)",
+            "Mother: comfortable, no nipple pinching/cracking"
+          ]
+        },
+        {
+          "title": "Документация и follow-up",
+          "items": [
+            "Время первого прикладывания (целевое <60 минут от рождения)",
+            "Длительность feed (typically 15-40 минут per breast в первые дни)",
+            "Какая грудь использовалась (alternate с каждым feed)",
+            "Effective latch: yes / no",
+            "Mother feedback: pain, comfort, confidence",
+            "Breastfeeding plan: q2-3h on demand, no scheduled supplements",
+            "Lactation consultant referral если: poor latch, concerns about milk supply, premature, multiple gestation",
+            "Follow-up assessment 24 + 48 ч: weight loss <10% (term), urine output ≥1/age in days первые 5 дней"
+          ]
+        }
+      ],
+      "references": [
+        "WHO/UNICEF. Baby-Friendly Hospital Initiative (BFHI) revised 2018",
+        "Moore ER et al. Cochrane Database Syst Rev 2016;CD003519 — Early skin-to-skin",
+        "AAP Section on Breastfeeding. Pediatrics 2012;129:e827"
+      ]
+    },
+    {
+      "id": "checklist-newborn-exam",
+      "title_ru": "Полный осмотр новорождённого (head-to-toe)",
+      "title_en": "Comprehensive newborn examination (head-to-toe)",
+      "category": "monitoring",
+      "estimated_minutes": 20,
+      "audience": "Педиатр-неонатолог",
+      "indications": [
+        "Routine newborn examination в первые 24-72 ч",
+        "Pre-discharge examination",
+        "Concern о congenital anomaly",
+        "Routine well-baby visit follow-up"
+      ],
+      "sections": [
+        {
+          "title": "Подготовка",
+          "items": [
+            "Тёплая среда (radiant warmer или incubator)",
+            "Чистые руки (handwashing >20 sec OR alcohol-based)",
+            "Игрушка для distraction старшего newborn",
+            "Отоскоп, ophthalmoscope, stethoscope, ruler",
+            "Согласие родителей (если возможно — invite to be present)"
+          ]
+        },
+        {
+          "title": "Vital signs + measurements",
+          "items": [
+            "HR (norm 100-160 awake, 80-90 sleep)",
+            "RR (norm 30-60), оцените эффективность дыхания",
+            "Temperature (axillary 36.5-37.5°C)",
+            "Pre/post-ductal SpO₂ (right hand vs foot, differential >3% = concern)",
+            "Length, weight, head circumference (HC) — plot на growth curve (Fenton для preterm)",
+            "BP (если indicated): preferred upper extremity, four-extremity при concern для CoA"
+          ]
+        },
+        {
+          "title": "Голова и шея",
+          "items": [
+            "Cephalhematoma vs caput succedaneum (cephalhematoma не пересекает sutures)",
+            "Anterior fontanelle: размер 1-3 см, soft + flat (bulging = ICP, sunken = dehydration)",
+            "Sutures: overriding (normal first days) vs ridged (craniosynostosis)",
+            "Лицо: симметрия, dysmorphic features (TORCH? syndromic?)",
+            "Глаза: red reflex BILATERAL (cataracts, retinoblastoma если absent), конъюнктивит",
+            "Уши: position normal vs low-set (renal anomalies association)",
+            "Нос: проходимость (passes 5 Fr catheter — choanal atresia exclusion)",
+            "Полость рта: cleft lip/palate, neonatal teeth, frenulum (tongue-tie)",
+            "Шея: torticollis, тиреоидное увеличение, cyst (thyroglossal duct)",
+            "Clavicle: интактность (fracture при birth trauma — pseudoparalysis)"
+          ]
+        },
+        {
+          "title": "Грудная клетка и сердце",
+          "items": [
+            "Inspection: симметрия, retractions, accessory muscle use",
+            "Palpation: точки сердечного толчка (4-5 межреберье midclavicular)",
+            "Auscultation: HR + ритм + murmurs (Still murmur normal; если pathologic — refer cardiology)",
+            "Pulses: brachial + femoral comparison (femoral weak/absent → CoA)",
+            "CRT (capillary refill time) <3 sec"
+          ]
+        },
+        {
+          "title": "Живот и пуповина",
+          "items": [
+            "Inspection: симметрия, distension, scaphoid (CDH)",
+            "Auscultation: bowel sounds present",
+            "Palpation: organomegaly (liver edge palpable 1-2 см below right costal margin = normal newborn)",
+            "Пуповина: 3 vessels (2 arteries + 1 vein) — single umbilical artery: 1% normal but check renal anomalies",
+            "Umbilical hernia (small <2 см typically resolves)",
+            "Anus: patent, proper position (visualization)"
+          ]
+        },
+        {
+          "title": "Гениталии",
+          "items": [
+            "Мальчик: оба testes в scrotum (cryptorchidism if not), urethral meatus position (hypospadias?), prepuce",
+            "Девочка: labia, vaginal mucosa, clitoris size (ambiguous → endocrine workup)",
+            "Anus: separate from genitals, normal position, patency",
+            "Hip exam: Ortolani + Barlow (DDH screening) — asymmetric thigh creases"
+          ]
+        },
+        {
+          "title": "Конечности и спина",
+          "items": [
+            "Симметрия, full range of motion",
+            "Digits: счёт 5+5 на руках, 5+5 на ногах (поли/синдактилия)",
+            "Палец рекомендации Erb palsy при асимметричном Moro",
+            "Спина: midline structures, sacral dimple (tethered cord — если deep, multiple, hairy → MRI/US)",
+            "Кожа: vernix, lanugo, milia, mongolian spots (document для NAT prevention), erythema toxicum"
+          ]
+        },
+        {
+          "title": "Неврология (newborn)",
+          "items": [
+            "Состояние: alert vs lethargic, irritable",
+            "Тонус: flexed posture (term), активные движения 4 конечностей",
+            "Рефлексы: Moro, palmar grasp, plantar grasp, rooting, sucking, stepping",
+            "Crying: strong cry vs weak/absent",
+            "Symmetry: face, limbs (asymmetry = focal lesion)"
+          ]
+        },
+        {
+          "title": "Документация",
+          "items": [
+            "Полный exam timestamp + examiner name",
+            "Вес/length/HC plotted на curve",
+            "Concerns или referrals (e.g., DDH → ultrasound, murmur → echo, ambiguous genitals → endocrinology)",
+            "Family education: ожидаемые behaviors, when to call (fever, decreased feeding, jaundice change)",
+            "Plan for follow-up: routine pediatrician 3-5 дней after discharge"
+          ]
+        }
+      ],
+      "references": [
+        "AAP Bright Futures Guidelines 4th ed. — Newborn examination",
+        "NICE NG194 (2021) — Postnatal care",
+        "Volpe JJ. Neurology of the Newborn 6th ed. (2017)"
       ]
     }
   ]
