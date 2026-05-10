@@ -240,7 +240,7 @@ export default function NeonatalHandbook() {
           fetch('/neonatal-lab-norms.json?v=1.1.0', { cache: 'force-cache' }),
           fetch('/neonatal-articles.json?v=1.7.0', { cache: 'force-cache' }),
           fetch('/neonatal-lactmed.json?v=1.0.0', { cache: 'force-cache' }),
-          fetch('/neonatal-nurse-procedures.json?v=1.0.0', { cache: 'force-cache' }),
+          fetch('/neonatal-nurse-procedures.json?v=1.1.0', { cache: 'force-cache' }),
         ]);
         if (!drugsR.ok) throw new Error(`monographs ${drugsR.status}`);
         const drugsJson = await drugsR.json();
