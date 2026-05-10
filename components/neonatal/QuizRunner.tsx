@@ -253,15 +253,18 @@ export default function QuizRunner({
         </span>
       </p>
 
-      {groupedByTopic.map(([topic, quizzes], catIdx) => (
+      {groupedByTopic.map(([topic, quizzes], catIdx) => {
+        const headingId = `quiz-topic-${topic.replace(/\s+/g, '-')}-${catIdx}`;
+        return (
         <motion.section
           key={topic}
+          aria-labelledby={headingId}
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1], delay: 0.06 + catIdx * 0.06 }}
           style={{ marginBottom: 28 }}
         >
-          <h3 style={{
+          <h3 id={headingId} style={{
             fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700,
             color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
             marginBottom: 12,
@@ -278,9 +281,14 @@ export default function QuizRunner({
               const passed = submitted && score >= passingScore;
               const lvl = LEVEL_LABELS[quiz.level];
               const description = TOPIC_DESCRIPTIONS[quiz.id] ?? `Тест по теме ${TOPIC_LABELS[quiz.topic] ?? quiz.topic}`;
+              const cardAriaLabel = submitted
+                ? `Тест: ${quiz.title_ru}. ${total} вопросов, ${lvl?.label ?? 'уровень не указан'}. Результат прошлой попытки: ${score} из ${total}, ${passed ? 'тест пройден' : 'тест не пройден'}. Нажмите чтобы пройти ещё раз.`
+                : `Тест: ${quiz.title_ru}. ${total} вопросов, ${lvl?.label ?? 'уровень не указан'}. ${description} Нажмите чтобы начать.`;
               return (
                 <motion.button
                   key={quiz.id}
+                  type="button"
+                  aria-label={cardAriaLabel}
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.03, duration: 0.3, ease: [0.05, 0.7, 0.1, 1] }}
@@ -394,7 +402,8 @@ export default function QuizRunner({
             })}
           </div>
         </motion.section>
-      ))}
+        );
+      })}
 
       {filteredQuizzes.length === 0 && (
         <div style={{
@@ -431,11 +440,14 @@ function ActiveQuizView({
   const allAnswered = answeredCount === total;
   const lvl = LEVEL_LABELS[quiz.level];
 
+  const quizTitleId = `quiz-title-${quiz.id}`;
   return (
-    <div style={{ width: '100%' }}>
+    <div role="region" aria-labelledby={quizTitleId} style={{ width: '100%' }}>
       {/* Back button + title */}
       <button
+        type="button"
         onClick={onClose}
+        aria-label="Вернуться к списку тестов"
         style={{
           display: 'inline-flex', alignItems: 'center', gap: 8,
           padding: '8px 14px',
@@ -454,7 +466,8 @@ function ActiveQuizView({
         onMouseLeave={(e) => { e.currentTarget.style.background = '#F5F6F8'; }}
       >
         <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+          stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
+          aria-hidden="true" focusable="false">
           <polyline points="15 18 9 12 15 6" />
         </svg>
         К списку тестов
@@ -490,16 +503,19 @@ function ActiveQuizView({
             </span>
           )}
         </div>
-        <h2 style={{
+        <h2 id={quizTitleId} style={{
           fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 700,
           color: '#1A1A1A', marginBottom: 6, letterSpacing: '-0.02em',
         }}>
           {quiz.title_ru}
         </h2>
-        <p style={{
-          fontFamily: 'var(--font-body)', fontSize: 14, color: '#6B7280',
-          lineHeight: 1.5,
-        }}>
+        <p
+          aria-live="polite"
+          style={{
+            fontFamily: 'var(--font-body)', fontSize: 14, color: '#6B7280',
+            lineHeight: 1.5,
+          }}
+        >
           {total} вопросов · {estimateDuration(total)} ·{' '}
           {submitted ? (
             <span style={{ color: passed ? '#059669' : '#B45309', fontWeight: 700 }}>
@@ -514,9 +530,12 @@ function ActiveQuizView({
       {/* Questions */}
       {quiz.questions.map((qu, qIdx) => {
         const selected = state?.selected[qIdx];
+        const questionLabelId = `quiz-${quiz.id}-q${qIdx}-label`;
         return (
           <motion.div
             key={qIdx}
+            role="group"
+            aria-labelledby={questionLabelId}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: qIdx * 0.05, duration: 0.3 }}
@@ -527,14 +546,14 @@ function ActiveQuizView({
               marginBottom: 14,
             }}
           >
-            <div style={{
+            <div id={questionLabelId} style={{
               fontSize: 14.5, fontWeight: 600,
               color: '#1F2937',
               marginBottom: 14,
               lineHeight: 1.45,
               display: 'flex', alignItems: 'baseline', gap: 10,
             }}>
-              <span style={{
+              <span aria-hidden="true" style={{
                 flexShrink: 0,
                 background: '#EFF6FF',
                 color: '#2563EB',
@@ -545,9 +564,12 @@ function ActiveQuizView({
               }}>
                 Q{qIdx + 1}
               </span>
-              <span>{qu.q}</span>
+              <span>
+                <span className="sr-only">Вопрос {qIdx + 1}: </span>
+                {qu.q}
+              </span>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <div role="radiogroup" aria-labelledby={questionLabelId} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
               {qu.options.map((opt, optIdx) => {
                 const isSelected = selected === optIdx;
                 const isCorrect = qu.answer === optIdx;
@@ -569,9 +591,17 @@ function ActiveQuizView({
                   border = '1px solid #BFDBFE';
                   color = '#1E40AF';
                 }
+                const optLetter = String.fromCharCode(65 + optIdx);
+                const optAriaLabel = submitted
+                  ? `Вариант ${optLetter}: ${opt}.${isCorrect ? ' Правильный ответ.' : ''}${isSelected && !isCorrect ? ' Ваш ответ — неверно.' : ''}${isSelected && isCorrect ? ' Ваш ответ — верно.' : ''}`
+                  : `Вариант ${optLetter}: ${opt}`;
                 return (
                   <button
                     key={optIdx}
+                    type="button"
+                    role="radio"
+                    aria-checked={isSelected}
+                    aria-label={optAriaLabel}
                     onClick={() => onSelect(qIdx, optIdx)}
                     disabled={submitted}
                     style={{
@@ -589,7 +619,7 @@ function ActiveQuizView({
                       transition: 'background 120ms',
                     }}
                   >
-                    <span style={{
+                    <span aria-hidden="true" style={{
                       flexShrink: 0,
                       width: 22, height: 22,
                       borderRadius: '50%',
@@ -600,9 +630,9 @@ function ActiveQuizView({
                       fontSize: 11, fontWeight: 700,
                       marginTop: 1,
                     }}>
-                      {String.fromCharCode(65 + optIdx)}
+                      {optLetter}
                     </span>
-                    <span style={{ lineHeight: 1.45, flex: 1 }}>
+                    <span aria-hidden="true" style={{ lineHeight: 1.45, flex: 1 }}>
                       {opt}
                       {submitted && isCorrect && (
                         <span style={{ marginLeft: 8, color: '#059669', fontWeight: 700 }}>✓</span>
@@ -616,7 +646,7 @@ function ActiveQuizView({
               })}
             </div>
             {submitted && (
-              <div style={{
+              <div role="note" style={{
                 marginTop: 12,
                 padding: '12px 14px',
                 background: '#FFFFFF',
@@ -646,8 +676,13 @@ function ActiveQuizView({
       }}>
         {!submitted ? (
           <button
+            type="button"
             onClick={onSubmit}
             disabled={!allAnswered}
+            aria-label={allAnswered
+              ? `Проверить тест: дано ${answeredCount} из ${total} ответов`
+              : `Проверить тест недоступно: дано ${answeredCount} из ${total} ответов, ответьте на все вопросы`
+            }
             style={{
               padding: '12px 24px',
               background: allAnswered ? '#2563EB' : '#9CA3AF',
@@ -666,7 +701,9 @@ function ActiveQuizView({
         ) : (
           <>
             <button
+              type="button"
               onClick={onReset}
+              aria-label="Сбросить ответы и пройти тест ещё раз"
               style={{
                 padding: '12px 24px',
                 background: '#F5F6F8',
@@ -682,7 +719,9 @@ function ActiveQuizView({
               Пройти ещё раз
             </button>
             <button
+              type="button"
               onClick={onClose}
+              aria-label="Закрыть тест и вернуться к списку"
               style={{
                 padding: '12px 24px',
                 background: '#2563EB',
