@@ -136,11 +136,31 @@ const serwist = new Serwist({
     // CacheFirst после первой загрузки = instant + offline.
     // Cache bust через query string ?v=X.Y.Z в коде клиента.
     //
-    // Также покрывает все Neonatology Module JSONs (audit issue 1.11):
-    //   neonatal-monographs, -guidelines, -growth, -bilirubin (existing)
-    //   neonatal-calculators, -lab-norms, -articles, -lactmed (added 2026-05-09)
-    // Полная offline-поддержка раздела Неонатология — данные кэшируются
-    // CacheFirst, через query ?v=X.Y.Z bust для invalidation на deploy.
+    // Также покрывает ВСЕ Neonatology Module JSONs (audit issue 1.11
+    // closed). Banks load в parallel в NeonatalHandbook.tsx через
+    // Promise.all + ?v=X.Y.Z bust для invalidation на deploy:
+    //
+    //   Existing (с прошлых сессий):
+    //   - neonatal-monographs (drugs)
+    //   - neonatal-guidelines (protocols)
+    //   - neonatal-growth (growth charts)
+    //   - neonatal-bilirubin (bilirubin nomogram)
+    //   - neonatal-calculators (calculator catalog)
+    //   - neonatal-lab-norms
+    //   - neonatal-articles
+    //   - neonatal-lactmed
+    //   - neonatal-quizzes
+    //   - neonatal-nurse-procedures
+    //
+    //   Educational extension Table 3.Д (added PR #43, 2026-05-10):
+    //   - neonatal-clinical-cases  (Д2: 12 cases)
+    //   - neonatal-common-mistakes (Д6: 16 pitfalls)
+    //   - neonatal-procedure-checklists (Д5: 10 interactive)
+    //   - neonatal-procedure-videos (Д3: 16 linkouts)
+    //   - neonatal-atlas (Д4: 16 references)
+    //
+    // Полная offline-поддержка раздела Неонатология — clinic environment
+    // часто без надёжного internet, особенно в УЗ rural settings.
     {
       matcher: ({ url }) => (
         /^\/icd1[01](?:cm|pcs|ca|gm|am)?(-(?:mms(?:-ext)?|starter|slim|details|search|drug-table|neoplasm|index))?\.json$/.test(url.pathname)
@@ -154,12 +174,18 @@ const serwist = new Serwist({
         || url.pathname === '/neonatal-lactmed.json'
         || url.pathname === '/neonatal-quizzes.json'
         || url.pathname === '/neonatal-nurse-procedures.json'
+        // Educational extension Table 3.Д (PR #43, 2026-05-10):
+        || url.pathname === '/neonatal-clinical-cases.json'
+        || url.pathname === '/neonatal-common-mistakes.json'
+        || url.pathname === '/neonatal-procedure-checklists.json'
+        || url.pathname === '/neonatal-procedure-videos.json'
+        || url.pathname === '/neonatal-atlas.json'
       ),
       handler: new CacheFirst({
         cacheName: 'bordik-icd',
         plugins: [
           new ExpirationPlugin({
-            maxEntries: 50,
+            maxEntries: 60, // bumped 50 → 60 для educational extension banks
             maxAgeSeconds: 180 * 24 * 60 * 60, // 180 days
             purgeOnQuotaError: true,
           }),

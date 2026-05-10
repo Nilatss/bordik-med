@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "lastUpdated": "2026-05-10",
   "source": "Bordik Med — Neonatology common pitfalls (audit Table 3.Д6)",
   "license": "Educational content adapted from public guidelines (AAP, NRP, NICE, ESPGHAN, BAPM, Cochrane).",
@@ -299,6 +299,81 @@
       "references": [
         "AAP COFN — feeding practices",
         "Embleton ND et al. JPGN 2022"
+      ]
+    },
+    {
+      "id": "mistake-rapid-rewarming-th",
+      "title_ru": "Rapid rewarming после therapeutic hypothermia",
+      "title_en": "Rapid rewarming after TH",
+      "category": "neuro",
+      "severity": "high",
+      "mistake": "Reactive ускорение rewarming (>1°C/час) после 72-часовой TH потому что ребёнок выглядит стабильным или из-за impatience.",
+      "why_it_happens": "Не понимание физиологии — slow rewarming critical для preventing rebound seizures, hypotension, hyperthermia.",
+      "correct_approach": "Strict rate ≤0.5°C/час × 6-12 часов. Continuous monitoring t°, HR, BP, glucose, EEG. Pause rewarming если seizures, hypotension. Total rewarming time 6-12 часов до 36.5°C.",
+      "consequence": "Rebound seizures (30-50% при rapid rewarming), hypotension, K⁺ shifts, hyperthermia rebound — все compromise neuroprotection benefits TH.",
+      "references": [
+        "Shankaran S et al. NEJM 2005;353:1574",
+        "Battin MR et al. J Pediatr 2004;144:518"
+      ]
+    },
+    {
+      "id": "mistake-no-iv-after-pulse-fail",
+      "title_ru": "Не provide IV после failed pulse oximetry screen",
+      "title_en": "Discharge after failed pulse ox without echo",
+      "category": "screening",
+      "severity": "high",
+      "mistake": "Discharge ребёнка home после single failed pulse ox screen без stat echo + cardiology consultation.",
+      "why_it_happens": "False-positive rate ~1.6% общая, particularly если screen <24 hr. Misperception что repeat screen достаточно.",
+      "correct_approach": "Failed CCHD pulse ox screen → STAT echocardiogram + cardiology consultation. NOT discharge until CHD ruled out OR managed. Sensitivity pulse ox ~76% — failed screen = high pre-test probability critical CHD.",
+      "consequence": "Missed critical CHD (HLHS, TGA, TOF) → cardiovascular collapse при closing PDA, death или severe morbidity.",
+      "references": [
+        "Mahle WT et al. AAP-CCHD 2009",
+        "Thangaratinam S et al. Lancet 2012;379:2459"
+      ]
+    },
+    {
+      "id": "mistake-prolonged-empiric-abx",
+      "title_ru": "Продолжение empiric ABX после negative cultures + clinical improvement",
+      "title_en": "Prolonged empiric ABX in negative culture sepsis",
+      "category": "infection",
+      "severity": "medium",
+      "mistake": "Continuing empiric antibiotics 7+ дней у well-appearing newborn с negative blood culture после 48 часов.",
+      "why_it_happens": "'Безопасность' decision-making — fear of missing infection. Не учитывают негативные effects prolonged ABX.",
+      "correct_approach": "Stop empiric ABX 36-48 часов если cultures negative + clinical improvement (CRP normalising, vitals stable, feeding OK). EOS calculator + serial CRP guides decision.",
+      "consequence": "Prolonged ABX (>5 дней): ↑ NEC (RR 1.84), candidemia, antibiotic resistance, dysbiosis affecting long-term microbiome / asthma / allergy.",
+      "references": [
+        "Cantey JB et al. JPIDS 2018;7:e7",
+        "Cordero L, Ayers LW. Infect Control Hosp Epidemiol 2003;24:662"
+      ]
+    },
+    {
+      "id": "mistake-routine-bicarb-acidosis",
+      "title_ru": "Bicarbonate bolus при метаболическом ацидозе у newborn",
+      "title_en": "Routine bicarbonate bolus в metabolic acidosis",
+      "category": "metabolic",
+      "severity": "medium",
+      "mistake": "Routine NaHCO₃ bolus 1-2 мэкв/кг IV для коррекции metabolic acidosis при HIE / sepsis / shock.",
+      "why_it_happens": "Старая практика. Conceptual appeal — раз pH низкий, давайте bicarb.",
+      "correct_approach": "Treat the cause: hypoxia → ventilation, hypovolemia → fluids, sepsis → ABX. Bicarbonate routinely NOT recommended (Cochrane). Reserved для severe pH<7.0 + adequate ventilation + persistent acidosis.",
+      "consequence": "Paradoxical CSF acidosis → worse cerebral perfusion. Hyperosmolality → IVH risk. Hypernatremia. Без proven benefit на mortality / neurodevelopmental outcomes.",
+      "references": [
+        "Lokesh L et al. Cochrane 2004;CD004864",
+        "AHA NRP 8 ed. — bicarbonate guidance"
+      ]
+    },
+    {
+      "id": "mistake-d50-vs-d10",
+      "title_ru": "Использование D50 в лечении gипогликемии",
+      "title_en": "Using D50 for hypoglycemia",
+      "category": "medication",
+      "severity": "high",
+      "mistake": "Bolus D50 (50% dextrose) IV для коррекции neonatal hypoglycemia — copying adult ACLS practice.",
+      "why_it_happens": "Из adult resus protocols. Неправильное понимание osmolality safety у newborn vessels.",
+      "correct_approach": "Newborn hypoglycemia: D10W 2 мл/кг bolus (200 мг/кг), затем continuous D10W GIR 6-8 мг/кг/мин. NEVER D50 в peripheral vein.",
+      "consequence": "Severe phlebitis, extravasation → tissue necrosis → permanent injury (loss of digit / limb). Hyperosmolar load.",
+      "references": [
+        "AAP CFN. Pediatrics 2011;127:575",
+        "Adamkin DH. Pediatrics 2017;141:e20174112"
       ]
     }
   ]
