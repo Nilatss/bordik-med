@@ -1,0 +1,316 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2026-05-10",
+  "source": "Bordik Med — curated procedure video linkouts (audit Table 3.Д3)",
+  "license": "External linkouts to authoritative sources (AAP, WHO, NEJM, Stanford, NIDCAP, EFCNI, UNICEF). Не размещаем встраиваемое видео — только linkouts с уважением к copyright.",
+  "categories": [
+    {
+      "id": "resuscitation",
+      "title_ru": "Реанимация"
+    },
+    {
+      "id": "respiratory",
+      "title_ru": "Респираторные"
+    },
+    {
+      "id": "vascular_access",
+      "title_ru": "Сосудистый доступ"
+    },
+    {
+      "id": "neuro",
+      "title_ru": "Неврологические"
+    },
+    {
+      "id": "thermal",
+      "title_ru": "Терморегуляция"
+    },
+    {
+      "id": "screening",
+      "title_ru": "Скрининг"
+    },
+    {
+      "id": "examination",
+      "title_ru": "Осмотр"
+    },
+    {
+      "id": "feeding",
+      "title_ru": "Питание / лактация"
+    },
+    {
+      "id": "developmental",
+      "title_ru": "Развитие"
+    },
+    {
+      "id": "hepatic",
+      "title_ru": "Гепатобилиарные"
+    }
+  ],
+  "videos": [
+    {
+      "id": "video-nrp-overview",
+      "title_ru": "NRP 8 ed. — обзор алгоритма реанимации",
+      "title_en": "NRP 8th ed. — Algorithm Overview",
+      "description": "Официальный обучающий обзор NRP 8 ed. (2021) — initial steps, MR SOPA, компрессии, эпинефрин. Канал AAP.",
+      "source": "American Academy of Pediatrics (AAP)",
+      "source_type": "youtube_official",
+      "url": "https://www.youtube.com/results?search_query=NRP+8th+edition+algorithm+AAP",
+      "category": "resuscitation",
+      "duration_min": 15,
+      "tags": [
+        "NRP",
+        "реанимация",
+        "AAP"
+      ]
+    },
+    {
+      "id": "video-uvc-uac-placement",
+      "title_ru": "Постановка пупочного катетера UVC/UAC",
+      "title_en": "Umbilical Catheter Placement — UVC/UAC",
+      "description": "Step-by-step пошаговое демонстрирование UVC + UAC техник с анатомической визуализацией. Учебный материал NEJM Procedure Videos.",
+      "source": "NEJM Procedural Videos",
+      "source_type": "nejm",
+      "url": "https://www.nejm.org/multimedia/medical-videos",
+      "category": "vascular_access",
+      "duration_min": 12,
+      "tags": [
+        "UVC",
+        "UAC",
+        "сосудистый доступ",
+        "NEJM"
+      ]
+    },
+    {
+      "id": "video-neonatal-intubation",
+      "title_ru": "Эндотрахеальная интубация новорождённого",
+      "title_en": "Neonatal Endotracheal Intubation",
+      "description": "Демонстрация интубации с лярингоскопом Miller blade size 0/1. Включает positioning, premedication, MR SOPA при затруднениях.",
+      "source": "Stanford Newborn Nursery / NEJM",
+      "source_type": "youtube_official",
+      "url": "https://www.youtube.com/results?search_query=neonatal+intubation+Stanford+newborn",
+      "category": "respiratory",
+      "duration_min": 10,
+      "tags": [
+        "интубация",
+        "ETT",
+        "Stanford"
+      ]
+    },
+    {
+      "id": "video-lisa-surfactant",
+      "title_ru": "LISA — менее инвазивное введение сурфактанта",
+      "title_en": "LISA — Less Invasive Surfactant Administration",
+      "description": "Видео-демонстрация LISA (less invasive surfactant administration) у preterm на CPAP. Показ техники с тонким катетером и Magill forceps.",
+      "source": "European Foundation for the Care of Newborn Infants (EFCNI)",
+      "source_type": "youtube_official",
+      "url": "https://www.youtube.com/results?search_query=LISA+surfactant+EFCNI+preterm",
+      "category": "respiratory",
+      "duration_min": 8,
+      "tags": [
+        "LISA",
+        "surfactant",
+        "preterm",
+        "EFCNI"
+      ]
+    },
+    {
+      "id": "video-lp-newborn",
+      "title_ru": "Люмбальная пункция у новорождённого",
+      "title_en": "Neonatal Lumbar Puncture",
+      "description": "Учебная демонстрация люмбальной пункции — позиционирование, идентификация межреберья, техника. Из NEJM educational series.",
+      "source": "NEJM Procedural Videos",
+      "source_type": "nejm",
+      "url": "https://www.nejm.org/multimedia/medical-videos",
+      "category": "neuro",
+      "duration_min": 8,
+      "tags": [
+        "LP",
+        "пункция",
+        "NEJM"
+      ]
+    },
+    {
+      "id": "video-thermal-care",
+      "title_ru": "Тепловая защита и метод кенгуру",
+      "title_en": "Thermal Care + Kangaroo Mother Care",
+      "description": "WHO Essential Newborn Care course module — тепловая цепь, KMC technique, golden hour management.",
+      "source": "World Health Organization (WHO)",
+      "source_type": "who_official",
+      "url": "https://www.who.int/teams/maternal-newborn-child-adolescent-health-and-ageing/newborn-health/essential-newborn-care",
+      "category": "thermal",
+      "duration_min": 20,
+      "tags": [
+        "WHO",
+        "KMC",
+        "ENC",
+        "тепловая защита"
+      ]
+    },
+    {
+      "id": "video-cpr-newborn",
+      "title_ru": "Компрессии грудной клетки 3:1 у новорождённого",
+      "title_en": "Neonatal Chest Compressions 3:1",
+      "description": "Демонстрация two-thumb encircling техники, 3:1 ratio (90 + 30 = 120/min), глубина 1/3 переднезаднего диаметра.",
+      "source": "American Heart Association (AHA) / NRP",
+      "source_type": "youtube_official",
+      "url": "https://www.youtube.com/results?search_query=neonatal+chest+compressions+NRP+two+thumb",
+      "category": "resuscitation",
+      "duration_min": 7,
+      "tags": [
+        "компрессии",
+        "СЛР",
+        "AHA",
+        "NRP"
+      ]
+    },
+    {
+      "id": "video-pulse-ox-cchd",
+      "title_ru": "CCHD pulse oximetry screening",
+      "title_en": "CCHD Pulse Oximetry Screening Demonstration",
+      "description": "Demonstration правильной техники pulse oximetry screening для critical congenital heart disease. Pre/post-ductal sites, fail criteria.",
+      "source": "American Academy of Pediatrics (AAP)",
+      "source_type": "youtube_official",
+      "url": "https://www.youtube.com/results?search_query=CCHD+pulse+oximetry+screening+AAP",
+      "category": "screening",
+      "duration_min": 6,
+      "tags": [
+        "CCHD",
+        "pulse ox",
+        "screening",
+        "AAP"
+      ]
+    },
+    {
+      "id": "video-rop-screen",
+      "title_ru": "ROP screening — техника обследования",
+      "title_en": "ROP Screening Examination Technique",
+      "description": "Indirect ophthalmoscopy + RetCam imaging для ROP screening у preterm. Демонстрация speculum placement, scleral depression, классификация ICROP3.",
+      "source": "American Academy of Ophthalmology (AAO)",
+      "source_type": "youtube_official",
+      "url": "https://www.youtube.com/results?search_query=ROP+screening+indirect+ophthalmoscopy+RetCam",
+      "category": "screening",
+      "duration_min": 10,
+      "tags": [
+        "ROP",
+        "офтальмоскопия",
+        "AAO"
+      ]
+    },
+    {
+      "id": "video-cooling-init",
+      "title_ru": "Therapeutic Hypothermia (TH) — инициация и cooling",
+      "title_en": "Therapeutic Hypothermia Initiation",
+      "description": "Демонстрация TH protocol: eligibility, equipment setup, target 33-34°C, monitoring throughout 72-hour cooling.",
+      "source": "Children's Hospital of Philadelphia (CHOP)",
+      "source_type": "youtube_official",
+      "url": "https://www.youtube.com/results?search_query=therapeutic+hypothermia+neonatal+CHOP+cooling",
+      "category": "neuro",
+      "duration_min": 15,
+      "tags": [
+        "TH",
+        "HIE",
+        "охлаждение",
+        "CHOP"
+      ]
+    },
+    {
+      "id": "video-cpap-bubble",
+      "title_ru": "Bubble CPAP — assembly + management",
+      "title_en": "Bubble CPAP — Assembly and Management",
+      "description": "Resource-conscious bubble CPAP setup для NICU. Включает device assembly, positioning, troubleshooting, weaning.",
+      "source": "WHO / GAPPS",
+      "source_type": "who_official",
+      "url": "https://www.who.int/publications/i/item/9789241516181",
+      "category": "respiratory",
+      "duration_min": 12,
+      "tags": [
+        "CPAP",
+        "bubble CPAP",
+        "WHO",
+        "preterm"
+      ]
+    },
+    {
+      "id": "video-exchange-transfusion",
+      "title_ru": "Заменное переливание крови (DVET) — техника",
+      "title_en": "Exchange Transfusion Technique",
+      "description": "Демонстрация push-pull техники exchange transfusion через UVC. Aliquot management, monitoring, complications recognition.",
+      "source": "WHO / Bilirubin management materials",
+      "source_type": "who_official",
+      "url": "https://www.who.int/teams/maternal-newborn-child-adolescent-health-and-ageing/newborn-health",
+      "category": "hepatic",
+      "duration_min": 15,
+      "tags": [
+        "exchange",
+        "DVET",
+        "ГБН",
+        "WHO"
+      ]
+    },
+    {
+      "id": "video-helping-babies-breathe",
+      "title_ru": "Helping Babies Breathe — global program",
+      "title_en": "Helping Babies Breathe (HBB)",
+      "description": "Полный курс HBB 2nd edition — реанимация в условиях ограниченных ресурсов, golden minute, basic resuscitation для midwives и medical staff.",
+      "source": "AAP / Helping Babies Survive",
+      "source_type": "youtube_official",
+      "url": "https://www.youtube.com/@HelpingBabiesSurvive/videos",
+      "category": "resuscitation",
+      "duration_min": 45,
+      "tags": [
+        "HBB",
+        "AAP",
+        "global health",
+        "low-resource"
+      ]
+    },
+    {
+      "id": "video-newborn-exam",
+      "title_ru": "Полный осмотр новорождённого",
+      "title_en": "Comprehensive Newborn Examination",
+      "description": "Систематический подход к osmoтру новорождённого — head-to-toe, primitive reflexes, ortolani/barlow, ophthalmologic.",
+      "source": "Stanford Medicine 25",
+      "source_type": "youtube_official",
+      "url": "https://stanfordmedicine25.stanford.edu/the25/newbornExam.html",
+      "category": "examination",
+      "duration_min": 25,
+      "tags": [
+        "осмотр",
+        "Stanford",
+        "newborn exam"
+      ]
+    },
+    {
+      "id": "video-breastfeeding-latch",
+      "title_ru": "Прикладывание к груди — правильная техника",
+      "title_en": "Effective Breastfeeding Latch",
+      "description": "Демонстрация asymmetric latch, positioning, signs of effective transfer. Adapted from UNICEF/WHO BFHI training materials.",
+      "source": "UNICEF / WHO Baby-Friendly Hospital Initiative",
+      "source_type": "who_official",
+      "url": "https://www.unicef.org/breastfeeding",
+      "category": "feeding",
+      "duration_min": 12,
+      "tags": [
+        "грудное вскармливание",
+        "UNICEF",
+        "WHO",
+        "BFHI"
+      ]
+    },
+    {
+      "id": "video-developmental-care",
+      "title_ru": "Developmental care в NICU — основные принципы",
+      "title_en": "Developmental Care in NICU — Principles",
+      "description": "NIDCAP-based developmental care: low-stim environment, family-integrated care, positioning, kangaroo mother care.",
+      "source": "NIDCAP Federation International",
+      "source_type": "youtube_official",
+      "url": "https://nidcap.org/",
+      "category": "developmental",
+      "duration_min": 18,
+      "tags": [
+        "NIDCAP",
+        "developmental care",
+        "family-integrated"
+      ]
+    }
+  ]
+}

@@ -199,7 +199,125 @@ interface NurseProceduresBank {
   procedures: NurseProcedure[];
 }
 
-type Tab = 'drugs' | 'guidelines' | 'calculators' | 'labs' | 'articles' | 'resuscitation' | 'lactmed' | 'quizzes' | 'nurse' | 'growth' | 'bilirubin';
+// =================== Educational extension (Table 3.Д) ===================
+
+interface ClinicalCase {
+  id: string;
+  title_ru: string;
+  title_en: string;
+  topic: string;
+  level: 'basic' | 'intermediate' | 'advanced';
+  vignette: string;
+  presenting_features: string[];
+  differential: string[];
+  management: string[];
+  pearls: string[];
+  references: string[];
+}
+
+interface ClinicalCasesBank {
+  version: string;
+  lastUpdated: string;
+  source: string;
+  license: string;
+  topics: { id: string; title_ru: string }[];
+  levels: { id: string; title_ru: string }[];
+  cases: ClinicalCase[];
+}
+
+interface CommonMistake {
+  id: string;
+  title_ru: string;
+  title_en: string;
+  category: string;
+  severity: 'low' | 'medium' | 'high';
+  mistake: string;
+  why_it_happens: string;
+  correct_approach: string;
+  consequence: string;
+  references: string[];
+}
+
+interface CommonMistakesBank {
+  version: string;
+  lastUpdated: string;
+  source: string;
+  license: string;
+  categories: { id: string; title_ru: string }[];
+  severities: { id: string; title_ru: string }[];
+  mistakes: CommonMistake[];
+}
+
+interface ChecklistSection {
+  title: string;
+  items: string[];
+}
+
+interface ProcedureChecklist {
+  id: string;
+  title_ru: string;
+  title_en: string;
+  category: string;
+  estimated_minutes: number;
+  audience: string;
+  indications: string[];
+  sections: ChecklistSection[];
+  references: string[];
+}
+
+interface ProcedureChecklistsBank {
+  version: string;
+  lastUpdated: string;
+  source: string;
+  license: string;
+  categories: { id: string; title_ru: string }[];
+  checklists: ProcedureChecklist[];
+}
+
+interface ProcedureVideo {
+  id: string;
+  title_ru: string;
+  title_en: string;
+  description: string;
+  source: string;
+  source_type: string;
+  url: string;
+  category: string;
+  duration_min: number;
+  tags: string[];
+}
+
+interface ProcedureVideosBank {
+  version: string;
+  lastUpdated: string;
+  source: string;
+  license: string;
+  categories: { id: string; title_ru: string }[];
+  videos: ProcedureVideo[];
+}
+
+interface AtlasEntry {
+  id: string;
+  title_ru: string;
+  title_en: string;
+  description: string;
+  key_findings: string[];
+  source: string;
+  source_type: string;
+  url: string;
+  category: string;
+}
+
+interface AtlasBank {
+  version: string;
+  lastUpdated: string;
+  source: string;
+  license: string;
+  categories: { id: string; title_ru: string }[];
+  atlas: AtlasEntry[];
+}
+
+type Tab ='drugs' | 'guidelines' | 'calculators' | 'labs' | 'articles' | 'resuscitation' | 'lactmed' | 'quizzes' | 'nurse' | 'growth' | 'bilirubin' | 'cases' | 'mistakes' | 'checklists' | 'videos' | 'atlas';
 
 export default function NeonatalHandbook() {
   const [bank, setBank] = useState<Bank | null>(null);
@@ -209,6 +327,11 @@ export default function NeonatalHandbook() {
   const [articles, setArticles] = useState<ArticlesBank | null>(null);
   const [lactmed, setLactmed] = useState<LactBank | null>(null);
   const [nurse, setNurse] = useState<NurseProceduresBank | null>(null);
+  const [cases, setCases] = useState<ClinicalCasesBank | null>(null);
+  const [mistakes, setMistakes] = useState<CommonMistakesBank | null>(null);
+  const [checklists, setChecklists] = useState<ProcedureChecklistsBank | null>(null);
+  const [videos, setVideos] = useState<ProcedureVideosBank | null>(null);
+  const [atlas, setAtlas] = useState<AtlasBank | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [q, setQ] = useState('');
   const [openId, setOpenId] = useState<string | null>(null);
@@ -250,14 +373,19 @@ export default function NeonatalHandbook() {
     let cancelled = false;
     void (async () => {
       try {
-        const [drugsR, guidelinesR, calcR, labsR, articlesR, lactR, nurseR] = await Promise.all([
+        const [drugsR, guidelinesR, calcR, labsR, articlesR, lactR, nurseR, casesR, mistakesR, checklistsR, videosR, atlasR] = await Promise.all([
           fetch('/neonatal-monographs.json?v=2.9.0', { cache: 'force-cache' }),
           fetch('/neonatal-guidelines.json?v=1.9.0', { cache: 'force-cache' }),
           fetch('/neonatal-calculators.json?v=1.0.0', { cache: 'force-cache' }),
           fetch('/neonatal-lab-norms.json?v=1.1.0', { cache: 'force-cache' }),
-          fetch('/neonatal-articles.json?v=1.8.0', { cache: 'force-cache' }),
+          fetch('/neonatal-articles.json?v=1.9.0', { cache: 'force-cache' }),
           fetch('/neonatal-lactmed.json?v=1.1.0', { cache: 'force-cache' }),
           fetch('/neonatal-nurse-procedures.json?v=1.2.0', { cache: 'force-cache' }),
+          fetch('/neonatal-clinical-cases.json?v=1.0.0', { cache: 'force-cache' }),
+          fetch('/neonatal-common-mistakes.json?v=1.0.0', { cache: 'force-cache' }),
+          fetch('/neonatal-procedure-checklists.json?v=1.0.0', { cache: 'force-cache' }),
+          fetch('/neonatal-procedure-videos.json?v=1.0.0', { cache: 'force-cache' }),
+          fetch('/neonatal-atlas.json?v=1.0.0', { cache: 'force-cache' }),
         ]);
         if (!drugsR.ok) throw new Error(`monographs ${drugsR.status}`);
         const drugsJson = await drugsR.json();
@@ -267,6 +395,11 @@ export default function NeonatalHandbook() {
         const articlesJson = articlesR.ok ? await articlesR.json() : null;
         const lactJson = lactR.ok ? await lactR.json() : null;
         const nurseJson = nurseR.ok ? await nurseR.json() : null;
+        const casesJson = casesR.ok ? await casesR.json() : null;
+        const mistakesJson = mistakesR.ok ? await mistakesR.json() : null;
+        const checklistsJson = checklistsR.ok ? await checklistsR.json() : null;
+        const videosJson = videosR.ok ? await videosR.json() : null;
+        const atlasJson = atlasR.ok ? await atlasR.json() : null;
         if (!cancelled) {
           setBank(drugsJson as Bank);
           if (guidesJson) setGuidelines(guidesJson as GuidelinesBank);
@@ -275,6 +408,11 @@ export default function NeonatalHandbook() {
           if (articlesJson) setArticles(articlesJson as ArticlesBank);
           if (lactJson) setLactmed(lactJson as LactBank);
           if (nurseJson) setNurse(nurseJson as NurseProceduresBank);
+          if (casesJson) setCases(casesJson as ClinicalCasesBank);
+          if (mistakesJson) setMistakes(mistakesJson as CommonMistakesBank);
+          if (checklistsJson) setChecklists(checklistsJson as ProcedureChecklistsBank);
+          if (videosJson) setVideos(videosJson as ProcedureVideosBank);
+          if (atlasJson) setAtlas(atlasJson as AtlasBank);
         }
       } catch (e) {
         if (!cancelled) setError((e as Error).message ?? 'load failed');
@@ -592,7 +730,7 @@ export default function NeonatalHandbook() {
 
       {/* Search — для табов с поиском; на growth/bilirubin/resuscitation не нужен.
           Также скрывается когда quiz active (clean exam UI). */}
-      {!(tab === 'quizzes' && quizActive) && (tab === 'drugs' || tab === 'guidelines' || tab === 'calculators' || tab === 'labs' || tab === 'articles' || tab === 'lactmed' || tab === 'quizzes' || tab === 'nurse') && (
+      {!(tab === 'quizzes' && quizActive) && (tab === 'drugs' || tab === 'guidelines' || tab === 'calculators' || tab === 'labs' || tab === 'articles' || tab === 'lactmed' || tab === 'quizzes' || tab === 'nurse' || tab === 'cases' || tab === 'mistakes' || tab === 'checklists' || tab === 'videos' || tab === 'atlas') && (
       <motion.div
         role="search"
         aria-label={
@@ -681,6 +819,13 @@ export default function NeonatalHandbook() {
           labs: { label: 'Лаб. нормы', count: totalLabs },
           growth: { label: 'Графики роста', count: null },
           bilirubin: { label: 'Билирубин', count: null },
+          // Educational extension (audit Table 3.Д). Counts заполняются
+          // когда соответствующий JSON загрузился (см. fetch блок).
+          cases: { label: 'Клинические случаи', count: cases?.cases.length ?? null },
+          mistakes: { label: 'Типичные ошибки', count: mistakes?.mistakes.length ?? null },
+          checklists: { label: 'Чек-листы процедур', count: checklists?.checklists.length ?? null },
+          videos: { label: 'Видео процедур', count: videos?.videos.length ?? null },
+          atlas: { label: 'Атласы', count: atlas?.atlas.length ?? null },
         };
         const meta = SECTION_META[tab];
         return (
@@ -1185,7 +1330,7 @@ export default function NeonatalHandbook() {
         >
           <GrowthCharts />
         </motion.div>
-      ) : (
+      ) : tab === 'bilirubin' ? (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -1193,7 +1338,17 @@ export default function NeonatalHandbook() {
         >
           <BilirubinNomogram />
         </motion.div>
-      )}
+      ) : tab === 'cases' ? (
+        <ClinicalCasesView bank={cases} query={q} openId={openId} setOpenId={setOpenId} />
+      ) : tab === 'mistakes' ? (
+        <CommonMistakesView bank={mistakes} query={q} openId={openId} setOpenId={setOpenId} />
+      ) : tab === 'checklists' ? (
+        <ChecklistsView bank={checklists} query={q} openId={openId} setOpenId={setOpenId} />
+      ) : tab === 'videos' ? (
+        <VideosView bank={videos} query={q} />
+      ) : tab === 'atlas' ? (
+        <AtlasView bank={atlas} query={q} openId={openId} setOpenId={setOpenId} />
+      ) : null}
 
       {/* Source / disclaimer panel — единый стиль с DrugChecker provenance.
           Скрывается на табе Тесты (panel описывает источники препаратов /
@@ -2791,3 +2946,1584 @@ function NurseProcedureCard({
   );
 }
 
+/**
+ * EducationPlaceholder — временный shell для разделов Таблицы 3.Д пока
+ * их content + cards собираются (T2-T6). Будет removed когда все 5
+ * educational sub-tabs получат dedicated card components.
+ */
+function EducationPlaceholder({
+  tab,
+}: {
+  tab: 'cases' | 'mistakes' | 'checklists' | 'videos' | 'atlas';
+}) {
+  const meta: Record<typeof tab, { title: string; subtitle: string }> = {
+    cases:      { title: 'Клинические случаи',  subtitle: 'Виньетки с разбором: презентация, ключевые находки, дифференциальный диагноз, тактика, обучающие points.' },
+    mistakes:   { title: 'Типичные ошибки',     subtitle: 'Распространённые pitfalls в неонатологии — что пошло не так, почему, и как избежать.' },
+    checklists: { title: 'Чек-листы процедур',  subtitle: 'Step-by-step чек-листы для UAC/UVC, интубации, LP, surfactant, заменного переливания и других процедур.' },
+    videos:     { title: 'Видео процедур',      subtitle: 'Подборка видеоматериалов от AAP, NRP, ESPNIC и других авторитетных источников.' },
+    atlas:      { title: 'Атласы',              subtitle: 'Справочник изображений — кожа, рентген, нейросонография, ROP-стадии и др.' },
+  };
+  const m = meta[tab];
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      style={{
+        padding: '24px 20px',
+        background: '#F5F6F8',
+        borderRadius: 14,
+        border: '1px dashed #D1D5DB',
+        textAlign: 'center',
+      }}
+    >
+      <div style={{
+        fontFamily: 'var(--font-display)',
+        fontSize: 17, fontWeight: 700,
+        color: '#1A1A1A',
+        marginBottom: 6,
+        letterSpacing: '-0.01em',
+      }}>
+        {m.title}
+      </div>
+      <p style={{
+        margin: '0 auto 12px',
+        maxWidth: 520,
+        fontSize: 13.5, lineHeight: 1.55,
+        color: '#6B7280',
+      }}>
+        {m.subtitle}
+      </p>
+      <span style={{
+        display: 'inline-flex', alignItems: 'center',
+        padding: '4px var(--space-2)',
+        borderRadius: 'var(--md-sys-shape-corner-full)',
+        background: '#FFFFFF',
+        boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
+        fontFamily: 'var(--font-mono)',
+        fontSize: '0.625rem', fontWeight: 600,
+        color: '#9CA3AF',
+        textTransform: 'uppercase', letterSpacing: '0.06em',
+      }}>
+        В разработке
+      </span>
+    </motion.div>
+  );
+}
+
+// ============================================================================
+// T2 — Clinical Cases (Таблица 3.Д2)
+// ============================================================================
+
+const CLINICAL_TOPIC_LABELS: Record<string, string> = {
+  respiratory: 'Респираторная',
+  cardiopulmonary: 'Сердечно-лёгочная',
+  neuro: 'Неврология',
+  infection: 'Инфекции',
+  gastro: 'ЖКТ',
+  metabolic: 'Метаболизм',
+  hepatic: 'Гепатобилиарная',
+  screening: 'Скрининг',
+};
+
+function ClinicalCasesView({
+  bank, query, openId, setOpenId,
+}: {
+  bank: ClinicalCasesBank | null;
+  query: string;
+  openId: string | null;
+  setOpenId: (id: string | null) => void;
+}) {
+  const filtered = useMemo(() => {
+    if (!bank) return [];
+    const q = query.trim().toLowerCase();
+    if (!q) return bank.cases;
+    return bank.cases.filter((c) =>
+      c.title_ru.toLowerCase().includes(q)
+      || c.title_en.toLowerCase().includes(q)
+      || c.vignette.toLowerCase().includes(q)
+      || c.topic.toLowerCase().includes(q)
+    );
+  }, [bank, query]);
+
+  const grouped = useMemo(() => {
+    const map = new Map<string, ClinicalCase[]>();
+    for (const c of filtered) {
+      const label = CLINICAL_TOPIC_LABELS[c.topic] ?? c.topic;
+      const arr = map.get(label) ?? [];
+      arr.push(c);
+      map.set(label, arr);
+    }
+    return Array.from(map.entries());
+  }, [filtered]);
+
+  if (!bank) {
+    return (
+      <div>
+        <div className="lc-shimmer" style={{ height: 48, width: '100%', borderRadius: 12, marginBottom: 12 }} />
+        <div className="lc-shimmer" style={{ height: 160, width: '100%', borderRadius: 14 }} />
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ width: '100%' }}>
+      <p style={{ fontSize: 13, color: '#6B7280', margin: '0 0 14px' }}>
+        Показано: <strong style={{ color: '#1A1A1A' }}>{filtered.length}</strong> из {bank.cases.length} кейсов
+        {' · '}
+        <span style={{ color: '#9CA3AF' }}>сгруппированы по системе</span>
+      </p>
+
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+        style={{ display: 'flex', flexDirection: 'column', gap: 24 }}
+      >
+        {grouped.map(([label, items]) => (
+          <div key={label}>
+            <h3 style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 17, fontWeight: 700,
+              color: '#1A1A1A',
+              margin: '0 0 18px',
+              letterSpacing: '-0.01em',
+              display: 'flex', alignItems: 'baseline', gap: 8,
+            }}>
+              {label}
+              <span style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: 11, fontWeight: 600,
+                color: '#9CA3AF',
+              }}>
+                {items.length}
+              </span>
+            </h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {items.map((c) => (
+                <ClinicalCaseCard
+                  key={c.id}
+                  caseEntry={c}
+                  query={query}
+                  isOpen={openId === c.id}
+                  onToggle={() => setOpenId(openId === c.id ? null : c.id)}
+                />
+              ))}
+            </div>
+          </div>
+        ))}
+
+        {filtered.length === 0 && (
+          <div style={{
+            padding: '32px 16px', background: '#F5F6F8', borderRadius: 12,
+            textAlign: 'center', color: '#6B7280', fontSize: 14,
+          }}>
+            Ничего не найдено.
+          </div>
+        )}
+      </motion.div>
+    </div>
+  );
+}
+
+function ClinicalCaseCard({
+  caseEntry, query, isOpen, onToggle,
+}: {
+  caseEntry: ClinicalCase;
+  query: string;
+  isOpen: boolean;
+  onToggle: () => void;
+}) {
+  const c = caseEntry;
+  const panelId = `case-panel-${c.id}`;
+  const levelLabel = c.level === 'basic' ? 'Базовый' : c.level === 'advanced' ? 'Продвинутый' : 'Средний';
+  return (
+    <div style={{
+      background: '#F5F6F8',
+      border: isOpen ? '1px solid #E5E7EB' : 'none',
+      borderRadius: 14,
+      overflow: 'hidden',
+      transition: 'border-color 150ms ease',
+    }}>
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={isOpen}
+        aria-controls={panelId}
+        aria-label={isOpen ? `Свернуть кейс: ${c.title_ru}` : `Развернуть кейс: ${c.title_ru}. Уровень: ${levelLabel}.`}
+        style={{
+          width: '100%',
+          display: 'flex', alignItems: 'flex-start', gap: 14,
+          padding: '14px 18px',
+          background: 'transparent', border: 'none',
+          cursor: 'pointer', textAlign: 'left',
+          fontFamily: 'inherit',
+          transition: 'background 150ms',
+        }}
+        onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
+        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+      >
+        <span aria-hidden="true" style={{ flex: 1, minWidth: 0 }}>
+          <span style={{
+            display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap',
+          }}>
+            <span style={{
+              fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 600,
+              color: '#111827', letterSpacing: '-0.01em', lineHeight: 1.35,
+            }}>
+              <Highlight text={c.title_ru} query={query} />
+            </span>
+            <span style={{
+              display: 'inline-flex', alignItems: 'center',
+              padding: '4px var(--space-2)',
+              borderRadius: 'var(--md-sys-shape-corner-full)',
+              background: '#FFFFFF',
+              boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.625rem', fontWeight: 500,
+              color: 'var(--md-sys-color-on-surface-variant)',
+              textTransform: 'uppercase', letterSpacing: '0.04em',
+              whiteSpace: 'nowrap',
+            }}>
+              {levelLabel}
+            </span>
+          </span>
+        </span>
+        <span aria-hidden="true" style={{
+          flexShrink: 0,
+          color: '#9CA3AF',
+          transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+          transition: 'transform 200ms',
+          marginTop: 4,
+        }}>
+          <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
+            aria-hidden="true" focusable="false">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </span>
+      </button>
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.div
+            id={panelId}
+            role="region"
+            aria-label={`Кейс: ${c.title_ru}`}
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{
+              height: { duration: 0.25, ease: [0.05, 0.7, 0.1, 1] },
+              opacity: { duration: 0.18 },
+            }}
+            style={{ overflow: 'hidden' }}
+          >
+            <div style={{
+              padding: '18px 20px 20px',
+              background: '#FFFFFF',
+              borderTop: '1px solid #E5E7EB',
+              fontSize: 13.5, lineHeight: 1.6, color: '#1F2937',
+            }}>
+              {/* Виньетка — первый блок (контекст случая) */}
+              <p style={{
+                margin: '0 0 16px',
+                paddingBottom: 14,
+                borderBottom: '1px solid #F0F1F5',
+                fontSize: 14,
+                lineHeight: 1.6,
+                color: '#374151',
+                fontStyle: 'italic',
+              }}>
+                <Highlight text={c.vignette} query={query} />
+              </p>
+
+              <CaseSection label="Ключевые находки" items={c.presenting_features} />
+              <CaseSection label="Дифференциальный диагноз" items={c.differential} />
+              <CaseSection label="Тактика" items={c.management} ordered />
+              <CaseSection label="Pearls (запомнить)" items={c.pearls} tone="pearl" />
+
+              {c.references.length > 0 && (
+                <div style={{ marginTop: 18, paddingTop: 14, borderTop: '1px solid #E5E7EB' }}>
+                  <div style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
+                    textTransform: 'uppercase', color: '#9CA3AF', marginBottom: 8,
+                  }}>
+                    References
+                  </div>
+                  <ol style={{ margin: 0, paddingLeft: 20, fontSize: 12, color: '#6B7280', lineHeight: 1.55 }}>
+                    {c.references.map((ref, i) => (
+                      <li key={i} style={{ marginBottom: 4 }}>{ref}</li>
+                    ))}
+                  </ol>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+/**
+ * CaseSection — uniform секция-блок внутри ClinicalCaseCard expanded view.
+ * Используется для presenting features / differential / management / pearls.
+ *
+ * tone='pearl' даёт subtle amber accent на label (mirror Precautions
+ * pattern из DrugCard) — pearls = take-home points, важно выделить.
+ */
+function CaseSection({
+  label, items, ordered, tone,
+}: {
+  label: string;
+  items: string[];
+  ordered?: boolean;
+  tone?: 'pearl';
+}) {
+  if (items.length === 0) return null;
+  const ListTag: 'ol' | 'ul' = ordered ? 'ol' : 'ul';
+  return (
+    <div style={{ marginBottom: 14 }}>
+      <div style={{
+        display: 'inline-flex', alignItems: 'center', gap: 6,
+        fontFamily: 'var(--font-mono)',
+        fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
+        textTransform: 'uppercase',
+        color: tone === 'pearl' ? '#B45309' : '#9CA3AF',
+        marginBottom: 6,
+      }}>
+        {tone === 'pearl' && (
+          <svg
+            aria-hidden="true" focusable="false"
+            width={11} height={11} viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" strokeWidth={2.4}
+            strokeLinecap="round" strokeLinejoin="round"
+            style={{ flexShrink: 0 }}
+          >
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="8" x2="12" y2="12" />
+            <line x1="12" y1="16" x2="12.01" y2="16" />
+          </svg>
+        )}
+        {label}
+      </div>
+      <ListTag style={{
+        margin: 0, paddingLeft: 22,
+        display: 'flex', flexDirection: 'column', gap: 4,
+        fontSize: 13, lineHeight: 1.55, color: '#374151',
+      }}>
+        {items.map((it, i) => (
+          <li key={i}>{it}</li>
+        ))}
+      </ListTag>
+    </div>
+  );
+}
+
+// ============================================================================
+// T3 — Common Mistakes (Таблица 3.Д6)
+// ============================================================================
+
+const MISTAKE_CATEGORY_LABELS: Record<string, string> = {
+  resuscitation: 'Реанимация',
+  respiratory: 'Респираторная',
+  thermoregulation: 'Терморегуляция',
+  nutrition: 'Питание',
+  medication: 'Медикаменты',
+  metabolic: 'Метаболизм',
+  infection: 'Инфекции',
+  neuro: 'Неврология',
+  hepatic: 'Гепатобилиарная',
+  screening: 'Скрининг',
+};
+
+function CommonMistakesView({
+  bank, query, openId, setOpenId,
+}: {
+  bank: CommonMistakesBank | null;
+  query: string;
+  openId: string | null;
+  setOpenId: (id: string | null) => void;
+}) {
+  const filtered = useMemo(() => {
+    if (!bank) return [];
+    const q = query.trim().toLowerCase();
+    if (!q) return bank.mistakes;
+    return bank.mistakes.filter((m) =>
+      m.title_ru.toLowerCase().includes(q)
+      || m.title_en.toLowerCase().includes(q)
+      || m.mistake.toLowerCase().includes(q)
+      || m.correct_approach.toLowerCase().includes(q)
+      || m.category.toLowerCase().includes(q)
+    );
+  }, [bank, query]);
+
+  const grouped = useMemo(() => {
+    const map = new Map<string, CommonMistake[]>();
+    for (const m of filtered) {
+      const label = MISTAKE_CATEGORY_LABELS[m.category] ?? m.category;
+      const arr = map.get(label) ?? [];
+      arr.push(m);
+      map.set(label, arr);
+    }
+    return Array.from(map.entries());
+  }, [filtered]);
+
+  if (!bank) {
+    return (
+      <div>
+        <div className="lc-shimmer" style={{ height: 48, width: '100%', borderRadius: 12, marginBottom: 12 }} />
+        <div className="lc-shimmer" style={{ height: 160, width: '100%', borderRadius: 14 }} />
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ width: '100%' }}>
+      <p style={{ fontSize: 13, color: '#6B7280', margin: '0 0 14px' }}>
+        Показано: <strong style={{ color: '#1A1A1A' }}>{filtered.length}</strong> из {bank.mistakes.length} ошибок
+        {' · '}
+        <span style={{ color: '#9CA3AF' }}>сгруппированы по системе</span>
+      </p>
+
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+        style={{ display: 'flex', flexDirection: 'column', gap: 24 }}
+      >
+        {grouped.map(([label, items]) => (
+          <div key={label}>
+            <h3 style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 17, fontWeight: 700,
+              color: '#1A1A1A',
+              margin: '0 0 18px',
+              letterSpacing: '-0.01em',
+              display: 'flex', alignItems: 'baseline', gap: 8,
+            }}>
+              {label}
+              <span style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: 11, fontWeight: 600,
+                color: '#9CA3AF',
+              }}>
+                {items.length}
+              </span>
+            </h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {items.map((m) => (
+                <CommonMistakeCard
+                  key={m.id}
+                  mistakeEntry={m}
+                  query={query}
+                  isOpen={openId === m.id}
+                  onToggle={() => setOpenId(openId === m.id ? null : m.id)}
+                />
+              ))}
+            </div>
+          </div>
+        ))}
+
+        {filtered.length === 0 && (
+          <div style={{
+            padding: '32px 16px', background: '#F5F6F8', borderRadius: 12,
+            textAlign: 'center', color: '#6B7280', fontSize: 14,
+          }}>
+            Ничего не найдено.
+          </div>
+        )}
+      </motion.div>
+    </div>
+  );
+}
+
+function CommonMistakeCard({
+  mistakeEntry, query, isOpen, onToggle,
+}: {
+  mistakeEntry: CommonMistake;
+  query: string;
+  isOpen: boolean;
+  onToggle: () => void;
+}) {
+  const m = mistakeEntry;
+  const panelId = `mistake-panel-${m.id}`;
+  // Severity color на text only (наш стандартный pattern):
+  // high — красный, medium — амбер, low — нейтральный grey.
+  const sevColor = m.severity === 'high' ? '#DC2626'
+    : m.severity === 'medium' ? '#B45309'
+    : '#6B7280';
+  const sevLabel = m.severity === 'high' ? 'Высокая'
+    : m.severity === 'medium' ? 'Средняя'
+    : 'Низкая';
+  return (
+    <div style={{
+      background: '#F5F6F8',
+      border: isOpen ? '1px solid #E5E7EB' : 'none',
+      borderRadius: 14,
+      overflow: 'hidden',
+      transition: 'border-color 150ms ease',
+    }}>
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={isOpen}
+        aria-controls={panelId}
+        aria-label={isOpen ? `Свернуть: ${m.title_ru}` : `Развернуть: ${m.title_ru}. Тяжесть последствий: ${sevLabel}.`}
+        style={{
+          width: '100%',
+          display: 'flex', alignItems: 'flex-start', gap: 14,
+          padding: '14px 18px',
+          background: 'transparent', border: 'none',
+          cursor: 'pointer', textAlign: 'left',
+          fontFamily: 'inherit',
+          transition: 'background 150ms',
+        }}
+        onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
+        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+      >
+        <span aria-hidden="true" style={{ flex: 1, minWidth: 0 }}>
+          <span style={{
+            display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap',
+          }}>
+            <span style={{
+              fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 600,
+              color: '#111827', letterSpacing: '-0.01em', lineHeight: 1.35,
+            }}>
+              <Highlight text={m.title_ru} query={query} />
+            </span>
+            <span style={{
+              display: 'inline-flex', alignItems: 'center',
+              padding: '4px var(--space-2)',
+              borderRadius: 'var(--md-sys-shape-corner-full)',
+              background: '#FFFFFF',
+              boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.625rem', fontWeight: 600,
+              color: sevColor,
+              textTransform: 'uppercase', letterSpacing: '0.04em',
+              whiteSpace: 'nowrap',
+            }}>
+              {sevLabel}
+            </span>
+          </span>
+        </span>
+        <span aria-hidden="true" style={{
+          flexShrink: 0,
+          color: '#9CA3AF',
+          transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+          transition: 'transform 200ms',
+          marginTop: 4,
+        }}>
+          <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
+            aria-hidden="true" focusable="false">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </span>
+      </button>
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.div
+            id={panelId}
+            role="region"
+            aria-label={`Ошибка: ${m.title_ru}`}
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{
+              height: { duration: 0.25, ease: [0.05, 0.7, 0.1, 1] },
+              opacity: { duration: 0.18 },
+            }}
+            style={{ overflow: 'hidden' }}
+          >
+            <div style={{
+              padding: '18px 20px 20px',
+              background: '#FFFFFF',
+              borderTop: '1px solid #E5E7EB',
+              fontSize: 13.5, lineHeight: 1.6, color: '#1F2937',
+            }}>
+              <MistakeBlock label="Что часто делают неправильно" text={m.mistake} />
+              <MistakeBlock label="Почему ошибка типична" text={m.why_it_happens} />
+              <MistakeBlock label="Как должно быть" text={m.correct_approach} tone="ok" />
+              <MistakeBlock label="Последствия ошибки" text={m.consequence} tone="warning" />
+
+              {m.references.length > 0 && (
+                <div style={{ marginTop: 18, paddingTop: 14, borderTop: '1px solid #E5E7EB' }}>
+                  <div style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
+                    textTransform: 'uppercase', color: '#9CA3AF', marginBottom: 8,
+                  }}>
+                    References
+                  </div>
+                  <ol style={{ margin: 0, paddingLeft: 20, fontSize: 12, color: '#6B7280', lineHeight: 1.55 }}>
+                    {m.references.map((ref, i) => (
+                      <li key={i} style={{ marginBottom: 4 }}>{ref}</li>
+                    ))}
+                  </ol>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+/**
+ * MistakeBlock — uniform секция-блок внутри CommonMistakeCard expanded view.
+ *   tone='ok' даёт green accent на label (correct approach).
+ *   tone='warning' — amber accent + ⚠ icon (consequence).
+ */
+function MistakeBlock({
+  label, text, tone,
+}: {
+  label: string;
+  text: string;
+  tone?: 'ok' | 'warning';
+}) {
+  const labelColor = tone === 'ok' ? '#059669'
+    : tone === 'warning' ? '#B45309'
+    : '#9CA3AF';
+  return (
+    <div style={{ marginBottom: 14 }}>
+      <div style={{
+        display: 'inline-flex', alignItems: 'center', gap: 6,
+        fontFamily: 'var(--font-mono)',
+        fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
+        textTransform: 'uppercase',
+        color: labelColor,
+        marginBottom: 6,
+      }}>
+        {tone === 'warning' && (
+          <svg
+            aria-hidden="true" focusable="false"
+            width={11} height={11} viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" strokeWidth={2.4}
+            strokeLinecap="round" strokeLinejoin="round"
+            style={{ flexShrink: 0 }}
+          >
+            <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z" />
+            <line x1="12" y1="9" x2="12" y2="13" />
+            <line x1="12" y1="17" x2="12.01" y2="17" />
+          </svg>
+        )}
+        {tone === 'ok' && (
+          <svg
+            aria-hidden="true" focusable="false"
+            width={11} height={11} viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" strokeWidth={2.4}
+            strokeLinecap="round" strokeLinejoin="round"
+            style={{ flexShrink: 0 }}
+          >
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        )}
+        {label}
+      </div>
+      <p style={{
+        margin: 0,
+        fontSize: 13.5, lineHeight: 1.55, color: '#374151',
+      }}>
+        {text}
+      </p>
+    </div>
+  );
+}
+
+// ============================================================================
+// T4 — Procedure Checklists (Таблица 3.Д5)
+// ============================================================================
+
+const CHECKLIST_CATEGORY_LABELS: Record<string, string> = {
+  vascular_access: 'Сосудистый доступ',
+  respiratory: 'Респираторные',
+  neuro: 'Неврологические',
+  hepatic: 'Гепатобилиарные',
+  resuscitation: 'Реанимация',
+};
+
+function ChecklistsView({
+  bank, query, openId, setOpenId,
+}: {
+  bank: ProcedureChecklistsBank | null;
+  query: string;
+  openId: string | null;
+  setOpenId: (id: string | null) => void;
+}) {
+  const filtered = useMemo(() => {
+    if (!bank) return [];
+    const q = query.trim().toLowerCase();
+    if (!q) return bank.checklists;
+    return bank.checklists.filter((c) =>
+      c.title_ru.toLowerCase().includes(q)
+      || c.title_en.toLowerCase().includes(q)
+      || c.indications.some((i) => i.toLowerCase().includes(q))
+      || c.category.toLowerCase().includes(q)
+    );
+  }, [bank, query]);
+
+  const grouped = useMemo(() => {
+    const map = new Map<string, ProcedureChecklist[]>();
+    for (const c of filtered) {
+      const label = CHECKLIST_CATEGORY_LABELS[c.category] ?? c.category;
+      const arr = map.get(label) ?? [];
+      arr.push(c);
+      map.set(label, arr);
+    }
+    return Array.from(map.entries());
+  }, [filtered]);
+
+  if (!bank) {
+    return (
+      <div>
+        <div className="lc-shimmer" style={{ height: 48, width: '100%', borderRadius: 12, marginBottom: 12 }} />
+        <div className="lc-shimmer" style={{ height: 160, width: '100%', borderRadius: 14 }} />
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ width: '100%' }}>
+      <p style={{ fontSize: 13, color: '#6B7280', margin: '0 0 14px' }}>
+        Показано: <strong style={{ color: '#1A1A1A' }}>{filtered.length}</strong> из {bank.checklists.length} чек-листов
+        {' · '}
+        <span style={{ color: '#9CA3AF' }}>прогресс сохраняется на устройстве</span>
+      </p>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+        style={{ display: 'flex', flexDirection: 'column', gap: 24 }}
+      >
+        {grouped.map(([label, items]) => (
+          <div key={label}>
+            <h3 style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 17, fontWeight: 700,
+              color: '#1A1A1A',
+              margin: '0 0 18px',
+              letterSpacing: '-0.01em',
+              display: 'flex', alignItems: 'baseline', gap: 8,
+            }}>
+              {label}
+              <span style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: 11, fontWeight: 600,
+                color: '#9CA3AF',
+              }}>
+                {items.length}
+              </span>
+            </h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {items.map((c) => (
+                <ChecklistCard
+                  key={c.id}
+                  checklist={c}
+                  query={query}
+                  isOpen={openId === c.id}
+                  onToggle={() => setOpenId(openId === c.id ? null : c.id)}
+                />
+              ))}
+            </div>
+          </div>
+        ))}
+        {filtered.length === 0 && (
+          <div style={{
+            padding: '32px 16px', background: '#F5F6F8', borderRadius: 12,
+            textAlign: 'center', color: '#6B7280', fontSize: 14,
+          }}>
+            Ничего не найдено.
+          </div>
+        )}
+      </motion.div>
+    </div>
+  );
+}
+
+function ChecklistCard({
+  checklist, query, isOpen, onToggle,
+}: {
+  checklist: ProcedureChecklist;
+  query: string;
+  isOpen: boolean;
+  onToggle: () => void;
+}) {
+  const c = checklist;
+  const panelId = `checklist-panel-${c.id}`;
+  // Прогресс хранится в localStorage. Ключ — bordik-neonatal-checklist-<id>.
+  // Map item-key (section_idx:item_idx) → bool checked.
+  const [progress, setProgress] = useState<Record<string, boolean>>(() => {
+    if (typeof window === 'undefined') return {};
+    try {
+      const raw = window.localStorage.getItem(`bordik-neonatal-checklist-${c.id}`);
+      return raw ? JSON.parse(raw) : {};
+    } catch { return {}; }
+  });
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    try { window.localStorage.setItem(`bordik-neonatal-checklist-${c.id}`, JSON.stringify(progress)); } catch { /* ignore */ }
+  }, [c.id, progress]);
+
+  const toggleItem = (key: string) =>
+    setProgress((prev) => ({ ...prev, [key]: !prev[key] }));
+  const resetAll = () => setProgress({});
+
+  // Подсчёт прогресса для UI display.
+  const totalItems = c.sections.reduce((s, sec) => s + sec.items.length, 0);
+  const doneItems = c.sections.reduce(
+    (s, sec, si) => s + sec.items.reduce(
+      (s2, _it, ii) => s2 + (progress[`${si}:${ii}`] ? 1 : 0), 0,
+    ), 0,
+  );
+  const percent = totalItems > 0 ? Math.round((doneItems / totalItems) * 100) : 0;
+
+  return (
+    <div style={{
+      background: '#F5F6F8',
+      border: isOpen ? '1px solid #E5E7EB' : 'none',
+      borderRadius: 14,
+      overflow: 'hidden',
+      transition: 'border-color 150ms ease',
+    }}>
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={isOpen}
+        aria-controls={panelId}
+        aria-label={isOpen ? `Свернуть чек-лист: ${c.title_ru}` : `Развернуть чек-лист: ${c.title_ru}. Длительность ~${c.estimated_minutes} минут.`}
+        style={{
+          width: '100%',
+          display: 'flex', alignItems: 'flex-start', gap: 14,
+          padding: '14px 18px',
+          background: 'transparent', border: 'none',
+          cursor: 'pointer', textAlign: 'left',
+          fontFamily: 'inherit',
+          transition: 'background 150ms',
+        }}
+        onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
+        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+      >
+        <span aria-hidden="true" style={{ flex: 1, minWidth: 0 }}>
+          <span style={{
+            display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap',
+          }}>
+            <span style={{
+              fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 600,
+              color: '#111827', letterSpacing: '-0.01em', lineHeight: 1.35,
+            }}>
+              <Highlight text={c.title_ru} query={query} />
+            </span>
+            <span style={{
+              display: 'inline-flex', alignItems: 'center',
+              padding: '4px var(--space-2)',
+              borderRadius: 'var(--md-sys-shape-corner-full)',
+              background: '#FFFFFF',
+              boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.625rem', fontWeight: 500,
+              color: 'var(--md-sys-color-on-surface-variant)',
+              whiteSpace: 'nowrap',
+            }}>
+              ~{c.estimated_minutes} мин
+            </span>
+            {percent > 0 && (
+              <span style={{
+                display: 'inline-flex', alignItems: 'center',
+                padding: '4px var(--space-2)',
+                borderRadius: 'var(--md-sys-shape-corner-full)',
+                background: '#FFFFFF',
+                boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
+                fontFamily: 'var(--font-mono)',
+                fontSize: '0.625rem', fontWeight: 600,
+                color: percent === 100 ? '#059669' : '#2563EB',
+                whiteSpace: 'nowrap',
+              }}>
+                {doneItems}/{totalItems} · {percent}%
+              </span>
+            )}
+          </span>
+        </span>
+        <span aria-hidden="true" style={{
+          flexShrink: 0,
+          color: '#9CA3AF',
+          transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+          transition: 'transform 200ms',
+          marginTop: 4,
+        }}>
+          <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
+            aria-hidden="true" focusable="false">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </span>
+      </button>
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.div
+            id={panelId}
+            role="region"
+            aria-label={`Чек-лист: ${c.title_ru}`}
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{
+              height: { duration: 0.25, ease: [0.05, 0.7, 0.1, 1] },
+              opacity: { duration: 0.18 },
+            }}
+            style={{ overflow: 'hidden' }}
+          >
+            <div style={{
+              padding: '18px 20px 20px',
+              background: '#FFFFFF',
+              borderTop: '1px solid #E5E7EB',
+              fontSize: 13.5, lineHeight: 1.55, color: '#1F2937',
+            }}>
+              {/* Audience + indications */}
+              <div style={{
+                marginBottom: 16,
+                paddingBottom: 14,
+                borderBottom: '1px solid #F0F1F5',
+              }}>
+                <div style={{
+                  fontSize: 12, color: '#6B7280', marginBottom: 6,
+                }}>
+                  <strong style={{ color: '#1A1A1A' }}>Аудитория:</strong> {c.audience}
+                </div>
+                {c.indications.length > 0 && (
+                  <div style={{ fontSize: 12, color: '#6B7280' }}>
+                    <strong style={{ color: '#1A1A1A' }}>Показания:</strong>
+                    <ul style={{ margin: '4px 0 0 18px', padding: 0 }}>
+                      {c.indications.map((it, i) => (
+                        <li key={i}>{it}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+
+              {/* Sections с интерактивными checkbox */}
+              {c.sections.map((sec, si) => (
+                <div key={si} style={{ marginBottom: 18 }}>
+                  <div style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
+                    textTransform: 'uppercase', color: '#9CA3AF',
+                    marginBottom: 8,
+                  }}>
+                    {sec.title}
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                    {sec.items.map((it, ii) => {
+                      const key = `${si}:${ii}`;
+                      const checked = !!progress[key];
+                      return (
+                        <label
+                          key={ii}
+                          style={{
+                            display: 'flex', alignItems: 'flex-start', gap: 10,
+                            padding: '8px 10px',
+                            background: checked ? '#ECFDF5' : '#F9FAFB',
+                            borderRadius: 8,
+                            cursor: 'pointer',
+                            transition: 'background 150ms',
+                            fontSize: 13.5,
+                            color: checked ? '#065F46' : '#1F2937',
+                            textDecoration: checked ? 'line-through' : 'none',
+                            opacity: checked ? 0.75 : 1,
+                          }}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={checked}
+                            onChange={() => toggleItem(key)}
+                            style={{
+                              flexShrink: 0,
+                              marginTop: 3,
+                              width: 16, height: 16,
+                              accentColor: '#059669',
+                              cursor: 'pointer',
+                            }}
+                          />
+                          <span style={{ lineHeight: 1.5 }}>{it}</span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+
+              {/* Reset button + references */}
+              <div style={{
+                marginTop: 14, paddingTop: 14, borderTop: '1px solid #E5E7EB',
+                display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 12,
+              }}>
+                <button
+                  type="button"
+                  onClick={resetAll}
+                  aria-label="Сбросить прогресс чек-листа"
+                  style={{
+                    display: 'inline-flex', alignItems: 'center', gap: 6,
+                    padding: '8px 14px',
+                    borderRadius: 'var(--md-sys-shape-corner-full)',
+                    background: '#FFFFFF',
+                    boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
+                    border: 'none',
+                    fontFamily: 'var(--font-body)',
+                    fontSize: 12.5, fontWeight: 600,
+                    color: '#1A1A1A',
+                    cursor: 'pointer',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  Сбросить прогресс
+                </button>
+                <span style={{ fontSize: 11, color: '#9CA3AF', flex: 1 }}>
+                  Прогресс сохраняется локально в браузере. Не заменяет
+                  институциональный чек-лист.
+                </span>
+              </div>
+
+              {c.references.length > 0 && (
+                <div style={{ marginTop: 18, paddingTop: 14, borderTop: '1px solid #E5E7EB' }}>
+                  <div style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
+                    textTransform: 'uppercase', color: '#9CA3AF', marginBottom: 8,
+                  }}>
+                    References
+                  </div>
+                  <ol style={{ margin: 0, paddingLeft: 20, fontSize: 12, color: '#6B7280', lineHeight: 1.55 }}>
+                    {c.references.map((ref, i) => (
+                      <li key={i} style={{ marginBottom: 4 }}>{ref}</li>
+                    ))}
+                  </ol>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+
+
+// ============================================================================
+// T5 — Procedure Videos (Таблица 3.Д3)
+// ============================================================================
+
+const VIDEO_CATEGORY_LABELS: Record<string, string> = {
+  resuscitation: 'Реанимация',
+  respiratory: 'Респираторные',
+  vascular_access: 'Сосудистый доступ',
+  neuro: 'Неврологические',
+  thermal: 'Терморегуляция',
+  screening: 'Скрининг',
+  examination: 'Осмотр',
+  feeding: 'Питание / лактация',
+  developmental: 'Развитие',
+  hepatic: 'Гепатобилиарные',
+};
+
+const VIDEO_SOURCE_TYPE_LABELS: Record<string, string> = {
+  youtube_official: 'YouTube · официальный канал',
+  who_official: 'WHO',
+  nejm: 'NEJM',
+};
+
+function VideosView({
+  bank, query,
+}: {
+  bank: ProcedureVideosBank | null;
+  query: string;
+}) {
+  const filtered = useMemo(() => {
+    if (!bank) return [];
+    const q = query.trim().toLowerCase();
+    if (!q) return bank.videos;
+    return bank.videos.filter((v) =>
+      v.title_ru.toLowerCase().includes(q)
+      || v.title_en.toLowerCase().includes(q)
+      || v.description.toLowerCase().includes(q)
+      || v.tags.some((t) => t.toLowerCase().includes(q))
+      || v.source.toLowerCase().includes(q)
+    );
+  }, [bank, query]);
+
+  const grouped = useMemo(() => {
+    const map = new Map<string, ProcedureVideo[]>();
+    for (const v of filtered) {
+      const label = VIDEO_CATEGORY_LABELS[v.category] ?? v.category;
+      const arr = map.get(label) ?? [];
+      arr.push(v);
+      map.set(label, arr);
+    }
+    return Array.from(map.entries());
+  }, [filtered]);
+
+  if (!bank) {
+    return (
+      <div>
+        <div className="lc-shimmer" style={{ height: 48, width: '100%', borderRadius: 12, marginBottom: 12 }} />
+        <div className="lc-shimmer" style={{ height: 160, width: '100%', borderRadius: 14 }} />
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ width: '100%' }}>
+      <p style={{ fontSize: 13, color: '#6B7280', margin: '0 0 14px' }}>
+        Показано: <strong style={{ color: '#1A1A1A' }}>{filtered.length}</strong> из {bank.videos.length} видео
+        {' · '}
+        <span style={{ color: '#9CA3AF' }}>линки на authoritative источники (AAP, WHO, NEJM, EFCNI и др.)</span>
+      </p>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+        style={{ display: 'flex', flexDirection: 'column', gap: 24 }}
+      >
+        {grouped.map(([label, items]) => (
+          <div key={label}>
+            <h3 style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 17, fontWeight: 700,
+              color: '#1A1A1A',
+              margin: '0 0 18px',
+              letterSpacing: '-0.01em',
+              display: 'flex', alignItems: 'baseline', gap: 8,
+            }}>
+              {label}
+              <span style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: 11, fontWeight: 600,
+                color: '#9CA3AF',
+              }}>
+                {items.length}
+              </span>
+            </h3>
+            <div className="rg-3">
+              {items.map((v) => (
+                <ProcedureVideoCard key={v.id} video={v} />
+              ))}
+            </div>
+          </div>
+        ))}
+        {filtered.length === 0 && (
+          <div style={{
+            padding: '32px 16px', background: '#F5F6F8', borderRadius: 12,
+            textAlign: 'center', color: '#6B7280', fontSize: 14,
+          }}>
+            Ничего не найдено.
+          </div>
+        )}
+      </motion.div>
+    </div>
+  );
+}
+
+function ProcedureVideoCard({ video }: { video: ProcedureVideo }) {
+  const v = video;
+  const sourceLabel = VIDEO_SOURCE_TYPE_LABELS[v.source_type] ?? v.source_type;
+  return (
+    <a
+      href={v.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={`Открыть видео: ${v.title_ru}. Источник: ${v.source}. Длительность ~${v.duration_min} минут.`}
+      style={{
+        display: 'flex', flexDirection: 'column',
+        background: '#F5F6F8',
+        borderRadius: 'var(--md-sys-shape-corner-extra-large)',
+        padding: 'var(--space-5)',
+        textDecoration: 'none',
+        color: 'inherit',
+        minHeight: 180,
+        transition: 'background 300ms cubic-bezier(0.22,1,0.36,1)',
+        contentVisibility: 'auto',
+        containIntrinsicSize: '180px 240px',
+      } as React.CSSProperties}
+      onMouseEnter={(e) => { e.currentTarget.style.background = '#F0F2F5'; }}
+      onMouseLeave={(e) => { e.currentTarget.style.background = '#F5F6F8'; }}
+    >
+      <div style={{
+        display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 'var(--space-3)',
+      }}>
+        <span style={{
+          display: 'inline-flex', alignItems: 'center',
+          padding: '4px var(--space-2)', borderRadius: 'var(--md-sys-shape-corner-full)',
+          background: '#FFFFFF',
+          boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
+          fontFamily: 'var(--font-mono)',
+          fontSize: '0.625rem', fontWeight: 500,
+          color: 'var(--md-sys-color-on-surface-variant)',
+          whiteSpace: 'nowrap',
+        }}>
+          ~{v.duration_min} мин
+        </span>
+        <span style={{
+          display: 'inline-flex', alignItems: 'center',
+          padding: '4px var(--space-2)', borderRadius: 'var(--md-sys-shape-corner-full)',
+          background: '#FFFFFF',
+          boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
+          fontFamily: 'var(--font-mono)',
+          fontSize: '0.625rem', fontWeight: 500,
+          color: 'var(--md-sys-color-on-surface-variant)',
+          textTransform: 'uppercase', letterSpacing: '0.04em',
+          whiteSpace: 'nowrap',
+        }}>
+          {sourceLabel}
+        </span>
+      </div>
+      <div style={{ flex: 1 }}>
+        <h3 style={{
+          fontFamily: 'var(--font-display)',
+          fontSize: 'var(--text-base)', fontWeight: 700,
+          color: 'var(--md-sys-color-on-surface)',
+          marginBottom: 'var(--space-1)', lineHeight: 1.25,
+        }}>
+          {v.title_ru}
+        </h3>
+        <p style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 'var(--text-xs)',
+          color: 'var(--md-sys-color-on-surface-variant)',
+          lineHeight: 1.4,
+          display: '-webkit-box',
+          WebkitLineClamp: 3,
+          WebkitBoxOrient: 'vertical',
+          overflow: 'hidden',
+          margin: 0,
+        }}>
+          {v.description}
+        </p>
+      </div>
+      <div style={{
+        marginTop: 'var(--space-3)',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        gap: 8,
+      }}>
+        <span style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 'var(--text-xs)', fontWeight: 500,
+          color: 'var(--md-sys-color-on-surface)',
+          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+        }}>
+          {v.source}
+        </span>
+        <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
+          aria-hidden="true" focusable="false"
+          style={{ flexShrink: 0, color: 'var(--md-sys-color-on-surface)' }}>
+          <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" />
+          <polyline points="15 3 21 3 21 9" />
+          <line x1="10" y1="14" x2="21" y2="3" />
+        </svg>
+      </div>
+    </a>
+  );
+}
+
+
+// ============================================================================
+// T6 — Atlas (Таблица 3.Д4)
+// ============================================================================
+
+const ATLAS_CATEGORY_LABELS: Record<string, string> = {
+  respiratory_imaging: 'Лёгкие — визуализация',
+  abdominal_imaging: 'Живот — визуализация',
+  neuroimaging: 'Нейровизуализация',
+  vascular_imaging: 'Сосуды / catheters',
+  skin: 'Кожа',
+  ROP: 'ROP',
+  examination: 'Клинический осмотр',
+};
+
+const ATLAS_SOURCE_TYPE_LABELS: Record<string, string> = {
+  radiopaedia: 'Radiopaedia (CC BY)',
+  who_official: 'WHO',
+  nejm: 'NEJM',
+  stanford: 'Stanford Medicine',
+  icrop: 'ICROP / AAO',
+};
+
+function AtlasView({
+  bank, query, openId, setOpenId,
+}: {
+  bank: AtlasBank | null;
+  query: string;
+  openId: string | null;
+  setOpenId: (id: string | null) => void;
+}) {
+  const filtered = useMemo(() => {
+    if (!bank) return [];
+    const q = query.trim().toLowerCase();
+    if (!q) return bank.atlas;
+    return bank.atlas.filter((a) =>
+      a.title_ru.toLowerCase().includes(q)
+      || a.title_en.toLowerCase().includes(q)
+      || a.description.toLowerCase().includes(q)
+      || a.key_findings.some((k) => k.toLowerCase().includes(q))
+      || a.source.toLowerCase().includes(q)
+    );
+  }, [bank, query]);
+
+  const grouped = useMemo(() => {
+    const map = new Map<string, AtlasEntry[]>();
+    for (const a of filtered) {
+      const label = ATLAS_CATEGORY_LABELS[a.category] ?? a.category;
+      const arr = map.get(label) ?? [];
+      arr.push(a);
+      map.set(label, arr);
+    }
+    return Array.from(map.entries());
+  }, [filtered]);
+
+  if (!bank) {
+    return (
+      <div>
+        <div className="lc-shimmer" style={{ height: 48, width: '100%', borderRadius: 12, marginBottom: 12 }} />
+        <div className="lc-shimmer" style={{ height: 160, width: '100%', borderRadius: 14 }} />
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ width: '100%' }}>
+      <p style={{ fontSize: 13, color: '#6B7280', margin: '0 0 14px' }}>
+        Показано: <strong style={{ color: '#1A1A1A' }}>{filtered.length}</strong> из {bank.atlas.length} атласов
+        {' · '}
+        <span style={{ color: '#9CA3AF' }}>линки на authoritative источники (Radiopaedia, NEJM, AAP)</span>
+      </p>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+        style={{ display: 'flex', flexDirection: 'column', gap: 24 }}
+      >
+        {grouped.map(([label, items]) => (
+          <div key={label}>
+            <h3 style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 17, fontWeight: 700,
+              color: '#1A1A1A',
+              margin: '0 0 18px',
+              letterSpacing: '-0.01em',
+              display: 'flex', alignItems: 'baseline', gap: 8,
+            }}>
+              {label}
+              <span style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: 11, fontWeight: 600,
+                color: '#9CA3AF',
+              }}>
+                {items.length}
+              </span>
+            </h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {items.map((a) => (
+                <AtlasCard
+                  key={a.id}
+                  entry={a}
+                  query={query}
+                  isOpen={openId === a.id}
+                  onToggle={() => setOpenId(openId === a.id ? null : a.id)}
+                />
+              ))}
+            </div>
+          </div>
+        ))}
+        {filtered.length === 0 && (
+          <div style={{
+            padding: '32px 16px', background: '#F5F6F8', borderRadius: 12,
+            textAlign: 'center', color: '#6B7280', fontSize: 14,
+          }}>
+            Ничего не найдено.
+          </div>
+        )}
+      </motion.div>
+    </div>
+  );
+}
+
+function AtlasCard({
+  entry, query, isOpen, onToggle,
+}: {
+  entry: AtlasEntry;
+  query: string;
+  isOpen: boolean;
+  onToggle: () => void;
+}) {
+  const a = entry;
+  const panelId = `atlas-panel-${a.id}`;
+  const sourceLabel = ATLAS_SOURCE_TYPE_LABELS[a.source_type] ?? a.source_type;
+  return (
+    <div style={{
+      background: '#F5F6F8',
+      border: isOpen ? '1px solid #E5E7EB' : 'none',
+      borderRadius: 14,
+      overflow: 'hidden',
+      transition: 'border-color 150ms ease',
+    }}>
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={isOpen}
+        aria-controls={panelId}
+        aria-label={isOpen ? `Свернуть атлас: ${a.title_ru}` : `Развернуть атлас: ${a.title_ru}. Источник: ${a.source}.`}
+        style={{
+          width: '100%',
+          display: 'flex', alignItems: 'flex-start', gap: 14,
+          padding: '14px 18px',
+          background: 'transparent', border: 'none',
+          cursor: 'pointer', textAlign: 'left',
+          fontFamily: 'inherit',
+          transition: 'background 150ms',
+        }}
+        onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
+        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+      >
+        <span aria-hidden="true" style={{ flex: 1, minWidth: 0 }}>
+          <span style={{
+            display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap',
+          }}>
+            <span style={{
+              fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 600,
+              color: '#111827', letterSpacing: '-0.01em', lineHeight: 1.35,
+            }}>
+              <Highlight text={a.title_ru} query={query} />
+            </span>
+            <span style={{
+              display: 'inline-flex', alignItems: 'center',
+              padding: '4px var(--space-2)',
+              borderRadius: 'var(--md-sys-shape-corner-full)',
+              background: '#FFFFFF',
+              boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.625rem', fontWeight: 500,
+              color: 'var(--md-sys-color-on-surface-variant)',
+              textTransform: 'uppercase', letterSpacing: '0.04em',
+              whiteSpace: 'nowrap',
+            }}>
+              {sourceLabel}
+            </span>
+          </span>
+        </span>
+        <span aria-hidden="true" style={{
+          flexShrink: 0,
+          color: '#9CA3AF',
+          transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+          transition: 'transform 200ms',
+          marginTop: 4,
+        }}>
+          <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
+            aria-hidden="true" focusable="false">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </span>
+      </button>
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.div
+            id={panelId}
+            role="region"
+            aria-label={`Атлас: ${a.title_ru}`}
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{
+              height: { duration: 0.25, ease: [0.05, 0.7, 0.1, 1] },
+              opacity: { duration: 0.18 },
+            }}
+            style={{ overflow: 'hidden' }}
+          >
+            <div style={{
+              padding: '18px 20px 20px',
+              background: '#FFFFFF',
+              borderTop: '1px solid #E5E7EB',
+              fontSize: 13.5, lineHeight: 1.6, color: '#1F2937',
+            }}>
+              <p style={{
+                margin: '0 0 16px',
+                paddingBottom: 14,
+                borderBottom: '1px solid #F0F1F5',
+                fontSize: 14, lineHeight: 1.55,
+                color: '#4B5563',
+              }}>
+                <Highlight text={a.description} query={query} />
+              </p>
+
+              {a.key_findings.length > 0 && (
+                <div style={{ marginBottom: 16 }}>
+                  <div style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
+                    textTransform: 'uppercase', color: '#9CA3AF',
+                    marginBottom: 6,
+                  }}>
+                    Ключевые находки
+                  </div>
+                  <ul style={{
+                    margin: 0, paddingLeft: 22,
+                    fontSize: 13, lineHeight: 1.55, color: '#374151',
+                    display: 'flex', flexDirection: 'column', gap: 4,
+                  }}>
+                    {a.key_findings.map((f, i) => (
+                      <li key={i}>{f}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              <div style={{
+                marginTop: 16,
+                display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 12,
+              }}>
+                <a
+                  href={a.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Открыть атлас: ${a.title_ru} на ${a.source}`}
+                  style={{
+                    display: 'inline-flex', alignItems: 'center', gap: 6,
+                    padding: '8px 14px',
+                    borderRadius: 'var(--md-sys-shape-corner-full)',
+                    background: '#FFFFFF',
+                    boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
+                    fontFamily: 'var(--font-body)',
+                    fontSize: 12.5, fontWeight: 600,
+                    color: '#1A1A1A',
+                    textDecoration: 'none',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  Открыть на {a.source}
+                  <svg width={12} height={12} viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
+                    aria-hidden="true" focusable="false">
+                    <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" />
+                    <polyline points="15 3 21 3 21 9" />
+                    <line x1="10" y1="14" x2="21" y2="3" />
+                  </svg>
+                </a>
+                <span style={{
+                  fontSize: 11, color: '#9CA3AF', flex: 1,
+                  lineHeight: 1.4, minWidth: 200,
+                }}>
+                  Изображения остаются в источнике для соблюдения copyright.
+                  Не клиническое заключение.
+                </span>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}

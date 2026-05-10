@@ -1,0 +1,530 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2026-05-10",
+  "source": "Bordik Med — Neonatology clinical cases (audit Table 3.Д2)",
+  "license": "Educational content adapted from public clinical guidelines (AAP, NRP, NICE, ESPGHAN, BAPM, Cochrane). Not a substitute for clinical judgment.",
+  "topics": [
+    {
+      "id": "respiratory",
+      "title_ru": "Респираторная"
+    },
+    {
+      "id": "cardiopulmonary",
+      "title_ru": "Сердечно-лёгочная"
+    },
+    {
+      "id": "neuro",
+      "title_ru": "Неврология"
+    },
+    {
+      "id": "infection",
+      "title_ru": "Инфекции"
+    },
+    {
+      "id": "gastro",
+      "title_ru": "ЖКТ"
+    },
+    {
+      "id": "metabolic",
+      "title_ru": "Метаболизм"
+    },
+    {
+      "id": "hepatic",
+      "title_ru": "Гепатобилиарная"
+    },
+    {
+      "id": "screening",
+      "title_ru": "Скрининг"
+    }
+  ],
+  "levels": [
+    {
+      "id": "basic",
+      "title_ru": "Базовый"
+    },
+    {
+      "id": "intermediate",
+      "title_ru": "Средний"
+    },
+    {
+      "id": "advanced",
+      "title_ru": "Продвинутый"
+    }
+  ],
+  "cases": [
+    {
+      "id": "case-rds-32wk",
+      "title_ru": "RDS у недоношенного 32 нед",
+      "title_en": "RDS in 32-week preterm",
+      "topic": "respiratory",
+      "level": "intermediate",
+      "vignette": "Мальчик GA 32 0/7 нед, BW 1650 г, родился ВЕС от 28-летней первородящей. Получены антенатальные стероиды (полный курс). Apgar 5/7. Тахипноэ ≥70/мин, втяжения межреберий, экспираторное «грантинг». На CPAP 6 cmH₂O FiO₂ 0.40 SpO₂ 90%. Sиверман 6/10.",
+      "presenting_features": [
+        "Тахипноэ >60/мин с втяжениями и грантингом",
+        "FiO₂ requirement >0.30 на CPAP",
+        "Сиверман 6/10 (умеренная RDS)",
+        "Рентген: ретикулогранулярность с air bronchograms за тенью сердца"
+      ],
+      "differential": [
+        "RDS (наиболее вероятно — preterm, антенатальные стероиды не отменяют RDS)",
+        "Транзиторное тахипноэ новорождённого (TTN) — менее вероятно при 32 нед",
+        "Ранний сепсис (EOS) — параллельно исключить",
+        "Пневмония (внутриутробная) — параллельно исключить",
+        "Пневмоторакс — исключить рентгеном"
+      ],
+      "management": [
+        "Подтвердить диагноз: рентген ОГК (ретикулогранулярность, air bronchograms).",
+        "Surfactant: LISA подход — Curosurf 200 мг/кг (2.5 мл/кг) через тонкий катетер на CPAP, без интубации (Sweet 2022).",
+        "Продолжить CPAP 6 cmH₂O, целевой FiO₂ <0.30 после surfactant.",
+        "Кофеин: loading 20 мг/кг IV → maintenance 5 мг/кг q24h (CAP trial — снижение BPD).",
+        "Параллельно: blood culture + CBC + CRP, эмпирические антибиотики (амп + гент) до исключения EOS.",
+        "Целевая SpO₂ 90-95% (BOOST/SUPPORT).",
+        "Минимизировать manipulation × 72 ч (профилактика IVH)."
+      ],
+      "pearls": [
+        "LISA preferred над INSURE при стабильном спонтанном дыхании на CPAP — снижает BPD.",
+        "Антенатальные стероиды снижают severity, но НЕ устраняют RDS у 32 нед.",
+        "Кофеин у preterm <32 нед — universal: facilitates extubation, снижает BPD."
+      ],
+      "references": [
+        "Sweet DG et al. Neonatology 2023;120:3 — European Consensus 2022 RDS",
+        "Aldana-Aguirre JC. Arch Dis Child Fetal Neonatal Ed 2017;102:F17 — LISA meta-analysis",
+        "Schmidt B et al. NEJM 2007;357:1893 — CAP trial caffeine"
+      ]
+    },
+    {
+      "id": "case-meconium-aspiration",
+      "title_ru": "Мекониальная аспирация у термин",
+      "title_en": "Meconium Aspiration Syndrome at term",
+      "topic": "respiratory",
+      "level": "intermediate",
+      "vignette": "Девочка 41 1/7 нед, BW 3850 г, post-term. Родилась через мекониальные воды. Apgar 4/6. Не активная, гипотонус. На room air SpO₂ 78% к 5 мин жизни. Цианоз, тахипноэ 80/мин, втяжения. Аускультация: ослабленное дыхание справа.",
+      "presenting_features": [
+        "Post-term родоразрешение",
+        "Мекониальные воды + non-vigorous newborn",
+        "Гипоксемия рефрактерная к O₂ (SpO₂ <85% на FiO₂ 1.0)",
+        "Pre/post-ductal SpO₂ differential >5% (PPHN)",
+        "Рентген: коарсные инфильтраты + гиперинфляция + возможный пневмоторакс"
+      ],
+      "differential": [
+        "MAS (типичная картина post-term + meconium + non-vigorous)",
+        "Сопутствующая PPHN (>30% MAS)",
+        "Пневмония (часто overlap)",
+        "Пневмоторакс (10-20% MAS, hyperinflation predisposes)",
+        "Cyanotic CHD — исключить hyperoxia test + echo"
+      ],
+      "management": [
+        "В родзале: НЕ рутинно интубировать vigorous baby. Non-vigorous: PPV first; intubate + suction только при obstructive airway (NRP 2015+).",
+        "Стабилизация: CPAP 6-8 cmH₂O или интубация при FiO₂ >0.60.",
+        "Surfactant lavage или болюс (поздняя evidence — снижает ECMO).",
+        "iNO 20 ppm при OI >15 (PPHN компонент).",
+        "Антибиотики broad-spectrum (амп + гент или вкл цефотаксим).",
+        "Echo: оценка PPHN, RV function, исключить CHD.",
+        "ECMO criteria: OI >25-40 несмотря на full medical."
+      ],
+      "pearls": [
+        "Routine суction у vigorous newborn НЕ recommended с 2015 NRP.",
+        "MAS + PPHN = 30%+ overlap, всегда delвать echo.",
+        "Гиперинфляция + контралатеральный сдвиг средостения = пневмоторакс пока не доказано обратное."
+      ],
+      "references": [
+        "Aziz K et al. Pediatrics 2021;147:e2020038505E — NRP 8 ed.",
+        "Vain NE et al. Lancet 2004;364:597 — meconium suctioning trial",
+        "El Shahed AI et al. Cochrane 2014;CD002054 — surfactant в MAS"
+      ]
+    },
+    {
+      "id": "case-eos-gbs",
+      "title_ru": "Ранний сепсис GBS у термин",
+      "title_en": "Early-onset GBS sepsis at term",
+      "topic": "infection",
+      "level": "intermediate",
+      "vignette": "Мальчик GA 39 4/7 нед, BW 3200 г. Мать — GBS-позитивна, IAP неадекватная (1 доза ампициллина за 1.5 ч до родов). Через 6 ч жизни — гипотермия 35.6°C, тахипноэ 75/мин, поверхностное дыхание. Кормление слабое.",
+      "presenting_features": [
+        "Inadequate IAP (доза <4 ч до родов)",
+        "Температурная нестабильность (гипотермия preterm-like)",
+        "Респираторные симптомы 6-72 ч postnatal",
+        "Слабое кормление, лёткая летаргия"
+      ],
+      "differential": [
+        "Ранний неонатальный сепсис GBS (наиболее вероятно)",
+        "Pneumonia GBS",
+        "Менингит GBS (15% EOS GBS, всегда исключить)",
+        "TTN — менее вероятно при системных симптомах",
+        "Гипогликемия или другая метаболическая причина — параллельно"
+      ],
+      "management": [
+        "Stat work-up: blood culture (≥1 мл) + CBC + CRP/PCT + glucose + ABG + лактат.",
+        "Эмпирические антибиотики в течение 1 ч: ампициллин 50 мг/кг q12h + гентамицин 4 мг/кг q24h IV.",
+        "Lumbar puncture при positive culture или клиническом подозрении на менингит (если состояние стабильно).",
+        "Поддержка: согревание, glucose IV если гипогликемия, фluид bolus 10 мл/кг при шоке.",
+        "Echo при hemodynamic compromise.",
+        "Длительность ABX: bacteremia 10-14 дней, meningitis 14-21 день GBS."
+      ],
+      "pearls": [
+        "Inadequate IAP = ≥1 доза адекватного ABX <4 ч до родов. Менее = full work-up + observation 36-48 ч даже при well-appearing.",
+        "Kaiser EOS calculator снижает unnecessary ABX exposure ≥50%.",
+        "Гипотермия у термин-новорождённого — red flag, не списывать на холод."
+      ],
+      "references": [
+        "Verani JR et al. CDC 2019 — GBS prevention",
+        "Puopolo KM et al. Pediatrics 2019;144:e20191881 — AAP EOS",
+        "Escobar GJ et al. Pediatrics 2014;133:30 — Kaiser EOS"
+      ]
+    },
+    {
+      "id": "case-hie-cooling",
+      "title_ru": "ХИЭ + терапевтическая гипотермия",
+      "title_en": "HIE + Therapeutic Hypothermia",
+      "topic": "neuro",
+      "level": "advanced",
+      "vignette": "Девочка GA 38 6/7 нед, BW 3450 г. Тяжёлая брадикардия плода интранатально. Кесарево сечение, Apgar 1/3/4 (1/5/10 мин). pH пуповинной 6.85, BD 18. Реанимация в родзале с ИВЛ через ЭТТ + 2 дозы адреналина. На 30 мин жизни — судороги клонические правой руки. Sarnat II-III.",
+      "presenting_features": [
+        "Severe perinatal acidosis (pH<7.0, BD≥16)",
+        "Apgar ≤5 на 10 мин",
+        "Need for resuscitation/PPV ≥10 мин",
+        "Sarnat II-III (умеренная-тяжёлая энцефалопатия)",
+        "Seizures в первые 24 ч"
+      ],
+      "differential": [
+        "ХИЭ (соответствует всем критериям NICHD)",
+        "Метаболическая энцефалопатия (исключить IEM)",
+        "Внутричерепное кровоизлияние (УЗИ ГМ)",
+        "Менингит/сепсис (full work-up)"
+      ],
+      "management": [
+        "Therapeutic hypothermia немедленно: target core 33-34°C × 72 ч (whole-body) если в первые 6 ч от рождения.",
+        "Анти конвульсанты: Phenobarbital 20 мг/кг IV → 10 мг/кг повторно до 40 мг/кг. Леветирацетам как 2-я линия.",
+        "Continuous aEEG/EEG × 72 ч + during rewarming.",
+        "Hb target ≥13 г/дл (transfuse PRBC если <13).",
+        "MAP ≥40 мм рт. ст. (dopamine 5-10 мкг/кг/мин при гипотонии).",
+        "Glucose target 4-7 ммоль/л — avoid hypo AND hyperglycemia.",
+        "Rewarming ≤0.5°C/ч после 72 ч.",
+        "MRI brain day 4-7 (DWI) для prognosis."
+      ],
+      "pearls": [
+        "TH окно — первые 6 ч! Запоздалое cooling — нет benefit.",
+        "Burst suppression на aEEG persistent через 36 ч TH = poor predictor (>80% adverse outcome).",
+        "Адъювантная терапия (EPO, melatonin, allopurinol) — research, не standard."
+      ],
+      "references": [
+        "Shankaran S et al. NEJM 2005;353:1574 — NICHD trial",
+        "Azzopardi DV et al. NEJM 2009;361:1349 — TOBY trial",
+        "AAP/ACOG 2014 Joint Statement on neonatal encephalopathy"
+      ]
+    },
+    {
+      "id": "case-nec-vlbw",
+      "title_ru": "НЭК у VLBW preterm",
+      "title_en": "NEC in VLBW preterm",
+      "topic": "gastro",
+      "level": "advanced",
+      "vignette": "Мальчик GA 27 нед, BW 950 г, day 14 жизни. На full feeds сцеженным грудным молоком 150 мл/кг/сут. Внезапно: feeding intolerance с bilious gastric residual 8 мл, абдоминальная distension, кровь в стуле. Тахикардия, t° 35.8°C, лактат 4.2 ммоль/л.",
+      "presenting_features": [
+        "Постнатальный возраст 1-3 нед (peak NEC у preterm)",
+        "Feeding intolerance (bilious residual, кровь в стуле)",
+        "Абдоминальная distension + tenderness",
+        "Системные признаки: temperature instability, тахикардия, ↑лактат",
+        "Рентген: pneumatosis intestinalis (Bell IIA+), dilated loops, портальный газ"
+      ],
+      "differential": [
+        "NEC Bell IIA-IIB (наиболее вероятно)",
+        "Spontaneous intestinal perforation (SIP) — может имитировать, но раньше + NSAID/steroid history",
+        "Mesenteric ischemia",
+        "Volvulus (исключить — UGI с контрастом если стабильный)",
+        "Сепсис без NEC (parallel work-up)"
+      ],
+      "management": [
+        "Stop feeds (NPO) + декомпрессия NG зонда.",
+        "IV fluids 150 мл/кг/сут (D10W + electrolytes).",
+        "Triple ABX: ампициллин 50 мг/кг q12h + гентамицин 4 мг/кг q24h + метронидазол 7.5 мг/кг q12h × 7-14 дней.",
+        "Stat AXR (повторять q6-12h первые 24-48 ч): искать pneumatosis, перфорацию, портальный газ.",
+        "Лабораторно: CBC (тромбоциты ↓), коагулограмма, ABG, лактат, CRP, blood culture.",
+        "Хирургическая консультация: при IIIA (severe без перфорации) или IIIB (перфорация — primary peritoneal drainage или лапаротомия).",
+        "После medical NEC — NPO + ABX 7-14 дней, slow re-feed после bowel rest."
+      ],
+      "pearls": [
+        "NEC peak — week 2-3 postnatal у preterm после establishment full feeds.",
+        "Pneumatosis intestinalis — highly suggestive (Bell IIA+), но parallel — sepsis, hyperinflation возможны.",
+        "Грудное молоко (mom's own > donor) снижает NEC в 6-10 раз vs formula у VLBW."
+      ],
+      "references": [
+        "Bell MJ et al. Ann Surg 1978;187:1 — Bell staging",
+        "Moss RL et al. NEJM 2006;354:2225 — NECSTEPS PPD vs laparotomy",
+        "Cochrane 2017 — Probiotics for NEC prevention"
+      ]
+    },
+    {
+      "id": "case-pphn-tga-suspect",
+      "title_ru": "PPHN с подозрением на TGA",
+      "title_en": "PPHN with TGA suspicion",
+      "topic": "cardiopulmonary",
+      "level": "advanced",
+      "vignette": "Мальчик GA 39 нед, BW 3200 г. На 4 ч жизни — внезапный цианоз, SpO₂ pre-ductal (RH) 92%, post-ductal (foot) 96%. Дыхание спокойное, аускультация без шумов. Hyperoxia test: PaO₂ 65 на FiO₂ 1.0 × 10 мин.",
+      "presenting_features": [
+        "Reverse differential SpO₂ (foot > RH) — patognomonic!",
+        "Failed hyperoxia test (PaO₂ <100 на 100% O₂)",
+        "Cyanosis без респираторного дистресса",
+        "Минимум легочных симптомов"
+      ],
+      "differential": [
+        "Транспозиция магистральных артерий (TGA) с PPHN — REVERSE differential — pathognomonic",
+        "PPHN изолированный (но обычно pre-ductal < post-ductal)",
+        "Cyanotic CHD: TOF, truncus, pulmonary atresia",
+        "Met-Hb (исключить если cyanosis без adequate response к O₂)"
+      ],
+      "management": [
+        "Stat echocardiogram — gold standard для CHD diagnosis. Подтвердить TGA.",
+        "Start PGE1 (Prostin) 0.05-0.1 мкг/кг/мин IV continuous — поддержать PDA patency. Side effects: apnea (готовность к интубации), fever.",
+        "Avoid hyperoxia (paradoxically — PDA закрывается, потеря mixing).",
+        "Cardiology + cardiac surgery consult: balloon atrial septostomy (Rashkind) часто bridge к arterial switch.",
+        "При значимой PPHN компоненте: iNO 20 ppm может improve oxygenation pre-Rashkind.",
+        "Stable transfer в pediatric cardiac surgery center."
+      ],
+      "pearls": [
+        "Reverse differential SpO₂ (foot > RH) = pathognomonic для TGA с PPHN.",
+        "Failed hyperoxia test = R-to-L shunting, всегда echo + PGE1 prep.",
+        "Не делать unnecessary O₂ — закроет PDA + ухудшит mixing."
+      ],
+      "references": [
+        "Steurer MA et al. Pediatrics 2017;139:e20161165 — PPHN review",
+        "Latson LA et al. Circulation 2008;117:2622 — TGA",
+        "AHA/AAP Pediatric Cardiac guidelines"
+      ]
+    },
+    {
+      "id": "case-hyperbili-rh",
+      "title_ru": "Тяжёлая Rh-ГБН",
+      "title_en": "Severe Rh-isoimmune HDN",
+      "topic": "hepatic",
+      "level": "intermediate",
+      "vignette": "Девочка GA 38 нед, BW 3000 г от Rh- матери (G3P2, no anti-D). При рождении — водянка, бледность, отёк. Hb пуповинной 75 г/л, прямая Кумбс +++, retics 12%. TSB 175 мкмоль/л в 6 ч → 285 мкмоль/л в 18 ч.",
+      "presenting_features": [
+        "Mother Rh- без anti-D в текущей беременности или previous",
+        "Гидропс fetalis (severe Rh-ГБН)",
+        "Anemia <100 г/л + DAT-positive",
+        "Rapid TSB rise >10 мкмоль/л/час"
+      ],
+      "differential": [
+        "Severe Rh-ГБН (наиболее вероятно — anti-D)",
+        "ABO ГБН (менее вероятно при выраженном hydrops)",
+        "Other antigen incompatibility (Kell, Duffy)",
+        "Genetic hemolytic anemias (G6PD, sphero) — параллельный workup"
+      ],
+      "management": [
+        "Stat: type + crossmatch O Rh- крови, готовность к exchange transfusion.",
+        "Intensive phototherapy (LED, irradiance ≥30 мкВт/см²/нм, multiple sources, сразу).",
+        "IVIG 1 г/кг IV за 2 ч — может предотвратить exchange (DAT+ + быстрый rise).",
+        "Если TSB достигает порога exchange: DVET через umbilical catheter, double blood volume = 160 мл/кг (термин). Aliquots 5-10 мл, темп 5-10 мл/кг/ч.",
+        "Поддержание Hb >120 г/л (PRBC PRN).",
+        "Мониторинг: TSB q4-6h, glucose, ionized Ca²⁺, K⁺ во время DVET.",
+        "Профилактика: anti-D 300 мкг IM матери в 28 нед + после родов следующих беременностей."
+      ],
+      "pearls": [
+        "Anti-D (RhoGAM) prophylaxis в 28 нед + 72 ч postpartum — снижает sensitisation 16% → <0.1%.",
+        "IVIG может предотвратить exchange при Rh/ABO ГБН с активным гемолизом.",
+        "Темп прироста TSB >10 мкмоль/л/ч = высокий риск, не ждать пороговых значений."
+      ],
+      "references": [
+        "Kemper AR et al. Pediatrics 2022;150:e2022058859 — AAP 2022",
+        "Smits-Wintjens VE et al. Pediatrics 2011;127:680 — IVIG в Rh-HDFN",
+        "ACOG Practice Bulletin 75 — Anti-D prophylaxis"
+      ]
+    },
+    {
+      "id": "case-iem-ammonia",
+      "title_ru": "Hyperammonemia — подозрение на UCD",
+      "title_en": "Hyperammonemia — UCD suspicion",
+      "topic": "metabolic",
+      "level": "advanced",
+      "vignette": "Мальчик GA 39 нед, BW 3300 г. Day 3 жизни — ранее well, прогрессирующая летаргия, vomiting, тахипноэ. NH3 = 480 мкмоль/л (норма <100), BG 4.2, no ketosis на urine. Лактат 3.5, ABG: pH 7.48 (respiratory alkalosis).",
+      "presenting_features": [
+        "Sudden deterioration ранее well newborn день 2-7",
+        "Hyperammonemia >200 мкмоль/л",
+        "Respiratory alkalosis (центральная гипервентиляция от NH3)",
+        "Hypoketotic hypoglycemia possible (при FAOD)",
+        "Vomiting + altered mental status"
+      ],
+      "differential": [
+        "Urea cycle defect (UCD) — наиболее вероятно при isolated hyperammonemia + alkalosis без ketosis",
+        "Organic acidemia (МMA, propionic) — обычно с metabolic acidosis + ketosis",
+        "FAOD (MCAD, VLCAD) — hypoketotic hypoglycemia",
+        "Sepsis — параллельно исключить (может имитировать)",
+        "Maple syrup urine disease (MSUD) — характерный запах"
+      ],
+      "management": [
+        "STOP protein немедленно (transient catabolic switch ухудшает).",
+        "Start D10 IV at GIR 8-10 мг/кг/мин (anabolic state — снижает endogenous protein breakdown).",
+        "Ammonia scavengers: sodium benzoate + sodium phenylacetate (Ammonul) IV bolus + infusion.",
+        "L-arginine 200-600 мг/кг IV (UCD-specific — кроме arginase deficiency).",
+        "Carnitine 100 мг/кг/сут (адъювантно).",
+        "Dialysis criteria: NH3 >500 мкмоль/л OR не снижается за 4-6 ч медикаментозно. CRRT preferred.",
+        "Critical sample: insulin, C-peptide, cortisol, GH, FFA, β-OH-butyrate, lactate, ammonia, urine organic acids, urine reducing substances.",
+        "Срочная metabolic team consultation."
+      ],
+      "pearls": [
+        "Hyperammonemia + respiratory alkalosis + no ketosis = UCD до доказательства обратного.",
+        "STOP protein первым шагом — самое важное mistake — продолжать AA infusion.",
+        "Time-to-treatment correlates с outcome — задержка часов меняет prognosis."
+      ],
+      "references": [
+        "Häberle J et al. JIMD 2019;42:1 — UCD suggested protocols",
+        "Summar ML et al. J Pediatr 2008;153:S6 — emergency management hyperammonemia"
+      ]
+    },
+    {
+      "id": "case-pda-elbw",
+      "title_ru": "Симптоматический hsPDA у ELBW",
+      "title_en": "Symptomatic hsPDA in ELBW",
+      "topic": "cardiopulmonary",
+      "level": "intermediate",
+      "vignette": "Мальчик GA 25 нед, BW 720 г, day 7 жизни. Не extubatable (FiO₂ 0.40, PIP 22, PEEP 6). Пансистолический шум. Echo: PDA 2.8 мм, LA:Ao 1.7, retrograde diastolic flow descending aorta.",
+      "presenting_features": [
+        "Persistent ИВЛ-зависимость у ELBW",
+        "Pansystolic murmur",
+        "ECHO: PDA ≥1.5 мм, LA:Ao ≥1.4, retrograde diastolic flow",
+        "Bounding peripheral pulses, wide pulse pressure"
+      ],
+      "differential": [
+        "hsPDA (наиболее вероятно — ELBW + classical findings)",
+        "Pulmonary hypertension secondary",
+        "Cardiac structural defect — исключить ECHO (но не первая mysl у ELBW <26 нед)"
+      ],
+      "management": [
+        "Conservative management first 7-10 дней: fluid restriction 120-130 мл/кг/сут, adequate PEEP, фуросемид 1 мг/кг q12-24h при отёке лёгких.",
+        "Если persistent hsPDA + clinical impact (failure to wean): pharmacological closure.",
+        "First-line ibuprofen IV: 10 → 5 → 5 мг/кг q24h × 3 дозы (NICE NG230).",
+        "Альтернатива paracetamol 15 мг/кг q6h × 3 дня (если NSAID противопоказан).",
+        "Контроль перед каждой дозой: тромбоциты ≥50k, креатинин <1.6, диурез ≥1 мл/кг/ч, no NEC suspicion.",
+        "Re-echo через 48 ч после cycle. Если no closure → 2-й cycle ИЛИ paracetamol.",
+        "Surgical ligation: после 2 failed cycles + persistent compromise."
+      ],
+      "pearls": [
+        "60-90% PDA закрываются спонтанно к 1 неделе у GA >28 нед — selective treatment preferred.",
+        "Paracetamol — alternative когда NSAIDs contraindicated (active bleeding, renal, NEC, IVH III/IV).",
+        "Surgical ligation reserved для failed medical — risk vocal cord palsy, chylothorax."
+      ],
+      "references": [
+        "Mitra S et al. JAMA 2018;319:1221 — comparative meta-analysis",
+        "El-Khuffash A et al. J Pediatr 2015;167:1354 — hsPDA staging",
+        "NICE NG230 2024 — PDA management preterm"
+      ]
+    },
+    {
+      "id": "case-hypoglycemia-idm",
+      "title_ru": "Гипогликемия у IDM",
+      "title_en": "Hypoglycemia in IDM",
+      "topic": "metabolic",
+      "level": "basic",
+      "vignette": "Девочка GA 38 нед, BW 4250 г (LGA), мать с GDM на инсулине. Apgar 8/9. На 1 ч жизни — capillary BG 1.2 ммоль/л, jitteriness. Кормила грудью — без улучшения BG.",
+      "presenting_features": [
+        "IDM (мать с GDM)",
+        "LGA (BW >90-го перцентиля)",
+        "Симптоматическая гипогликемия (jitteriness)",
+        "Persistent low BG несмотря на feed"
+      ],
+      "differential": [
+        "Транзиторный гиперинсулинизм IDM (наиболее вероятно)",
+        "Congenital hyperinsulinism (если persistent >48 ч)",
+        "Inborn error of metabolism (если persistent + другие symptoms)",
+        "Adrenal insufficiency"
+      ],
+      "management": [
+        "Stat IV: D10 bolus 2 мл/кг (200 мг/кг) → continuous D10W GIR 6-8 мг/кг/мин.",
+        "Re-check BG q30 мин initially → q1-2h.",
+        "Если persistent <2.6 ммоль/л: increase GIR by 2 мг/кг/мин.",
+        "Glucagon 30-50 мкг/кг IM/IV если no IV access (single dose).",
+        "Hydrocortisone 1 мг/кг IV q6h при подозрении на адреналовую недостаточность.",
+        "При persistent >48 ч: critical sample при event (insulin, C-peptide, cortisol, GH, FFA, ketones, lactate, ammonia).",
+        "Если HI confirmed: diazoxide 5-15 мг/кг/сут q8h. Failure → octreotide.",
+        "Поддержка лактации, frequent feeds."
+      ],
+      "pearls": [
+        "IDM hypoglycemia 60-80% — обычно transient, разрешается за 24-48 ч.",
+        "PES 2015 threshold for symptomatic <2.6 ммоль/л; BAPM 2017 <2.0 для at-risk.",
+        "Persistent >48 ч → workup для congenital HI или другой эндокринопатии."
+      ],
+      "references": [
+        "Thornton PS et al. PES 2015 J Pediatr 2015;167:238",
+        "BAPM 2017 — Identification & Management of Neonatal Hypoglycaemia",
+        "AAP CFN. Pediatrics 2011;127:575"
+      ]
+    },
+    {
+      "id": "case-rop-stage3",
+      "title_ru": "ROP Type 1 (Stage 3 + plus)",
+      "title_en": "Type 1 ROP (Stage 3 + plus disease)",
+      "topic": "screening",
+      "level": "intermediate",
+      "vignette": "Мальчик GA 25 нед, BW 680 г, на 12-й нед PMA (PMA 37). На ROP screen: Zone II Stage 3 + plus disease в 8 часовых меридианов. Skip area минимальная.",
+      "presenting_features": [
+        "GA <30 нед + BW <1500 г (screening eligible)",
+        "Type 1 ETROP criteria: Zone II Stage 3 + plus",
+        "Plus disease (dilated/tortuous posterior pole vessels)"
+      ],
+      "differential": [
+        "Type 1 ROP, требует treatment в 48-72 ч",
+        "Aggressive ROP (A-ROP) — посмотреть для rapid posterior pole disease без classical demarcation"
+      ],
+      "management": [
+        "Treatment в 48-72 ч от диагностики (ETROP).",
+        "Zone II Stage 3 + plus → laser photocoagulation preferred (vs anti-VEGF — laser лучше для Zone II).",
+        "Procedure: diode laser 810 нм, ablation avascular retina anterior to ridge, 1500-3000 spots.",
+        "Анестезия: GA или conscious sedation (intubation), pre-op fasting, IV access, монитор.",
+        "Pre-op assessment: hemodynamic stability, рентген ОГК, ABG.",
+        "Post-op: re-examine 1 нед, затем q2 нед до regression.",
+        "Long-term: ophth follow-up до 6 лет (риск миопии, refractive errors)."
+      ],
+      "pearls": [
+        "Zone I, A-ROP → anti-VEGF (bevacizumab/ranibizumab) preferred (RAINBOW trial).",
+        "Zone II → laser preferred (исторически superior outcomes).",
+        "Anti-VEGF recurrence 19% — extended monitoring до full vascularization (50-60 нед PMA)."
+      ],
+      "references": [
+        "Mintz-Hittner HA et al. NEJM 2011;364:603 — BEAT-ROP",
+        "Stahl A et al. Lancet 2019;394:1551 — RAINBOW",
+        "Chiang MF et al. Ophthalmology 2021;128:e51 — ICROP3"
+      ]
+    },
+    {
+      "id": "case-nas-opioid",
+      "title_ru": "NAS у ребёнка opioid-exposed",
+      "title_en": "NAS in opioid-exposed infant",
+      "topic": "neuro",
+      "level": "intermediate",
+      "vignette": "Мальчик GA 38 нед, BW 2900 г. Мать на metadone maintenance therapy (40 мг/сут). Day 3: jitteriness, высокотональный плач, плохое кормление, диарея. Modified Finnegan score 11 → 13 → 15 за 12 ч.",
+      "presenting_features": [
+        "Maternal opioid use during pregnancy",
+        "Onset symptoms 2-7 дней (methadone — задержка)",
+        "CNS hyperarousal (jitteriness, высокотональный плач)",
+        "Autonomic dysfunction (диарея, sweating, тахипноэ)",
+        "Modified Finnegan ≥8 × 3 consecutive ИЛИ ≥12 × 2 — pharm trigger"
+      ],
+      "differential": [
+        "NAS / NOWS opioid-exposed (наиболее вероятно)",
+        "Hyperthyroidism (jitteriness)",
+        "Hypocalcemia / hypoglycemia (исключить)",
+        "Sepsis (параллельно)"
+      ],
+      "management": [
+        "Non-pharmacological bundle first: rooming-in, skin-to-skin, breastfeeding (methadone OK), low-stim environment, swaddling, pacifier.",
+        "ESC (Eat-Sleep-Console) approach preferred over Finnegan-driven (короче LOS, меньше pharm).",
+        "Если non-pharm не достаточно: morphine 0.04-0.1 мг/кг q3-4h PO (titrate up).",
+        "Альтернатива: buprenorphine SL 4-5 мкг/кг q8h (BBORN trial — короче duration).",
+        "Adjunct: clonidine 1 мкг/кг q3-4h PO если monotherapy не достаточно.",
+        "Wean by 10-20% q1-2 days as tolerated.",
+        "Discharge criteria: off pharm 24-48 ч, adequate feeding/weight, social work clearance."
+      ],
+      "pearls": [
+        "ESC approach снижает LOS с 23-30 → 6-10 дней vs Finnegan.",
+        "Phenobarbital — declined в use (neurodevelopmental concerns).",
+        "Wraparound services (PT/OT, behavioral, social) улучшают long-term outcomes."
+      ],
+      "references": [
+        "Patrick SW et al. Pediatrics 2020;146:e2020029074 — AAP NAS",
+        "Grossman MR et al. Pediatrics 2017;139:e20163360 — ESC original",
+        "Kraft WK et al. NEJM 2017;376:2341 — BBORN buprenorphine"
+      ]
+    }
+  ]
+}

@@ -291,8 +291,9 @@ export default function Sidebar() {
   //   1. Справочники   — быстрый lookup таблиц
   //   2. Расчёты       — интерактивные калькуляторы и графики
   //   3. Протоколы     — клинические алгоритмы и процедуры
-  //   4. Обучение      — статьи и тесты
-  type NeonatalSubTab = 'drugs' | 'calculators' | 'guidelines' | 'resuscitation' | 'articles' | 'lactmed' | 'quizzes' | 'nurse' | 'labs' | 'growth' | 'bilirubin';
+  //   4. Обучение      — статьи, тесты, кейсы, чек-листы, видео, атлас, ошибки
+  // Educational extension реализует Таблицу 3.Д из аудита (Д1-Д6).
+  type NeonatalSubTab = 'drugs' | 'calculators' | 'guidelines' | 'resuscitation' | 'articles' | 'lactmed' | 'quizzes' | 'nurse' | 'labs' | 'growth' | 'bilirubin' | 'cases' | 'mistakes' | 'checklists' | 'videos' | 'atlas';
   const neonatalGroups: { title: string; items: { id: NeonatalSubTab; label: string }[] }[] = [
     {
       title: 'Справочники',
@@ -300,6 +301,7 @@ export default function Sidebar() {
         { id: 'drugs',    label: 'Препараты' },
         { id: 'lactmed',  label: 'ГВ / LactMed' },
         { id: 'labs',     label: 'Лаб. нормы' },
+        { id: 'atlas',    label: 'Атласы' },
       ],
     },
     {
@@ -316,12 +318,16 @@ export default function Sidebar() {
         { id: 'guidelines',    label: 'Протоколы' },
         { id: 'resuscitation', label: 'Реанимация (4 региона)' },
         { id: 'nurse',         label: 'Процедуры медсестры' },
+        { id: 'checklists',    label: 'Чек-листы процедур' },
+        { id: 'videos',        label: 'Видео процедур' },
       ],
     },
     {
       title: 'Обучение',
       items: [
         { id: 'articles', label: 'Статьи' },
+        { id: 'cases',    label: 'Клинические случаи' },
+        { id: 'mistakes', label: 'Типичные ошибки' },
         { id: 'quizzes',  label: 'Тесты' },
       ],
     },

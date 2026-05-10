@@ -45,8 +45,10 @@ interface AppState {
   /** Neonatal Handbook — справочник доз для новорождённых (NICU). */
   showNeonatal: boolean;
   /** Active tab inside NeonatalHandbook — controlled from Sidebar
-   *  expanded submenu. Persists в localStorage через persist-middleware. */
-  neonatalActiveTab: 'drugs' | 'calculators' | 'guidelines' | 'resuscitation' | 'articles' | 'lactmed' | 'quizzes' | 'nurse' | 'labs' | 'growth' | 'bilirubin';
+   *  expanded submenu. Persists в localStorage через persist-middleware.
+   *  Tabs cases/mistakes/checklists/videos/atlas covers Table 3.Д
+   *  educational materials per neonatology audit. */
+  neonatalActiveTab: 'drugs' | 'calculators' | 'guidelines' | 'resuscitation' | 'articles' | 'lactmed' | 'quizzes' | 'nurse' | 'labs' | 'growth' | 'bilirubin' | 'cases' | 'mistakes' | 'checklists' | 'videos' | 'atlas';
   activeToolId: string | null;
 
   /** Tools page persistent state — filters, scroll, favourites */
