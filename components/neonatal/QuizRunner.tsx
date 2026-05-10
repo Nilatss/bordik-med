@@ -164,7 +164,7 @@ export default function QuizRunner({
     let cancelled = false;
     void (async () => {
       try {
-        const r = await fetch('/neonatal-quizzes.json?v=1.3.0', { cache: 'force-cache' });
+        const r = await fetch('/neonatal-quizzes.json?v=1.4.0', { cache: 'force-cache' });
         if (!r.ok) throw new Error(`quizzes ${r.status}`);
         const json = await r.json();
         if (!cancelled) setBank(json as QuizBank);
