@@ -743,23 +743,31 @@ export default function NeonatalHandbook() {
           >
             {filteredCalculators.map((group) => (
               <div key={group.id}>
+                {/* Section header — visually 1:1 с RenderedRow.kind="category"
+                    из ToolsPage: display-font 17/700, маленький mono count
+                    справа цвета #9CA3AF. */}
                 <h3 style={{
                   fontFamily: 'var(--font-display)',
-                  fontSize: 16,
+                  fontSize: 17,
                   fontWeight: 700,
-                  color: '#1F2937',
-                  margin: '0 0 12px',
+                  color: '#1A1A1A',
+                  margin: '0 0 18px',
                   letterSpacing: '-0.01em',
+                  display: 'flex',
+                  alignItems: 'baseline',
+                  gap: 8,
                 }}>
                   {group.title_ru}
+                  <span style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 11,
+                    fontWeight: 600,
+                    color: '#9CA3AF',
+                  }}>
+                    {group.calculators.length}
+                  </span>
                 </h3>
-                <div
-                  style={{
-                    display: 'grid',
-                    gap: 'var(--space-3)',
-                    gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-                  }}
-                >
+                <div className="rg-3">
                   {group.calculators.map((calc) => (
                     <NeonatalCalcCard
                       key={calc.id}
@@ -1742,27 +1750,18 @@ function NeonatalCalcCard({
           display: 'flex', alignItems: 'center', gap: 4, flex: 1, minWidth: 0,
           flexWrap: 'wrap',
         }}>
-          <span style={{
-            display: 'inline-flex', alignItems: 'center', gap: 'var(--space-1)',
-            padding: '4px var(--space-2)', borderRadius: 'var(--md-sys-shape-corner-full)',
-            background: '#FFFFFF',
-            boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-            fontFamily: 'var(--font-mono)',
-            fontSize: '0.625rem', fontWeight: 500,
-            color: 'var(--md-sys-color-on-surface-variant)',
-          }}>
-            {subcategoryLabel}
-          </span>
+          {/* Single short pill (mirrors ToolCard subcategory chip).
+              audit_id (e.g. "A1", "A24/A25") is the natural short label;
+              full group title is already shown in the section heading above. */}
           {calc.audit_id && (
             <span style={{
-              display: 'inline-flex', alignItems: 'center',
+              display: 'inline-flex', alignItems: 'center', gap: 'var(--space-1)',
               padding: '4px var(--space-2)', borderRadius: 'var(--md-sys-shape-corner-full)',
               background: '#FFFFFF',
               boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
               fontFamily: 'var(--font-mono)',
-              fontSize: '0.625rem', fontWeight: 600,
-              color: '#6B7280',
-              whiteSpace: 'nowrap',
+              fontSize: '0.625rem', fontWeight: 500,
+              color: 'var(--md-sys-color-on-surface-variant)',
             }}>
               {calc.audit_id}
             </span>
