@@ -95,7 +95,14 @@ next-env.d.ts
 
 .vercel
 
-# Graphify (claude-code-memory-setup) — AST-кэш. Только cache/ исключаем
-# (локальный бинарь). graph.json и GRAPH_REPORT.md можно коммитить —
-# они полезны команде для агрегированных запросов о структуре кода.
-graphify-out/cache/
+# Graphify (claude-code-memory-setup) — entirely local AST cache.
+# Hooks rebuild graph.json / graph.html / manifest.json on every git
+# checkout + commit — these are noise in `git status` and create false
+# "modified" diffs that bubble up как stale Create-PR карточки в UI.
+# Treat the entire output dir as local-only artifact.
+graphify-out/
+
+# Auto-generated session log files — written by Claude Code session
+# tracker. Not meant for VCS. Manual session notes (без `-auto` suffix)
+# остаются tracked.
+docs/sessions/*-auto.md
