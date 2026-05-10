@@ -1,5 +1,5 @@
 {
-  "version": "2.1.0",
+  "version": "2.2.0",
   "lastUpdated": "2026-05-10",
   "source": "Bordik Med — клинические обзоры NICU (audit Д1)",
   "license": "Каждая статья цитирует первоисточники (AAP, NICE, ESPGHAN, КР МЗ РФ). Тексты — original synthesis на основе guidelines и landmark trials.",
@@ -2185,6 +2185,87 @@
         "Bacha EA et al. Pediatr Cardiol 2014;35:1146"
       ],
       "related_calculators": []
+    },
+    {
+      "id": "art-newborn-screening",
+      "title_ru": "Неонатальный скрининг — обзор и алгоритм действий",
+      "title_en": "Newborn metabolic + hearing + CCHD screening",
+      "topic": "screening",
+      "audience": "neonatologist + педиатр",
+      "level": "basic",
+      "summary": "РФ: 36 заболеваний скринингом 2023+. США: RUSP 35 core + 26 secondary. Triple screen — пяточная кровь + слух + pulse oximetry. Алгоритм работы с positive screen.",
+      "content": "## Что входит в neonatal screening\n\nNeonatal screening — комплекс обязательных скринингов в первые дни жизни для раннего выявления состояний, требующих immediate treatment.\n\n### Триада универсальных screenings\n\n1. **Метаболический скрининг (пяточная кровь)** — генетико-метаболические заболевания\n2. **Слуховой скрининг (OAE / AABR)** — congenital hearing loss\n3. **Pulse oximetry (CCHD)** — critical congenital heart disease\n\n## РФ — расширенный неонатальный скрининг (РНС) с 2023\n\nС 01.01.2023 — 36 заболеваний (приказ МЗ РФ 274н от 21.04.2022):\n\n### 5 «классических» (с 2006):\n- Фенилкетонурия (ФКУ)\n- Врождённый гипотиреоз (CH)\n- Адреногенитальный синдром (AGS / CAH)\n- Галактоземия\n- Муковисцидоз\n\n### +31 newer (2023):\n- 36 organic acidemias / fatty acid oxidation disorders / aminoacidopathies\n- Spinal muscular atrophy (SMA)\n- Severe combined immunodeficiency (SCID)\n- Primary immunodeficiencies\n\n### Timing:\n- Пяточная кровь: term — 24–48 ч; preterm — 7-й день\n- Если ребёнок переведён в другое отделение / выписан — следить за continuity\n\n### Confirmatory testing\n- Positive screen → срочное уведомление педиатра + регионального генетика\n- Confirmation: повторный анализ + специфичные тесты (TSH/Т4 для CH; phenylalanine для PKU; и т.д.)\n- Treatment initiation в первые 2 недели жизни — ключевое для cognitive outcomes\n\n## США — RUSP (Recommended Uniform Screening Panel)\n\n- 35 core conditions + 26 secondary (HRSA Advisory Committee 2023)\n- Метаболическая, эндокринная, гематологическая, иммунная, лизосомная категории\n- State-specific implementation (всё ещё ~5 штатов не на full RUSP)\n\n## Hearing screening\n\n- **OAE** (otoacoustic emissions) — outer hair cell function (cochlea)\n- **AABR** (automated auditory brainstem response) — full pathway brainstem\n\n### Algorithm\n- Universal newborn hearing screen by 1 month\n- 1-3-6 rule: screen by 1 mo, diagnose by 3 mo, intervene by 6 mo\n- Refer to audiology если refer на birth + repeat refer на rescreen\n- Risk factors → ALWAYS AABR (NICU, prolonged ventilation, hyperbilirubinemia требующий exchange, ototoxic ABX, family history)\n\n## CCHD screening (pulse oximetry)\n\n### When + how\n- 24-48 ч age (after fetal-to-neonatal transition)\n- Pre-ductal (right hand) + post-ductal (foot)\n- 1 measurement в 1 site, repeat × 1 если first abnormal\n\n### Pass criteria\n- SpO₂ ≥ 95% в обеих локациях И\n- Differential ≤ 3% между pre- и post-ductal\n\n### Fail criteria\n- SpO₂ < 90% в любой локации (immediate fail)\n- SpO₂ 90-94% × 3 повторных measurements (q1h)\n- Differential > 3% × 3 повторных measurements\n\n### Failed screen → echo\n- ECHO для confirm CCHD (TGA, HLHS, TAPVR, TOF, etc.)\n- ~50% true positives — clinical urgency высокая\n- Consult cardiology stat при confirmed CCHD\n\n## Practical tips\n\n- Document: timing, results, family informed\n- Если refer / fail — track follow-up до definitive results\n- Family education: что значит positive screen, что не означает diagnosis\n- Cultural sensitivity (Узбекистан): обсудить confidentiality, family support\n- Repeat screen всегда возможен при technical issues (improper timing, transfusion within 72 h, etc.)\n\n## Источники\n\n- Приказ МЗ РФ 274н от 21.04.2022 — Расширенный неонатальный скрининг\n- AAP/ACOG Joint statement 2023 — Newborn screening",
+      "references": [
+        "Приказ МЗ РФ 274н 21.04.2022 — РНС",
+        "HRSA RUSP 2023 — Recommended Uniform Screening Panel",
+        "Joint Committee on Infant Hearing 2019",
+        "AAP Section on Cardiology 2011 — CCHD screening"
+      ],
+      "related_calculators": [
+        "neo-newborn-screening",
+        "neo-cchd-pulse-oximetry"
+      ]
+    },
+    {
+      "id": "art-acute-kidney-injury",
+      "title_ru": "Острая почечная недостаточность (AKI) у новорождённого",
+      "title_en": "Neonatal Acute Kidney Injury (AKI)",
+      "topic": "renal",
+      "audience": "neonatologist",
+      "level": "advanced",
+      "summary": "Neonatal AKI — KDIGO criteria adapted: SCr rise ≥0.3 mg/dL or 1.5× baseline ИЛИ urine output <0.5 mL/kg/h ×6h. Causes: pre-renal (asphyxia, sepsis), intrinsic (ATN, congenital), post-renal (obstruction). High mortality в ELBW.",
+      "content": "## Definitions (Neonatal AKI — KDIGO/AWAKEN modified)\n\n**Stage 1:** SCr rise ≥0.3 mg/dL за 48 ч ИЛИ 1.5-1.9× baseline; UO <0.5 мл/кг/ч за 6-12 ч\n\n**Stage 2:** SCr 2.0-2.9× baseline; UO <0.5 мл/кг/ч за >12 ч\n\n**Stage 3:** SCr ≥3.0× baseline ИЛИ ≥2.5 mg/dL ИЛИ диализ; UO <0.3 мл/кг/ч за >24 ч ИЛИ anuria >12 ч\n\n## Эпидемиология\n\n- **AWAKEN study** (2017): AKI в 30% NICU admits\n- **VLBW**: AKI частота 18-40%\n- **HIE / cooling**: AKI 30-60%\n- **AKI = independent риск mortality** (OR 1.5-4× зависит от severity)\n\n## Этиология (3 категории)\n\n### Pre-renal (decreased perfusion) — most common\n- Perinatal asphyxia / HIE\n- Sepsis / shock\n- Hypovolemia (dehydration, hemorrhage)\n- PDA с ductal steal\n- NSAIDs (indomethacin / ibuprofen для PDA closure)\n- Capillary leak (sepsis, NEC)\n\n### Intrinsic\n- Acute tubular necrosis (ATN) — prolonged pre-renal или nephrotoxin\n- Nephrotoxins: aminoglycosides, vancomycin, amphotericin, contrast\n- Glomerular: post-infectious, lupus-related (rare neonates)\n- Congenital renal dysplasia, polycystic disease, Potter sequence\n- Renal vein thrombosis (особенно IDM, polycythemia, central catheters)\n\n### Post-renal (obstruction)\n- Posterior urethral valves (boys — антенатальный oligohydramnios)\n- Hydronephrosis (UPJ obstruction)\n- Neurogenic bladder (myelomeningocele)\n- Stones (rare neonates)\n\n## Diagnostic workup\n\n### Initial\n- **Serum creatinine** (interpret карефул — first 2-3 d ≈ maternal value)\n- **Urea** (BUN) — useful trend\n- **Electrolytes** + acid-base\n- **Urinalysis** + urine culture\n- **Urine sodium** (FENa < 1% pre-renal, > 2% intrinsic)\n- **Renal US** — first imaging (size, hydronephrosis, vessels)\n\n### Если intrinsic suspected\n- **Renal Doppler** (vein thrombosis exclusion)\n- **VCUG** (если recurrent UTI / suspected reflux)\n- **MAG3 / DTPA scan** (function — older patients usually)\n- **Renal biopsy** (rare — refractory или unclear etiology)\n\n## Management\n\n### General\n1. **Identify + treat underlying cause**\n2. **Discontinue nephrotoxins** где возможно\n3. **Adjust drug dosing** (renal calculator — dose-adjusted by GFR)\n4. **Optimize hemodynamics** — avoid hypotension AND volume overload\n\n### Fluid management\n- Restrict fluid 60-80% maintenance + replace insensible + UO\n- Daily weight + I/O strict\n- Diuretics (furosemide 1 мг/кг IV) — может improve UO в transient phase\n- BUT диуретики НЕ улучшают outcomes если established AKI\n\n### Electrolyte correction\n- **Hyperkalemia** (>6.5 мэкв/л): calcium gluconate 0.5 мл/кг IV (cardiac stabilization), insulin + glucose, kayexalate (controversial neonates), dialysis если refractory\n- **Hyperphosphatemia**: minimize phosphate intake (TPN adjust)\n- **Acidosis**: NaHCO₃ ТОЛЬКО если pH < 7.20 + adequate ventilation\n- **Hypocalcemia**: Ca gluconate 1-2 мл/кг slow IV\n\n### Renal Replacement Therapy (RRT)\n\n**Indications:**\n- Refractory hyperkalemia (>7 mmol/L)\n- Refractory acidosis (pH <7.10)\n- Volume overload >10-20% birth weight + respiratory compromise\n- Uremia (BUN >150 mg/dL) с symptoms\n- Inborn error of metabolism (urgent removal toxic metabolites)\n\n**Modalities:**\n- **Peritoneal dialysis (PD)** — most common neonates (technically simpler, hemodynamically stable)\n- **CRRT (CVVH/CVVHD)** — preferred при unstable, larger infants\n- **Intermittent hemodialysis** — rare neonates (vascular access issues)\n\n## Prognosis\n\n- Recovery в 60-70% выживших — NICU survivors\n- AKI = predictor of CKD — long-term follow-up nephrology\n- Mortality higher с stage 3 AKI (40-50% vs 5-10% no AKI)\n- ELBW + AKI: высочайший риск (mortality 60%+)\n\n## Источники\n\n- Jetton JG et al. Lancet Child Adolesc Health 2017;1:184 — AWAKEN study",
+      "references": [
+        "Jetton JG et al. Lancet Child Adolesc Health 2017;1:184 — AWAKEN",
+        "Selewski DT et al. Pediatr Res 2020;87:550 — Neonatal AKI consensus",
+        "Charlton JR et al. Pediatr Res 2019;85:329 — Neonatal AKI epi",
+        "KDIGO 2012 — Clinical Practice Guideline AKI"
+      ],
+      "related_calculators": [
+        "neo-fluid",
+        "neo-furosemide-dose"
+      ]
+    },
+    {
+      "id": "art-vaccination-schedule-discharge",
+      "title_ru": "Иммунизация при выписке — Hep B + BCG (РФ + WHO)",
+      "title_en": "Immunization at discharge — Hep B + BCG",
+      "topic": "vaccination",
+      "audience": "педиатр + neonatologist + медсестра",
+      "level": "basic",
+      "summary": "РФ + WHO: hep B первая доза в первые 24 ч (Engerix-B 0.5 мл IM); BCG 3-7 день жизни (если вес >2000 г и не противопоказания). Расширенная схема для HepB-positive mam + immunoglobulin.",
+      "content": "## Hep B vaccination — первая доза в первые 24 ч\n\n### Кому\n- ВСЕ новорождённые (universal — РФ, WHO, AAP)\n- Особенно critical при maternal HBsAg positive — vaccine + HBIG\n\n### Препарат + дозировка\n- **Engerix-B** (GSK) или **Эувакс В** (Sanofi-Aventis) или **Регевак-В** (РФ)\n- 0.5 мл IM в anterolateral thigh (vastus lateralis)\n- Single dose в первые 24 ч жизни (target — 12 ч)\n\n### Maternal HBsAg positive newborn\n- **Hep B vaccine 0.5 мл IM в первые 12 ч** (immediately after birth, до cleaning vernix)\n- **PLUS HBIG 0.5 мл IM** в другое место\n- Schedule: vaccine doses 1, 1-2 mo, 6 mo (3-dose series + birth dose = 4 total)\n- Test для seroprotection at 9-12 mo (anti-HBs ≥10 mIU/mL = protected)\n\n### Premature\n- BW <2000 г: vaccine не считается в course (не immunogenic)\n- Initial dose at birth (для start protocol), then re-dose в schedule weeks с full series\n- Если mama HBsAg positive AND BW <2000 г: birth dose + HBIG; повторить vaccine course с 1 mo\n\n## BCG vaccination — 3-7 день жизни\n\n### Российская схема\n- **Universal** (РФ — high TB endemicity)\n- **BCG-M** (modified, lower antigen content — для preterm и risk groups) или **BCG**\n- 0.05 мл (BCG-M) или 0.1 мл (BCG) intradermal в left deltoid (junction upper + middle third)\n\n### Когда\n- Здоровый term: 3-7 день жизни (in maternity)\n- Preterm <2500 г: при достижении 2500 г\n- HIV-exposed (mother positive): defer до confirm HIV status (если mama on ART + low viral load — discuss с infectious disease)\n\n### Противопоказания BCG\n- BW <2000 г\n- Major congenital anomaly\n- Severe immunodeficiency (известная или подозрение)\n- Maternal HIV без виремии control\n- Severe perinatal asphyxia (relative — defer until stable)\n\n## США — schedule\n\nUSA НЕ универсальная BCG (низкий TB endemicity):\n\n- Только при специфическом риске exposure\n- Hep B universal как РФ — birth dose + 1 mo + 6 mo\n\n## Узбекистан — национальный календарь\n\n- BCG: 0-3 day жизни (similar РФ)\n- Hep B: birth dose universal\n- Затем routine — DTP/Hib/Polio (6 weeks), MMR (9 месяцев), и т.д.\n- В сравнении РФ — DTP starts на 6 weeks vs РФ 3 months\n\n## Practical tips\n\n- Document: лот номер vaccine, sites, time, любые reactions\n- Family counseling: post-vaccine signs (low-grade fever, fussiness 24-48 ч normal; severe или persistent — call)\n- BCG-specific education: papule develops over 2-12 weeks → ulcerates → crusts → scar (normal evolution)\n- BCGitis prevention: technique (intradermal NOT subcutaneous), avoid scrubbing/picking site\n\n## Источники",
+      "references": [
+        "Национальный календарь профилактических прививок РФ — Приказ МЗ РФ 1122н 06.12.2021",
+        "WHO. BCG vaccines: WHO position paper — February 2018",
+        "AAP COID. Red Book 2024-2027 — Hep B + BCG sections",
+        "CDC ACIP. MMWR 2018;67:455 — Hep B vaccine schedule"
+      ],
+      "related_calculators": [
+        "neo-vaccination-calendar"
+      ]
+    },
+    {
+      "id": "art-discharge-readiness",
+      "title_ru": "Критерии готовности к выписке — расширенные",
+      "title_en": "Discharge readiness criteria — extended",
+      "topic": "discharge",
+      "audience": "neonatologist + педиатр",
+      "level": "intermediate",
+      "summary": "Готов к выписке: stable temperature open crib, adequate feeding (≥120 кал/кг/д, gain 15-30 г/д), no apnea ≥5-7 d, hearing+ROP+NBS+CCHD пройдены, family education + immunizations.",
+      "content": "## Universal discharge criteria (AAP COFN 2008, reaffirmed 2018)\n\n### Physiologic stability\n- **Temperature stability в open crib** ≥24-48 ч (без incubator/warmer)\n- **Cardiovascular stability**: HR + BP в normal range без support\n- **Respiratory stability**: room air SpO₂ ≥95% sustained; no apnea/bradycardia events ≥5-7 d (preterm; term shorter)\n- **No active medical issues** requiring inpatient management\n\n### Feeding\n- **Adequate caloric intake**: ≥120 ккал/кг/д (term); 130-150 ккал/кг/д (preterm)\n- **Weight gain**: 15-30 г/д (preterm); 20-30 г/д (term post-physiologic loss recovery)\n- **Feeding method**: full breast OR bottle OR establish home gavage program (если необходимо)\n- **No significant emesis / abdominal distension**\n- **GA equivalent ≥34-36 нед** (для preterm) — coordinated suck-swallow-breathe\n\n### Screening completed\n- **NBS metabolic** (пяточная кровь) — collected, results pending OK\n- **Hearing screen** — passed OR refer with audiology follow-up scheduled\n- **CCHD pulse ox** — passed (or echo confirmed normal if failed initially)\n- **ROP screen** (если eligible — BW <1500 g или GA <30 нед) — initial done, follow-up scheduled\n- **Hyperbilirubinemia screen** (TSB / TcB) — within safe range pre-discharge\n\n### Immunizations + prophylaxis\n- **Hep B vaccine birth dose** administered\n- **BCG** (РФ + Узбекистан + WHO endemic regions) administered if eligible\n- **Vit K** prophylaxis given (1 мг IM в первый час)\n- **Erythromycin eye prophylaxis** (РФ + ряд других стран)\n- **Vit D supplementation** plan (400 IU/day breastfed; formula has it)\n- **Iron supplementation** plan (preterm or breastfed term — start 1 mo if preterm <2500 g)\n- **Synagis (palivizumab)** plan if criteria met (RSV season + high-risk preterm/CHD)\n\n### Family + home readiness\n- **Caregiver competence** demonstrated:\n  - Feeding technique (breast or bottle)\n  - Signs of illness (fever, decreased intake, color changes)\n  - Safe sleep (back-to-sleep, firm surface, no soft objects)\n  - Cord care\n  - Bathing\n  - When to call (specific scenarios)\n- **Carseat tolerance test** (для preterm <37 нед или low BW) — 90-120 мин в seat без desats/apnea\n- **Home environment safe**: smoke-free, working smoke detector, working CO detector, safe water source\n- **Transportation arranged** — car seat installed correctly\n- **Pediatrician identified** + **first follow-up appointment scheduled** (24-72 ч post-discharge для term; sooner для preterm or jaundice concerns)\n- **Lactation support** identified (если breastfeeding) — phone/video consultation OR home visit\n\n### Special populations\n\n#### Preterm <34 weeks GA\n- Open crib temperature stability 5-7 d (vs 1-2 d term)\n- Feed competency longer development (suck-swallow-breathe coordination)\n- ROP follow-up arranged ophthalmology visit\n- Audiology follow-up if NICU stay >5 d\n- High-risk infant follow-up clinic referral\n- Synagis if RSV season\n\n#### TORCH / congenital infections\n- Antibody/PCR results — discuss с infectious disease\n- Immediate vs delayed treatment plan documented\n- Family counseling about long-term sequelae potential\n\n#### Neonatal abstinence syndrome (NAS)\n- Modified Finnegan score stable / decreasing для ≥48 ч without escalation\n- Caregiver capacity assessment (CPS involvement если applicable)\n- Methadone / buprenorphine taper plan если на medication\n- Specialty follow-up (pediatrics + behavioral health)\n\n## Время для discharge planning\n\n- **Day 1 admission**: identify potential issues, discuss family expectations\n- **Mid-stay**: family teaching начинается\n- **48-72 h pre-discharge**: confirm screenings, immunizations, follow-up appointments\n- **Day of discharge**: final exam, written instructions, contact information\n\n## Документация\n\nDischarge summary должен содержать:\n- BW, GA, prenatal/maternal history\n- Hospital course summary by system\n- Medications с doses (если any)\n- Feeding regimen\n- Screening results + pending tests\n- Immunizations administered + due\n- Follow-up appointments\n- Caregivers who participated в discharge teaching\n- Specific concerns/red flags\n\n## Источники",
+      "references": [
+        "AAP Committee on Fetus and Newborn. Pediatrics 2008;122:1119 (reaffirmed 2018) — Hospital discharge criteria for healthy term newborn",
+        "AAP/ACOG. Guidelines for Perinatal Care 8th ed. 2017",
+        "Eichenwald EC. Pediatrics 2008;122:1115 — Apnea of prematurity",
+        "NICE NG194 (2021) — Postnatal care"
+      ],
+      "related_calculators": [
+        "neo-discharge-criteria",
+        "neo-vaccination-calendar",
+        "neo-newborn-screening",
+        "neo-cchd-pulse-oximetry"
+      ]
     }
   ]
 }
