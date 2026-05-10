@@ -69,6 +69,8 @@ export default function Sidebar() {
     setShowIcd10,
     setShowDrugs,
     setShowNeonatal,
+    neonatalActiveTab,
+    setNeonatalActiveTab,
     toggleProfile,
     sidebarOpen,
     toggleSidebar,
@@ -76,6 +78,14 @@ export default function Sidebar() {
     setActiveSection,
     openTool,
   } = useAppStore();
+
+  // Auto-expand Neonatology submenu when user is on /neonatology view.
+  // User can collapse manually via caret toggle. Persisted via local state
+  // (resets on reload) — sidebar is ephemeral context, not deep persistence.
+  const [neonatalExpanded, setNeonatalExpanded] = useState(false);
+  useEffect(() => {
+    if (showNeonatal) setNeonatalExpanded(true);
+  }, [showNeonatal]);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [searchFocus, setSearchFocus] = useState(false);
@@ -271,6 +281,33 @@ export default function Sidebar() {
     { id: 'study',    title: t('nav.group.study'),    items: ['learning', 'tests', 'stats'] },
     { id: 'services', title: t('nav.group.services'), items: ['tools', 'icd10', 'drugs', 'neonatal'] },
   ];
+
+  // Neonatology submenu — sub-sections appear under "Неонатология" in the
+  // sidebar when expanded. Clicking a sub-item sets showNeonatal=true +
+  // selects the corresponding tab via store.neonatalActiveTab. The
+  // NeonatalHandbook reads this store value and renders the matched view.
+  type NeonatalSubTab = 'drugs' | 'calculators' | 'guidelines' | 'resuscitation' | 'articles' | 'lactmed' | 'labs' | 'growth' | 'bilirubin';
+  const neonatalSubItems: { id: NeonatalSubTab; label: string }[] = [
+    { id: 'drugs',         label: 'Препараты' },
+    { id: 'calculators',   label: 'Калькуляторы' },
+    { id: 'guidelines',    label: 'Протоколы' },
+    { id: 'resuscitation', label: 'Реанимация (4 региона)' },
+    { id: 'articles',      label: 'Статьи' },
+    { id: 'lactmed',       label: 'ГВ / LactMed' },
+    { id: 'labs',          label: 'Лаб. нормы' },
+    { id: 'growth',        label: 'Графики роста' },
+    { id: 'bilirubin',     label: 'Билирубин' },
+  ];
+
+  const handleNeonatalSubClick = (subTab: NeonatalSubTab) => {
+    setShowNeonatal(true);
+    setNeonatalActiveTab(subTab);
+    // Auto-close drawer on mobile so user sees destination
+    if (typeof window !== 'undefined' &&
+        window.matchMedia('(max-width: 768px)').matches) {
+      useAppStore.setState({ sidebarOpen: false });
+    }
+  };
 
   // Filter by search
   const q = searchQuery.trim().toLowerCase();
@@ -538,39 +575,118 @@ export default function Sidebar() {
                     {group.items.map((id) => {
                       const item = navItems[id];
                       const isActive = activeNav === id;
+                      const isNeonatal = id === 'neonatal';
                       return (
-                        <button
-                          key={id}
-                          onClick={() => handleNav(id)}
-                          onFocus={() => prefetch(id)}
-                          style={{
-                            width: '100%', display: 'flex', alignItems: 'center', gap: 14,
-                            padding: '11px 16px',
-                            borderRadius: 12,
-                            background: isActive ? '#E2E4EA' : 'transparent',
-                            border: 'none', cursor: 'pointer',
-                            transition: 'background 150ms ease',
-                          }}
-                          onMouseEnter={(e) => {
-                            prefetch(id);
-                            if (!isActive) e.currentTarget.style.background = '#E8E9ED';
-                          }}
-                          onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.background = 'transparent'; }}
-                        >
-                          <span style={{
-                            display: 'flex',
-                            color: isActive ? '#1A1A1A' : '#999',
-                          }}>
-                            {item.icon}
-                          </span>
-                          <span style={{
-                            fontFamily: 'var(--font-body)', fontSize: 14.5,
-                            fontWeight: isActive ? 600 : 400,
-                            color: isActive ? '#1A1A1A' : '#777',
-                          }}>
-                            {item.label}
-                          </span>
-                        </button>
+                        <div key={id}>
+                          <button
+                            onClick={() => {
+                              if (isNeonatal) {
+                                // Neonatology — first click sets view + expands; further clicks toggle expand
+                                setShowNeonatal(true);
+                                setNeonatalExpanded((prev) => !prev || !isActive);
+                                if (typeof window !== 'undefined' &&
+                                    window.matchMedia('(max-width: 768px)').matches) {
+                                  useAppStore.setState({ sidebarOpen: false });
+                                }
+                                return;
+                              }
+                              handleNav(id);
+                            }}
+                            onFocus={() => prefetch(id)}
+                            style={{
+                              width: '100%', display: 'flex', alignItems: 'center', gap: 14,
+                              padding: '11px 16px',
+                              borderRadius: 12,
+                              background: isActive ? '#E2E4EA' : 'transparent',
+                              border: 'none', cursor: 'pointer',
+                              transition: 'background 150ms ease',
+                            }}
+                            onMouseEnter={(e) => {
+                              prefetch(id);
+                              if (!isActive) e.currentTarget.style.background = '#E8E9ED';
+                            }}
+                            onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.background = 'transparent'; }}
+                          >
+                            <span style={{
+                              display: 'flex',
+                              color: isActive ? '#1A1A1A' : '#999',
+                            }}>
+                              {item.icon}
+                            </span>
+                            <span style={{
+                              flex: 1,
+                              fontFamily: 'var(--font-body)', fontSize: 14.5,
+                              fontWeight: isActive ? 600 : 400,
+                              color: isActive ? '#1A1A1A' : '#777',
+                              textAlign: 'left',
+                            }}>
+                              {item.label}
+                            </span>
+                            {isNeonatal && (
+                              <span
+                                aria-hidden="true"
+                                style={{
+                                  display: 'flex',
+                                  color: isActive ? '#1A1A1A' : '#999',
+                                  transform: neonatalExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                                  transition: 'transform 200ms ease',
+                                }}
+                              >
+                                <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
+                                  stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                                  <polyline points="6 9 12 15 18 9" />
+                                </svg>
+                              </span>
+                            )}
+                          </button>
+
+                          {/* Neonatology expandable submenu */}
+                          {isNeonatal && neonatalExpanded && (
+                            <div
+                              role="menu"
+                              aria-label="Разделы неонатологии"
+                              style={{
+                                display: 'flex', flexDirection: 'column', gap: 1,
+                                paddingLeft: 22, paddingTop: 4, paddingBottom: 4,
+                                marginLeft: 16,
+                                borderLeft: '2px solid #DCDFE5',
+                              }}
+                            >
+                              {neonatalSubItems.map((sub) => {
+                                const subActive = isActive && neonatalActiveTab === sub.id;
+                                return (
+                                  <button
+                                    key={sub.id}
+                                    role="menuitem"
+                                    onClick={() => handleNeonatalSubClick(sub.id)}
+                                    style={{
+                                      display: 'flex', alignItems: 'center',
+                                      padding: '7px 12px',
+                                      background: subActive ? '#E2E4EA' : 'transparent',
+                                      color: subActive ? '#1A1A1A' : '#666',
+                                      border: 'none',
+                                      borderRadius: 8,
+                                      cursor: 'pointer',
+                                      fontFamily: 'var(--font-body)',
+                                      fontSize: 13,
+                                      fontWeight: subActive ? 600 : 400,
+                                      textAlign: 'left',
+                                      transition: 'background 150ms ease',
+                                    }}
+                                    onMouseEnter={(e) => {
+                                      if (!subActive) e.currentTarget.style.background = '#E8E9ED';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                      if (!subActive) e.currentTarget.style.background = 'transparent';
+                                    }}
+                                  >
+                                    {sub.label}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          )}
+                        </div>
                       );
                     })}
                   </div>

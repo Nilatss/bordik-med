@@ -178,18 +178,13 @@ export default function NeonatalHandbook() {
   const [error, setError] = useState<string | null>(null);
   const [q, setQ] = useState('');
   const [openId, setOpenId] = useState<string | null>(null);
-  // Tab state — persisted to sessionStorage so closing a calculator that
-  // was opened from this page returns to the same tab (e.g., Калькуляторы).
-  const [tab, setTab] = useState<Tab>(() => {
-    if (typeof window === 'undefined') return 'drugs';
-    try {
-      const saved = window.sessionStorage.getItem('bordik-neonatal-tab');
-      if (saved && ['drugs', 'guidelines', 'calculators', 'labs', 'articles', 'resuscitation', 'lactmed', 'growth', 'bilirubin'].includes(saved)) {
-        return saved as Tab;
-      }
-    } catch { /* sessionStorage unavailable — ignore */ }
-    return 'drugs';
-  });
+  // Tab state is now driven by store.neonatalActiveTab (set from Sidebar
+  // expandable submenu). Local sync via setTab keeps UI responsive while
+  // syncing back to store + sessionStorage as defense-in-depth.
+  const storeTab = useAppStore((s) => s.neonatalActiveTab);
+  const setNeonatalActiveTab = useAppStore((s) => s.setNeonatalActiveTab);
+  const tab: Tab = storeTab as Tab;
+  const setTab = (next: Tab) => setNeonatalActiveTab(next as typeof storeTab);
   useEffect(() => {
     if (typeof window === 'undefined') return;
     try { window.sessionStorage.setItem('bordik-neonatal-tab', tab); } catch { /* ignore */ }
@@ -477,61 +472,53 @@ export default function NeonatalHandbook() {
       </motion.div>
       )}
 
-      {/* Tabs: Препараты / Протоколы */}
-      <div role="tablist" aria-label="Разделы" style={{
-        display: 'flex', gap: 4, flexWrap: 'wrap',
-        borderBottom: '1px solid #E5E7EB',
-        marginBottom: 18, paddingBottom: 0,
-        marginLeft: -14, marginRight: -14,
-      }}>
-        {([
-          { id: 'drugs' as const, label: 'Препараты', count: bank.drugs.length },
-          { id: 'calculators' as const, label: 'Калькуляторы', count: totalCalculators },
-          { id: 'guidelines' as const, label: 'Протоколы', count: guidelines?.guidelines.length ?? 0 },
-          { id: 'resuscitation' as const, label: 'Реанимация (4 региона)', count: 4 as number | null },
-          { id: 'articles' as const, label: 'Статьи', count: articles?.articles.length ?? 0 },
-          { id: 'lactmed' as const, label: 'ГВ / LactMed', count: lactmed?.drugs.length ?? 0 },
-          { id: 'labs' as const, label: 'Лаб. нормы', count: totalLabs },
-          { id: 'growth' as const, label: 'Графики роста', count: null as number | null },
-          { id: 'bilirubin' as const, label: 'Билирубин', count: null as number | null },
-        ]).map((t) => {
-          const isActive = tab === t.id;
-          return (
-            <button
-              key={t.id}
-              role="tab"
-              aria-selected={isActive}
-              onClick={() => { setTab(t.id); setOpenId(null); }}
-              style={{
-                position: 'relative',
-                background: 'transparent',
-                border: 'none',
-                padding: '10px 14px',
-                fontSize: 14,
-                fontWeight: isActive ? 600 : 500,
-                fontFamily: 'inherit',
-                color: isActive ? '#2563EB' : '#374151',
-                cursor: 'pointer',
-                borderBottom: isActive ? '2px solid #2563EB' : '2px solid transparent',
-                marginBottom: -1,
-                display: 'inline-flex', alignItems: 'center', gap: 6,
-                transition: 'color 120ms',
-              }}
-            >
-              <span>{t.label}</span>
-              {t.count !== null && (
-                <span style={{
-                  fontSize: 11, fontWeight: 700,
-                  color: isActive ? '#2563EB' : '#9CA3AF',
-                  opacity: isActive ? 0.85 : 0.7,
-                }}>
-                  {t.count}
-                </span>
-              )}
-            </button>
-          );
-        })}
-      </div>
+      {/*
+        Section breadcrumb header.
+        Замена горизонтальных табов: navigation теперь живёт в Sidebar
+        (раскрывающийся submenu под "Неонатология"). Здесь показываем
+        текущий активный раздел + count для оrientation. Tabs strip
+        DELETED — see git history before 2026-05-09 PR #30.
+      */}
+      {(() => {
+        const SECTION_META: Record<Tab, { label: string; count: number | null }> = {
+          drugs: { label: 'Препараты', count: bank.drugs.length },
+          calculators: { label: 'Калькуляторы', count: totalCalculators },
+          guidelines: { label: 'Протоколы', count: guidelines?.guidelines.length ?? 0 },
+          resuscitation: { label: 'Реанимация (4 региона)', count: 4 },
+          articles: { label: 'Статьи', count: articles?.articles.length ?? 0 },
+          lactmed: { label: 'ГВ / LactMed', count: lactmed?.drugs.length ?? 0 },
+          labs: { label: 'Лаб. нормы', count: totalLabs },
+          growth: { label: 'Графики роста', count: null },
+          bilirubin: { label: 'Билирубин', count: null },
+        };
+        const meta = SECTION_META[tab];
+        return (
+          <div style={{
+            display: 'flex', alignItems: 'baseline', gap: 8,
+            paddingBottom: 14, marginBottom: 18,
+            borderBottom: '1px solid #E5E7EB',
+          }}>
+            <h2 style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 22, fontWeight: 700,
+              letterSpacing: '-0.02em',
+              color: '#1A1A1A',
+              margin: 0,
+            }}>
+              {meta.label}
+            </h2>
+            {meta.count !== null && (
+              <span style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: 14, fontWeight: 700,
+                color: '#9CA3AF',
+              }}>
+                {meta.count}
+              </span>
+            )}
+          </div>
+        );
+      })()}
 
       {tab === 'drugs' ? (
         <>
