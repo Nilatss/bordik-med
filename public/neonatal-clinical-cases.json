@@ -1,5 +1,5 @@
 {
-  "version": "1.4.0",
+  "version": "1.5.0",
   "lastUpdated": "2026-05-10",
   "source": "Bordik Med — Neonatology clinical cases (audit Table 3.Д2)",
   "license": "Educational content adapted from public clinical guidelines (AAP, NRP, NICE, ESPGHAN, BAPM, Cochrane). Not a substitute for clinical judgment.",
@@ -1450,6 +1450,187 @@
       "references": [
         "AAP/ACOG/PES Joint statement 2023 — Newborn Screening for Congenital Hypothyroidism",
         "Rovet JF. J Endocrinol Invest 2014;37:533 — Long-term cognitive outcomes treated CH"
+      ]
+    },
+    {
+      "id": "case-anemia-of-prematurity",
+      "title_ru": "Анемия недоношенных — when to transfuse",
+      "title_en": "Anemia of prematurity — transfusion threshold",
+      "topic": "hematology",
+      "level": "intermediate",
+      "vignette": "Девочка GA 26 нед, BW 750 г, age 4 weeks. Hgb 8.5 g/dL, на CPAP 5 cmH₂O FiO₂ 0.28, SpO₂ 91-93% target. HR 165-175, weight gain stagnated за последние 5 дней. Reticulocyte count 1.5%. Iron + folate replacement adequate. Phlebotomy losses 25 мл cumulatively.",
+      "presenting_features": [
+        "Preterm <32 нед — peak anemia в 4-8 weeks (early form, постнатальная anemia)",
+        "Compromised erythropoiesis (low EPO due to relative hyperoxia ex utero)",
+        "Phlebotomy losses (significant фактор у ELBW)",
+        "Symptomatic: tachycardia, poor weight gain, tachypnea, increased apnea, decreased activity",
+        "Hgb thresholds depend на postnatal age + respiratory support + stability"
+      ],
+      "differential": [
+        "Anemia of prematurity (наиболее вероятно)",
+        "Active hemorrhage (IVH, GI bleeding) — exclude",
+        "Hemolysis (DAT, smear, retic count, bilirubin)",
+        "Iron deficiency (preterm иногда develops после 2-3 месяцев — usually later)",
+        "Bone marrow suppression (sepsis, infection)"
+      ],
+      "management": [
+        "Decision to transfuse: NO single Hgb threshold — оценить symptoms + support level + age.",
+        "Restrictive transfusion thresholds (Pediatrix/Cochrane neoOpt 2020+): на CPAP/HFNC FiO₂ ≤0.30 — Hgb 7-8 g/dL OK; на mech vent — Hgb 9-10; off support — Hgb 7-8.",
+        "PRBC dose: 15-20 мл/кг over 4 ч through 22 G IV (or central).",
+        "CMV-negative + irradiated + leukoreduced for preterm (TA-GVHD prevention).",
+        "Pre/post transfusion: vital signs, monitor для transfusion reactions (chills, hypotension, dyspnea).",
+        "Post-transfusion Hgb check 2-4 ч later — expected rise 2-3 g/dL.",
+        "EPO (rh-erythropoietin) — recombinant — controversial (decreases transfusion needs модestly но не improves clinical outcomes; Cochrane 2017).",
+        "Iron supplementation 2-3 мг/кг/д начать с 2 weeks of life; increase if EPO used.",
+        "Minimize phlebotomy: micro-tubes, batch labs, point-of-care testing.",
+        "Family counseling: blood product safety, alternatives (autologous cord blood — не routine)."
+      ],
+      "pearls": [
+        "Restrictive vs liberal transfusion (TOP/ETTNO trials 2020): no significant developmental outcome differences — restrictive thresholds OK.",
+        "Phlebotomy losses часто excееdedают birth-loss из bleeding — careful tracking.",
+        "EPO + iron may decrease transfusion needs у ELBW но cost-effectiveness questionable."
+      ],
+      "references": [
+        "Kirpalani H et al. NEJM 2020;383:2639 — TOP trial restrictive transfusion",
+        "Franz AR et al. JAMA 2020;324:560 — ETTNO trial",
+        "Aher SM, Ohlsson A. Cochrane 2020;CD004863 — Erythropoietin for preventing red cell transfusion в preterm"
+      ]
+    },
+    {
+      "id": "case-persistent-hyperinsulinism",
+      "title_ru": "Персистирующий гиперинсулинизм у новорождённого",
+      "title_en": "Persistent neonatal hyperinsulinism",
+      "topic": "metabolic",
+      "level": "advanced",
+      "vignette": "Мальчик GA 39 нед, BW 4200 г (LGA, mom non-diabetic). Hypoglycemia BG 1.6 ммоль/л at 6 ч age. Despite continuous D10 IV @ 12 мг/кг/мин GIR + регулярных feeds — recurrent BG <2.6 на 7 day life. Insulin level @ time of hypoglycemia: 25 µU/mL (norm <5 при BG <2.5). Beta-OH-butyrate <0.5 ммоль/л. Free fatty acids low.",
+      "presenting_features": [
+        "Recurrent hypoglycemia >5-7 days (выходит за рамки transient neonatal hypoglycemia)",
+        "GIR >8 мг/кг/мин для maintain BG (transient < 6, hyperinsulinism часто >10-15)",
+        "Inappropriately elevated insulin during hypoglycemia",
+        "Low ketones + low free fatty acids (insulin suppresses lipolysis)",
+        "LGA, macrosomia (insulin = growth factor antenatally)",
+        "Possible family history (часто autosomal recessive — congenital hyperinsulinism)"
+      ],
+      "differential": [
+        "Congenital hyperinsulinism (ABCC8/KCNJ11 mutations — channelopathy)",
+        "Beckwith-Wiedemann syndrome (LGA + macroglossia + omphalocele + hyperinsulinism)",
+        "IDM (transient hyperinsulinism — resolves typically by 3-7 days)",
+        "Perinatal stress hyperinsulinism (HIE, RDS)",
+        "GLUD1 hyperinsulinism / hyperammonemia syndrome",
+        "Late-onset diazoxide-responsive hyperinsulinism"
+      ],
+      "management": [
+        "Acute: D10 bolus 2 мл/кг при BG <2.0; continuous IV до GIR 12-15 мг/кг/мин если нужно.",
+        "Avoid prolonged hypoglycemia — neuroglycopenic damage может occur с 30 мин-1 ч episodes.",
+        "Diagnostic workup: at time hypoglycemia (BG <2.5) — insulin, C-peptide, beta-OH-butyrate, FFA, lactate, ammonia, cortisol, growth hormone.",
+        "Genetic testing: ABCC8 + KCNJ11 + GLUD1 + GCK — определяет phenotype + treatment response.",
+        "First-line: diazoxide 5-15 мг/кг/д PO divided q8-12h (вместе с chlorothiazide 7-10 мг/кг/д для prevent fluid retention).",
+        "Diazoxide responder: можно wean, oral feeds tolerate.",
+        "Diazoxide non-responder (часто KATP channel mutations): octreotide 5-10 мкг/кг/день SC q6-8h ИЛИ continuous infusion.",
+        "Subtotal pancreatectomy (95% pancreas resection) — для diffuse disease refractory.",
+        "PET-CT с 18F-DOPA: differentiate focal vs diffuse hyperinsulinism — focal lesion может быть curative с targeted resection.",
+        "Long-term: diabetes development risk (post-pancreatectomy), neurodevelopmental follow-up."
+      ],
+      "pearls": [
+        "Hypoglycemia >7 days = think hyperinsulinism (genetic).",
+        "Diazoxide trial — first-line; non-responders нуждаются в genetic testing для определить mutation.",
+        "Untreated severe hyperinsulinism — significant brain injury risk; aggressive treatment imperative."
+      ],
+      "references": [
+        "Stanley CA. J Clin Endocrinol Metab 2016;101:815 — Hyperinsulinism diagnosis + management",
+        "Lord K, De León DD. Front Endocrinol 2021;12:619548 — Congenital hyperinsulinism",
+        "Thornton PS et al. Pediatrics 2015;135:e238 — Recommendations from PES Hypoglycemia Task Force"
+      ]
+    },
+    {
+      "id": "case-cleft-palate-feeding",
+      "title_ru": "Расщелина нёба — feeding management",
+      "title_en": "Cleft palate — feeding management",
+      "topic": "gastro",
+      "level": "intermediate",
+      "vignette": "Девочка GA 39 нед, BW 3200 г, antenatal diagnosed cleft palate (без cleft lip). После рождения: ineffective sucking при breast latch, milk leakage из nose, prolonged feeds (>40 минут не satisfying), poor weight gain в первые 5 days. Mom desires breastfeeding.",
+      "presenting_features": [
+        "Cleft palate (с или без cleft lip): feeding difficulties almost universal",
+        "Inadequate negative pressure generation (palate cannot seal)",
+        "Nasal regurgitation of milk",
+        "Prolonged feeds + fatigue → inadequate intake",
+        "Increased risk choking/aspiration",
+        "Possible syndromic association: Pierre Robin sequence (micrognathia + glossoptosis + cleft palate), 22q11 deletion (DiGeorge), Stickler syndrome"
+      ],
+      "differential": [
+        "Isolated cleft palate (наиболее вероятно)",
+        "Pierre Robin sequence (look для micrognathia + glossoptosis)",
+        "Submucous cleft palate (часто missed initially — bifid uvula clue)",
+        "VPI (velopharyngeal insufficiency) после repair",
+        "Laryngomalacia (different presentation — stridor рекомендации)"
+      ],
+      "management": [
+        "Cleft team referral immediate: pediatric dentist, plastic surgeon, ENT, speech therapist, audiologist, geneticist.",
+        "Feeding: специализированные bottles + nipples — Haberman/Special Needs, Pigeon, Mead Johnson cleft cup feeder.",
+        "Position: upright 60-90° (не reclined) — gravity helps swallowing.",
+        "Pace feeding: 20-30 мин total, frequent burping (high air swallowing).",
+        "Если breastfeeding desired: use nipple shield + supplementer system (SNS) — partial success в некоторых, но often supplementation needed.",
+        "Weight monitoring: closely (q3-7 days в первые недели) — adequate growth criterion для surgery timing.",
+        "Hearing assessment: AABR + tympanometry (high risk for chronic OME due to cleft).",
+        "Echocardiogram + chromosomal testing если concern для syndromic association.",
+        "Surgical timing: lip repair 3-6 months, palate repair 9-18 months (улучшает speech outcomes).",
+        "Pre-surgery: nutrition optimization (gain weight to ≥10 lbs), hemoglobin >10, no recent illness.",
+        "Family education: support groups (CleftLine, ACPA), realistic expectations о feeding/speech progress."
+      ],
+      "pearls": [
+        "Cleft palate без lip — often delayed diagnosis (palate not visualized routine exam) — palpate hard palate всегда!",
+        "Specialized bottles обязательны — обычные bottles не работают (no negative pressure generation).",
+        "Multi-disciplinary team — outcomes значительно лучше vs isolated provider care."
+      ],
+      "references": [
+        "ACPA. Standards of care for cleft lip + palate 2018",
+        "Reid J et al. Cleft Palate Craniofac J 2007;44:312 — Feeding interventions",
+        "Wang X et al. Plast Reconstr Surg 2015;136:1031 — Optimal timing palate repair"
+      ]
+    },
+    {
+      "id": "case-chylothorax-neonatal",
+      "title_ru": "Хилоторакс у новорождённого — congenital + post-surgical",
+      "title_en": "Neonatal chylothorax — congenital + post-surgical",
+      "topic": "respiratory",
+      "level": "advanced",
+      "vignette": "Мальчик GA 35 нед, BW 2400 г, antenatal diagnosed left pleural effusion. Postnatally: significant respiratory distress, intubated. Pleural drainage — milky fluid после feeds. Lab analysis: triglycerides 1200 мг/дл (high), lymphocyte-predominant cell count, total protein elevated.",
+      "presenting_features": [
+        "Pleural effusion identified antenatally OR postoperatively (cardiac surgery, ductal ligation)",
+        "Respiratory distress — может быть severe при large effusion",
+        "Pleural fluid milky / chylous appearance после feeds (clear pre-feed)",
+        "Pleural fluid analysis: triglycerides >110 мг/дл (definitive), lymphocytes >80%, total protein >3 г/дл",
+        "Loss из chyle: hypoalbuminemia, hypogammaglobulinemia, lymphocytopenia, immune compromise",
+        "Risk of fluid + protein + immunological depletion"
+      ],
+      "differential": [
+        "Congenital chylothorax (lymphatic system anomaly — Down/Turner/Noonan syndrome association)",
+        "Post-surgical chylothorax (most common — cardiothoracic surgery, PDA ligation)",
+        "Trauma (rare neonates)",
+        "Neoplasm (ekstremно rare neonates)",
+        "Lymphatic malformation (cystic hygroma если cervical)"
+      ],
+      "management": [
+        "Chest tube drainage: continuous suction до volume <10 мл/кг/д для consider removal.",
+        "Nutrition modification: medium-chain triglyceride (MCT) formula (Portagen, Monogen, Pregestimil) — bypasses lymphatic transport.",
+        "NPO + parenteral nutrition если high output (>50 мл/кг/д) — bowel rest reduces lymphatic flow.",
+        "Replace losses: albumin (1 г/кг IV q24-48h при <2.5 г/дл), gamma-globulin if recurrent infections + low IgG, fresh frozen plasma при coagulopathy.",
+        "Octreotide 1-10 мкг/кг/ч continuous IV ИЛИ 10-20 мкг/кг q6-8h SC — vasoconstrictor, decreases splanchnic flow + chyle production. Sometimes effective. Watch for NEC + hypoglycemia.",
+        "Sirolimus / sildenafil — emerging therapies для refractory cases (lymphatic malformation context).",
+        "Surgical: pleurodesis, thoracic duct ligation, pleuroperitoneal shunt — для refractory >4 weeks high-output drainage.",
+        "Genetic + syndromic workup: chromosomal analysis (Down, Turner, Noonan), echo (lymphatic anomalies often syndromic).",
+        "Vaccinations: assess immune status before live vaccines (BCG может быть contraindicated если significant IgG loss).",
+        "Monitoring: pleural fluid output trends, serum albumin/IgG, electrolytes, cell counts (lymphocyte recovery)."
+      ],
+      "pearls": [
+        "Triglycerides >110 мг/дл в pleural fluid = definitive chylothorax (если ребёнок был кормлен).",
+        "MCT formula + careful NPO trials — first-line. Most resolve в 4-6 недель.",
+        "Octreotide promising но evidence variable — try при failure conservative therapy >2 недели."
+      ],
+      "references": [
+        "Soto-Martinez M, Massie J. J Paediatr Child Health 2009;45:480 — Chylothorax in children",
+        "Resch B et al. J Perinatol 2009;29:810 — Congenital chylothorax: management + outcomes",
+        "Bellini C et al. Pediatr Pulmonol 2021;56:1815 — Octreotide для neonatal chylothorax"
       ]
     }
   ]

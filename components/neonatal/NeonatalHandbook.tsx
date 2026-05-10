@@ -400,7 +400,7 @@ export default function NeonatalHandbook() {
           fetch('/neonatal-articles.json?v=2.2.0', { cache: 'force-cache' }),
           fetch('/neonatal-lactmed.json?v=1.1.0', { cache: 'force-cache' }),
           fetch('/neonatal-nurse-procedures.json?v=1.3.0', { cache: 'force-cache' }),
-          fetch('/neonatal-clinical-cases.json?v=1.4.0', { cache: 'force-cache' }),
+          fetch('/neonatal-clinical-cases.json?v=1.5.0', { cache: 'force-cache' }),
           fetch('/neonatal-common-mistakes.json?v=1.4.0', { cache: 'force-cache' }),
           fetch('/neonatal-procedure-checklists.json?v=1.3.0', { cache: 'force-cache' }),
           fetch('/neonatal-procedure-videos.json?v=1.4.0', { cache: 'force-cache' }),
@@ -4974,7 +4974,7 @@ export function ProgressDashboard({ bank: _bank, quizzesBank: _quizzesBank }: { 
     let cancelled = false;
     void (async () => {
       try {
-        const r = await fetch('/neonatal-quizzes.json?v=1.3.0', { cache: 'force-cache' });
+        const r = await fetch('/neonatal-quizzes.json?v=1.4.0', { cache: 'force-cache' });
         if (!r.ok) return;
         const json = await r.json();
         if (!cancelled) setQuizzes(json.quizzes);

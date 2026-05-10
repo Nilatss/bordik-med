@@ -1,5 +1,5 @@
 {
-  "version": "1.3.0",
+  "version": "1.4.0",
   "lastUpdated": "2026-05-10",
   "source": "Bordik Med — clinical quizzes для самопроверки знаний неонатологии (audit Е1-Е4)",
   "license": "Образовательный материал. Не заменяет certified educational programs (NRP / ERC NLS / HBB / профильная резидентура).",
@@ -3125,6 +3125,147 @@
           ],
           "answer": 1,
           "explanation": "Maternal/neonatal screening при OUD: HIV + HepB + HepC + RPR/syphilis + chlamydia/gonorrhea, urine toxicology, tobacco, depression screen, social work, custody planning. Постдоставкa: HepB vaccine + immunoglobulin if HBsAg+, HIV treatment guidelines if maternal+."
+        }
+      ]
+    },
+    {
+      "id": "quiz-discharge-prep",
+      "title_ru": "Подготовка к выписке + скрининги",
+      "title_en": "Discharge preparation + screening",
+      "topic": "screening_discharge",
+      "level": "intermediate",
+      "questions": [
+        {
+          "q": "Когда следует проводить metabolic screening (пяточная кровь) у термин-новорождённого по приказу МЗ РФ?",
+          "options": [
+            "В первые 6 часов жизни",
+            "24-48 часов жизни",
+            "На 7-й день жизни",
+            "На 14-й день жизни"
+          ],
+          "answer": 1,
+          "explanation": "РФ + AAP recommend collection в 24-48 ч для term — feeds должны установиться, чтобы детектировать metabolic disorders. Для preterm — на 7-й день жизни (приказ 274н от 21.04.2022)."
+        },
+        {
+          "q": "Какое правило применяется к hearing screening новорождённого?",
+          "options": [
+            "1-3-6: screen by 1 mo, diagnose by 3 mo, intervene by 6 mo",
+            "1-1-1: всё в первый месяц",
+            "3-6-12: screen by 3 mo, diagnose by 6 mo, intervene by 12 mo",
+            "Не делается рутинно при отсутствии факторов риска"
+          ],
+          "answer": 0,
+          "explanation": "Joint Committee on Infant Hearing 2019: 1-3-6 правило — universal screen by 1 month, diagnose by 3 months, начать intervention by 6 months. Раннее лечение — ключ к нормальному language development."
+        },
+        {
+          "q": "Pulse oximetry CCHD screening: какой результат означает FAIL?",
+          "options": [
+            "SpO₂ 95% pre-ductal + 95% post-ductal + differential 2%",
+            "SpO₂ 92% pre-ductal + 95% post-ductal + differential 3%",
+            "SpO₂ 88% pre-ductal в любом измерении",
+            "SpO₂ 96% оба + differential 5%"
+          ],
+          "answer": 2,
+          "explanation": "AAP 2011 CCHD screening: PASS = SpO₂ ≥95% в обеих локациях И differential ≤3%. FAIL: SpO₂ <90% в любой локации (immediate fail) ИЛИ SpO₂ 90-94% × 3 повторных measurements ИЛИ differential >3% × 3."
+        },
+        {
+          "q": "Когда следует ввести первую дозу Hep B vaccine у нормального термин-новорождённого?",
+          "options": [
+            "В первые 24 часа жизни",
+            "В 1 месяц жизни",
+            "Только если mama HBsAg-положительная",
+            "В 6 недель — вместе с DTP"
+          ],
+          "answer": 0,
+          "explanation": "РФ + WHO + AAP universal recommendation: Hep B vaccine 0.5 мл IM в первые 24 ч жизни (target 12 ч). При HBsAg+ mama — vaccine + HBIG в первые 12 ч."
+        },
+        {
+          "q": "Когда вводится BCG в РФ?",
+          "options": [
+            "Никогда — только при риске exposure",
+            "3-7 день жизни (для здорового термина) intradermal в left deltoid",
+            "В первый час жизни",
+            "В 1 месяц жизни"
+          ],
+          "answer": 1,
+          "explanation": "РФ — high TB endemic country, universal BCG. 3-7 день жизни в роддоме (BW ≥2000 г, без противопоказаний). 0.05 мл BCG-M или 0.1 мл BCG intradermal в junction upper + middle third left deltoid."
+        },
+        {
+          "q": "Минимальный adequate weight gain для готовности к выписке у term-newborn (после physiologic loss)?",
+          "options": [
+            "5-10 г/день",
+            "15-30 г/день",
+            "50-80 г/день",
+            "100-150 г/день"
+          ],
+          "answer": 1,
+          "explanation": "AAP COFN 2008: adequate weight gain 15-30 г/д для term, 20-30 г/д после возвращения к birth weight. Maximum physiologic weight loss до 10% term, 12-15% preterm — ожидается восстановление к 10-14 дням."
+        },
+        {
+          "q": "Caretaker car-seat tolerance test показан для:",
+          "options": [
+            "Всех новорождённых перед выпиской",
+            "Только при weight <2000 г",
+            "Preterm <37 нед или low BW",
+            "Только при положительном CCHD screen"
+          ],
+          "answer": 2,
+          "explanation": "AAP recommends car-seat tolerance test для preterm <37 недель ИЛИ low birth weight: 90-120 минут в seat без desats/apnea. Preterm имеют insufficient muscle tone для maintain airway в semi-reclined position."
+        },
+        {
+          "q": "Минимальный adequate caloric intake для термин-новорождённого готового к выписке:",
+          "options": [
+            "60 ккал/кг/д",
+            "90 ккал/кг/д",
+            "≥120 ккал/кг/д",
+            "180 ккал/кг/д"
+          ],
+          "answer": 2,
+          "explanation": "Term ≥120 ккал/кг/д (в зависимости от BW и activity); preterm 130-150 ккал/кг/д. Adequate intake assessed by feeding adequacy + weight gain + urine output ≥1 мл/кг/ч."
+        },
+        {
+          "q": "Какая концентрация phototherapy irradiance считается \"intensive\"?",
+          "options": [
+            "8-10 µW/cm²/nm",
+            "15-20 µW/cm²/nm",
+            "≥30 µW/cm²/nm",
+            "≥100 µW/cm²/nm"
+          ],
+          "answer": 2,
+          "explanation": "AAP 2022: intensive phototherapy = irradiance ≥30 µW/cm²/nm на узком blue spectrum (425-475 нм) с двух сторон. Standard phototherapy 8-10 µW/cm²/nm. Intensive необходима при approaching exchange threshold."
+        },
+        {
+          "q": "Через сколько часов после прекращения phototherapy надо checkнуть TSB rebound?",
+          "options": [
+            "Через 4-6 часов",
+            "Через 12-24 часа",
+            "Через 7 дней",
+            "Не нужно — rebound редкий"
+          ],
+          "answer": 1,
+          "explanation": "TSB rebound бывает у 13-23% после phototherapy discontinuation. AAP 2022 рекомендует recheck TSB 12-24 ч после prekratehня — особенно в случаях значительной hemolysis или закончили phototherapy при low-edge of safety."
+        },
+        {
+          "q": "PRN follow-up appointment для здорового term newborn после discharge должен быть через:",
+          "options": [
+            "24-72 часа",
+            "1 неделю",
+            "2 недели",
+            "1 месяц"
+          ],
+          "answer": 0,
+          "explanation": "AAP/AAFP: 24-72 часа после выписки (sooner для preterm, jaundice concerns, feeding issues). Цели: weight check (потеря <10%), feeding adequacy assessment, jaundice progression check, family questions."
+        },
+        {
+          "q": "Что такое 1 mg vit K — и когда его вводить?",
+          "options": [
+            "PO в первый месяц жизни",
+            "IM в первый час жизни (0.5 мг при BW <1000 г)",
+            "Только при mama refusing breastfeeding",
+            "В 1 месяц с первой dose Hep B"
+          ],
+          "answer": 1,
+          "explanation": "AAP CFN 2003 (reaffirmed 2018) + КР МЗ РФ: vit K1 1 мг IM в первый час жизни (0.5 мг при BW <1000 г). Профилактика VKDB (early, classic, late forms). PO regimens менее эффективны для late VKDB; IM стандарт."
         }
       ]
     }
