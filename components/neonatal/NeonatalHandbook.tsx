@@ -1001,7 +1001,10 @@ export default function NeonatalHandbook() {
         </motion.div>
       )}
 
-      {/* Source / disclaimer panel — единый стиль с DrugChecker provenance */}
+      {/* Source / disclaimer panel — единый стиль с DrugChecker provenance.
+          Скрывается на табе Тесты (panel описывает источники препаратов /
+          графиков / билирубина — не релевантно для тестового раздела). */}
+      {tab !== 'quizzes' && (
       <section
         aria-labelledby="neonatal-provenance"
         style={{
@@ -1068,6 +1071,7 @@ export default function NeonatalHandbook() {
           врач/клин-фармаколог/неонатолог.
         </p>
       </section>
+      )}
 
       {/* ApgarTimer fullscreen modal — audit 1.9 */}
       {apgarTimerOpen && (
