@@ -637,7 +637,7 @@ export default function ResuscitationFlowchart() {
                 padding: '4px var(--space-2)',
                 borderRadius: 'var(--md-sys-shape-corner-full)',
                 background: '#FFFFFF',
-                boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06), inset 0 0 0 1px #FECACA',
+                boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
                 fontFamily: 'var(--font-mono)',
                 fontSize: '0.625rem', fontWeight: 700,
                 color: '#DC2626',

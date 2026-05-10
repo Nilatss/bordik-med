@@ -23,6 +23,10 @@ import QuizRunner from '@/components/neonatal/QuizRunner';
 import { ArrowRight } from '@/components/icons';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore } from '@/lib/store';
+import { FilterDropdown } from '@/components/tools/page/FilterDropdown';
+import EmojiOrFlag from '@/components/ui/EmojiOrFlag';
+import { countryMatches, matchCountry } from '@/lib/tool-meta-helpers';
+import type { FilterOption } from '@/lib/tools-page/types';
 
 interface Drug {
   id: string;
@@ -224,6 +228,11 @@ export default function NeonatalHandbook() {
   // ApgarTimer fullscreen modal state — audit 1.9 closes timer UI gap.
   const [apgarTimerOpen, setApgarTimerOpen] = useState(false);
 
+  // Country filter on Калькуляторы tab — same pattern что у ToolsPage
+  // (pure-functional buildCountryCounts + countryMatches over calc.source).
+  const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
+  const [countryFilterOpen, setCountryFilterOpen] = useState(false);
+
   // Quiz active flag — when QuizRunner enters fullscreen takeover (user
   // clicks a test card), we hide the page header / search / breadcrumb
   // for a clean exam-like UI. QuizRunner notifies via onActiveChange.
@@ -239,7 +248,7 @@ export default function NeonatalHandbook() {
           fetch('/neonatal-calculators.json?v=1.0.0', { cache: 'force-cache' }),
           fetch('/neonatal-lab-norms.json?v=1.1.0', { cache: 'force-cache' }),
           fetch('/neonatal-articles.json?v=1.8.0', { cache: 'force-cache' }),
-          fetch('/neonatal-lactmed.json?v=1.0.0', { cache: 'force-cache' }),
+          fetch('/neonatal-lactmed.json?v=1.1.0', { cache: 'force-cache' }),
           fetch('/neonatal-nurse-procedures.json?v=1.2.0', { cache: 'force-cache' }),
         ]);
         if (!drugsR.ok) throw new Error(`monographs ${drugsR.status}`);
@@ -322,19 +331,68 @@ export default function NeonatalHandbook() {
   const filteredCalculators = useMemo(() => {
     if (!calculators) return [];
     const query = q.trim().toLowerCase();
-    if (!query) return calculators.groups;
     return calculators.groups
       .map((g) => ({
         ...g,
-        calculators: g.calculators.filter((c) =>
-          c.title_ru.toLowerCase().includes(query)
-          || c.title_en.toLowerCase().includes(query)
-          || c.id.toLowerCase().includes(query)
-          || c.source.toLowerCase().includes(query)
-        ),
+        calculators: g.calculators.filter((c) => {
+          if (query
+            && !c.title_ru.toLowerCase().includes(query)
+            && !c.title_en.toLowerCase().includes(query)
+            && !c.id.toLowerCase().includes(query)
+            && !c.source.toLowerCase().includes(query)) return false;
+          // Country filter — same pattern as ToolsPage (countryMatches на raw
+          // source string). Если ни одного матча — calculator скрыт.
+          if (selectedCountries.length > 0) {
+            const hit = selectedCountries.some((sel) => countryMatches(c.source, sel));
+            if (!hit) return false;
+          }
+          return true;
+        }),
       }))
       .filter((g) => g.calculators.length > 0);
-  }, [calculators, q]);
+  }, [calculators, q, selectedCountries]);
+
+  // Country counts — derived from all calculators, not the filtered set, чтобы
+  // user видел сколько калькуляторов из каждой страны (а не сколько прошло
+  // текущий поиск).
+  const calcCountryCounts = useMemo<FilterOption[]>(() => {
+    if (!calculators) return [];
+    const counts: Record<string, number> = Object.create(null);
+    const flags: Record<string, string> = Object.create(null);
+    const orders: Record<string, number> = Object.create(null);
+    for (const g of calculators.groups) {
+      for (const c of g.calculators) {
+        const seen = new Set<string>();
+        for (const part of (c.source ?? '').split(/[·•;,]/)) {
+          const trimmed = part.trim();
+          if (!trimmed) continue;
+          const cg = matchCountry(trimmed);
+          if (!cg || seen.has(cg.name)) continue;
+          seen.add(cg.name);
+          counts[cg.name] = (counts[cg.name] ?? 0) + 1;
+          flags[cg.name] = cg.flag;
+          orders[cg.name] = cg.order;
+        }
+        if (seen.size === 0) {
+          // Default fallback like ToolsPage
+          counts.Международный = (counts.Международный ?? 0) + 1;
+          flags.Международный = '🌍';
+          orders.Международный = 1;
+        }
+      }
+    }
+    return Object.entries(counts)
+      .map(([value, count]) => ({ value, count, flag: flags[value], _order: orders[value] ?? 999 }))
+      .sort((a, b) => {
+        if (a._order !== b._order) return a._order - b._order;
+        if (b.count !== a.count) return b.count - a.count;
+        return a.value.localeCompare(b.value);
+      })
+      .map(({ value, count, flag }) => ({
+        value, count,
+        ...(flag !== undefined && { flag }),
+      }));
+  }, [calculators]);
 
   const totalCalculators = useMemo(
     () => calculators?.groups.reduce((s, g) => s + g.calculators.length, 0) ?? 0,
@@ -709,32 +767,49 @@ export default function NeonatalHandbook() {
             </span>
           </p>
 
-          {/* Apgar Timer launcher — fullscreen timer для родзала, audit 1.9 */}
-          <button
-            onClick={() => setApgarTimerOpen(true)}
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 8,
-              padding: '10px 14px',
-              marginBottom: 16,
-              background: '#0F172A',
-              color: '#FFFFFF',
-              border: 'none',
-              borderRadius: 10,
-              cursor: 'pointer',
-              fontSize: 13,
-              fontWeight: 600,
-              fontFamily: 'inherit',
-            }}
-          >
-            <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="10" />
-              <polyline points="12 6 12 12 16 14" />
-            </svg>
-            Запустить Apgar Timer (родзал)
-          </button>
+          {/* Filter row: country dropdown (same pattern как у ToolsPage) +
+              Apgar Timer launcher на одной строке. */}
+          <div style={{
+            display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 10,
+            marginBottom: 16,
+          }}>
+            <FilterDropdown
+              label="Страны"
+              icon={<svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><circle cx={12} cy={12} r={10}/><line x1={2} y1={12} x2={22} y2={12}/><path d="M12 2a15 15 0 014 10 15 15 0 01-4 10 15 15 0 01-4-10 15 15 0 014-10z"/></svg>}
+              options={calcCountryCounts}
+              selected={selectedCountries}
+              onChange={setSelectedCountries}
+              open={countryFilterOpen}
+              onOpen={setCountryFilterOpen}
+              searchable
+            />
+            <button
+              type="button"
+              onClick={() => setApgarTimerOpen(true)}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                padding: '10px 14px',
+                background: '#0F172A',
+                color: '#FFFFFF',
+                border: 'none',
+                borderRadius: 10,
+                cursor: 'pointer',
+                fontSize: 13,
+                fontWeight: 600,
+                fontFamily: 'inherit',
+              }}
+            >
+              <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
+                aria-hidden="true" focusable="false">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>
+              Запустить Apgar Timer (родзал)
+            </button>
+          </div>
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -1397,27 +1472,39 @@ function NeonatalDetailBlock({
   children: React.ReactNode;
 }) {
   const isWarning = tone === 'warning';
+  // Warning row выглядит так же как neutral (тот же grid / padding / border-bottom),
+  // но получает амбер-цвет label-а и тонкий ⚠ маркер. Никаких yellow-box BG,
+  // negative margins или border-radius — это разрушало гармонию остальных полей
+  // и читалось как inline-callout вместо органичной строки данных.
   return (
     <div className="neo-detail-row" style={{
-      padding: isWarning ? '14px 16px' : '14px 0',
-      margin: isWarning ? '6px -8px 0' : 0,
-      background: isWarning ? '#FFFBEB' : 'transparent',
-      border: isWarning ? '1px solid #FDE68A' : 'none',
-      borderRadius: isWarning ? 10 : 0,
-      borderBottom: isWarning
-        ? '1px solid #FDE68A'
-        : (isLast ? 'none' : '1px solid #F0F1F5'),
+      padding: '14px 0',
+      borderBottom: isLast ? 'none' : '1px solid #F0F1F5',
     }}>
       <div style={{
+        display: 'inline-flex', alignItems: 'center', gap: 6,
         fontSize: 11, fontWeight: 600, letterSpacing: '0.06em',
         textTransform: 'uppercase',
-        color: isWarning ? '#92400E' : '#9CA3AF',
+        color: isWarning ? '#B45309' : '#9CA3AF',
         paddingTop: 1,
       }}>
+        {isWarning && (
+          <svg
+            aria-hidden="true" focusable="false"
+            width={11} height={11} viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" strokeWidth={2.4}
+            strokeLinecap="round" strokeLinejoin="round"
+            style={{ flexShrink: 0 }}
+          >
+            <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z" />
+            <line x1="12" y1="9" x2="12" y2="13" />
+            <line x1="12" y1="17" x2="12.01" y2="17" />
+          </svg>
+        )}
         {label}
       </div>
       <div style={{
-        color: isWarning ? '#78350F' : '#374151',
+        color: '#374151',
         fontSize: 13.5, lineHeight: 1.55,
       }}>
         {children}
@@ -1703,6 +1790,23 @@ function NeonatalCalcCard({
 }) {
   const handleClick = useCallback(() => onOpen(calc.id), [onOpen, calc.id]);
 
+  // Country chips — derive from calc.source string. Mirrors ToolCard pattern
+  // (max 2 visible + «+N» overflow chip). Source может содержать несколько
+  // источников через ";" / "," / "·" — splittwitwlk на любой из них.
+  const countries = useMemo(() => {
+    const seen = new Set<string>();
+    const out: { name: string; flag: string }[] = [];
+    for (const part of (calc.source ?? '').split(/[·•;,]/)) {
+      const trimmed = part.trim();
+      if (!trimmed) continue;
+      const g = matchCountry(trimmed);
+      if (!g || seen.has(g.name)) continue;
+      seen.add(g.name);
+      out.push({ name: g.name, flag: g.flag });
+    }
+    return out;
+  }, [calc.source]);
+
   // Prefetch на hover/focus — same pattern как ToolCard. Тёплые chunks
   // (ToolView + tools-runners + per-tool runner) скрывают latency 150-300 ms.
   const handlePrefetch = useCallback(() => {
@@ -1766,6 +1870,47 @@ function NeonatalCalcCard({
               {calc.audit_id}
             </span>
           )}
+          {/* Country chips — макс. 2 видимых, overflow через «+N» (1:1 ToolCard). */}
+          {countries.length > 0 && (() => {
+            const visible = countries.slice(0, 2);
+            const extra = countries.length - visible.length;
+            return (
+              <>
+                {visible.map((c) => (
+                  <span
+                    key={c.name}
+                    title={c.name}
+                    style={{
+                      display: 'inline-flex', alignItems: 'center', gap: 4,
+                      padding: '4px var(--space-2)', borderRadius: 'var(--md-sys-shape-corner-full)',
+                      background: '#FFFFFF',
+                      boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: '0.625rem', fontWeight: 500,
+                      color: 'var(--md-sys-color-on-surface-variant)',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    <EmojiOrFlag emoji={c.flag} size={12} />
+                    {c.name}
+                  </span>
+                ))}
+                {extra > 0 && (
+                  <span style={{
+                    display: 'inline-flex', alignItems: 'center',
+                    padding: '4px 8px', borderRadius: 999,
+                    background: '#FFFFFF',
+                    boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '0.625rem', fontWeight: 600,
+                    color: '#6B7280',
+                  }}>
+                    +{extra}
+                  </span>
+                )}
+              </>
+            );
+          })()}
         </div>
       </div>
 
@@ -1839,8 +1984,11 @@ function ArticleCard({
         onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
       >
         <span aria-hidden="true" style={{ flex: 1, minWidth: 0 }}>
+          {/* Collapsed header матчит GuidelineCard: только title + topic pill.
+              Сводка (article.summary) перенесена внутрь раскрытой панели как
+              лид-абзац — мирror «подробнее» pattern из протоколов. */}
           <span style={{
-            display: 'flex', alignItems: 'baseline', gap: 8, flexWrap: 'wrap',
+            display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap',
           }}>
             <span style={{
               fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 600,
@@ -1862,11 +2010,6 @@ function ArticleCard({
             }}>
               {article.topic}
             </span>
-          </span>
-          <span style={{
-            display: 'block', marginTop: 4, fontSize: 12, color: '#6B7280', lineHeight: 1.5,
-          }}>
-            <Highlight text={article.summary} query={query} />
           </span>
         </span>
         <span aria-hidden="true" style={{
@@ -1903,6 +2046,22 @@ function ArticleCard({
               background: '#FFFFFF',
               borderTop: '1px solid #E5E7EB',
             }}>
+              {/* Лид: краткая сводка статьи (бывший collapsed-summary).
+                  Mirrors протокольный intro — visually distinct paragraph
+                  выше основного содержимого. */}
+              {article.summary && (
+                <p style={{
+                  margin: '0 0 16px',
+                  paddingBottom: 14,
+                  borderBottom: '1px solid #F0F1F5',
+                  fontSize: 14,
+                  lineHeight: 1.55,
+                  color: '#4B5563',
+                  fontWeight: 400,
+                }}>
+                  <Highlight text={article.summary} query={query} />
+                </p>
+              )}
               <ArticleContent content={article.content} />
               {article.related_calculators.length > 0 && (
                 <div style={{ marginTop: 18, paddingTop: 14, borderTop: '1px solid #E5E7EB' }}>
@@ -1920,11 +2079,17 @@ function ArticleCard({
                     {article.related_calculators.map((calcId) => (
                       <li key={calcId}>
                         <a href={`/tools/${calcId}`} style={{
-                          display: 'inline-block', padding: '4px 10px',
-                          background: '#EEF2FF', color: '#4338CA',
-                          borderRadius: 6, fontSize: 12, fontWeight: 500,
+                          display: 'inline-flex', alignItems: 'center',
+                          padding: '4px var(--space-2)',
+                          borderRadius: 'var(--md-sys-shape-corner-full)',
+                          background: '#FFFFFF',
+                          boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
+                          fontFamily: 'var(--font-mono)',
+                          fontSize: '0.625rem', fontWeight: 500,
+                          color: '#4338CA',
+                          textTransform: 'uppercase', letterSpacing: '0.04em',
+                          whiteSpace: 'nowrap',
                           textDecoration: 'none',
-                          border: '1px solid #E0E7FF',
                         }}>
                           {calcId}
                         </a>
@@ -2175,8 +2340,8 @@ function LactCard({
               display: 'inline-flex', alignItems: 'center',
               padding: '4px var(--space-2)',
               borderRadius: 'var(--md-sys-shape-corner-full)',
-              background: colors.bg,
-              boxShadow: `0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06), inset 0 0 0 1px ${colors.border}`,
+              background: '#FFFFFF',
+              boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
               fontFamily: 'var(--font-mono)',
               fontSize: '0.625rem', fontWeight: 600,
               color: colors.text,
@@ -2222,57 +2387,80 @@ function LactCard({
             style={{ overflow: 'hidden' }}
           >
             <div style={{
-              padding: '14px 20px 18px',
+              padding: '18px 20px 20px',
               background: '#FFFFFF',
               borderTop: '1px solid #E5E7EB',
-              fontSize: 13.5, lineHeight: 1.55, color: '#1F2937',
+              fontSize: 13.5, lineHeight: 1.6, color: '#1F2937',
             }}>
-              <div style={{ marginBottom: 10 }}>
-                <span style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
-                  textTransform: 'uppercase', color: '#9CA3AF',
+              {/* Лид-абзац (summary) — то же что было в свернутой карточке. */}
+              {drug.summary && (
+                <p style={{
+                  margin: '0 0 16px',
+                  paddingBottom: 14,
+                  borderBottom: '1px solid #F0F1F5',
+                  fontSize: 14,
+                  lineHeight: 1.55,
+                  color: '#4B5563',
                 }}>
-                  Детали
-                </span>
-                <p style={{ margin: '4px 0 0' }}>{drug.details}</p>
-              </div>
-              {drug.monitoring && (
-                <div style={{ marginBottom: 10 }}>
-                  <span style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
-                    textTransform: 'uppercase', color: '#9CA3AF',
-                  }}>
-                    Мониторинг
-                  </span>
-                  <p style={{ margin: '4px 0 0' }}>{drug.monitoring}</p>
-                </div>
+                  <Highlight text={drug.summary} query={query} />
+                </p>
               )}
-              <div>
+
+              {/* Структурированные секции через ту же neo-detail-row grid,
+                  что и в DrugCard — лейбл слева, content справа,
+                  тонкие divider'ы между секциями. */}
+              {drug.details && (
+                <NeonatalDetailBlock label="Клинические детали">
+                  <Highlight text={drug.details} query={query} />
+                </NeonatalDetailBlock>
+              )}
+              {drug.monitoring && (
+                <NeonatalDetailBlock label="Мониторинг ребёнка">
+                  <Highlight text={drug.monitoring} query={query} />
+                </NeonatalDetailBlock>
+              )}
+
+              {/* Footer: link на LactMed + disclaimer. Кнопка теперь
+                  design-system-style (white BG + soft shadow). */}
+              <div style={{
+                marginTop: 16,
+                display: 'flex', alignItems: 'center',
+                flexWrap: 'wrap', gap: 12,
+              }}>
                 <a
                   href={drug.lactmed_url}
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label={`Открыть статью LactMed (NCBI) по препарату ${drug.name_ru}`}
                   style={{
                     display: 'inline-flex', alignItems: 'center', gap: 6,
-                    padding: '6px 12px',
-                    background: '#EEF2FF',
-                    color: '#4338CA',
-                    borderRadius: 6,
-                    fontSize: 12, fontWeight: 600,
+                    padding: '8px 14px',
+                    borderRadius: 'var(--md-sys-shape-corner-full)',
+                    background: '#FFFFFF',
+                    boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
+                    fontFamily: 'var(--font-body)',
+                    fontSize: 12.5, fontWeight: 600,
+                    color: '#1A1A1A',
                     textDecoration: 'none',
-                    border: '1px solid #E0E7FF',
+                    whiteSpace: 'nowrap',
                   }}
                 >
-                  Открыть LactMed (NCBI)
+                  Открыть статью на LactMed (NCBI)
                   <svg width={12} height={12} viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                    stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
+                    aria-hidden="true" focusable="false">
                     <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" />
                     <polyline points="15 3 21 3 21 9" />
                     <line x1="10" y1="14" x2="21" y2="3" />
                   </svg>
                 </a>
+                <span style={{
+                  fontSize: 11, color: '#9CA3AF', lineHeight: 1.4,
+                  flex: 1, minWidth: 200,
+                }}>
+                  Резюме адаптировано из LactMed (NIH, public domain).
+                  Не заменяет клиническое решение.
+                </span>
               </div>
             </div>
           </motion.div>
@@ -2418,20 +2606,29 @@ function NurseProcedureCard({
               ))}
               {procedure.warnings.length > 0 && (
                 <div style={{
-                  marginTop: 10,
-                  padding: '12px 14px',
-                  background: '#FEF2F2',
-                  border: '1px solid #FECACA',
-                  borderRadius: 8,
+                  marginTop: 14, paddingTop: 12,
+                  borderTop: '1px solid #F0F1F5',
                 }}>
                   <div style={{
+                    display: 'inline-flex', alignItems: 'center', gap: 6,
                     fontFamily: 'var(--font-mono)',
                     fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
-                    textTransform: 'uppercase', color: '#991B1B', marginBottom: 6,
+                    textTransform: 'uppercase', color: '#B45309', marginBottom: 6,
                   }}>
-                    ⚠️ Предупреждения
+                    <svg
+                      aria-hidden="true" focusable="false"
+                      width={11} height={11} viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" strokeWidth={2.4}
+                      strokeLinecap="round" strokeLinejoin="round"
+                      style={{ flexShrink: 0 }}
+                    >
+                      <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z" />
+                      <line x1="12" y1="9" x2="12" y2="13" />
+                      <line x1="12" y1="17" x2="12.01" y2="17" />
+                    </svg>
+                    Предупреждения
                   </div>
-                  <ul style={{ margin: 0, paddingLeft: 18, fontSize: 12, color: '#991B1B', lineHeight: 1.55 }}>
+                  <ul style={{ margin: 0, paddingLeft: 18, fontSize: 12.5, color: '#374151', lineHeight: 1.55 }}>
                     {procedure.warnings.map((w, i) => (
                       <li key={i} style={{ marginBottom: 3 }}>{w}</li>
                     ))}

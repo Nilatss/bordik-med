@@ -12,7 +12,7 @@
  *   - localStorage persists last attempts
  */
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight } from '@/components/icons';
 
@@ -41,10 +41,43 @@ interface QuizBank {
 }
 
 type QuizState = Record<string, {
+  /** Maps DISPLAY index (0..displayCount-1) → option index. */
   selected: Record<number, number>;
   submitted: boolean;
   score: number;
+  /** Sequence of bank-question indices for the current attempt.
+   *  Empty/undefined for legacy state (will be lazily initialised). */
+  playOrder?: number[];
+  /** Permanent ledger of bank-indices the user has already seen across
+   *  ALL prior attempts. Used to avoid repeats on retry: we prefer unseen
+   *  questions first, only re-pulling seen ones if the bank is exhausted. */
+  seenIndices?: number[];
 }>;
+
+const QUIZ_DISPLAY_COUNT = 10;
+
+/** Fisher-Yates shuffle (in-place, returns same array). */
+function shuffleInPlace<T>(arr: T[]): T[] {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j]!, arr[i]!];
+  }
+  return arr;
+}
+
+/** Builds a fresh play order for an attempt. Prefers unseen indices first
+ *  (so retries pull NEW questions until the bank is exhausted), then
+ *  falls back to a fresh shuffle of previously-seen indices. */
+function buildPlayOrder(bankSize: number, seenIndices: ReadonlyArray<number>): number[] {
+  const want = Math.min(QUIZ_DISPLAY_COUNT, bankSize);
+  const seenSet = new Set(seenIndices);
+  const all = Array.from({ length: bankSize }, (_, i) => i);
+  const unseen = shuffleInPlace(all.filter((i) => !seenSet.has(i)));
+  if (unseen.length >= want) return unseen.slice(0, want);
+  // Bank exhausted — recycle seen, re-shuffled, to fill the gap.
+  const seenShuffled = shuffleInPlace(all.filter((i) => seenSet.has(i)));
+  return [...unseen, ...seenShuffled].slice(0, want);
+}
 
 const TOPIC_LABELS: Record<string, string> = {
   resuscitation: 'Реанимация',
@@ -131,7 +164,7 @@ export default function QuizRunner({
     let cancelled = false;
     void (async () => {
       try {
-        const r = await fetch('/neonatal-quizzes.json?v=1.2.0', { cache: 'force-cache' });
+        const r = await fetch('/neonatal-quizzes.json?v=1.3.0', { cache: 'force-cache' });
         if (!r.ok) throw new Error(`quizzes ${r.status}`);
         const json = await r.json();
         if (!cancelled) setBank(json as QuizBank);
@@ -165,15 +198,15 @@ export default function QuizRunner({
     return Array.from(map.entries());
   }, [filteredQuizzes]);
 
-  const handleSelect = (quizId: string, qIdx: number, optionIdx: number) => {
+  const handleSelect = (quizId: string, displayIdx: number, optionIdx: number) => {
     setState((prev) => {
-      const cur = prev[quizId] ?? { selected: {}, submitted: false, score: 0 };
-      if (cur.submitted) return prev;
+      const cur = prev[quizId];
+      if (!cur || cur.submitted) return prev;
       return {
         ...prev,
         [quizId]: {
           ...cur,
-          selected: { ...cur.selected, [qIdx]: optionIdx },
+          selected: { ...cur.selected, [displayIdx]: optionIdx },
         },
       };
     });
@@ -181,25 +214,71 @@ export default function QuizRunner({
 
   const handleSubmit = (quiz: Quiz) => {
     setState((prev) => {
-      const cur = prev[quiz.id] ?? { selected: {}, submitted: false, score: 0 };
+      const cur = prev[quiz.id];
+      if (!cur) return prev;
+      const order = cur.playOrder ?? Array.from({ length: quiz.questions.length }, (_, i) => i);
       let correct = 0;
-      quiz.questions.forEach((qu, idx) => {
-        if (cur.selected[idx] === qu.answer) correct += 1;
+      order.forEach((bankIdx, displayIdx) => {
+        const selectedOpt = cur.selected[displayIdx];
+        const qu = quiz.questions[bankIdx];
+        if (qu && selectedOpt === qu.answer) correct += 1;
       });
+      // Add this attempt's questions to the seen ledger so retry pulls
+      // a fresh set if the bank has more than displayCount items.
+      const seenSet = new Set(cur.seenIndices ?? []);
+      for (const i of order) seenSet.add(i);
       return {
         ...prev,
-        [quiz.id]: { ...cur, submitted: true, score: correct },
+        [quiz.id]: {
+          ...cur,
+          submitted: true,
+          score: correct,
+          seenIndices: Array.from(seenSet),
+        },
       };
     });
   };
 
-  const handleReset = (quizId: string) => {
+  /** Reset = start a fresh attempt. Builds a new randomised playOrder
+   *  preferring unseen bank indices, preserves seenIndices ledger. */
+  const handleReset = (quiz: Quiz) => {
     setState((prev) => {
-      const next = { ...prev };
-      delete next[quizId];
-      return next;
+      const cur = prev[quiz.id];
+      const seen = cur?.seenIndices ?? [];
+      const playOrder = buildPlayOrder(quiz.questions.length, seen);
+      return {
+        ...prev,
+        [quiz.id]: {
+          selected: {},
+          submitted: false,
+          score: 0,
+          playOrder,
+          seenIndices: seen,
+        },
+      };
     });
   };
+
+  /** Ensures a quiz state has a playOrder before user starts answering.
+   *  Idempotent — won't re-shuffle if attempt is already in progress. */
+  const ensurePlayOrder = useCallback((quiz: Quiz) => {
+    setState((prev) => {
+      const cur = prev[quiz.id];
+      if (cur?.playOrder?.length) return prev;
+      const seen = cur?.seenIndices ?? [];
+      const playOrder = buildPlayOrder(quiz.questions.length, seen);
+      return {
+        ...prev,
+        [quiz.id]: {
+          selected: cur?.selected ?? {},
+          submitted: cur?.submitted ?? false,
+          score: cur?.score ?? 0,
+          playOrder,
+          seenIndices: seen,
+        },
+      };
+    });
+  }, []);
 
   if (error) {
     return (
@@ -234,10 +313,11 @@ export default function QuizRunner({
       <ActiveQuizView
         quiz={quiz}
         state={state[quiz.id]}
+        ensurePlayOrder={ensurePlayOrder}
         onClose={() => setActiveQuiz(null)}
-        onSelect={(qIdx, optionIdx) => handleSelect(quiz.id, qIdx, optionIdx)}
+        onSelect={(displayIdx, optionIdx) => handleSelect(quiz.id, displayIdx, optionIdx)}
         onSubmit={() => handleSubmit(quiz)}
-        onReset={() => handleReset(quiz.id)}
+        onReset={() => handleReset(quiz)}
       />
     );
   }
@@ -357,8 +437,9 @@ export default function QuizRunner({
                         borderRadius: 'var(--md-sys-shape-corner-full)',
                         background: '#FFFFFF',
                         boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-                        fontFamily: 'var(--font-mono)', fontSize: '0.625rem', fontWeight: 600,
-                        color: lvl.color,
+                        fontFamily: 'var(--font-mono)', fontSize: '0.625rem', fontWeight: 500,
+                        color: 'var(--md-sys-color-on-surface-variant)',
+                        textTransform: 'uppercase', letterSpacing: '0.04em',
                       }}>
                         {lvl.label}
                       </span>
@@ -422,23 +503,48 @@ export default function QuizRunner({
  * Mirrors DiagnosticTest takeover-pattern.
  */
 function ActiveQuizView({
-  quiz, state, onClose, onSelect, onSubmit, onReset,
+  quiz, state, ensurePlayOrder, onClose, onSelect, onSubmit, onReset,
 }: {
   quiz: Quiz;
-  state: { selected: Record<number, number>; submitted: boolean; score: number } | undefined;
+  state: {
+    selected: Record<number, number>;
+    submitted: boolean;
+    score: number;
+    playOrder?: number[];
+    seenIndices?: number[];
+  } | undefined;
+  ensurePlayOrder: (quiz: Quiz) => void;
   onClose: () => void;
-  onSelect: (qIdx: number, optionIdx: number) => void;
+  onSelect: (displayIdx: number, optionIdx: number) => void;
   onSubmit: () => void;
   onReset: () => void;
 }) {
+  // On first mount/when state has no playOrder yet — initialise it.
+  // ensurePlayOrder is idempotent so repeat renders are no-ops.
+  useEffect(() => {
+    ensurePlayOrder(quiz);
+  }, [quiz, ensurePlayOrder, state?.playOrder?.length]);
+
+  // playOrder may be undefined for a tick on first open — fall back to
+  // sequential 0..N-1 so the UI doesn't flicker empty. The actual
+  // randomised order replaces it on the next tick from ensurePlayOrder.
+  const playOrder = state?.playOrder ?? Array.from({ length: Math.min(QUIZ_DISPLAY_COUNT, quiz.questions.length) }, (_, i) => i);
+  const displayQuestions = playOrder
+    .map((bankIdx) => quiz.questions[bankIdx])
+    .filter((q): q is QuizQuestion => Boolean(q));
+
   const submitted = state?.submitted ?? false;
   const score = state?.score ?? 0;
-  const total = quiz.questions.length;
+  const total = displayQuestions.length;
   const passingScore = Math.ceil(total * 0.7);
   const passed = submitted && score >= passingScore;
   const answeredCount = Object.keys(state?.selected ?? {}).length;
   const allAnswered = answeredCount === total;
   const lvl = LEVEL_LABELS[quiz.level];
+
+  const bankSize = quiz.questions.length;
+  const seenSize = state?.seenIndices?.length ?? 0;
+  const remainingFresh = Math.max(0, bankSize - seenSize);
 
   const quizTitleId = `quiz-title-${quiz.id}`;
   return (
@@ -503,10 +609,10 @@ function ActiveQuizView({
               padding: '4px var(--space-2)',
               borderRadius: 'var(--md-sys-shape-corner-full)',
               background: '#FFFFFF',
-              boxShadow: `0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)`,
+              boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
               fontFamily: 'var(--font-mono)',
-              fontSize: '0.625rem', fontWeight: 600,
-              color: lvl.color,
+              fontSize: '0.625rem', fontWeight: 500,
+              color: 'var(--md-sys-color-on-surface-variant)',
               textTransform: 'uppercase',
               letterSpacing: '0.04em',
               whiteSpace: 'nowrap',
@@ -536,11 +642,16 @@ function ActiveQuizView({
           ) : (
             <span>Прогресс: {answeredCount}/{total} ответов</span>
           )}
+          {bankSize > total && (
+            <span style={{ color: '#9CA3AF', marginLeft: 6 }}>
+              · бaнк {bankSize} вопросов{remainingFresh > 0 && remainingFresh < bankSize ? `, ещё ${remainingFresh} новых при retry` : ''}
+            </span>
+          )}
         </p>
       </motion.div>
 
-      {/* Questions */}
-      {quiz.questions.map((qu, qIdx) => {
+      {/* Questions — отображаются по playOrder (рандомизированному) */}
+      {displayQuestions.map((qu, qIdx) => {
         const selected = state?.selected[qIdx];
         const questionLabelId = `quiz-${quiz.id}-q${qIdx}-label`;
         return (

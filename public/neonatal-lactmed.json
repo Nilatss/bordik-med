@@ -1,19 +1,59 @@
 {
-  "version": "1.0.0",
-  "lastUpdated": "2026-05-09",
+  "version": "1.1.0",
+  "lastUpdated": "2026-05-10",
   "source": "Adapted summaries from LactMed (Drugs and Lactation Database, NCBI Bookshelf NBK501922, U.S. National Library of Medicine, free CC0). Каждая запись содержит linkout на оригинал.",
   "license": "LactMed — public domain (CC0). Резюме переведены и адаптированы для русскоязычной аудитории. Не заменяет клиническое решение.",
   "categories": [
-    { "id": "antibiotics", "title_ru": "Антибиотики и противоинфекционные", "title_en": "Antibiotics & Anti-infectives" },
-    { "id": "analgesics", "title_ru": "Анальгетики и анестетики", "title_en": "Analgesics & Anesthetics" },
-    { "id": "psychotropic", "title_ru": "Психотропные и противоэпилептические", "title_en": "Psychotropic & Antiepileptic" },
-    { "id": "cardio", "title_ru": "Сердечно-сосудистые", "title_en": "Cardiovascular" },
-    { "id": "endocrine", "title_ru": "Эндокринные и метаболические", "title_en": "Endocrine & Metabolic" },
-    { "id": "gi", "title_ru": "ЖКТ и гепатологические", "title_en": "GI & Hepatic" },
-    { "id": "pulmonology", "title_ru": "Респираторные", "title_en": "Pulmonology" },
-    { "id": "vitamins", "title_ru": "Витамины и минералы", "title_en": "Vitamins & Minerals" },
-    { "id": "vaccines", "title_ru": "Вакцины", "title_en": "Vaccines" },
-    { "id": "contrast_radio", "title_ru": "Контрастные и радиофарм", "title_en": "Contrast & Radiopharm" }
+    {
+      "id": "antibiotics",
+      "title_ru": "Антибиотики и противоинфекционные",
+      "title_en": "Antibiotics & Anti-infectives"
+    },
+    {
+      "id": "analgesics",
+      "title_ru": "Анальгетики и анестетики",
+      "title_en": "Analgesics & Anesthetics"
+    },
+    {
+      "id": "psychotropic",
+      "title_ru": "Психотропные и противоэпилептические",
+      "title_en": "Psychotropic & Antiepileptic"
+    },
+    {
+      "id": "cardio",
+      "title_ru": "Сердечно-сосудистые",
+      "title_en": "Cardiovascular"
+    },
+    {
+      "id": "endocrine",
+      "title_ru": "Эндокринные и метаболические",
+      "title_en": "Endocrine & Metabolic"
+    },
+    {
+      "id": "gi",
+      "title_ru": "ЖКТ и гепатологические",
+      "title_en": "GI & Hepatic"
+    },
+    {
+      "id": "pulmonology",
+      "title_ru": "Респираторные",
+      "title_en": "Pulmonology"
+    },
+    {
+      "id": "vitamins",
+      "title_ru": "Витамины и минералы",
+      "title_en": "Vitamins & Minerals"
+    },
+    {
+      "id": "vaccines",
+      "title_ru": "Вакцины",
+      "title_en": "Vaccines"
+    },
+    {
+      "id": "contrast_radio",
+      "title_ru": "Контрастные и радиофарм",
+      "title_en": "Contrast & Radiopharm"
+    }
   ],
   "drugs": [
     {
@@ -25,7 +65,7 @@
       "summary": "Совместим с грудным вскармливанием. Минимальные количества проникают в молоко. Рутинно применяется у кормящих матерей.",
       "details": "Относительная детская доза (RID) <1%. Лёгкая диарея и кандидоз у ребёнка возможны, но редко. Аллергические реакции у детей — редкость, но возможны.",
       "monitoring": "При длительном курсе — наблюдать стул ребёнка (диарея/кандидоз).",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501207/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Amoxicillin+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_ampicillin",
@@ -36,7 +76,7 @@
       "summary": "Совместим. Малое проникновение в молоко (RID <1%). Стандарт у кормящих.",
       "details": "Уровни в молоке низкие. Возможны: лёгкая диарея, кандидоз ротовой полости у ребёнка.",
       "monitoring": "Без рутинного мониторинга.",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501229/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Ampicillin+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_cephalexin",
@@ -47,7 +87,7 @@
       "summary": "Совместим. Цефалоспорины 1-3 поколения — preferred первой линии у кормящих.",
       "details": "RID <1%. Маленькие количества проникают в молоко.",
       "monitoring": "Без рутинного мониторинга. Длительный курс — наблюдать стул.",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501286/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Cephalexin+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_ceftriaxone",
@@ -58,7 +98,7 @@
       "summary": "Совместим. RID <1%. Может использоваться при тяжёлых инфекциях у кормящих.",
       "details": "Очень низкая концентрация в молоке. Не вызывает существенных эффектов у ребёнка.",
       "monitoring": "Без мониторинга.",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501259/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Ceftriaxone+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_azithromycin",
@@ -69,7 +109,7 @@
       "summary": "Совместим. Проникает в молоко в малых количествах. Альтернатива эритромицину (меньше IHPS-риск).",
       "details": "RID 5-6%. Tissue accumulation у матери — длительный t½ 50-70ч. Случаи infantile hypertrophic pyloric stenosis (IHPS) — теоретически возможны (как у эритромицина), но риск ниже.",
       "monitoring": "Наблюдать ребёнка <6 нед на признаки IHPS (рвота фонтаном, дегидратация).",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501286/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Azithromycin+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_erythromycin",
@@ -80,7 +120,7 @@
       "summary": "С осторожностью у новорождённых <6 нед — IHPS-риск. У старших младенцев совместим.",
       "details": "RID 1.5-2%. Прямой приём ребёнком эритромицина связан с пилоростенозом (5x риск). Через молоко — теоретический риск.",
       "monitoring": "У новорождённых <6 нед: рвота фонтаном, дегидратация → ультразвук пилоруса.",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501298/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Erythromycin+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_clindamycin",
@@ -91,7 +131,7 @@
       "summary": "С осторожностью. Может быть использован, но возможна диарея у ребёнка.",
       "details": "RID 1-2%. Известен случай кровянистой диареи у грудного младенца — связан с C. difficile у матери.",
       "monitoring": "Наблюдать стул ребёнка. При появлении кровянистой/тяжёлой диареи — приостановить кормление.",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501922/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Clindamycin+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_metronidazole",
@@ -102,7 +142,7 @@
       "summary": "С осторожностью. Single-dose 2 г (трихомониаз) — приостановить ГВ на 12-24 ч.",
       "details": "RID 12-13% (high). Для длительного применения предпочтительнее альтернатива. Для коротких курсов (<5 дней) — приемлемо без приостановки.",
       "monitoring": "Наблюдать стул, аппетит, рост ребёнка.",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501922/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Metronidazole+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_fluconazole",
@@ -113,7 +153,7 @@
       "summary": "Совместим. Используется у кормящих и у новорождённых одновременно. RID 16-22% — но безопасен.",
       "details": "Применяется при кандидозе соска / ребёнка. Уровни в молоке относительно высокие, но младенцы переносят.",
       "monitoring": "Без рутинного мониторинга.",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501507/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Fluconazole+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_acyclovir",
@@ -124,7 +164,7 @@
       "summary": "Совместим. Используется при HSV у кормящей. RID 1-2%.",
       "details": "Активные поражения сосков HSV — возможна задержка ГВ из этой груди до заживления.",
       "monitoring": "Без рутинного.",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501922/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Acyclovir+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_paracetamol",
@@ -135,7 +175,7 @@
       "summary": "Препарат выбора для анальгезии у кормящих. RID <2%. Безопасен.",
       "details": "Не накапливается в молоке. Standard analgesic при родовых болях, головных болях, лихорадке.",
       "monitoring": "Без мониторинга.",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501194/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Paracetamol%20/%20Acetaminophen+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_ibuprofen",
@@ -146,7 +186,7 @@
       "summary": "Совместим. Препарат выбора NSAID. RID <0.5%.",
       "details": "Минимальные количества в молоке. Ультра-короткий t½ у матери (1.8-2 ч).",
       "monitoring": "Без мониторинга.",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501307/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Ibuprofen+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_morphine",
@@ -157,7 +197,7 @@
       "summary": "С осторожностью. Короткие курсы (1-2 дня) после родов в стандартных дозах — приемлемы. Длительный приём — риск седации новорождённого.",
       "details": "RID 9-35%. Морфин-6-глюкуронид (активный метаболит) накапливается у новорождённых из-за незрелости почек.",
       "monitoring": "Наблюдать ребёнка: сонливость, плохое сосание, вялость, угнетение дыхания. Отменить ГВ или морфин при симптомах.",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501379/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Morphine+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_codeine",
@@ -168,7 +208,7 @@
       "summary": "ИЗБЕГАТЬ. FDA black box (2017) — risk respiratory depression и смерть младенца у матерей-ultrarapid CYP2D6 metabolizers.",
       "details": "Кодеин конвертируется в морфин через CYP2D6. У ultra-rapid metabolizers (UM) морфин накапливается до токсических уровней. Случаи летального исхода у грудных младенцев.",
       "monitoring": "НЕ рекомендуется к рутинному применению. Альтернатива: парацетамол + ибупрофен.",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501253/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Codeine+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_tramadol",
@@ -179,7 +219,7 @@
       "summary": "ИЗБЕГАТЬ. FDA black box (2017) — same mechanism as codeine (CYP2D6 conversion в активный метаболит).",
       "details": "Risk respiratory depression у младенцев матерей-ultra-rapid CYP2D6 metabolizers.",
       "monitoring": "НЕ рекомендуется. Альтернатива: парацетамол, ибупрофен.",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK500820/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Tramadol+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_fluoxetine",
@@ -190,7 +230,7 @@
       "summary": "С осторожностью у новорождённых <8 нед. Сертралин предпочтительнее у кормящих.",
       "details": "RID 1.6-14.6% (зависит от метаболизма). Длительный t½ — накапливается. Случаи: irritability, плохое сосание, плохой набор веса у grudnyh младенцев.",
       "monitoring": "Наблюдать рост, сон, плач, аппетит ребёнка.",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501175/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Fluoxetine+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_sertraline",
@@ -201,7 +241,7 @@
       "summary": "Совместим. ПЕРВАЯ линия SSRI у кормящих. RID <2%.",
       "details": "Минимальные уровни у младенца. Не вызывает значимых эффектов. Preferred SSRI per AAP.",
       "monitoring": "Без рутинного. Наблюдать рост.",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501449/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Sertraline+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_escitalopram",
@@ -212,7 +252,7 @@
       "summary": "Совместим. Альтернатива сертралину. RID 5%.",
       "details": "Низкие уровни у младенца. Препарат относительно безопасен.",
       "monitoring": "Наблюдать ребёнка.",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501231/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Escitalopram+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_lithium",
@@ -223,7 +263,7 @@
       "summary": "С осторожностью. Уровни лития у младенца могут достигать 30-50% материнских.",
       "details": "RID 12-30%. Случаи: cyanosis, hypotonia, нарушение TSH. Требует мониторинга у младенца.",
       "monitoring": "Уровни лития, креатинина, TSH у младенца ежемесячно. Контроль гидратации.",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK500997/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Lithium+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_lamotrigine",
@@ -234,7 +274,7 @@
       "summary": "С осторожностью. Уровни у младенца могут быть значительными (до 50% материнских).",
       "details": "RID 9-18%. Случаи: тромбоцитопения у младенца. Stevens-Johnson syndrome — теоретический риск (rare).",
       "monitoring": "Уровни ламотриджина и тромбоциты у младенца. Сыпь — экстренный контакт.",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501353/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Lamotrigine+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_levetiracetam",
@@ -245,7 +285,7 @@
       "summary": "Совместим. Preferred AED у кормящих. RID 5-7%.",
       "details": "Низкие уровни у младенца. Не вызывает значимых эффектов.",
       "monitoring": "Без рутинного. Наблюдать рост, поведение.",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK500982/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Levetiracetam+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_phenobarbital",
@@ -256,7 +296,7 @@
       "summary": "С осторожностью. Накапливается у младенца (длинный t½ 1-7 дней).",
       "details": "RID 24%. Случаи: седация, плохое сосание, withdrawal при отмене.",
       "monitoring": "Наблюдать сон, активность, кормление. Уровни в молоке.",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501414/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Phenobarbital+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_valproic_acid",
@@ -267,7 +307,7 @@
       "summary": "Совместим. RID 1-2%. Минимальные уровни у младенца.",
       "details": "Hepatotoxicity rare — наблюдать. Беременность contraindicated (teratogen), но ГВ — приемлемо.",
       "monitoring": "LFT у младенца при длительном приёме матерью.",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501922/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Valproic%20Acid+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_propranolol",
@@ -278,7 +318,7 @@
       "summary": "Совместим. β-blocker preferred у кормящих. RID <1%.",
       "details": "Низкие уровни у младенца. Возможна bradycardia, hypoglycemia (rare).",
       "monitoring": "ЧСС, glucose у младенца если симптомы.",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501424/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Propranolol+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_metoprolol",
@@ -289,7 +329,7 @@
       "summary": "Совместим. RID 1.4%. Альтернатива пропранололу.",
       "details": "Низкие уровни у младенца.",
       "monitoring": "ЧСС у младенца при симптомах.",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501374/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Metoprolol+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_enalapril",
@@ -300,7 +340,7 @@
       "summary": "Совместим. RID <0.2%. ACE-i preferred у кормящих.",
       "details": "Минимальные уровни у младенца. Не противопоказан в лактации (в отличие от беременности).",
       "monitoring": "Без мониторинга.",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501229/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Enalapril+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_warfarin",
@@ -311,7 +351,7 @@
       "summary": "Совместим. Препарат выбора антикоагулянта у кормящих.",
       "details": "RID <1%. Не определяется в плазме у младенца.",
       "monitoring": "Без рутинного.",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501922/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Warfarin+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_heparin_lmwh",
@@ -322,7 +362,7 @@
       "summary": "Совместим. Не проникает в молоко (большая молекула).",
       "details": "Стандарт антикоагуляции у кормящих.",
       "monitoring": "Без мониторинга.",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501283/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Heparin%20/%20LMWH+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_levothyroxine",
@@ -333,7 +373,7 @@
       "summary": "Совместим. Может стимулировать выработку молока у hypothyroid матерей.",
       "details": "Минимальные количества в молоке. Безопасно.",
       "monitoring": "Без рутинного.",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501353/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Levothyroxine+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_metformin",
@@ -344,7 +384,7 @@
       "summary": "Совместим. RID <1%. Стандарт DM2 у кормящих.",
       "details": "Минимальные уровни у младенца. Не вызывает hypoglycemia.",
       "monitoring": "Без рутинного.",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501922/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Metformin+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_insulin",
@@ -355,7 +395,7 @@
       "summary": "Совместим. Не проникает в молоко (белок).",
       "details": "Полностью разрушается в ЖКТ младенца. Стандарт DM1 у кормящих.",
       "monitoring": "Без мониторинга.",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501922/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Insulin+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_omeprazole",
@@ -366,7 +406,7 @@
       "summary": "Совместим. RID <0.04%. Безопасен.",
       "details": "Активирует только в кислой среде париэтальной клетки — мало активного у младенца.",
       "monitoring": "Без рутинного.",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501395/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Omeprazole+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_ranitidine",
@@ -377,7 +417,7 @@
       "summary": "RID 1.6%. Withdrawn по причине NDMA contamination — альтернатива фамотидин.",
       "details": "Безопасен для лактации, но не используется по соображениям production.",
       "monitoring": "—",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501438/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Ranitidine+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_loperamide",
@@ -388,7 +428,7 @@
       "summary": "Совместим. RID <0.03%. Не проникает значимо.",
       "details": "Безопасен у кормящих при острой диарее.",
       "monitoring": "Без рутинного.",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501922/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Loperamide+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_salbutamol_inh",
@@ -399,7 +439,7 @@
       "summary": "Совместим. Inhaled: системный эффект минимален.",
       "details": "Препарат выбора при астме у кормящих.",
       "monitoring": "Без рутинного.",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501229/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Salbutamol/Albuterol+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_budesonide_inh",
@@ -410,7 +450,7 @@
       "summary": "Совместим. Inhaled ICS — стандарт у кормящих с астмой.",
       "details": "Минимальный системный эффект.",
       "monitoring": "Без рутинного.",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501229/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Budesonide+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_pseudoephedrine",
@@ -421,7 +461,7 @@
       "summary": "С осторожностью. Может снижать продукцию молока (~24% уменьшение в одном исследовании).",
       "details": "Single-dose 60 мг — снижение milk supply до 24% на следующий день. Избегать у матерей с marginal supply.",
       "monitoring": "Наблюдать продукцию молока. Альтернатива: солевые промывания носа, антигистамины.",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK500964/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Pseudoephedrine+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_vitamin_d",
@@ -432,7 +472,7 @@
       "summary": "Совместим. Высокие дозы матери (≥6400 МЕ/день) могут устранить необходимость у младенца supplementation.",
       "details": "AAP рекомендует 400 МЕ/день младенцу. Hollis 2015 trial показал эффективность 6400 МЕ/день у матери.",
       "monitoring": "25-OH-D уровни.",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501922/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Vitamin%20D+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_iron_oral",
@@ -443,7 +483,7 @@
       "summary": "Совместим. Стандарт у кормящих с anemia.",
       "details": "Не вызывает effects у младенца.",
       "monitoring": "Без рутинного.",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501922/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Iron+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_calcium",
@@ -454,7 +494,7 @@
       "summary": "Совместим. Стандартный supplement у кормящих.",
       "details": "Не влияет на младенца.",
       "monitoring": "Без рутинного.",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501922/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Calcium+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_b12",
@@ -465,7 +505,7 @@
       "summary": "Совместим. Veganism — risk деficit у младенца, supplementation важна.",
       "details": "Уровни в молоке коррелируют с материнскими. Vegan/vegetarian матери — supplementation необходима.",
       "monitoring": "B12 у младенца при veganism матери.",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501922/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Cyanocobalamin+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_inactivated_vaccines",
@@ -476,7 +516,7 @@
       "summary": "Совместимы. Разрешены и рекомендованы во время лактации.",
       "details": "Не передаются через молоко в активной форме. Антитела передаются — пассивная иммунизация ребёнка.",
       "monitoring": "—",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501922/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Inactivated%20vaccines+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_live_vaccines",
@@ -487,7 +527,7 @@
       "summary": "С осторожностью. Жёлтая лихорадка — противопоказана у кормящих <8 мес ребёнка (rare encephalitis).",
       "details": "MMR + ветрянка — допустимы. Yellow fever — defer если возможно (избегать), особенно <8 мес ребёнка.",
       "monitoring": "—",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501922/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Live%20vaccines+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_iodine_contrast",
@@ -498,7 +538,7 @@
       "summary": "Совместим. RID <1%. ACR допускает продолжение ГВ без перерыва.",
       "details": "ACR Manual on Contrast Media 2024: ГВ можно продолжать без приостановки.",
       "monitoring": "Без рутинного.",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501922/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Iodinated%20contrast%20media+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_gadolinium",
@@ -509,7 +549,7 @@
       "summary": "Совместим. RID <0.04%. ACR — продолжать ГВ без перерыва.",
       "details": "ACR Manual on Contrast Media 2024: продолжение ГВ безопасно.",
       "monitoring": "—",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501922/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Gadolinium+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_radioiodine_131",
@@ -520,7 +560,7 @@
       "summary": "ИЗБЕГАТЬ. ГВ полностью прекратить (irreversibly терминирует лактацию).",
       "details": "I-131 концентрируется в молоке и щитовидке младенца — risk thyroid damage. Therapeutic dose — пожизненная отмена ГВ.",
       "monitoring": "—",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501922/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Radioactive%20iodine+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_aspirin_high_dose",
@@ -531,7 +571,7 @@
       "summary": "С осторожностью при дозах >100 мг/день. Реё syndrome — теоретический риск.",
       "details": "Низкие дозы (<100 мг для cardioprotection) — приемлемы. Высокие — risk metabolic acidosis у младенца.",
       "monitoring": "Признаки Reye syndrome (vomiting, lethargy) — отмена ГВ + аспирина.",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501259/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Aspirin+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_caffeine",
@@ -542,7 +582,7 @@
       "summary": "Совместим. Умеренное потребление (≤300 мг/день, ~3 чашки кофе) — безопасно.",
       "details": "RID 0.06-1.5%. Высокие дозы — irritability, sleeplessness у младенца.",
       "monitoring": "Наблюдать сон ребёнка.",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501467/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Caffeine+AND+(lactmed%5Bsim%5D)"
     },
     {
       "id": "lact_alcohol",
@@ -553,7 +593,7 @@
       "summary": "С осторожностью. Случайное употребление приемлемо. Регулярный приём — снижение milk supply, задержка развития.",
       "details": "BAC матери = BAC молока. Подождать 2-3 ч на стандартную порцию перед ГВ. Не нужно сцеживать (\"pump and dump\") — алкоголь покидает молоко с той же скоростью, что и кровь.",
       "monitoring": "Сонливость ребёнка, milk supply, набор веса.",
-      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/NBK501469/"
+      "lactmed_url": "https://www.ncbi.nlm.nih.gov/books/?term=Alcohol+AND+(lactmed%5Bsim%5D)"
     }
   ]
 }
