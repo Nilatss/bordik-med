@@ -785,42 +785,46 @@ export default function NeonatalHandbook() {
                     Fixed column widths via <colgroup> + table-layout: fixed —
                     обеспечивает identical layout across all groups (без
                     "skating" колонок при разной длине контента в строках).
-                    Total = 100 % (40 + 22 + 22 + 16).
+                    Total = 100 % (35 + 23 + 27 + 15).
+                    Preterm column шире — там часто длинные значения типа
+                    "133-145 (early days), 135-145 (after)".
+                    Padding ячеек увеличен с 8/10 → 14/18 для better
+                    breathing room; font-size 12.5 → 13.5 для readability.
                   */}
                   <table style={{
                     width: '100%',
                     borderCollapse: 'collapse',
-                    fontSize: 12.5,
+                    fontSize: 13.5,
                     tableLayout: 'fixed',
                   }}>
                     <colgroup>
-                      <col style={{ width: '40%' }} />
-                      <col style={{ width: '22%' }} />
-                      <col style={{ width: '22%' }} />
-                      <col style={{ width: '16%' }} />
+                      <col style={{ width: '35%' }} />
+                      <col style={{ width: '23%' }} />
+                      <col style={{ width: '27%' }} />
+                      <col style={{ width: '15%' }} />
                     </colgroup>
                     <thead>
                       <tr style={{ background: '#E5E7EB' }}>
-                        <th style={{ padding: '8px 10px', textAlign: 'left', fontWeight: 600, color: '#374151' }}>Показатель</th>
-                        <th style={{ padding: '8px 10px', textAlign: 'left', fontWeight: 600, color: '#374151' }}>Term</th>
-                        <th style={{ padding: '8px 10px', textAlign: 'left', fontWeight: 600, color: '#374151' }}>Preterm</th>
-                        <th style={{ padding: '8px 10px', textAlign: 'left', fontWeight: 600, color: '#374151' }}>Ед.</th>
+                        <th style={{ padding: '12px 18px', textAlign: 'left', fontWeight: 600, color: '#374151' }}>Показатель</th>
+                        <th style={{ padding: '12px 18px', textAlign: 'left', fontWeight: 600, color: '#374151' }}>Term</th>
+                        <th style={{ padding: '12px 18px', textAlign: 'left', fontWeight: 600, color: '#374151' }}>Preterm</th>
+                        <th style={{ padding: '12px 18px', textAlign: 'left', fontWeight: 600, color: '#374151' }}>Ед.</th>
                       </tr>
                     </thead>
                     <tbody>
                       {group.values.map((v, i) => (
                         <tr key={i} style={{ borderTop: '1px solid #E5E7EB' }}>
-                          <td style={{ padding: '8px 10px', color: '#1A1A1A', fontWeight: 500, wordBreak: 'break-word' }}>
+                          <td style={{ padding: '14px 18px', color: '#1A1A1A', fontWeight: 500, wordBreak: 'break-word', verticalAlign: 'top' }}>
                             {v.name_ru}
                             {v.notes && (
-                              <div style={{ fontSize: 11, color: '#6B7280', marginTop: 2, lineHeight: 1.35 }}>
+                              <div style={{ fontSize: 12, color: '#6B7280', marginTop: 4, lineHeight: 1.45 }}>
                                 {v.notes}
                               </div>
                             )}
                           </td>
-                          <td style={{ padding: '8px 10px', color: '#1A1A1A', wordBreak: 'break-word' }}>{v.term}</td>
-                          <td style={{ padding: '8px 10px', color: '#1A1A1A', wordBreak: 'break-word' }}>{v.preterm}</td>
-                          <td style={{ padding: '8px 10px', color: '#6B7280', fontFamily: 'var(--font-mono, monospace)', fontSize: 11.5, wordBreak: 'break-word' }}>{v.unit}</td>
+                          <td style={{ padding: '14px 18px', color: '#1A1A1A', wordBreak: 'break-word', verticalAlign: 'top' }}>{v.term}</td>
+                          <td style={{ padding: '14px 18px', color: '#1A1A1A', wordBreak: 'break-word', verticalAlign: 'top' }}>{v.preterm}</td>
+                          <td style={{ padding: '14px 18px', color: '#6B7280', fontFamily: 'var(--font-mono, monospace)', fontSize: 12, wordBreak: 'break-word', verticalAlign: 'top' }}>{v.unit}</td>
                         </tr>
                       ))}
                     </tbody>
