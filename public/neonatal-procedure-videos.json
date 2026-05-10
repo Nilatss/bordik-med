@@ -1,6 +1,6 @@
 {
-  "version": "1.4.0",
-  "lastUpdated": "2026-05-10",
+  "version": "1.5.0",
+  "lastUpdated": "2026-05-11",
   "source": "Bordik Med — curated procedure video linkouts (audit Table 3.Д3)",
   "license": "External linkouts to authoritative sources (AAP, WHO, NEJM, Stanford, NIDCAP, EFCNI, UNICEF). Не размещаем встраиваемое видео — только linkouts с уважением к copyright.",
   "categories": [
@@ -484,6 +484,96 @@
         "VAP",
         "infection control",
         "CDC"
+      ]
+    },
+    {
+      "id": "video-delayed-cord-clamping",
+      "title_ru": "Отсроченное пережатие пуповины (DCC)",
+      "title_en": "Delayed cord clamping (DCC)",
+      "description": "WHO + AAP recommendations: DCC ≥60 sec для term, ≥30 sec для preterm. Снижает IVH у preterm, улучшает iron stores у term. Позиция baby при cord intact, milking discussion.",
+      "source": "World Health Organization (WHO)",
+      "source_type": "who_official",
+      "url": "https://www.who.int/teams/maternal-newborn-child-adolescent-health-and-ageing/newborn-health/essential-newborn-care",
+      "category": "resuscitation",
+      "duration_min": 8,
+      "tags": [
+        "DCC",
+        "cord clamping",
+        "WHO",
+        "iron",
+        "IVH prevention"
+      ]
+    },
+    {
+      "id": "video-mask-ppv-technique",
+      "title_ru": "Техника mask PPV — C+E grip + chin lift",
+      "title_en": "Mask PPV technique — C+E grip + chin lift",
+      "description": "Правильная техника удержания маски: C+E grip (большой + указательный = C на маске, остальные = E под подбородком). Sniffing position. Rate 40-60/min. Common errors: leak, чрезмерное давление на trachea.",
+      "source": "American Academy of Pediatrics (AAP)",
+      "source_type": "aap",
+      "url": "https://www.aap.org/en/learning/neonatal-resuscitation-program/",
+      "category": "resuscitation",
+      "duration_min": 8,
+      "tags": [
+        "PPV",
+        "mask ventilation",
+        "NRP",
+        "AAP",
+        "C+E grip"
+      ]
+    },
+    {
+      "id": "video-heel-stick-technique",
+      "title_ru": "Heel stick — техника капиллярного забора крови",
+      "title_en": "Heel stick — capillary blood draw technique",
+      "description": "Lateral aspect heel (avoid medial — calcaneus risk). Warm 3-5 минут pre-procedure для increase blood flow. Sucrose + non-nutritive sucking для аналгезии. Single deep puncture лучше vs multiple shallow.",
+      "source": "Stanford Medicine 25",
+      "source_type": "stanford",
+      "url": "https://stanfordmedicine25.stanford.edu/the25/newbornExam.html",
+      "category": "examination",
+      "duration_min": 6,
+      "tags": [
+        "heel stick",
+        "blood draw",
+        "capillary",
+        "pain management"
+      ]
+    },
+    {
+      "id": "video-vaccine-administration-newborn",
+      "title_ru": "Администрирование IM вакцин у новорождённого",
+      "title_en": "IM vaccine administration in newborn",
+      "description": "Anterolateral thigh (vastus lateralis) — preferred site neonates + infants <12 mo (deltoid не developed). 25-G needle, 0.5-1 inch length. Rapid plunge без aspiration (CDC 2014). Pain reduction techniques.",
+      "source": "Centers for Disease Control (CDC)",
+      "source_type": "cdc",
+      "url": "https://www.cdc.gov/vaccines/hcp/admin/index.html",
+      "category": "screening",
+      "duration_min": 7,
+      "tags": [
+        "vaccination",
+        "IM injection",
+        "CDC",
+        "Hep B",
+        "BCG"
+      ]
+    },
+    {
+      "id": "video-skin-to-skin-transition",
+      "title_ru": "Skin-to-skin transition сразу после рождения",
+      "title_en": "Skin-to-skin transition immediately after birth",
+      "description": "WHO + UNICEF Baby-Friendly: skin-to-skin ≥60 минут от рождения. Stable term newborn перенесён сразу на голую грудь матери. Continuous monitoring HR/RR/color/tone/temp. Параллельно — DCC, drying, vit K planning.",
+      "source": "UNICEF",
+      "source_type": "who_official",
+      "url": "https://www.unicef.org/breastfeeding",
+      "category": "thermal",
+      "duration_min": 10,
+      "tags": [
+        "skin-to-skin",
+        "KMC",
+        "thermal protection",
+        "breastfeeding initiation",
+        "BFHI",
+        "WHO"
       ]
     }
   ]
