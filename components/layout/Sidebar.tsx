@@ -293,7 +293,7 @@ export default function Sidebar() {
   //   3. Протоколы     — клинические алгоритмы и процедуры
   //   4. Обучение      — статьи, тесты, кейсы, чек-листы, видео, атлас, ошибки
   // Educational extension реализует Таблицу 3.Д из аудита (Д1-Д6).
-  type NeonatalSubTab = 'drugs' | 'calculators' | 'guidelines' | 'resuscitation' | 'articles' | 'lactmed' | 'quizzes' | 'nurse' | 'labs' | 'growth' | 'bilirubin' | 'cases' | 'mistakes' | 'checklists' | 'videos' | 'atlas' | 'progress' | 'favorites' | 'drugcalc' | 'search' | 'notes';
+  type NeonatalSubTab = 'drugs' | 'calculators' | 'guidelines' | 'resuscitation' | 'articles' | 'lactmed' | 'quizzes' | 'nurse' | 'labs' | 'growth' | 'bilirubin' | 'cases' | 'mistakes' | 'checklists' | 'videos' | 'atlas' | 'drugcalc' | 'search' | 'notes';
   const neonatalGroups: { title: string; items: { id: NeonatalSubTab; label: string }[] }[] = [
     {
       title: 'Справочники',
@@ -330,15 +330,13 @@ export default function Sidebar() {
         { id: 'cases',    label: 'Клинические случаи' },
         { id: 'mistakes', label: 'Типичные ошибки' },
         { id: 'quizzes',  label: 'Тесты' },
-        { id: 'progress', label: 'Прогресс обучения' },
       ],
     },
     {
       title: 'Личное',
       items: [
-        { id: 'search',    label: 'Глобальный поиск' },
-        { id: 'favorites', label: 'Избранное' },
-        { id: 'notes',     label: 'Мои заметки' },
+        { id: 'search', label: 'Глобальный поиск' },
+        { id: 'notes',  label: 'Мои заметки' },
       ],
     },
   ];
