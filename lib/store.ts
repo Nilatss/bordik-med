@@ -44,11 +44,13 @@ interface AppState {
   showDrugs: boolean;
   /** Neonatal Handbook — справочник доз для новорождённых (NICU). */
   showNeonatal: boolean;
+  /** Personal Notes — top-level раздел (extracted from neonatology). */
+  showNotes: boolean;
   /** Active tab inside NeonatalHandbook — controlled from Sidebar
    *  expanded submenu. Persists в localStorage через persist-middleware.
    *  Tabs cases/mistakes/checklists/videos/atlas covers Table 3.Д
    *  educational materials per neonatology audit. */
-  neonatalActiveTab: 'drugs' | 'calculators' | 'guidelines' | 'resuscitation' | 'articles' | 'lactmed' | 'quizzes' | 'nurse' | 'labs' | 'growth' | 'bilirubin' | 'cases' | 'mistakes' | 'checklists' | 'videos' | 'atlas' | 'drugcalc' | 'search' | 'notes';
+  neonatalActiveTab: 'drugs' | 'calculators' | 'guidelines' | 'resuscitation' | 'articles' | 'lactmed' | 'quizzes' | 'nurse' | 'labs' | 'growth' | 'bilirubin' | 'cases' | 'mistakes' | 'checklists' | 'videos' | 'atlas' | 'drugcalc';
   activeToolId: string | null;
 
   /** Tools page persistent state — filters, scroll, favourites */
@@ -119,6 +121,7 @@ interface AppState {
   setShowIcd10: (show: boolean) => void;
   setShowDrugs: (show: boolean) => void;
   setShowNeonatal: (show: boolean) => void;
+  setShowNotes: (show: boolean) => void;
   /** Switch active tab inside NeonatalHandbook. Used by Sidebar expandable
    *  submenu — clicking sub-item also calls setShowNeonatal(true). */
   setNeonatalActiveTab: (tab: AppState['neonatalActiveTab']) => void;
@@ -209,6 +212,7 @@ export const useAppStore = create<AppState>()(
       showIcd10: false,
       showDrugs: false,
       showNeonatal: false,
+      showNotes: false,
       neonatalActiveTab: 'drugs',
       activeToolId: null,
 
@@ -361,7 +365,7 @@ export const useAppStore = create<AppState>()(
 
       setActiveSection: (id) => set({ activeSection: id, activeModuleId: null, currentCourseId: null }),
 
-      goHome: () => set({ activeSection: null, activeModuleId: null, currentCourseId: null, showProfile: false, showLearning: false, showTools: false, showStats: false, showTests: false, showIcd10: false, showDrugs: false, showNeonatal: false, activeToolId: null }),
+      goHome: () => set({ activeSection: null, activeModuleId: null, currentCourseId: null, showProfile: false, showLearning: false, showTools: false, showStats: false, showTests: false, showIcd10: false, showDrugs: false, showNeonatal: false, showNotes: false, activeToolId: null }),
 
       toggleModule: (id) => {
         const { openModules } = get();
@@ -380,20 +384,21 @@ export const useAppStore = create<AppState>()(
 
       setUserProfile: (data) => set((s) => ({ ...s, ...data })),
 
-      setShowLearning: (show) => set({ showLearning: show, showProfile: false, showTools: false, showStats: false, showTests: false, showIcd10: false, showDrugs: false, showNeonatal: false, activeSection: null, activeModuleId: null, currentCourseId: null, activeToolId: null }),
+      setShowLearning: (show) => set({ showLearning: show, showProfile: false, showTools: false, showStats: false, showTests: false, showIcd10: false, showDrugs: false, showNeonatal: false, showNotes: false, activeSection: null, activeModuleId: null, currentCourseId: null, activeToolId: null }),
 
-      setShowTools: (show) => set({ showTools: show, showProfile: false, showLearning: false, showStats: false, showTests: false, showIcd10: false, showDrugs: false, showNeonatal: false, activeSection: null, activeModuleId: null, currentCourseId: null, activeToolId: null }),
+      setShowTools: (show) => set({ showTools: show, showProfile: false, showLearning: false, showStats: false, showTests: false, showIcd10: false, showDrugs: false, showNeonatal: false, showNotes: false, activeSection: null, activeModuleId: null, currentCourseId: null, activeToolId: null }),
 
-      setShowStats: (show) => set({ showStats: show, showProfile: false, showLearning: false, showTools: false, showTests: false, showIcd10: false, showDrugs: false, showNeonatal: false, activeSection: null, activeModuleId: null, currentCourseId: null, activeToolId: null }),
+      setShowStats: (show) => set({ showStats: show, showProfile: false, showLearning: false, showTools: false, showTests: false, showIcd10: false, showDrugs: false, showNeonatal: false, showNotes: false, activeSection: null, activeModuleId: null, currentCourseId: null, activeToolId: null }),
 
-      setShowTests: (show) => set({ showTests: show, showProfile: false, showLearning: false, showTools: false, showStats: false, showIcd10: false, showDrugs: false, showNeonatal: false, activeSection: null, activeModuleId: null, currentCourseId: null, activeToolId: null }),
+      setShowTests: (show) => set({ showTests: show, showProfile: false, showLearning: false, showTools: false, showStats: false, showIcd10: false, showDrugs: false, showNeonatal: false, showNotes: false, activeSection: null, activeModuleId: null, currentCourseId: null, activeToolId: null }),
 
-      setShowIcd10: (show) => set({ showIcd10: show, showProfile: false, showLearning: false, showTools: false, showStats: false, showTests: false, showDrugs: false, activeSection: null, activeModuleId: null, currentCourseId: null, activeToolId: null }),
+      setShowIcd10: (show) => set({ showIcd10: show, showProfile: false, showLearning: false, showTools: false, showStats: false, showTests: false, showDrugs: false, showNeonatal: false, showNotes: false, activeSection: null, activeModuleId: null, currentCourseId: null, activeToolId: null }),
 
-      setShowDrugs: (show) => set({ showDrugs: show, showProfile: false, showLearning: false, showTools: false, showStats: false, showTests: false, showIcd10: false, showNeonatal: false, activeSection: null, activeModuleId: null, currentCourseId: null, activeToolId: null }),
+      setShowDrugs: (show) => set({ showDrugs: show, showProfile: false, showLearning: false, showTools: false, showStats: false, showTests: false, showIcd10: false, showNeonatal: false, showNotes: false, activeSection: null, activeModuleId: null, currentCourseId: null, activeToolId: null }),
 
-      setShowNeonatal: (show) => set({ showNeonatal: show, showProfile: false, showLearning: false, showTools: false, showStats: false, showTests: false, showIcd10: false, showDrugs: false, activeSection: null, activeModuleId: null, currentCourseId: null, activeToolId: null }),
+      setShowNeonatal: (show) => set({ showNeonatal: show, showProfile: false, showLearning: false, showTools: false, showStats: false, showTests: false, showIcd10: false, showDrugs: false, showNotes: false, activeSection: null, activeModuleId: null, currentCourseId: null, activeToolId: null }),
       setNeonatalActiveTab: (tab) => set({ neonatalActiveTab: tab }),
+      setShowNotes: (show) => set({ showNotes: show, showProfile: false, showLearning: false, showTools: false, showStats: false, showTests: false, showIcd10: false, showDrugs: false, showNeonatal: false, activeSection: null, activeModuleId: null, currentCourseId: null, activeToolId: null }),
 
       setLastDiagnosticResult: (r) => set({ lastDiagnosticResult: r }),
 

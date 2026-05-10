@@ -29,7 +29,7 @@ import Highlight from '@/components/ui/Highlight';
 // is just the existing avatar circle from the static SVG below.
 const UserMenu = nextDynamic(() => import('./UserMenu'), { ssr: false });
 
-type NavItem = 'home' | 'learning' | 'tests' | 'tools' | 'icd10' | 'drugs' | 'neonatal' | 'stats' | 'profile';
+type NavItem = 'home' | 'learning' | 'tests' | 'tools' | 'icd10' | 'drugs' | 'neonatal' | 'stats' | 'notes' | 'profile';
 
 // Highlight вынесен в `components/ui/Highlight.tsx` — единый паттерн
 // для всех мест поиска (sidebar, Cmd+K, фильтры, /icd10).
@@ -61,6 +61,7 @@ export default function Sidebar() {
     showIcd10,
     showDrugs,
     showNeonatal,
+    showNotes,
     goHome,
     setShowLearning,
     setShowTools,
@@ -69,6 +70,7 @@ export default function Sidebar() {
     setShowIcd10,
     setShowDrugs,
     setShowNeonatal,
+    setShowNotes,
     neonatalActiveTab,
     setNeonatalActiveTab,
     toggleProfile,
@@ -124,9 +126,11 @@ export default function Sidebar() {
               ? 'drugs'
               : showNeonatal
                 ? 'neonatal'
-                : (activeSection || showLearning)
-                  ? 'learning'
-                  : 'home';
+                : showNotes
+                  ? 'notes'
+                  : (activeSection || showLearning)
+                    ? 'learning'
+                    : 'home';
 
   const handleNav = (item: NavItem) => {
     if (item === 'home') goHome();
@@ -138,6 +142,7 @@ export default function Sidebar() {
     else if (item === 'drugs') setShowDrugs(true);
     else if (item === 'neonatal') setShowNeonatal(true);
     else if (item === 'stats') setShowStats(true);
+    else if (item === 'notes') setShowNotes(true);
     // Auto-close drawer on mobile so the user actually sees the destination.
     // Profile is a modal panel that overlays the sidebar - closing the
     // sidebar there would hide the modal too, so we leave it alone.
@@ -164,6 +169,7 @@ export default function Sidebar() {
       case 'icd10':    void import('@/components/classifications/ClassificationsHub'); break;
       case 'drugs':    void import('@/components/drugs/DrugChecker'); break;
       case 'neonatal': void import('@/components/neonatal/NeonatalHandbook'); break;
+      case 'notes':    void import('@/components/notes/NotesPage'); break;
       case 'learning': /* no chunk — sections render in app/page.tsx */ break;
       case 'home':     /* eager */ break;
     }
@@ -263,6 +269,20 @@ export default function Sidebar() {
         </svg>
       ),
     },
+    notes: {
+      id: 'notes',
+      label: 'Мои заметки',
+      keywords: ['заметки', 'мои', 'notes', 'note', 'личное', 'персональное', 'notebook'],
+      icon: (
+        <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+          <polyline points="14 2 14 8 20 8" />
+          <line x1="16" y1="13" x2="8" y2="13" />
+          <line x1="16" y1="17" x2="8" y2="17" />
+          <line x1="10" y1="9" x2="8" y2="9" />
+        </svg>
+      ),
+    },
     profile: {
       id: 'profile',
       label: t('nav.profile'),
@@ -280,6 +300,7 @@ export default function Sidebar() {
     { id: 'main',     title: t('nav.group.main'),     items: ['home', 'profile'] },
     { id: 'study',    title: t('nav.group.study'),    items: ['learning', 'tests', 'stats'] },
     { id: 'services', title: t('nav.group.services'), items: ['tools', 'icd10', 'drugs', 'neonatal'] },
+    { id: 'personal', title: 'Личное',                items: ['notes'] },
   ];
 
   // Neonatology submenu — sub-sections appear under "Неонатология" in the
@@ -293,7 +314,7 @@ export default function Sidebar() {
   //   3. Протоколы     — клинические алгоритмы и процедуры
   //   4. Обучение      — статьи, тесты, кейсы, чек-листы, видео, атлас, ошибки
   // Educational extension реализует Таблицу 3.Д из аудита (Д1-Д6).
-  type NeonatalSubTab = 'drugs' | 'calculators' | 'guidelines' | 'resuscitation' | 'articles' | 'lactmed' | 'quizzes' | 'nurse' | 'labs' | 'growth' | 'bilirubin' | 'cases' | 'mistakes' | 'checklists' | 'videos' | 'atlas' | 'drugcalc' | 'search' | 'notes';
+  type NeonatalSubTab = 'drugs' | 'calculators' | 'guidelines' | 'resuscitation' | 'articles' | 'lactmed' | 'quizzes' | 'nurse' | 'labs' | 'growth' | 'bilirubin' | 'cases' | 'mistakes' | 'checklists' | 'videos' | 'atlas' | 'drugcalc';
   const neonatalGroups: { title: string; items: { id: NeonatalSubTab; label: string }[] }[] = [
     {
       title: 'Справочники',
@@ -330,13 +351,6 @@ export default function Sidebar() {
         { id: 'cases',    label: 'Клинические случаи' },
         { id: 'mistakes', label: 'Типичные ошибки' },
         { id: 'quizzes',  label: 'Тесты' },
-      ],
-    },
-    {
-      title: 'Личное',
-      items: [
-        { id: 'search', label: 'Глобальный поиск' },
-        { id: 'notes',  label: 'Мои заметки' },
       ],
     },
   ];

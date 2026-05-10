@@ -319,7 +319,7 @@ interface AtlasBank {
   atlas: AtlasEntry[];
 }
 
-type Tab ='drugs' | 'guidelines' | 'calculators' | 'labs' | 'articles' | 'resuscitation' | 'lactmed' | 'quizzes' | 'nurse' | 'growth' | 'bilirubin' | 'cases' | 'mistakes' | 'checklists' | 'videos' | 'atlas' | 'drugcalc' | 'search' | 'notes';
+type Tab ='drugs' | 'guidelines' | 'calculators' | 'labs' | 'articles' | 'resuscitation' | 'lactmed' | 'quizzes' | 'nurse' | 'growth' | 'bilirubin' | 'cases' | 'mistakes' | 'checklists' | 'videos' | 'atlas' | 'drugcalc';
 
 export default function NeonatalHandbook() {
   const [bank, setBank] = useState<Bank | null>(null);
@@ -403,7 +403,7 @@ export default function NeonatalHandbook() {
           fetch('/neonatal-clinical-cases.json?v=1.3.0', { cache: 'force-cache' }),
           fetch('/neonatal-common-mistakes.json?v=1.3.0', { cache: 'force-cache' }),
           fetch('/neonatal-procedure-checklists.json?v=1.2.0', { cache: 'force-cache' }),
-          fetch('/neonatal-procedure-videos.json?v=1.3.0', { cache: 'force-cache' }),
+          fetch('/neonatal-procedure-videos.json?v=1.4.0', { cache: 'force-cache' }),
           fetch('/neonatal-atlas.json?v=1.3.0', { cache: 'force-cache' }),
         ]);
         if (!drugsR.ok) throw new Error(`monographs ${drugsR.status}`);
@@ -863,8 +863,6 @@ export default function NeonatalHandbook() {
           atlas: { label: 'Атласы', count: atlas?.atlas.length ?? null },
           // Personal / progress tabs (PR #45 — F1, F2, F3 + PR #47 cleanup)
           drugcalc: { label: 'Дозы по весу', count: null },
-          search: { label: 'Глобальный поиск', count: null },
-          notes: { label: 'Мои заметки', count: null },
         };
         const meta = SECTION_META[tab];
         return (
@@ -1423,22 +1421,6 @@ export default function NeonatalHandbook() {
         <AtlasView bank={atlas} query={q} openId={openId} setOpenId={setOpenId} />
       ) : tab === 'drugcalc' ? (
         <DrugDoseCalculator />
-      ) : tab === 'search' ? (
-        <GlobalSearchView
-          drugs={bank?.drugs ?? []}
-          guidelines={guidelines?.guidelines ?? []}
-          articles={articles?.articles ?? []}
-          cases={cases?.cases ?? []}
-          mistakes={mistakes?.mistakes ?? []}
-          checklists={checklists?.checklists ?? []}
-          videos={videos?.videos ?? []}
-          atlas={atlas?.atlas ?? []}
-          lactmed={lactmed?.drugs ?? []}
-          nurse={nurse?.procedures ?? []}
-          onJumpToTab={setTab}
-        />
-      ) : tab === 'notes' ? (
-        <PersonalNotesView />
       ) : null}
 
       {/* Source / disclaimer panel — единый стиль с DrugChecker provenance.
@@ -2739,14 +2721,13 @@ function LactCard({
             </span>
             <span style={{
               display: 'inline-flex', alignItems: 'center',
-              padding: '4px var(--space-2)',
+              padding: '4px 10px',
               borderRadius: 'var(--md-sys-shape-corner-full)',
               background: '#FFFFFF',
               boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-              fontFamily: 'var(--font-mono)',
-              fontSize: '0.625rem', fontWeight: 600,
-              color: colors.text,
-              textTransform: 'uppercase', letterSpacing: '0.04em',
+              fontFamily: 'var(--font-body)',
+              fontSize: 11, fontWeight: 600,
+              color: 'var(--md-sys-color-on-surface-variant)',
               whiteSpace: 'nowrap',
             }}>
               {colors.label}
@@ -3290,14 +3271,13 @@ function ClinicalCaseCard({
             </span>
             <span style={{
               display: 'inline-flex', alignItems: 'center',
-              padding: '4px var(--space-2)',
+              padding: '4px 10px',
               borderRadius: 'var(--md-sys-shape-corner-full)',
               background: '#FFFFFF',
               boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-              fontFamily: 'var(--font-mono)',
-              fontSize: '0.625rem', fontWeight: 500,
+              fontFamily: 'var(--font-body)',
+              fontSize: 11, fontWeight: 600,
               color: 'var(--md-sys-color-on-surface-variant)',
-              textTransform: 'uppercase', letterSpacing: '0.04em',
               whiteSpace: 'nowrap',
             }}>
               {levelLabel}
@@ -3581,11 +3561,6 @@ function CommonMistakeCard({
 }) {
   const m = mistakeEntry;
   const panelId = `mistake-panel-${m.id}`;
-  // Severity color на text only (наш стандартный pattern):
-  // high — красный, medium — амбер, low — нейтральный grey.
-  const sevColor = m.severity === 'high' ? '#DC2626'
-    : m.severity === 'medium' ? '#B45309'
-    : '#6B7280';
   const sevLabel = m.severity === 'high' ? 'Высокая'
     : m.severity === 'medium' ? 'Средняя'
     : 'Низкая';
@@ -3631,14 +3606,13 @@ function CommonMistakeCard({
             </span>
             <span style={{
               display: 'inline-flex', alignItems: 'center',
-              padding: '4px var(--space-2)',
+              padding: '4px 10px',
               borderRadius: 'var(--md-sys-shape-corner-full)',
               background: '#FFFFFF',
               boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-              fontFamily: 'var(--font-mono)',
-              fontSize: '0.625rem', fontWeight: 600,
-              color: sevColor,
-              textTransform: 'uppercase', letterSpacing: '0.04em',
+              fontFamily: 'var(--font-body)',
+              fontSize: 11, fontWeight: 600,
+              color: 'var(--md-sys-color-on-surface-variant)',
               whiteSpace: 'nowrap',
             }}>
               {sevLabel}
@@ -4190,6 +4164,15 @@ const VIDEO_SOURCE_TYPE_LABELS: Record<string, string> = {
   youtube_official: 'YouTube · официальный канал',
   who_official: 'WHO',
   nejm: 'NEJM',
+  aap: 'AAP',
+  aha: 'AHA',
+  cdc: 'CDC',
+  aao: 'AAO',
+  stanford: 'Stanford',
+  efcni: 'EFCNI',
+  chop: 'CHOP',
+  audiology: 'AAA · Audiology',
+  nidcap: 'NIDCAP',
 };
 
 function VideosView({
@@ -4346,11 +4329,11 @@ function ProcedureVideoCard({ video }: { video: ProcedureVideo }) {
       }}>
         <span style={{
           display: 'inline-flex', alignItems: 'center',
-          padding: '4px var(--space-2)', borderRadius: 'var(--md-sys-shape-corner-full)',
+          padding: '4px 10px', borderRadius: 'var(--md-sys-shape-corner-full)',
           background: '#FFFFFF',
           boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-          fontFamily: 'var(--font-mono)',
-          fontSize: '0.625rem', fontWeight: 500,
+          fontFamily: 'var(--font-body)',
+          fontSize: 11, fontWeight: 500,
           color: 'var(--md-sys-color-on-surface-variant)',
           whiteSpace: 'nowrap',
         }}>
@@ -4358,13 +4341,12 @@ function ProcedureVideoCard({ video }: { video: ProcedureVideo }) {
         </span>
         <span style={{
           display: 'inline-flex', alignItems: 'center',
-          padding: '4px var(--space-2)', borderRadius: 'var(--md-sys-shape-corner-full)',
+          padding: '4px 10px', borderRadius: 'var(--md-sys-shape-corner-full)',
           background: '#FFFFFF',
           boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-          fontFamily: 'var(--font-mono)',
-          fontSize: '0.625rem', fontWeight: 500,
+          fontFamily: 'var(--font-body)',
+          fontSize: 11, fontWeight: 500,
           color: 'var(--md-sys-color-on-surface-variant)',
-          textTransform: 'uppercase', letterSpacing: '0.04em',
           whiteSpace: 'nowrap',
         }}>
           {sourceLabel}
@@ -4727,14 +4709,13 @@ function AtlasCard({
             </span>
             <span style={{
               display: 'inline-flex', alignItems: 'center',
-              padding: '4px var(--space-2)',
+              padding: '4px 10px',
               borderRadius: 'var(--md-sys-shape-corner-full)',
               background: '#FFFFFF',
               boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-              fontFamily: 'var(--font-mono)',
-              fontSize: '0.625rem', fontWeight: 500,
+              fontFamily: 'var(--font-body)',
+              fontSize: 11, fontWeight: 500,
               color: 'var(--md-sys-color-on-surface-variant)',
-              textTransform: 'uppercase', letterSpacing: '0.04em',
               whiteSpace: 'nowrap',
             }}>
               {sourceLabel}
@@ -5504,7 +5485,9 @@ function useFavoritesFilter() {
   return { showFavOnly, setShowFavOnly, favsSet };
 }
 
-/** Reusable toggle chip — "⋆ только избранные". Used at top of each section. */
+/** Reusable toggle chip — mirror of ToolsPage filter pill (dark on active,
+ *  body font, sentence case). Replaces previous mono-uppercase variant per
+ *  user feedback — "возьми его из инструментов". */
 function FavoritesToggleChip({
   active, onToggle, count,
 }: {
@@ -5512,29 +5495,27 @@ function FavoritesToggleChip({
   onToggle: () => void;
   count: number;
 }) {
+  const disabled = count === 0 && !active;
   return (
     <button
       type="button"
       onClick={onToggle}
+      disabled={disabled}
       aria-pressed={active}
       aria-label={active ? 'Показать все' : `Показать только избранные (${count})`}
+      title={disabled ? 'Сначала добавьте элементы в избранное' : undefined}
       style={{
         display: 'inline-flex', alignItems: 'center', gap: 6,
-        padding: '6px 12px',
-        borderRadius: 'var(--md-sys-shape-corner-full)',
-        background: active ? '#FEF3C7' : '#FFFFFF',
-        border: 'none',
-        boxShadow: active
-          ? '0 0 0 1px #F59E0B, 0 1px 2px rgba(245,158,11,0.12)'
-          : '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-        fontFamily: 'var(--font-mono)',
-        fontSize: '0.7rem', fontWeight: 500,
-        color: active ? '#92400E' : 'var(--md-sys-color-on-surface-variant)',
-        cursor: 'pointer',
-        transition: 'all 200ms cubic-bezier(0.22,1,0.36,1)',
-        textTransform: 'uppercase', letterSpacing: '0.04em',
-        whiteSpace: 'nowrap',
+        padding: '7px 12px',
+        background: active ? '#1A1A1A' : '#F5F6F8',
+        color: active ? '#FFFFFF' : disabled ? '#B0B3BA' : '#374151',
+        border: 'none', borderRadius: 999,
+        cursor: disabled ? 'not-allowed' : 'pointer',
+        fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 600,
+        transition: 'background 180ms, color 180ms',
       }}
+      onMouseEnter={(e) => { if (!active && !disabled) e.currentTarget.style.background = '#EFF1F4'; }}
+      onMouseLeave={(e) => { if (!active && !disabled) e.currentTarget.style.background = '#F5F6F8'; }}
     >
       <svg width={12} height={12} viewBox="0 0 24 24"
         fill={active ? 'currentColor' : 'none'}
@@ -5542,15 +5523,13 @@ function FavoritesToggleChip({
         aria-hidden="true" focusable="false">
         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
       </svg>
-      Только избранные
-      {count > 0 && (
-        <span style={{ opacity: 0.6 }}>({count})</span>
-      )}
+      Избранные{count > 0 ? ` · ${count}` : ''}
     </button>
   );
 }
 
-/** Reusable star button — toggles favorite state. Used inside cards. */
+/** Reusable star button on cards — mirror of ToolsPage CardFavButton.
+ *  26x26 rounded-square, white BG default, amber on active. */
 function FavoriteStarButton({ id, type, title }: { id: string; type: FavoriteEntry['type']; title: string }) {
   const [isFav, setIsFav] = useState<boolean>(() => {
     const favs = loadFavorites();
@@ -5588,650 +5567,30 @@ function FavoriteStarButton({ id, type, title }: { id: string; type: FavoriteEnt
       aria-pressed={isFav}
       style={{
         flexShrink: 0,
-        background: 'transparent',
-        border: 'none',
+        width: 26, height: 26, borderRadius: 8,
+        position: 'relative',
+        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+        background: isFav ? '#FEF3C7' : '#FFFFFF',
+        color: isFav ? '#D97706' : '#9CA3AF',
+        border: isFav ? '1px solid #FDE68A' : '1px solid transparent',
         cursor: 'pointer',
-        padding: 4,
-        display: 'inline-flex', alignItems: 'center',
-        color: isFav ? '#F59E0B' : '#9CA3AF',
-        transition: 'color 150ms',
+        boxShadow: isFav ? 'none' : '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
+        transition: 'background 160ms, color 160ms, box-shadow 160ms, border-color 160ms',
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.background = isFav ? '#FDE68A' : '#F5F6F8';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.background = isFav ? '#FEF3C7' : '#FFFFFF';
       }}
     >
-      <svg width={16} height={16} viewBox="0 0 24 24"
+      <svg width={13} height={13} viewBox="0 0 24 24"
         fill={isFav ? 'currentColor' : 'none'}
-        stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
+        stroke="currentColor" strokeWidth={isFav ? 0 : 1.9}
+        strokeLinecap="round" strokeLinejoin="round"
         aria-hidden="true" focusable="false">
         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
       </svg>
     </button>
-  );
-}
-
-
-// ============================================================================
-// G1 — Global Search across all banks
-// ============================================================================
-
-interface GlobalSearchHit {
-  id: string;
-  title: string;
-  snippet: string;
-  type: 'drug' | 'guideline' | 'article' | 'case' | 'mistake' | 'checklist' | 'video' | 'atlas' | 'lactmed' | 'nurse';
-  jumpTab: Tab;
-}
-
-const HIT_TYPE_LABELS: Record<GlobalSearchHit['type'], string> = {
-  drug: 'Препарат',
-  guideline: 'Протокол',
-  article: 'Статья',
-  case: 'Кейс',
-  mistake: 'Ошибка',
-  checklist: 'Чек-лист',
-  video: 'Видео',
-  atlas: 'Атлас',
-  lactmed: 'LactMed',
-  nurse: 'Процедура',
-};
-
-const HIT_TYPE_COLORS: Record<GlobalSearchHit['type'], string> = {
-  drug: '#2563EB',
-  guideline: '#7C3AED',
-  article: '#0891B2',
-  case: '#DC2626',
-  mistake: '#B45309',
-  checklist: '#059669',
-  video: '#DB2777',
-  atlas: '#65A30D',
-  lactmed: '#0D9488',
-  nurse: '#7C2D12',
-};
-
-interface GlobalSearchProps {
-  drugs: Array<{ id: string; name_ru: string; name_en: string; indications?: string; fullText: string }>;
-  guidelines: Array<{ id: string; title_ru: string; title_en: string; content: string }>;
-  articles: Array<{ id: string; title_ru: string; title_en: string; summary: string; content: string }>;
-  cases: Array<{ id: string; title_ru: string; title_en: string; vignette: string }>;
-  mistakes: Array<{ id: string; title_ru: string; title_en: string; mistake: string }>;
-  checklists: Array<{ id: string; title_ru: string; title_en: string; indications: string[] }>;
-  videos: Array<{ id: string; title_ru: string; title_en: string; description: string }>;
-  atlas: Array<{ id: string; title_ru: string; title_en: string; description: string }>;
-  lactmed: Array<{ id: string; name_ru: string; name_en: string; summary: string }>;
-  nurse: Array<{ id: string; title_ru: string; title_en: string; category: string }>;
-  onJumpToTab: (t: Tab) => void;
-}
-
-function GlobalSearchView({
-  drugs, guidelines, articles, cases, mistakes, checklists, videos, atlas, lactmed, nurse,
-  onJumpToTab,
-}: GlobalSearchProps) {
-  const [query, setQuery] = useState('');
-  const [enabledTypes, setEnabledTypes] = useState<Set<GlobalSearchHit['type']>>(
-    new Set(['drug', 'guideline', 'article', 'case', 'mistake', 'checklist', 'video', 'atlas', 'lactmed', 'nurse']),
-  );
-
-  const hits: GlobalSearchHit[] = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (q.length < 2) return [];
-    const out: GlobalSearchHit[] = [];
-
-    const trySnippet = (haystack: string, fallback: string): string => {
-      const idx = haystack.toLowerCase().indexOf(q);
-      if (idx === -1) return fallback.slice(0, 140);
-      const start = Math.max(0, idx - 40);
-      const end = Math.min(haystack.length, idx + q.length + 80);
-      const snip = haystack.slice(start, end);
-      return (start > 0 ? '…' : '') + snip + (end < haystack.length ? '…' : '');
-    };
-
-    if (enabledTypes.has('drug')) {
-      for (const d of drugs) {
-        const text = `${d.name_ru} ${d.name_en} ${d.indications ?? ''} ${d.fullText}`.toLowerCase();
-        if (text.includes(q)) {
-          out.push({ id: `drug-${d.id}`, title: d.name_ru, snippet: trySnippet(d.fullText || d.indications || '', d.indications ?? ''), type: 'drug', jumpTab: 'drugs' });
-        }
-      }
-    }
-    if (enabledTypes.has('guideline')) {
-      for (const g of guidelines) {
-        const text = `${g.title_ru} ${g.title_en} ${g.content}`.toLowerCase();
-        if (text.includes(q)) {
-          out.push({ id: `gd-${g.id}`, title: g.title_ru, snippet: trySnippet(g.content, g.content.slice(0, 140)), type: 'guideline', jumpTab: 'guidelines' });
-        }
-      }
-    }
-    if (enabledTypes.has('article')) {
-      for (const a of articles) {
-        const text = `${a.title_ru} ${a.title_en} ${a.summary} ${a.content}`.toLowerCase();
-        if (text.includes(q)) {
-          out.push({ id: `art-${a.id}`, title: a.title_ru, snippet: trySnippet(a.content, a.summary), type: 'article', jumpTab: 'articles' });
-        }
-      }
-    }
-    if (enabledTypes.has('case')) {
-      for (const c of cases) {
-        const text = `${c.title_ru} ${c.title_en} ${c.vignette}`.toLowerCase();
-        if (text.includes(q)) {
-          out.push({ id: `cs-${c.id}`, title: c.title_ru, snippet: trySnippet(c.vignette, c.vignette.slice(0, 140)), type: 'case', jumpTab: 'cases' });
-        }
-      }
-    }
-    if (enabledTypes.has('mistake')) {
-      for (const m of mistakes) {
-        const text = `${m.title_ru} ${m.title_en} ${m.mistake}`.toLowerCase();
-        if (text.includes(q)) {
-          out.push({ id: `mt-${m.id}`, title: m.title_ru, snippet: trySnippet(m.mistake, m.mistake.slice(0, 140)), type: 'mistake', jumpTab: 'mistakes' });
-        }
-      }
-    }
-    if (enabledTypes.has('checklist')) {
-      for (const ch of checklists) {
-        const text = `${ch.title_ru} ${ch.title_en} ${ch.indications.join(' ')}`.toLowerCase();
-        if (text.includes(q)) {
-          out.push({ id: `ck-${ch.id}`, title: ch.title_ru, snippet: ch.indications[0] ?? '', type: 'checklist', jumpTab: 'checklists' });
-        }
-      }
-    }
-    if (enabledTypes.has('video')) {
-      for (const v of videos) {
-        const text = `${v.title_ru} ${v.title_en} ${v.description}`.toLowerCase();
-        if (text.includes(q)) {
-          out.push({ id: `vd-${v.id}`, title: v.title_ru, snippet: trySnippet(v.description, v.description.slice(0, 140)), type: 'video', jumpTab: 'videos' });
-        }
-      }
-    }
-    if (enabledTypes.has('atlas')) {
-      for (const a of atlas) {
-        const text = `${a.title_ru} ${a.title_en} ${a.description}`.toLowerCase();
-        if (text.includes(q)) {
-          out.push({ id: `at-${a.id}`, title: a.title_ru, snippet: trySnippet(a.description, a.description.slice(0, 140)), type: 'atlas', jumpTab: 'atlas' });
-        }
-      }
-    }
-    if (enabledTypes.has('lactmed')) {
-      for (const l of lactmed) {
-        const text = `${l.name_ru} ${l.name_en} ${l.summary}`.toLowerCase();
-        if (text.includes(q)) {
-          out.push({ id: `lm-${l.id}`, title: l.name_ru, snippet: trySnippet(l.summary, l.summary.slice(0, 140)), type: 'lactmed', jumpTab: 'lactmed' });
-        }
-      }
-    }
-    if (enabledTypes.has('nurse')) {
-      for (const n of nurse) {
-        const text = `${n.title_ru} ${n.title_en} ${n.category}`.toLowerCase();
-        if (text.includes(q)) {
-          out.push({ id: `nu-${n.id}`, title: n.title_ru, snippet: n.category, type: 'nurse', jumpTab: 'nurse' });
-        }
-      }
-    }
-
-    return out.slice(0, 100);
-  }, [query, enabledTypes, drugs, guidelines, articles, cases, mistakes, checklists, videos, atlas, lactmed, nurse]);
-
-  const grouped = useMemo(() => {
-    const map = new Map<GlobalSearchHit['type'], GlobalSearchHit[]>();
-    for (const h of hits) {
-      const arr = map.get(h.type) ?? [];
-      arr.push(h);
-      map.set(h.type, arr);
-    }
-    return Array.from(map.entries()).sort((a, b) => b[1].length - a[1].length);
-  }, [hits]);
-
-  const toggleType = (t: GlobalSearchHit['type']) => {
-    setEnabledTypes((prev) => {
-      const next = new Set(prev);
-      if (next.has(t)) next.delete(t); else next.add(t);
-      return next;
-    });
-  };
-
-  const totalCorpus = drugs.length + guidelines.length + articles.length + cases.length + mistakes.length + checklists.length + videos.length + atlas.length + lactmed.length + nurse.length;
-
-  return (
-    <div style={{ width: '100%' }}>
-      {/* Search input */}
-      <div style={{
-        display: 'flex', alignItems: 'center', gap: 10,
-        padding: '12px 16px',
-        background: '#F5F6F8',
-        borderRadius: 12,
-        marginBottom: 12,
-      }}>
-        <svg width={18} height={18} viewBox="0 0 24 24" fill="none"
-          stroke="#9CA3AF" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
-          aria-hidden="true" focusable="false">
-          <circle cx="11" cy="11" r="8" />
-          <line x1="21" y1="21" x2="16.65" y2="16.65" />
-        </svg>
-        <input
-          type="search"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          autoFocus
-          placeholder='Поиск по всем разделам: "сурфактант", "BPD", "гипогликемия"...'
-          aria-label="Глобальный поиск по разделу неонатологии"
-          style={{
-            flex: 1, background: 'transparent', border: 'none', outline: 'none',
-            fontFamily: 'inherit', fontSize: 15, color: '#1A1A1A',
-          }}
-        />
-        {query && (
-          <button
-            type="button"
-            onClick={() => setQuery('')}
-            aria-label="Очистить поиск"
-            style={{
-              background: 'transparent', border: 'none', cursor: 'pointer',
-              color: '#9CA3AF', fontSize: 18, padding: '4px 8px',
-            }}
-          >×</button>
-        )}
-      </div>
-
-      {/* Type filter chips */}
-      <div style={{
-        display: 'flex', flexWrap: 'wrap', gap: 6,
-        marginBottom: 16,
-      }}>
-        {(['drug', 'guideline', 'article', 'case', 'mistake', 'checklist', 'video', 'atlas', 'lactmed', 'nurse'] as const).map((t) => {
-          const enabled = enabledTypes.has(t);
-          return (
-            <button
-              key={t}
-              type="button"
-              onClick={() => toggleType(t)}
-              aria-pressed={enabled}
-              style={{
-                padding: '6px 12px',
-                background: enabled ? HIT_TYPE_COLORS[t] : '#FFFFFF',
-                color: enabled ? '#FFFFFF' : '#1A1A1A',
-                border: 'none',
-                borderRadius: 'var(--md-sys-shape-corner-full)',
-                boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-                cursor: 'pointer',
-                fontFamily: 'var(--font-mono)',
-                fontSize: '0.625rem', fontWeight: 600,
-                textTransform: 'uppercase', letterSpacing: '0.04em',
-              }}
-            >
-              {HIT_TYPE_LABELS[t]}
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Empty state */}
-      {query.trim().length < 2 && (
-        <div style={{
-          padding: '32px 20px', background: '#F5F6F8', borderRadius: 14,
-          textAlign: 'center', color: '#6B7280',
-        }}>
-          <div style={{ fontFamily: 'var(--font-display)', fontSize: 17, fontWeight: 700, color: '#1A1A1A', marginBottom: 6 }}>
-            Глобальный поиск
-          </div>
-          <p style={{ margin: '0 auto', maxWidth: 460, fontSize: 13.5, lineHeight: 1.55 }}>
-            Введите запрос (≥2 символов) для поиска в {totalCorpus} клинических и обучающих
-            документах. Можно фильтровать по типу через chips сверху.
-          </p>
-        </div>
-      )}
-
-      {/* No results */}
-      {query.trim().length >= 2 && hits.length === 0 && (
-        <div style={{
-          padding: '32px 16px', background: '#F5F6F8', borderRadius: 12,
-          textAlign: 'center', color: '#6B7280', fontSize: 14,
-        }}>
-          Ничего не найдено по запросу «{query}».
-        </div>
-      )}
-
-      {/* Results count + groups */}
-      {hits.length > 0 && (
-        <>
-          <p style={{ fontSize: 13, color: '#6B7280', margin: '0 0 14px' }}>
-            Найдено: <strong style={{ color: '#1A1A1A' }}>{hits.length}</strong> результатов
-            {hits.length === 100 && ' (показаны первые 100)'}
-            {' · '}
-            <span style={{ color: '#9CA3AF' }}>
-              из корпуса {totalCorpus} документов
-            </span>
-          </p>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-            {grouped.map(([type, items]) => (
-              <div key={type}>
-                <h3 style={{
-                  fontFamily: 'var(--font-display)',
-                  fontSize: 17, fontWeight: 700,
-                  color: '#1A1A1A',
-                  margin: '0 0 12px',
-                  letterSpacing: '-0.01em',
-                  display: 'flex', alignItems: 'baseline', gap: 8,
-                }}>
-                  {HIT_TYPE_LABELS[type]}
-                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 600, color: '#9CA3AF' }}>
-                    {items.length}
-                  </span>
-                </h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                  {items.map((h) => (
-                    <button
-                      key={h.id}
-                      type="button"
-                      onClick={() => onJumpToTab(h.jumpTab)}
-                      aria-label={`Перейти к разделу ${HIT_TYPE_LABELS[type]}: ${h.title}`}
-                      style={{
-                        display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 4,
-                        padding: '12px 14px',
-                        background: '#F5F6F8',
-                        border: 'none',
-                        borderRadius: 10,
-                        cursor: 'pointer',
-                        textAlign: 'left',
-                        fontFamily: 'inherit',
-                        transition: 'background 150ms',
-                      }}
-                      onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
-                      onMouseLeave={(e) => { e.currentTarget.style.background = '#F5F6F8'; }}
-                    >
-                      <span style={{ fontWeight: 600, fontSize: 14, color: '#1A1A1A' }}>{h.title}</span>
-                      {h.snippet && (
-                        <span style={{ fontSize: 12, color: '#6B7280', lineHeight: 1.4 }}>{h.snippet}</span>
-                      )}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </>
-      )}
-    </div>
-  );
-}
-
-// ============================================================================
-// G2 — Personal Notes (markdown editor + localStorage)
-// ============================================================================
-
-interface PersonalNote {
-  id: string;
-  title: string;
-  body: string;
-  created: number;
-  updated: number;
-  tags: string[];
-}
-
-function loadNotes(): PersonalNote[] {
-  if (typeof window === 'undefined') return [];
-  try {
-    const raw = window.localStorage.getItem('bordik-neonatal-notes');
-    if (!raw) return [];
-    return JSON.parse(raw) as PersonalNote[];
-  } catch { return []; }
-}
-
-function saveNotes(notes: PersonalNote[]): void {
-  if (typeof window === 'undefined') return;
-  try { window.localStorage.setItem('bordik-neonatal-notes', JSON.stringify(notes)); } catch { /* ignore */ }
-}
-
-function PersonalNotesView() {
-  const [notes, setNotes] = useState<PersonalNote[]>(() => loadNotes());
-  const [activeId, setActiveId] = useState<string | null>(null);
-  const [editingTitle, setEditingTitle] = useState('');
-  const [editingBody, setEditingBody] = useState('');
-
-  const activeNote = notes.find((n) => n.id === activeId);
-
-  useEffect(() => {
-    if (activeNote) {
-      setEditingTitle(activeNote.title);
-      setEditingBody(activeNote.body);
-    }
-  }, [activeId, activeNote]);
-
-  const createNew = () => {
-    const id = `note-${Date.now()}`;
-    const note: PersonalNote = {
-      id,
-      title: 'Новая заметка',
-      body: '',
-      created: Date.now(),
-      updated: Date.now(),
-      tags: [],
-    };
-    const next = [note, ...notes];
-    setNotes(next);
-    saveNotes(next);
-    setActiveId(id);
-    setEditingTitle(note.title);
-    setEditingBody(note.body);
-  };
-
-  const saveCurrent = () => {
-    if (!activeNote) return;
-    const updated = notes.map((n) =>
-      n.id === activeNote.id
-        ? { ...n, title: editingTitle, body: editingBody, updated: Date.now() }
-        : n,
-    );
-    setNotes(updated);
-    saveNotes(updated);
-  };
-
-  const deleteCurrent = () => {
-    if (!activeNote) return;
-    const filtered = notes.filter((n) => n.id !== activeNote.id);
-    setNotes(filtered);
-    saveNotes(filtered);
-    setActiveId(null);
-  };
-
-  // Auto-save on body/title change with debounce
-  useEffect(() => {
-    if (!activeNote) return;
-    const t = setTimeout(() => saveCurrent(), 500);
-    return () => clearTimeout(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [editingTitle, editingBody]);
-
-  if (notes.length === 0 && !activeId) {
-    return (
-      <div style={{
-        padding: '32px 20px',
-        background: '#F5F6F8',
-        borderRadius: 14,
-        textAlign: 'center',
-        color: '#6B7280',
-      }}>
-        <div style={{
-          fontFamily: 'var(--font-display)',
-          fontSize: 17, fontWeight: 700,
-          color: '#1A1A1A',
-          marginBottom: 8,
-        }}>
-          Пока нет заметок
-        </div>
-        <p style={{ margin: '0 auto 16px', maxWidth: 460, fontSize: 13.5, lineHeight: 1.55 }}>
-          Создайте заметку для записи клинических наблюдений, ссылок,
-          кастомных подсказок. Заметки хранятся локально в браузере.
-        </p>
-        <button
-          type="button"
-          onClick={createNew}
-          style={{
-            padding: '10px 20px',
-            background: '#1A1A1A',
-            color: '#FFFFFF',
-            border: 'none',
-            borderRadius: 10,
-            cursor: 'pointer',
-            fontSize: 13,
-            fontWeight: 600,
-          }}
-        >
-          Создать первую заметку
-        </button>
-      </div>
-    );
-  }
-
-  return (
-    <div style={{ width: '100%' }}>
-      <div style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        gap: 10, marginBottom: 14,
-      }}>
-        <p style={{ fontSize: 13, color: '#6B7280', margin: 0 }}>
-          Всего заметок: <strong style={{ color: '#1A1A1A' }}>{notes.length}</strong>
-          {' · '}
-          <span style={{ color: '#9CA3AF' }}>
-            хранятся локально в браузере, синхронизация скоро
-          </span>
-        </p>
-        <button
-          type="button"
-          onClick={createNew}
-          style={{
-            padding: '8px 14px',
-            background: '#1A1A1A',
-            color: '#FFFFFF',
-            border: 'none',
-            borderRadius: 'var(--md-sys-shape-corner-full)',
-            cursor: 'pointer',
-            fontFamily: 'var(--font-mono)',
-            fontSize: '0.625rem', fontWeight: 700,
-            textTransform: 'uppercase', letterSpacing: '0.04em',
-          }}
-        >
-          + Новая заметка
-        </button>
-      </div>
-
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: '260px 1fr',
-        gap: 14,
-        minHeight: 400,
-      }}>
-        {/* Notes list */}
-        <div style={{
-          background: '#F5F6F8',
-          borderRadius: 12,
-          padding: 8,
-          maxHeight: 600,
-          overflowY: 'auto',
-        }}>
-          {notes.map((n) => (
-            <button
-              key={n.id}
-              type="button"
-              onClick={() => setActiveId(n.id)}
-              style={{
-                display: 'block',
-                width: '100%',
-                padding: '10px 12px',
-                background: n.id === activeId ? '#FFFFFF' : 'transparent',
-                border: 'none',
-                borderRadius: 8,
-                cursor: 'pointer',
-                textAlign: 'left',
-                marginBottom: 2,
-                fontFamily: 'inherit',
-              }}
-            >
-              <div style={{
-                fontSize: 13, fontWeight: 600, color: '#1A1A1A',
-                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-              }}>
-                {n.title || '(без названия)'}
-              </div>
-              <div style={{ fontSize: 11, color: '#9CA3AF', marginTop: 2 }}>
-                {new Date(n.updated).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })}
-              </div>
-            </button>
-          ))}
-        </div>
-
-        {/* Editor */}
-        <div style={{
-          background: '#F5F6F8',
-          borderRadius: 12,
-          padding: 16,
-          display: 'flex', flexDirection: 'column', gap: 10,
-        }}>
-          {activeNote ? (
-            <>
-              <input
-                type="text"
-                value={editingTitle}
-                onChange={(e) => setEditingTitle(e.target.value)}
-                aria-label="Заголовок заметки"
-                style={{
-                  width: '100%',
-                  padding: '10px 12px',
-                  background: '#FFFFFF',
-                  border: 'none',
-                  borderRadius: 8,
-                  fontFamily: 'var(--font-display)',
-                  fontSize: 18, fontWeight: 700,
-                  color: '#1A1A1A',
-                  outline: 'none',
-                }}
-              />
-              <textarea
-                value={editingBody}
-                onChange={(e) => setEditingBody(e.target.value)}
-                aria-label="Содержимое заметки"
-                placeholder="Введите содержимое заметки. Поддерживается plain text + Markdown..."
-                style={{
-                  width: '100%',
-                  minHeight: 400,
-                  padding: '12px 14px',
-                  background: '#FFFFFF',
-                  border: 'none',
-                  borderRadius: 8,
-                  fontFamily: 'var(--font-body)',
-                  fontSize: 14, lineHeight: 1.55,
-                  color: '#1F2937',
-                  resize: 'vertical',
-                  outline: 'none',
-                }}
-              />
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
-                <span style={{ fontSize: 11, color: '#9CA3AF' }}>
-                  {editingBody.length} символов · автосохранение
-                </span>
-                <button
-                  type="button"
-                  onClick={deleteCurrent}
-                  aria-label="Удалить заметку"
-                  style={{
-                    padding: '6px 12px',
-                    background: '#FEF2F2',
-                    color: '#991B1B',
-                    border: 'none',
-                    borderRadius: 8,
-                    cursor: 'pointer',
-                    fontSize: 12, fontWeight: 600,
-                  }}
-                >
-                  Удалить
-                </button>
-              </div>
-            </>
-          ) : (
-            <div style={{
-              padding: '40px 20px', textAlign: 'center', color: '#9CA3AF',
-              fontSize: 13.5,
-            }}>
-              Выберите заметку из списка или создайте новую.
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
   );
 }
