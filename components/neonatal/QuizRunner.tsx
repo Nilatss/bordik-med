@@ -483,21 +483,33 @@ function ActiveQuizView({
           display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 8,
         }}>
           <span style={{
-            fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-            color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
+            display: 'inline-flex', alignItems: 'center',
+            padding: '4px var(--space-2)',
+            borderRadius: 'var(--md-sys-shape-corner-full)',
+            background: '#FFFFFF',
+            boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
+            fontFamily: 'var(--font-mono)',
+            fontSize: '0.625rem', fontWeight: 500,
+            color: 'var(--md-sys-color-on-surface-variant)',
+            textTransform: 'uppercase',
+            letterSpacing: '0.04em',
+            whiteSpace: 'nowrap',
           }}>
             {TOPIC_LABELS[quiz.topic] ?? quiz.topic}
           </span>
           {lvl && (
             <span style={{
-              fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-              color: lvl.color,
-              padding: '2px 8px',
+              display: 'inline-flex', alignItems: 'center',
+              padding: '4px var(--space-2)',
+              borderRadius: 'var(--md-sys-shape-corner-full)',
               background: '#FFFFFF',
-              border: `1px solid ${lvl.color}33`,
-              borderRadius: 4,
+              boxShadow: `0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)`,
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.625rem', fontWeight: 600,
+              color: lvl.color,
               textTransform: 'uppercase',
               letterSpacing: '0.04em',
+              whiteSpace: 'nowrap',
             }}>
               {lvl.label}
             </span>
@@ -555,12 +567,16 @@ function ActiveQuizView({
             }}>
               <span aria-hidden="true" style={{
                 flexShrink: 0,
-                background: '#EFF6FF',
-                color: '#2563EB',
+                display: 'inline-flex', alignItems: 'center',
+                padding: '4px var(--space-2)',
+                borderRadius: 'var(--md-sys-shape-corner-full)',
+                background: '#FFFFFF',
+                boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
                 fontFamily: 'var(--font-mono)',
-                fontSize: 11, fontWeight: 700,
-                padding: '3px 8px',
-                borderRadius: 5,
+                fontSize: '0.625rem', fontWeight: 700,
+                color: '#2563EB',
+                letterSpacing: '0.04em',
+                whiteSpace: 'nowrap',
               }}>
                 Q{qIdx + 1}
               </span>

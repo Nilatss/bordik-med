@@ -436,11 +436,15 @@ export default function ApgarTimer({ onClose }: { onClose: () => void }) {
                     </span>
                   </span>
                   <span style={{
-                    fontSize: 11, fontWeight: 700,
+                    display: 'inline-flex', alignItems: 'center',
+                    padding: '4px var(--space-2)',
+                    borderRadius: 'var(--md-sys-shape-corner-full)',
+                    background: 'rgba(255,255,255,0.10)',
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '0.625rem', fontWeight: 600,
                     color: intent.color,
-                    padding: '2px 8px',
-                    background: 'rgba(255,255,255,0.08)',
-                    borderRadius: 4,
+                    textTransform: 'uppercase', letterSpacing: '0.04em',
+                    whiteSpace: 'nowrap',
                   }}>
                     {intent.label.toUpperCase()}
                   </span>
