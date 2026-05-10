@@ -72,6 +72,13 @@ const TOPIC_DESCRIPTIONS: Record<string, string> = {
   'quiz-nutrition': 'Aminoacids start, GIR ranges, lipid emulsions, trophic feeds.',
   'quiz-iem': 'Принципы IEM rescue, hyperammonemia management, B12-responsive forms.',
   'quiz-screening': 'Sample timing, CCHD pulse oximetry, ROP screen для preterm.',
+  'quiz-pphn': 'iNO, sildenafil, milrinone, ECMO criteria, vasopressin для warm shock.',
+  'quiz-nec': 'Bell staging, pneumatosis intestinalis, triple ABX, surgical indications.',
+  'quiz-pda': 'HSPDA ECHO criteria, ibuprofen / paracetamol / indomethacin closure.',
+  'quiz-cooling-protocol': 'Rewarming rate, anticonvulsants, Hb targets во время cooling.',
+  'quiz-eos-puopolo': 'Kaiser EOS calc, Puopolo Tiered, maternal risk factors, ABX duration.',
+  'quiz-feeding-vlbw': 'Trophic feeds, advancement rate, HMF timing, ESPGHAN 2022.',
+  'quiz-rop-treatment': 'Screening timing, Type 1 ETROP criteria, anti-VEGF preferred.',
 };
 
 function estimateDuration(questionCount: number): string {
@@ -117,7 +124,7 @@ export default function QuizRunner({
     let cancelled = false;
     void (async () => {
       try {
-        const r = await fetch('/neonatal-quizzes.json?v=1.0.0', { cache: 'force-cache' });
+        const r = await fetch('/neonatal-quizzes.json?v=1.1.0', { cache: 'force-cache' });
         if (!r.ok) throw new Error(`quizzes ${r.status}`);
         const json = await r.json();
         if (!cancelled) setBank(json as QuizBank);
