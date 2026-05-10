@@ -44,6 +44,9 @@ interface AppState {
   showDrugs: boolean;
   /** Neonatal Handbook — справочник доз для новорождённых (NICU). */
   showNeonatal: boolean;
+  /** Active tab inside NeonatalHandbook — controlled from Sidebar
+   *  expanded submenu. Persists в localStorage через persist-middleware. */
+  neonatalActiveTab: 'drugs' | 'calculators' | 'guidelines' | 'resuscitation' | 'articles' | 'lactmed' | 'labs' | 'growth' | 'bilirubin';
   activeToolId: string | null;
 
   /** Tools page persistent state — filters, scroll, favourites */
@@ -114,6 +117,9 @@ interface AppState {
   setShowIcd10: (show: boolean) => void;
   setShowDrugs: (show: boolean) => void;
   setShowNeonatal: (show: boolean) => void;
+  /** Switch active tab inside NeonatalHandbook. Used by Sidebar expandable
+   *  submenu — clicking sub-item also calls setShowNeonatal(true). */
+  setNeonatalActiveTab: (tab: AppState['neonatalActiveTab']) => void;
   setLastDiagnosticResult: (r: AppState['lastDiagnosticResult']) => void;
   toggleProfile: () => void;
   addStudyTime: (courseId: string, seconds: number) => void;
@@ -201,6 +207,7 @@ export const useAppStore = create<AppState>()(
       showIcd10: false,
       showDrugs: false,
       showNeonatal: false,
+      neonatalActiveTab: 'drugs',
       activeToolId: null,
 
       testAttempts: {},
@@ -384,6 +391,7 @@ export const useAppStore = create<AppState>()(
       setShowDrugs: (show) => set({ showDrugs: show, showProfile: false, showLearning: false, showTools: false, showStats: false, showTests: false, showIcd10: false, showNeonatal: false, activeSection: null, activeModuleId: null, currentCourseId: null, activeToolId: null }),
 
       setShowNeonatal: (show) => set({ showNeonatal: show, showProfile: false, showLearning: false, showTools: false, showStats: false, showTests: false, showIcd10: false, showDrugs: false, activeSection: null, activeModuleId: null, currentCourseId: null, activeToolId: null }),
+      setNeonatalActiveTab: (tab) => set({ neonatalActiveTab: tab }),
 
       setLastDiagnosticResult: (r) => set({ lastDiagnosticResult: r }),
 
