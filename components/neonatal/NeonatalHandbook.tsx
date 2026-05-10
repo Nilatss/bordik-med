@@ -402,7 +402,7 @@ export default function NeonatalHandbook() {
           fetch('/neonatal-nurse-procedures.json?v=1.2.0', { cache: 'force-cache' }),
           fetch('/neonatal-clinical-cases.json?v=1.4.0', { cache: 'force-cache' }),
           fetch('/neonatal-common-mistakes.json?v=1.4.0', { cache: 'force-cache' }),
-          fetch('/neonatal-procedure-checklists.json?v=1.2.0', { cache: 'force-cache' }),
+          fetch('/neonatal-procedure-checklists.json?v=1.3.0', { cache: 'force-cache' }),
           fetch('/neonatal-procedure-videos.json?v=1.4.0', { cache: 'force-cache' }),
           fetch('/neonatal-atlas.json?v=1.3.0', { cache: 'force-cache' }),
         ]);
@@ -3872,6 +3872,8 @@ const CHECKLIST_CATEGORY_LABELS: Record<string, string> = {
   neuro: 'Неврологические',
   hepatic: 'Гепатобилиарные',
   resuscitation: 'Реанимация',
+  feeding: 'Питание / лактация',
+  monitoring: 'Осмотр и мониторинг',
 };
 
 function ChecklistsView({
