@@ -381,11 +381,11 @@ export default function NeonatalHandbook() {
           fetch('/neonatal-articles.json?v=1.9.0', { cache: 'force-cache' }),
           fetch('/neonatal-lactmed.json?v=1.1.0', { cache: 'force-cache' }),
           fetch('/neonatal-nurse-procedures.json?v=1.2.0', { cache: 'force-cache' }),
-          fetch('/neonatal-clinical-cases.json?v=1.0.0', { cache: 'force-cache' }),
-          fetch('/neonatal-common-mistakes.json?v=1.0.0', { cache: 'force-cache' }),
-          fetch('/neonatal-procedure-checklists.json?v=1.0.0', { cache: 'force-cache' }),
-          fetch('/neonatal-procedure-videos.json?v=1.0.0', { cache: 'force-cache' }),
-          fetch('/neonatal-atlas.json?v=1.0.0', { cache: 'force-cache' }),
+          fetch('/neonatal-clinical-cases.json?v=1.1.0', { cache: 'force-cache' }),
+          fetch('/neonatal-common-mistakes.json?v=1.1.0', { cache: 'force-cache' }),
+          fetch('/neonatal-procedure-checklists.json?v=1.1.0', { cache: 'force-cache' }),
+          fetch('/neonatal-procedure-videos.json?v=1.1.0', { cache: 'force-cache' }),
+          fetch('/neonatal-atlas.json?v=1.1.0', { cache: 'force-cache' }),
         ]);
         if (!drugsR.ok) throw new Error(`monographs ${drugsR.status}`);
         const drugsJson = await drugsR.json();

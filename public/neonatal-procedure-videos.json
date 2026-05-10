@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "lastUpdated": "2026-05-10",
   "source": "Bordik Med — curated procedure video linkouts (audit Table 3.Д3)",
   "license": "External linkouts to authoritative sources (AAP, WHO, NEJM, Stanford, NIDCAP, EFCNI, UNICEF). Не размещаем встраиваемое видео — только linkouts с уважением к copyright.",
@@ -310,6 +310,90 @@
         "NIDCAP",
         "developmental care",
         "family-integrated"
+      ]
+    },
+    {
+      "id": "video-newborn-hearing-screen",
+      "title_ru": "Скрининг слуха новорождённого — AABR/OAE",
+      "title_en": "Newborn hearing screen — AABR/OAE",
+      "description": "Demonstration both AABR (Automated Auditory Brainstem Response) и OAE (Otoacoustic Emissions) techniques. AABR preferred для NICU babies (catches retrocochlear pathology).",
+      "source": "American Academy of Audiology",
+      "source_type": "youtube_official",
+      "url": "https://www.audiology.org/practice-guidelines/childhood-hearing-screening-guidelines/",
+      "category": "screening",
+      "duration_min": 8,
+      "tags": [
+        "слух",
+        "AABR",
+        "OAE",
+        "screening"
+      ]
+    },
+    {
+      "id": "video-cpr-newborn-2-thumb",
+      "title_ru": "Two-thumb encircling CPR техника",
+      "title_en": "Two-thumb encircling CPR technique",
+      "description": "Detailed demonstration two-thumb encircling chest compression technique для newborn CPR. Preferred over two-finger при ≥2 rescuers (less fatigue, better quality compressions).",
+      "source": "American Heart Association",
+      "source_type": "youtube_official",
+      "url": "https://www.heart.org/en/cpr",
+      "category": "resuscitation",
+      "duration_min": 6,
+      "tags": [
+        "компрессии",
+        "CPR",
+        "AHA",
+        "2-thumb"
+      ]
+    },
+    {
+      "id": "video-eye-prophylaxis",
+      "title_ru": "Глазная профилактика — техника применения",
+      "title_en": "Eye prophylaxis administration technique",
+      "description": "Application of erythromycin 0.5% ophthalmic ointment для prevention gonococcal/chlamydial conjunctivitis. CDC recommendation для ALL newborns в первые 24 ч.",
+      "source": "CDC",
+      "source_type": "who_official",
+      "url": "https://www.cdc.gov/sti-treatment/hcp/clinical-guidance/neonates.html",
+      "category": "examination",
+      "duration_min": 4,
+      "tags": [
+        "глазная профилактика",
+        "CDC",
+        "гонорея"
+      ]
+    },
+    {
+      "id": "video-bili-blanket-use",
+      "title_ru": "Bilibed / Bili-blanket использование",
+      "title_en": "Bili-blanket fiber-optic phototherapy use",
+      "description": "Demonstration fiber-optic phototherapy (bili-blanket) — alternative to overhead phototherapy. Permits skin-to-skin contact with mother during treatment, more flexibility.",
+      "source": "AAP Implementation Guide",
+      "source_type": "youtube_official",
+      "url": "https://www.aap.org/en/patient-care/newborn-and-infant-nutrition/",
+      "category": "hepatic",
+      "duration_min": 7,
+      "tags": [
+        "фототерапия",
+        "bili-blanket",
+        "AAP",
+        "ГБН"
+      ]
+    },
+    {
+      "id": "video-hbb-helping-babies-survive",
+      "title_ru": "Helping Babies Breathe / Survive — global program",
+      "title_en": "Helping Babies Survive — full program",
+      "description": "Полный курс HBS (Helping Babies Survive) — реанимация в условиях ограниченных ресурсов, golden minute, basic resuscitation для midwives + medical staff в low-resource settings (LMIC focus).",
+      "source": "AAP / Helping Babies Survive",
+      "source_type": "youtube_official",
+      "url": "https://www.youtube.com/@HelpingBabiesSurvive/videos",
+      "category": "resuscitation",
+      "duration_min": 50,
+      "tags": [
+        "HBB",
+        "AAP",
+        "global health",
+        "LMIC"
       ]
     }
   ]

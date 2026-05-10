@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "lastUpdated": "2026-05-10",
   "source": "Bordik Med — Neonatology procedure checklists (audit Table 3.Д5)",
   "license": "Educational checklists adapted from public guidelines (AAP, NRP, NICE, AAP COFN, Cochrane).",
@@ -905,6 +905,390 @@
         "Shankaran S et al. NEJM 2005;353:1574 — NICHD trial",
         "Azzopardi DV et al. NEJM 2009;361:1349 — TOBY trial",
         "AAP/ACOG 2014 Joint Statement — Neonatal Encephalopathy"
+      ]
+    },
+    {
+      "id": "checklist-arterial-line-radial",
+      "title_ru": "Постановка peripheral arterial line (radial)",
+      "title_en": "Peripheral arterial line placement (radial)",
+      "category": "vascular_access",
+      "estimated_minutes": 20,
+      "audience": "Врач-неонатолог",
+      "indications": [
+        "Continuous arterial BP monitoring у unstable neonate",
+        "Frequent ABG sampling",
+        "Когда UAC недоступен или contraindicated"
+      ],
+      "sections": [
+        {
+          "title": "Подготовка",
+          "items": [
+            "22-24 G arterial cath (Insyte 24 Fr most common term, Cathlon 24 Fr ≤1500 г)",
+            "Стерильный набор: gloves, drape, антисептик",
+            "T-piece + heparinized NaCl 0.9% (1 ЕД/мл)",
+            "Pressure transducer + monitor",
+            "Sterile occlusive dressing",
+            "Готовность ultrasound (improves success ELBW)"
+          ]
+        },
+        {
+          "title": "Перед процедурой",
+          "items": [
+            "Modified Allen test — assess collateral ulnar flow",
+            "Pulse palpation — radial artery typically lateral к flexor carpi radialis tendon",
+            "Position wrist hyperextended over rolled towel",
+            "Sterile prep + drape",
+            "Sucrose 24% PO + non-nutritive sucking",
+            "Local anesthesia: lidocaine 1% 0.1 мл (max 4 мг/кг without epi)"
+          ]
+        },
+        {
+          "title": "Insertion technique",
+          "items": [
+            "Identify maximum pulsation",
+            "Insert needle 30° angle, slowly advance",
+            "Watch for arterial flash (pulsatile bright red)",
+            "Lower angle, advance catheter into vessel",
+            "Withdraw needle, attach T-piece",
+            "Connect transducer, observe waveform"
+          ]
+        },
+        {
+          "title": "После процедуры",
+          "items": [
+            "Anchor с suture или secure tape",
+            "Sterile transparent dressing — visualization",
+            "Set BP monitor + waveform alarm",
+            "Toe/finger perfusion check q1h",
+            "Document time, side, gauge, attempts",
+            "Removal criteria: not needed OR signs ischemia OR ≥7 дней (CDC recommendation)"
+          ]
+        },
+        {
+          "title": "Осложнения",
+          "items": [
+            "Vasospasm — STAT removal если persistent ischemia >30 мин",
+            "Thrombosis — anticoagulation considered",
+            "Hematoma",
+            "Infection (catheter-related bloodstream infection)",
+            "Inadvertent venipuncture (arterial blood pulsates, venous doesn't)"
+          ]
+        }
+      ],
+      "references": [
+        "AAP COFN Procedures 2024",
+        "Schindler E et al. Anaesth Crit Care Pain Med 2017;36:419"
+      ]
+    },
+    {
+      "id": "checklist-blood-transfusion-prbc",
+      "title_ru": "Трансфузия эритроцитарной массы (PRBC)",
+      "title_en": "Packed RBC transfusion в neonate",
+      "category": "vascular_access",
+      "estimated_minutes": 30,
+      "audience": "Врач-неонатолог + медсестра",
+      "indications": [
+        "Anemia с symptoms (apnea, bradycardia, поor feeding, lactic acidosis)",
+        "TOP trial thresholds: Hb 70-110 г/л based on respiratory support + age (Kirpalani 2020)",
+        "Acute hemorrhage с hemodynamic compromise"
+      ],
+      "sections": [
+        {
+          "title": "Подготовка",
+          "items": [
+            "Type + crossmatch verified ребёнок и мать",
+            "PRBC: leukoreduced, irradiated, CMV-seronegative или -reduced (CDC)",
+            "Volume calculation: 10-15 мл/кг (over 2-4 часа typically)",
+            "Pre-warming preferred (avoid hypothermia из cold blood)",
+            "IV access (peripheral OK, NOT через UVC если sterile concerns)",
+            "Furosemide ready — если concerned для volume overload"
+          ]
+        },
+        {
+          "title": "Перед transfusion",
+          "items": [
+            "Two-person verification: patient name, blood unit ID, expiry, crossmatch",
+            "Baseline vitals: t°, HR, BP, RR, SpO₂",
+            "Pre-transfusion CBC + bilirubin",
+            "Informed consent (parental — каждая transfusion)",
+            "Document time of start"
+          ]
+        },
+        {
+          "title": "Во время transfusion",
+          "items": [
+            "Slow start 1-2 мл/кг/час × 15 мин — watch for reaction",
+            "Reassess vitals at 15 мин, 30 мин, hourly",
+            "Standard rate 10-15 мл/кг/час if stable",
+            "Maximum infusion time 4 часа per unit (bacterial growth risk)",
+            "Watch для transfusion reaction signs (fever, hypotension, hives, hemoglobinuria)"
+          ]
+        },
+        {
+          "title": "После transfusion",
+          "items": [
+            "Post-transfusion CBC 1-2 часа (verify rise; expected 1 мл/кг raises Hb 10 г/л)",
+            "Recheck bilirubin 6 часа (TSB rise — common, monitor)",
+            "Documentation: volume, rate, response, complications",
+            "Consider iron supplementation после multiple transfusions"
+          ]
+        },
+        {
+          "title": "Осложнения",
+          "items": [
+            "Acute hemolytic reaction — STOP, supportive care, investigate",
+            "Bacterial contamination (rare с modern screening, but high mortality)",
+            "TACO (transfusion-associated circulatory overload) — slow rate, diuretic",
+            "TRALI (transfusion-related acute lung injury)",
+            "Hyperkalemia (older blood)",
+            "NEC (controversial association — irradiated leukoreduced lower risk)"
+          ]
+        }
+      ],
+      "references": [
+        "Kirpalani H et al. NEJM 2020;383:2639 — TOP trial",
+        "Whyte RK, Jefferies AL. CPS 2014",
+        "AABB Standards 2024"
+      ]
+    },
+    {
+      "id": "checklist-ng-tube-placement",
+      "title_ru": "Постановка orogastric/nasogastric зонда",
+      "title_en": "Orogastric/nasogastric tube placement",
+      "category": "respiratory",
+      "estimated_minutes": 5,
+      "audience": "Медсестра / врач",
+      "indications": [
+        "Enteral nutrition delivery в preterm",
+        "Gastric decompression (CPAP, NEC, ileus)",
+        "Medication administration"
+      ],
+      "sections": [
+        {
+          "title": "Подготовка",
+          "items": [
+            "Tube: 5 Fr (preterm <2 кг), 8 Fr (term)",
+            "Choice: orogastric preferred preterm <34 нед (preserves nasal breathing)",
+            "Lubricant (sterile water-soluble)",
+            "Шприц 5-10 мл для aspiration",
+            "Tape для secure",
+            "pH paper или verification system"
+          ]
+        },
+        {
+          "title": "Pre-measurement (NEMU technique preferred)",
+          "items": [
+            "NEMU = nose to ear to mid-umbilicus distance",
+            "Mark measurement на tube (sterile marker)",
+            "Alternative formula: weight-based 13 + (weight kg × 1.7) cm",
+            "Не использовать NEX (nose-ear-xiphoid) — frequently malpositioned"
+          ]
+        },
+        {
+          "title": "Insertion",
+          "items": [
+            "Position infant supine, head в neutral position",
+            "Lubricate tip of tube",
+            "Pass tube smoothly through mouth/nose toward back of throat",
+            "При 5-7 см от mouth — pass quickly past pharynx",
+            "Continue к pre-measured depth",
+            "При resistance — STOP, withdraw 1-2 см, re-attempt slowly"
+          ]
+        },
+        {
+          "title": "Verification (CRITICAL)",
+          "items": [
+            "Aspirate gastric contents — pH paper testing",
+            "pH ≤5.0 = correctly в желудке (gastric acid)",
+            "pH 5.5-7.0 = uncertain — verify дополнительно",
+            "pH >7.0 = likely respiratory tract — REMOVE",
+            "Auscultation alone NOT reliable (false-positive в lung)",
+            "Ультразвук подтверждение если pH uncertain (ELBW часто achlorhydric)",
+            "X-ray verification если concerns / large feeds planned"
+          ]
+        },
+        {
+          "title": "Secure + post-procedure",
+          "items": [
+            "Tape secure без tension на nose / lip",
+            "Document depth at lip / naris",
+            "Check residuals before each feed",
+            "Re-verify position daily + при concerning signs",
+            "Replace q3-7 days (или per institution policy)"
+          ]
+        },
+        {
+          "title": "Осложнения",
+          "items": [
+            "Misplacement в trachea (especially preterm) → respiratory compromise",
+            "Tracheoesophageal injury",
+            "Apnea / bradycardia при insertion (vagal)",
+            "Skin breakdown около nose / lip",
+            "Sinusitis (chronic NG)"
+          ]
+        }
+      ],
+      "references": [
+        "ESPGHAN 2018 PN guidelines",
+        "Quandt D et al. J Perinatol 2009;29:339 — NEMU vs NEX",
+        "AAP Hospital Care Manual 2024"
+      ]
+    },
+    {
+      "id": "checklist-discharge-readiness-vlbw",
+      "title_ru": "Готовность к выписке VLBW",
+      "title_en": "Discharge readiness VLBW",
+      "category": "resuscitation",
+      "estimated_minutes": 15,
+      "audience": "NICU team",
+      "indications": [
+        "VLBW preterm после prolonged NICU stay",
+        "Discharge planning для multidisciplinary team"
+      ],
+      "sections": [
+        {
+          "title": "Cardio-respiratory stability",
+          "items": [
+            "No apnea / bradycardia × 5-7 дней (institution-specific)",
+            "Off methylxanthines × 5-7 дней",
+            "On stable respiratory support if any (or room air)",
+            "SpO₂ stable in target range",
+            "No supplemental O₂ OR home O₂ plan in place"
+          ]
+        },
+        {
+          "title": "Thermal regulation",
+          "items": [
+            "Maintain temperature в open crib без incubator",
+            "≥1800-2000 г weight (institution variable)",
+            "Demonstrated thermal stability × 24-48 часов"
+          ]
+        },
+        {
+          "title": "Nutrition + growth",
+          "items": [
+            "Adequate weight gain trajectory (15-30 г/сут)",
+            "All feeds PO (бутылка / breastfeeding) OR home tube feeding plan",
+            "Mother's breastfeeding established / formula plan",
+            "Iron supplementation prescribed (preterm)",
+            "Vitamin D supplementation prescribed",
+            "HMF transition plan если applicable"
+          ]
+        },
+        {
+          "title": "Screenings completed",
+          "items": [
+            "Hearing screen (AABR/OAE) passed OR follow-up arranged",
+            "ROP — to regression OR follow-up scheduled",
+            "Cranial ultrasound — final exam",
+            "CCHD pulse ox screen passed",
+            "Newborn metabolic screen sent",
+            "Hb / electrolytes acceptable",
+            "Hip exam normal"
+          ]
+        },
+        {
+          "title": "Family education + support",
+          "items": [
+            "CPR training для primary caregivers",
+            "Medication administration training",
+            "Recognition signs of illness",
+            "Equipment training (apnea monitor, O₂, tube feeds если applicable)",
+            "Safe sleep education",
+            "Car seat tolerance test passed (semi-recumbent angle observation 90 min)",
+            "Social work assessment + community resources",
+            "Mental health support (parental depression screen)"
+          ]
+        },
+        {
+          "title": "Follow-up arranged",
+          "items": [
+            "Pediatrician visit within 1-3 days of discharge",
+            "NICU follow-up clinic at 1 month, 4 months, 6-9 months, 12-15 months",
+            "Developmental follow-up до 18-24 months corrected age",
+            "Specialty follow-up: ophthalmology, audiology, neurology, pulmonology PRN",
+            "Early intervention referral если indicated",
+            "Synagis (palivizumab) plan для RSV season если eligible"
+          ]
+        }
+      ],
+      "references": [
+        "AAP COFN. Pediatrics 2008;122:1119 — Hospital Discharge of the High-Risk Neonate",
+        "Bull MJ, Engle WA. AAP. Pediatrics 2009;123:1424"
+      ]
+    },
+    {
+      "id": "checklist-blood-glucose-monitoring",
+      "title_ru": "Glucose мониторинг at-risk newborn в первые 48 часов",
+      "title_en": "Glucose monitoring at-risk newborn first 48h",
+      "category": "vascular_access",
+      "estimated_minutes": 5,
+      "audience": "Медсестра",
+      "indications": [
+        "IDM (мать с диабетом)",
+        "LGA (>90-й перцентиль)",
+        "SGA (<10-й перцентиль)",
+        "Late preterm 34-36 нед",
+        "Symptomatic newborn"
+      ],
+      "sections": [
+        {
+          "title": "Schedule",
+          "items": [
+            "First check 30-60 мин после first feed (within 2 ч жизни)",
+            "Repeat pre-feed × 12-24 ч (q3-4h)",
+            "Continue × 12-48 ч depending risk + glucose stability",
+            "Stop after 2-3 stable pre-feed values ≥2.6 ммоль/л (47 мг/дл)"
+          ]
+        },
+        {
+          "title": "Action thresholds",
+          "items": [
+            "BG <1.0 ммоль/л — STAT IV D10 bolus regardless symptoms",
+            "BG <2.0 ммоль/л + symptoms — IV D10 bolus + continuous infusion",
+            "BG <2.0 ммоль/л asymptomatic — feed (formula 10-30 мл/кг или breastfeed)",
+            "BG <2.6 ммоль/л + symptoms — IV D10 bolus",
+            "BG ≥2.6 ммоль/л — continue routine schedule"
+          ]
+        },
+        {
+          "title": "Buccal dextrose gel option",
+          "items": [
+            "40% dextrose gel 0.2 г/кг (~0.5 мл/кг) PO buccal",
+            "Apply в cheek mucosa, follow с feed",
+            "Adjunct, NOT replacement for evaluation",
+            "SHIN trial: equivalent или superior to IV для transient operational hypoglycemia"
+          ]
+        },
+        {
+          "title": "Documentation",
+          "items": [
+            "Time + value каждой glucose check",
+            "Method: bedside glucometer vs lab plasma",
+            "Confirmed lab value if bedside <2.5 ммоль/л",
+            "Feed timing relative к check",
+            "Symptoms если любые",
+            "Action taken"
+          ]
+        },
+        {
+          "title": "Persistent hypoglycemia >48 hours",
+          "items": [
+            "Critical sample при event (BG <2.6):",
+            "  Insulin, C-peptide, cortisol, GH",
+            "  β-hydroxybutyrate, free fatty acids",
+            "  Lactate, ammonia",
+            "  Urine ketones, reducing substances, organic acids",
+            "Glucagon stimulation test (rise ≥1.7 ммоль/л = preserved liver glycogen + HI)",
+            "Consult endocrine + metabolic",
+            "Diazoxide trial если HI confirmed"
+          ]
+        }
+      ],
+      "references": [
+        "BAPM 2017 — Identification & Management Neonatal Hypoglycaemia",
+        "Thornton PS et al. PES J Pediatr 2015;167:238",
+        "Harris DL et al. Lancet 2013;382:2077 — SHIN trial"
       ]
     }
   ]
