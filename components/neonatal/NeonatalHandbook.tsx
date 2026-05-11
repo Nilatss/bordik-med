@@ -1526,7 +1526,7 @@ function DrugCard({
       transition: 'border-color 150ms ease',
       position: 'relative',
     }}>
-      <div style={{ position: 'absolute', top: 8, right: 8, zIndex: 2 }}>
+      <div style={{ position: 'absolute', top: 12, right: 50, zIndex: 2 }}>
         <FavoriteStarButton id={`drug:${drug.id}`} type="drug" title={drug.name_ru} />
       </div>
       <button
@@ -1538,7 +1538,7 @@ function DrugCard({
         style={{
           width: '100%',
           display: 'flex', alignItems: 'center', gap: 14,
-          padding: '14px 40px 14px 18px',
+          padding: '14px 18px',
           background: 'transparent', border: 'none',
           cursor: 'pointer', textAlign: 'left',
           fontFamily: 'inherit',
@@ -2136,7 +2136,7 @@ function GuidelineCard({
       transition: 'border-color 150ms ease',
       position: 'relative',
     }}>
-      <div style={{ position: 'absolute', top: 8, right: 8, zIndex: 2 }}>
+      <div style={{ position: 'absolute', top: 12, right: 50, zIndex: 2 }}>
         <FavoriteStarButton id={`guideline:${guideline.id}`} type="guideline" title={guideline.title_ru} />
       </div>
       <button
@@ -2148,7 +2148,7 @@ function GuidelineCard({
         style={{
           width: '100%',
           display: 'flex', alignItems: 'flex-start', gap: 14,
-          padding: '14px 40px 14px 18px',
+          padding: '14px 18px',
           background: 'transparent', border: 'none',
           cursor: 'pointer', textAlign: 'left',
           fontFamily: 'inherit',
@@ -2832,7 +2832,7 @@ function LactCard({
       transition: 'border-color 150ms ease',
       position: 'relative',
     }}>
-      <div style={{ position: 'absolute', top: 8, right: 8, zIndex: 2 }}>
+      <div style={{ position: 'absolute', top: 12, right: 50, zIndex: 2 }}>
         <FavoriteStarButton id={`lactmed:${drug.id}`} type="lactmed" title={drug.name_ru} />
       </div>
       <button
@@ -2844,7 +2844,7 @@ function LactCard({
         style={{
           width: '100%',
           display: 'flex', alignItems: 'flex-start', gap: 14,
-          padding: '14px 40px 14px 18px',
+          padding: '14px 18px',
           background: 'transparent', border: 'none',
           cursor: 'pointer', textAlign: 'left',
           fontFamily: 'inherit',
@@ -4036,7 +4036,7 @@ function ChecklistCard({
       transition: 'border-color 150ms ease',
       position: 'relative',
     }}>
-      <div style={{ position: 'absolute', top: 8, right: 8, zIndex: 2 }}>
+      <div style={{ position: 'absolute', top: 12, right: 50, zIndex: 2 }}>
         <FavoriteStarButton id={`checklist:${c.id}`} type="checklist" title={c.title_ru} />
       </div>
       <button
@@ -4048,7 +4048,7 @@ function ChecklistCard({
         style={{
           width: '100%',
           display: 'flex', alignItems: 'flex-start', gap: 14,
-          padding: '14px 40px 14px 18px',
+          padding: '14px 18px',
           background: 'transparent', border: 'none',
           cursor: 'pointer', textAlign: 'left',
           fontFamily: 'inherit',
@@ -4418,7 +4418,7 @@ function ProcedureVideoCard({ video }: { video: ProcedureVideo }) {
   };
   return (
     <div style={{ position: 'relative' }}>
-      <div style={{ position: 'absolute', top: 8, right: 8, zIndex: 2 }}>
+      <div style={{ position: 'absolute', top: 12, right: 12, zIndex: 2 }}>
         <FavoriteStarButton id={`video:${v.id}`} type="video" title={v.title_ru} />
       </div>
     <a
@@ -4796,7 +4796,7 @@ function AtlasCard({
       transition: 'border-color 150ms ease',
       position: 'relative',
     }}>
-      <div style={{ position: 'absolute', top: 8, right: 8, zIndex: 2 }}>
+      <div style={{ position: 'absolute', top: 12, right: 50, zIndex: 2 }}>
         <FavoriteStarButton id={`atlas:${a.id}`} type="atlas" title={a.title_ru} />
       </div>
       <button
@@ -4808,7 +4808,7 @@ function AtlasCard({
         style={{
           width: '100%',
           display: 'flex', alignItems: 'flex-start', gap: 14,
-          padding: '14px 40px 14px 18px',
+          padding: '14px 18px',
           background: 'transparent', border: 'none',
           cursor: 'pointer', textAlign: 'left',
           fontFamily: 'inherit',
