@@ -67,10 +67,7 @@ export default function BilirubinNomogram() {
 
   if (error) {
     return (
-      <div style={{
-        padding: 24, borderRadius: 12, background: '#FEF2F2',
-        border: '1px solid #FECACA', color: '#991B1B', fontSize: 14,
-      }}>
+      <div className="p-6 rounded-[12px] bg-[#FEF2F2] border border-[#FECACA] text-[#991B1B] text-sm">
         Не удалось загрузить нормы билирубина: {error}.
       </div>
     );
@@ -78,16 +75,16 @@ export default function BilirubinNomogram() {
 
   if (!bank) {
     return (
-      <div style={{ padding: '8px 0' }}>
-        <div className="lc-shimmer" style={{ height: 28, width: 240, borderRadius: 8, marginBottom: 14 }} />
-        <div className="lc-shimmer" style={{ height: 64, width: '100%', maxWidth: 480, borderRadius: 12, marginBottom: 12 }} />
-        <div className="lc-shimmer" style={{ height: 320, width: '100%', borderRadius: 12 }} />
+      <div className="py-2">
+        <div className="lc-shimmer h-7 w-60 rounded-lg mb-[14px]" />
+        <div className="lc-shimmer h-16 w-full max-w-[480px] rounded-[12px] mb-3" />
+        <div className="lc-shimmer h-[320px] w-full rounded-[12px]" />
       </div>
     );
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+    <div className="flex flex-col gap-[18px]">
       <ControlsPanel
         bank={bank}
         gaWeeks={gaWeeks}
@@ -143,19 +140,11 @@ function ControlsPanel({
   };
 
   return (
-    <div style={{
-      display: 'flex', flexDirection: 'column', gap: 18,
-      padding: 18,
-      background: '#F5F6F8',
-      borderRadius: 14,
-    }}>
+    <div className="flex flex-col gap-[18px] p-[18px] bg-[#F5F6F8] rounded-[14px]">
       {/* Section: Параметры пациента */}
       <div>
         <SectionLabel>Параметры пациента</SectionLabel>
-        <div style={{
-          display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
-          gap: 10,
-        }}>
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(160px,1fr))] gap-2.5">
           <Field label="GA, недели" hint="35–42">
             <BordikNumberInput
               value={gaWeeks}
@@ -194,7 +183,7 @@ function ControlsPanel({
       {/* Section: Факторы риска */}
       <div>
         <SectionLabel>Факторы риска нейротоксичности</SectionLabel>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+        <div className="flex flex-wrap gap-2">
           {bank.riskFactors.map((rf) => {
             const active = risks.has(rf.id);
             const isAuto = rf.id === 'ga_lt_38';
@@ -217,12 +206,7 @@ function ControlsPanel({
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{
-      fontFamily: 'var(--font-display)',
-      fontSize: 13, fontWeight: 600, color: '#111827',
-      letterSpacing: '-0.005em',
-      marginBottom: 10,
-    }}>
+    <div className="font-[var(--font-display)] text-[13px] font-semibold text-[#111827] tracking-[-0.005em] mb-2.5">
       {children}
     </div>
   );
@@ -230,19 +214,13 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 
 function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
   return (
-    <label style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-      <span style={{
-        fontSize: 11, fontWeight: 600, color: '#6B7280',
-        letterSpacing: '0.04em', textTransform: 'uppercase',
-      }}>
+    <label className="flex flex-col gap-[5px]">
+      <span className="text-[11px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase">
         {label}
       </span>
       {children}
       {hint && (
-        <span style={{
-          fontSize: 11, fontWeight: 400, color: '#9CA3AF',
-          marginTop: 2,
-        }}>
+        <span className="text-[11px] font-normal text-[#9CA3AF] mt-0.5">
           {hint}
         </span>
       )}
@@ -267,31 +245,14 @@ function BordikNumberInput({
     value,
     onChange: (e) => onChange(e.target.value),
     inputMode: 'decimal',
-    style: {
-      width: '100%',
-      background: 'transparent',
-      border: 'none',
-      outline: 'none',
-      padding: 0,
-      fontFamily: 'inherit',
-      fontSize: 14,
-      fontWeight: 500,
-      color: '#111827',
-    },
+    className: 'w-full bg-transparent border-none outline-none p-0 font-[inherit] text-sm font-medium text-[#111827]',
   };
   if (min !== undefined) inputProps.min = min;
   if (max !== undefined) inputProps.max = max;
   if (step !== undefined) inputProps.step = step;
   if (placeholder !== undefined) inputProps.placeholder = placeholder;
   return (
-    <div className="bordik-search" style={{
-      padding: '10px 12px',
-      background: '#FFFFFF',
-      borderRadius: 10,
-      transition: 'background 140ms ease, box-shadow 140ms ease',
-      minHeight: 40,
-      display: 'flex', alignItems: 'center',
-    }}>
+    <div className="bordik-search py-2.5 px-3 bg-white rounded-[10px] transition-[background,box-shadow] duration-[140ms] min-h-10 flex items-center">
       <input {...inputProps} />
     </div>
   );
@@ -307,13 +268,7 @@ function SegmentedControl<T extends string>({
   options: Array<{ value: T; label: string }>;
 }) {
   return (
-    <div role="tablist" style={{
-      display: 'flex', gap: 2,
-      padding: 4,
-      background: '#FFFFFF',
-      borderRadius: 10,
-      minHeight: 40,
-    }}>
+    <div role="tablist" className="flex gap-0.5 p-1 bg-white rounded-[10px] min-h-10">
       {options.map((opt) => {
         const isActive = value === opt.value;
         return (
@@ -323,21 +278,11 @@ function SegmentedControl<T extends string>({
             role="tab"
             aria-selected={isActive}
             onClick={() => onChange(opt.value)}
-            style={{
-              flex: 1,
-              padding: '6px 10px',
-              background: isActive ? '#2563EB' : 'transparent',
-              color: isActive ? '#FFFFFF' : '#6B7280',
-              border: 'none',
-              borderRadius: 7,
-              cursor: 'pointer',
-              fontFamily: 'inherit',
-              fontSize: 13, fontWeight: 600,
-              letterSpacing: '0.01em',
-              transition: 'background 140ms ease, color 140ms ease',
-            }}
-            onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.color = '#111827'; }}
-            onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.color = '#6B7280'; }}
+            className={`flex-1 py-1.5 px-2.5 border-none rounded-[7px] cursor-pointer font-[inherit] text-[13px] font-semibold tracking-[0.01em] transition-colors duration-[140ms] ${
+              isActive
+                ? 'bg-[#2563EB] text-white'
+                : 'bg-transparent text-[#6B7280] hover:text-[#111827]'
+            }`}
           >
             {opt.label}
           </button>
@@ -358,6 +303,11 @@ function RiskChip({
   hint: string;
   onClick: () => void;
 }) {
+  const stateClass = active
+    ? 'bg-[#EFF6FF] text-[#1D4ED8] font-semibold opacity-100'
+    : disabled
+      ? 'bg-white text-[#9CA3AF] font-medium opacity-65'
+      : 'bg-white hover:bg-[#EFF1F4] text-[#374151] font-medium opacity-100';
   return (
     <button
       type="button"
@@ -365,21 +315,9 @@ function RiskChip({
       disabled={disabled}
       title={hint}
       aria-pressed={active}
-      style={{
-        display: 'inline-flex', alignItems: 'center', gap: 6,
-        padding: '7px 13px',
-        background: active ? '#EFF6FF' : '#FFFFFF',
-        color: active ? '#1D4ED8' : disabled ? '#9CA3AF' : '#374151',
-        border: 'none',
-        borderRadius: 999,
-        cursor: disabled ? 'not-allowed' : 'pointer',
-        fontFamily: 'inherit',
-        fontSize: 12, fontWeight: active ? 600 : 500,
-        opacity: disabled && !active ? 0.65 : 1,
-        transition: 'background 140ms ease, color 140ms ease',
-      }}
-      onMouseEnter={(e) => { if (!disabled && !active) e.currentTarget.style.background = '#EFF1F4'; }}
-      onMouseLeave={(e) => { if (!disabled && !active) e.currentTarget.style.background = '#FFFFFF'; }}
+      className={`inline-flex items-center gap-1.5 py-[7px] px-[13px] border-none rounded-full font-[inherit] text-xs transition-colors duration-[140ms] ${
+        disabled ? 'cursor-not-allowed' : 'cursor-pointer'
+      } ${stateClass}`}
     >
       {active && (
         <svg width={12} height={12} viewBox="0 0 24 24" fill="none"
@@ -432,13 +370,7 @@ function ResultPanel({
 
   if (!computed) {
     return (
-      <div style={{
-        padding: '20px 18px', background: '#FFFFFF',
-        border: '1px dashed #E5E7EB', borderRadius: 12,
-        color: '#9CA3AF', fontSize: 13,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        textAlign: 'center', minHeight: 240,
-      }}>
+      <div className="py-5 px-[18px] bg-white border border-dashed border-[#E5E7EB] rounded-[12px] text-[#9CA3AF] text-[13px] flex items-center justify-center text-center min-h-[240px]">
         Введите GA, часы жизни и TSB — рассчитаем пороги фототерапии и обменного переливания + рекомендацию по AAP 2022.
       </div>
     );
@@ -472,55 +404,62 @@ function ResultPanel({
   }[rec.tone];
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+    <div className="flex flex-col gap-3">
       {/* Главная рекомендация: тон + label + detail + rationale + reference */}
-      <div style={{
-        padding: '14px 16px',
-        background: toneBg,
-        borderLeft: `4px solid ${toneAccent}`,
-        borderRadius: 10,
-      }}>
-        <div style={{
-          fontSize: 11, fontWeight: 700, color: toneText,
-          letterSpacing: '0.04em', textTransform: 'uppercase', marginBottom: 6, opacity: 0.85,
-        }}>
+      <div
+        className="py-[14px] px-4 bg-[var(--tone-bg)] border-l-4 border-[var(--tone-accent)] rounded-[10px]"
+        // eslint-disable-next-line react/forbid-dom-props -- dynamic tone palette
+        style={{
+          ['--tone-bg' as string]: toneBg,
+          ['--tone-accent' as string]: toneAccent,
+        }}
+      >
+        <div
+          className="text-[11px] font-bold tracking-[0.04em] uppercase mb-1.5 opacity-85 text-[var(--tone-text)]"
+          // eslint-disable-next-line react/forbid-dom-props -- dynamic tone text
+          style={{ ['--tone-text' as string]: toneText }}
+        >
           Рекомендация AAP 2022
         </div>
-        <div style={{
-          fontFamily: 'var(--font-display)',
-          fontSize: 16, fontWeight: 600,
-          color: toneText, letterSpacing: '-0.005em',
-          lineHeight: 1.4, marginBottom: 8,
-        }}>
+        <div
+          className="font-[var(--font-display)] text-base font-semibold tracking-[-0.005em] leading-[1.4] mb-2 text-[var(--tone-text)]"
+          // eslint-disable-next-line react/forbid-dom-props -- dynamic tone text
+          style={{ ['--tone-text' as string]: toneText }}
+        >
           {rec.label_ru}
         </div>
-        <p style={{
-          margin: 0, fontSize: 13, color: toneText, opacity: 0.92,
-          lineHeight: 1.55,
-        }}>
+        <p
+          className="m-0 text-[13px] opacity-90 leading-[1.55] text-[var(--tone-text)]"
+          // eslint-disable-next-line react/forbid-dom-props -- dynamic tone text
+          style={{ ['--tone-text' as string]: toneText }}
+        >
           {rec.detail_ru}
         </p>
-        <div style={{
-          marginTop: 10, paddingTop: 10,
-          borderTop: `1px solid ${toneAccent}33`,
-        }}>
-          <div style={{
-            fontSize: 10, fontWeight: 700, color: toneText, opacity: 0.7,
-            letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 3,
-          }}>
+        <div
+          className="mt-2.5 pt-2.5 border-t border-[var(--tone-divider)]"
+          // eslint-disable-next-line react/forbid-dom-props -- dynamic tone divider
+          style={{ ['--tone-divider' as string]: `${toneAccent}33` }}
+        >
+          <div
+            className="text-[10px] font-bold opacity-70 tracking-[0.06em] uppercase mb-[3px] text-[var(--tone-text)]"
+            // eslint-disable-next-line react/forbid-dom-props -- dynamic tone text
+            style={{ ['--tone-text' as string]: toneText }}
+          >
             Почему так
           </div>
-          <div style={{
-            fontSize: 12, color: toneText, opacity: 0.92, lineHeight: 1.55,
-          }}>
+          <div
+            className="text-xs opacity-90 leading-[1.55] text-[var(--tone-text)]"
+            // eslint-disable-next-line react/forbid-dom-props -- dynamic tone text
+            style={{ ['--tone-text' as string]: toneText }}
+          >
             {rec.rationale_ru}
           </div>
         </div>
-        <div style={{
-          marginTop: 8,
-          fontSize: 10, color: toneText, opacity: 0.6,
-          fontStyle: 'italic', lineHeight: 1.45,
-        }}>
+        <div
+          className="mt-2 text-[10px] opacity-60 italic leading-[1.45] text-[var(--tone-text)]"
+          // eslint-disable-next-line react/forbid-dom-props -- dynamic tone text
+          style={{ ['--tone-text' as string]: toneText }}
+        >
           Источник: {rec.reference}
         </div>
       </div>
@@ -529,53 +468,29 @@ function ResultPanel({
             1. Страт риска — узкий полноширинный contextual pill (Tier C)
             2. Текущий TSB — primary metric, accent blue, full width (Tier A)
             3. Порог ФТ + Порог ОП — secondary metrics в 2 колонки (Tier B) */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <div className="flex flex-col gap-2">
         {/* Tier C — стратум как inline-context */}
-        <div style={{
-          padding: '8px 12px',
-          background: '#F5F6F8',
-          borderRadius: 8,
-          display: 'flex', alignItems: 'baseline', gap: 8,
-          flexWrap: 'wrap',
-        }}>
-          <span style={{
-            fontSize: 10, fontWeight: 700, color: '#9CA3AF',
-            letterSpacing: '0.06em', textTransform: 'uppercase',
-            fontFamily: 'var(--font-mono, ui-monospace)',
-          }}>
+        <div className="py-2 px-3 bg-[#F5F6F8] rounded-lg flex items-baseline gap-2 flex-wrap">
+          <span className="text-[10px] font-bold text-[#9CA3AF] tracking-[0.06em] uppercase font-[var(--font-mono,ui-monospace)]">
             Страт риска
           </span>
-          <span style={{ fontSize: 12, fontWeight: 500, color: '#374151', lineHeight: 1.4 }}>
+          <span className="text-xs font-medium text-[#374151] leading-[1.4]">
             {STRATUM_LABEL_RU[computed.stratum]}
           </span>
         </div>
 
         {/* Tier A — текущий TSB как primary */}
-        <div style={{
-          padding: '14px 16px',
-          background: '#EFF6FF',
-          border: '1px solid #BFDBFE',
-          borderRadius: 12,
-        }}>
-          <div style={{
-            fontSize: 11, fontWeight: 600, color: '#1D4ED8',
-            letterSpacing: '0.04em', textTransform: 'uppercase', marginBottom: 4,
-          }}>
+        <div className="py-[14px] px-4 bg-[#EFF6FF] border border-[#BFDBFE] rounded-[12px]">
+          <div className="text-[11px] font-semibold text-[#1D4ED8] tracking-[0.04em] uppercase mb-1">
             Текущий TSB
           </div>
-          <div style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: 28, fontWeight: 700,
-            color: '#1E3A8A', letterSpacing: '-0.02em', lineHeight: 1.1,
-          }}>
-            {fmt(computed.tsbMgdl)} <span style={{ fontSize: 16, fontWeight: 600, opacity: 0.65 }}>{unit}</span>
+          <div className="font-[var(--font-display)] text-[28px] font-bold text-[#1E3A8A] tracking-[-0.02em] leading-[1.1]">
+            {fmt(computed.tsbMgdl)} <span className="text-base font-semibold opacity-65">{unit}</span>
           </div>
         </div>
 
         {/* Tier B — пороги в 2 колонки */}
-        <div style={{
-          display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8,
-        }}>
+        <div className="grid grid-cols-2 gap-2">
           <Card
             label="Порог фототерапии"
             value={`${fmt(computed.ptThr)} ${unit}`}
@@ -602,32 +517,15 @@ function Card({
   accent?: boolean;
 }) {
   return (
-    <div style={{
-      padding: '12px 14px',
-      background: accent ? '#EFF6FF' : '#FFFFFF',
-      border: `1px solid ${accent ? '#BFDBFE' : '#E5E7EB'}`,
-      borderRadius: 12,
-    }}>
-      <div style={{
-        fontSize: 11, fontWeight: 600,
-        color: accent ? '#1D4ED8' : '#9CA3AF',
-        letterSpacing: '0.04em', textTransform: 'uppercase', marginBottom: 4,
-      }}>
+    <div className={`py-3 px-3.5 rounded-[12px] border ${accent ? 'bg-[#EFF6FF] border-[#BFDBFE]' : 'bg-white border-[#E5E7EB]'}`}>
+      <div className={`text-[11px] font-semibold tracking-[0.04em] uppercase mb-1 ${accent ? 'text-[#1D4ED8]' : 'text-[#9CA3AF]'}`}>
         {label}
       </div>
-      <div style={{
-        fontFamily: 'var(--font-display)',
-        fontSize: small ? 13 : 18, fontWeight: 700,
-        color: accent ? '#1E3A8A' : '#111827', letterSpacing: '-0.01em',
-        lineHeight: 1.3,
-      }}>
+      <div className={`font-[var(--font-display)] font-bold tracking-[-0.01em] leading-[1.3] ${small ? 'text-[13px]' : 'text-lg'} ${accent ? 'text-[#1E3A8A]' : 'text-[#111827]'}`}>
         {value}
       </div>
       {sub && (
-        <div style={{
-          fontSize: 11, color: accent ? '#3B82F6' : '#6B7280', marginTop: 3,
-          fontFamily: 'var(--font-mono, ui-monospace)',
-        }}>
+        <div className={`text-[11px] mt-[3px] font-[var(--font-mono,ui-monospace)] ${accent ? 'text-[#3B82F6]' : 'text-[#6B7280]'}`}>
           {sub}
         </div>
       )}
@@ -705,44 +603,24 @@ function ChartView({
   const exPath = smoothPath(exCurve.filter((p) => p.hour <= maxHour).map((p) => ({ x: xScale(p.hour), y: yScale(transform(p.tsb)) })));
 
   return (
-    <div style={{
-      padding: '16px 18px 14px',
-      background: '#FFFFFF',
-      border: '1px solid #E5E7EB',
-      borderRadius: 12,
-      display: 'flex', flexDirection: 'column', gap: 12,
-      position: 'relative',
-    }}>
+    <div className="pt-4 px-[18px] pb-[14px] bg-white border border-[#E5E7EB] rounded-[12px] flex flex-col gap-3 relative">
       {/* Header — title + параграф + контекст */}
       <div>
-        <div style={{
-          display: 'flex', alignItems: 'baseline', justifyContent: 'space-between',
-          flexWrap: 'wrap', gap: 8, marginBottom: 4,
-        }}>
-          <h3 style={{
-            margin: 0,
-            fontFamily: 'var(--font-display)', fontSize: 16, fontWeight: 600,
-            color: '#111827', letterSpacing: '-0.01em',
-          }}>
+        <div className="flex items-baseline justify-between flex-wrap gap-2 mb-1">
+          <h3 className="m-0 font-[var(--font-display)] text-base font-semibold text-[#111827] tracking-[-0.01em]">
             Билирубин TSB ({unit}) по часам жизни
           </h3>
-          <div style={{
-            fontSize: 11, color: '#9CA3AF',
-            letterSpacing: '0.04em', textTransform: 'uppercase', fontWeight: 600,
-            fontFamily: 'var(--font-mono, ui-monospace)',
-          }}>
+          <div className="text-[11px] text-[#9CA3AF] tracking-[0.04em] uppercase font-semibold font-[var(--font-mono,ui-monospace)]">
             AAP 2022 · 0–168 ч
           </div>
         </div>
-        <p style={{
-          margin: 0, fontSize: 12, color: '#6B7280', lineHeight: 1.5,
-        }}>
+        <p className="m-0 text-xs text-[#6B7280] leading-[1.5]">
           Кривые отображают пороги для текущего страта риска. Точка пациента
           между ФТ и ОП — фототерапия; над ОП — обменное переливание.
         </p>
       </div>
 
-      <svg viewBox={`0 0 ${width} ${height}`} style={{ width: '100%', height: 'auto' }}
+      <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-auto"
         role="img" aria-label="График порогов AAP 2022">
         <defs>
           <linearGradient id="bili-bg" x1="0" y1="0" x2="0" y2="1">
@@ -847,29 +725,27 @@ function ChartView({
         const isRightHalf = tooltipLeftPct > 60;
         const fmt = (v: number): string => unit === 'mg/dL' ? v.toFixed(1) : Math.round(v * factor).toString();
         return (
-          <div className="neo-chart-tooltip" style={{
-            left: `${tooltipLeftPct}%`,
-            top: `${(margin.top / height) * 100 + 2}%`,
-            transform: isRightHalf ? 'translateX(calc(-100% - 12px))' : 'translateX(12px)',
-            minWidth: 160,
-          }}>
-            <div style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: 13, fontWeight: 600, color: '#111827',
-              marginBottom: 8, letterSpacing: '-0.005em',
-            }}>
+          <div
+            className={`neo-chart-tooltip min-w-[160px] ${isRightHalf ? '-translate-x-[calc(100%+12px)]' : 'translate-x-3'}`}
+            // eslint-disable-next-line react/forbid-dom-props -- dynamic tooltip position
+            style={{
+              left: `${tooltipLeftPct}%`,
+              top: `${(margin.top / height) * 100 + 2}%`,
+            }}
+          >
+            <div className="font-[var(--font-display)] text-[13px] font-semibold text-[#111827] mb-2 tracking-[-0.005em]">
               {Math.round(hoverHour)} ч жизни
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#2563EB', flexShrink: 0 }} />
-                <span style={{ color: '#6B7280', minWidth: 24 }}>ФТ</span>
-                <span style={{ color: '#111827', fontWeight: 600, marginLeft: 'auto' }}>{fmt(ptV)} {unit}</span>
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-[#2563EB] shrink-0" />
+                <span className="text-[#6B7280] min-w-[24px]">ФТ</span>
+                <span className="text-[#111827] font-semibold ml-auto">{fmt(ptV)} {unit}</span>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#DC2626', flexShrink: 0 }} />
-                <span style={{ color: '#6B7280', minWidth: 24 }}>ОП</span>
-                <span style={{ color: '#111827', fontWeight: 600, marginLeft: 'auto' }}>{fmt(exV)} {unit}</span>
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-[#DC2626] shrink-0" />
+                <span className="text-[#6B7280] min-w-[24px]">ОП</span>
+                <span className="text-[#111827] font-semibold ml-auto">{fmt(exV)} {unit}</span>
               </div>
             </div>
           </div>
@@ -877,16 +753,13 @@ function ChartView({
       })()}
 
       {/* Legend */}
-      <div style={{
-        display: 'flex', gap: 16, justifyContent: 'center',
-        fontSize: 11, color: '#6B7280',
-      }}>
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-          <span style={{ display: 'inline-block', width: 16, height: 2, background: '#2563EB', borderRadius: 1 }} />
+      <div className="flex gap-4 justify-center text-[11px] text-[#6B7280]">
+        <span className="inline-flex items-center gap-1.5">
+          <span className="inline-block w-4 h-0.5 bg-[#2563EB] rounded-[1px]" />
           Фототерапия
         </span>
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-          <span style={{ display: 'inline-block', width: 16, height: 2, background: '#DC2626', borderRadius: 1, opacity: 0.85 }} />
+        <span className="inline-flex items-center gap-1.5">
+          <span className="inline-block w-4 h-0.5 bg-[#DC2626] rounded-[1px] opacity-85" />
           Обменное переливание
         </span>
       </div>

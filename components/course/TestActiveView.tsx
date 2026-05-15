@@ -184,20 +184,8 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
       {/* Fullscreen overlay during test attempt — hides the course header,
            TOC sidebar and any other navigation. The only way out is the
            "Прервать" confirmation modal that re-uses onCancel. */}
-      <div className="test-active" style={{
-        position: 'fixed', inset: 0, zIndex: 50,
-        background: '#FFFFFF',
-        overflowY: 'auto',
-        padding: 'clamp(14px, 3vw, 32px) clamp(12px, 4vw, 48px) clamp(20px, 4vw, 32px)',
-        // While we're waiting for camera/mic permissions, dim the test so
-        // the user can't peek at questions before agreeing.
-        opacity: proctorReady ? 1 : 0,
-        pointerEvents: proctorReady ? undefined : 'none',
-      }}>
-      <div style={{
-        maxWidth: 840, margin: '0 auto',
-        display: 'flex', flexDirection: 'column', gap: 10,
-      }}>
+      <div className={`test-active fixed inset-0 z-50 bg-white overflow-y-auto pt-[clamp(14px,3vw,32px)] px-[clamp(12px,4vw,48px)] pb-[clamp(20px,4vw,32px)] ${proctorReady ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
+      <div className="max-w-[840px] mx-auto flex flex-col gap-2.5">
         {/* Soft warning banner — shows when proctoring detects a soft
              issue (loud audio etc.). Auto-dismisses after a few seconds. */}
         <AnimatePresence>
@@ -208,19 +196,11 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.22, ease: [0.05, 0.7, 0.1, 1] }}
-              style={{
-                padding: '10px 14px',
-                background: '#FFFBEB',
-                border: '1px solid #FCD34D',
-                color: '#92400E',
-                borderRadius: 10,
-                fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
-                display: 'flex', alignItems: 'center', gap: 10,
-              }}
+              className="py-2.5 px-3.5 bg-[#FFFBEB] border border-[#FCD34D] text-[#92400E] rounded-[10px] font-[var(--font-body)] text-[13px] font-semibold flex items-center gap-2.5"
             >
               <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round"
-                style={{ flexShrink: 0 }}>
+                className="shrink-0">
                 <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
                 <line x1="12" y1="9" x2="12" y2="13" />
                 <line x1="12" y1="17" x2="12.01" y2="17" />
@@ -240,40 +220,24 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10, scale: 0.97 }}
               transition={{ duration: 0.22, ease: [0.05, 0.7, 0.1, 1] }}
-              style={{
-                padding: '14px 16px',
-                background: '#FEF2F2',
-                border: '1px solid #FCA5A5',
-                color: '#991B1B',
-                borderRadius: 12,
-                fontFamily: 'var(--font-body)', fontSize: 13.5,
-                display: 'flex', alignItems: 'flex-start', gap: 12,
-                boxShadow: '0 6px 16px rgba(220,38,38,0.10)',
-              }}
+              className="py-[14px] px-4 bg-[#FEF2F2] border border-[#FCA5A5] text-[#991B1B] rounded-[12px] font-[var(--font-body)] text-[13.5px] flex items-start gap-3 shadow-[0_6px_16px_rgba(220,38,38,0.10)]"
             >
               <svg width={20} height={20} viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round"
-                style={{ flexShrink: 0, marginTop: 1 }}>
+                className="shrink-0 mt-px">
                 <circle cx="12" cy="12" r="10" />
                 <line x1="12" y1="8" x2="12" y2="12" />
                 <line x1="12" y1="16" x2="12.01" y2="16" />
               </svg>
-              <div style={{ minWidth: 0, flex: 1 }}>
-                <div style={{
-                  fontFamily: 'var(--font-mono)', fontSize: 10.5, fontWeight: 700,
-                  letterSpacing: '0.08em', textTransform: 'uppercase',
-                  color: '#B91C1C', marginBottom: 4,
-                }}>
+              <div className="min-w-0 flex-1">
+                <div className="font-[var(--font-mono)] text-[10.5px] font-bold tracking-[0.08em] uppercase text-[#B91C1C] mb-1">
                   Нарушение #{violationModal.count} из 3
                 </div>
-                <div style={{ fontWeight: 600, lineHeight: 1.5 }}>
+                <div className="font-semibold leading-[1.5]">
                   {violationModal.message}
                 </div>
                 {violationModal.count >= 3 && (
-                  <div style={{
-                    fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 600,
-                    color: '#7F1D1D', marginTop: 6,
-                  }}>
+                  <div className="font-[var(--font-body)] text-xs font-semibold text-[#7F1D1D] mt-1.5">
                     Это было третье нарушение — тест завершается, повторная попытка через 24 часа.
                   </div>
                 )}
@@ -284,13 +248,7 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
                   setViolationModal(null);
                 }}
                 aria-label="Закрыть"
-                style={{
-                  width: 24, height: 24, borderRadius: 6,
-                  background: 'transparent', border: 'none', cursor: 'pointer',
-                  color: '#991B1B', display: 'inline-flex',
-                  alignItems: 'center', justifyContent: 'center',
-                  flexShrink: 0,
-                }}
+                className="w-6 h-6 rounded-md bg-transparent border-none cursor-pointer text-[#991B1B] inline-flex items-center justify-center shrink-0"
               >
                 <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
                   stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
@@ -303,47 +261,28 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
         </AnimatePresence>
 
         {/* Header panel - matches TestPanel "Прогресс обучения" */}
-        <div className="test-active__head" style={{
-          padding: 'clamp(14px, 3vw, 20px) clamp(14px, 3vw, 24px)',
-          background: '#F5F6F8',
-          borderRadius: 14,
-          color: '#1A1A1A',
-        }}>
-          <div className="test-active__head-row" style={{
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            gap: 10, flexWrap: 'wrap', marginBottom: 12,
-          }}>
-            <div style={{ minWidth: 0 }}>
-              <p style={{
-                fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 600,
-                color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
-                marginBottom: 4,
-              }}>
+        <div className="test-active__head py-[clamp(14px,3vw,20px)] px-[clamp(14px,3vw,24px)] bg-[#F5F6F8] rounded-[14px] text-[#1A1A1A]">
+          <div className="test-active__head-row flex items-center justify-between gap-2.5 flex-wrap mb-3">
+            <div className="min-w-0">
+              <p className="font-[var(--font-mono)] text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-[0.08em] mb-1">
                 {testLabel}
               </p>
-              <h3 style={{
-                fontFamily: 'var(--font-display)', fontSize: 'clamp(15px, 4vw, 18px)', fontWeight: 700,
-                color: '#1A1A1A', margin: 0, letterSpacing: '-0.01em',
-                whiteSpace: 'nowrap',
-              }}>
+              <h3 className="font-[var(--font-display)] text-[clamp(15px,4vw,18px)] font-bold text-[#1A1A1A] m-0 tracking-[-0.01em] whitespace-nowrap">
                 Вопрос {currentQ + 1} из {questions.length}
               </h3>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
-              <span style={{
-                fontFamily: 'var(--font-mono)', fontSize: 16, fontWeight: 700,
-                color: timeRemaining < 60_000 ? '#B91C1C' : timeRemaining < 300_000 ? '#D97706' : '#1A1A1A',
-                animation: timeRemaining < 60_000 ? 'bordik-timer-pulse 1s ease-in-out infinite' : undefined,
-              }}>
+            <div className="flex items-center gap-2.5 shrink-0">
+              <span className={`font-[var(--font-mono)] text-base font-bold ${
+                timeRemaining < 60_000
+                  ? 'text-[#B91C1C] animate-[bordik-timer-pulse_1s_ease-in-out_infinite]'
+                  : timeRemaining < 300_000
+                    ? 'text-[#D97706]'
+                    : 'text-[#1A1A1A]'
+              }`}>
                 {formatTimer(timeRemaining)}
               </span>
               {violations > 0 && (
-                <span style={{
-                  padding: '3px 8px', borderRadius: 999,
-                  background: '#FEF2F2', color: '#B91C1C',
-                  fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-                  letterSpacing: '0.04em', textTransform: 'uppercase',
-                }}>
+                <span className="py-[3px] px-2 rounded-full bg-[#FEF2F2] text-[#B91C1C] font-[var(--font-mono)] text-[10px] font-bold tracking-[0.04em] uppercase">
                   {violations} нар.
                 </span>
               )}
@@ -351,21 +290,7 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
                 onClick={() => setConfirmExit(true)}
                 aria-label="Прервать тест"
                 title="Прервать тест"
-                style={{
-                  width: 32, height: 32, borderRadius: 8,
-                  background: 'transparent', border: 'none', cursor: 'pointer',
-                  color: '#9CA3AF',
-                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                  transition: 'background 180ms, color 180ms',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = '#FEF2F2';
-                  e.currentTarget.style.color = '#B91C1C';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'transparent';
-                  e.currentTarget.style.color = '#9CA3AF';
-                }}
+                className="w-8 h-8 rounded-lg bg-transparent hover:bg-[#FEF2F2] text-[#9CA3AF] hover:text-[#B91C1C] border-none cursor-pointer inline-flex items-center justify-center transition-colors duration-[180ms]"
               >
                 <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
                   stroke="currentColor" strokeWidth={2.5}
@@ -377,16 +302,12 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
             </div>
           </div>
           {/* Progress bar */}
-          <div style={{
-            height: 6, background: '#E2E4EA', borderRadius: 999,
-          }}>
-            <div style={{
-              height: '100%',
-              width: `${((currentQ + 1) / questions.length) * 100}%`,
-              background: 'linear-gradient(90deg, #10B981 0%, #34D399 100%)',
-              borderRadius: 999,
-              transition: 'width 400ms ease',
-            }} />
+          <div className="h-1.5 bg-[#E2E4EA] rounded-full">
+            <div
+              className="h-full bg-gradient-to-r from-[#10B981] to-[#34D399] rounded-full transition-[width] duration-[400ms] ease w-[var(--progress)]"
+              // eslint-disable-next-line react/forbid-dom-props -- dynamic progress %
+              style={{ ['--progress' as string]: `${((currentQ + 1) / questions.length) * 100}%` }}
+            />
           </div>
         </div>
 
@@ -398,21 +319,13 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.25, ease: [0.05, 0.7, 0.1, 1] }}
-            style={{
-              background: '#F5F6F8',
-              borderRadius: 14,
-              padding: 'clamp(16px, 3vw, 22px) clamp(16px, 3vw, 24px)',
-            }}
+            className="bg-[#F5F6F8] rounded-[14px] py-[clamp(16px,3vw,22px)] px-[clamp(16px,3vw,24px)]"
           >
-            <h4 style={{
-              fontFamily: 'var(--font-display)', fontSize: 'clamp(14px, 3.6vw, 16px)', fontWeight: 700,
-              color: '#1A1A1A', marginBottom: 18,
-              lineHeight: 1.45, letterSpacing: '-0.01em',
-            }}>
+            <h4 className="font-[var(--font-display)] text-[clamp(14px,3.6vw,16px)] font-bold text-[#1A1A1A] mb-[18px] leading-[1.45] tracking-[-0.01em]">
               {q.question}
             </h4>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <div className="flex flex-col gap-2">
               {q.options.map((option, idx) => {
                 const isSelected = selected === idx;
                 const letter = String.fromCharCode(65 + idx);
@@ -420,35 +333,15 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
                   <button
                     key={idx}
                     onClick={() => selectOption(idx)}
-                    style={{
-                      display: 'flex', alignItems: 'center', gap: 12,
-                      padding: 'clamp(10px, 2.6vw, 12px) clamp(12px, 3vw, 16px)',
-                      borderRadius: 10,
-                      // Soft blue tint when selected — same accent as Next
-                      // button, far less aggressive than the previous black ring.
-                      background: isSelected ? '#F0F7FF' : '#FFFFFF',
-                      boxShadow: isSelected
-                        ? '0 0 0 1.5px #3B82F6, 0 1px 2px rgba(59,130,246,0.08)'
-                        : '0 1px 2px rgba(16,24,40,0.04)',
-                      border: 'none',
-                      cursor: 'pointer', textAlign: 'left', width: '100%',
-                      transition: 'box-shadow 180ms, background 180ms',
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!isSelected) e.currentTarget.style.boxShadow = '0 1px 2px rgba(16,24,40,0.06), 0 2px 8px rgba(16,24,40,0.06)';
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!isSelected) e.currentTarget.style.boxShadow = '0 1px 2px rgba(16,24,40,0.04)';
-                    }}
+                    className={`flex items-center gap-3 py-[clamp(10px,2.6vw,12px)] px-[clamp(12px,3vw,16px)] rounded-[10px] border-none cursor-pointer text-left w-full transition-[box-shadow,background] duration-[180ms] ${
+                      isSelected
+                        ? 'bg-[#F0F7FF] shadow-[0_0_0_1.5px_#3B82F6,0_1px_2px_rgba(59,130,246,0.08)]'
+                        : 'bg-white shadow-[0_1px_2px_rgba(16,24,40,0.04)] hover:shadow-[0_1px_2px_rgba(16,24,40,0.06),0_2px_8px_rgba(16,24,40,0.06)]'
+                    }`}
                   >
-                    <span style={{
-                      width: 28, height: 28, borderRadius: 8, flexShrink: 0,
-                      background: isSelected ? '#3B82F6' : '#F0F1F5',
-                      color: isSelected ? '#FFFFFF' : '#666',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontFamily: 'var(--font-display)', fontSize: 12, fontWeight: 700,
-                      transition: 'background 180ms',
-                    }}>
+                    <span className={`w-7 h-7 rounded-lg shrink-0 flex items-center justify-center font-[var(--font-display)] text-xs font-bold transition-colors duration-[180ms] ${
+                      isSelected ? 'bg-[#3B82F6] text-white' : 'bg-[#F0F1F5] text-[#666]'
+                    }`}>
                       {isSelected ? (
                         <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
                           stroke="currentColor" strokeWidth={3}
@@ -457,10 +350,7 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
                         </svg>
                       ) : letter}
                     </span>
-                    <span style={{
-                      fontFamily: 'var(--font-body)', fontSize: 'clamp(13px, 3.2vw, 14px)', fontWeight: 500,
-                      color: '#1A1A1A', lineHeight: 1.5,
-                    }}>
+                    <span className="font-[var(--font-body)] text-[clamp(13px,3.2vw,14px)] font-medium text-[#1A1A1A] leading-[1.5]">
                       {option}
                     </span>
                   </button>
@@ -471,29 +361,15 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
         </AnimatePresence>
 
         {/* Navigation */}
-        <div style={{
-          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-          gap: 8,
-          padding: 'clamp(12px, 3vw, 14px) clamp(14px, 3vw, 24px)',
-          background: '#F5F6F8',
-          borderRadius: 14,
-        }}>
+        <div className="flex justify-between items-center gap-2 py-[clamp(12px,3vw,14px)] px-[clamp(14px,3vw,24px)] bg-[#F5F6F8] rounded-[14px]">
           <button
             onClick={prevQuestion}
             disabled={currentQ === 0}
-            style={{
-              display: 'inline-flex', alignItems: 'center', gap: 6,
-              padding: '8px 16px',
-              borderRadius: 10,
-              background: 'transparent',
-              color: currentQ === 0 ? '#C7CAD1' : '#6B7280',
-              border: 'none',
-              cursor: currentQ === 0 ? 'not-allowed' : 'pointer',
-              fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
-              transition: 'color 180ms',
-            }}
-            onMouseEnter={(e) => { if (currentQ !== 0) e.currentTarget.style.color = '#1A1A1A'; }}
-            onMouseLeave={(e) => { if (currentQ !== 0) e.currentTarget.style.color = '#6B7280'; }}
+            className={`inline-flex items-center gap-1.5 py-2 px-4 rounded-[10px] bg-transparent border-none font-[var(--font-body)] text-[13px] font-semibold transition-colors duration-[180ms] ${
+              currentQ === 0
+                ? 'text-[#C7CAD1] cursor-not-allowed'
+                : 'text-[#6B7280] hover:text-[#1A1A1A] cursor-pointer'
+            }`}
           >
             <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
               <line x1="19" y1="12" x2="5" y2="12" />
@@ -504,19 +380,11 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
           <button
             onClick={nextQuestion}
             disabled={selected === null}
-            style={{
-              display: 'inline-flex', alignItems: 'center', gap: 6,
-              padding: '10px 20px',
-              borderRadius: 10,
-              background: selected !== null ? '#3B82F6' : '#E2E4EA',
-              color: selected !== null ? '#FFFFFF' : '#9CA3AF',
-              border: 'none',
-              cursor: selected !== null ? 'pointer' : 'not-allowed',
-              fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
-              transition: 'background 180ms',
-            }}
-            onMouseEnter={(e) => { if (selected !== null) e.currentTarget.style.background = '#2563EB'; }}
-            onMouseLeave={(e) => { if (selected !== null) e.currentTarget.style.background = '#3B82F6'; }}
+            className={`inline-flex items-center gap-1.5 py-2.5 px-5 rounded-[10px] border-none font-[var(--font-body)] text-[13px] font-semibold transition-colors duration-[180ms] ${
+              selected !== null
+                ? 'bg-[#3B82F6] hover:bg-[#2563EB] text-white cursor-pointer'
+                : 'bg-[#E2E4EA] text-[#9CA3AF] cursor-not-allowed'
+            }`}
           >
             {isLast ? 'Завершить тест' : 'Далее'}
             {selected !== null && (
@@ -538,13 +406,7 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.18 }}
-            style={{
-              position: 'fixed', inset: 0, zIndex: 1000,
-              background: 'rgba(15, 23, 42, 0.55)',
-              backdropFilter: 'blur(2px)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              padding: 24,
-            }}
+            className="fixed inset-0 z-[1000] bg-[rgba(15,23,42,0.55)] backdrop-blur-[2px] flex items-center justify-center p-6"
             onClick={() => setConfirmExit(false)}
           >
             <motion.div
@@ -553,76 +415,37 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
               exit={{ opacity: 0, scale: 0.95, y: 8 }}
               transition={{ duration: 0.22, ease: [0.05, 0.7, 0.1, 1] }}
               onClick={(e) => e.stopPropagation()}
-              style={{
-                background: '#FFFFFF',
-                borderRadius: 16,
-                padding: '28px 28px 22px',
-                maxWidth: 400,
-                width: '100%',
-                boxShadow: '0 24px 48px rgba(15,23,42,0.24)',
-              }}
+              className="bg-white rounded-[16px] pt-7 px-7 pb-[22px] max-w-[400px] w-full shadow-[0_24px_48px_rgba(15,23,42,0.24)]"
             >
-              <h3 style={{
-                fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 700,
-                color: '#1A1A1A', margin: '0 0 8px 0', letterSpacing: '-0.01em',
-              }}>
+              <h3 className="font-[var(--font-display)] text-lg font-bold text-[#1A1A1A] mt-0 mb-2 mx-0 tracking-[-0.01em]">
                 Прервать тест?
               </h3>
-              <p style={{
-                fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: 400,
-                color: '#6B7280', lineHeight: 1.5, margin: '0 0 14px 0',
-              }}>
+              <p className="font-[var(--font-body)] text-sm font-normal text-[#6B7280] leading-[1.5] mt-0 mb-[14px] mx-0">
                 Прогресс не сохранится. Ответы на {selectedAnswers.filter(a => a !== null).length} из {questions.length} вопросов будут потеряны.
               </p>
-              <div style={{
-                background: '#FEF2F2',
-                border: '1px solid #FECACA',
-                borderRadius: 12,
-                padding: '12px 14px',
-                margin: '0 0 22px 0',
-                display: 'flex', alignItems: 'flex-start', gap: 10,
-              }}>
+              <div className="bg-[#FEF2F2] border border-[#FECACA] rounded-[12px] py-3 px-3.5 mt-0 mb-[22px] mx-0 flex items-start gap-2.5">
                 <svg width={18} height={18} viewBox="0 0 24 24" fill="none"
                   stroke="#B91C1C" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
-                  style={{ flexShrink: 0, marginTop: 1 }}>
+                  className="shrink-0 mt-px">
                   <circle cx="12" cy="12" r="10" />
                   <line x1="12" y1="8" x2="12" y2="12" />
                   <line x1="12" y1="16" x2="12.01" y2="16" />
                 </svg>
-                <div style={{
-                  fontFamily: 'var(--font-body)', fontSize: 13, lineHeight: 1.5,
-                  color: '#991B1B',
-                }}>
-                  <strong style={{ fontWeight: 700 }}>Тест будет заблокирован на 12 часов.</strong>
+                <div className="font-[var(--font-body)] text-[13px] leading-[1.5] text-[#991B1B]">
+                  <strong className="font-bold">Тест будет заблокирован на 12 часов.</strong>
                   {' '}Перезайти и пройти этот тест заново можно будет только после окончания этого срока.
                 </div>
               </div>
-              <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
+              <div className="flex gap-2.5 justify-end">
                 <button
                   onClick={() => setConfirmExit(false)}
-                  style={{
-                    padding: '10px 18px', borderRadius: 10,
-                    background: '#F5F6F8', color: '#1A1A1A',
-                    border: 'none', cursor: 'pointer',
-                    fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
-                    transition: 'background 180ms',
-                  }}
-                  onMouseEnter={(e) => { e.currentTarget.style.background = '#E2E4EA'; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = '#F5F6F8'; }}
+                  className="py-2.5 px-[18px] rounded-[10px] bg-[#F5F6F8] hover:bg-[#E2E4EA] text-[#1A1A1A] border-none cursor-pointer font-[var(--font-body)] text-[13px] font-semibold transition-colors duration-[180ms]"
                 >
                   Продолжить тест
                 </button>
                 <button
                   onClick={() => { setConfirmExit(false); onCancel(selectedAnswers, violations); }}
-                  style={{
-                    padding: '10px 18px', borderRadius: 10,
-                    background: '#B91C1C', color: '#FFFFFF',
-                    border: 'none', cursor: 'pointer',
-                    fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
-                    transition: 'background 180ms',
-                  }}
-                  onMouseEnter={(e) => { e.currentTarget.style.background = '#991B1B'; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = '#B91C1C'; }}
+                  className="py-2.5 px-[18px] rounded-[10px] bg-[#B91C1C] hover:bg-[#991B1B] text-white border-none cursor-pointer font-[var(--font-body)] text-[13px] font-semibold transition-colors duration-[180ms]"
                 >
                   Прервать
                 </button>
