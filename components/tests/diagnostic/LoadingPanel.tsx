@@ -5,13 +5,13 @@
  */
 import { motion } from 'framer-motion';
 import { Spinner } from './Spinner';
-import { fadeProps, panelStyle, loadingTextStyle } from './styles';
+import { fadeProps, panelClass, loadingTextClass } from './styles';
 
 export function LoadingPanel() {
   return (
-    <motion.div key="loading" {...fadeProps} style={panelStyle}>
+    <motion.div key="loading" {...fadeProps} className={panelClass}>
       <Spinner />
-      <p style={loadingTextStyle}>Готовим следующий вопрос…</p>
+      <p className={loadingTextClass}>Готовим следующий вопрос…</p>
     </motion.div>
   );
 }

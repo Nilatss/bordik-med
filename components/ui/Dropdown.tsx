@@ -107,87 +107,56 @@ export default function Dropdown({
     setQuery('');
   };
 
+  // The container width is dynamic (number | string | undefined). We use a CSS
+  // variable so the eslint forbid-dom-props rule has exactly one allowed
+  // inline-style escape rather than a static `width: 100%` style attribute.
+  const widthVar = typeof width === 'number' ? `${width}px` : (width ?? '100%');
+
   return (
-    <div ref={wrapRef} style={{ position: 'relative', width: width ?? '100%' }}>
+    <div
+      ref={wrapRef}
+      className="relative w-[var(--dropdown-w)]"
+      // eslint-disable-next-line react/forbid-dom-props -- dynamic width
+      style={{ ['--dropdown-w' as string]: widthVar }}
+    >
       {/* Trigger */}
       <button
         type="button"
         onClick={toggle}
-        style={{
-          width: '100%',
-          display: 'flex', alignItems: 'center', gap: 8,
-          padding: '8px 12px 8px 14px',
-          height: 38,
-          background: open ? '#E8EAEF' : '#EEF0F3',
-          border: 'none',
-          borderRadius: 8,
-          cursor: 'pointer',
-          transition: 'background 150ms',
-          outline: 'none',
-          textAlign: 'left',
-          fontFamily: 'var(--font-body)',
-          fontSize: 13,
-        }}
-        onMouseEnter={(e) => { if (!open) e.currentTarget.style.background = '#E8EAEF'; }}
-        onMouseLeave={(e) => { if (!open) e.currentTarget.style.background = '#EEF0F3'; }}
+        className={`w-full flex items-center gap-2 py-2 pr-3 pl-3.5 h-[38px] border-none rounded-lg cursor-pointer transition-colors duration-150 outline-none text-left font-[var(--font-body)] text-[13px] ${open ? 'bg-[#E8EAEF]' : 'bg-[#EEF0F3] hover:bg-[#E8EAEF]'}`}
       >
         {selected ? (
           <>
             {selected.emoji && <EmojiOrFlag emoji={selected.emoji} size={16} />}
-            <span style={{ flex: 1, color: '#1A1A1A', fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            <span className="flex-1 text-[#1A1A1A] font-medium overflow-hidden text-ellipsis whitespace-nowrap">
               {selected.label}
             </span>
           </>
         ) : (
-          <span style={{ flex: 1, color: '#9CA3AF', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          <span className="flex-1 text-[#9CA3AF] overflow-hidden text-ellipsis whitespace-nowrap">
             {placeholder}
           </span>
         )}
         <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
           stroke="#6B7280" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
-          style={{
-            flexShrink: 0,
-            transform: open ? 'rotate(180deg)' : 'rotate(0deg)',
-            transition: 'transform 200ms',
-          }}>
+          className={`shrink-0 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}>
           <polyline points="6,9 12,15 18,9" />
         </svg>
       </button>
 
       {/* Menu */}
       {open && (
-        <div style={{
-          position: 'absolute',
-          top: 'calc(100% + 4px)',
-          left: align === 'left' ? 0 : 'auto',
-          right: align === 'right' ? 0 : 'auto',
-          width: 340,
-          background: '#FFFFFF',
-          border: '1px solid #E5E7EB',
-          borderRadius: 12,
-          boxShadow: '0 12px 32px rgba(0,0,0,0.10), 0 4px 12px rgba(0,0,0,0.05)',
-          zIndex: 100,
-          overflow: 'hidden',
-          animation: 'bordik-dropdown-fadein 160ms cubic-bezier(0.2,0,0,1)',
-        }}
-        onClick={(e) => e.stopPropagation()}
+        <div
+          className={`absolute top-[calc(100%+4px)] ${align === 'right' ? 'right-0' : 'left-0'} w-[340px] bg-white border border-[#E5E7EB] rounded-[12px] shadow-[0_12px_32px_rgba(0,0,0,0.10),0_4px_12px_rgba(0,0,0,0.05)] z-[100] overflow-hidden animate-[bordik-dropdown-fadein_160ms_cubic-bezier(0.2,0,0,1)]`}
+          onClick={(e) => e.stopPropagation()}
         >
           {searchable && (
-            <div style={{
-              padding: 8, borderBottom: '1px solid #F3F4F6',
-              background: '#FAFAFB',
-            }}>
-              <div style={{
-                display: 'flex', alignItems: 'center', gap: 8,
-                padding: '7px 10px',
-                background: searchFocus ? '#E5E7EB' : '#EEF0F3',
-                borderRadius: 8,
-                transition: 'background 150ms',
-              }}>
+            <div className="p-2 border-b border-[#F3F4F6] bg-[#FAFAFB]">
+              <div className={`flex items-center gap-2 py-[7px] px-2.5 rounded-lg transition-colors duration-150 ${searchFocus ? 'bg-[#E5E7EB]' : 'bg-[#EEF0F3]'}`}>
                 <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
                   stroke={searchFocus ? '#6B7280' : '#9CA3AF'} strokeWidth={2}
                   strokeLinecap="round" strokeLinejoin="round"
-                  style={{ flexShrink: 0, transition: 'stroke 150ms' }}>
+                  className="shrink-0 transition-[stroke] duration-150">
                   <circle cx="11" cy="11" r="8" />
                   <line x1="21" y1="21" x2="16.65" y2="16.65" />
                 </svg>
@@ -198,29 +167,14 @@ export default function Dropdown({
                   onFocus={() => setSearchFocus(true)}
                   onBlur={() => setSearchFocus(false)}
                   placeholder={searchPlaceholder}
-                  style={{
-                    flex: 1,
-                    border: 'none', outline: 'none',
-                    background: 'transparent',
-                    fontFamily: 'var(--font-body)',
-                    fontSize: 13, color: '#1A1A1A',
-                  }}
+                  className="flex-1 border-none outline-none bg-transparent font-[var(--font-body)] text-[13px] text-[#1A1A1A]"
                 />
               </div>
             </div>
           )}
-          <div style={{
-            maxHeight: 280,
-            overflowY: 'auto',
-            scrollbarGutter: 'stable',
-            padding: 4,
-          }}>
+          <div className="max-h-[280px] overflow-y-auto [scrollbar-gutter:stable] p-1">
             {filtered.length === 0 ? (
-              <div style={{
-                padding: '12px 16px',
-                fontFamily: 'var(--font-body)', fontSize: 13, color: '#9CA3AF',
-                textAlign: 'center',
-              }}>
+              <div className="py-3 px-4 font-[var(--font-body)] text-[13px] text-[#9CA3AF] text-center">
                 {emptyLabel}
               </div>
             ) : (
@@ -243,47 +197,17 @@ export default function Dropdown({
                         type="button"
                         onClick={() => toggleGroup(opt.group!)}
                         disabled={isSearching}
-                        style={{
-                          width: '100%',
-                          display: 'flex', alignItems: 'center', gap: 8,
-                          padding: i === 0 ? '6px 10px 5px' : '8px 10px 5px',
-                          marginTop: i === 0 ? 0 : 4,
-                          borderTop: i === 0 ? 'none' : '1px solid #F3F4F6',
-                          background: 'transparent',
-                          border: 'none',
-                          cursor: isSearching ? 'default' : 'pointer',
-                          fontFamily: 'var(--font-mono)',
-                          fontSize: 10, fontWeight: 700,
-                          color: '#9CA3AF',
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.06em',
-                          textAlign: 'left',
-                          borderRadius: 0,
-                          transition: 'color 120ms',
-                        }}
-                        onMouseEnter={(e) => { if (!isSearching) e.currentTarget.style.color = '#6B7280'; }}
-                        onMouseLeave={(e) => { if (!isSearching) e.currentTarget.style.color = '#9CA3AF'; }}
+                        className={`w-full flex items-center gap-2 px-2.5 pt-2 pb-[5px] ${i === 0 ? 'pt-1.5 mt-0 border-t-0' : 'mt-1 border-t border-[#F3F4F6]'} bg-transparent border-none font-[var(--font-mono)] text-[10px] font-bold text-[#9CA3AF] uppercase tracking-[0.06em] text-left rounded-none transition-colors duration-[120ms] ${isSearching ? 'cursor-default' : 'cursor-pointer hover:text-[#6B7280]'}`}
                       >
                         {!isSearching && (
                           <svg width={10} height={10} viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round"
-                            style={{
-                              transform: isGroupCollapsed ? 'rotate(-90deg)' : 'rotate(0deg)',
-                              transition: 'transform 160ms',
-                              flexShrink: 0,
-                            }}>
+                            className={`shrink-0 transition-transform duration-[160ms] ${isGroupCollapsed ? '-rotate-90' : ''}`}>
                             <polyline points="6,9 12,15 18,9" />
                           </svg>
                         )}
-                        <span style={{ flex: 1 }}>{opt.group}</span>
-                        <span style={{
-                          padding: '1px 6px',
-                          borderRadius: 999,
-                          background: '#F3F4F6',
-                          color: '#9CA3AF',
-                          fontFamily: 'var(--font-mono)',
-                          fontSize: 9, fontWeight: 700,
-                        }}>
+                        <span className="flex-1">{opt.group}</span>
+                        <span className="py-px px-1.5 rounded-full bg-[#F3F4F6] text-[#9CA3AF] font-[var(--font-mono)] text-[9px] font-bold">
                           {groupCount}
                         </span>
                       </button>
@@ -292,29 +216,10 @@ export default function Dropdown({
                       <button
                         type="button"
                         onClick={() => pick(opt.value)}
-                        style={{
-                          width: '100%',
-                          display: 'flex', alignItems: 'center', gap: 10,
-                          padding: '9px 10px',
-                          background: isActive ? '#F5F6F8' : 'transparent',
-                          border: 'none',
-                          borderRadius: 8,
-                          cursor: 'pointer',
-                          textAlign: 'left',
-                          fontFamily: 'var(--font-body)', fontSize: 13,
-                          color: isActive ? '#1A1A1A' : '#374151',
-                          fontWeight: isActive ? 600 : 400,
-                          transition: 'background 120ms',
-                        }}
-                        onMouseEnter={(e) => {
-                          if (!isActive) e.currentTarget.style.background = '#F9FAFB';
-                        }}
-                        onMouseLeave={(e) => {
-                          if (!isActive) e.currentTarget.style.background = 'transparent';
-                        }}
+                        className={`w-full flex items-center gap-2.5 py-[9px] px-2.5 border-none rounded-lg cursor-pointer text-left font-[var(--font-body)] text-[13px] transition-colors duration-[120ms] ${isActive ? 'bg-[#F5F6F8] text-[#1A1A1A] font-semibold' : 'bg-transparent hover:bg-[#F9FAFB] text-[#374151] font-normal'}`}
                       >
                         {opt.emoji && <EmojiOrFlag emoji={opt.emoji} size={16} />}
-                        <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        <span className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap">
                           {opt.label}
                         </span>
                         {isActive && (

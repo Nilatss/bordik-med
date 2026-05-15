@@ -71,59 +71,33 @@ export const FilterDropdown = React.memo(function FilterDropdown({
     else onChange([...selected, v]);
   }, [selected, onChange]);
 
+  const buttonStateClass = count > 0 || open
+    ? 'bg-[#1A1A1A] text-white'
+    : 'bg-[#F5F6F8] hover:bg-[#EFF1F4] text-[#374151]';
+
   return (
-    <div ref={ref} style={{ position: 'relative' }}>
+    <div ref={ref} className="relative">
       <button
         onClick={() => onOpen(!open)}
-        style={{
-          display: 'inline-flex', alignItems: 'center', gap: 6,
-          padding: '7px 12px',
-          background: count > 0 || open ? '#1A1A1A' : '#F5F6F8',
-          color: count > 0 || open ? '#FFFFFF' : '#374151',
-          border: 'none', borderRadius: 999,
-          cursor: 'pointer',
-          fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 600,
-          transition: 'background 180ms, color 180ms',
-        }}
-        onMouseEnter={(e) => { if (count === 0 && !open) e.currentTarget.style.background = '#EFF1F4'; }}
-        onMouseLeave={(e) => { if (count === 0 && !open) e.currentTarget.style.background = '#F5F6F8'; }}
+        className={`inline-flex items-center gap-1.5 py-[7px] px-3 border-none rounded-full cursor-pointer font-[var(--font-body)] text-xs font-semibold transition-colors duration-[180ms] ${buttonStateClass}`}
       >
-        <span style={{ display: 'flex', flexShrink: 0 }}>{icon}</span>
+        <span className="flex shrink-0">{icon}</span>
         <span>{label}</span>
         {count > 0 && (
-          <span style={{
-            background: '#FFFFFF', color: '#1A1A1A',
-            fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-            padding: '1px 6px', borderRadius: 999, minWidth: 18, textAlign: 'center',
-          }}>{count}</span>
+          <span className="bg-white text-[#1A1A1A] font-[var(--font-mono)] text-[10px] font-bold py-px px-1.5 rounded-full min-w-[18px] text-center">{count}</span>
         )}
         <svg width={11} height={11} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round"
-          style={{ transition: 'transform 200ms', transform: open ? 'rotate(180deg)' : 'rotate(0)' }}>
+          className={`transition-transform duration-200 ${open ? 'rotate-180' : ''}`}>
           <polyline points="6 9 12 15 18 9"/>
         </svg>
       </button>
 
       {open && (
-        <div style={{
-          position: 'absolute', top: 'calc(100% + 8px)',
-          // Auto-flip: open right of trigger by default; if that would
-          // clip the viewport (rightmost filter button) we anchor to the
-          // right edge of the trigger and open leftward instead.
-          ...(anchorRight ? { right: 0 } : { left: 0 }),
-          background: '#FFFFFF',
-          borderRadius: 14,
-          boxShadow: '0 12px 32px rgba(0,0,0,0.12), 0 2px 6px rgba(0,0,0,0.06)',
-          minWidth: 280, maxWidth: 360, maxHeight: 420,
-          zIndex: 50,
-          display: 'flex', flexDirection: 'column',
-          overflow: 'hidden',
-        }}>
+        <div
+          className={`absolute top-[calc(100%+8px)] ${anchorRight ? 'right-0' : 'left-0'} bg-white rounded-[14px] shadow-[0_12px_32px_rgba(0,0,0,0.12),0_2px_6px_rgba(0,0,0,0.06)] min-w-[280px] max-w-[360px] max-h-[420px] z-50 flex flex-col overflow-hidden`}
+        >
           {searchable && (
-            <div style={{
-              padding: '10px 12px',
-              borderBottom: '1px solid #F0F1F5',
-              display: 'flex', alignItems: 'center', gap: 8,
-            }}>
+            <div className="py-2.5 px-3 border-b border-[#F0F1F5] flex items-center gap-2">
               <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
               </svg>
@@ -131,22 +105,15 @@ export const FilterDropdown = React.memo(function FilterDropdown({
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
                 placeholder={t('common.search')}
-                style={{
-                  flex: 1, border: 'none', outline: 'none',
-                  background: 'transparent',
-                  fontFamily: 'var(--font-body)', fontSize: 13, color: '#1A1A1A',
-                }}
+                className="flex-1 border-none outline-none bg-transparent font-[var(--font-body)] text-[13px] text-[#1A1A1A]"
                 autoFocus
               />
             </div>
           )}
 
-          <div style={{ flex: 1, overflowY: 'auto', padding: '6px 6px' }}>
+          <div className="flex-1 overflow-y-auto p-1.5">
             {filteredOptions.length === 0 ? (
-              <div style={{
-                padding: 20, textAlign: 'center',
-                fontFamily: 'var(--font-body)', fontSize: 12, color: '#9CA3AF',
-              }}>
+              <div className="p-5 text-center font-[var(--font-body)] text-xs text-[#9CA3AF]">
                 {t('nav.nothingFound')}
               </div>
             ) : filteredOptions.map((opt) => {
@@ -156,47 +123,22 @@ export const FilterDropdown = React.memo(function FilterDropdown({
                   key={opt.value}
                   type="button"
                   onClick={() => toggle(opt.value)}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: 10,
-                    padding: '8px 10px',
-                    background: checked ? '#F5F6F8' : 'transparent',
-                    border: 'none', borderRadius: 8, cursor: 'pointer',
-                    width: '100%', textAlign: 'left',
-                    fontFamily: 'var(--font-body)', fontSize: 13,
-                    color: '#1A1A1A',
-                    transition: 'background 120ms',
-                  }}
-                  onMouseEnter={(e) => { if (!checked) e.currentTarget.style.background = '#FAFBFC'; }}
-                  onMouseLeave={(e) => { if (!checked) e.currentTarget.style.background = 'transparent'; }}
+                  className={`flex items-center gap-2.5 py-2 px-2.5 border-none rounded-lg cursor-pointer w-full text-left font-[var(--font-body)] text-[13px] text-[#1A1A1A] transition-colors duration-[120ms] ${checked ? 'bg-[#F5F6F8]' : 'bg-transparent hover:bg-[#FAFBFC]'}`}
                 >
-                  <span style={{
-                    width: 16, height: 16, borderRadius: 4,
-                    background: checked ? '#1A1A1A' : '#FFFFFF',
-                    border: checked ? 'none' : '1.5px solid #D1D5DB',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    flexShrink: 0,
-                  }}>
+                  <span className={`w-4 h-4 rounded-[4px] flex items-center justify-center shrink-0 ${checked ? 'bg-[#1A1A1A] border-none' : 'bg-white border-[1.5px] border-[#D1D5DB]'}`}>
                     {checked && (
                       <svg width={10} height={10} viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth={3.5} strokeLinecap="round" strokeLinejoin="round">
                         <polyline points="20,6 9,17 4,12" />
                       </svg>
                     )}
                   </span>
-                  <span style={{
-                    flex: 1, minWidth: 0,
-                    display: 'inline-flex', alignItems: 'center', gap: 8,
-                    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                  }}>
+                  <span className="flex-1 min-w-0 inline-flex items-center gap-2 overflow-hidden text-ellipsis whitespace-nowrap">
                     {opt.flag && <EmojiOrFlag emoji={opt.flag} size={16} />}
-                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    <span className="overflow-hidden text-ellipsis">
                       <Highlight text={opt.label ?? opt.value} query={deferredQ} />
                     </span>
                   </span>
-                  <span style={{
-                    fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 600,
-                    color: '#9CA3AF', padding: '1px 6px', borderRadius: 4,
-                    background: '#F5F6F8',
-                  }}>
+                  <span className="font-[var(--font-mono)] text-[10px] font-semibold text-[#9CA3AF] py-px px-1.5 rounded bg-[#F5F6F8]">
                     {opt.count}
                   </span>
                 </button>
@@ -205,25 +147,14 @@ export const FilterDropdown = React.memo(function FilterDropdown({
           </div>
 
           {selected.length > 0 && (
-            <div style={{
-              padding: '8px 12px',
-              borderTop: '1px solid #F0F1F5',
-              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-            }}>
+            <div className="py-2 px-3 border-t border-[#F0F1F5] flex justify-between items-center">
               <button
                 onClick={() => onChange([])}
-                style={{
-                  background: 'transparent', border: 'none', cursor: 'pointer',
-                  fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 500,
-                  color: '#6B7280', padding: 0,
-                }}
+                className="bg-transparent border-none cursor-pointer font-[var(--font-body)] text-xs font-medium text-[#6B7280] p-0"
               >
                 {t('tools.reset', { label: label.toLowerCase() })}
               </button>
-              <span style={{
-                fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 600,
-                color: '#9CA3AF',
-              }}>
+              <span className="font-[var(--font-mono)] text-[11px] font-semibold text-[#9CA3AF]">
                 {selected.length} выбрано
               </span>
             </div>

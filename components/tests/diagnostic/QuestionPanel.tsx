@@ -7,7 +7,7 @@
 import { motion } from 'framer-motion';
 import type { ServerQuestion, Phase } from '@/lib/diagnostic/types';
 import { topicRu } from '@/lib/diagnostic/utils';
-import { fadeProps, panelStyle, primaryBtn } from './styles';
+import { fadeProps, panelClass, primaryBtnClass } from './styles';
 
 interface Props {
   current: ServerQuestion;
@@ -31,70 +31,44 @@ export function QuestionPanel({
   onNext,
 }: Props) {
   return (
-    <motion.div key={`q-${indexNow}`} {...fadeProps} style={panelStyle}>
-      <p style={{
-        fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-        color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
-        margin: '0 0 8px',
-      }}>
+    <motion.div key={`q-${indexNow}`} {...fadeProps} className={panelClass}>
+      <p className="font-[var(--font-mono)] text-[10px] font-bold text-[#9CA3AF] uppercase tracking-[0.08em] mt-0 mb-2 mx-0">
         Тема · {topicRu(current.topic)}
       </p>
-      <h3 style={{
-        fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 700,
-        color: '#1A1A1A', letterSpacing: '-0.01em', lineHeight: 1.35,
-        margin: '0 0 18px',
-      }}>
+      <h3 className="font-[var(--font-display)] text-lg font-bold text-[#1A1A1A] tracking-[-0.01em] leading-[1.35] mt-0 mb-[18px] mx-0">
         {current.question}
       </h3>
-      <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <ul className="m-0 p-0 list-none flex flex-col gap-2.5">
         {current.options.map((opt, i) => {
           const isPicked = picked === i;
           const isReview = phase === 'reviewing';
           const isCorrect = i === current.correctIndex;
-          let bg = '#F5F6F8';
-          let border = 'none';
-          let color = '#1A1A1A';
+          let stateClass = 'bg-[#F5F6F8] hover:bg-[#E8E9ED] text-[#1A1A1A] border-none';
           if (isReview) {
-            if (isCorrect) { bg = '#ECFDF5'; border = '1px solid #A7F3D0'; color = '#065F46'; }
-            else if (isPicked) { bg = '#FEF2F2'; border = '1px solid #FCA5A5'; color = '#991B1B'; }
+            if (isCorrect) stateClass = 'bg-[#ECFDF5] border border-[#A7F3D0] text-[#065F46]';
+            else if (isPicked) stateClass = 'bg-[#FEF2F2] border border-[#FCA5A5] text-[#991B1B]';
+            else stateClass = 'bg-[#F5F6F8] text-[#1A1A1A] border-none';
           } else if (isPicked) {
-            bg = '#EFF6FF'; border = '1px solid #BFDBFE'; color = '#1E40AF';
+            stateClass = 'bg-[#EFF6FF] border border-[#BFDBFE] text-[#1E40AF]';
           }
+          const letterBg = isReview && isCorrect
+            ? 'bg-[#10B981]'
+            : isReview && isPicked
+              ? 'bg-[#DC2626]'
+              : isPicked
+                ? 'bg-[#3B82F6]'
+                : 'bg-[#E2E4EA]';
           return (
             <li key={i}>
               <button
                 onClick={() => onPick(i)}
                 disabled={isReview}
-                style={{
-                  width: '100%', textAlign: 'left',
-                  padding: '12px 16px', borderRadius: 12,
-                  background: bg, border, color,
-                  cursor: isReview ? 'default' : 'pointer',
-                  fontFamily: 'var(--font-body)', fontSize: 14, lineHeight: 1.45,
-                  display: 'flex', alignItems: 'flex-start', gap: 12,
-                  transition: 'background 160ms, border-color 160ms, color 160ms',
-                }}
-                onMouseEnter={(e) => {
-                  if (!isReview && !isPicked) e.currentTarget.style.background = '#E8E9ED';
-                }}
-                onMouseLeave={(e) => {
-                  if (!isReview && !isPicked) e.currentTarget.style.background = '#F5F6F8';
-                }}
+                className={`w-full text-left py-3 px-4 rounded-[12px] font-[var(--font-body)] text-sm leading-[1.45] flex items-start gap-3 transition-[background,border-color,color] duration-[160ms] ${isReview ? 'cursor-default' : 'cursor-pointer'} ${stateClass}`}
               >
-                <span style={{
-                  flexShrink: 0, marginTop: 2,
-                  width: 22, height: 22, borderRadius: 6,
-                  background: isReview && isCorrect ? '#10B981'
-                    : isReview && isPicked ? '#DC2626'
-                    : isPicked ? '#3B82F6'
-                    : '#E2E4EA',
-                  color: '#FFFFFF',
-                  fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700,
-                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                }}>
+                <span className={`shrink-0 mt-0.5 w-[22px] h-[22px] rounded-[6px] text-white font-[var(--font-mono)] text-[11px] font-bold inline-flex items-center justify-center ${letterBg}`}>
                   {String.fromCharCode(65 + i)}
                 </span>
-                <span style={{ flex: 1 }}>{opt}</span>
+                <span className="flex-1">{opt}</span>
               </button>
             </li>
           );
@@ -102,20 +76,15 @@ export function QuestionPanel({
       </ul>
 
       {phase === 'reviewing' && current.explanation && (
-        <div style={{
-          marginTop: 16, padding: '12px 14px',
-          background: '#F8FAFC', borderRadius: 10,
-          fontFamily: 'var(--font-body)', fontSize: 13, color: '#475569',
-          lineHeight: 1.55,
-        }}>
-          <strong style={{ color: '#1A1A1A', display: 'block', marginBottom: 4 }}>Пояснение</strong>
+        <div className="mt-4 py-3 px-[14px] bg-[#F8FAFC] rounded-[10px] font-[var(--font-body)] text-[13px] text-[#475569] leading-[1.55]">
+          <strong className="text-[#1A1A1A] block mb-1">Пояснение</strong>
           {current.explanation}
         </div>
       )}
 
       {phase === 'reviewing' && (
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 18 }}>
-          <button onClick={onNext} style={primaryBtn}>
+        <div className="flex justify-end mt-[18px]">
+          <button onClick={onNext} className={primaryBtnClass}>
             {historyLength + 1 >= total ? 'Получить рекомендацию' : 'Следующий вопрос →'}
           </button>
         </div>
