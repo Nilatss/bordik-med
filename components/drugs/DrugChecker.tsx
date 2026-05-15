@@ -191,8 +191,8 @@ export default function DrugChecker() {
 
   if (loadError) {
     return (
-      <main id="main-content" style={{ padding: '40px 16px' }}>
-        <p style={{ color: '#991B1B' }}>
+      <main id="main-content" className="py-10 px-4">
+        <p className="text-[#991B1B]">
           Не удалось загрузить базу взаимодействий: {loadError}
         </p>
       </main>
@@ -201,11 +201,11 @@ export default function DrugChecker() {
 
   if (!data) {
     return (
-      <main id="main-content" style={{ padding: '40px 16px' }}>
-        <div className="lc-shimmer" style={{ height: 28, width: 320, borderRadius: 8, marginBottom: 14 }} />
-        <div className="lc-shimmer" style={{ height: 16, width: '60%', borderRadius: 6, marginBottom: 24 }} />
-        <div className="lc-shimmer" style={{ height: 56, width: '100%', maxWidth: 480, borderRadius: 12, marginBottom: 12 }} />
-        <div className="lc-shimmer" style={{ height: 120, width: '100%', borderRadius: 14 }} />
+      <main id="main-content" className="py-10 px-4">
+        <div className="lc-shimmer h-7 w-[320px] rounded-lg mb-3.5" />
+        <div className="lc-shimmer h-4 w-[60%] rounded-md mb-6" />
+        <div className="lc-shimmer h-14 w-full max-w-[480px] rounded-xl mb-3" />
+        <div className="lc-shimmer h-[120px] w-full rounded-[14px]" />
       </main>
     );
   }
@@ -213,32 +213,16 @@ export default function DrugChecker() {
   return (
     <main
       id="main-content"
-      style={{
-        width: '100%',
-        fontFamily: 'var(--font-body, system-ui)',
-        color: 'var(--md-sys-color-on-surface, #1A1A1A)',
-      }}
+      className="w-full font-[var(--font-body,system-ui)] text-[var(--md-sys-color-on-surface,#1A1A1A)]"
     >
       {/* Header — единый ритм с /tools (h2 28 + body 14 + 24 margin) */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1] }}
-        style={{ marginBottom: 24 }}
+        className="mb-6"
       >
-        <div style={{
-          display: 'inline-flex', alignItems: 'center', gap: 6,
-          marginBottom: 10,
-          padding: '3px 10px',
-          background: '#FEF3C7',
-          color: '#92400E',
-          border: '1px solid #FDE68A',
-          borderRadius: 999,
-          fontFamily: 'var(--font-mono, ui-monospace)',
-          fontSize: 10, fontWeight: 700,
-          letterSpacing: '0.04em',
-          textTransform: 'uppercase',
-        }}>
+        <div className="inline-flex items-center gap-1.5 mb-2.5 px-2.5 py-[3px] bg-[#FEF3C7] text-[#92400E] border border-[#FDE68A] rounded-full font-[var(--font-mono,ui-monospace)] text-[10px] font-bold tracking-[0.04em] uppercase">
           <svg width={10} height={10} viewBox="0 0 24 24" fill="none"
             stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round">
             <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
@@ -247,17 +231,10 @@ export default function DrugChecker() {
           </svg>
           BETA · требует верификации
         </div>
-        <h2 style={{
-          fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 700,
-          color: '#1A1A1A', marginBottom: 6, letterSpacing: '-0.02em',
-          margin: '0 0 6px',
-        }}>
+        <h2 className="font-[var(--font-display)] text-[28px] font-bold text-[#1A1A1A] tracking-[-0.02em] mt-0 mb-1.5">
           Чекер взаимодействий
         </h2>
-        <p style={{
-          margin: 0,
-          fontFamily: 'var(--font-body)', fontSize: 14, color: '#6B7280', lineHeight: 1.5,
-        }}>
+        <p className="m-0 font-[var(--font-body)] text-sm text-[#6B7280] leading-[1.5]">
           Проверка совместимости лекарств. Введите 2–{MAX_DRUGS} препарата —
           получите список парных взаимодействий с механизмом, клиническим
           следствием и тактикой.
@@ -269,15 +246,9 @@ export default function DrugChecker() {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1], delay: 0.06 }}
-        style={{ marginBottom: 24 }}
+        className="mb-6"
       >
-        <div className="bordik-search" style={{
-          padding: '10px 16px',
-          background: '#F5F6F8',
-          borderRadius: 12,
-          display: 'flex', flexWrap: 'wrap', gap: 8, alignItems: 'center',
-          minHeight: 44,
-        }}>
+        <div className="bordik-search px-4 py-2.5 bg-[#F5F6F8] rounded-xl flex flex-wrap gap-2 items-center min-h-[44px]">
           <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
             stroke="#9CA3AF" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
             <circle cx="11" cy="11" r="8" />
@@ -290,27 +261,14 @@ export default function DrugChecker() {
             return (
               <span
                 key={id}
-                style={{
-                  display: 'inline-flex', alignItems: 'center', gap: 6,
-                  padding: '4px 6px 4px 12px',
-                  background: '#FFFFFF',
-                  border: '1px solid #E5E7EB',
-                  borderRadius: 999,
-                  fontSize: 13, fontWeight: 500,
-                  color: '#1A1A1A',
-                }}
+                className="inline-flex items-center gap-1.5 pl-3 pr-1.5 py-1 bg-white border border-[#E5E7EB] rounded-full text-[13px] font-medium text-[#1A1A1A]"
               >
                 {displayDrugName(d)}
                 <button
                   type="button"
                   onClick={() => removeDrug(id)}
                   aria-label={`Убрать ${displayDrugName(d)}`}
-                  style={{
-                    width: 20, height: 20, borderRadius: '50%',
-                    background: '#F3F4F6', border: 'none',
-                    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                    cursor: 'pointer', color: '#6B7280',
-                  }}
+                  className="w-5 h-5 rounded-full bg-[#F3F4F6] border-0 inline-flex items-center justify-center cursor-pointer text-[#6B7280]"
                 >
                   <svg width={10} height={10} viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" strokeWidth={2.5} strokeLinecap="round">
@@ -333,13 +291,7 @@ export default function DrugChecker() {
               ? 'Например: «Варфарин», «Амиодарон», «Клопидогрел»'
               : selected.length < MAX_DRUGS ? 'Добавить ещё препарат…' : 'Достигнут максимум'}
             disabled={selected.length >= MAX_DRUGS}
-            style={{
-              flex: 1, minWidth: 200,
-              border: 'none', outline: 'none',
-              background: 'transparent',
-              fontFamily: 'var(--font-body)', fontSize: 14,
-              color: '#1A1A1A',
-            }}
+            className="flex-1 min-w-[200px] border-0 outline-none bg-transparent font-[var(--font-body)] text-sm text-[#1A1A1A]"
             onKeyDown={(e) => {
               if (e.key === 'Enter' && suggestions[0]) {
                 e.preventDefault();
@@ -356,13 +308,7 @@ export default function DrugChecker() {
             <button
               type="button"
               onClick={clearAll}
-              style={{
-                padding: '4px 10px',
-                background: 'transparent', border: 'none',
-                cursor: 'pointer',
-                fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 600,
-                color: '#6B7280',
-              }}
+              className="px-2.5 py-1 bg-transparent border-0 cursor-pointer font-[var(--font-body)] text-xs font-semibold text-[#6B7280]"
             >
               Очистить
             </button>
@@ -377,15 +323,7 @@ export default function DrugChecker() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -4 }}
               transition={{ duration: 0.15 }}
-              style={{
-                marginTop: 6,
-                background: '#FFFFFF',
-                border: '1px solid #E5E7EB',
-                borderRadius: 12,
-                boxShadow: '0 4px 16px rgba(0,0,0,0.08)',
-                maxWidth: 600,
-                overflow: 'hidden',
-              }}
+              className="mt-1.5 bg-white border border-[#E5E7EB] rounded-xl shadow-[0_4px_16px_rgba(0,0,0,0.08)] max-w-[600px] overflow-hidden"
             >
               {suggestions.map((d) => (
                 <button
@@ -393,34 +331,18 @@ export default function DrugChecker() {
                   type="button"
                   onMouseDown={(e) => e.preventDefault()}
                   onClick={() => addDrug(d.id)}
-                  style={{
-                    width: '100%',
-                    display: 'flex', alignItems: 'center', gap: 10,
-                    padding: '10px 14px',
-                    background: 'transparent', border: 'none',
-                    cursor: 'pointer', textAlign: 'left',
-                    fontFamily: 'inherit',
-                    transition: 'background 120ms',
-                  }}
-                  onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF6FF'; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+                  className="w-full flex items-center gap-2.5 px-3.5 py-2.5 bg-transparent hover:bg-[#EFF6FF] border-0 cursor-pointer text-left font-[inherit] transition-[background-color] duration-[120ms]"
                 >
-                  <span style={{ flex: 1, minWidth: 0 }}>
-                    <span style={{
-                      display: 'block',
-                      fontSize: 14, fontWeight: 600, color: '#1A1A1A',
-                    }}>
+                  <span className="flex-1 min-w-0">
+                    <span className="block text-sm font-semibold text-[#1A1A1A]">
                       {displayDrugName(d)}
                     </span>
-                    <span style={{
-                      display: 'block', marginTop: 2,
-                      fontSize: 12, color: '#6B7280',
-                    }}>
+                    <span className="block mt-0.5 text-xs text-[#6B7280]">
                       {d.class_ru || ''}
                       {(d.aliases?.length ?? 0) > 0 && ` · ${(d.aliases ?? []).slice(0, 3).join(', ')}`}
                     </span>
                   </span>
-                  <span style={{ flexShrink: 0, color: '#9CA3AF' }}>
+                  <span className="shrink-0 text-[#9CA3AF]">
                     <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
                       stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                       <line x1="12" y1="5" x2="12" y2="19" />
@@ -442,69 +364,32 @@ export default function DrugChecker() {
           transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1], delay: 0.12 }}
         >
           {/* Hero CTA — две карточки рядом + подсказка снизу */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-            gap: 12,
-            marginBottom: 12,
-          }}>
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-3 mb-3">
             {/* Card 1: «Как начать» */}
-            <div style={{
-              padding: '18px 20px',
-              background: '#F5F6F8',
-              borderRadius: 14,
-              display: 'flex', alignItems: 'flex-start', gap: 14,
-            }}>
-              <div style={{
-                width: 38, height: 38, borderRadius: 10,
-                background: '#FFFFFF',
-                display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                color: '#2563EB',
-                flexShrink: 0,
-              }}>
+            <div className="px-5 py-[18px] bg-[#F5F6F8] rounded-[14px] flex items-start gap-3.5">
+              <div className="w-[38px] h-[38px] rounded-[10px] bg-white inline-flex items-center justify-center text-[#2563EB] shrink-0">
                 <svg width={18} height={18} viewBox="0 0 24 24" fill="none"
                   stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="11" cy="11" r="8" />
                   <line x1="21" y1="21" x2="16.65" y2="16.65" />
                 </svg>
               </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{
-                  fontSize: 11, fontWeight: 600, color: '#9CA3AF',
-                  letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 4,
-                }}>
+              <div className="flex-1 min-w-0">
+                <div className="text-[11px] font-semibold text-[#9CA3AF] tracking-[0.06em] uppercase mb-1">
                   Шаг 1
                 </div>
-                <h3 style={{
-                  margin: 0,
-                  fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 600,
-                  color: '#111827', letterSpacing: '-0.01em', lineHeight: 1.4,
-                }}>
+                <h3 className="m-0 font-[var(--font-display)] text-[15px] font-semibold text-[#111827] tracking-[-0.01em] leading-[1.4]">
                   Добавьте 2+ препарата
                 </h3>
-                <p style={{
-                  margin: '4px 0 0',
-                  fontSize: 13, color: '#6B7280', lineHeight: 1.5,
-                }}>
+                <p className="mt-1 mb-0 text-[13px] text-[#6B7280] leading-[1.5]">
                   В строке поиска выше. По русскому, английскому или торговому названию.
                 </p>
               </div>
             </div>
 
             {/* Card 2: База знаний */}
-            <div style={{
-              padding: '18px 20px',
-              background: '#F5F6F8',
-              borderRadius: 14,
-              display: 'flex', alignItems: 'flex-start', gap: 14,
-            }}>
-              <div style={{
-                width: 38, height: 38, borderRadius: 10,
-                background: '#FFFFFF',
-                display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                color: '#2563EB',
-                flexShrink: 0,
-              }}>
+            <div className="px-5 py-[18px] bg-[#F5F6F8] rounded-[14px] flex items-start gap-3.5">
+              <div className="w-[38px] h-[38px] rounded-[10px] bg-white inline-flex items-center justify-center text-[#2563EB] shrink-0">
                 <svg width={18} height={18} viewBox="0 0 24 24" fill="none"
                   stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                   <ellipse cx="12" cy="5" rx="9" ry="3" />
@@ -512,24 +397,14 @@ export default function DrugChecker() {
                   <path d="M3 12a9 3 0 0 0 18 0" />
                 </svg>
               </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{
-                  fontSize: 11, fontWeight: 600, color: '#9CA3AF',
-                  letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 4,
-                }}>
+              <div className="flex-1 min-w-0">
+                <div className="text-[11px] font-semibold text-[#9CA3AF] tracking-[0.06em] uppercase mb-1">
                   База
                 </div>
-                <h3 style={{
-                  margin: 0,
-                  fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 600,
-                  color: '#111827', letterSpacing: '-0.01em', lineHeight: 1.4,
-                }}>
+                <h3 className="m-0 font-[var(--font-display)] text-[15px] font-semibold text-[#111827] tracking-[-0.01em] leading-[1.4]">
                   {data.drugs.length.toLocaleString('ru-RU')} препаратов · {data.interactions.length.toLocaleString('ru-RU')} пар
                 </h3>
-                <p style={{
-                  margin: '4px 0 0',
-                  fontSize: 13, color: '#6B7280', lineHeight: 1.5,
-                }}>
+                <p className="mt-1 mb-0 text-[13px] text-[#6B7280] leading-[1.5]">
                   Stockley&apos;s, UpToDate Lexidrug, ESC/AHA Guidelines, FDA.
                 </p>
               </div>
@@ -537,13 +412,7 @@ export default function DrugChecker() {
           </div>
 
           {/* Inline hint */}
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: 8,
-            padding: '8px 14px',
-            color: '#6B7280',
-            fontSize: 12, lineHeight: 1.5,
-            marginBottom: 32,
-          }}>
+          <div className="flex items-center gap-2 px-3.5 py-2 text-[#6B7280] text-xs leading-[1.5] mb-8">
             <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
               stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
               <circle cx="12" cy="12" r="10" />
@@ -555,18 +424,10 @@ export default function DrugChecker() {
 
           {/* Готовые пресеты */}
           <div>
-            <h3 style={{
-              margin: '0 0 16px',
-              fontFamily: 'var(--font-mono, ui-monospace)', fontSize: 11, fontWeight: 700,
-              color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
-            }}>
+            <h3 className="mt-0 mb-4 font-[var(--font-mono,ui-monospace)] text-[11px] font-bold text-[#9CA3AF] uppercase tracking-[0.08em]">
               Попробуйте классические комбинации
             </h3>
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-              gap: 12,
-            }}>
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-3">
               {EMPTY_PRESETS.map((preset) => {
                 const allExist = preset.drugs.every((id) => drugById.has(id));
                 if (!allExist) return null;
@@ -576,54 +437,19 @@ export default function DrugChecker() {
                     key={preset.label}
                     type="button"
                     onClick={() => setSelected(preset.drugs)}
-                    style={{
-                      display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 8,
-                      padding: 16,
-                      background: '#FFFFFF',
-                      border: '1px solid #F0F1F5',
-                      borderRadius: 12,
-                      cursor: 'pointer',
-                      textAlign: 'left',
-                      fontFamily: 'inherit',
-                      transition: 'background 160ms, border-color 160ms, transform 160ms',
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = '#F5F6F8';
-                      e.currentTarget.style.borderColor = '#E5E7EB';
-                      e.currentTarget.style.transform = 'translateY(-1px)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = '#FFFFFF';
-                      e.currentTarget.style.borderColor = '#F0F1F5';
-                      e.currentTarget.style.transform = 'translateY(0)';
-                    }}
+                    className="flex flex-col items-start gap-2 p-4 bg-white hover:bg-[#F5F6F8] border border-[#F0F1F5] hover:border-[#E5E7EB] hover:-translate-y-px rounded-xl cursor-pointer text-left font-[inherit] transition-[background-color,border-color,transform] duration-[160ms]"
                   >
-                    <span style={{
-                      display: 'inline-flex', alignItems: 'center',
-                      padding: '2px 9px',
-                      background: sevMeta.bg,
-                      color: sevMeta.color,
-                      border: 'none',
-                      borderRadius: 999,
-                      fontFamily: 'var(--font-mono, ui-monospace)',
-                      fontSize: 10, fontWeight: 700,
-                      letterSpacing: '0.04em',
-                      textTransform: 'uppercase',
-                      whiteSpace: 'nowrap',
-                    }}>
+                    <span
+                      className="inline-flex items-center px-2.5 py-0.5 bg-[var(--sev-bg)] text-[var(--sev-color)] border-0 rounded-full font-[var(--font-mono,ui-monospace)] text-[10px] font-bold tracking-[0.04em] uppercase whitespace-nowrap"
+                      // eslint-disable-next-line react/forbid-dom-props -- severity palette per preset
+                      style={{ ['--sev-bg' as string]: sevMeta.bg, ['--sev-color' as string]: sevMeta.color }}
+                    >
                       {sevMeta.label}
                     </span>
-                    <span style={{
-                      display: 'block',
-                      fontFamily: 'var(--font-display)', fontSize: 14, fontWeight: 700,
-                      color: '#1A1A1A', letterSpacing: '-0.01em', lineHeight: 1.35,
-                    }}>
+                    <span className="block font-[var(--font-display)] text-sm font-bold text-[#1A1A1A] tracking-[-0.01em] leading-[1.35]">
                       {preset.label}
                     </span>
-                    <span style={{
-                      display: 'block',
-                      fontSize: 12, color: '#6B7280', lineHeight: 1.55,
-                    }}>
+                    <span className="block text-xs text-[#6B7280] leading-[1.55]">
                       {preset.hint}
                     </span>
                   </button>
@@ -642,32 +468,22 @@ export default function DrugChecker() {
           transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1], delay: 0.12 }}
         >
           {/* Summary card */}
-          <div style={{
-            padding: '16px 24px',
-            background: interactions.length === 0 ? '#ECFDF5' : '#F5F6F8',
-            border: 'none',
-            borderRadius: 14,
-            marginBottom: 24,
-            display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap',
-          }}>
+          <div className={`px-6 py-4 border-0 rounded-[14px] mb-6 flex items-center gap-4 flex-wrap ${
+            interactions.length === 0 ? 'bg-[#ECFDF5]' : 'bg-[#F5F6F8]'
+          }`}>
             {interactions.length === 0 ? (
               <>
-                <span style={{
-                  width: 36, height: 36, borderRadius: 10,
-                  background: '#10B981', color: '#FFFFFF',
-                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                  flexShrink: 0,
-                }}>
+                <span className="w-9 h-9 rounded-[10px] bg-[#10B981] text-white inline-flex items-center justify-center shrink-0">
                   <svg width={18} height={18} viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
                 </span>
-                <span style={{ flex: 1, minWidth: 200 }}>
-                  <strong style={{ display: 'block', fontSize: 15, color: '#065F46' }}>
+                <span className="flex-1 min-w-[200px]">
+                  <strong className="block text-[15px] text-[#065F46]">
                     Значимых взаимодействий не найдено
                   </strong>
-                  <span style={{ fontSize: 12, color: '#047857', marginTop: 2, display: 'block' }}>
+                  <span className="text-xs text-[#047857] mt-0.5 block">
                     Это не означает полную безопасность — база ограничена {data.drugs.length} препаратами.
                     Сверьтесь с фарм-справочником у конкретного пациента.
                   </span>
@@ -675,30 +491,24 @@ export default function DrugChecker() {
               </>
             ) : (
               <>
-                <span style={{ flex: 1, minWidth: 200 }}>
-                  <strong style={{ display: 'block', fontSize: 15, color: '#1A1A1A' }}>
+                <span className="flex-1 min-w-[200px]">
+                  <strong className="block text-[15px] text-[#1A1A1A]">
                     Найдено взаимодействий: {interactions.length}
                   </strong>
-                  <span style={{ fontSize: 12, color: '#6B7280', marginTop: 4, display: 'block' }}>
+                  <span className="text-xs text-[#6B7280] mt-1 block">
                     Препаратов: {selected.length} · пар проверено: {(selected.length * (selected.length - 1)) / 2}
                   </span>
                 </span>
-                <span style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                <span className="flex gap-1.5 flex-wrap">
                   {(['contraindicated', 'major', 'moderate', 'minor'] as const).map((s) => {
                     if (summary[s] === 0) return null;
                     const meta = SEVERITY_META[s];
                     return (
                       <span
                         key={s}
-                        style={{
-                          padding: '4px 10px',
-                          background: meta.bg, color: meta.color,
-                          border: 'none',
-                          borderRadius: 999,
-                          fontFamily: 'var(--font-mono, ui-monospace)',
-                          fontSize: 11, fontWeight: 700,
-                          letterSpacing: '0.02em',
-                        }}
+                        className="px-2.5 py-1 bg-[var(--sev-bg)] text-[var(--sev-color)] border-0 rounded-full font-[var(--font-mono,ui-monospace)] text-[11px] font-bold tracking-[0.02em]"
+                        // eslint-disable-next-line react/forbid-dom-props -- per-severity palette
+                        style={{ ['--sev-bg' as string]: meta.bg, ['--sev-color' as string]: meta.color }}
                       >
                         {meta.label}: {summary[s]}
                       </span>
@@ -711,10 +521,7 @@ export default function DrugChecker() {
 
           {/* Interactions list */}
           {interactions.length > 0 && (
-            <ul style={{
-              listStyle: 'none', padding: 0, margin: 0,
-              display: 'flex', flexDirection: 'column', gap: 10,
-            }}>
+            <ul className="list-none p-0 m-0 flex flex-col gap-2.5">
               {interactions.map((i, idx) => {
                 const meta = SEVERITY_META[i.severity];
                 const id = `${i.drugA}__${i.drugB}`;
@@ -730,40 +537,21 @@ export default function DrugChecker() {
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3, ease: [0.05, 0.7, 0.1, 1], delay: 0.04 * idx }}
-                    style={{
-                      background: '#F5F6F8',
-                      border: '1px solid #E5E7EB',
-                      borderLeft: `3px solid ${meta.accent}`,
-                      borderRadius: 14,
-                      overflow: 'hidden',
-                    }}
+                    className="bg-[#F5F6F8] border border-[#E5E7EB] border-l-[3px] border-l-[var(--sev-accent)] rounded-[14px] overflow-hidden"
+                    // eslint-disable-next-line react/forbid-dom-props -- severity accent for left border
+                    style={{ ['--sev-accent' as string]: meta.accent }}
                   >
                     {hasDetails ? (
                       <button
                         type="button"
                         onClick={() => setExpandedId(isExpanded ? null : id)}
                         aria-expanded={isExpanded}
-                        style={{
-                          width: '100%',
-                          display: 'flex', alignItems: 'flex-start', gap: 14,
-                          padding: '14px 18px',
-                          background: 'transparent', border: 'none',
-                          cursor: 'pointer', textAlign: 'left',
-                          fontFamily: 'inherit',
-                          transition: 'background 150ms',
-                        }}
-                        onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+                        className="w-full flex items-start gap-3.5 px-[18px] py-3.5 bg-transparent hover:bg-[#EFF1F4] border-0 cursor-pointer text-left font-[inherit] transition-[background-color] duration-150"
                       >
                         <InteractionRowContent i={i} meta={meta} hasDetails={hasDetails} isExpanded={isExpanded} />
                       </button>
                     ) : (
-                      <div
-                        style={{
-                          display: 'flex', alignItems: 'flex-start', gap: 14,
-                          padding: '14px 18px',
-                        }}
-                      >
+                      <div className="flex items-start gap-3.5 px-[18px] py-3.5">
                         <InteractionRowContent i={i} meta={meta} hasDetails={hasDetails} isExpanded={false} />
                       </div>
                     )}
@@ -778,21 +566,13 @@ export default function DrugChecker() {
                             height: { duration: 0.25, ease: [0.05, 0.7, 0.1, 1] },
                             opacity: { duration: 0.18 },
                           }}
-                          style={{ overflow: 'hidden' }}
+                          className="overflow-hidden"
                         >
-                          <div style={{
-                            padding: '0 0 0 0',
-                            borderTop: '1px solid #E5E7EB',
-                            background: '#FFFFFF',
-                          }}>
+                          <div className="border-t border-[#E5E7EB] bg-white">
                             {/* Реальная HTML-таблица: парсеры/скринридеры
                                 видят семантику, копируется через Ctrl+C
                                 в Excel/Word как таблица. */}
-                            <table style={{
-                              width: '100%',
-                              borderCollapse: 'collapse',
-                              fontSize: 13, color: '#374151', lineHeight: 1.55,
-                            }}>
+                            <table className="w-full border-collapse text-[13px] text-[#374151] leading-[1.55]">
                               <tbody>
                                 {i.mechanism && <DetailRow label="Механизм"  value={i.mechanism} />}
                                 {i.management && <DetailRow label="Тактика"   value={i.management} />}
@@ -823,70 +603,35 @@ export default function DrugChecker() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, ease: [0.05, 0.7, 0.1, 1], delay: 0.1 }}
-          style={{
-            marginTop: 24,
-            background: '#F5F6F8',
-            border: '1px solid #E5E7EB',
-            borderLeft: '3px solid #2563EB',
-            borderRadius: 14,
-            overflow: 'hidden',
-          }}
+          className="mt-6 bg-[#F5F6F8] border border-[#E5E7EB] border-l-[3px] border-l-[#2563EB] rounded-[14px] overflow-hidden"
         >
           <button
             type="button"
             onClick={() => setShowPoisonCodes((v) => !v)}
             aria-expanded={showPoisonCodes}
-            style={{
-              width: '100%',
-              display: 'flex', alignItems: 'flex-start', gap: 14,
-              padding: '12px 16px',
-              background: 'transparent', border: 'none',
-              cursor: 'pointer', textAlign: 'left',
-              fontFamily: 'inherit',
-              transition: 'background 150ms',
-            }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+            className="w-full flex items-start gap-3.5 px-4 py-3 bg-transparent hover:bg-[#EFF1F4] border-0 cursor-pointer text-left font-[inherit] transition-[background-color] duration-150"
           >
-            <span style={{ flex: 1, minWidth: 0 }}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                <span style={{
-                  display: 'inline-flex', alignItems: 'center',
-                  padding: '2px 9px',
-                  background: '#EFF6FF',
-                  color: '#1D4ED8',
-                  border: 'none',
-                  borderRadius: 999,
-                  fontFamily: 'var(--font-mono, ui-monospace)',
-                  fontSize: 10, fontWeight: 700,
-                  letterSpacing: '0.04em',
-                  textTransform: 'uppercase',
-                  whiteSpace: 'nowrap',
-                }}>
+            <span className="flex-1 min-w-0">
+              <span className="flex items-center gap-2 mb-1">
+                <span className="inline-flex items-center px-2.5 py-0.5 bg-[#EFF6FF] text-[#1D4ED8] border-0 rounded-full font-[var(--font-mono,ui-monospace)] text-[10px] font-bold tracking-[0.04em] uppercase whitespace-nowrap">
                   ICD-10-CM
                 </span>
               </span>
-              <span style={{
-                display: 'block',
-                fontFamily: 'var(--font-display)', fontSize: 16, fontWeight: 600,
-                color: '#111827', letterSpacing: '-0.01em', lineHeight: 1.4,
-              }}>
+              <span className="block font-[var(--font-display)] text-base font-semibold text-[#111827] tracking-[-0.01em] leading-[1.4]">
                 Коды для отравлений и побочных действий
               </span>
-              <span style={{ display: 'block', marginTop: 4, fontSize: 13, color: '#6B7280', lineHeight: 1.55 }}>
+              <span className="block mt-1 text-[13px] text-[#6B7280] leading-[1.55]">
                 По каждому из выбранных препаратов — 6 ICD-10-CM кодов (Случайное / Преднамеренное / Нападение / Неуточнённое / Побочное / Underdosing) для записи в карту пациента.
               </span>
-              <span style={{ display: 'block', marginTop: 6, fontSize: 11, color: '#9CA3AF', letterSpacing: '0.02em' }}>
+              <span className="block mt-1.5 text-[11px] text-[#9CA3AF] tracking-[0.02em]">
                 Source: CMS Table of Drugs and Chemicals (FY2026)
               </span>
             </span>
-            <span style={{
-              flexShrink: 0,
-              color: '#6B7280',
-              transform: showPoisonCodes ? 'rotate(180deg)' : 'rotate(0deg)',
-              transition: 'transform 200ms',
-              marginTop: 6,
-            }}>
+            <span
+              className={`shrink-0 text-[#6B7280] transition-transform duration-200 mt-1.5 ${
+                showPoisonCodes ? 'rotate-180' : 'rotate-0'
+              }`}
+            >
               <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="6 9 12 15 18 9" />
@@ -903,13 +648,13 @@ export default function DrugChecker() {
                   height: { duration: 0.25, ease: [0.05, 0.7, 0.1, 1] },
                   opacity: { duration: 0.18 },
                 }}
-                style={{ overflow: 'hidden' }}
+                className="overflow-hidden"
               >
-                <div style={{ borderTop: '1px solid #E5E7EB', background: '#FFFFFF', padding: '16px 18px' }}>
+                <div className="border-t border-[#E5E7EB] bg-white px-[18px] py-4">
                   {!drugTable ? (
-                    <div style={{ fontSize: 13, color: '#6B7280' }}>Загружаем CMS Drug Table…</div>
+                    <div className="text-[13px] text-[#6B7280]">Загружаем CMS Drug Table…</div>
                   ) : (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                    <div className="flex flex-col gap-4">
                       {selected.map((id) => {
                         const drug = drugById.get(id);
                         if (!drug) return null;
@@ -926,35 +671,21 @@ export default function DrugChecker() {
                         }).slice(0, 5);
                         return (
                           <div key={id}>
-                            <div style={{
-                              fontFamily: 'var(--font-display)',
-                              fontSize: 14, fontWeight: 600, color: '#111827',
-                              letterSpacing: '-0.005em', marginBottom: 8,
-                            }}>
+                            <div className="font-[var(--font-display)] text-sm font-semibold text-[#111827] tracking-[-0.005em] mb-2">
                               {displayDrugName(drug)}
                             </div>
                             {matches.length === 0 ? (
-                              <div style={{ fontSize: 12, color: '#9CA3AF', fontStyle: 'italic' }}>
+                              <div className="text-xs text-[#9CA3AF] italic">
                                 Не найдено в CMS Table
                               </div>
                             ) : (
-                              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                              <div className="flex flex-col gap-1.5">
                                 {matches.map((m, idx) => (
-                                  <div key={idx} style={{
-                                    background: '#F5F6F8', borderRadius: 8, padding: '10px 12px',
-                                  }}>
-                                    <div style={{
-                                      fontSize: 11, color: '#9CA3AF', marginBottom: 6,
-                                      letterSpacing: '0.02em',
-                                    }}>
+                                  <div key={idx} className="bg-[#F5F6F8] rounded-lg px-3 py-2.5">
+                                    <div className="text-[11px] text-[#9CA3AF] mb-1.5 tracking-[0.02em]">
                                       {m.name}
                                     </div>
-                                    <div style={{
-                                      display: 'grid',
-                                      gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
-                                      gap: 6,
-                                      fontSize: 11,
-                                    }}>
+                                    <div className="grid grid-cols-[repeat(auto-fit,minmax(120px,1fr))] gap-1.5 text-[11px]">
                                       <PoisonCell label="Случайное"     code={m.accidental} />
                                       <PoisonCell label="Преднамеренное" code={m.intentional} />
                                       <PoisonCell label="Нападение"     code={m.assault} />
@@ -984,56 +715,33 @@ export default function DrugChecker() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1], delay: 0.18 }}
         aria-labelledby="dc-provenance"
-        style={{
-          marginTop: 32,
-          padding: '20px 22px',
-          background: '#F5F6F8',
-          border: 'none',
-          borderRadius: 14,
-          fontSize: 13,
-          color: '#4B5563',
-          lineHeight: 1.55,
-        }}
+        className="mt-8 px-[22px] py-5 bg-[#F5F6F8] border-0 rounded-[14px] text-[13px] text-[#4B5563] leading-[1.55]"
       >
-        <h3 id="dc-provenance" style={{
-          margin: '0 0 14px',
-          fontFamily: 'var(--font-display)',
-          fontSize: 15, fontWeight: 700,
-          color: '#1A1A1A',
-          letterSpacing: '-0.01em',
-        }}>
+        <h3 id="dc-provenance" className="mt-0 mb-3.5 font-[var(--font-display)] text-[15px] font-bold text-[#1A1A1A] tracking-[-0.01em]">
           Источник и обновление
         </h3>
-        <dl style={{
-          margin: 0, display: 'grid',
-          gridTemplateColumns: 'auto 1fr', columnGap: 18, rowGap: 10,
-        }}>
-          <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Версия базы</dt>
-          <dd style={{ margin: 0, color: '#1A1A1A', fontFamily: 'var(--font-mono, ui-monospace)', fontSize: 12 }}>
+        <dl className="m-0 grid grid-cols-[auto_1fr] gap-x-[18px] gap-y-2.5">
+          <dt className="text-[#9CA3AF] text-xs">Версия базы</dt>
+          <dd className="m-0 text-[#1A1A1A] font-[var(--font-mono,ui-monospace)] text-xs">
             {data.version}
           </dd>
-          <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Обновлено</dt>
-          <dd style={{ margin: 0, color: '#1A1A1A', fontFamily: 'var(--font-mono, ui-monospace)', fontSize: 12 }}>
+          <dt className="text-[#9CA3AF] text-xs">Обновлено</dt>
+          <dd className="m-0 text-[#1A1A1A] font-[var(--font-mono,ui-monospace)] text-xs">
             {data.lastUpdated}
           </dd>
-          <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Источники</dt>
-          <dd style={{ margin: 0, color: '#1A1A1A' }}>
+          <dt className="text-[#9CA3AF] text-xs">Источники</dt>
+          <dd className="m-0 text-[#1A1A1A]">
             {data.sources.join(' · ')}
           </dd>
-          <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Покрытие</dt>
-          <dd style={{ margin: 0, color: '#1A1A1A' }}>
+          <dt className="text-[#9CA3AF] text-xs">Покрытие</dt>
+          <dd className="m-0 text-[#1A1A1A]">
             {data.drugs.length} препаратов · {data.interactions.length} пар
             (только clinically significant).
           </dd>
         </dl>
 
-        <p role="note" style={{
-          marginTop: 18, paddingTop: 16,
-          borderTop: '1px solid #E5E7EB',
-          fontSize: 12, color: '#6B7280', lineHeight: 1.55,
-          margin: '18px 0 0',
-        }}>
-          <strong style={{ color: '#1A1A1A' }}>Не заменяет фарм-консультацию.</strong>{' '}
+        <p role="note" className="mt-[18px] mb-0 pt-4 border-t border-[#E5E7EB] text-xs text-[#6B7280] leading-[1.55]">
+          <strong className="text-[#1A1A1A]">Не заменяет фарм-консультацию.</strong>{' '}
           Решение по конкретному пациенту принимает врач/клин-фармаколог, опираясь
           на полный клинический контекст, инструкции производителей (ГРЛС Минздрава)
           и индивидуальные особенности пациента (ХБП, печёночная функция,
@@ -1056,45 +764,27 @@ function InteractionRowContent({
 }) {
   return (
     <>
-      <span style={{ flex: 1, minWidth: 0 }}>
-        <span style={{
-          display: 'inline-flex', alignItems: 'center',
-          padding: '3px 10px',
-          marginBottom: 10,
-          background: meta.bg,
-          color: meta.color,
-          border: 'none',
-          borderRadius: 999,
-          fontFamily: 'var(--font-mono, ui-monospace)',
-          fontSize: 10, fontWeight: 700,
-          letterSpacing: '0.04em',
-          textTransform: 'uppercase',
-          whiteSpace: 'nowrap',
-        }}>
+      <span className="flex-1 min-w-0">
+        <span
+          className="inline-flex items-center px-2.5 py-[3px] mb-2.5 bg-[var(--sev-bg)] text-[var(--sev-color)] border-0 rounded-full font-[var(--font-mono,ui-monospace)] text-[10px] font-bold tracking-[0.04em] uppercase whitespace-nowrap"
+          // eslint-disable-next-line react/forbid-dom-props -- severity palette injected from meta
+          style={{ ['--sev-bg' as string]: meta.bg, ['--sev-color' as string]: meta.color }}
+        >
           {meta.label}
         </span>
-        <span style={{
-          display: 'block',
-          fontFamily: 'var(--font-display)', fontSize: 16, fontWeight: 600,
-          color: '#111827', letterSpacing: '-0.01em', lineHeight: 1.4,
-        }}>
+        <span className="block font-[var(--font-display)] text-base font-semibold text-[#111827] tracking-[-0.01em] leading-[1.4]">
           {i.drugAName} + {i.drugBName}
         </span>
-        <span style={{
-          display: 'block', marginTop: 4,
-          fontSize: 13, color: '#6B7280', lineHeight: 1.55,
-        }}>
+        <span className="block mt-1 text-[13px] text-[#6B7280] leading-[1.55]">
           {i.effect ?? `Уровень риска: ${meta.label.toLowerCase()}. Детали уточните у клин-фармаколога.`}
         </span>
       </span>
       {hasDetails && (
-        <span style={{
-          flexShrink: 0,
-          color: '#6B7280',
-          transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
-          transition: 'transform 200ms',
-          marginTop: 4,
-        }}>
+        <span
+          className={`shrink-0 text-[#6B7280] transition-transform duration-200 mt-1 ${
+            isExpanded ? 'rotate-180' : 'rotate-0'
+          }`}
+        >
           <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
             stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
             <polyline points="6 9 12 15 18 9" />
@@ -1118,12 +808,9 @@ function PoisonCell({ label, code }: { label: string; code?: string | null | und
 
   if (!code) {
     return (
-      <div style={{
-        padding: '6px 8px', background: '#FFFFFF', border: '1px solid #F0F1F5',
-        borderRadius: 6, color: '#D1D5DB', fontSize: 10, textAlign: 'center',
-      }}>
+      <div className="px-2 py-1.5 bg-white border border-[#F0F1F5] rounded-md text-[#D1D5DB] text-[10px] text-center">
         <div>{label}</div>
-        <div style={{ marginTop: 2 }}>—</div>
+        <div className="mt-0.5">—</div>
       </div>
     );
   }
@@ -1142,29 +829,16 @@ function PoisonCell({ label, code }: { label: string; code?: string | null | und
       onClick={handleCopy}
       title={copied ? `${code} скопирован` : `Скопировать ${code}`}
       aria-live="polite"
-      style={{
-        position: 'relative',
-        padding: '8px 10px',
-        background: copied ? '#DCFCE7' : '#FFFFFF',
-        border: `1px solid ${copied ? '#86EFAC' : '#DBEAFE'}`,
-        borderRadius: 8, cursor: 'pointer', textAlign: 'center',
-        fontFamily: 'inherit',
-        transition: 'background 150ms, border-color 150ms',
-      }}
+      className={`relative px-2.5 py-2 rounded-lg cursor-pointer text-center font-[inherit] transition-[background-color,border-color] duration-150 border ${
+        copied ? 'bg-[#DCFCE7] border-[#86EFAC]' : 'bg-white border-[#DBEAFE]'
+      }`}
     >
-      <div style={{
-        fontSize: 11, fontWeight: 500,
-        color: copied ? '#15803D' : '#6B7280',
-      }}>
+      <div className={`text-[11px] font-medium ${copied ? 'text-[#15803D]' : 'text-[#6B7280]'}`}>
         {copied ? 'Скопировано' : label}
       </div>
-      <div style={{
-        marginTop: 3, fontFamily: 'var(--font-mono, ui-monospace)',
-        fontSize: 13, fontWeight: 700,
-        color: copied ? '#15803D' : '#2563EB',
-        display: 'inline-flex', alignItems: 'center', gap: 4,
-        letterSpacing: '0.01em',
-      }}>
+      <div className={`mt-[3px] font-[var(--font-mono,ui-monospace)] text-[13px] font-bold inline-flex items-center gap-1 tracking-[0.01em] ${
+        copied ? 'text-[#15803D]' : 'text-[#2563EB]'
+      }`}>
         {copied && (
           <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor"
             strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -1185,39 +859,18 @@ function PoisonCell({ label, code }: { label: string; code?: string | null | und
 function DetailRow({
   label, value, last,
 }: { label: string; value: string; last?: boolean }) {
-  const cellStyle: React.CSSProperties = {
-    padding: '12px 18px',
-    borderBottom: last ? 'none' : '1px solid #F0F1F5',
-    verticalAlign: 'top',
-    background: '#FFFFFF',
-  };
+  // Padding + vertical-align + base bg shared across both cells.
+  // Last row drops the bottom border.
+  const cellBase = `px-[18px] py-3 align-top ${last ? '' : 'border-b border-b-[#F0F1F5]'}`;
   return (
     <tr>
       <th
         scope="row"
-        style={{
-          ...cellStyle,
-          width: 1,
-          whiteSpace: 'nowrap',
-          textAlign: 'left',
-          fontFamily: 'inherit',
-          fontSize: 11, fontWeight: 600,
-          color: '#9CA3AF',
-          textTransform: 'uppercase',
-          letterSpacing: '0.06em',
-          background: '#F9FAFB',
-        }}
+        className={`${cellBase} w-px whitespace-nowrap text-left font-[inherit] text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-[0.06em] bg-[#F9FAFB]`}
       >
         {label}
       </th>
-      <td
-        style={{
-          ...cellStyle,
-          fontSize: 13, color: '#1A1A1A', lineHeight: 1.55,
-          fontWeight: 400,
-          fontFamily: 'inherit',
-        }}
-      >
+      <td className={`${cellBase} bg-white text-[13px] text-[#1A1A1A] leading-[1.55] font-normal font-[inherit]`}>
         {value}
       </td>
     </tr>
