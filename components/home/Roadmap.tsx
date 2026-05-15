@@ -110,34 +110,23 @@ export default function Roadmap() {
   const yGridLines = [100, 150, 200];
 
   return (
-    <div style={{
-      background: '#FFFFFF',
-      borderRadius: 'var(--md-sys-shape-corner-extra-large)',
-      padding: 'var(--space-6)',
-      marginBottom: 'var(--space-6)',
-    }}>
+    <div className="bg-white rounded-[var(--md-sys-shape-corner-extra-large)] p-[var(--space-6)] mb-[var(--space-6)]">
       {/* Header */}
-      <div style={{ marginBottom: 'var(--space-5)' }}>
-        <h3 style={{
-          fontFamily: 'var(--font-display)', fontSize: 'var(--text-lg)', fontWeight: 700,
-          color: 'var(--md-sys-color-on-surface)', marginBottom: 'var(--space-1)',
-        }}>
+      <div className="mb-[var(--space-5)]">
+        <h3 className="font-[var(--font-display)] text-[length:var(--text-lg)] font-bold text-[color:var(--md-sys-color-on-surface)] mb-[var(--space-1)]">
           Дорожная карта
         </h3>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)', flexWrap: 'wrap' }}>
-          <p style={{
-            fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)',
-            color: 'var(--md-sys-color-on-surface-variant)',
-          }}>
+        <div className="flex items-center gap-[var(--space-4)] flex-wrap">
+          <p className="font-[var(--font-body)] text-[length:var(--text-xs)] text-[color:var(--md-sys-color-on-surface-variant)]">
             Уровни профессии от санинструктора до реаниматолога
           </p>
-          <div style={{ display: 'flex', gap: 'var(--space-4)', marginLeft: 'auto' }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontFamily: 'var(--font-body)', fontSize: '0.625rem', color: 'var(--md-sys-color-on-surface-variant)' }}>
-              <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--md-sys-color-primary)' }} />
+          <div className="flex gap-[var(--space-4)] ml-auto">
+            <span className="flex items-center gap-1.5 font-[var(--font-body)] text-[0.625rem] text-[color:var(--md-sys-color-on-surface-variant)]">
+              <span className="w-2 h-2 rounded-full bg-[var(--md-sys-color-primary)]" />
               Пройдено
             </span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontFamily: 'var(--font-body)', fontSize: '0.625rem', color: 'var(--md-sys-color-on-surface-variant)' }}>
-              <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#DFE2E8' }} />
+            <span className="flex items-center gap-1.5 font-[var(--font-body)] text-[0.625rem] text-[color:var(--md-sys-color-on-surface-variant)]">
+              <span className="w-2 h-2 rounded-full bg-[#DFE2E8]" />
               Не начато
             </span>
           </div>
@@ -145,10 +134,10 @@ export default function Roadmap() {
       </div>
 
       {/* Chart - fixed Y axis + scrollable content */}
-      <div style={{ display: 'flex', position: 'relative' }}>
+      <div className="flex relative">
         {/* Fixed Y axis */}
-        <div style={{ flexShrink: 0, width: Y_AXIS_W }}>
-          <svg width={Y_AXIS_W} height={H} viewBox={`0 0 ${Y_AXIS_W} ${H}`} style={{ display: 'block' }}>
+        <div className="shrink-0 w-[52px]">
+          <svg width={Y_AXIS_W} height={H} viewBox={`0 0 ${Y_AXIS_W} ${H}`} className="block">
             {/* Y axis title */}
             <text
               x={12} y={PAD_T + CHART_H / 2}
@@ -167,8 +156,8 @@ export default function Roadmap() {
         </div>
 
         {/* Scrollable chart */}
-        <div style={{ flex: 1, overflowX: 'auto', overflowY: 'hidden', paddingBottom: 4 }}>
-          <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} style={{ display: 'block', minWidth: W }}>
+        <div className="flex-1 overflow-x-auto overflow-y-hidden pb-1">
+          <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} className="block min-w-[2400px]">
 
             {/* Gradient definition */}
             <defs>
@@ -207,7 +196,7 @@ export default function Roadmap() {
               return (
                 <g
                   key={`${item.moduleId}-${i}`}
-                  style={{ cursor: 'pointer' }}
+                  className="cursor-pointer"
                   onClick={() => openCourse(item.courseId)}
                 >
                   {item.completed && (
@@ -236,7 +225,7 @@ export default function Roadmap() {
                     fontWeight={500}
                     fontFamily="var(--font-body)"
                     fill={item.completed ? '#FFFFFF' : '#4B5563'}
-                    style={{ pointerEvents: 'none' }}
+                    className="pointer-events-none"
                   >
                     {item.label}
                   </text>
@@ -287,17 +276,9 @@ export default function Roadmap() {
         </div>
 
         {/* Left fade gradient overlay */}
-        <div style={{
-          position: 'absolute', top: 0, left: Y_AXIS_W, bottom: 0, width: 40,
-          background: 'linear-gradient(to left, transparent, rgba(255,255,255,0.9))',
-          pointerEvents: 'none', zIndex: 1,
-        }} />
+        <div className="absolute top-0 bottom-0 left-[52px] w-10 bg-gradient-to-l from-transparent to-white/90 pointer-events-none z-[1]" />
         {/* Right fade gradient overlay */}
-        <div style={{
-          position: 'absolute', top: 0, right: 0, bottom: 0, width: 60,
-          background: 'linear-gradient(to right, transparent, rgba(255,255,255,0.9))',
-          pointerEvents: 'none',
-        }} />
+        <div className="absolute top-0 right-0 bottom-0 w-[60px] bg-gradient-to-r from-transparent to-white/90 pointer-events-none" />
       </div>
     </div>
   );

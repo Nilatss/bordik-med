@@ -182,9 +182,9 @@ export default function ToolView({ toolId }: { toolId: string }) {
 
   if (!tool) {
     return (
-      <div style={{ padding: 40, textAlign: 'center', color: '#9CA3AF' }}>
+      <div className="p-10 text-center text-[#9CA3AF]">
         {t('tool.notFound')}
-        <div style={{ marginTop: 16 }}>
+        <div className="mt-4">
           <BackButton onClick={closeTool} />
         </div>
       </div>
@@ -197,14 +197,11 @@ export default function ToolView({ toolId }: { toolId: string }) {
     // by the real runner's motion.div — animating twice caused a double
     // fade flash on first tool open. The main view's animation is enough.
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', maxWidth: 760 }}>
+      <div className="flex flex-col max-w-[760px]">
         <BackButton onClick={closeTool} />
         <Header tool={tool} />
-        <div style={{
-          marginTop: 24, padding: '40px 24px',
-          background: '#F5F6F8', borderRadius: 20, textAlign: 'center',
-        }}>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: 14, color: '#6B7280' }}>
+        <div className="mt-6 py-10 px-6 bg-[#F5F6F8] rounded-[20px] text-center">
+          <p className="font-[var(--font-body)] text-sm text-[#6B7280]">
             {loading ? t('tool.loading') : t('tool.runnerSoon')}
           </p>
         </div>
@@ -234,7 +231,7 @@ export default function ToolView({ toolId }: { toolId: string }) {
       {/* Top header - back + tags + title + description + InfoPills (full width, outside grid) */}
       <BackButton onClick={closeTool} />
       <Header tool={tool} kind={kindLabel} />
-      <div className="info-pill-row" style={{ marginTop: 16, marginBottom: 20 }}>
+      <div className="info-pill-row mt-4 mb-5">
         <InfoPill icon={<IconBolt />} label={t('tool.field.type')} value={kindLabel} />
         <InfoPill icon={<IconTag />} label={t('tool.field.section')} value={tool.subcategory} />
         <InfoPill icon={<IconBook />} label={t('tool.field.source')} value={shortRef(runner.reference)} />
@@ -247,31 +244,18 @@ export default function ToolView({ toolId }: { toolId: string }) {
         <AnimatePresence mode="wait" initial={false}>
         <motion.div
           key={active.id}
-          className="lesson-card"
+          className="lesson-card bg-white rounded-[var(--md-sys-shape-corner-extra-large)] p-[var(--space-6)] min-h-[300px]"
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -6 }}
           transition={{ duration: 0.25, ease: [0.05, 0.7, 0.1, 1] }}
-          style={{
-          background: '#FFFFFF',
-          borderRadius: 'var(--md-sys-shape-corner-extra-large)',
-          padding: 'var(--space-6)',
-          minHeight: 300,
-        }}>
+        >
           {/* Tab header - identical structure to TabbedLessonViewer */}
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: 12,
-            marginBottom: 16, paddingBottom: 16,
-            borderBottom: '1px solid #F0F0F0',
-          }}>
-            <span style={{ display: 'flex', color: '#1A1A1A' }}>
+          <div className="flex items-center gap-3 mb-4 pb-4 border-b border-[#F0F0F0]">
+            <span className="flex text-[#1A1A1A]">
               <TabIcon name={active.iconKey} size={24} />
             </span>
-            <h2 style={{
-              fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 700,
-              color: '#1A1A1A', lineHeight: 1.2, letterSpacing: '-0.01em',
-              margin: 0,
-            }}>
+            <h2 className="font-[var(--font-display)] text-[22px] font-bold text-[#1A1A1A] leading-[1.2] tracking-[-0.01em] m-0">
               {active.title}
             </h2>
           </div>
@@ -295,22 +279,18 @@ export default function ToolView({ toolId }: { toolId: string }) {
 
           {active.kind === 'reference' && (
             <div className="lesson-content tool-info">
-              <p style={{ marginBottom: 12 }}>
+              <p className="mb-3">
                 <strong>{t('tool.referenceTitle')}</strong>
               </p>
               <p>{cleanReference(runner.reference)}</p>
-              <p style={{ marginTop: 20, color: '#6B7280', fontSize: 13 }}>
+              <p className="mt-5 text-[#6B7280] text-[13px]">
                 {t('tool.referenceFooter')}
               </p>
             </div>
           )}
 
           {/* Prev / Next - identical to TabbedLessonViewer */}
-          <div style={{
-            display: 'flex', justifyContent: 'space-between', gap: 12,
-            marginTop: 32, paddingTop: 20,
-            borderTop: '1px solid #F0F0F0',
-          }}>
+          <div className="flex justify-between gap-3 mt-8 pt-5 border-t border-[#F0F0F0]">
             {prevTab ? (
               <NavButton onClick={() => setActiveId(prevTab.id)} label={prevTab.short} dir="prev" />
             ) : <span />}

@@ -299,22 +299,17 @@ export default function ToolsPage() {
 
   return (
     <ToolCardContext.Provider value={cardContextValue}>
-    <div ref={rootRef} style={{ width: '100%' }}>
+    <div ref={rootRef} className="w-full">
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1] }}
-        style={{ marginBottom: 20 }}
+        className="mb-5"
       >
-        <h2 style={{
-          fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 700,
-          color: '#1A1A1A', marginBottom: 6, letterSpacing: '-0.02em',
-        }}>
+        <h2 className="font-[var(--font-display)] text-[28px] font-bold text-[#1A1A1A] mb-1.5 tracking-[-0.02em]">
           {t('tools.title')}
         </h2>
-        <p style={{
-          fontFamily: 'var(--font-body)', fontSize: 14, color: '#6B7280', lineHeight: 1.5,
-        }}>
+        <p className="font-[var(--font-body)] text-sm text-[#6B7280] leading-[1.5]">
           {t('tools.subtitle', {
             ready: readyCount,
             total: tools.length,
@@ -328,15 +323,9 @@ export default function ToolsPage() {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1], delay: 0.06 }}
-        style={{ marginBottom: 14 }}
+        className="mb-[14px]"
       >
-        <div style={{
-          display: 'flex', alignItems: 'center', gap: 10,
-          padding: '10px 16px',
-          background: '#F5F6F8',
-          borderRadius: 12,
-          maxWidth: 480,
-        }}>
+        <div className="flex items-center gap-2.5 py-2.5 px-4 bg-[#F5F6F8] rounded-[12px] max-w-[480px]">
           <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
             stroke="#9CA3AF" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
             <circle cx="11" cy="11" r="8" />
@@ -346,22 +335,12 @@ export default function ToolsPage() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={t('tools.search.placeholder')}
-            style={{
-              flex: 1,
-              border: 'none', outline: 'none',
-              background: 'transparent',
-              fontFamily: 'var(--font-body)', fontSize: 14,
-              color: '#1A1A1A',
-            }}
+            className="flex-1 border-none outline-none bg-transparent font-[var(--font-body)] text-sm text-[#1A1A1A]"
           />
           {query && (
             <button
               onClick={() => setQuery('')}
-              style={{
-                background: 'transparent', border: 'none', padding: 0,
-                cursor: 'pointer', color: '#9CA3AF',
-                display: 'flex',
-              }}
+              className="bg-transparent border-none p-0 cursor-pointer text-[#9CA3AF] flex"
               aria-label={t('tools.clear')}
             >
               <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
@@ -380,10 +359,7 @@ export default function ToolsPage() {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1], delay: 0.12 }}
-        style={{
-          display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center',
-          marginBottom: 20,
-        }}
+        className="flex gap-2 flex-wrap items-center mb-5"
       >
         <FilterDropdown
           label={t('tools.filter.sections')}
@@ -425,18 +401,13 @@ export default function ToolsPage() {
           onClick={() => setOnlyFavourites((v) => !v)}
           disabled={favouriteSet.size === 0}
           title={favouriteSet.size === 0 ? t('tools.favoritesEmptyHint') : undefined}
-          style={{
-            display: 'inline-flex', alignItems: 'center', gap: 6,
-            padding: '7px 12px',
-            background: onlyFavourites ? '#1A1A1A' : '#F5F6F8',
-            color: onlyFavourites ? '#FFFFFF' : favouriteSet.size === 0 ? '#B0B3BA' : '#374151',
-            border: 'none', borderRadius: 999,
-            cursor: favouriteSet.size === 0 ? 'not-allowed' : 'pointer',
-            fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 600,
-            transition: 'background 180ms, color 180ms',
-          }}
-          onMouseEnter={(e) => { if (!onlyFavourites && favouriteSet.size > 0) e.currentTarget.style.background = '#EFF1F4'; }}
-          onMouseLeave={(e) => { if (!onlyFavourites && favouriteSet.size > 0) e.currentTarget.style.background = '#F5F6F8'; }}
+          className={`inline-flex items-center gap-1.5 py-[7px] px-3 border-none rounded-full font-[var(--font-body)] text-xs font-semibold transition-colors duration-[180ms] disabled:cursor-not-allowed ${
+            onlyFavourites
+              ? 'bg-[#1A1A1A] text-white cursor-pointer'
+              : favouriteSet.size === 0
+                ? 'bg-[#F5F6F8] text-[#B0B3BA]'
+                : 'bg-[#F5F6F8] hover:bg-[#EFF1F4] text-[#374151] cursor-pointer'
+          }`}
         >
           <svg width={12} height={12} viewBox="0 0 24 24"
             fill={onlyFavourites ? 'currentColor' : 'none'}
@@ -451,17 +422,7 @@ export default function ToolsPage() {
         <button
           onClick={() => setBulkOpen(true)}
           title="Сохранить все доступные инструменты для офлайн"
-          style={{
-            display: 'inline-flex', alignItems: 'center', gap: 6,
-            padding: '7px 12px',
-            background: '#F5F6F8', color: '#374151',
-            border: 'none', borderRadius: 999,
-            cursor: 'pointer',
-            fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 600,
-            transition: 'background 180ms',
-          }}
-          onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.background = '#F5F6F8'; }}
+          className="inline-flex items-center gap-1.5 py-[7px] px-3 bg-[#F5F6F8] hover:bg-[#EFF1F4] text-[#374151] border-none rounded-full cursor-pointer font-[var(--font-body)] text-xs font-semibold transition-colors duration-[180ms]"
         >
           <svg width={12} height={12} viewBox="0 0 24 24" fill="none"
             stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round">
@@ -475,16 +436,7 @@ export default function ToolsPage() {
         {totalFilters > 0 && (
           <button
             onClick={resetAll}
-            style={{
-              marginLeft: 'auto',
-              display: 'inline-flex', alignItems: 'center', gap: 6,
-              background: 'transparent', border: 'none',
-              cursor: 'pointer', padding: '6px 10px',
-              fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 500,
-              color: '#6B7280',
-            }}
-            onMouseEnter={(e) => { e.currentTarget.style.color = '#1A1A1A'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.color = '#6B7280'; }}
+            className="ml-auto inline-flex items-center gap-1.5 bg-transparent border-none cursor-pointer py-1.5 px-2.5 font-[var(--font-body)] text-xs font-medium text-[#6B7280] hover:text-[#1A1A1A] transition-colors"
           >
             <svg width={11} height={11} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
               <line x1={18} y1={6} x2={6} y2={18}/><line x1={6} y1={6} x2={18} y2={18}/>
@@ -495,12 +447,7 @@ export default function ToolsPage() {
       </motion.div>
 
       {totalFilters > 0 && (
-        <div style={{
-          display: 'flex', flexWrap: 'wrap', gap: 6,
-          marginBottom: 20,
-          paddingBottom: 16,
-          borderBottom: '1px solid #F0F1F5',
-        }}>
+        <div className="flex flex-wrap gap-1.5 mb-5 pb-4 border-b border-[#F0F1F5]">
           {selectedCategories.map((c) => (
             <FilterChip key={`c-${c}`} label={stripCategoryNumber(c)}
               onRemove={() => setCats(selectedCategories.filter((x) => x !== c))} />
@@ -528,10 +475,7 @@ export default function ToolsPage() {
       <RecentToolsWidget catalog={tools} onOpen={openToolAction} />
 
       {rows.length === 0 ? (
-        <div style={{
-          padding: '60px 20px', textAlign: 'center',
-          fontFamily: 'var(--font-body)', fontSize: 14, color: '#9CA3AF',
-        }}>
+        <div className="py-[60px] px-5 text-center font-[var(--font-body)] text-sm text-[#9CA3AF]">
           {t('tools.noResults')}
         </div>
       ) : (

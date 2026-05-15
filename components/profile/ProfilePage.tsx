@@ -115,78 +115,54 @@ export default function ProfilePage() {
   });
 
   return (
-    <div style={{ width: '100%' }}>
-      <div className="profile-2col" style={{ display: 'grid', gridTemplateColumns: '500px 1fr', gap: 16, alignItems: 'stretch' }}>
+    <div className="w-full">
+      <div className="profile-2col grid grid-cols-[500px_1fr] gap-4 items-stretch">
 
         {/* LEFT: User card */}
-        <div style={{
-          background: '#F5F6F8',
-          borderRadius: 20,
-          padding: '28px 24px 0',
-          display: 'flex', flexDirection: 'column', alignItems: 'center',
-          border: 'none',
-          overflow: 'visible',
-        }}>
+        <div className="bg-[#F5F6F8] rounded-[20px] pt-7 px-6 pb-0 flex flex-col items-center border-none overflow-visible">
           {/* Avatar */}
-          <div style={{
-            width: 64, height: 64, borderRadius: '50%',
-            background: '#E2E4EA',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            marginBottom: 12,
-          }}>
-            <span style={{
-              fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 700, color: '#555',
-            }}>
+          <div className="w-16 h-16 rounded-full bg-[#E2E4EA] flex items-center justify-center mb-3">
+            <span className="font-[var(--font-display)] text-[22px] font-bold text-[#555]">
               {userName.charAt(0).toUpperCase()}
             </span>
           </div>
 
           <EditableName value={userName} onSave={(v) => setUserProfile({ userName: v })} />
 
-          <p style={{
-            fontFamily: 'var(--font-body)', fontSize: 12, color: '#AAA', marginBottom: 20,
-          }}>
+          <p className="font-[var(--font-body)] text-xs text-[#AAA] mb-5">
             {dateStr}
           </p>
 
           {/* 3 stats bar */}
-          <div style={{
-            display: 'flex', width: '100%',
-            background: '#FFFFFF', borderRadius: 14,
-            padding: '12px 8px',
-            marginBottom: 20,
-          }}>
-            <div style={{ flex: 1, textAlign: 'center', borderRight: '1px solid #E8E9ED' }}>
-              <p style={{ fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 700, color: '#1A1A1A' }}>
+          <div className="flex w-full bg-white rounded-[14px] py-3 px-2 mb-5">
+            <div className="flex-1 text-center border-r border-[#E8E9ED]">
+              <p className="font-[var(--font-display)] text-lg font-bold text-[#1A1A1A]">
                 {completeness}
               </p>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: 10, color: '#999', marginTop: 2 }}>
+              <p className="font-[var(--font-body)] text-[10px] text-[#999] mt-0.5">
                 {t('profile.progress')}
               </p>
             </div>
-            <div style={{ flex: 1, textAlign: 'center', borderRight: '1px solid #E8E9ED' }}>
-              <p style={{ fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 700, color: '#1A1A1A' }}>
+            <div className="flex-1 text-center border-r border-[#E8E9ED]">
+              <p className="font-[var(--font-display)] text-lg font-bold text-[#1A1A1A]">
                 {testPassRate}
               </p>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: 10, color: '#999', marginTop: 2 }}>
+              <p className="font-[var(--font-body)] text-[10px] text-[#999] mt-0.5">
                 {t('profile.tests')}
               </p>
             </div>
-            <div style={{ flex: 1, textAlign: 'center' }}>
-              <p style={{ fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 700, color: '#1A1A1A' }}>
+            <div className="flex-1 text-center">
+              <p className="font-[var(--font-display)] text-lg font-bold text-[#1A1A1A]">
                 {avgScore > 0 ? `${avgScore}%` : '-'}
               </p>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: 10, color: '#999', marginTop: 2 }}>
+              <p className="font-[var(--font-body)] text-[10px] text-[#999] mt-0.5">
                 {t('profile.avgScore')}
               </p>
             </div>
           </div>
 
           {/* Student info */}
-          <div style={{
-            width: '100%', paddingBottom: 24,
-            display: 'flex', flexDirection: 'column', gap: 4,
-          }}>
+          <div className="w-full pb-6 flex flex-col gap-1">
             {/* Email (validated) */}
             <EmailRow value={userEmail} onSave={(v) => setUserProfile({ userEmail: v })} t={t} />
 
@@ -246,18 +222,12 @@ export default function ProfilePage() {
         </div>
 
         {/* RIGHT: Gauge + metrics */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          <div style={{
-            background: '#F5F6F8',
-            borderRadius: 20,
-            padding: '32px 24px 24px',
-            display: 'flex', flexDirection: 'column', alignItems: 'center',
-            border: 'none',
-          }}>
+        <div className="flex flex-col gap-4">
+          <div className="bg-[#F5F6F8] rounded-[20px] pt-8 px-6 pb-6 flex flex-col items-center border-none">
             <ScoreGauge score={progress} label={gaugeLabel} />
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <div className="flex flex-col gap-2.5">
             {metrics.map((m) => (
               <MetricCard key={m.title} {...m} />
             ))}

@@ -138,24 +138,18 @@ export default function TestsPage() {
   }
 
   return (
-    <div style={{ width: '100%' }}>
+    <div className="w-full">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1] }}
-        style={{ marginBottom: 24 }}
+        className="mb-6"
       >
-        <h2 style={{
-          fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 700,
-          color: '#1A1A1A', marginBottom: 6, letterSpacing: '-0.02em',
-        }}>
+        <h2 className="font-[var(--font-display)] text-[28px] font-bold text-[#1A1A1A] mb-1.5 tracking-[-0.02em]">
           {t('testsPage.title')}
         </h2>
-        <p style={{
-          fontFamily: 'var(--font-body)', fontSize: 14, color: '#6B7280',
-          lineHeight: 1.5,
-        }}>
+        <p className="font-[var(--font-body)] text-sm text-[#6B7280] leading-[1.5]">
           {t('testsPage.subtitle')}
         </p>
       </motion.div>
@@ -172,52 +166,22 @@ export default function TestsPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, ease: [0.05, 0.7, 0.1, 1], delay: 0.04 }}
           onClick={() => setActiveTest('diagnostic')}
-          style={{
-            width: '100%',
-            display: 'flex', alignItems: 'center', gap: 12,
-            padding: '12px 16px',
-            background: '#F5F6F8',
-            border: 'none',
-            borderRadius: 12,
-            cursor: 'pointer',
-            marginBottom: 20,
-            textAlign: 'left',
-            fontFamily: 'inherit',
-            transition: 'background 180ms cubic-bezier(0.22,1,0.36,1)',
-          }}
-          onMouseEnter={(e) => { e.currentTarget.style.background = '#F0F2F5'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.background = '#F5F6F8'; }}
+          className="w-full flex items-center gap-3 py-3 px-4 bg-[#F5F6F8] hover:bg-[#F0F2F5] border-none rounded-[12px] cursor-pointer mb-5 text-left font-[inherit] transition-colors duration-[180ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
         >
-          <span style={{
-            flex: '0 0 auto',
-            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-            width: 28, height: 28, borderRadius: 8,
-            background: '#2563EB', color: '#FFFFFF',
-          }}>
+          <span className="flex-[0_0_auto] inline-flex items-center justify-center w-7 h-7 rounded-lg bg-[#2563EB] text-white">
             <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
               stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round">
               <polyline points="20 6 9 17 4 12" />
             </svg>
           </span>
-          <span style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <span style={{
-              display: 'flex', alignItems: 'baseline', gap: 8, flexWrap: 'wrap',
-              fontFamily: 'var(--font-display)', fontSize: 14, fontWeight: 600,
-              color: '#1A1A1A', letterSpacing: '-0.005em',
-              lineHeight: 1.3,
-            }}>
-              <span style={{
-                fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-                color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
-              }}>
+          <span className="flex-1 min-w-0 flex flex-col gap-0.5">
+            <span className="flex items-baseline gap-2 flex-wrap font-[var(--font-display)] text-sm font-semibold text-[#1A1A1A] tracking-[-0.005em] leading-[1.3]">
+              <span className="font-[var(--font-mono)] text-[10px] font-bold text-[#9CA3AF] uppercase tracking-[0.08em]">
                 Диагностика
               </span>
               <span>{lastDiagnostic.profession}</span>
             </span>
-            <span style={{
-              fontFamily: 'var(--font-body)', fontSize: 12, color: '#6B7280',
-              lineHeight: 1.4,
-            }}>
+            <span className="font-[var(--font-body)] text-xs text-[#6B7280] leading-[1.4]">
               {lastDiagnostic.correct}/{lastDiagnostic.total} верных · {' '}
               {lastDiagnostic.level === 'basic' ? 'базовый'
                 : lastDiagnostic.level === 'intermediate' ? 'средний' : 'продвинутый'} · {' '}
@@ -238,64 +202,29 @@ export default function TestsPage() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1], delay: 0.06 + catIdx * 0.06 }}
-          style={{ marginBottom: 28 }}
+          className="mb-7"
         >
-          <h3 style={{
-            fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700,
-            color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
-            marginBottom: 12,
-          }}>
+          <h3 className="font-[var(--font-mono)] text-[11px] font-bold text-[#9CA3AF] uppercase tracking-[0.08em] mb-3">
             {category}
           </h3>
           <div className="rg-3">
-            {tests.map((test, i) => (
-              <motion.button
-                key={test.id}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: test.unlocked ? 1 : 0.48, y: 0 }}
-                transition={{ delay: i * 0.03, duration: 0.3, ease: [0.05, 0.7, 0.1, 1] }}
-                disabled={!test.unlocked}
-                onClick={() => { if (test.unlocked) setActiveTest(test.id); }}
-                style={{
-                  background: '#F5F6F8',
-                  borderRadius: 'var(--md-sys-shape-corner-extra-large)',
-                  border: 'none',
-                  padding: 'var(--space-5)',
-                  textAlign: 'left',
-                  cursor: test.unlocked ? 'pointer' : 'not-allowed',
-                  opacity: test.unlocked ? 1 : 0.48,
-                  position: 'relative',
-                  overflow: 'hidden',
-                  minHeight: 160,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between',
-                  transition: 'background 400ms cubic-bezier(0.22,1,0.36,1), transform 400ms cubic-bezier(0.22,1,0.36,1)',
-                }}
-                onMouseEnter={(e) => {
-                  if (test.unlocked) {
-                    e.currentTarget.style.background = '#F0F2F5';
-                    e.currentTarget.style.transform = 'translateY(-1px)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = '#F5F6F8';
-                  e.currentTarget.style.transform = 'translateY(0)';
-                }}
-              >
+            {tests.map((test, i) => {
+              const cardStateClass = test.unlocked
+                ? 'cursor-pointer opacity-100 hover:bg-[#F0F2F5] hover:-translate-y-px'
+                : 'cursor-not-allowed opacity-[0.48]';
+              return (
+                <motion.button
+                  key={test.id}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: test.unlocked ? 1 : 0.48, y: 0 }}
+                  transition={{ delay: i * 0.03, duration: 0.3, ease: [0.05, 0.7, 0.1, 1] }}
+                  disabled={!test.unlocked}
+                  onClick={() => { if (test.unlocked) setActiveTest(test.id); }}
+                  className={`bg-[#F5F6F8] rounded-[var(--md-sys-shape-corner-extra-large)] border-none p-[var(--space-5)] text-left relative overflow-hidden min-h-[160px] flex flex-col justify-between transition-[background,transform] duration-[400ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${cardStateClass}`}
+                >
                 {/* "Скоро" lock badge - top-right */}
                 {!test.unlocked && (
-                  <div style={{
-                    position: 'absolute', top: 12, right: 12, zIndex: 2,
-                    display: 'inline-flex', alignItems: 'center', gap: 6,
-                    padding: '4px 10px',
-                    borderRadius: 999,
-                    background: '#1A1A1A',
-                    color: '#FFFFFF',
-                    fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-                    letterSpacing: '0.06em', textTransform: 'uppercase',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
-                  }}>
+                  <div className="absolute top-3 right-3 z-[2] inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full bg-[#1A1A1A] text-white font-[var(--font-mono)] text-[10px] font-bold tracking-[0.06em] uppercase shadow-[0_2px_8px_rgba(0,0,0,0.12)]">
                     <svg width={10} height={10} viewBox="0 0 24 24" fill="none"
                       stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round">
                       <rect x="3" y="11" width="18" height="11" rx="2" />
@@ -306,54 +235,32 @@ export default function TestsPage() {
                 )}
 
                 {/* Top pill - questions + duration */}
-                <div style={{ marginBottom: 'var(--space-3)', position: 'relative', zIndex: 1 }}>
-                  <span style={{
-                    display: 'inline-flex', alignItems: 'center', gap: 'var(--space-1)',
-                    padding: '4px var(--space-2)',
-                    borderRadius: 'var(--md-sys-shape-corner-full)',
-                    background: '#FFFFFF',
-                    boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-                    fontFamily: 'var(--font-mono)', fontSize: '0.625rem', fontWeight: 500,
-                    color: 'var(--md-sys-color-on-surface-variant)',
-                  }}>
+                <div className="mb-[var(--space-3)] relative z-[1]">
+                  <span className="inline-flex items-center gap-[var(--space-1)] py-1 px-[var(--space-2)] rounded-[var(--md-sys-shape-corner-full)] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.06),0_2px_6px_rgba(16,24,40,0.06)] font-[var(--font-mono)] text-[0.625rem] font-medium text-[color:var(--md-sys-color-on-surface-variant)]">
                     {t('testsPage.questionsDuration', { n: test.questions, duration: test.duration })}
                   </span>
                 </div>
 
                 {/* Middle: title + description */}
-                <div style={{ position: 'relative', zIndex: 1, flex: 1 }}>
-                  <h3 style={{
-                    fontFamily: 'var(--font-display)', fontSize: 'var(--text-base)', fontWeight: 700,
-                    color: 'var(--md-sys-color-on-surface)',
-                    marginBottom: 'var(--space-1)', lineHeight: 1.25,
-                  }}>
+                <div className="relative z-[1] flex-1">
+                  <h3 className="font-[var(--font-display)] text-[length:var(--text-base)] font-bold text-[color:var(--md-sys-color-on-surface)] mb-[var(--space-1)] leading-[1.25]">
                     {test.title}
                   </h3>
-                  <p style={{
-                    fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)',
-                    color: 'var(--md-sys-color-on-surface-variant)', lineHeight: 1.4,
-                    display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
-                    overflow: 'hidden',
-                  }}>
+                  <p className="font-[var(--font-body)] text-[length:var(--text-xs)] text-[color:var(--md-sys-color-on-surface-variant)] leading-[1.4] overflow-hidden [-webkit-line-clamp:2] [-webkit-box-orient:vertical] [display:-webkit-box]">
                     {test.description}
                   </p>
                 </div>
 
                 {/* Footer */}
-                <div style={{
-                  display: 'flex', alignItems: 'center', gap: 'var(--space-1)',
-                  marginTop: 'var(--space-3)', position: 'relative', zIndex: 1,
-                }}>
-                  <span style={{
-                    fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', fontWeight: 500,
-                    color: test.unlocked ? 'var(--md-sys-color-on-surface)' : '#9CA3AF',
-                  }}>
+                <div className="flex items-center gap-[var(--space-1)] mt-[var(--space-3)] relative z-[1]">
+                  <span className={`font-[var(--font-body)] text-[length:var(--text-xs)] font-medium ${test.unlocked ? 'text-[color:var(--md-sys-color-on-surface)]' : 'text-[#9CA3AF]'}`}>
                     {test.unlocked ? t('testsPage.startTest') : t('testsPage.inDevelopment')}
                   </span>
                   {test.unlocked && <ArrowRight size={14} color="var(--md-sys-color-on-surface)" />}
                 </div>
-              </motion.button>
-            ))}
+                </motion.button>
+              );
+            })}
           </div>
         </motion.section>
       ))}
