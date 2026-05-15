@@ -13,24 +13,11 @@ interface StatPillProps {
 
 export default function StatPill({ label, value }: StatPillProps) {
   return (
-    <div style={{
-      background: '#F5F6F8',
-      borderRadius: 12,
-      padding: '12px 14px',
-      display: 'flex', flexDirection: 'column', gap: 4,
-      minWidth: 0,
-    }}>
-      <span style={{
-        fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-        color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
-      }}>
+    <div className="bg-[#F5F6F8] rounded-xl py-3 px-3.5 flex flex-col gap-1 min-w-0">
+      <span className="font-[var(--font-mono)] text-[10px] font-bold text-[#9CA3AF] uppercase tracking-[0.08em]">
         {label}
       </span>
-      <span style={{
-        fontFamily: 'var(--font-body)', fontSize: 13.5, fontWeight: 600,
-        color: '#1A1A1A', lineHeight: 1.35,
-        overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-      }}>
+      <span className="font-[var(--font-body)] text-[13.5px] font-semibold text-[#1A1A1A] leading-[1.35] overflow-hidden text-ellipsis whitespace-nowrap">
         {value}
       </span>
     </div>

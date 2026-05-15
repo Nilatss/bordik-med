@@ -55,13 +55,26 @@ export default function Highlight({ text, query, color = HIGHLIGHT_COLOR_DEFAULT
   // Множество нормализованных токенов для O(1) проверки matched
   const tokenSet = new Set(tokens.map(normalize));
 
+  // P1-CR-4: migrated from inline style to Tailwind. Default color via
+  // class; custom color path uses CSS variable to keep className-driven.
+  const isDefault = color === HIGHLIGHT_COLOR_DEFAULT;
+
   return (
     <>
-      {parts.map((p, i) =>
-        p && tokenSet.has(normalize(p))
-          ? <strong key={i} style={{ fontWeight: 700, color }}>{p}</strong>
-          : <span key={i}>{p}</span>
-      )}
+      {parts.map((p, i) => {
+        if (!p || !tokenSet.has(normalize(p))) return <span key={i}>{p}</span>;
+        if (isDefault) return <strong key={i} className="font-bold text-[#2563EB]">{p}</strong>;
+        return (
+          <strong
+            key={i}
+            className="font-bold text-[var(--highlight-color)]"
+            // eslint-disable-next-line react/forbid-dom-props -- CSS-var injection для dynamic color prop (rare, no call sites override default)
+            style={{ ['--highlight-color' as string]: color }}
+          >
+            {p}
+          </strong>
+        );
+      })}
     </>
   );
 }

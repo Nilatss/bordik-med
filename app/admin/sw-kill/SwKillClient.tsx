@@ -49,20 +49,12 @@ export default function SwKillClient() {
         type="button"
         onClick={trigger}
         disabled={busy}
-        style={{
-          padding: '12px 22px', borderRadius: 10,
-          background: busy ? '#9CA3AF' : '#DC2626', color: '#FFFFFF',
-          border: 'none', cursor: busy ? 'not-allowed' : 'pointer',
-          fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: 700,
-        }}
+        className={`py-3 px-[22px] rounded-[10px] ${busy ? 'bg-[#9CA3AF] cursor-not-allowed' : 'bg-[#DC2626] cursor-pointer'} text-white border-none font-[var(--font-body)] text-[14px] font-bold`}
       >
         {busy ? 'Отправляю…' : 'Активировать kill-switch'}
       </button>
       {msg ? (
-        <p style={{
-          marginTop: 16, padding: 12, borderRadius: 8,
-          background: '#F3F4F6', fontSize: 13, color: '#1A1A1A',
-        }}>
+        <p className="mt-4 p-3 rounded-lg bg-[#F3F4F6] text-[13px] text-[#1A1A1A]">
           {msg}
         </p>
       ) : null}

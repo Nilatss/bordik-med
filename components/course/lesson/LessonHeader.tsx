@@ -14,18 +14,11 @@ interface LessonHeaderProps {
 
 export function LessonHeader({ iconKey, title }: LessonHeaderProps) {
   return (
-    <div style={{
-      display: 'flex', alignItems: 'center', gap: 12,
-      marginBottom: 16, paddingBottom: 16,
-      borderBottom: '1px solid #F0F0F0',
-    }}>
-      <span style={{ display: 'flex', color: '#1A1A1A' }}>
+    <div className="flex items-center gap-3 mb-4 pb-4 border-b border-[#F0F0F0]">
+      <span className="flex text-[#1A1A1A]">
         <TabIcon name={iconKey} size={24} />
       </span>
-      <h2 style={{
-        fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 700,
-        color: '#1A1A1A', lineHeight: 1.2, letterSpacing: '-0.01em',
-      }}>
+      <h2 className="font-[var(--font-display)] text-[22px] font-bold text-[#1A1A1A] leading-[1.2] tracking-[-0.01em]">
         {title}
       </h2>
     </div>

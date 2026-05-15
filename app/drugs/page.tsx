@@ -56,10 +56,7 @@ export default function DrugsPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <main style={{
-        maxWidth: 1040, margin: '0 auto',
-        padding: '32px 24px 80px',
-      }}>
+      <main className="max-w-[1040px] mx-auto pt-8 px-6 pb-20">
         <DrugChecker />
       </main>
     </>

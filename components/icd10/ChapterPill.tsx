@@ -13,43 +13,19 @@ interface ChapterPillProps {
 }
 
 export function ChapterPill({ label, count, active, onClick }: ChapterPillProps) {
+  // P1-CR-4: migrated from inline style to Tailwind. Hover via `hover:` modifier.
+  const stateClass = active
+    ? 'bg-[#2563EB] text-white border-[#2563EB] shadow-[0_1px_2px_rgba(37,99,235,0.18)] hover:bg-[#1D4ED8]'
+    : 'bg-[#F5F6F8] text-[#374151] border-transparent hover:bg-[#EFF1F4]';
+  const countColor = active ? 'text-white/[0.78]' : 'text-[#9CA3AF]';
   return (
     <button
       type="button"
       onClick={onClick}
-      style={{
-        flexShrink: 0,
-        display: 'inline-flex', alignItems: 'center', gap: 8,
-        padding: '7px 12px',
-        // Активная — синяя (тон совпадает с soft-blue badge номера
-        // главы), неактивная — стандартный серый F5F6F8 чип.
-        background: active ? '#2563EB' : '#F5F6F8',
-        color: active ? '#FFFFFF' : '#374151',
-        border: '1px solid transparent',
-        borderColor: active ? '#2563EB' : 'transparent',
-        borderRadius: 999,
-        cursor: 'pointer',
-        fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 600,
-        whiteSpace: 'nowrap',
-        transition: 'background 180ms, color 180ms, border-color 180ms',
-        boxShadow: active ? '0 1px 2px rgba(37,99,235,0.18)' : 'none',
-      }}
-      onMouseEnter={(e) => {
-        if (active) e.currentTarget.style.background = '#1D4ED8';
-        else e.currentTarget.style.background = '#EFF1F4';
-      }}
-      onMouseLeave={(e) => {
-        if (active) e.currentTarget.style.background = '#2563EB';
-        else e.currentTarget.style.background = '#F5F6F8';
-      }}
+      className={`shrink-0 inline-flex items-center gap-2 py-[7px] px-3 ${stateClass} border rounded-full cursor-pointer font-[var(--font-body)] text-[12px] font-semibold whitespace-nowrap transition-[background,color,border-color] duration-[180ms]`}
     >
       <span>{label}</span>
-      <span style={{
-        fontFamily: 'var(--font-mono, ui-monospace)',
-        fontSize: 10, fontWeight: 700,
-        color: active ? 'rgba(255,255,255,0.78)' : '#9CA3AF',
-        letterSpacing: '0.02em',
-      }}>
+      <span className={`font-mono text-[10px] font-bold tracking-[0.02em] ${countColor}`}>
         {count}
       </span>
     </button>

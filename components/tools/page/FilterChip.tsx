@@ -9,27 +9,11 @@ import { useT } from '@/lib/i18n';
 export function FilterChip({ label, onRemove }: { label: string; onRemove: () => void }) {
   const t = useT();
   return (
-    <span style={{
-      display: 'inline-flex', alignItems: 'center', gap: 6,
-      padding: '5px 6px 5px 12px',
-      background: '#EEF2FF',
-      color: '#1E3A8A',
-      border: 'none', borderRadius: 999,
-      fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 500,
-    }}>
+    <span className="inline-flex items-center gap-1.5 pl-3 pr-1.5 py-[5px] bg-[#EEF2FF] text-[#1E3A8A] border-none rounded-full font-[var(--font-body)] text-[12px] font-medium">
       {label}
       <button
         onClick={onRemove}
-        style={{
-          background: 'transparent', border: 'none', padding: 0,
-          cursor: 'pointer',
-          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-          color: '#4F46E5',
-          width: 16, height: 16, borderRadius: '50%',
-          transition: 'background 150ms',
-        }}
-        onMouseEnter={(e) => { e.currentTarget.style.background = '#C7D2FE'; }}
-        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+        className="bg-transparent hover:bg-[#C7D2FE] border-none p-0 cursor-pointer inline-flex items-center justify-center text-[#4F46E5] w-4 h-4 rounded-full transition-colors duration-150"
         aria-label={t('tools.remove')}
       >
         <svg width={10} height={10} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">

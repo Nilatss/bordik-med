@@ -19,25 +19,11 @@ interface LessonNavigationProps {
 
 export function LessonNavigation({ prevTab, nextTab, onSelect }: LessonNavigationProps) {
   return (
-    <div style={{
-      display: 'flex', justifyContent: 'space-between', gap: 12,
-      marginTop: 32, paddingTop: 20,
-      borderTop: '1px solid #F0F0F0',
-    }}>
+    <div className="flex justify-between gap-3 mt-8 pt-5 border-t border-[#F0F0F0]">
       {prevTab ? (
         <button
           onClick={() => onSelect(prevTab.id)}
-          style={{
-            display: 'inline-flex', alignItems: 'center', gap: 8,
-            padding: '10px 16px',
-            background: '#F5F6F8', color: '#1A1A1A',
-            border: 'none', borderRadius: 10,
-            cursor: 'pointer',
-            fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 500,
-            transition: 'background 180ms',
-          }}
-          onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.background = '#F5F6F8'; }}
+          className="inline-flex items-center gap-2 py-2.5 px-4 bg-[#F5F6F8] hover:bg-[#EFF1F4] text-[#1A1A1A] border-none rounded-[10px] cursor-pointer font-[var(--font-body)] text-[13px] font-medium transition-colors duration-[180ms]"
         >
           ← {prevTab.short}
         </button>
@@ -45,17 +31,7 @@ export function LessonNavigation({ prevTab, nextTab, onSelect }: LessonNavigatio
       {nextTab ? (
         <button
           onClick={() => onSelect(nextTab.id)}
-          style={{
-            display: 'inline-flex', alignItems: 'center', gap: 8,
-            padding: '10px 16px',
-            background: '#3B82F6', color: '#FFF',
-            border: 'none', borderRadius: 10,
-            cursor: 'pointer',
-            fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
-            transition: 'background 180ms',
-          }}
-          onMouseEnter={(e) => { e.currentTarget.style.background = '#2563EB'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.background = '#3B82F6'; }}
+          className="inline-flex items-center gap-2 py-2.5 px-4 bg-[#3B82F6] hover:bg-[#2563EB] text-white border-none rounded-[10px] cursor-pointer font-[var(--font-body)] text-[13px] font-semibold transition-colors duration-[180ms]"
         >
           {nextTab.short} →
         </button>
