@@ -31,6 +31,17 @@ const HEATMAP_LEVELS: readonly string[] = [
 ];
 const HEATMAP_FALLBACK = '#F1F3F6';
 
+// Pre-mapped Tailwind classes for the 5 heatmap intensities — lets us use
+// className instead of inline style for the static palette. Index -1 is the
+// out-of-range padding cell (rendered transparent).
+const HEATMAP_BG_CLASS: readonly string[] = [
+  'bg-[#F1F3F6]',  // 0 — none
+  'bg-[#DBE7FF]',  // 1 — light
+  'bg-[#A8C7FF]',  // 2 — medium
+  'bg-[#7AA5FA]',  // 3 — strong
+  'bg-[#3B82F6]',  // 4 — peak (ACCENT)
+];
+
 /* ─── Period selector ─────────────────────────────────────────── */
 type Period = 'month' | 'week' | 'all';
 const PERIOD_LABELS: Record<Period, string> = {
@@ -106,7 +117,7 @@ export default function StatisticsPage() {
   }, [testAttempts]);
 
   return (
-    <div className="stats-page" style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+    <div className="stats-page flex flex-col gap-[18px]">
       {/* Header bar — explicit z-index so the period dropdown isn't
            covered by KPI-row siblings (each motion.div creates its own
            stacking context via the entrance transform). */}
@@ -114,75 +125,44 @@ export default function StatisticsPage() {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1], delay: 0 }}
-        style={{
-          position: 'relative',
-          zIndex: 30,
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          gap: 12, flexWrap: 'wrap',
-        }}
+        className="relative z-30 flex items-center justify-between gap-3 flex-wrap"
       >
         <div>
-          <h1 style={{
-            fontFamily: 'var(--font-display)', fontSize: 26, fontWeight: 700,
-            color: '#1A1A1A', letterSpacing: '-0.02em', marginBottom: 4,
-          }}>
+          <h1 className="font-[var(--font-display)] text-[26px] font-bold text-[#1A1A1A] tracking-[-0.02em] mb-1">
             Статистика обучения
           </h1>
-          <p style={{
-            fontFamily: 'var(--font-body)', fontSize: 13, color: '#6B7280',
-          }}>
+          <p className="font-[var(--font-body)] text-[13px] text-[#6B7280]">
             Аналитика прогресса{userName ? ` — ${userName}` : ''}
           </p>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <div className="flex items-center gap-2.5">
           {/* Period dropdown */}
-          <div style={{ position: 'relative' }}>
+          <div className="relative">
             <button
               onClick={() => setPeriodOpen((v) => !v)}
-              style={{
-                display: 'inline-flex', alignItems: 'center', gap: 8,
-                padding: '8px 14px',
-                background: '#FFFFFF',
-                border: '1px solid #E5E7EB',
-                borderRadius: 10,
-                cursor: 'pointer',
-                fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
-                color: '#1A1A1A',
-              }}
+              className="inline-flex items-center gap-2 px-3.5 py-2 bg-white border border-[#E5E7EB] rounded-[10px] cursor-pointer font-[var(--font-body)] text-[13px] font-semibold text-[#1A1A1A]"
             >
               {PERIOD_LABELS[period]}
-              <svg width={12} height={12} viewBox="0 0 24 24" fill="none"
+              <svg
+                width={12} height={12} viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round"
-                style={{ transition: 'transform 200ms', transform: periodOpen ? 'rotate(180deg)' : 'rotate(0)' }}>
+                className={`transition-transform duration-200 ${periodOpen ? 'rotate-180' : 'rotate-0'}`}
+              >
                 <polyline points="6 9 12 15 18 9" />
               </svg>
             </button>
             {periodOpen && (
-              <div style={{
-                position: 'absolute', top: 'calc(100% + 6px)', right: 0,
-                background: '#FFFFFF',
-                borderRadius: 12,
-                boxShadow: '0 12px 32px rgba(0,0,0,0.10), 0 4px 12px rgba(0,0,0,0.05)',
-                minWidth: 180,
-                padding: 4,
-                zIndex: 30,
-                display: 'flex', flexDirection: 'column', gap: 2,
-              }}>
+              <div className="absolute top-[calc(100%+6px)] right-0 bg-white rounded-xl shadow-[0_12px_32px_rgba(0,0,0,0.10),0_4px_12px_rgba(0,0,0,0.05)] min-w-[180px] p-1 z-30 flex flex-col gap-0.5">
                 {(Object.keys(PERIOD_LABELS) as Period[]).map((p) => (
                   <button
                     key={p}
                     onClick={() => { setPeriod(p); setPeriodOpen(false); }}
-                    style={{
-                      padding: '8px 12px',
-                      background: p === period ? ACCENT_BG : 'transparent',
-                      color: p === period ? ACCENT_DARK : '#1A1A1A',
-                      border: 'none', borderRadius: 8,
-                      cursor: 'pointer',
-                      fontFamily: 'var(--font-body)', fontSize: 13,
-                      fontWeight: p === period ? 600 : 500,
-                      textAlign: 'left',
-                    }}
+                    className={`px-3 py-2 border-0 rounded-lg cursor-pointer font-[var(--font-body)] text-[13px] text-left ${
+                      p === period
+                        ? 'bg-[#EFF4FF] text-[#2563EB] font-semibold'
+                        : 'bg-transparent text-[#1A1A1A] font-medium'
+                    }`}
                   >
                     {PERIOD_LABELS[p]}
                   </button>
@@ -194,15 +174,7 @@ export default function StatisticsPage() {
           <button
             disabled
             title="Скоро будет доступно"
-            style={{
-              display: 'inline-flex', alignItems: 'center', gap: 8,
-              padding: '8px 16px',
-              background: ACCENT,
-              color: '#FFFFFF',
-              border: 'none', borderRadius: 10,
-              cursor: 'not-allowed', opacity: 0.55,
-              fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
-            }}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-[#3B82F6] text-white border-0 rounded-[10px] cursor-not-allowed opacity-[0.55] font-[var(--font-body)] text-[13px] font-semibold"
           >
             <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
               stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round">
@@ -216,7 +188,7 @@ export default function StatisticsPage() {
       </motion.div>
 
       {/* KPI cards row */}
-      <div className="stats-kpi-row" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 16 }}>
+      <div className="stats-kpi-row grid grid-cols-[repeat(3,minmax(0,1fr))] gap-4">
         {/* each KpiCard wrapped below carries its own stagger delay */}
         <KpiCard
           delay={60}
@@ -277,12 +249,7 @@ export default function StatisticsPage() {
       </Section>
 
       {/* Bottom 2-col grid: Section progress hex | Recent attempts */}
-      <div className="stats-2col" style={{
-        display: 'grid',
-        gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1.4fr)',
-        gap: 14,
-        width: '100%',
-      }}>
+      <div className="stats-2col grid grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] gap-3.5 w-full">
         <Section
           delay={300}
           title="Прогресс по модулям"
@@ -334,14 +301,8 @@ function InfoTip({ text }: { text: string }) {
   return (
     <span
       tabIndex={0}
-      className="stats-infotip"
+      className="stats-infotip relative inline-flex items-center justify-center cursor-help outline-none"
       aria-label={text}
-      style={{
-        position: 'relative',
-        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-        cursor: 'help',
-        outline: 'none',
-      }}
     >
       <svg width={13} height={13} viewBox="0 0 24 24" fill="none"
         stroke="#9CA3AF" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
@@ -369,62 +330,33 @@ function KpiCard({ label, value, sub, delta, deltaPositive, icon, tip, delay = 0
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1], delay: delay / 1000 }}
-      style={{
-        background: '#FFFFFF',
-        border: '1px solid #F0F1F5',
-        borderRadius: 16,
-        padding: 18,
-        display: 'flex', flexDirection: 'column', gap: 10,
-        minWidth: 0,
-      }}
+      className="bg-white border border-[#F0F1F5] rounded-2xl p-[18px] flex flex-col gap-2.5 min-w-0"
     >
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <span style={{
-          fontFamily: 'var(--font-body)', fontSize: 13, color: '#6B7280',
-          fontWeight: 500,
-          display: 'inline-flex', alignItems: 'center', gap: 6,
-        }}>
+      <div className="flex items-center justify-between">
+        <span className="font-[var(--font-body)] text-[13px] text-[#6B7280] font-medium inline-flex items-center gap-1.5">
           {label}
           {tip && <InfoTip text={tip} />}
         </span>
-        <span style={{
-          width: 30, height: 30, borderRadius: 8,
-          background: ACCENT_BG, color: ACCENT_DARK,
-          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-        }}>
+        <span className="w-[30px] h-[30px] rounded-lg bg-[#EFF4FF] text-[#2563EB] inline-flex items-center justify-center">
           {icon}
         </span>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
-        <span style={{
-          fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 700,
-          color: '#1A1A1A', letterSpacing: '-0.02em', lineHeight: 1.05,
-        }}>
+      <div className="flex items-baseline gap-1.5">
+        <span className="font-[var(--font-display)] text-[28px] font-bold text-[#1A1A1A] tracking-[-0.02em] leading-[1.05]">
           {value}
         </span>
         {sub && (
-          <span style={{
-            fontFamily: 'var(--font-body)', fontSize: 13, color: '#9CA3AF',
-            fontWeight: 500,
-          }}>
+          <span className="font-[var(--font-body)] text-[13px] text-[#9CA3AF] font-medium">
             {sub}
           </span>
         )}
       </div>
 
-      <div style={{
-        display: 'inline-flex', alignItems: 'center', gap: 6,
-        fontFamily: 'var(--font-body)', fontSize: 12, color: '#6B7280',
-      }}>
-        <span style={{
-          display: 'inline-flex', alignItems: 'center', gap: 4,
-          padding: '2px 8px',
-          borderRadius: 999,
-          background: deltaPositive ? '#ECFDF5' : '#FEF2F2',
-          color: deltaPositive ? '#047857' : '#B91C1C',
-          fontWeight: 600,
-        }}>
+      <div className="inline-flex items-center gap-1.5 font-[var(--font-body)] text-xs text-[#6B7280]">
+        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full font-semibold ${
+          deltaPositive ? 'bg-[#ECFDF5] text-[#047857]' : 'bg-[#FEF2F2] text-[#B91C1C]'
+        }`}>
           {deltaPositive ? '↑' : '↓'}
         </span>
         {delta}
@@ -449,33 +381,16 @@ function Section({ title, subtitle, children, action, tip, delay = 0 }: {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1], delay: delay / 1000 }}
-      style={{
-        background: '#FFFFFF',
-        border: '1px solid #F0F1F5',
-        borderRadius: 16,
-        padding: 18,
-        display: 'flex', flexDirection: 'column', gap: 14,
-        minWidth: 0,
-      }}
+      className="bg-white border border-[#F0F1F5] rounded-2xl p-[18px] flex flex-col gap-3.5 min-w-0"
     >
-      <div style={{
-        display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between',
-        gap: 12,
-      }}>
+      <div className="flex items-start justify-between gap-3">
         <div>
-          <h3 style={{
-            fontFamily: 'var(--font-display)', fontSize: 16, fontWeight: 700,
-            color: '#1A1A1A', letterSpacing: '-0.01em',
-            display: 'inline-flex', alignItems: 'center', gap: 6,
-          }}>
+          <h3 className="font-[var(--font-display)] text-base font-bold text-[#1A1A1A] tracking-[-0.01em] inline-flex items-center gap-1.5">
             {title}
             {tip && <InfoTip text={tip} />}
           </h3>
           {subtitle && (
-            <p style={{
-              fontFamily: 'var(--font-body)', fontSize: 12, color: '#9CA3AF',
-              marginTop: 2,
-            }}>
+            <p className="font-[var(--font-body)] text-xs text-[#9CA3AF] mt-0.5">
               {subtitle}
             </p>
           )}
@@ -593,34 +508,19 @@ function Heatmap({ data, period }: { data: HeatmapData; period: Period }) {
   const totalCells = isCalendar ? weeks * 7 : data.cols;
 
   return (
-    <div style={{
-      display: 'flex', flexDirection: 'column', gap: 8, minWidth: 0,
-      position: 'relative',
-      overflow: 'visible',
-    }}>
+    <div className="flex flex-col gap-2 min-w-0 relative overflow-visible">
       {isCalendar ? (
         // ── Calendar grid (month view) ──
         // Cells stretch the full card width as wide rectangles — taller than
         // the year heatmap dots, but not square.
-        <div style={{ width: '100%' }}>
+        <div className="w-full">
           {/* Day-of-week header */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(7, 1fr)',
-            gap: 6,
-            fontFamily: 'var(--font-mono)', fontSize: 10, color: '#9CA3AF',
-            paddingBottom: 4,
-          }}>
+          <div className="grid grid-cols-7 gap-1.5 font-[var(--font-mono)] text-[10px] text-[#9CA3AF] pb-1">
             {['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'].map((d) => (
-              <span key={d} style={{ textAlign: 'center' }}>{d}</span>
+              <span key={d} className="text-center">{d}</span>
             ))}
           </div>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(7, 1fr)',
-            gridAutoRows: '1fr',
-            gap: 6,
-          }}>
+          <div className="grid grid-cols-7 auto-rows-fr gap-1.5">
             {Array.from({ length: totalCells }).map((_, idx) => {
               const dayIdx = idx - leadingPad;
               const inMonth = dayIdx >= 0 && dayIdx < data.cols;
@@ -636,19 +536,11 @@ function Heatmap({ data, period }: { data: HeatmapData; period: Period }) {
                   key={idx}
                   onPointerEnter={inMonth ? () => setHovered(dayIdx) : undefined}
                   onPointerLeave={inMonth ? () => setHovered((c) => (c === dayIdx ? null : c)) : undefined}
-                  className="stats-heat-cell"
-                  style={{
-                    height: 56,
-                    background: lvl < 0 ? 'transparent' : HEATMAP_LEVELS[lvl],
-                    borderRadius: 6,
-                    cursor: inMonth ? 'default' : undefined,
-                    outline: isHovered ? `2px solid ${ACCENT}` : 'none',
-                    outlineOffset: isHovered ? 1 : 0,
-                    display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-end',
-                    padding: 4,
-                    fontFamily: 'var(--font-mono)', fontSize: 10,
-                    color: lvl >= 3 ? 'rgba(255,255,255,0.85)' : '#6B7280',
-                  }}
+                  className={`stats-heat-cell h-14 rounded-md flex items-start justify-end p-1 font-[var(--font-mono)] text-[10px] ${
+                    lvl < 0 ? 'bg-transparent' : HEATMAP_BG_CLASS[lvl]
+                  } ${inMonth ? 'cursor-default' : ''} ${
+                    isHovered ? 'outline outline-2 outline-offset-1 outline-[#3B82F6]' : ''
+                  } ${lvl >= 3 ? 'text-white/[0.85]' : 'text-[#6B7280]'}`}
                 >
                   {inMonth ? dayIdx + 1 : ''}
                 </div>
@@ -658,30 +550,20 @@ function Heatmap({ data, period }: { data: HeatmapData; period: Period }) {
         </div>
       ) : (
         // ── Week view — same visual as calendar but a single row of 7 cells.
-        <div style={{ width: '100%' }}>
+        <div className="w-full">
           {/* Day-of-week header — based on actual dates so order is correct
                regardless of which weekday "today" lands on. */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(7, 1fr)',
-            gap: 6,
-            fontFamily: 'var(--font-mono)', fontSize: 10, color: '#9CA3AF',
-            paddingBottom: 4,
-          }}>
+          <div className="grid grid-cols-7 gap-1.5 font-[var(--font-mono)] text-[10px] text-[#9CA3AF] pb-1">
             {Array.from({ length: data.cols }).map((_, i) => {
               const d = dateForCol(i);
               const dow = d.toLocaleDateString('ru-RU', { weekday: 'short' });
               const cap = dow.charAt(0).toUpperCase() + dow.slice(1).replace('.', '');
               return (
-                <span key={i} style={{ textAlign: 'center' }}>{cap}</span>
+                <span key={i} className="text-center">{cap}</span>
               );
             })}
           </div>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(7, 1fr)',
-            gap: 6,
-          }}>
+          <div className="grid grid-cols-7 gap-1.5">
             {data.cells.map((v, col) => {
               const lvl = v === 0 ? 0 :
                 v >= max * 0.75 ? 4 :
@@ -694,19 +576,11 @@ function Heatmap({ data, period }: { data: HeatmapData; period: Period }) {
                   key={col}
                   onPointerEnter={() => setHovered(col)}
                   onPointerLeave={() => setHovered((c) => (c === col ? null : c))}
-                  className="stats-heat-cell"
-                  style={{
-                    height: 56,
-                    background: HEATMAP_LEVELS[lvl],
-                    borderRadius: 6,
-                    cursor: 'default',
-                    outline: isHovered ? `2px solid ${ACCENT}` : 'none',
-                    outlineOffset: isHovered ? 1 : 0,
-                    display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-end',
-                    padding: 4,
-                    fontFamily: 'var(--font-mono)', fontSize: 10,
-                    color: lvl >= 3 ? 'rgba(255,255,255,0.85)' : '#6B7280',
-                  }}
+                  className={`stats-heat-cell h-14 rounded-md cursor-default flex items-start justify-end p-1 font-[var(--font-mono)] text-[10px] ${
+                    HEATMAP_BG_CLASS[lvl]
+                  } ${
+                    isHovered ? 'outline outline-2 outline-offset-1 outline-[#3B82F6]' : ''
+                  } ${lvl >= 3 ? 'text-white/[0.85]' : 'text-[#6B7280]'}`}
                 >
                   {day}
                 </div>
@@ -732,30 +606,19 @@ function Heatmap({ data, period }: { data: HeatmapData; period: Period }) {
         const rowOfCell = isCalendar ? Math.floor((leadingPad + col) / 7) : 0;
         return (
           <div
+            className={`absolute left-[var(--tt-left)] bg-[#1A1A1A] text-[#F4F5F7] px-3.5 py-2.5 rounded-lg font-[var(--font-body)] text-xs leading-[1.4] whitespace-nowrap pointer-events-none shadow-[0_12px_32px_rgba(15,23,42,0.18),0_4px_12px_rgba(15,23,42,0.08)] z-[5] ${
+              isCalendar
+                ? 'top-[var(--tt-top)] -translate-x-1/2 -translate-y-full'
+                : 'bottom-[calc(100%+14px)] -translate-x-1/2'
+            }`}
+            // eslint-disable-next-line react/forbid-dom-props -- dynamic tooltip position based on hovered cell
             style={{
-              position: 'absolute',
-              left: `${colPct}%`,
-              top: isCalendar ? `calc(${(rowOfCell / weeks) * 100}% - 4px)` : undefined,
-              bottom: isCalendar ? undefined : 'calc(100% + 14px)',
-              transform: isCalendar ? 'translate(-50%, -100%)' : 'translateX(-50%)',
-              background: '#1A1A1A',
-              color: '#F4F5F7',
-              padding: '10px 14px',
-              borderRadius: 8,
-              fontFamily: 'var(--font-body)', fontSize: 12,
-              lineHeight: 1.4,
-              whiteSpace: 'nowrap',
-              pointerEvents: 'none',
-              boxShadow: '0 12px 32px rgba(15, 23, 42, 0.18), 0 4px 12px rgba(15, 23, 42, 0.08)',
-              zIndex: 5,
+              ['--tt-left' as string]: `${colPct}%`,
+              ...(isCalendar ? { ['--tt-top' as string]: `calc(${(rowOfCell / weeks) * 100}% - 4px)` } : {}),
             }}
           >
-            <div style={{ fontWeight: 600 }}>{date}</div>
-            <div style={{
-              fontSize: 12,
-              color: v > 0 ? '#F4F5F7' : '#9CA3AF',
-              marginTop: 2,
-            }}>
+            <div className="font-semibold">{date}</div>
+            <div className={`text-xs mt-0.5 ${v > 0 ? 'text-[#F4F5F7]' : 'text-[#9CA3AF]'}`}>
               {v === 0 ? 'нет активности' : `Сделано ${v} ${testWord}`}
             </div>
           </div>
@@ -842,54 +705,38 @@ function YearHeatmap({ testAttempts }: {
     d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', weekday: 'short' });
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+    <div className="flex flex-col gap-2.5">
       {/* Grid */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: '24px minmax(0, 1fr)',
-        columnGap: 6,
-        position: 'relative',
-        overflow: 'visible',
-      }}>
+      <div className="grid grid-cols-[24px_minmax(0,1fr)] gap-x-1.5 relative overflow-visible">
         {/* Top-left empty + month labels row */}
         <div />
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: `repeat(${yearData.weeks}, minmax(0, 1fr))`,
-          columnGap: 3,
-          fontFamily: 'var(--font-mono)', fontSize: 10, color: '#9CA3AF',
-          marginBottom: 4,
-        }}>
+        <div
+          className="grid gap-x-[3px] font-[var(--font-mono)] text-[10px] text-[#9CA3AF] mb-1"
+          // eslint-disable-next-line react/forbid-dom-props -- dynamic column count = yearData.weeks
+          style={{ gridTemplateColumns: `repeat(${yearData.weeks}, minmax(0, 1fr))` }}
+        >
           {monthOfWeek.map((m, w) => (
-            <span key={w} style={{ textAlign: 'left', whiteSpace: 'nowrap' }}>
+            <span key={w} className="text-left whitespace-nowrap">
               {m !== null ? monthLabels[m] : ''}
             </span>
           ))}
         </div>
 
         {/* Day-of-week labels */}
-        <div style={{
-          display: 'grid',
-          gridTemplateRows: 'repeat(7, 1fr)',
-          rowGap: 3,
-          fontFamily: 'var(--font-mono)', fontSize: 9, color: '#9CA3AF',
-        }}>
+        <div className="grid grid-rows-7 gap-y-[3px] font-[var(--font-mono)] text-[9px] text-[#9CA3AF]">
           {dowLabels.map((l, i) => (
-            <span key={i} style={{ display: 'flex', alignItems: 'center' }}>
+            <span key={i} className="flex items-center">
               {l}
             </span>
           ))}
         </div>
 
         {/* The 7×weeks cell grid */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: `repeat(${yearData.weeks}, minmax(0, 1fr))`,
-          gridTemplateRows: 'repeat(7, 1fr)',
-          gap: 3,
-          gridAutoFlow: 'column',
-          position: 'relative',
-        }}>
+        <div
+          className="grid grid-rows-7 gap-[3px] grid-flow-col relative"
+          // eslint-disable-next-line react/forbid-dom-props -- dynamic column count = yearData.weeks
+          style={{ gridTemplateColumns: `repeat(${yearData.weeks}, minmax(0, 1fr))` }}
+        >
           {Array.from({ length: yearData.weeks * 7 }).map((_, idx) => {
             const di = idx - yearData.leadingPad;
             const inYear = di >= 0 && di < yearData.days;
@@ -906,15 +753,11 @@ function YearHeatmap({ testAttempts }: {
                 key={idx}
                 onPointerEnter={inYear ? () => setHovered(di) : undefined}
                 onPointerLeave={inYear ? () => setHovered((c) => (c === di ? null : c)) : undefined}
-                className="stats-heat-cell"
-                style={{
-                  aspectRatio: '1 / 1',
-                  background: lvl < 0 ? 'transparent' : HEATMAP_LEVELS[lvl],
-                  borderRadius: 3,
-                  cursor: inYear ? 'default' : undefined,
-                  outline: isHovered ? `2px solid ${ACCENT}` : 'none',
-                  outlineOffset: isHovered ? 1 : 0,
-                }}
+                className={`stats-heat-cell aspect-square rounded-[3px] ${
+                  lvl < 0 ? 'bg-transparent' : HEATMAP_BG_CLASS[lvl]
+                } ${inYear ? 'cursor-default' : ''} ${
+                  isHovered ? 'outline outline-2 outline-offset-1 outline-[#3B82F6]' : ''
+                }`}
               />
             );
           })}
@@ -928,28 +771,13 @@ function YearHeatmap({ testAttempts }: {
             const colPct = ((col + 0.5) / yearData.weeks) * 100;
             const word = v === 1 ? 'тест' : v < 5 ? 'теста' : 'тестов';
             return (
-              <div style={{
-                position: 'absolute',
-                left: `${colPct}%`,
-                bottom: 'calc(100% + 8px)',
-                transform: 'translateX(-50%)',
-                background: '#1A1A1A',
-                color: '#F4F5F7',
-                padding: '10px 14px',
-                borderRadius: 8,
-                fontFamily: 'var(--font-body)', fontSize: 12,
-                lineHeight: 1.4,
-                whiteSpace: 'nowrap',
-                pointerEvents: 'none',
-                boxShadow: '0 12px 32px rgba(15, 23, 42, 0.18), 0 4px 12px rgba(15, 23, 42, 0.08)',
-                zIndex: 5,
-              }}>
-                <div style={{ fontWeight: 600 }}>{date}</div>
-                <div style={{
-                  fontSize: 12,
-                  color: v > 0 ? '#F4F5F7' : '#9CA3AF',
-                  marginTop: 2,
-                }}>
+              <div
+                className="absolute left-[var(--tt-left)] bottom-[calc(100%+8px)] -translate-x-1/2 bg-[#1A1A1A] text-[#F4F5F7] px-3.5 py-2.5 rounded-lg font-[var(--font-body)] text-xs leading-[1.4] whitespace-nowrap pointer-events-none shadow-[0_12px_32px_rgba(15,23,42,0.18),0_4px_12px_rgba(15,23,42,0.08)] z-[5]"
+                // eslint-disable-next-line react/forbid-dom-props -- dynamic horizontal position from hovered week
+                style={{ ['--tt-left' as string]: `${colPct}%` }}
+              >
+                <div className="font-semibold">{date}</div>
+                <div className={`text-xs mt-0.5 ${v > 0 ? 'text-[#F4F5F7]' : 'text-[#9CA3AF]'}`}>
                   {v === 0 ? 'нет активности' : `Сделано ${v} ${word}`}
                 </div>
               </div>
@@ -959,22 +787,16 @@ function YearHeatmap({ testAttempts }: {
       </div>
 
       {/* Year switcher + summary */}
-      <div style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        gap: 12, paddingTop: 12, borderTop: '1px solid #F0F1F5',
-        flexWrap: 'wrap',
-      }}>
-        <div style={{
-          fontFamily: 'var(--font-body)', fontSize: 12, color: '#6B7280',
-        }}>
-          <strong style={{ color: '#1A1A1A', fontWeight: 700 }}>{yearData.activeDays}</strong>
+      <div className="flex items-center justify-between gap-3 pt-3 border-t border-[#F0F1F5] flex-wrap">
+        <div className="font-[var(--font-body)] text-xs text-[#6B7280]">
+          <strong className="text-[#1A1A1A] font-bold">{yearData.activeDays}</strong>
           {' '}{yearData.activeDays === 1 ? 'день' : yearData.activeDays < 5 ? 'дня' : 'дней'} активности
           {' · '}
-          <strong style={{ color: '#1A1A1A', fontWeight: 700 }}>{yearData.total}</strong>
+          <strong className="text-[#1A1A1A] font-bold">{yearData.total}</strong>
           {' '}{yearData.total === 1 ? 'тест' : yearData.total < 5 ? 'теста' : 'тестов'}
         </div>
 
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+        <div className="inline-flex items-center gap-1">
           <YearArrow disabled={!availableYears.includes(year - 1) && (availableYears[0] !== undefined && year - 1 < availableYears[0])}
             onClick={() => setYear((y) => y - 1)} dir="prev" />
           {availableYears.map((y) => (
@@ -982,16 +804,9 @@ function YearHeatmap({ testAttempts }: {
               key={y}
               type="button"
               onClick={() => setYear(y)}
-              style={{
-                padding: '4px 10px',
-                borderRadius: 999,
-                border: 'none',
-                cursor: 'pointer',
-                fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 700,
-                background: y === year ? ACCENT : 'transparent',
-                color:      y === year ? '#FFFFFF' : '#6B7280',
-                transition: 'background 160ms, color 160ms',
-              }}
+              className={`px-2.5 py-1 rounded-full border-0 cursor-pointer font-[var(--font-mono)] text-xs font-bold transition-[background-color,color] duration-150 ${
+                y === year ? 'bg-[#3B82F6] text-white' : 'bg-transparent text-[#6B7280]'
+              }`}
             >
               {y}
             </button>
@@ -1012,14 +827,9 @@ function YearArrow({ disabled, onClick, dir }: {
       onClick={disabled ? undefined : onClick}
       disabled={disabled}
       aria-label={dir === 'prev' ? 'Предыдущий год' : 'Следующий год'}
-      style={{
-        width: 26, height: 26, borderRadius: 999,
-        background: 'transparent', border: 'none',
-        cursor: disabled ? 'not-allowed' : 'pointer',
-        opacity: disabled ? 0.3 : 1,
-        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-        color: '#6B7280',
-      }}
+      className={`w-[26px] h-[26px] rounded-full bg-transparent border-0 inline-flex items-center justify-center text-[#6B7280] ${
+        disabled ? 'cursor-not-allowed opacity-30' : 'cursor-pointer opacity-100'
+      }`}
     >
       <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
         stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round">
@@ -1131,19 +941,16 @@ function SectionHex({ rows }: { rows: SectionProgressRow[] }) {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 14, alignItems: 'stretch' }}>
+    <div className="flex flex-col gap-3.5 items-stretch">
       {/* Hex cluster */}
-      <div style={{
-        display: 'flex', justifyContent: 'center',
-        padding: '4px 0 8px',
-      }}>
+      <div className="flex justify-center pt-1 pb-2">
         <svg
           width={layout.width}
           height={layout.height}
           viewBox={`0 0 ${layout.width} ${layout.height}`}
           // overflow: visible so the tooltip foreignObject can extend past
           // the SVG viewBox without being clipped on narrow viewports.
-          style={{ display: 'block', maxWidth: '100%', overflow: 'visible' }}
+          className="block max-w-full overflow-visible"
           // Single, reliable "leave" point — when the cursor exits the SVG
           // the hover state and tooltip clear. Per-cell pointerLeave was
           // unreliable: when scaled hexes overlap neighbours, leave events
@@ -1183,14 +990,12 @@ function SectionHex({ rows }: { rows: SectionProgressRow[] }) {
                   key={c.row.id}
                   onClick={interactive ? () => goToSection(sectionId) : undefined}
                   onPointerEnter={() => setHoveredCell(c)}
-                  className={interactive ? 'stats-hex stats-hex--interactive' : 'stats-hex'}
+                  className={`${interactive ? 'stats-hex stats-hex--interactive cursor-pointer' : 'stats-hex cursor-not-allowed'} [transform-origin:var(--hex-origin)]`}
                   // transform-origin in SVG user-space coords. transformBox: fill-box
                   // would re-anchor to bbox top-left and skew the hex sideways on
                   // scale; the default user-space behaviour is what we want here.
-                  style={{
-                    transformOrigin: `${c.cx}px ${c.cy}px`,
-                    cursor: interactive ? 'pointer' : 'not-allowed',
-                  }}
+                  // eslint-disable-next-line react/forbid-dom-props -- dynamic SVG transform-origin per cell
+                  style={{ ['--hex-origin' as string]: `${c.cx}px ${c.cy}px` }}
                 >
                   <polygon
                     points={hexPoints(c.cx, c.cy, layout.size)}
@@ -1208,7 +1013,7 @@ function SectionHex({ rows }: { rows: SectionProgressRow[] }) {
                       fontFamily="var(--font-mono)"
                       fontWeight={700}
                       fill={c.row.pct >= 50 ? '#FFFFFF' : ACCENT_DARK}
-                      style={{ pointerEvents: 'none' }}
+                      className="pointer-events-none"
                     >
                       {c.row.pct === 0 ? '·' : c.row.pct}
                     </text>
@@ -1245,7 +1050,7 @@ function SectionHex({ rows }: { rows: SectionProgressRow[] }) {
                 width={tipW}
                 height={tipH}
                 pointerEvents="none"
-                style={{ overflow: 'visible' }}
+                className="overflow-visible"
               >
                 <div
                   // @ts-expect-error — xmlns required for foreignObject HTML content (React-DOM types don't include it on div)
@@ -1272,53 +1077,33 @@ function SectionHex({ rows }: { rows: SectionProgressRow[] }) {
       </div>
 
       {/* Summary stat row — three columns separated by faint dividers */}
-      <div style={{
-        display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)',
-        gap: 0, padding: '12px 0 4px',
-        borderTop: '1px solid #F0F1F5',
-      }}>
+      <div className="grid grid-cols-3 gap-0 pt-3 pb-1 border-t border-[#F0F1F5]">
         <HexStat dotColor={ACCENT}      value={`${avgPct}%`}      label="Средний прогресс" />
         <HexStat dotColor="#7AA5FA"     value={`${startedCount}`} label="Модулей начато" border />
         <HexStat dotColor="#A8C7FF"     value={`${completedCount}`} label="Завершено модулей" />
       </div>
 
       {/* Top sections list — small, like the % rows under the hex chart */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+      <div className="flex flex-col gap-1">
         {rows.slice(0, 4).map((r, i) => (
           <motion.div
             key={r.id}
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.28, ease: [0.05, 0.7, 0.1, 1], delay: 0.05 * i }}
-            style={{
-              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-              fontFamily: 'var(--font-body)', fontSize: 12,
-              padding: '6px 0',
-              borderTop: '1px solid #F8F9FB',
-            }}>
-            <span style={{
-              display: 'inline-flex', alignItems: 'center', gap: 8,
-              color: '#1A1A1A', fontWeight: 500,
-              minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-            }}>
-              <span style={{
-                width: 8, height: 8, borderRadius: '50%',
-                background: hexColor(r.pct, r.started > 0),
-                flexShrink: 0,
-              }} />
-              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{r.pct}% {r.name}</span>
+            className="flex justify-between items-center font-[var(--font-body)] text-xs py-1.5 border-t border-[#F8F9FB]"
+          >
+            <span className="inline-flex items-center gap-2 text-[#1A1A1A] font-medium min-w-0 overflow-hidden text-ellipsis whitespace-nowrap">
+              <span
+                className="w-2 h-2 rounded-full shrink-0 bg-[var(--dot-color)]"
+                // eslint-disable-next-line react/forbid-dom-props -- dynamic per-row palette
+                style={{ ['--dot-color' as string]: hexColor(r.pct, r.started > 0) }}
+              />
+              <span className="overflow-hidden text-ellipsis">{r.pct}% {r.name}</span>
             </span>
-            <span style={{
-              color: '#9CA3AF', fontSize: 11,
-              flexShrink: 0,
-              display: 'inline-flex', alignItems: 'center', gap: 6,
-            }}>
+            <span className="text-[#9CA3AF] text-[11px] shrink-0 inline-flex items-center gap-1.5">
               {r.started > 0 && r.done < r.started && (
-                <span style={{
-                  fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-                  color: ACCENT_DARK,
-                  padding: '1px 6px', borderRadius: 999, background: ACCENT_BG,
-                }}>
+                <span className="font-[var(--font-mono)] text-[10px] font-bold text-[#2563EB] px-1.5 py-px rounded-full bg-[#EFF4FF]">
                   начат
                 </span>
               )}
@@ -1454,27 +1239,20 @@ function HexStat({ dotColor, value, label, border }: {
   dotColor: string; value: string; label: string; border?: boolean;
 }) {
   return (
-    <div style={{
-      padding: '0 12px',
-      borderLeft:  border ? '1px solid #F0F1F5' : 'none',
-      borderRight: border ? '1px solid #F0F1F5' : 'none',
-      textAlign: 'left',
-    }}>
-      <div style={{
-        display: 'flex', alignItems: 'center', gap: 6,
-        fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 18,
-        color: '#1A1A1A', letterSpacing: '-0.01em',
-      }}>
-        <span style={{
-          width: 10, height: 10, borderRadius: '50%',
-          background: dotColor,
-        }} />
+    <div
+      className={`px-3 text-left ${
+        border ? 'border-l border-r border-[#F0F1F5]' : ''
+      }`}
+    >
+      <div className="flex items-center gap-1.5 font-[var(--font-display)] font-bold text-lg text-[#1A1A1A] tracking-[-0.01em]">
+        <span
+          className="w-2.5 h-2.5 rounded-full bg-[var(--hexstat-dot)]"
+          // eslint-disable-next-line react/forbid-dom-props -- dynamic dot palette per stat
+          style={{ ['--hexstat-dot' as string]: dotColor }}
+        />
         {value}
       </div>
-      <div style={{
-        fontFamily: 'var(--font-body)', fontSize: 11, color: '#9CA3AF',
-        marginTop: 2,
-      }}>
+      <div className="font-[var(--font-body)] text-[11px] text-[#9CA3AF] mt-0.5">
         {label}
       </div>
     </div>
@@ -1560,88 +1338,57 @@ function ToolKindsPanel({ stats }: { stats: ToolKindStats }) {
     return <EmptyHint text="Откройте любой инструмент — счётчики появятся здесь." />;
   }
   return (
-    <div className="stats-toolkinds" style={{
-      display: 'grid',
-      gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1.05fr)',
-      gap: 18,
-    }}>
+    <div className="stats-toolkinds grid grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] gap-[18px]">
       {/* Left — kinds breakdown as KPI-style cards */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 10, minWidth: 0 }}>
+      <div className="flex flex-col gap-2.5 min-w-0">
         {stats.byKind.map((k, i) => {
-          const tint = k.kind === 'calculator' ? ACCENT : '#7AA5FA';
-          const tintBg = k.kind === 'calculator' ? ACCENT_BG : '#EFF4FF';
+          const isCalc = k.kind === 'calculator';
           return (
             <motion.div
               key={k.kind}
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, ease: [0.05, 0.7, 0.1, 1], delay: 0.05 * i }}
-              style={{
-                display: 'grid',
-                gridTemplateColumns: '36px minmax(0, 1fr)',
-                columnGap: 12,
-                rowGap: 8,
-                alignItems: 'center',
-                padding: '12px 14px',
-                background: '#FFFFFF',
-                border: '1px solid #F0F1F5',
-                borderRadius: 12,
-                minWidth: 0,
-              }}
+              className="grid grid-cols-[36px_minmax(0,1fr)] gap-x-3 gap-y-2 items-center px-3.5 py-3 bg-white border border-[#F0F1F5] rounded-xl min-w-0"
             >
               {/* Icon square — aligned with the title row only, not vertically
                    centered across the whole card. */}
-              <span style={{
-                gridRow: '1',
-                width: 36, height: 36, borderRadius: 8,
-                background: tintBg, color: tint,
-                display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                flexShrink: 0,
-              }}>
-                {k.kind === 'calculator' ? <IconCalc /> : <IconScale />}
+              <span
+                className={`row-start-1 w-9 h-9 rounded-lg inline-flex items-center justify-center shrink-0 ${
+                  isCalc ? 'bg-[#EFF4FF] text-[#3B82F6]' : 'bg-[#EFF4FF] text-[#7AA5FA]'
+                }`}
+              >
+                {isCalc ? <IconCalc /> : <IconScale />}
               </span>
 
               {/* Title row — just the kind label */}
-              <span style={{
-                fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: 600,
-                color: '#1A1A1A', letterSpacing: '-0.005em',
-                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-              }}>
+              <span className="font-[var(--font-body)] text-sm font-semibold text-[#1A1A1A] tracking-[-0.005em] overflow-hidden text-ellipsis whitespace-nowrap">
                 {k.label}
               </span>
 
               {/* Bar — full card width, under the title+icon row */}
-              <div style={{
-                gridColumn: '1 / span 2',
-                height: 6, borderRadius: 999,
-                background: '#F1F3F6', overflow: 'hidden', minWidth: 0,
-              }}>
+              <div className="col-span-2 h-1.5 rounded-full bg-[#F1F3F6] overflow-hidden min-w-0">
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${k.pct}%` }}
                   transition={{ duration: 0.6, ease: [0.05, 0.7, 0.1, 1], delay: 0.12 + 0.05 * i }}
-                  style={{ height: '100%', background: tint, borderRadius: 999 }}
+                  className={`h-full rounded-full ${isCalc ? 'bg-[#3B82F6]' : 'bg-[#7AA5FA]'}`}
                 />
               </div>
 
               {/* Stats row UNDER the bar — opens on left, X из Y on right.
                    Numbers and surrounding text share the same size/font so
                    the row reads as one consistent line. */}
-              <div style={{
-                gridColumn: '1 / span 2',
-                display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
-                fontFamily: 'var(--font-body)', fontSize: 12,
-                color: '#6B7280', minWidth: 0,
-              }}>
+              <div className="col-span-2 flex justify-between items-baseline font-[var(--font-body)] text-xs text-[#6B7280] min-w-0">
                 <span>
-                  <strong style={{ color: '#1A1A1A', fontWeight: 700 }}>{k.count}</strong>
+                  <strong className="text-[#1A1A1A] font-bold">{k.count}</strong>
                   {' '}
                   {k.count === 1 ? 'открытие' : 'открытий'}
                 </span>
-                <span style={{ flexShrink: 0 }}>
-                  <strong style={{ color: '#1A1A1A', fontWeight: 700 }}>{k.uniq}</strong>
+                <span className="shrink-0">
+                  <strong className="text-[#1A1A1A] font-bold">{k.uniq}</strong>
                   {' из '}
-                  <strong style={{ color: '#1A1A1A', fontWeight: 700 }}>{k.total}</strong>
+                  <strong className="text-[#1A1A1A] font-bold">{k.total}</strong>
                 </span>
               </div>
             </motion.div>
@@ -1650,23 +1397,11 @@ function ToolKindsPanel({ stats }: { stats: ToolKindStats }) {
       </div>
 
       {/* Right — Top tools list */}
-      <div style={{
-        display: 'flex', flexDirection: 'column',
-        background: '#FFFFFF',
-        border: '1px solid #F0F1F5',
-        borderRadius: 12,
-        overflow: 'hidden',
-        minWidth: 0,
-      }}>
-        <div style={{
-          padding: '12px 14px 8px',
-          fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-          color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
-          borderBottom: '1px solid #F4F5F8',
-        }}>
+      <div className="flex flex-col bg-white border border-[#F0F1F5] rounded-xl overflow-hidden min-w-0">
+        <div className="px-3.5 pt-3 pb-2 font-[var(--font-mono)] text-[10px] font-bold text-[#9CA3AF] uppercase tracking-[0.08em] border-b border-[#F4F5F8]">
           Топ открываемых инструментов
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <div className="flex flex-col">
           {stats.topTools.map((t, i) => (
             <motion.button
               key={t.id}
@@ -1676,47 +1411,24 @@ function ToolKindsPanel({ stats }: { stats: ToolKindStats }) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.28, ease: [0.05, 0.7, 0.1, 1], delay: 0.05 * i }}
               whileHover={{ background: '#F8F9FB' }}
-              style={{
-                display: 'grid',
-                gridTemplateColumns: '24px minmax(0, 1fr) auto auto auto',
-                columnGap: 10,
-                alignItems: 'center',
-                padding: '10px 14px',
-                borderTop: i === 0 ? 'none' : '1px solid #F4F5F8',
-                borderLeft: 'none', borderRight: 'none', borderBottom: 'none',
-                background: 'transparent',
-                cursor: 'pointer',
-                textAlign: 'left',
-                fontFamily: 'var(--font-body)', fontSize: 13,
-                width: '100%',
-                transition: 'background 160ms',
-              }}
+              className={`grid grid-cols-[24px_minmax(0,1fr)_auto_auto_auto] gap-x-2.5 items-center px-3.5 py-2.5 border-x-0 border-b-0 bg-transparent cursor-pointer text-left font-[var(--font-body)] text-[13px] w-full transition-[background-color] duration-150 ${
+                i === 0 ? 'border-t-0' : 'border-t border-t-[#F4F5F8]'
+              }`}
               aria-label={`Открыть инструмент: ${t.title}`}
             >
-              <span style={{
-                fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700,
-                color: '#9CA3AF',
-              }}>
+              <span className="font-[var(--font-mono)] text-[11px] font-bold text-[#9CA3AF]">
                 {String(i + 1).padStart(2, '0')}
               </span>
-              <span style={{
-                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                fontSize: 10.5, fontWeight: 600, color: '#1A1A1A',
-              }}>
+              <span className="overflow-hidden text-ellipsis whitespace-nowrap text-[10.5px] font-semibold text-[#1A1A1A]">
                 {t.title}
               </span>
               <KindPill kind={t.kind} />
-              <span style={{
-                display: 'inline-flex', alignItems: 'center',
-                padding: '2px 8px', borderRadius: 999,
-                background: ACCENT_BG, color: ACCENT_DARK,
-                fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700,
-              }}>
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-[#EFF4FF] text-[#2563EB] font-[var(--font-mono)] text-[11px] font-bold">
                 ×{t.count}
               </span>
               <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
                 stroke="#9CA3AF" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round"
-                style={{ flexShrink: 0 }}>
+                className="shrink-0">
                 <polyline points="9 18 15 12 9 6" />
               </svg>
             </motion.button>
@@ -1730,14 +1442,11 @@ function ToolKindsPanel({ stats }: { stats: ToolKindStats }) {
 function KindPill({ kind }: { kind: string }) {
   const isCalc = kind === 'calculator';
   return (
-    <span style={{
-      display: 'inline-flex', alignItems: 'center', gap: 4,
-      padding: '2px 8px', borderRadius: 999,
-      background: isCalc ? '#EFF4FF' : '#F1F5FB',
-      color:      isCalc ? ACCENT_DARK : '#475569',
-      fontFamily: 'var(--font-body)', fontSize: 10.5, fontWeight: 600,
-      letterSpacing: '0.005em', whiteSpace: 'nowrap',
-    }}>
+    <span
+      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full font-[var(--font-body)] text-[10.5px] font-semibold tracking-[0.005em] whitespace-nowrap ${
+        isCalc ? 'bg-[#EFF4FF] text-[#2563EB]' : 'bg-[#F1F5FB] text-[#475569]'
+      }`}
+    >
       {isCalc ? 'калькулятор' : 'шкала'}
     </span>
   );
@@ -1781,28 +1490,13 @@ function RecentAttempts({ attempts }: { attempts: { courseId: string; testLevel:
     return <EmptyHint text="Сданные тесты появятся здесь." />;
   }
   return (
-    <div className="stats-attempts" style={{
-      display: 'flex', flexDirection: 'column',
-      background: '#FFFFFF',
-      border: '1px solid #F0F1F5',
-      borderRadius: 12,
-      overflow: 'hidden',
-      minWidth: 0,
-    }}>
+    <div className="stats-attempts flex flex-col bg-white border border-[#F0F1F5] rounded-xl overflow-hidden min-w-0">
       {/* Column header — hidden on mobile, where each row stacks instead */}
-      <div className="stats-attempts__head" style={{
-        display: 'grid',
-        gridTemplateColumns: 'minmax(0, 1fr) 56px 64px 110px',
-        columnGap: 14,
-        padding: '12px 14px',
-        fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-        color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
-        borderBottom: '1px solid #F4F5F8',
-      }}>
+      <div className="stats-attempts__head grid grid-cols-[minmax(0,1fr)_56px_64px_110px] gap-x-3.5 px-3.5 py-3 font-[var(--font-mono)] text-[10px] font-bold text-[#9CA3AF] uppercase tracking-[0.08em] border-b border-[#F4F5F8]">
         <span>Курс / Тест</span>
         <span>Балл</span>
         <span>Дата</span>
-        <span style={{ justifySelf: 'start' }}>Статус</span>
+        <span className="justify-self-start">Статус</span>
       </div>
 
       {attempts.map((a, i) => {
@@ -1818,69 +1512,35 @@ function RecentAttempts({ attempts }: { attempts: { courseId: string; testLevel:
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.28, ease: [0.05, 0.7, 0.1, 1], delay: 0.05 * i }}
             whileHover={{ background: '#F8F9FB' }}
-            className="stats-attempts__row"
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'minmax(0, 1fr) 56px 64px 110px',
-              columnGap: 14,
-              alignItems: 'center',
-              padding: '12px 14px',
-              borderTop: '1px solid #F4F5F8',
-              borderLeft: 'none', borderRight: 'none', borderBottom: 'none',
-              background: 'transparent',
-              cursor: course ? 'pointer' : 'default',
-              textAlign: 'left',
-              fontFamily: 'var(--font-body)', fontSize: 12,
-              width: '100%',
-              transition: 'background 160ms',
-            }}
+            className={`stats-attempts__row grid grid-cols-[minmax(0,1fr)_56px_64px_110px] gap-x-3.5 items-center px-3.5 py-3 border-t border-x-0 border-b-0 border-t-[#F4F5F8] bg-transparent text-left font-[var(--font-body)] text-xs w-full transition-[background-color] duration-150 ${
+              course ? 'cursor-pointer' : 'cursor-default'
+            }`}
             aria-label={course ? `Открыть курс: ${course.title}` : a.courseId}
           >
             {/* Course title + test level */}
-            <span style={{
-              minWidth: 0,
-              display: 'flex', flexDirection: 'column', gap: 1,
-            }}>
-              <span style={{
-                fontSize: 12, fontWeight: 600, color: '#1A1A1A',
-                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-              }}>
+            <span className="min-w-0 flex flex-col gap-px">
+              <span className="text-xs font-semibold text-[#1A1A1A] overflow-hidden text-ellipsis whitespace-nowrap">
                 {course?.title ?? a.courseId}
               </span>
-              <span className="stats-attempts__sub-mobile" style={{
-                fontSize: 11, color: '#9CA3AF',
-                display: 'none',
-              }}>
+              <span className="stats-attempts__sub-mobile text-[11px] text-[#9CA3AF] hidden">
                 {a.score}/{a.total} · {dateStr}
               </span>
             </span>
 
             {/* Score — matches Section Progress list size (12px) */}
-            <span className="stats-attempts__score" style={{
-              fontFamily: 'var(--font-body)', fontSize: 12,
-              color: '#1A1A1A',
-            }}>
+            <span className="stats-attempts__score font-[var(--font-body)] text-xs text-[#1A1A1A]">
               {a.score}/{a.total}
             </span>
 
             {/* Date */}
-            <span className="stats-attempts__date" style={{
-              fontFamily: 'var(--font-body)', fontSize: 12, color: '#6B7280',
-            }}>
+            <span className="stats-attempts__date font-[var(--font-body)] text-xs text-[#6B7280]">
               {dateStr}
             </span>
 
             {/* Status pill */}
-            <span style={{
-              justifySelf: 'start',
-              display: 'inline-flex', alignItems: 'center', gap: 4,
-              padding: '3px 10px',
-              borderRadius: 999,
-              background: a.passed ? '#DCFCE7' : '#FEF2F2',
-              color:      a.passed ? '#15803D' : '#B91C1C',
-              fontFamily: 'var(--font-body)', fontSize: 11, fontWeight: 600,
-              whiteSpace: 'nowrap',
-            }}>
+            <span className={`justify-self-start inline-flex items-center gap-1 px-2.5 py-px rounded-full font-[var(--font-body)] text-[11px] font-semibold whitespace-nowrap ${
+              a.passed ? 'bg-[#DCFCE7] text-[#15803D]' : 'bg-[#FEF2F2] text-[#B91C1C]'
+            }`}>
               {a.passed ? 'Пройден' : 'Не пройден'}
             </span>
           </motion.button>
@@ -1895,13 +1555,7 @@ function RecentAttempts({ attempts }: { attempts: { courseId: string; testLevel:
    ════════════════════════════════════════════════════════════════ */
 function EmptyHint({ text }: { text: string }) {
   return (
-    <div style={{
-      padding: '24px 16px', textAlign: 'center',
-      fontFamily: 'var(--font-body)', fontSize: 13, color: '#9CA3AF',
-      lineHeight: 1.5,
-      background: '#F8F9FB',
-      borderRadius: 10,
-    }}>
+    <div className="px-4 py-6 text-center font-[var(--font-body)] text-[13px] text-[#9CA3AF] leading-[1.5] bg-[#F8F9FB] rounded-[10px]">
       {text}
     </div>
   );
