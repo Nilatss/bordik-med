@@ -1,6 +1,6 @@
 {
-  "version": "1.0.0",
-  "lastUpdated": "2026-05-09",
+  "version": "1.1.0",
+  "lastUpdated": "2026-05-11",
   "source": "Bordik Med — neonatology calculator runners (lib/runners/neo-*.ts)",
   "license": "Each calculator cites primary source (AAP, NICE, ESPGHAN, AHA, WHO, NICHD, КР МЗ РФ, gov.uz)",
   "groups": [
@@ -9,12 +9,48 @@
       "title_ru": "Реанимация и оценка при рождении",
       "title_en": "Resuscitation & birth assessment",
       "calculators": [
-        { "id": "apgar", "title_ru": "Apgar score", "title_en": "Apgar Score (1 / 5 / 10 min)", "source": "NRP 8 ed. 2021; AAP/ACOG 2015", "audit_id": "A1" },
-        { "id": "silverman", "title_ru": "Silverman-Anderson", "title_en": "Silverman-Anderson Score", "source": "КР РФ РДС", "audit_id": "A2" },
-        { "id": "ballard", "title_ru": "Ballard / New Ballard", "title_en": "New Ballard Score (GA 20-44 нед)", "source": "Ballard JL 1991; StatPearls", "audit_id": "A4" },
-        { "id": "dubowitz", "title_ru": "Dubowitz GA (21 критерий)", "title_en": "Dubowitz Gestational Age", "source": "Dubowitz LMS 1970", "audit_id": "A5" },
-        { "id": "neo-petrussa", "title_ru": "Petrussa Score (упрощ. GA)", "title_en": "Petrussa Simplified GA Score", "source": "Petrussa В; Avery's Diseases of Newborn 11th ed.", "audit_id": "A6" },
-        { "id": "neo-resus-doses", "title_ru": "Реанимационные дозы (NRP / ERC / МЗ РФ)", "title_en": "Resuscitation Doses (3-region)", "source": "NRP 8 ed.; ERC 2021/2025; МЗ РФ 04.03.2020", "audit_id": "A17" }
+        {
+          "id": "apgar",
+          "title_ru": "Apgar score",
+          "title_en": "Apgar Score (1 / 5 / 10 min)",
+          "source": "NRP 8 ed. 2021; AAP/ACOG 2015",
+          "audit_id": "A1"
+        },
+        {
+          "id": "silverman",
+          "title_ru": "Silverman-Anderson",
+          "title_en": "Silverman-Anderson Score",
+          "source": "КР РФ РДС",
+          "audit_id": "A2"
+        },
+        {
+          "id": "ballard",
+          "title_ru": "Ballard / New Ballard",
+          "title_en": "New Ballard Score (GA 20-44 нед)",
+          "source": "Ballard JL 1991; StatPearls",
+          "audit_id": "A4"
+        },
+        {
+          "id": "dubowitz",
+          "title_ru": "Dubowitz GA (21 критерий)",
+          "title_en": "Dubowitz Gestational Age",
+          "source": "Dubowitz LMS 1970",
+          "audit_id": "A5"
+        },
+        {
+          "id": "neo-petrussa",
+          "title_ru": "Petrussa Score (упрощ. GA)",
+          "title_en": "Petrussa Simplified GA Score",
+          "source": "Petrussa В; Avery's Diseases of Newborn 11th ed.",
+          "audit_id": "A6"
+        },
+        {
+          "id": "neo-resus-doses",
+          "title_ru": "Реанимационные дозы (NRP / ERC / МЗ РФ)",
+          "title_en": "Resuscitation Doses (3-region)",
+          "source": "NRP 8 ed.; ERC 2021/2025; МЗ РФ 04.03.2020",
+          "audit_id": "A17"
+        }
       ]
     },
     {
@@ -22,11 +58,48 @@
       "title_ru": "Шкалы тяжести состояния",
       "title_en": "Severity scoring",
       "calculators": [
-        { "id": "thompson", "title_ru": "Thompson Score / Sarnat staging", "title_en": "Thompson / Sarnat HIE", "source": "Thompson 1997; Sarnat & Sarnat 1976", "audit_id": "A24/A25" },
-        { "id": "crib", "title_ru": "CRIB-II / SNAP-II / SNAPPE-II", "title_en": "CRIB-II / SNAPPE-II", "source": "Parry G 2003; Richardson DK 2001", "audit_id": "A31/A32" },
-        { "id": "neo-downes", "title_ru": "Downes Score (RDS severity)", "title_en": "Downes RDS Score", "source": "Downes JJ 1970; КР МЗ РФ", "audit_id": "A3" },
-        { "id": "neo-nsofa", "title_ru": "Neonatal SOFA (nSOFA)", "title_en": "Neonatal SOFA Score", "source": "Wynn JL JAMA Pediatr 2020;174:e202531", "audit_id": "A33" },
-        { "id": "neo-rds-class", "title_ru": "RDS classification (X-ray + FiO₂)", "title_en": "RDS Classification I-IV", "source": "Sweet DG European Consensus 2022; КР МЗ РФ", "audit_id": "Б4" }
+        {
+          "id": "thompson",
+          "title_ru": "Thompson Score / Sarnat staging",
+          "title_en": "Thompson / Sarnat HIE",
+          "source": "Thompson 1997; Sarnat & Sarnat 1976",
+          "audit_id": "A24/A25"
+        },
+        {
+          "id": "crib",
+          "title_ru": "CRIB-II / SNAP-II / SNAPPE-II",
+          "title_en": "CRIB-II / SNAPPE-II",
+          "source": "Parry G 2003; Richardson DK 2001",
+          "audit_id": "A31/A32"
+        },
+        {
+          "id": "neo-downes",
+          "title_ru": "Downes Score (RDS severity)",
+          "title_en": "Downes RDS Score",
+          "source": "Downes JJ 1970; КР МЗ РФ",
+          "audit_id": "A3"
+        },
+        {
+          "id": "neo-nsofa",
+          "title_ru": "Neonatal SOFA (nSOFA)",
+          "title_en": "Neonatal SOFA Score",
+          "source": "Wynn JL JAMA Pediatr 2020;174:e202531",
+          "audit_id": "A33"
+        },
+        {
+          "id": "neo-rds-class",
+          "title_ru": "RDS classification (X-ray + FiO₂)",
+          "title_en": "RDS Classification I-IV",
+          "source": "Sweet DG European Consensus 2022; КР МЗ РФ",
+          "audit_id": "Б4"
+        },
+        {
+          "id": "neo-snappe-ii",
+          "title_ru": "SNAPPE-II — прогноз летальности",
+          "title_en": "SNAPPE-II (Neonatal Acute Physiology + Perinatal Extension v2)",
+          "source": "Richardson DK et al. J Pediatr 2001;138:92-100",
+          "audit_id": "A32"
+        }
       ]
     },
     {
@@ -34,12 +107,48 @@
       "title_ru": "Питание (PN + EN)",
       "title_en": "Nutrition (PN + EN)",
       "calculators": [
-        { "id": "neo-fluid", "title_ru": "Жидкость по дням жизни", "title_en": "Fluid Requirements Day-by-Day", "source": "ESPGHAN 2018 PN; КР МЗ РФ", "audit_id": "A11" },
-        { "id": "neo-gir", "title_ru": "GIR (Glucose Infusion Rate)", "title_en": "GIR Calculator", "source": "ESPGHAN 2018; PES 2015", "audit_id": "A12" },
-        { "id": "neo-tpn", "title_ru": "TPN macronutrient (ESPGHAN PN 2018)", "title_en": "TPN Macronutrient Calculator", "source": "ESPGHAN/ESPEN/ESPR/CSPEN 2018 (Clin Nutr 37:2306)", "audit_id": "A13" },
-        { "id": "neo-enteral", "title_ru": "Enteral feed advancement (VLBW/ELBW)", "title_en": "Enteral Feed Advancement", "source": "ESPGHAN 2022 EN Position", "audit_id": "A14" },
-        { "id": "neo-newt", "title_ru": "NEWT — потеря массы (грудное)", "title_en": "Newborn Weight Tool", "source": "Flaherman 2015; newbornweight.org", "audit_id": "A21" },
-        { "id": "neo-glucose-bolus-dose", "title_ru": "Глюкоза болюс при гипогликемии", "title_en": "Glucose Bolus (Hypoglycemia)", "source": "PES 2015; AAP CFN 2011; BAPM 2017", "audit_id": "В6" }
+        {
+          "id": "neo-fluid",
+          "title_ru": "Жидкость по дням жизни",
+          "title_en": "Fluid Requirements Day-by-Day",
+          "source": "ESPGHAN 2018 PN; КР МЗ РФ",
+          "audit_id": "A11"
+        },
+        {
+          "id": "neo-gir",
+          "title_ru": "GIR (Glucose Infusion Rate)",
+          "title_en": "GIR Calculator",
+          "source": "ESPGHAN 2018; PES 2015",
+          "audit_id": "A12"
+        },
+        {
+          "id": "neo-tpn",
+          "title_ru": "TPN macronutrient (ESPGHAN PN 2018)",
+          "title_en": "TPN Macronutrient Calculator",
+          "source": "ESPGHAN/ESPEN/ESPR/CSPEN 2018 (Clin Nutr 37:2306)",
+          "audit_id": "A13"
+        },
+        {
+          "id": "neo-enteral",
+          "title_ru": "Enteral feed advancement (VLBW/ELBW)",
+          "title_en": "Enteral Feed Advancement",
+          "source": "ESPGHAN 2022 EN Position",
+          "audit_id": "A14"
+        },
+        {
+          "id": "neo-newt",
+          "title_ru": "NEWT — потеря массы (грудное)",
+          "title_en": "Newborn Weight Tool",
+          "source": "Flaherman 2015; newbornweight.org",
+          "audit_id": "A21"
+        },
+        {
+          "id": "neo-glucose-bolus-dose",
+          "title_ru": "Глюкоза болюс при гипогликемии",
+          "title_en": "Glucose Bolus (Hypoglycemia)",
+          "source": "PES 2015; AAP CFN 2011; BAPM 2017",
+          "audit_id": "В6"
+        }
       ]
     },
     {
@@ -47,8 +156,20 @@
       "title_ru": "Доступы и трубки",
       "title_en": "Lines & tubes",
       "calculators": [
-        { "id": "neo-ett", "title_ru": "Размер ЭТТ + глубина", "title_en": "ETT Size + Depth", "source": "NRP 8 ed.; Takeuchi 2020 (ELBW); ERC 2021; МЗ РФ", "audit_id": "A15" },
-        { "id": "neo-uvc-uac", "title_ru": "UVC / UAC размер + глубина", "title_en": "UVC / UAC Catheter Size", "source": "NRP 8 ed.; Shukla 1986", "audit_id": "A16" }
+        {
+          "id": "neo-ett",
+          "title_ru": "Размер ЭТТ + глубина",
+          "title_en": "ETT Size + Depth",
+          "source": "NRP 8 ed.; Takeuchi 2020 (ELBW); ERC 2021; МЗ РФ",
+          "audit_id": "A15"
+        },
+        {
+          "id": "neo-uvc-uac",
+          "title_ru": "UVC / UAC размер + глубина",
+          "title_en": "UVC / UAC Catheter Size",
+          "source": "NRP 8 ed.; Shukla 1986",
+          "audit_id": "A16"
+        }
       ]
     },
     {
@@ -56,11 +177,41 @@
       "title_ru": "Гипербилирубинемия и ГБН",
       "title_en": "Hyperbilirubinemia & HDN",
       "calculators": [
-        { "id": "kramer", "title_ru": "Kramer / Bhutani nomogram", "title_en": "Kramer Scale / Bhutani Nomogram", "source": "Kramer 1969; Bhutani 1999", "audit_id": "A8.alt" },
-        { "id": "neo-bili-2022", "title_ru": "Bili-2022 AAP / NICE / КР РФ ГБН (≥35 нед)", "title_en": "Bili-2022 (3-region)", "source": "AAP 2022 Pediatrics 150:e2022058859; NICE CG98; КР МЗ РФ", "audit_id": "A8" },
-        { "id": "neo-photo-preterm", "title_ru": "Phototherapy 28-34 нед", "title_en": "Phototherapy Threshold Preterm", "source": "NICE CG98 addendum 2023; Maisels 2012; КР МЗ РФ", "audit_id": "A9" },
-        { "id": "neo-exchange-volume", "title_ru": "Double Volume Exchange (ОПК)", "title_en": "DVET Calculator", "source": "AAP 2022; NICE CG98; КР МЗ РФ ГБН", "audit_id": "A10" },
-        { "id": "neo-tcb-conversion", "title_ru": "TcB → TSB конверсия", "title_en": "TcB → TSB Conversion", "source": "Maisels 2006; NICE CG98 (2023); AAP 2022", "audit_id": "A42" }
+        {
+          "id": "kramer",
+          "title_ru": "Kramer / Bhutani nomogram",
+          "title_en": "Kramer Scale / Bhutani Nomogram",
+          "source": "Kramer 1969; Bhutani 1999",
+          "audit_id": "A8.alt"
+        },
+        {
+          "id": "neo-bili-2022",
+          "title_ru": "Bili-2022 AAP / NICE / КР РФ ГБН (≥35 нед)",
+          "title_en": "Bili-2022 (3-region)",
+          "source": "AAP 2022 Pediatrics 150:e2022058859; NICE CG98; КР МЗ РФ",
+          "audit_id": "A8"
+        },
+        {
+          "id": "neo-photo-preterm",
+          "title_ru": "Phototherapy 28-34 нед",
+          "title_en": "Phototherapy Threshold Preterm",
+          "source": "NICE CG98 addendum 2023; Maisels 2012; КР МЗ РФ",
+          "audit_id": "A9"
+        },
+        {
+          "id": "neo-exchange-volume",
+          "title_ru": "Double Volume Exchange (ОПК)",
+          "title_en": "DVET Calculator",
+          "source": "AAP 2022; NICE CG98; КР МЗ РФ ГБН",
+          "audit_id": "A10"
+        },
+        {
+          "id": "neo-tcb-conversion",
+          "title_ru": "TcB → TSB конверсия",
+          "title_en": "TcB → TSB Conversion",
+          "source": "Maisels 2006; NICE CG98 (2023); AAP 2022",
+          "audit_id": "A42"
+        }
       ]
     },
     {
@@ -68,8 +219,20 @@
       "title_ru": "Сепсис (EOS / LOS)",
       "title_en": "Sepsis (EOS / LOS)",
       "calculators": [
-        { "id": "neo-kaiser-eos", "title_ru": "Kaiser EOS (≥ 34 нед, 3-region)", "title_en": "Kaiser EOS Calculator", "source": "Pediatrics 2024;154(4):e2023065267", "audit_id": "A22" },
-        { "id": "neo-puopolo-eos", "title_ru": "Puopolo EOS (≤ 34 нед, AAP 2018)", "title_en": "Puopolo EOS Tiered", "source": "Puopolo Pediatrics 2017;139:e20162426; AAP COFN 2018", "audit_id": "A23" }
+        {
+          "id": "neo-kaiser-eos",
+          "title_ru": "Kaiser EOS (≥ 34 нед, 3-region)",
+          "title_en": "Kaiser EOS Calculator",
+          "source": "Pediatrics 2024;154(4):e2023065267",
+          "audit_id": "A22"
+        },
+        {
+          "id": "neo-puopolo-eos",
+          "title_ru": "Puopolo EOS (≤ 34 нед, AAP 2018)",
+          "title_en": "Puopolo EOS Tiered",
+          "source": "Puopolo Pediatrics 2017;139:e20162426; AAP COFN 2018",
+          "audit_id": "A23"
+        }
       ]
     },
     {
@@ -77,11 +240,55 @@
       "title_ru": "NEC / ВЖК / БЛД / ROP",
       "title_en": "NEC / IVH / BPD / ROP",
       "calculators": [
-        { "id": "neo-bell-nec", "title_ru": "Bell staging НЭК", "title_en": "Bell NEC Staging (modified Walsh-Kliegman)", "source": "Bell 1978; Walsh-Kliegman 1986", "audit_id": "A27" },
-        { "id": "neo-papile", "title_ru": "Papile ВЖК (I-IV)", "title_en": "Papile IVH Grading", "source": "Papile 1978; Volpe 2018", "audit_id": "A28" },
-        { "id": "neo-bpd-nih", "title_ru": "NIH BPD consensus", "title_en": "NIH BPD Consensus 2018", "source": "Jobe-Bancalari 2001; Higgins 2018", "audit_id": "A29" },
-        { "id": "neo-icrop3", "title_ru": "ICROP3 ROP staging", "title_en": "ICROP3 ROP Staging", "source": "Chiang Ophthalmology 2021", "audit_id": "A30" },
-        { "id": "neo-rop-screen-timing", "title_ru": "ROP screening timing (когда первый осмотр)", "title_en": "ROP Screening Timing", "source": "AAP/AAO/AAPOS 2018 (Pediatrics 142:e20183064)", "audit_id": "Скрининг" }
+        {
+          "id": "neo-bell-nec",
+          "title_ru": "Bell staging НЭК",
+          "title_en": "Bell NEC Staging (modified Walsh-Kliegman)",
+          "source": "Bell 1978; Walsh-Kliegman 1986",
+          "audit_id": "A27"
+        },
+        {
+          "id": "neo-papile",
+          "title_ru": "Papile ВЖК (I-IV)",
+          "title_en": "Papile IVH Grading",
+          "source": "Papile 1978; Volpe 2018",
+          "audit_id": "A28"
+        },
+        {
+          "id": "neo-bpd-nih",
+          "title_ru": "NIH BPD consensus",
+          "title_en": "NIH BPD Consensus 2018",
+          "source": "Jobe-Bancalari 2001; Higgins 2018",
+          "audit_id": "A29"
+        },
+        {
+          "id": "neo-icrop3",
+          "title_ru": "ICROP3 ROP staging",
+          "title_en": "ICROP3 ROP Staging",
+          "source": "Chiang Ophthalmology 2021",
+          "audit_id": "A30"
+        },
+        {
+          "id": "neo-rop-screen-timing",
+          "title_ru": "ROP screening timing (когда первый осмотр)",
+          "title_en": "ROP Screening Timing",
+          "source": "AAP/AAO/AAPOS 2018 (Pediatrics 142:e20183064)",
+          "audit_id": "Скрининг"
+        },
+        {
+          "id": "neo-osmolality",
+          "title_ru": "Serum osmolality + gap",
+          "title_en": "Calculated serum osmolality + osmolal gap",
+          "source": "Smellie WS BMJ 2007;334:701. Avery 11th ed.",
+          "audit_id": "A44"
+        },
+        {
+          "id": "neo-map",
+          "title_ru": "MAP по GA + DOL",
+          "title_en": "Mean Arterial Pressure (target by GA + day of life)",
+          "source": "BAPM Hypotension Framework 2017. Dempsey EM Curr Opin Pediatr 2009;21:181",
+          "audit_id": "A44"
+        }
       ]
     },
     {
@@ -89,8 +296,20 @@
       "title_ru": "ХИЭ и неврология",
       "title_en": "HIE & Neurology",
       "calculators": [
-        { "id": "neo-hie-cooling", "title_ru": "TH eligibility (NICHD/TOBY)", "title_en": "Therapeutic Hypothermia Eligibility", "source": "NICHD; TOBY UK; SIBEN; КР МЗ РФ ХИЭ", "audit_id": "A26" },
-        { "id": "neo-asphyxia-criteria", "title_ru": "Критерии асфиксии (P21 МКБ-10)", "title_en": "Birth Asphyxia Criteria", "source": "AAP/ACOG 2014 Joint Statement", "audit_id": "Б3" }
+        {
+          "id": "neo-hie-cooling",
+          "title_ru": "TH eligibility (NICHD/TOBY)",
+          "title_en": "Therapeutic Hypothermia Eligibility",
+          "source": "NICHD; TOBY UK; SIBEN; КР МЗ РФ ХИЭ",
+          "audit_id": "A26"
+        },
+        {
+          "id": "neo-asphyxia-criteria",
+          "title_ru": "Критерии асфиксии (P21 МКБ-10)",
+          "title_en": "Birth Asphyxia Criteria",
+          "source": "AAP/ACOG 2014 Joint Statement",
+          "audit_id": "Б3"
+        }
       ]
     },
     {
@@ -98,10 +317,34 @@
       "title_ru": "Респираторная поддержка",
       "title_en": "Respiratory support",
       "calculators": [
-        { "id": "neo-resp-indices", "title_ru": "OI / OSI / A-aDO₂ / P/F / SF", "title_en": "Respiratory Indices (OI/OSI/A-aDO₂)", "source": "Khemani 2009; ELSO; PALICC 2015", "audit_id": "A39" },
-        { "id": "neo-low-flow-o2", "title_ru": "Low-flow O₂ → Effective FiO₂", "title_en": "Low-flow O₂ → Effective FiO₂", "source": "Finer NN J Pediatr 1996;129:274; NICUtools", "audit_id": "A43" },
-        { "id": "neo-extubation-readiness", "title_ru": "Готовность к extubation (preterm)", "title_en": "Extubation Readiness Assessment", "source": "Sant'Anna GM; Manley BJ; CAP trial Schmidt 2007", "audit_id": "Протокол" },
-        { "id": "neo-abg", "title_ru": "ABG / acid-base interpretation", "title_en": "ABG Acid-Base Interpretation", "source": "Tin Adv Neonatal Care 2017; КР МЗ РФ КЩС", "audit_id": "A40" }
+        {
+          "id": "neo-resp-indices",
+          "title_ru": "OI / OSI / A-aDO₂ / P/F / SF",
+          "title_en": "Respiratory Indices (OI/OSI/A-aDO₂)",
+          "source": "Khemani 2009; ELSO; PALICC 2015",
+          "audit_id": "A39"
+        },
+        {
+          "id": "neo-low-flow-o2",
+          "title_ru": "Low-flow O₂ → Effective FiO₂",
+          "title_en": "Low-flow O₂ → Effective FiO₂",
+          "source": "Finer NN J Pediatr 1996;129:274; NICUtools",
+          "audit_id": "A43"
+        },
+        {
+          "id": "neo-extubation-readiness",
+          "title_ru": "Готовность к extubation (preterm)",
+          "title_en": "Extubation Readiness Assessment",
+          "source": "Sant'Anna GM; Manley BJ; CAP trial Schmidt 2007",
+          "audit_id": "Протокол"
+        },
+        {
+          "id": "neo-abg",
+          "title_ru": "ABG / acid-base interpretation",
+          "title_en": "ABG Acid-Base Interpretation",
+          "source": "Tin Adv Neonatal Care 2017; КР МЗ РФ КЩС",
+          "audit_id": "A40"
+        }
       ]
     },
     {
@@ -109,9 +352,27 @@
       "title_ru": "PPHN и сердечная патология",
       "title_en": "PPHN & Cardiac",
       "calculators": [
-        { "id": "neo-pphn-screen", "title_ru": "PPHN screening / criteria", "title_en": "PPHN Screening / Diagnosis", "source": "AHA 2019 PPHN Scientific Statement", "audit_id": "Протокол" },
-        { "id": "neo-tof-spell-management", "title_ru": "TOF tet spell management (cyanotic spell)", "title_en": "TOF Tet Spell Management", "source": "Park's Pediatric Cardiology; AHA/AAP", "audit_id": "Протокол" },
-        { "id": "neo-cchd-pulse-oximetry", "title_ru": "CCHD pulse oximetry screening", "title_en": "CCHD Pulse Oximetry Screening", "source": "AAP/AHA 2018 (Pediatrics 142:e20183064)", "audit_id": "Скрининг" }
+        {
+          "id": "neo-pphn-screen",
+          "title_ru": "PPHN screening / criteria",
+          "title_en": "PPHN Screening / Diagnosis",
+          "source": "AHA 2019 PPHN Scientific Statement",
+          "audit_id": "Протокол"
+        },
+        {
+          "id": "neo-tof-spell-management",
+          "title_ru": "TOF tet spell management (cyanotic spell)",
+          "title_en": "TOF Tet Spell Management",
+          "source": "Park's Pediatric Cardiology; AHA/AAP",
+          "audit_id": "Протокол"
+        },
+        {
+          "id": "neo-cchd-pulse-oximetry",
+          "title_ru": "CCHD pulse oximetry screening",
+          "title_en": "CCHD Pulse Oximetry Screening",
+          "source": "AAP/AHA 2018 (Pediatrics 142:e20183064)",
+          "audit_id": "Скрининг"
+        }
       ]
     },
     {
@@ -119,10 +380,34 @@
       "title_ru": "Боль, седация, NAS",
       "title_en": "Pain, Sedation, NAS",
       "calculators": [
-        { "id": "neo-nips", "title_ru": "NIPS (Neonatal Infant Pain Scale)", "title_en": "NIPS Pain Scale (term)", "source": "Lawrence 1993; AAP 2016", "audit_id": "A34" },
-        { "id": "neo-pipp-r", "title_ru": "PIPP-R (Premature Infant Pain Profile)", "title_en": "PIPP-R Pain Scale (preterm)", "source": "Stevens 2014", "audit_id": "A35" },
-        { "id": "neo-npass", "title_ru": "N-PASS (Pain + Sedation)", "title_en": "N-PASS Bimodal Scale", "source": "Hummel 2008", "audit_id": "A36" },
-        { "id": "neo-finnegan", "title_ru": "Modified Finnegan (NAS)", "title_en": "Modified Finnegan NAS", "source": "Finnegan 1975; Hudak/Tan AAP 2012", "audit_id": "A7" }
+        {
+          "id": "neo-nips",
+          "title_ru": "NIPS (Neonatal Infant Pain Scale)",
+          "title_en": "NIPS Pain Scale (term)",
+          "source": "Lawrence 1993; AAP 2016",
+          "audit_id": "A34"
+        },
+        {
+          "id": "neo-pipp-r",
+          "title_ru": "PIPP-R (Premature Infant Pain Profile)",
+          "title_en": "PIPP-R Pain Scale (preterm)",
+          "source": "Stevens 2014",
+          "audit_id": "A35"
+        },
+        {
+          "id": "neo-npass",
+          "title_ru": "N-PASS (Pain + Sedation)",
+          "title_en": "N-PASS Bimodal Scale",
+          "source": "Hummel 2008",
+          "audit_id": "A36"
+        },
+        {
+          "id": "neo-finnegan",
+          "title_ru": "Modified Finnegan (NAS)",
+          "title_en": "Modified Finnegan NAS",
+          "source": "Finnegan 1975; Hudak/Tan AAP 2012",
+          "audit_id": "A7"
+        }
       ]
     },
     {
@@ -130,9 +415,27 @@
       "title_ru": "Рост и развитие",
       "title_en": "Growth & Development",
       "calculators": [
-        { "id": "neo-fenton", "title_ru": "Fenton 2025 (преэрмы 22-50 нед PMA)", "title_en": "Fenton 2025 Growth Chart", "source": "Pediatrics 2025;155:e2024069896", "audit_id": "A18" },
-        { "id": "intergrowth", "title_ru": "Intergrowth-21st / Fenton chart", "title_en": "Intergrowth-21st Standards", "source": "Lancet 2014; intergrowth21.com", "audit_id": "A19" },
-        { "id": "neo-who-growth", "title_ru": "WHO Growth 0-24 мес (term)", "title_en": "WHO Growth Standards", "source": "WHO Multicentre 2006", "audit_id": "A20" }
+        {
+          "id": "neo-fenton",
+          "title_ru": "Fenton 2025 (преэрмы 22-50 нед PMA)",
+          "title_en": "Fenton 2025 Growth Chart",
+          "source": "Pediatrics 2025;155:e2024069896",
+          "audit_id": "A18"
+        },
+        {
+          "id": "intergrowth",
+          "title_ru": "Intergrowth-21st / Fenton chart",
+          "title_en": "Intergrowth-21st Standards",
+          "source": "Lancet 2014; intergrowth21.com",
+          "audit_id": "A19"
+        },
+        {
+          "id": "neo-who-growth",
+          "title_ru": "WHO Growth 0-24 мес (term)",
+          "title_en": "WHO Growth Standards",
+          "source": "WHO Multicentre 2006",
+          "audit_id": "A20"
+        }
       ]
     },
     {
@@ -140,11 +443,41 @@
       "title_ru": "Классификации",
       "title_en": "Classifications",
       "calculators": [
-        { "id": "neo-prematurity-class", "title_ru": "Классификация недоношенности", "title_en": "Prematurity Classification", "source": "WHO ICD-11 P07; AAP/Engle 2009", "audit_id": "Б1" },
-        { "id": "neo-zvur-class", "title_ru": "ЗВУР / SGA / AGA / LGA", "title_en": "IUGR / SGA Classification", "source": "ACOG Committee Opinion 800 (2020)", "audit_id": "Б2" },
-        { "id": "neo-cholestasis-criteria", "title_ru": "Cholestasis у н/р (criteria + workup)", "title_en": "Cholestasis Criteria + Workup", "source": "NASPGHAN/ESPGHAN 2017 (Fawaz JPGN 64:154)", "audit_id": "Холестаз" },
-        { "id": "neo-perinatal-infections-class", "title_ru": "Перинатальные инфекции (P35-P39 МКБ-10)", "title_en": "Perinatal Infections Classification", "source": "WHO ICD-10 P35-P39; AAP Red Book 2024-2027; КР МЗ РФ", "audit_id": "Б10" },
-        { "id": "neo-hdn-class", "title_ru": "ГБН — тяжесть", "title_en": "HDN Severity", "source": "КР МЗ РФ ГБН 2024; AAP 2022; NICE CG98", "audit_id": "Б11" }
+        {
+          "id": "neo-prematurity-class",
+          "title_ru": "Классификация недоношенности",
+          "title_en": "Prematurity Classification",
+          "source": "WHO ICD-11 P07; AAP/Engle 2009",
+          "audit_id": "Б1"
+        },
+        {
+          "id": "neo-zvur-class",
+          "title_ru": "ЗВУР / SGA / AGA / LGA",
+          "title_en": "IUGR / SGA Classification",
+          "source": "ACOG Committee Opinion 800 (2020)",
+          "audit_id": "Б2"
+        },
+        {
+          "id": "neo-cholestasis-criteria",
+          "title_ru": "Cholestasis у н/р (criteria + workup)",
+          "title_en": "Cholestasis Criteria + Workup",
+          "source": "NASPGHAN/ESPGHAN 2017 (Fawaz JPGN 64:154)",
+          "audit_id": "Холестаз"
+        },
+        {
+          "id": "neo-perinatal-infections-class",
+          "title_ru": "Перинатальные инфекции (P35-P39 МКБ-10)",
+          "title_en": "Perinatal Infections Classification",
+          "source": "WHO ICD-10 P35-P39; AAP Red Book 2024-2027; КР МЗ РФ",
+          "audit_id": "Б10"
+        },
+        {
+          "id": "neo-hdn-class",
+          "title_ru": "ГБН — тяжесть",
+          "title_en": "HDN Severity",
+          "source": "КР МЗ РФ ГБН 2024; AAP 2022; NICE CG98",
+          "audit_id": "Б11"
+        }
       ]
     },
     {
@@ -152,12 +485,48 @@
       "title_ru": "Скрининги и протоколы",
       "title_en": "Screenings & Protocols",
       "calculators": [
-        { "id": "neo-newborn-screening", "title_ru": "Newborn Metabolic Screening (timing)", "title_en": "Newborn Metabolic Screening", "source": "РФ Приказ МЗ РФ 2023; US RUSP; WHO 2007", "audit_id": "В13" },
-        { "id": "neo-vaccination-calendar", "title_ru": "Календарь вакцинации (РФ/UZ/Intl)", "title_en": "Vaccination Calendar (3-region)", "source": "Приказ МЗ РФ № 1122н; UZ нацкалендарь; WHO/CDC", "audit_id": "В12" },
-        { "id": "neo-feeding-readiness", "title_ru": "Oral Feeding Readiness (preterm)", "title_en": "Oral Feeding Readiness", "source": "Lau C; Howe TH PIOFRAS; AAP COFN 2008", "audit_id": "Протокол" },
-        { "id": "neo-discharge-criteria", "title_ru": "Критерии выписки н/р из NICU", "title_en": "NICU Discharge Criteria", "source": "AAP COFN 2008 (Pediatrics 122:1119)", "audit_id": "В15" },
-        { "id": "neo-thermal-management", "title_ru": "Thermal management (Golden hour)", "title_en": "Thermal Management Golden Hour", "source": "WHO 2017; NRP 8 ed. Ch. 7; HBS", "audit_id": "Транспорт" },
-        { "id": "neo-hypothermia-transport", "title_ru": "Гипотермия — управление при транспорте", "title_en": "Hypothermia Transport Management", "source": "WHO Newborn Health 2017; NRP 8 ed.; КР МЗ РФ", "audit_id": "А41" }
+        {
+          "id": "neo-newborn-screening",
+          "title_ru": "Newborn Metabolic Screening (timing)",
+          "title_en": "Newborn Metabolic Screening",
+          "source": "РФ Приказ МЗ РФ 2023; US RUSP; WHO 2007",
+          "audit_id": "В13"
+        },
+        {
+          "id": "neo-vaccination-calendar",
+          "title_ru": "Календарь вакцинации (РФ/UZ/Intl)",
+          "title_en": "Vaccination Calendar (3-region)",
+          "source": "Приказ МЗ РФ № 1122н; UZ нацкалендарь; WHO/CDC",
+          "audit_id": "В12"
+        },
+        {
+          "id": "neo-feeding-readiness",
+          "title_ru": "Oral Feeding Readiness (preterm)",
+          "title_en": "Oral Feeding Readiness",
+          "source": "Lau C; Howe TH PIOFRAS; AAP COFN 2008",
+          "audit_id": "Протокол"
+        },
+        {
+          "id": "neo-discharge-criteria",
+          "title_ru": "Критерии выписки н/р из NICU",
+          "title_en": "NICU Discharge Criteria",
+          "source": "AAP COFN 2008 (Pediatrics 122:1119)",
+          "audit_id": "В15"
+        },
+        {
+          "id": "neo-thermal-management",
+          "title_ru": "Thermal management (Golden hour)",
+          "title_en": "Thermal Management Golden Hour",
+          "source": "WHO 2017; NRP 8 ed. Ch. 7; HBS",
+          "audit_id": "Транспорт"
+        },
+        {
+          "id": "neo-hypothermia-transport",
+          "title_ru": "Гипотермия — управление при транспорте",
+          "title_en": "Hypothermia Transport Management",
+          "source": "WHO Newborn Health 2017; NRP 8 ed.; КР МЗ РФ",
+          "audit_id": "А41"
+        }
       ]
     },
     {
@@ -165,7 +534,13 @@
       "title_ru": "Полицитемия",
       "title_en": "Polycythemia",
       "calculators": [
-        { "id": "neo-partial-exchange", "title_ru": "Partial Exchange (полицитемия)", "title_en": "Partial Exchange Transfusion (Polycythemia)", "source": "Rawlings AJDC 1982; AAP CFN 2008", "audit_id": "A38" }
+        {
+          "id": "neo-partial-exchange",
+          "title_ru": "Partial Exchange (полицитемия)",
+          "title_en": "Partial Exchange Transfusion (Polycythemia)",
+          "source": "Rawlings AJDC 1982; AAP CFN 2008",
+          "audit_id": "A38"
+        }
       ]
     }
   ]

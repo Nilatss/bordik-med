@@ -395,7 +395,7 @@ export default function NeonatalHandbook() {
         const [drugsR, guidelinesR, calcR, labsR, articlesR, lactR, nurseR, casesR, mistakesR, checklistsR, videosR, atlasR] = await Promise.all([
           fetch('/neonatal-monographs.json?v=2.9.0', { cache: 'force-cache' }),
           fetch('/neonatal-guidelines.json?v=1.9.0', { cache: 'force-cache' }),
-          fetch('/neonatal-calculators.json?v=1.0.0', { cache: 'force-cache' }),
+          fetch('/neonatal-calculators.json?v=1.1.0', { cache: 'force-cache' }),
           fetch('/neonatal-lab-norms.json?v=1.1.0', { cache: 'force-cache' }),
           fetch('/neonatal-articles.json?v=2.2.0', { cache: 'force-cache' }),
           fetch('/neonatal-lactmed.json?v=1.1.0', { cache: 'force-cache' }),
