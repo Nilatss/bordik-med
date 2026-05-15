@@ -136,16 +136,13 @@ export default function ClassificationsHub({ defaultTab = 'icd10' }: Props) {
   };
 
   return (
-    <main id="main-content" style={{
-      padding: 0,
-      fontFamily: 'var(--font-body, system-ui)',
-    }}>
+    <main id="main-content" className="p-0 font-[var(--font-body,system-ui)]">
       {/* Шапка хаба */}
-      <header style={{ marginBottom: 24 }}>
-        <h1 style={{ fontSize: 32, fontWeight: 700, margin: '0 0 8px', color: '#101010' }}>
+      <header className="mb-6">
+        <h1 className="text-[32px] font-bold mt-0 mb-2 text-[#101010]">
           Классификации
         </h1>
-        <p style={{ fontSize: 16, color: '#6B7280', margin: 0, maxWidth: 760, lineHeight: 1.5 }}>
+        <p className="text-base text-[#6B7280] m-0 max-w-[760px] leading-[1.5]">
           Единый справочник классификаций МКБ/ICD — российская МКБ-10, новая МКБ-11 ВОЗ
           и национальные адаптации (США, Канада, Германия, Австралия). Cross-walk между
           системами появится по мере подключения каждой.
@@ -153,12 +150,7 @@ export default function ClassificationsHub({ defaultTab = 'icd10' }: Props) {
       </header>
 
       {/* Табы — left-flush с заголовком (компенсируем padding кнопок через marginLeft) */}
-      <div role="tablist" aria-label="Классификации" style={{
-        display: 'flex', gap: 4, flexWrap: 'wrap',
-        borderBottom: '1px solid #E5E7EB',
-        marginBottom: 24, paddingBottom: 0,
-        marginLeft: -14, marginRight: -14,
-      }}>
+      <div role="tablist" aria-label="Классификации" className="flex gap-1 flex-wrap border-b border-[#E5E7EB] mb-6 pb-0 -mx-3.5">
         {TABS.map((tab) => {
           const isActive = activeTab === tab.id;
           const isRoadmap = tab.status === 'roadmap';
@@ -170,31 +162,17 @@ export default function ClassificationsHub({ defaultTab = 'icd10' }: Props) {
               aria-controls={`panel-${tab.id}`}
               id={`tab-${tab.id}`}
               onClick={() => setActiveTab(tab.id)}
-              style={{
-                position: 'relative',
-                background: 'transparent',
-                border: 'none',
-                padding: '10px 14px',
-                fontSize: 14,
-                fontWeight: isActive ? 600 : 500,
-                fontFamily: 'inherit',
-                color: isActive ? '#2563EB' : isRoadmap ? '#9CA3AF' : '#374151',
-                cursor: 'pointer',
-                borderBottom: isActive ? '2px solid #2563EB' : '2px solid transparent',
-                marginBottom: -1,
-                display: 'inline-flex', alignItems: 'center', gap: 6,
-                transition: 'color 120ms ease',
-              }}
-              onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.color = '#2563EB'; }}
-              onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.color = isRoadmap ? '#9CA3AF' : '#374151'; }}
+              className={`relative bg-transparent border-0 px-3.5 py-2.5 text-sm font-[inherit] cursor-pointer -mb-px inline-flex items-center gap-1.5 transition-[color] duration-[120ms] ease-out border-b-2 ${
+                isActive
+                  ? 'font-semibold text-[#2563EB] border-b-[#2563EB]'
+                  : isRoadmap
+                    ? 'font-medium text-[#9CA3AF] hover:text-[#2563EB] border-b-transparent'
+                    : 'font-medium text-[#374151] hover:text-[#2563EB] border-b-transparent'
+              }`}
             >
               <span>{tab.label}</span>
               {isRoadmap && (
-                <span style={{
-                  fontSize: 9, fontWeight: 600, letterSpacing: '0.04em',
-                  background: '#F5F6F8', color: '#6B7280',
-                  padding: '2px 6px', borderRadius: 999, textTransform: 'uppercase',
-                }}>
+                <span className="text-[9px] font-semibold tracking-[0.04em] bg-[#F5F6F8] text-[#6B7280] px-1.5 py-0.5 rounded-full uppercase">
                   скоро
                 </span>
               )}
@@ -251,21 +229,18 @@ function Icd10Panel({
 }: { bank: Bank | null; error: string | null; formatDate: (iso: string) => string }) {
   if (error) {
     return (
-      <div style={{
-        padding: 24, borderRadius: 12, background: '#FEF2F2',
-        border: '1px solid #FECACA', color: '#991B1B', fontSize: 14,
-      }}>
+      <div className="p-6 rounded-xl bg-[#FEF2F2] border border-[#FECACA] text-[#991B1B] text-sm">
         Не удалось загрузить справочник МКБ-10: {error}.
       </div>
     );
   }
   if (!bank) {
     return (
-      <div style={{ padding: '8px 0' }}>
-        <div className="lc-shimmer" style={{ height: 28, width: 240, borderRadius: 8, marginBottom: 14 }} />
-        <div className="lc-shimmer" style={{ height: 16, width: '60%', borderRadius: 6, marginBottom: 24 }} />
-        <div className="lc-shimmer" style={{ height: 48, width: '100%', borderRadius: 12, marginBottom: 12 }} />
-        <div className="lc-shimmer" style={{ height: 64, width: '100%', borderRadius: 12 }} />
+      <div className="py-2">
+        <div className="lc-shimmer h-7 w-[240px] rounded-lg mb-3.5" />
+        <div className="lc-shimmer h-4 w-[60%] rounded-md mb-6" />
+        <div className="lc-shimmer h-12 w-full rounded-xl mb-3" />
+        <div className="lc-shimmer h-16 w-full rounded-xl" />
       </div>
     );
   }
@@ -300,23 +275,16 @@ function Icd10InfoCard({
   version, lastUpdated, source, codesCount, chaptersCount,
 }: { version: string; lastUpdated: string; source: string; codesCount: number; chaptersCount: number }) {
   return (
-    <div style={{
-      maxWidth: 880,
-      background: '#FFFFFF',
-      borderRadius: 16,
-      border: '1px solid #E5E7EB',
-      padding: '32px 32px 28px',
-      marginBottom: 24,
-    }}>
-      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 20, flexWrap: 'wrap' }}>
-        <div style={{ flex: 1, minWidth: 240 }}>
-          <div style={{ fontSize: 11, color: '#9CA3AF', letterSpacing: '0.06em', textTransform: 'uppercase', fontWeight: 600, marginBottom: 6 }}>
+    <div className="max-w-[880px] bg-white rounded-2xl border border-[#E5E7EB] pt-8 px-8 pb-7 mb-6">
+      <div className="flex items-start gap-3 mb-5 flex-wrap">
+        <div className="flex-1 min-w-[240px]">
+          <div className="text-[11px] text-[#9CA3AF] tracking-[0.06em] uppercase font-semibold mb-1.5">
             РФ / СНГ · ВОЗ rev.10
           </div>
-          <h2 style={{ fontSize: 22, fontWeight: 700, margin: '0 0 6px', color: '#101010' }}>
+          <h2 className="text-[22px] font-bold mt-0 mb-1.5 text-[#101010]">
             МКБ-10 (ВОЗ rev.10, РФ-адаптация Минздрава)
           </h2>
-          <div style={{ fontSize: 14, color: '#6B7280', lineHeight: 1.55 }}>
+          <div className="text-sm text-[#6B7280] leading-[1.55]">
             Российская редакция Международной классификации болезней 10-го пересмотра.
             Используется в РФ для всей официальной диагностической отчётности — амбулаторной
             и стационарной. Поиск работает в офлайн-режиме после первой загрузки.
@@ -377,10 +345,7 @@ function Icd11Panel() {
 
   if (error) {
     return (
-      <div style={{
-        padding: 24, borderRadius: 12, background: '#FEF2F2',
-        border: '1px solid #FECACA', color: '#991B1B', fontSize: 14,
-      }}>
+      <div className="p-6 rounded-xl bg-[#FEF2F2] border border-[#FECACA] text-[#991B1B] text-sm">
         Не удалось загрузить справочник МКБ-11: {error}.
       </div>
     );
@@ -388,11 +353,11 @@ function Icd11Panel() {
 
   if (!bank) {
     return (
-      <div style={{ padding: '8px 0' }}>
-        <div className="lc-shimmer" style={{ height: 28, width: 240, borderRadius: 8, marginBottom: 14 }} />
-        <div className="lc-shimmer" style={{ height: 16, width: '60%', borderRadius: 6, marginBottom: 24 }} />
-        <div className="lc-shimmer" style={{ height: 48, width: '100%', borderRadius: 12, marginBottom: 12 }} />
-        <div className="lc-shimmer" style={{ height: 64, width: '100%', borderRadius: 12 }} />
+      <div className="py-2">
+        <div className="lc-shimmer h-7 w-[240px] rounded-lg mb-3.5" />
+        <div className="lc-shimmer h-4 w-[60%] rounded-md mb-6" />
+        <div className="lc-shimmer h-12 w-full rounded-xl mb-3" />
+        <div className="lc-shimmer h-16 w-full rounded-xl" />
       </div>
     );
   }
@@ -422,23 +387,16 @@ function Icd11InfoCard({
   version, lastUpdated, source, codesCount, chaptersCount,
 }: { version: string; lastUpdated: string; source: string; codesCount: number; chaptersCount: number }) {
   return (
-    <div style={{
-      maxWidth: 880,
-      background: '#FFFFFF',
-      borderRadius: 16,
-      border: '1px solid #E5E7EB',
-      padding: '32px 32px 28px',
-      marginBottom: 24,
-    }}>
-      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 20, flexWrap: 'wrap' }}>
-        <div style={{ flex: 1, minWidth: 240 }}>
-          <div style={{ fontSize: 11, color: '#9CA3AF', letterSpacing: '0.06em', textTransform: 'uppercase', fontWeight: 600, marginBottom: 6 }}>
+    <div className="max-w-[880px] bg-white rounded-2xl border border-[#E5E7EB] pt-8 px-8 pb-7 mb-6">
+      <div className="flex items-start gap-3 mb-5 flex-wrap">
+        <div className="flex-1 min-w-[240px]">
+          <div className="text-[11px] text-[#9CA3AF] tracking-[0.06em] uppercase font-semibold mb-1.5">
             Мир · ВОЗ rev.11 · MMS
           </div>
-          <h2 style={{ fontSize: 22, fontWeight: 700, margin: '0 0 6px', color: '#101010' }}>
+          <h2 className="text-[22px] font-bold mt-0 mb-1.5 text-[#101010]">
             МКБ-11 (ICD-11 MMS, WHO 2024-01 release)
           </h2>
-          <div style={{ fontSize: 14, color: '#6B7280', lineHeight: 1.55 }}>
+          <div className="text-sm text-[#6B7280] leading-[1.55]">
             Международная классификация болезней 11-го пересмотра ВОЗ — Mortality
             and Morbidity Statistics linearization. Включает все терминальные категории,
             extension-коды (XA-XY) для постcoordination и раздел традиционной медицины (SA-SJ).
@@ -495,21 +453,18 @@ function Icd10cmPanel() {
 
   if (error) {
     return (
-      <div style={{
-        padding: 24, borderRadius: 12, background: '#FEF2F2',
-        border: '1px solid #FECACA', color: '#991B1B', fontSize: 14,
-      }}>
+      <div className="p-6 rounded-xl bg-[#FEF2F2] border border-[#FECACA] text-[#991B1B] text-sm">
         Не удалось загрузить ICD-10-CM: {error}.
       </div>
     );
   }
   if (!bank) {
     return (
-      <div style={{ padding: '8px 0' }}>
-        <div className="lc-shimmer" style={{ height: 28, width: 240, borderRadius: 8, marginBottom: 14 }} />
-        <div className="lc-shimmer" style={{ height: 16, width: '60%', borderRadius: 6, marginBottom: 24 }} />
-        <div className="lc-shimmer" style={{ height: 48, width: '100%', borderRadius: 12, marginBottom: 12 }} />
-        <div className="lc-shimmer" style={{ height: 64, width: '100%', borderRadius: 12 }} />
+      <div className="py-2">
+        <div className="lc-shimmer h-7 w-[240px] rounded-lg mb-3.5" />
+        <div className="lc-shimmer h-4 w-[60%] rounded-md mb-6" />
+        <div className="lc-shimmer h-12 w-full rounded-xl mb-3" />
+        <div className="lc-shimmer h-16 w-full rounded-xl" />
       </div>
     );
   }
@@ -576,44 +531,30 @@ function Icd10cmIndexSearch() {
   }, [index, q]);
 
   return (
-    <div style={{
-      maxWidth: 880,
-      background: '#F5F6F8',
-      borderRadius: 14,
-      border: open ? '1px solid #E5E7EB' : 'none',
-      marginBottom: 12,
-      overflow: 'hidden',
-      transition: 'border-color 150ms ease',
-    }}>
+    <div
+      className={`max-w-[880px] bg-[#F5F6F8] rounded-[14px] mb-3 overflow-hidden transition-[border-color] duration-150 ease-out ${
+        open ? 'border border-[#E5E7EB]' : 'border-0'
+      }`}
+    >
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
-        style={{
-          width: '100%',
-          display: 'flex', alignItems: 'center', gap: 12,
-          padding: '12px 16px',
-          background: 'transparent', border: 'none',
-          cursor: 'pointer', textAlign: 'left',
-          fontFamily: 'inherit',
-          transition: 'background 150ms',
-        }}
-        onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
-        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+        className="w-full flex items-center gap-3 px-4 py-3 bg-transparent hover:bg-[#EFF1F4] border-0 cursor-pointer text-left font-[inherit] transition-[background-color] duration-150"
       >
-        <span style={{ flex: 1 }}>
-          <span style={{ display: 'block', fontSize: 14, fontWeight: 600, color: '#1A1A1A' }}>
+        <span className="flex-1">
+          <span className="block text-sm font-semibold text-[#1A1A1A]">
             Поиск по симптому (Алфавитный указатель)
           </span>
-          <span style={{ display: 'block', marginTop: 2, fontSize: 12, color: '#6B7280' }}>
+          <span className="block mt-0.5 text-xs text-[#6B7280]">
             CMS Alphabetic Index — 76 327 терминов. Удобно когда знаешь жалобу/симптом, а не точный диагноз.
           </span>
         </span>
-        <span style={{
-          color: '#6B7280',
-          transform: open ? 'rotate(180deg)' : 'rotate(0deg)',
-          transition: 'transform 200ms',
-        }}>
+        <span
+          className={`text-[#6B7280] transition-transform duration-200 ${
+            open ? 'rotate-180' : 'rotate-0'
+          }`}
+        >
           <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor"
             strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
             <polyline points="6 9 12 15 18 9" />
@@ -630,13 +571,10 @@ function Icd10cmIndexSearch() {
               height: { duration: 0.25, ease: [0.05, 0.7, 0.1, 1] },
               opacity: { duration: 0.18 },
             }}
-            style={{ overflow: 'hidden' }}
+            className="overflow-hidden"
           >
-            <div style={{ borderTop: '1px solid #E5E7EB', background: '#FFFFFF', padding: '12px 16px' }}>
-              <div className="bordik-search" style={{
-                display: 'flex', alignItems: 'center', gap: 10,
-                padding: '10px 14px', background: '#F5F6F8', borderRadius: 10, marginBottom: 12,
-              }}>
+            <div className="border-t border-[#E5E7EB] bg-white px-4 py-3">
+              <div className="bordik-search flex items-center gap-2.5 px-3.5 py-2.5 bg-[#F5F6F8] rounded-[10px] mb-3">
                 <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
                   stroke="#9CA3AF" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="11" cy="11" r="8" />
@@ -648,41 +586,34 @@ function Icd10cmIndexSearch() {
                   onChange={(e) => setQ(e.target.value)}
                   placeholder="Например: «headache», «pain», «cough», «fever»…"
                   aria-label="Поиск по симптому"
-                  style={{
-                    flex: 1, background: 'transparent', border: 'none', outline: 'none',
-                    fontFamily: 'inherit', fontSize: 14, color: '#1A1A1A',
-                  }}
+                  className="flex-1 bg-transparent border-0 outline-none font-[inherit] text-sm text-[#1A1A1A]"
                 />
               </div>
               {!index ? (
-                <div style={{ fontSize: 13, color: '#6B7280', padding: 8 }}>Загружаем указатель…</div>
+                <div className="text-[13px] text-[#6B7280] p-2">Загружаем указатель…</div>
               ) : !q.trim() ? (
-                <div style={{ fontSize: 12, color: '#9CA3AF', padding: 8, fontStyle: 'italic' }}>
+                <div className="text-xs text-[#9CA3AF] p-2 italic">
                   Начните печатать симптом или жалобу.
                 </div>
               ) : results.length === 0 ? (
-                <div style={{ fontSize: 12, color: '#9CA3AF', padding: 8, fontStyle: 'italic' }}>
+                <div className="text-xs text-[#9CA3AF] p-2 italic">
                   Ничего не найдено.
                 </div>
               ) : (
-                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 6 }}>
+                <ul className="list-none p-0 m-0 flex flex-col gap-1.5">
                   {results.map((r, i) => (
-                    <li key={i} style={{
-                      display: 'flex', alignItems: 'flex-start', gap: 10,
-                      padding: '8px 12px',
-                      background: '#FAFBFC', borderRadius: 8,
-                    }}>
-                      <span style={{ flex: 1, fontSize: 13, color: '#1A1A1A', lineHeight: 1.4 }}>
+                    <li key={i} className="flex items-start gap-2.5 px-3 py-2 bg-[#FAFBFC] rounded-lg">
+                      <span className="flex-1 text-[13px] text-[#1A1A1A] leading-[1.4]">
                         <Highlight text={r.term} query={q} />
                       </span>
                       {r.code ? (
                         <CopyCodeButton code={r.code} />
                       ) : r.see ? (
-                        <span style={{ flexShrink: 0, fontSize: 11, color: '#6B7280', fontStyle: 'italic' }}>
+                        <span className="shrink-0 text-[11px] text-[#6B7280] italic">
                           → см. {r.see}
                         </span>
                       ) : r.seeAlso ? (
-                        <span style={{ flexShrink: 0, fontSize: 11, color: '#6B7280', fontStyle: 'italic' }}>
+                        <span className="shrink-0 text-[11px] text-[#6B7280] italic">
                           ↗ также {r.seeAlso}
                         </span>
                       ) : null}
@@ -691,7 +622,7 @@ function Icd10cmIndexSearch() {
                 </ul>
               )}
               {results.length === 50 && (
-                <div style={{ fontSize: 11, color: '#9CA3AF', padding: '8px 0 0', fontStyle: 'italic' }}>
+                <div className="text-[11px] text-[#9CA3AF] pt-2 italic">
                   Показаны первые 50 совпадений — уточните запрос.
                 </div>
               )}
@@ -750,44 +681,30 @@ function Icd10cmNeoplasmCoder() {
   }, [data, q]);
 
   return (
-    <div style={{
-      maxWidth: 880,
-      background: '#F5F6F8',
-      borderRadius: 14,
-      border: open ? '1px solid #E5E7EB' : 'none',
-      marginBottom: 12,
-      overflow: 'hidden',
-      transition: 'border-color 150ms ease',
-    }}>
+    <div
+      className={`max-w-[880px] bg-[#F5F6F8] rounded-[14px] mb-3 overflow-hidden transition-[border-color] duration-150 ease-out ${
+        open ? 'border border-[#E5E7EB]' : 'border-0'
+      }`}
+    >
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
-        style={{
-          width: '100%',
-          display: 'flex', alignItems: 'center', gap: 12,
-          padding: '12px 16px',
-          background: 'transparent', border: 'none',
-          cursor: 'pointer', textAlign: 'left',
-          fontFamily: 'inherit',
-          transition: 'background 150ms',
-        }}
-        onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
-        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+        className="w-full flex items-center gap-3 px-4 py-3 bg-transparent hover:bg-[#EFF1F4] border-0 cursor-pointer text-left font-[inherit] transition-[background-color] duration-150"
       >
-        <span style={{ flex: 1 }}>
-          <span style={{ display: 'block', fontSize: 14, fontWeight: 600, color: '#1A1A1A' }}>
+        <span className="flex-1">
+          <span className="block text-sm font-semibold text-[#1A1A1A]">
             Онко-кодер (Neoplasm Table)
           </span>
-          <span style={{ display: 'block', marginTop: 2, fontSize: 12, color: '#6B7280' }}>
+          <span className="block mt-0.5 text-xs text-[#6B7280]">
             CMS Neoplasm Table — введи локализацию, получи коды для всех 6 типов поведения опухоли.
           </span>
         </span>
-        <span style={{
-          color: '#6B7280',
-          transform: open ? 'rotate(180deg)' : 'rotate(0deg)',
-          transition: 'transform 200ms',
-        }}>
+        <span
+          className={`text-[#6B7280] transition-transform duration-200 ${
+            open ? 'rotate-180' : 'rotate-0'
+          }`}
+        >
           <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor"
             strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
             <polyline points="6 9 12 15 18 9" />
@@ -804,13 +721,10 @@ function Icd10cmNeoplasmCoder() {
               height: { duration: 0.25, ease: [0.05, 0.7, 0.1, 1] },
               opacity: { duration: 0.18 },
             }}
-            style={{ overflow: 'hidden' }}
+            className="overflow-hidden"
           >
-            <div style={{ borderTop: '1px solid #E5E7EB', background: '#FFFFFF', padding: '12px 16px' }}>
-              <div className="bordik-search" style={{
-                display: 'flex', alignItems: 'center', gap: 10,
-                padding: '10px 14px', background: '#F5F6F8', borderRadius: 10, marginBottom: 12,
-              }}>
+            <div className="border-t border-[#E5E7EB] bg-white px-4 py-3">
+              <div className="bordik-search flex items-center gap-2.5 px-3.5 py-2.5 bg-[#F5F6F8] rounded-[10px] mb-3">
                 <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
                   stroke="#9CA3AF" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="11" cy="11" r="8" />
@@ -822,41 +736,32 @@ function Icd10cmNeoplasmCoder() {
                   onChange={(e) => setQ(e.target.value)}
                   placeholder="Локализация: «liver», «lung upper lobe», «brain stem»…"
                   aria-label="Поиск локализации опухоли"
-                  style={{
-                    flex: 1, background: 'transparent', border: 'none', outline: 'none',
-                    fontFamily: 'inherit', fontSize: 14, color: '#1A1A1A',
-                  }}
+                  className="flex-1 bg-transparent border-0 outline-none font-[inherit] text-sm text-[#1A1A1A]"
                 />
               </div>
               {!data ? (
-                <div style={{ fontSize: 13, color: '#6B7280', padding: 8 }}>Загружаем Neoplasm Table…</div>
+                <div className="text-[13px] text-[#6B7280] p-2">Загружаем Neoplasm Table…</div>
               ) : !q.trim() ? (
-                <div style={{ fontSize: 12, color: '#9CA3AF', padding: 8, fontStyle: 'italic' }}>
+                <div className="text-xs text-[#9CA3AF] p-2 italic">
                   Введите анатомическую локализацию (на английском).
                 </div>
               ) : results.length === 0 ? (
-                <div style={{ fontSize: 12, color: '#9CA3AF', padding: 8, fontStyle: 'italic' }}>
+                <div className="text-xs text-[#9CA3AF] p-2 italic">
                   Ничего не найдено.
                 </div>
               ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <div className="flex flex-col gap-2">
                   {results.map((r, i) => (
-                    <div key={i} style={{
-                      background: '#FAFBFC', borderRadius: 10, padding: '10px 12px',
-                    }}>
-                      <div style={{ fontSize: 12, color: '#6B7280', marginBottom: 8 }}>
+                    <div key={i} className="bg-[#FAFBFC] rounded-[10px] px-3 py-2.5">
+                      <div className="text-xs text-[#6B7280] mb-2">
                         <Highlight text={r.site} query={q} />
                       </div>
                       {r.seeAlso ? (
-                        <div style={{ fontSize: 11, color: '#9CA3AF', fontStyle: 'italic' }}>
+                        <div className="text-[11px] text-[#9CA3AF] italic">
                           → см. также: {r.seeAlso}
                         </div>
                       ) : (
-                        <div style={{
-                          display: 'grid',
-                          gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))',
-                          gap: 6,
-                        }}>
+                        <div className="grid grid-cols-[repeat(auto-fit,minmax(110px,1fr))] gap-1.5">
                           <NeoplasmCell label="Primary"      code={r.primary} />
                           <NeoplasmCell label="Secondary"    code={r.secondary} />
                           <NeoplasmCell label="Ca in situ"   code={r.in_situ} />
@@ -901,18 +806,11 @@ function CopyCodeButton({ code }: { code: string }) {
       onClick={handleCopy}
       title={copied ? `${code} скопирован` : `Скопировать ${code}`}
       aria-live="polite"
-      style={{
-        flexShrink: 0,
-        display: 'inline-flex', alignItems: 'center', gap: 4,
-        padding: '4px 10px',
-        background: copied ? '#DCFCE7' : '#EFF6FF',
-        border: `1px solid ${copied ? '#86EFAC' : '#DBEAFE'}`,
-        borderRadius: 6, cursor: 'pointer',
-        fontFamily: 'var(--font-mono, ui-monospace)',
-        fontSize: 12, fontWeight: 700,
-        color: copied ? '#15803D' : '#2563EB',
-        transition: 'background 150ms, border-color 150ms',
-      }}
+      className={`shrink-0 inline-flex items-center gap-1 px-2.5 py-1 rounded-md cursor-pointer font-[var(--font-mono,ui-monospace)] text-xs font-bold transition-[background-color,border-color] duration-150 border ${
+        copied
+          ? 'bg-[#DCFCE7] border-[#86EFAC] text-[#15803D]'
+          : 'bg-[#EFF6FF] border-[#DBEAFE] text-[#2563EB]'
+      }`}
     >
       {copied && (
         <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -935,12 +833,9 @@ function NeoplasmCell({ label, code }: { label: string; code?: string | null | u
 
   if (!code || code === '--') {
     return (
-      <div style={{
-        padding: '6px 8px', background: '#FFFFFF', border: '1px solid #F0F1F5',
-        borderRadius: 6, color: '#D1D5DB', fontSize: 10, textAlign: 'center',
-      }}>
+      <div className="px-2 py-1.5 bg-white border border-[#F0F1F5] rounded-md text-[#D1D5DB] text-[10px] text-center">
         <div>{label}</div>
-        <div style={{ marginTop: 2 }}>—</div>
+        <div className="mt-0.5">—</div>
       </div>
     );
   }
@@ -959,24 +854,18 @@ function NeoplasmCell({ label, code }: { label: string; code?: string | null | u
       onClick={handleCopy}
       title={copied ? `${code} скопирован` : `Скопировать ${code}`}
       aria-live="polite"
-      style={{
-        padding: '6px 8px',
-        background: copied ? '#DCFCE7' : '#FFFFFF',
-        border: `1px solid ${copied ? '#86EFAC' : '#DBEAFE'}`,
-        borderRadius: 6, cursor: 'pointer', textAlign: 'center',
-        fontFamily: 'inherit',
-        transition: 'background 150ms, border-color 150ms',
-      }}
+      className={`px-2 py-1.5 rounded-md cursor-pointer text-center font-[inherit] transition-[background-color,border-color] duration-150 border ${
+        copied ? 'bg-[#DCFCE7] border-[#86EFAC]' : 'bg-white border-[#DBEAFE]'
+      }`}
     >
-      <div style={{ fontSize: 10, color: copied ? '#15803D' : '#6B7280' }}>
+      <div className={`text-[10px] ${copied ? 'text-[#15803D]' : 'text-[#6B7280]'}`}>
         {copied ? 'Скопировано' : label}
       </div>
-      <div style={{
-        marginTop: 2, fontFamily: 'var(--font-mono, ui-monospace)',
-        fontSize: 12, fontWeight: 700,
-        color: copied ? '#15803D' : '#2563EB',
-        display: 'inline-flex', alignItems: 'center', gap: 4,
-      }}>
+      <div
+        className={`mt-0.5 font-[var(--font-mono,ui-monospace)] text-xs font-bold inline-flex items-center gap-1 ${
+          copied ? 'text-[#15803D]' : 'text-[#2563EB]'
+        }`}
+      >
         {copied && (
           <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor"
             strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -993,23 +882,16 @@ function Icd10cmInfoCard({
   version, lastUpdated, source, codesCount, chaptersCount,
 }: { version: string; lastUpdated: string; source: string; codesCount: number; chaptersCount: number }) {
   return (
-    <div style={{
-      maxWidth: 880,
-      background: '#FFFFFF',
-      borderRadius: 16,
-      border: '1px solid #E5E7EB',
-      padding: '32px 32px 28px',
-      marginBottom: 24,
-    }}>
-      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 20, flexWrap: 'wrap' }}>
-        <div style={{ flex: 1, minWidth: 240 }}>
-          <div style={{ fontSize: 11, color: '#9CA3AF', letterSpacing: '0.06em', textTransform: 'uppercase', fontWeight: 600, marginBottom: 6 }}>
+    <div className="max-w-[880px] bg-white rounded-2xl border border-[#E5E7EB] pt-8 px-8 pb-7 mb-6">
+      <div className="flex items-start gap-3 mb-5 flex-wrap">
+        <div className="flex-1 min-w-[240px]">
+          <div className="text-[11px] text-[#9CA3AF] tracking-[0.06em] uppercase font-semibold mb-1.5">
             США · Clinical Modification
           </div>
-          <h2 style={{ fontSize: 22, fontWeight: 700, margin: '0 0 6px', color: '#101010' }}>
+          <h2 className="text-[22px] font-bold mt-0 mb-1.5 text-[#101010]">
             ICD-10-CM (FY2026)
           </h2>
-          <div style={{ fontSize: 14, color: '#6B7280', lineHeight: 1.55 }}>
+          <div className="text-sm text-[#6B7280] leading-[1.55]">
             Clinical Modification ICD-10 для США (CDC / CMS). Используется для всей
             диагностической отчётности в системе здравоохранения США (Medicare,
             Medicaid, частное страхование). Семизначные коды с детализацией по
@@ -1056,21 +938,18 @@ function Icd10pcsPanel() {
 
   if (error) {
     return (
-      <div style={{
-        padding: 24, borderRadius: 12, background: '#FEF2F2',
-        border: '1px solid #FECACA', color: '#991B1B', fontSize: 14,
-      }}>
+      <div className="p-6 rounded-xl bg-[#FEF2F2] border border-[#FECACA] text-[#991B1B] text-sm">
         Не удалось загрузить ICD-10-PCS: {error}.
       </div>
     );
   }
   if (!bank) {
     return (
-      <div style={{ padding: '8px 0' }}>
-        <div className="lc-shimmer" style={{ height: 28, width: 240, borderRadius: 8, marginBottom: 14 }} />
-        <div className="lc-shimmer" style={{ height: 16, width: '60%', borderRadius: 6, marginBottom: 24 }} />
-        <div className="lc-shimmer" style={{ height: 48, width: '100%', borderRadius: 12, marginBottom: 12 }} />
-        <div className="lc-shimmer" style={{ height: 64, width: '100%', borderRadius: 12 }} />
+      <div className="py-2">
+        <div className="lc-shimmer h-7 w-[240px] rounded-lg mb-3.5" />
+        <div className="lc-shimmer h-4 w-[60%] rounded-md mb-6" />
+        <div className="lc-shimmer h-12 w-full rounded-xl mb-3" />
+        <div className="lc-shimmer h-16 w-full rounded-xl" />
       </div>
     );
   }
@@ -1100,23 +979,16 @@ function Icd10pcsInfoCard({
   version, lastUpdated, source, codesCount, chaptersCount,
 }: { version: string; lastUpdated: string; source: string; codesCount: number; chaptersCount: number }) {
   return (
-    <div style={{
-      maxWidth: 880,
-      background: '#FFFFFF',
-      borderRadius: 16,
-      border: '1px solid #E5E7EB',
-      padding: '32px 32px 28px',
-      marginBottom: 24,
-    }}>
-      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 20, flexWrap: 'wrap' }}>
-        <div style={{ flex: 1, minWidth: 240 }}>
-          <div style={{ fontSize: 11, color: '#9CA3AF', letterSpacing: '0.06em', textTransform: 'uppercase', fontWeight: 600, marginBottom: 6 }}>
+    <div className="max-w-[880px] bg-white rounded-2xl border border-[#E5E7EB] pt-8 px-8 pb-7 mb-6">
+      <div className="flex items-start gap-3 mb-5 flex-wrap">
+        <div className="flex-1 min-w-[240px]">
+          <div className="text-[11px] text-[#9CA3AF] tracking-[0.06em] uppercase font-semibold mb-1.5">
             США · Procedures
           </div>
-          <h2 style={{ fontSize: 22, fontWeight: 700, margin: '0 0 6px', color: '#101010' }}>
+          <h2 className="text-[22px] font-bold mt-0 mb-1.5 text-[#101010]">
             ICD-10-PCS (FY2026)
           </h2>
-          <div style={{ fontSize: 14, color: '#6B7280', lineHeight: 1.55 }}>
+          <div className="text-sm text-[#6B7280] leading-[1.55]">
             Procedure Coding System — классификация хирургических и медицинских
             процедур в США (заменила МКБ-9-CM Volume 3). Применяется только в
             стационаре для отчётности перед CMS. Семизначные коды:
@@ -1172,21 +1044,18 @@ function Icd10caPanel() {
 
   if (error) {
     return (
-      <div style={{
-        padding: 24, borderRadius: 12, background: '#FEF2F2',
-        border: '1px solid #FECACA', color: '#991B1B', fontSize: 14,
-      }}>
+      <div className="p-6 rounded-xl bg-[#FEF2F2] border border-[#FECACA] text-[#991B1B] text-sm">
         Не удалось загрузить ICD-10-CA: {error}.
       </div>
     );
   }
   if (!bank) {
     return (
-      <div style={{ padding: '8px 0' }}>
-        <div className="lc-shimmer" style={{ height: 28, width: 240, borderRadius: 8, marginBottom: 14 }} />
-        <div className="lc-shimmer" style={{ height: 16, width: '60%', borderRadius: 6, marginBottom: 24 }} />
-        <div className="lc-shimmer" style={{ height: 48, width: '100%', borderRadius: 12, marginBottom: 12 }} />
-        <div className="lc-shimmer" style={{ height: 64, width: '100%', borderRadius: 12 }} />
+      <div className="py-2">
+        <div className="lc-shimmer h-7 w-[240px] rounded-lg mb-3.5" />
+        <div className="lc-shimmer h-4 w-[60%] rounded-md mb-6" />
+        <div className="lc-shimmer h-12 w-full rounded-xl mb-3" />
+        <div className="lc-shimmer h-16 w-full rounded-xl" />
       </div>
     );
   }
@@ -1216,23 +1085,16 @@ function Icd10caInfoCard({
   version, lastUpdated, source, codesCount, chaptersCount,
 }: { version: string; lastUpdated: string; source: string; codesCount: number; chaptersCount: number }) {
   return (
-    <div style={{
-      maxWidth: 880,
-      background: '#FFFFFF',
-      borderRadius: 16,
-      border: '1px solid #E5E7EB',
-      padding: '32px 32px 28px',
-      marginBottom: 24,
-    }}>
-      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 20, flexWrap: 'wrap' }}>
-        <div style={{ flex: 1, minWidth: 240 }}>
-          <div style={{ fontSize: 11, color: '#9CA3AF', letterSpacing: '0.06em', textTransform: 'uppercase', fontWeight: 600, marginBottom: 6 }}>
+    <div className="max-w-[880px] bg-white rounded-2xl border border-[#E5E7EB] pt-8 px-8 pb-7 mb-6">
+      <div className="flex items-start gap-3 mb-5 flex-wrap">
+        <div className="flex-1 min-w-[240px]">
+          <div className="text-[11px] text-[#9CA3AF] tracking-[0.06em] uppercase font-semibold mb-1.5">
             Канада · Diagnoses
           </div>
-          <h2 style={{ fontSize: 22, fontWeight: 700, margin: '0 0 6px', color: '#101010' }}>
+          <h2 className="text-[22px] font-bold mt-0 mb-1.5 text-[#101010]">
             ICD-10-CA ({version})
           </h2>
-          <div style={{ fontSize: 14, color: '#6B7280', lineHeight: 1.55 }}>
+          <div className="text-sm text-[#6B7280] leading-[1.55]">
             Canadian Adaptation ICD-10. Используется во всей Канаде в стационарной
             отчётности (DAD/NACRS). Параллельно работает классификация процедур
             CCI (Canadian Classification of Health Interventions). По сравнению с
@@ -1258,47 +1120,38 @@ function Icd10caInfoCard({
 
 function RoadmapPanel({ tab, info }: { tab: TabDef; info: StubInfo }) {
   return (
-    <div style={{
-      maxWidth: 880,
-      background: '#FFFFFF',
-      borderRadius: 16,
-      border: '1px solid #E5E7EB',
-      padding: '32px 32px 28px',
-    }}>
+    <div className="max-w-[880px] bg-white rounded-2xl border border-[#E5E7EB] pt-8 px-8 pb-7">
       {/* Заголовок */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 20, flexWrap: 'wrap' }}>
-        <div style={{ flex: 1, minWidth: 240 }}>
-          <div style={{ fontSize: 11, color: '#9CA3AF', letterSpacing: '0.06em', textTransform: 'uppercase', fontWeight: 600, marginBottom: 6 }}>
+      <div className="flex items-start gap-3 mb-5 flex-wrap">
+        <div className="flex-1 min-w-[240px]">
+          <div className="text-[11px] text-[#9CA3AF] tracking-[0.06em] uppercase font-semibold mb-1.5">
             {tab.region}
           </div>
-          <h2 style={{ fontSize: 22, fontWeight: 700, margin: '0 0 6px', color: '#101010' }}>
+          <h2 className="text-[22px] font-bold mt-0 mb-1.5 text-[#101010]">
             {tab.fullName}
           </h2>
-          <div style={{ fontSize: 14, color: '#6B7280' }}>
+          <div className="text-sm text-[#6B7280]">
             {info.description}
           </div>
         </div>
-        <span style={{
-          flexShrink: 0,
-          display: 'inline-flex', alignItems: 'center', gap: 6,
-          background: '#EFF6FF', color: '#1D4ED8',
-          fontSize: 11, fontWeight: 600, letterSpacing: '0.04em',
-          textTransform: 'uppercase',
-          padding: '6px 12px', borderRadius: 999,
-        }}>
+        <span className="shrink-0 inline-flex items-center gap-1.5 bg-[#EFF6FF] text-[#1D4ED8] text-[11px] font-semibold tracking-[0.04em] uppercase px-3 py-1.5 rounded-full">
           В разработке · {info.eta}
         </span>
       </div>
 
       {/* Таблица фактов */}
-      <div style={{ marginBottom: 24 }}>
+      <div className="mb-6">
         <FactsPanel items={[
           { label: 'Покрытие', value: info.coverage },
           {
             label: 'Источник',
             value: (
-              <a href={info.sourceUrl} target="_blank" rel="noopener noreferrer"
-                style={{ color: '#2563EB', textDecoration: 'none', borderBottom: '1px solid #BFDBFE' }}>
+              <a
+                href={info.sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#2563EB] no-underline border-b border-[#BFDBFE]"
+              >
                 {info.source}
               </a>
             ),
@@ -1309,40 +1162,30 @@ function RoadmapPanel({ tab, info }: { tab: TabDef; info: StubInfo }) {
 
       {/* Заметки */}
       {info.notes.length > 0 && (
-        <div style={{ marginBottom: 24 }}>
-          <div style={{
-            fontSize: 11, color: '#9CA3AF', letterSpacing: '0.06em',
-            textTransform: 'uppercase', fontWeight: 600, marginBottom: 12,
-          }}>
+        <div className="mb-6">
+          <div className="text-[11px] text-[#9CA3AF] tracking-[0.06em] uppercase font-semibold mb-3">
             Особенности системы
           </div>
-          <ul style={{ margin: 0, padding: '0 0 0 18px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <ul className="m-0 pl-[18px] flex flex-col gap-2">
             {info.notes.map((n, i) => (
-              <li key={i} style={{ fontSize: 14, color: '#374151', lineHeight: 1.55 }}>{n}</li>
+              <li key={i} className="text-sm text-[#374151] leading-[1.55]">{n}</li>
             ))}
           </ul>
         </div>
       )}
 
       {/* CTA — пока нет интеграции */}
-      <div style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        gap: 12, padding: '16px 20px',
-        background: '#F5F6F8', borderRadius: 12, flexWrap: 'wrap',
-      }}>
-        <div style={{ fontSize: 13, color: '#6B7280', maxWidth: 520 }}>
+      <div className="flex items-center justify-between gap-3 px-5 py-4 bg-[#F5F6F8] rounded-xl flex-wrap">
+        <div className="text-[13px] text-[#6B7280] max-w-[520px]">
           Полный поиск по {tab.label} появится в Bordik к {info.eta}. Пока пользуйтесь
           официальным источником — он в открытом доступе на сайте организации.
         </div>
-        <a href={info.sourceUrl} target="_blank" rel="noopener noreferrer"
-           style={{
-             flexShrink: 0,
-             display: 'inline-flex', alignItems: 'center', gap: 6,
-             background: '#2563EB', color: '#FFFFFF',
-             fontSize: 13, fontWeight: 600,
-             padding: '10px 16px', borderRadius: 8,
-             textDecoration: 'none', whiteSpace: 'nowrap',
-           }}>
+        <a
+          href={info.sourceUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="shrink-0 inline-flex items-center gap-1.5 bg-[#2563EB] text-white text-[13px] font-semibold px-4 py-2.5 rounded-lg no-underline whitespace-nowrap"
+        >
           Открыть источник
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
             <path d="M7 17L17 7" />
@@ -1358,27 +1201,13 @@ function RoadmapPanel({ tab, info }: { tab: TabDef; info: StubInfo }) {
  *  Серый фон, чёткие границы, row-дивайдеры между строками. */
 function FactsPanel({ items }: { items: Array<{ label: string; value: React.ReactNode }> }) {
   return (
-    <dl style={{
-      margin: 0,
-      background: '#F5F6F8',
-      borderRadius: 12,
-      border: 'none',
-      overflow: 'hidden',
-    }}>
+    <dl className="m-0 bg-[#F5F6F8] rounded-xl overflow-hidden">
       {items.map((item, i) => (
-        <div key={i} style={{
-          display: 'grid', gridTemplateColumns: '160px 1fr', gap: 16,
-          padding: '14px 18px',
-          borderBottom: 'none',
-        }}>
-          <dt style={{
-            margin: 0,
-            fontSize: 11, color: '#9CA3AF', letterSpacing: '0.06em',
-            textTransform: 'uppercase', fontWeight: 600, paddingTop: 2,
-          }}>
+        <div key={i} className="grid grid-cols-[160px_1fr] gap-4 px-[18px] py-3.5">
+          <dt className="m-0 text-[11px] text-[#9CA3AF] tracking-[0.06em] uppercase font-semibold pt-0.5">
             {item.label}
           </dt>
-          <dd style={{ margin: 0, fontSize: 14, color: '#374151', lineHeight: 1.55 }}>
+          <dd className="m-0 text-sm text-[#374151] leading-[1.55]">
             {item.value}
           </dd>
         </div>
