@@ -18,31 +18,14 @@ interface CourseHeaderProps {
 /* ═══ Info pill component ═══ */
 function InfoPill({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
-    <div style={{
-      flex: 1,
-      background: '#F5F6F8',
-      borderRadius: 12,
-      padding: '12px 16px',
-      display: 'flex', flexDirection: 'column', gap: 4,
-      minWidth: 0,
-    }}>
-      <div style={{
-        display: 'flex', alignItems: 'center', gap: 6,
-        color: '#6B7280',
-      }}>
+    <div className="flex-1 bg-[#F5F6F8] rounded-[12px] py-3 px-4 flex flex-col gap-1 min-w-0">
+      <div className="flex items-center gap-1.5 text-[#6B7280]">
         {icon}
-        <span style={{
-          fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-          color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.06em',
-        }}>
+        <span className="font-[var(--font-mono)] text-[10px] font-bold text-[#6B7280] uppercase tracking-[0.06em]">
           {label}
         </span>
       </div>
-      <span style={{
-        fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
-        color: '#1A1A1A', lineHeight: 1.35,
-        overflow: 'hidden', textOverflow: 'ellipsis',
-      }}>
+      <span className="font-[var(--font-body)] text-[13px] font-semibold text-[#1A1A1A] leading-[1.35] overflow-hidden text-ellipsis">
         {value}
       </span>
     </div>
@@ -74,70 +57,34 @@ export default function CourseHeader({ courseId }: CourseHeaderProps) {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, ease: [0.05, 0.7, 0.1, 1] }}
-      style={{ marginBottom: 20 }}
+      className="mb-5"
     >
       {/* Tags */}
-      <div style={{
-        display: 'flex', flexWrap: 'wrap', alignItems: 'center',
-        gap: 6, marginBottom: 12,
-      }}>
-        <span style={{
-          padding: '3px 10px',
-          fontSize: 11,
-          fontFamily: 'var(--font-body)',
-          fontWeight: 500,
-          borderRadius: 999,
-          backgroundColor: '#E2E4EA',
-          color: '#374151',
-        }}>
+      <div className="flex flex-wrap items-center gap-1.5 mb-3">
+        <span className="py-[3px] px-2.5 text-[11px] font-[var(--font-body)] font-medium rounded-full bg-[#E2E4EA] text-[#374151]">
           {difficultyLabel}
         </span>
         {course.tags.map((tag) => (
-          <span key={tag} style={{
-            padding: '3px 10px',
-            fontSize: 11,
-            fontFamily: 'var(--font-body)',
-            fontWeight: 400,
-            color: '#6B7280',
-            background: '#F0F1F5',
-            borderRadius: 999,
-          }}>
+          <span key={tag} className="py-[3px] px-2.5 text-[11px] font-[var(--font-body)] font-normal text-[#6B7280] bg-[#F0F1F5] rounded-full">
             {tag}
           </span>
         ))}
       </div>
 
       {/* Title */}
-      <h1 style={{
-        fontFamily: 'var(--font-display)',
-        fontSize: 'var(--text-2xl)',
-        fontWeight: 700,
-        color: 'var(--md-sys-color-on-surface)',
-        marginBottom: 8,
-        letterSpacing: '-0.02em',
-        lineHeight: 1.2,
-      }}>
+      <h1 className="font-[var(--font-display)] text-[length:var(--text-2xl)] font-bold text-[color:var(--md-sys-color-on-surface)] mb-2 tracking-[-0.02em] leading-[1.2]">
         {course.title}
       </h1>
 
       {/* Description */}
-      <p style={{
-        fontFamily: 'var(--font-body)',
-        fontSize: 'var(--text-sm)',
-        color: 'var(--md-sys-color-on-surface-variant)',
-        maxWidth: 'var(--content-max)',
-        lineHeight: 1.6,
-        marginBottom: 16,
-      }}>
+      <p className="font-[var(--font-body)] text-[length:var(--text-sm)] text-[color:var(--md-sys-color-on-surface-variant)] max-w-[var(--content-max)] leading-[1.6] mb-4">
         {course.description}
       </p>
 
       {/* Info pills: Уровень · Аудитория · Объём.
           On mobile (< 640 px) the .course-info-pills CSS class stacks them
           one-per-row instead of squeezing into 3 narrow columns. */}
-      <div className="course-info-pills" style={{
-        display: 'flex', gap: 10, flexWrap: 'wrap',
-      }}>
+      <div className="course-info-pills flex gap-2.5 flex-wrap">
         <InfoPill
           icon={
             <svg width={14} height={14} viewBox="0 0 24 24" fill="none"

@@ -52,7 +52,7 @@ export function ScoreGauge({ score, label }: ScoreGaugeProps) {
   const labelColor = clampedScore >= 80 ? '#1E8449' : clampedScore >= 50 ? '#B7950B' : '#C0392B';
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+    <div className="flex flex-col items-center">
       <svg width={200} height={160} viewBox="0 0 200 200">
         <defs>
           <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -75,14 +75,11 @@ export function ScoreGauge({ score, label }: ScoreGaugeProps) {
           Bordik Score
         </text>
       </svg>
-      <span style={{
-        marginTop: -8,
-        padding: '4px 14px',
-        borderRadius: 20,
-        background: labelBg,
-        fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 600,
-        color: labelColor,
-      }}>
+      <span
+        className="-mt-2 py-1 px-[14px] rounded-[20px] bg-[var(--label-bg)] font-[var(--font-body)] text-xs font-semibold text-[var(--label-color)]"
+        // eslint-disable-next-line react/forbid-dom-props -- dynamic palette tied to score band
+        style={{ ['--label-bg' as string]: labelBg, ['--label-color' as string]: labelColor }}
+      >
         {label}
       </span>
     </div>
@@ -102,17 +99,13 @@ export function MiniScore({ value, max, color }: MiniScoreProps) {
   const offset = circ - (pct / 100) * circ;
 
   return (
-    <div style={{ position: 'relative', width: 40, height: 40, flexShrink: 0 }}>
-      <svg width={40} height={40} viewBox="0 0 40 40" style={{ transform: 'rotate(-90deg)' }}>
+    <div className="relative w-10 h-10 shrink-0">
+      <svg width={40} height={40} viewBox="0 0 40 40" className="-rotate-90">
         <circle cx={20} cy={20} r={r} fill="none" stroke="#EAECF0" strokeWidth={stroke} />
         <circle cx={20} cy={20} r={r} fill="none" stroke={color} strokeWidth={stroke}
           strokeDasharray={circ} strokeDashoffset={offset} strokeLinecap="round" />
       </svg>
-      <span style={{
-        position: 'absolute', inset: 0,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontFamily: 'var(--font-display)', fontSize: 11, fontWeight: 700, color: '#1A1A1A',
-      }}>
+      <span className="absolute inset-0 flex items-center justify-center font-[var(--font-display)] text-[11px] font-bold text-[#1A1A1A]">
         {pct}
       </span>
     </div>
@@ -134,26 +127,21 @@ export function MetricCard({
   value, max, title, description, impact, impactColor, impactBg, circleColor,
 }: MetricCardProps) {
   return (
-    <div style={{
-      display: 'flex', alignItems: 'center', gap: 16,
-      padding: '16px 20px',
-      background: '#F5F6F8',
-      borderRadius: 14,
-    }}>
+    <div className="flex items-center gap-4 py-4 px-5 bg-[#F5F6F8] rounded-[14px]">
       <MiniScore value={value} max={max} color={circleColor} />
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <p style={{ fontFamily: 'var(--font-display)', fontSize: 14, fontWeight: 600, color: '#1A1A1A' }}>
+      <div className="flex-1 min-w-0">
+        <p className="font-[var(--font-display)] text-sm font-semibold text-[#1A1A1A]">
           {title}
         </p>
-        <p style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: '#888', marginTop: 2 }}>
+        <p className="font-[var(--font-body)] text-xs text-[#888] mt-0.5">
           {description}
         </p>
       </div>
-      <span style={{
-        padding: '4px 12px', borderRadius: 20, flexShrink: 0,
-        fontFamily: 'var(--font-body)', fontSize: 11, fontWeight: 600,
-        color: impactColor, background: impactBg,
-      }}>
+      <span
+        className="py-1 px-3 rounded-[20px] shrink-0 font-[var(--font-body)] text-[11px] font-semibold text-[var(--impact-color)] bg-[var(--impact-bg)]"
+        // eslint-disable-next-line react/forbid-dom-props -- dynamic palette per metric
+        style={{ ['--impact-color' as string]: impactColor, ['--impact-bg' as string]: impactBg }}
+      >
         {impact}
       </span>
     </div>

@@ -57,81 +57,55 @@ export function BulkOfflineDownload({
     <div
       role="dialog"
       onClick={() => stage !== 'running' && onClose()}
-      style={{
-        position: 'fixed', inset: 0, zIndex: 9999,
-        background: 'rgba(15,23,42,0.45)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        padding: 20,
-      }}
+      className="fixed inset-0 z-[9999] bg-[rgba(15,23,42,0.45)] flex items-center justify-center p-5"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        style={{
-          width: '100%', maxWidth: 420,
-          background: '#FFFFFF', borderRadius: 16,
-          padding: '24px 24px 20px',
-          boxShadow: '0 24px 48px rgba(15,23,42,0.24)',
-        }}
+        className="w-full max-w-[420px] bg-white rounded-[16px] pt-6 px-6 pb-5 shadow-[0_24px_48px_rgba(15,23,42,0.24)]"
       >
-        <h3 style={{
-          margin: '0 0 8px',
-          fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 700,
-          color: '#1A1A1A', letterSpacing: '-0.01em',
-        }}>
+        <h3 className="mt-0 mb-2 mx-0 font-[var(--font-display)] text-lg font-bold text-[#1A1A1A] tracking-[-0.01em]">
           Сохранить инструменты для офлайн
         </h3>
 
         {stage === 'confirm' && (
           <>
-            <p style={{
-              margin: '0 0 14px',
-              fontFamily: 'var(--font-body)', fontSize: 13, color: '#6B7280', lineHeight: 1.55,
-            }}>
+            <p className="mt-0 mb-[14px] mx-0 font-[var(--font-body)] text-[13px] text-[#6B7280] leading-[1.55]">
               {toolIds.length} инструментов будет скачано и доступно без интернета.
               Сейчас в офлайн-кэше браузер занимает ~{(estBytes / 1024 / 1024).toFixed(1)} МБ.
             </p>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
-              <button onClick={onClose} style={btnSecondary}>Отмена</button>
-              <button onClick={start} style={btnPrimary}>Начать загрузку</button>
+            <div className="flex justify-end gap-2">
+              <button onClick={onClose} className={btnSecondaryClass}>Отмена</button>
+              <button onClick={start} className={btnPrimaryClass}>Начать загрузку</button>
             </div>
           </>
         )}
 
         {stage === 'running' && (
           <>
-            <p style={{
-              margin: '0 0 12px',
-              fontFamily: 'var(--font-body)', fontSize: 13, color: '#1A1A1A',
-            }}>
+            <p className="mt-0 mb-3 mx-0 font-[var(--font-body)] text-[13px] text-[#1A1A1A]">
               Загружаем… {Math.round(progress * 100)}%
             </p>
-            <div style={{
-              height: 6, borderRadius: 999, background: '#F1F3F6', overflow: 'hidden',
-              marginBottom: 14,
-            }}>
-              <div style={{
-                height: '100%', width: `${progress * 100}%`,
-                background: '#3B82F6', borderRadius: 999,
-                transition: 'width 80ms linear',
-              }} />
+            <div className="h-1.5 rounded-full bg-[#F1F3F6] overflow-hidden mb-[14px]">
+              <div
+                className="h-full bg-[#3B82F6] rounded-full transition-[width] duration-[80ms] linear w-[var(--bulk-progress)]"
+                // eslint-disable-next-line react/forbid-dom-props -- dynamic progress %
+                style={{ ['--bulk-progress' as string]: `${progress * 100}%` }}
+              />
             </div>
-            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <button onClick={cancel} style={btnSecondary}>Остановить</button>
+            <div className="flex justify-end">
+              <button onClick={cancel} className={btnSecondaryClass}>Остановить</button>
             </div>
           </>
         )}
 
         {stage === 'done' && result && (
           <>
-            <p style={{
-              margin: '0 0 14px',
-              fontFamily: 'var(--font-body)', fontSize: 13, color: '#1A1A1A', lineHeight: 1.55,
-            }}>
+            <p className="mt-0 mb-[14px] mx-0 font-[var(--font-body)] text-[13px] text-[#1A1A1A] leading-[1.55]">
               Готово. Скачано: <strong>{result.ok}</strong>
-              {result.fail > 0 && <>, ошибок: <strong style={{ color: '#B91C1C' }}>{result.fail}</strong></>}.
+              {result.fail > 0 && <>, ошибок: <strong className="text-[#B91C1C]">{result.fail}</strong></>}.
             </p>
-            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <button onClick={onClose} style={btnPrimary}>Закрыть</button>
+            <div className="flex justify-end">
+              <button onClick={onClose} className={btnPrimaryClass}>Закрыть</button>
             </div>
           </>
         )}
@@ -140,15 +114,7 @@ export function BulkOfflineDownload({
   );
 }
 
-const btnPrimary: React.CSSProperties = {
-  padding: '9px 18px', borderRadius: 10,
-  background: '#3B82F6', color: '#FFFFFF',
-  border: 'none', cursor: 'pointer',
-  fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
-};
-const btnSecondary: React.CSSProperties = {
-  padding: '9px 16px', borderRadius: 10,
-  background: 'transparent', color: '#6B7280',
-  border: 'none', cursor: 'pointer',
-  fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
-};
+const btnPrimaryClass =
+  'py-[9px] px-[18px] rounded-[10px] bg-[#3B82F6] text-white border-none cursor-pointer font-[var(--font-body)] text-[13px] font-semibold';
+const btnSecondaryClass =
+  'py-[9px] px-4 rounded-[10px] bg-transparent text-[#6B7280] border-none cursor-pointer font-[var(--font-body)] text-[13px] font-semibold';

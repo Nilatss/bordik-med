@@ -335,15 +335,7 @@ export function CommandPalette() {
       aria-modal="true"
       aria-label="Глобальный поиск"
       onKeyDown={onKeyDown}
-      style={{
-        position: 'fixed', inset: 0, zIndex: 9999,
-        background: 'rgba(15, 17, 21, 0.45)',
-        backdropFilter: 'blur(4px)',
-        WebkitBackdropFilter: 'blur(4px)',
-        display: 'flex', alignItems: 'flex-start', justifyContent: 'center',
-        padding: '12vh 16px 16px',
-        animation: 'cmdk-fade 120ms ease-out',
-      }}
+      className="fixed inset-0 z-[9999] bg-[rgba(15,17,21,0.45)] backdrop-blur-[4px] [-webkit-backdrop-filter:blur(4px)] flex items-start justify-center pt-[12vh] px-4 pb-4 animate-[cmdk-fade_120ms_ease-out]"
       onClick={(e) => { if (e.target === e.currentTarget) close(); }}
     >
       <style jsx>{`
@@ -352,21 +344,8 @@ export function CommandPalette() {
           to   { opacity: 1; }
         }
       `}</style>
-      <div
-        style={{
-          width: '100%', maxWidth: 640,
-          background: '#FFFFFF',
-          borderRadius: 16,
-          boxShadow: '0 24px 60px rgba(15,17,21,0.18), 0 4px 12px rgba(15,17,21,0.06)',
-          overflow: 'hidden',
-          fontFamily: 'var(--font-body, system-ui)',
-          color: '#1A1A1A',
-        }}
-      >
-        <div style={{
-          display: 'flex', alignItems: 'center', gap: 12,
-          padding: '14px 18px', borderBottom: '1px solid #F0F1F5',
-        }}>
+      <div className="w-full max-w-[640px] bg-white rounded-[16px] shadow-[0_24px_60px_rgba(15,17,21,0.18),0_4px_12px_rgba(15,17,21,0.06)] overflow-hidden font-[var(--font-body,system-ui)] text-[#1A1A1A]">
+        <div className="flex items-center gap-3 py-[14px] px-[18px] border-b border-[#F0F1F5]">
           <svg width={18} height={18} viewBox="0 0 24 24" fill="none"
             stroke="#9CA3AF" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
             <circle cx="11" cy="11" r="7" />
@@ -378,19 +357,11 @@ export function CommandPalette() {
             onChange={(e) => setQuery(e.target.value)}
             placeholder='Калькуляторы, МКБ-10, разделы... ("ТЭЛА", "Wells", "I10", "GCS")'
             aria-label="Поисковый запрос"
-            style={{
-              flex: 1, border: 'none', outline: 'none', background: 'transparent',
-              fontSize: 16, fontFamily: 'inherit', color: '#1A1A1A',
-            }}
+            className="flex-1 border-none outline-none bg-transparent text-base font-[inherit] text-[#1A1A1A]"
             autoComplete="off"
             spellCheck={false}
           />
-          <kbd style={{
-            padding: '2px 8px', borderRadius: 6,
-            background: '#F5F6F8', border: '1px solid #E5E7EB',
-            fontFamily: 'var(--font-mono, ui-monospace)', fontSize: 11,
-            color: '#6B7280',
-          }}>
+          <kbd className="py-0.5 px-2 rounded-md bg-[#F5F6F8] border border-[#E5E7EB] font-[var(--font-mono,ui-monospace)] text-[11px] text-[#6B7280]">
             esc
           </kbd>
         </div>
@@ -398,17 +369,14 @@ export function CommandPalette() {
         <div
           role="listbox"
           aria-label={`Найдено: ${total}`}
-          style={{ maxHeight: '60vh', overflowY: 'auto', padding: '8px 0' }}
+          className="max-h-[60vh] overflow-y-auto py-2"
         >
           {!debouncedQ.trim() && (
             <Hint />
           )}
 
           {empty && (
-            <div style={{
-              padding: '32px 18px', textAlign: 'center',
-              color: '#6B7280', fontSize: 14,
-            }}>
+            <div className="py-8 px-[18px] text-center text-[#6B7280] text-sm">
               Ничего не нашли. Попробуйте код МКБ-10, аббревиатуру шкалы или диагноз.
             </div>
           )}
@@ -458,11 +426,7 @@ export function CommandPalette() {
           )}
         </div>
 
-        <div style={{
-          padding: '10px 18px', borderTop: '1px solid #F0F1F5',
-          display: 'flex', gap: 16, fontSize: 11, color: '#9CA3AF',
-          fontFamily: 'var(--font-mono, ui-monospace)', letterSpacing: '0.02em',
-        }}>
+        <div className="py-2.5 px-[18px] border-t border-[#F0F1F5] flex gap-4 text-[11px] text-[#9CA3AF] font-[var(--font-mono,ui-monospace)] tracking-[0.02em]">
           <span>↑↓ навигация</span>
           <span>↵ открыть</span>
           <span>esc закрыть</span>
@@ -474,12 +438,8 @@ export function CommandPalette() {
 
 function Group({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div style={{ padding: '4px 0' }}>
-      <div style={{
-        padding: '6px 18px',
-        fontFamily: 'var(--font-mono, ui-monospace)', fontSize: 10, fontWeight: 700,
-        color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
-      }}>
+    <div className="py-1">
+      <div className="py-1.5 px-[18px] font-[var(--font-mono,ui-monospace)] text-[10px] font-bold text-[#9CA3AF] uppercase tracking-[0.08em]">
         {title}
       </div>
       {children}
@@ -497,38 +457,20 @@ function Row({
       href={href}
       role="option"
       aria-selected={active}
-      style={{
-        display: 'flex', alignItems: 'center', gap: 12,
-        padding: '10px 18px',
-        background: active ? '#F5F6F8' : 'transparent',
-        textDecoration: 'none', color: 'inherit',
-        cursor: 'pointer',
-      }}
+      className={`flex items-center gap-3 py-2.5 px-[18px] no-underline text-inherit cursor-pointer ${active ? 'bg-[#F5F6F8]' : 'bg-transparent'}`}
     >
-      <span style={{ flex: 1, minWidth: 0 }}>
-        <div style={{
-          fontSize: 14, fontWeight: 500, color: '#1A1A1A',
-          whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
-        }}>
+      <span className="flex-1 min-w-0">
+        <div className="text-sm font-medium text-[#1A1A1A] whitespace-nowrap overflow-hidden text-ellipsis">
           {primary}
         </div>
         {secondary && (
-          <div style={{
-            fontSize: 12, color: '#6B7280', marginTop: 2,
-            whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
-          }}>
+          <div className="text-xs text-[#6B7280] mt-0.5 whitespace-nowrap overflow-hidden text-ellipsis">
             {secondary}
           </div>
         )}
       </span>
       {badge && (
-        <span style={{
-          flexShrink: 0,
-          padding: '2px 8px', borderRadius: 999,
-          background: '#F5F6F8', color: '#6B7280',
-          fontFamily: 'var(--font-mono, ui-monospace)', fontSize: 10, fontWeight: 600,
-          letterSpacing: '0.04em',
-        }}>
+        <span className="shrink-0 py-0.5 px-2 rounded-full bg-[#F5F6F8] text-[#6B7280] font-[var(--font-mono,ui-monospace)] text-[10px] font-semibold tracking-[0.04em]">
           {badge}
         </span>
       )}
@@ -546,43 +488,24 @@ function Hint() {
     { q: 'sepsis',       hint: '→ qSOFA, NEWS2' },
   ];
   return (
-    <div style={{ padding: '8px 18px 16px' }}>
-      <div style={{
-        fontFamily: 'var(--font-mono, ui-monospace)', fontSize: 10, fontWeight: 700,
-        color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
-        margin: '4px 0 10px',
-      }}>
+    <div className="pt-2 px-[18px] pb-4">
+      <div className="font-[var(--font-mono,ui-monospace)] text-[10px] font-bold text-[#9CA3AF] uppercase tracking-[0.08em] mt-1 mb-2.5 mx-0">
         Попробуйте
       </div>
-      <div style={{
-        display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8,
-      }}>
+      <div className="grid grid-cols-2 gap-2">
         {examples.map((e) => (
           <div
             key={e.q}
-            style={{
-              display: 'flex', alignItems: 'center', gap: 10,
-              padding: '8px 10px',
-              background: '#F5F6F8', borderRadius: 10,
-              fontSize: 12, color: '#4B5563',
-            }}
+            className="flex items-center gap-2.5 py-2 px-2.5 bg-[#F5F6F8] rounded-[10px] text-xs text-[#4B5563]"
           >
-            <span style={{
-              padding: '2px 8px', borderRadius: 6,
-              background: '#FFFFFF', border: '1px solid #E5E7EB',
-              fontFamily: 'var(--font-mono, ui-monospace)', fontSize: 11, fontWeight: 600,
-              color: '#1A1A1A',
-            }}>
+            <span className="py-0.5 px-2 rounded-md bg-white border border-[#E5E7EB] font-[var(--font-mono,ui-monospace)] text-[11px] font-semibold text-[#1A1A1A]">
               {e.q}
             </span>
-            <span style={{ color: '#6B7280' }}>{e.hint}</span>
+            <span className="text-[#6B7280]">{e.hint}</span>
           </div>
         ))}
       </div>
-      <p style={{
-        marginTop: 14, fontSize: 12, color: '#9CA3AF',
-        lineHeight: 1.5,
-      }}>
+      <p className="mt-[14px] text-xs text-[#9CA3AF] leading-[1.5]">
         Поиск понимает синонимы рус/латынь/англ, аббревиатуры и нечёткое
         написание. Запускается через <KbdInline>Cmd</KbdInline> +{' '}
         <KbdInline>K</KbdInline> или <KbdInline>/</KbdInline>.
@@ -593,12 +516,7 @@ function Hint() {
 
 function KbdInline({ children }: { children: React.ReactNode }) {
   return (
-    <kbd style={{
-      padding: '1px 6px', borderRadius: 4,
-      background: '#FFFFFF', border: '1px solid #E5E7EB',
-      fontFamily: 'var(--font-mono, ui-monospace)', fontSize: 10,
-      color: '#1A1A1A',
-    }}>
+    <kbd className="py-px px-1.5 rounded bg-white border border-[#E5E7EB] font-[var(--font-mono,ui-monospace)] text-[10px] text-[#1A1A1A]">
       {children}
     </kbd>
   );
