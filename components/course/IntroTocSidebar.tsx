@@ -21,19 +21,8 @@ export default function IntroTocSidebar({ tabs }: IntroTocSidebarProps) {
   const t = useT();
 
   return (
-    <aside className="toc-sidebar" style={{
-      position: 'sticky', top: 20,
-      background: '#F5F6F8',
-      borderRadius: 'var(--md-sys-shape-corner-extra-large)',
-      padding: 16,
-      display: 'flex', flexDirection: 'column', gap: 4,
-    }}>
-      <p style={{
-        fontFamily: 'var(--font-body)', fontSize: 11,
-        fontWeight: 600, color: '#888',
-        textTransform: 'uppercase', letterSpacing: '0.08em',
-        padding: '4px 12px 10px',
-      }}>
+    <aside className="toc-sidebar sticky top-5 bg-[#F5F6F8] rounded-[var(--md-sys-shape-corner-extra-large)] p-4 flex flex-col gap-1">
+      <p className="font-[var(--font-body)] text-[11px] font-semibold text-[#888] uppercase tracking-[0.08em] pt-1 px-3 pb-2.5">
         {t('course.toc.title')}
       </p>
       {tabs.map((tab, i) => {
@@ -44,28 +33,18 @@ export default function IntroTocSidebar({ tabs }: IntroTocSidebarProps) {
         return (
           <div
             key={tab.id}
-            style={{
-              display: 'flex', alignItems: 'center', gap: 10,
-              padding: '10px 12px',
-              background: isFirst ? '#FFFFFF' : 'transparent',
-              color: isFirst ? '#1A1A1A' : '#9CA3AF',
-              borderRadius: 10,
-              fontFamily: 'var(--font-body)', fontSize: 13,
-              fontWeight: isFirst ? 600 : 500,
-              cursor: 'default',
-              boxShadow: isFirst ? '0 1px 2px rgba(16,24,40,0.06), 0 1px 3px rgba(16,24,40,0.04)' : 'none',
-            }}
+            className={`flex items-center gap-2.5 py-2.5 px-3 rounded-[10px] font-[var(--font-body)] text-[13px] cursor-default ${
+              isFirst
+                ? 'bg-white text-[#1A1A1A] font-semibold shadow-[0_1px_2px_rgba(16,24,40,0.06),0_1px_3px_rgba(16,24,40,0.04)]'
+                : 'bg-transparent text-[#9CA3AF] font-medium'
+            }`}
           >
-            <span style={{
-              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-              width: 24, height: 24, borderRadius: '50%',
-              background: isFirst ? '#3B82F6' : '#E2E4EA',
-              color: isFirst ? '#FFF' : '#9CA3AF',
-              fontSize: 11.5, fontWeight: 700, flexShrink: 0,
-            }}>
+            <span className={`inline-flex items-center justify-center w-6 h-6 rounded-full text-[11.5px] font-bold shrink-0 ${
+              isFirst ? 'bg-[#3B82F6] text-white' : 'bg-[#E2E4EA] text-[#9CA3AF]'
+            }`}>
               {i + 1}
             </span>
-            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            <span className="overflow-hidden text-ellipsis whitespace-nowrap">
               {tab.short}
             </span>
           </div>

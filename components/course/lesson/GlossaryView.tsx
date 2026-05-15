@@ -18,38 +18,20 @@ export function GlossaryView({ body }: GlossaryViewProps) {
   return (
     <div>
       {intro && (
-        <p style={{
-          fontFamily: 'var(--font-body)', fontSize: 14, color: '#555',
-          lineHeight: 1.65, marginBottom: 18,
-        }}>
+        <p className="font-[var(--font-body)] text-sm text-[#555] leading-[1.65] mb-[18px]">
           {intro}
         </p>
       )}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
-        gap: 10,
-      }}>
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-2.5">
         {terms.map(({ term, def }, i) => (
           <div
             key={i}
-            style={{
-              background: '#F5F6F8',
-              borderRadius: 12,
-              padding: '14px 16px',
-              display: 'flex', flexDirection: 'column', gap: 4,
-            }}
+            className="bg-[#F5F6F8] rounded-[12px] py-[14px] px-4 flex flex-col gap-1"
           >
-            <p style={{
-              fontFamily: 'var(--font-display)', fontSize: 14, fontWeight: 700,
-              color: '#1A1A1A', letterSpacing: '-0.01em', lineHeight: 1.3,
-            }}>
+            <p className="font-[var(--font-display)] text-sm font-bold text-[#1A1A1A] tracking-[-0.01em] leading-[1.3]">
               {term}
             </p>
-            <p style={{
-              fontFamily: 'var(--font-body)', fontSize: 13, color: '#4B5563',
-              lineHeight: 1.55,
-            }}>
+            <p className="font-[var(--font-body)] text-[13px] text-[#4B5563] leading-[1.55]">
               {def}
             </p>
           </div>
