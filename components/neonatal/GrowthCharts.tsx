@@ -71,10 +71,7 @@ export default function GrowthCharts() {
 
   if (error) {
     return (
-      <div style={{
-        padding: 24, borderRadius: 12, background: '#FEF2F2',
-        border: '1px solid #FECACA', color: '#991B1B', fontSize: 14,
-      }}>
+      <div className="p-6 rounded-[12px] bg-[#FEF2F2] border border-[#FECACA] text-[#991B1B] text-sm">
         Не удалось загрузить графики роста: {error}.
       </div>
     );
@@ -82,10 +79,10 @@ export default function GrowthCharts() {
 
   if (!bank) {
     return (
-      <div style={{ padding: '8px 0' }}>
-        <div className="lc-shimmer" style={{ height: 28, width: 240, borderRadius: 8, marginBottom: 14 }} />
-        <div className="lc-shimmer" style={{ height: 64, width: '100%', maxWidth: 480, borderRadius: 12, marginBottom: 12 }} />
-        <div className="lc-shimmer" style={{ height: 320, width: '100%', borderRadius: 12 }} />
+      <div className="py-2">
+        <div className="lc-shimmer h-7 w-60 rounded-lg mb-[14px]" />
+        <div className="lc-shimmer h-16 w-full max-w-[480px] rounded-[12px] mb-3" />
+        <div className="lc-shimmer h-[320px] w-full rounded-[12px]" />
       </div>
     );
   }
@@ -94,7 +91,7 @@ export default function GrowthCharts() {
   if (!dataset) return null;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+    <div className="flex flex-col gap-[18px]">
       <DatasetSelector
         bank={bank}
         active={datasetKey}
@@ -149,7 +146,7 @@ function DatasetSelector({
 }) {
   const keys = Object.keys(bank.datasets);
   return (
-    <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+    <div className="flex gap-2 flex-wrap">
       {keys.map((k) => {
         const ds = bank.datasets[k];
         if (!ds) return null;
@@ -159,17 +156,9 @@ function DatasetSelector({
             key={k}
             type="button"
             onClick={() => onChange(k)}
-            style={{
-              padding: '8px 14px',
-              background: isActive ? '#2563EB' : '#F5F6F8',
-              color: isActive ? '#FFFFFF' : '#374151',
-              border: 'none',
-              borderRadius: 999,
-              cursor: 'pointer',
-              fontFamily: 'inherit',
-              fontSize: 13, fontWeight: 600,
-              transition: 'background 150ms',
-            }}
+            className={`py-2 px-3.5 border-none rounded-full cursor-pointer font-[inherit] text-[13px] font-semibold transition-colors duration-150 ${
+              isActive ? 'bg-[#2563EB] text-white' : 'bg-[#F5F6F8] text-[#374151]'
+            }`}
           >
             {ds.label_ru}
           </button>
@@ -193,13 +182,7 @@ function ControlsPanel({
   setValue: (s: string) => void;
 }) {
   return (
-    <div style={{
-      display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-      gap: 10,
-      padding: 18,
-      background: '#F5F6F8',
-      borderRadius: 14,
-    }}>
+    <div className="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-2.5 p-[18px] bg-[#F5F6F8] rounded-[14px]">
       <ControlField label="Параметр">
         <BordikSelect
           value={parameter}
@@ -252,19 +235,13 @@ function ControlField({
   label, hint, children,
 }: { label: string; hint?: string; children: React.ReactNode }) {
   return (
-    <label style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-      <span style={{
-        fontSize: 11, fontWeight: 600, color: '#6B7280',
-        letterSpacing: '0.04em', textTransform: 'uppercase',
-      }}>
+    <label className="flex flex-col gap-[5px]">
+      <span className="text-[11px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase">
         {label}
       </span>
       {children}
       {hint && (
-        <span style={{
-          fontSize: 11, fontWeight: 400, color: '#9CA3AF',
-          marginTop: 2,
-        }}>
+        <span className="text-[11px] font-normal text-[#9CA3AF] mt-0.5">
           {hint}
         </span>
       )}
@@ -288,31 +265,14 @@ function BordikNumberInput({
     value,
     onChange: (e) => onChange(e.target.value),
     inputMode: 'decimal',
-    style: {
-      width: '100%',
-      background: 'transparent',
-      border: 'none',
-      outline: 'none',
-      padding: 0,
-      fontFamily: 'inherit',
-      fontSize: 14,
-      fontWeight: 500,
-      color: '#111827',
-    },
+    className: 'w-full bg-transparent border-none outline-none p-0 font-[inherit] text-sm font-medium text-[#111827]',
   };
   if (min !== undefined) inputProps.min = min;
   if (max !== undefined) inputProps.max = max;
   if (step !== undefined) inputProps.step = step;
   if (placeholder !== undefined) inputProps.placeholder = placeholder;
   return (
-    <div className="bordik-search" style={{
-      padding: '10px 12px',
-      background: '#FFFFFF',
-      borderRadius: 10,
-      transition: 'background 140ms ease, box-shadow 140ms ease',
-      minHeight: 40,
-      display: 'flex', alignItems: 'center',
-    }}>
+    <div className="bordik-search py-2.5 px-3 bg-white rounded-[10px] transition-[background,box-shadow] duration-[140ms] min-h-10 flex items-center">
       <input {...inputProps} />
     </div>
   );
@@ -354,41 +314,19 @@ function BordikSelect({
   const current = options.find((o) => o.value === value);
 
   return (
-    <div ref={containerRef} style={{ position: 'relative' }}>
+    <div ref={containerRef} className="relative">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="listbox"
         aria-expanded={open}
-        style={{
-          width: '100%',
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          gap: 8,
-          padding: '10px 12px',
-          minHeight: 40,
-          background: '#FFFFFF',
-          border: 'none',
-          borderRadius: 10,
-          cursor: 'pointer',
-          fontFamily: 'inherit',
-          fontSize: 14, fontWeight: 500,
-          color: '#111827',
-          textAlign: 'left',
-          boxShadow: open
-            ? '0 0 0 1px #2563EB, 0 0 0 4px rgba(37, 99, 235, 0.14)'
-            : 'none',
-          transition: 'box-shadow 140ms ease',
-        }}
+        className={`w-full flex items-center justify-between gap-2 py-2.5 px-3 min-h-10 bg-white border-none rounded-[10px] cursor-pointer font-[inherit] text-sm font-medium text-[#111827] text-left transition-shadow duration-[140ms] ${open ? 'shadow-[0_0_0_1px_#2563EB,0_0_0_4px_rgba(37,99,235,0.14)]' : ''}`}
       >
         <span>{current?.label ?? '—'}</span>
         <svg
           width={14} height={14} viewBox="0 0 24 24" fill="none"
           stroke="#9CA3AF" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
-          style={{
-            transform: open ? 'rotate(180deg)' : 'rotate(0deg)',
-            transition: 'transform 150ms ease',
-            flexShrink: 0,
-          }}
+          className={`shrink-0 transition-transform duration-150 ${open ? 'rotate-180' : ''}`}
           aria-hidden
         >
           <polyline points="6 9 12 15 18 9" />
@@ -396,22 +334,7 @@ function BordikSelect({
       </button>
 
       {open && (
-        <ul role="listbox" style={{
-          position: 'absolute',
-          top: 'calc(100% + 4px)',
-          left: 0,
-          right: 0,
-          margin: 0,
-          padding: 4,
-          listStyle: 'none',
-          background: '#FFFFFF',
-          border: '1px solid #E5E7EB',
-          borderRadius: 10,
-          boxShadow: '0 8px 24px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(15, 23, 42, 0.06)',
-          zIndex: 20,
-          maxHeight: 280,
-          overflowY: 'auto',
-        }}>
+        <ul role="listbox" className="absolute top-[calc(100%+4px)] left-0 right-0 m-0 p-1 list-none bg-white border border-[#E5E7EB] rounded-[10px] shadow-[0_8px_24px_rgba(15,23,42,0.08),0_1px_3px_rgba(15,23,42,0.06)] z-20 max-h-[280px] overflow-y-auto">
           {options.map((opt) => {
             const isSelected = opt.value === value;
             return (
@@ -420,22 +343,11 @@ function BordikSelect({
                 role="option"
                 aria-selected={isSelected}
                 onClick={() => { onChange(opt.value); setOpen(false); }}
-                style={{
-                  padding: '8px 10px',
-                  borderRadius: 6,
-                  fontSize: 14, fontWeight: isSelected ? 600 : 500,
-                  color: isSelected ? '#1D4ED8' : '#374151',
-                  background: isSelected ? '#EFF6FF' : 'transparent',
-                  cursor: 'pointer',
-                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                  transition: 'background 100ms ease',
-                }}
-                onMouseEnter={(e) => {
-                  if (!isSelected) e.currentTarget.style.background = '#F5F6F8';
-                }}
-                onMouseLeave={(e) => {
-                  if (!isSelected) e.currentTarget.style.background = 'transparent';
-                }}
+                className={`py-2 px-2.5 rounded-md text-sm cursor-pointer flex items-center justify-between transition-colors duration-100 ${
+                  isSelected
+                    ? 'font-semibold text-[#1D4ED8] bg-[#EFF6FF]'
+                    : 'font-medium text-[#374151] bg-transparent hover:bg-[#F5F6F8]'
+                }`}
               >
                 <span>{opt.label}</span>
                 {isSelected && (
@@ -480,13 +392,7 @@ function ResultPanel({
 
   if (!result) {
     return (
-      <div style={{
-        padding: '20px 18px', background: '#FFFFFF',
-        border: '1px dashed #E5E7EB', borderRadius: 12,
-        color: '#9CA3AF', fontSize: 13,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        textAlign: 'center', minHeight: 200,
-      }}>
+      <div className="py-5 px-[18px] bg-white border border-dashed border-[#E5E7EB] rounded-[12px] text-[#9CA3AF] text-[13px] flex items-center justify-center text-center min-h-[200px]">
         Введите PMA и измеренное значение — рассчитаем перцентиль и Z-score.
       </div>
     );
@@ -514,13 +420,9 @@ function ResultPanel({
   const medianStr = `${result.M.toFixed(parameter === 'weight' ? 0 : 1)} ${PARAMETER_UNIT[parameter]}`;
 
   return (
-    <div style={{
-      display: 'flex', flexDirection: 'column', gap: 12,
-    }}>
+    <div className="flex flex-col gap-3">
       {/* 2 метрики в один ряд: основная (Перцентиль, primary) + контекстная (Медиана) */}
-      <div style={{
-        display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10,
-      }}>
+      <div className="grid grid-cols-2 gap-2.5">
         <ResultCard
           label="Перцентиль"
           value={`P${formatPercentile(result.pct)}`}
@@ -535,52 +437,60 @@ function ResultPanel({
       </div>
 
       {/* Развёрнутая клиническая интерпретация */}
-      <div style={{
-        padding: '14px 16px',
-        background: toneBg,
-        borderLeft: `4px solid ${toneAccent}`,
-        borderRadius: 10,
-      }}>
-        <div style={{
-          fontSize: 11, fontWeight: 700, color: toneText, opacity: 0.85,
-          letterSpacing: '0.04em', textTransform: 'uppercase', marginBottom: 6,
-        }}>
+      <div
+        className="py-[14px] px-4 bg-[var(--tone-bg)] border-l-4 border-[var(--tone-accent)] rounded-[10px]"
+        // eslint-disable-next-line react/forbid-dom-props -- dynamic tone palette
+        style={{
+          ['--tone-bg' as string]: toneBg,
+          ['--tone-accent' as string]: toneAccent,
+        }}
+      >
+        <div
+          className="text-[11px] font-bold opacity-85 tracking-[0.04em] uppercase mb-1.5 text-[var(--tone-text)]"
+          // eslint-disable-next-line react/forbid-dom-props -- dynamic tone text color
+          style={{ ['--tone-text' as string]: toneText }}
+        >
           Клиническая интерпретация
         </div>
-        <div style={{
-          fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 600,
-          color: toneText, letterSpacing: '-0.005em',
-          lineHeight: 1.4, marginBottom: 8,
-        }}>
+        <div
+          className="font-[var(--font-display)] text-[15px] font-semibold tracking-[-0.005em] leading-[1.4] mb-2 text-[var(--tone-text)]"
+          // eslint-disable-next-line react/forbid-dom-props -- dynamic tone text color
+          style={{ ['--tone-text' as string]: toneText }}
+        >
           {result.interp.label}
         </div>
-        <p style={{
-          margin: 0, fontSize: 13, color: toneText, opacity: 0.92,
-          lineHeight: 1.55,
-        }}>
+        <p
+          className="m-0 text-[13px] opacity-90 leading-[1.55] text-[var(--tone-text)]"
+          // eslint-disable-next-line react/forbid-dom-props -- dynamic tone text color
+          style={{ ['--tone-text' as string]: toneText }}
+        >
           {result.interp.detail}
         </p>
-        <div style={{
-          marginTop: 10, paddingTop: 10,
-          borderTop: `1px solid ${toneAccent}33`,
-        }}>
-          <div style={{
-            fontSize: 10, fontWeight: 700, color: toneText, opacity: 0.7,
-            letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 3,
-          }}>
+        <div
+          className="mt-2.5 pt-2.5 border-t border-[var(--tone-divider)]"
+          // eslint-disable-next-line react/forbid-dom-props -- dynamic tone divider with alpha
+          style={{ ['--tone-divider' as string]: `${toneAccent}33` }}
+        >
+          <div
+            className="text-[10px] font-bold opacity-70 tracking-[0.06em] uppercase mb-[3px] text-[var(--tone-text)]"
+            // eslint-disable-next-line react/forbid-dom-props -- dynamic tone text color
+            style={{ ['--tone-text' as string]: toneText }}
+          >
             Рекомендация
           </div>
-          <div style={{
-            fontSize: 12, color: toneText, opacity: 0.92, lineHeight: 1.55,
-          }}>
+          <div
+            className="text-xs opacity-90 leading-[1.55] text-[var(--tone-text)]"
+            // eslint-disable-next-line react/forbid-dom-props -- dynamic tone text color
+            style={{ ['--tone-text' as string]: toneText }}
+          >
             {result.interp.recommendation}
           </div>
         </div>
-        <div style={{
-          marginTop: 8,
-          fontSize: 10, color: toneText, opacity: 0.6,
-          fontStyle: 'italic', lineHeight: 1.45,
-        }}>
+        <div
+          className="mt-2 text-[10px] opacity-60 italic leading-[1.45] text-[var(--tone-text)]"
+          // eslint-disable-next-line react/forbid-dom-props -- dynamic tone text color
+          style={{ ['--tone-text' as string]: toneText }}
+        >
           Источник классификации: {result.interp.reference}
         </div>
       </div>
@@ -604,31 +514,15 @@ function ResultCard({
   accent?: boolean;
 }) {
   return (
-    <div style={{
-      padding: '12px 14px',
-      background: accent ? '#EFF6FF' : '#FFFFFF',
-      border: `1px solid ${accent ? '#BFDBFE' : '#E5E7EB'}`,
-      borderRadius: 12,
-    }}>
-      <div style={{
-        fontSize: 11, fontWeight: 600,
-        color: accent ? '#1D4ED8' : '#9CA3AF',
-        letterSpacing: '0.04em', textTransform: 'uppercase', marginBottom: 4,
-      }}>
+    <div className={`py-3 px-3.5 rounded-[12px] border ${accent ? 'bg-[#EFF6FF] border-[#BFDBFE]' : 'bg-white border-[#E5E7EB]'}`}>
+      <div className={`text-[11px] font-semibold tracking-[0.04em] uppercase mb-1 ${accent ? 'text-[#1D4ED8]' : 'text-[#9CA3AF]'}`}>
         {label}
       </div>
-      <div style={{
-        fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 700,
-        color: accent ? '#1E3A8A' : '#111827', letterSpacing: '-0.02em',
-        lineHeight: 1.15,
-      }}>
+      <div className={`font-[var(--font-display)] text-[22px] font-bold tracking-[-0.02em] leading-[1.15] ${accent ? 'text-[#1E3A8A]' : 'text-[#111827]'}`}>
         {value}
       </div>
       {sub && (
-        <div style={{
-          fontSize: 11, color: accent ? '#3B82F6' : '#6B7280',
-          marginTop: 4, fontFamily: 'var(--font-mono, ui-monospace)',
-        }}>
+        <div className={`text-[11px] mt-1 font-[var(--font-mono,ui-monospace)] ${accent ? 'text-[#3B82F6]' : 'text-[#6B7280]'}`}>
           {sub}
         </div>
       )}
@@ -711,44 +605,24 @@ function ChartView({
     : `${Math.round(t)} см`;
 
   return (
-    <div style={{
-      padding: '16px 18px 14px',
-      background: '#FFFFFF',
-      border: '1px solid #E5E7EB',
-      borderRadius: 12,
-      display: 'flex', flexDirection: 'column', gap: 12,
-      position: 'relative',
-    }}>
+    <div className="pt-4 px-[18px] pb-[14px] bg-white border border-[#E5E7EB] rounded-[12px] flex flex-col gap-3 relative">
       {/* Header — title + параметр + контекст */}
       <div>
-        <div style={{
-          display: 'flex', alignItems: 'baseline', justifyContent: 'space-between',
-          flexWrap: 'wrap', gap: 8, marginBottom: 4,
-        }}>
-          <h3 style={{
-            margin: 0,
-            fontFamily: 'var(--font-display)', fontSize: 16, fontWeight: 600,
-            color: '#111827', letterSpacing: '-0.01em',
-          }}>
+        <div className="flex items-baseline justify-between flex-wrap gap-2 mb-1">
+          <h3 className="m-0 font-[var(--font-display)] text-base font-semibold text-[#111827] tracking-[-0.01em]">
             {PARAMETER_LABEL_RU[parameter]} по гестационному возрасту
           </h3>
-          <div style={{
-            fontSize: 11, color: '#9CA3AF',
-            letterSpacing: '0.04em', textTransform: 'uppercase', fontWeight: 600,
-            fontFamily: 'var(--font-mono, ui-monospace)',
-          }}>
+          <div className="text-[11px] text-[#9CA3AF] tracking-[0.04em] uppercase font-semibold font-[var(--font-mono,ui-monospace)]">
             {SEX_LABEL_RU[sex]} · {dataset.label_ru}
           </div>
         </div>
-        <p style={{
-          margin: 0, fontSize: 12, color: '#6B7280', lineHeight: 1.5,
-        }}>
+        <p className="m-0 text-xs text-[#6B7280] leading-[1.5]">
           Кривые показывают распределение значений среди здоровых сверстников.
           Перцентиль = % детей с показателем ниже этой линии.
         </p>
       </div>
 
-      <svg viewBox={`0 0 ${width} ${height}`} style={{ width: '100%', height: 'auto' }}
+      <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-auto"
         role="img" aria-label={`График ${PARAMETER_LABEL_RU[parameter]}`}>
         <defs>
           <linearGradient id="growth-bg" x1="0" y1="0" x2="0" y2="1">
@@ -911,30 +785,32 @@ function ChartView({
       </svg>
 
       {/* Легенда — объясняет что значит каждая линия */}
-      <div style={{
-        display: 'flex', flexWrap: 'wrap', gap: '8px 18px',
-        padding: '10px 12px',
-        background: '#F9FAFB',
-        borderRadius: 8,
-        fontSize: 11.5, color: '#4B5563', lineHeight: 1.5,
-      }}>
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-          <span style={{ display: 'inline-block', width: 22, height: 2.5, background: PERCENTILE_COLORS[50], borderRadius: 1 }} />
-          <strong style={{ color: '#111827', fontWeight: 600 }}>P50</strong>
+      <div className="flex flex-wrap gap-x-[18px] gap-y-2 py-2.5 px-3 bg-[#F9FAFB] rounded-lg text-[11.5px] text-[#4B5563] leading-[1.5]">
+        <span className="inline-flex items-center gap-1.5">
+          <span
+            className="inline-block w-[22px] h-[2.5px] rounded-[1px] bg-[var(--legend-color)]"
+            // eslint-disable-next-line react/forbid-dom-props -- legend swatch palette
+            style={{ ['--legend-color' as string]: PERCENTILE_COLORS[50] }}
+          />
+          <strong className="text-[#111827] font-semibold">P50</strong>
           <span>— медиана, типичное значение</span>
         </span>
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-          <span style={{ display: 'inline-block', width: 22, height: 2, background: PERCENTILE_COLORS[10], borderRadius: 1, opacity: 0.7 }} />
-          <strong style={{ color: '#111827', fontWeight: 600 }}>P10–P90</strong>
+        <span className="inline-flex items-center gap-1.5">
+          <span
+            className="inline-block w-[22px] h-0.5 rounded-[1px] opacity-70 bg-[var(--legend-color)]"
+            // eslint-disable-next-line react/forbid-dom-props -- legend swatch palette
+            style={{ ['--legend-color' as string]: PERCENTILE_COLORS[10] }}
+          />
+          <strong className="text-[#111827] font-semibold">P10–P90</strong>
           <span>— широкая норма (~80% сверстников)</span>
         </span>
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-          <span style={{
-            display: 'inline-block', width: 22, height: 0,
-            borderTop: `2px dashed ${PERCENTILE_COLORS[3]}`,
-            opacity: 0.7,
-          }} />
-          <strong style={{ color: '#111827', fontWeight: 600 }}>P3 / P97</strong>
+        <span className="inline-flex items-center gap-1.5">
+          <span
+            className="inline-block w-[22px] h-0 opacity-70 border-t-2 border-dashed border-[var(--legend-color)]"
+            // eslint-disable-next-line react/forbid-dom-props -- legend swatch palette
+            style={{ ['--legend-color' as string]: PERCENTILE_COLORS[3] }}
+          />
+          <strong className="text-[#111827] font-semibold">P3 / P97</strong>
           <span>— границы внимания (≤3% или ≥97% сверстников)</span>
         </span>
       </div>
@@ -946,35 +822,31 @@ function ChartView({
         const tooltipLeftPct = ((margin.left + xScale(hoverAge)) / width) * 100;
         const isRightHalf = tooltipLeftPct > 60;
         return (
-          <div className="neo-chart-tooltip" style={{
-            left: `${tooltipLeftPct}%`,
-            top: `${(margin.top / height) * 100 + 2}%`,
-            transform: isRightHalf ? 'translateX(calc(-100% - 12px))' : 'translateX(12px)',
-          }}>
-            <div style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: 13, fontWeight: 600, color: '#111827',
-              marginBottom: 8, letterSpacing: '-0.005em',
-            }}>
+          <div
+            className={`neo-chart-tooltip ${isRightHalf ? '-translate-x-[calc(100%+12px)]' : 'translate-x-3'}`}
+            // eslint-disable-next-line react/forbid-dom-props -- dynamic hover tooltip position
+            style={{
+              left: `${tooltipLeftPct}%`,
+              top: `${(margin.top / height) * 100 + 2}%`,
+            }}
+          >
+            <div className="font-[var(--font-display)] text-[13px] font-semibold text-[#111827] mb-2 tracking-[-0.005em]">
               {hoverAge.toFixed(1)} нед {dataset.ageType === 'postmenstrual' ? 'PMA' : ''}
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+            <div className="flex flex-col gap-1">
               {curves.map((c) => {
                 const v = valueFromZ(PERCENTILE_TO_Z[c.percentile], lms);
                 return (
-                  <div key={c.percentile} style={{
-                    display: 'flex', alignItems: 'center', gap: 8,
-                    fontSize: 12,
-                  }}>
-                    <span style={{
-                      width: 8, height: 8, borderRadius: '50%',
-                      background: PERCENTILE_COLORS[c.percentile],
-                      flexShrink: 0,
-                    }} />
-                    <span style={{ color: '#6B7280', minWidth: 32, fontFamily: 'var(--font-mono, ui-monospace)', fontSize: 11 }}>
+                  <div key={c.percentile} className="flex items-center gap-2 text-xs">
+                    <span
+                      className="w-2 h-2 rounded-full shrink-0 bg-[var(--curve-color)]"
+                      // eslint-disable-next-line react/forbid-dom-props -- dynamic curve color
+                      style={{ ['--curve-color' as string]: PERCENTILE_COLORS[c.percentile] }}
+                    />
+                    <span className="text-[#6B7280] min-w-[32px] font-[var(--font-mono,ui-monospace)] text-[11px]">
                       P{c.percentile}
                     </span>
-                    <span style={{ color: '#111827', fontWeight: 600, marginLeft: 'auto' }}>
+                    <span className="text-[#111827] font-semibold ml-auto">
                       {parameter === 'weight' && v >= 1000 ? `${(v / 1000).toFixed(2)} кг` : `${v.toFixed(parameter === 'weight' ? 0 : 1)} ${PARAMETER_UNIT[parameter]}`}
                     </span>
                   </div>
