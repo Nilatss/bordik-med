@@ -172,15 +172,7 @@ export default function Icd10Lookup({ chapters, codes, hideHeading = false }: Pr
   return (
     <main
       id="main-content"
-      style={{
-        // width: 100% без max-width — точно так же, как у /tools.
-        // Внешний app-main-inner уже даёт правильные отступы,
-        // дополнительный max ограничивал контент и оставлял пустые
-        // полосы по краям на широких экранах.
-        width: '100%',
-        fontFamily: 'var(--font-body, system-ui)',
-        color: 'var(--md-sys-color-on-surface, #1A1A1A)',
-      }}
+      className="w-full font-[var(--font-body,system-ui)] text-[color:var(--md-sys-color-on-surface,#1A1A1A)]"
     >
       {/* Standard staggered fade-in: header → search → pills → list.
           Тот же паттерн что и в /tools (см. ToolsPage.tsx). */}
@@ -189,17 +181,12 @@ export default function Icd10Lookup({ chapters, codes, hideHeading = false }: Pr
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1] }}
-          style={{ marginBottom: 20 }}
+          className="mb-5"
         >
-          <h2 style={{
-            fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 700,
-            color: '#1A1A1A', marginBottom: 6, letterSpacing: '-0.02em',
-          }}>
+          <h2 className="font-[var(--font-display)] text-[28px] font-bold text-[#1A1A1A] mb-1.5 tracking-[-0.02em]">
             МКБ-10
           </h2>
-          <p style={{
-            fontFamily: 'var(--font-body)', fontSize: 14, color: '#6B7280', lineHeight: 1.5,
-          }}>
+          <p className="font-[var(--font-body)] text-sm text-[#6B7280] leading-[1.5]">
             Справочник кодов: поиск по диагнозу или коду. Все 22 главы МКБ-10
             в редакции ВОЗ (русский перевод Минздрава).
           </p>
@@ -211,15 +198,9 @@ export default function Icd10Lookup({ chapters, codes, hideHeading = false }: Pr
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1], delay: 0.06 }}
-        style={{ marginBottom: 14 }}
+        className="mb-[14px]"
       >
-        <div className="bordik-search" style={{
-          display: 'flex', alignItems: 'center', gap: 10,
-          padding: '10px 16px',
-          background: '#F5F6F8',
-          borderRadius: 12,
-          maxWidth: 480,
-        }}>
+        <div className="bordik-search flex items-center gap-2.5 py-2.5 px-4 bg-[#F5F6F8] rounded-[12px] max-w-[480px]">
           <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
             stroke="#9CA3AF" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
             <circle cx="11" cy="11" r="8" />
@@ -232,22 +213,12 @@ export default function Icd10Lookup({ chapters, codes, hideHeading = false }: Pr
             placeholder='Например: "I10", "гипертензия", "пневмония"…'
             aria-label="Поиск кода или диагноза"
             inputMode="search"
-            style={{
-              flex: 1,
-              border: 'none', outline: 'none',
-              background: 'transparent',
-              fontFamily: 'var(--font-body)', fontSize: 14,
-              color: '#1A1A1A',
-            }}
+            className="flex-1 border-none outline-none bg-transparent font-[var(--font-body)] text-sm text-[#1A1A1A]"
           />
           {q && (
             <button
               onClick={() => setQ('')}
-              style={{
-                background: 'transparent', border: 'none', padding: 0,
-                cursor: 'pointer', color: '#9CA3AF',
-                display: 'flex',
-              }}
+              className="bg-transparent border-none p-0 cursor-pointer text-[#9CA3AF] flex"
               aria-label="Очистить поиск"
             >
               <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
@@ -266,10 +237,7 @@ export default function Icd10Lookup({ chapters, codes, hideHeading = false }: Pr
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1], delay: 0.12 }}
-        style={{
-          display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center',
-          marginBottom: 20,
-        }}
+        className="flex gap-2 flex-wrap items-center mb-5"
       >
         <ChapterPill
           label="Все главы"
@@ -300,7 +268,7 @@ export default function Icd10Lookup({ chapters, codes, hideHeading = false }: Pr
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1], delay: 0.18 }}
-          style={{ display: 'flex', flexDirection: 'column', gap: 8 }}
+          className="flex flex-col gap-2"
         >
           {chapters.map((ch) => {
             const list = codesByChapter.get(ch.id) ?? [];
@@ -331,11 +299,7 @@ export default function Icd10Lookup({ chapters, codes, hideHeading = false }: Pr
           })}
         </motion.div>
       ) : (
-        <div style={{
-          opacity: isStale ? 0.5 : 1,
-          transition: 'opacity 120ms',
-          pointerEvents: isStale ? 'none' : 'auto',
-        }}>
+        <div className={`transition-opacity duration-[120ms] ${isStale ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>
           <FlatList
             filtered={filtered}
             activeChapter={activeChapter}

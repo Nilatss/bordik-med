@@ -44,6 +44,9 @@ export function FavouriteButton({ isFavourite, onToggle }: {
     }),
     [],
   );
+  const stateClass = isFavourite
+    ? 'bg-[#FEF3C7] hover:bg-[#FDE68A] text-[#92400E] border-[#FDE68A]'
+    : 'bg-[#F0F1F5] hover:bg-[#E2E4EA] text-[#6B7280] border-transparent';
   return (
     <motion.button
       type="button"
@@ -52,29 +55,10 @@ export function FavouriteButton({ isFavourite, onToggle }: {
       animate={{ scale: 1 }}
       whileTap={{ scale: 0.94 }}
       transition={{ type: 'spring', stiffness: 480, damping: 22 }}
-      style={{
-        position: 'relative',
-        display: 'inline-flex', alignItems: 'center', gap: 6,
-        padding: '5px 10px 5px 8px', borderRadius: 999,
-        background: isFavourite ? '#FEF3C7' : '#F0F1F5',
-        color: isFavourite ? '#92400E' : '#6B7280',
-        border: isFavourite ? '1px solid #FDE68A' : '1px solid transparent',
-        cursor: 'pointer',
-        fontFamily: 'var(--font-body)', fontSize: 11, fontWeight: 600,
-        transition: 'background 160ms, color 160ms, border-color 160ms',
-        overflow: 'visible',
-      }}
-      onMouseEnter={(e) => {
-        if (!isFavourite) e.currentTarget.style.background = '#E2E4EA';
-        else e.currentTarget.style.background = '#FDE68A';
-      }}
-      onMouseLeave={(e) => {
-        if (!isFavourite) e.currentTarget.style.background = '#F0F1F5';
-        else e.currentTarget.style.background = '#FEF3C7';
-      }}
+      className={`relative inline-flex items-center gap-1.5 py-[5px] pl-2 pr-2.5 rounded-full border cursor-pointer font-[var(--font-body)] text-[11px] font-semibold transition-[background,color,border-color] duration-[160ms] overflow-visible ${stateClass}`}
     >
       <motion.span
-        style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 11, height: 11 }}
+        className="relative inline-flex items-center justify-center w-[11px] h-[11px]"
         // Star itself: pop on add, gentle shrink-to-baseline on remove
         animate={isFavourite
           ? { scale: [0.6, 1.4, 1], rotate: [-90, 12, 0] }
@@ -97,13 +81,7 @@ export function FavouriteButton({ isFavourite, onToggle }: {
               initial={{ x: 0, y: 0, opacity: 1, scale: 0.6 }}
               animate={{ x: s.x, y: s.y, opacity: 0, scale: 0.2 }}
               transition={{ duration: 0.6, ease: [0.2, 0.8, 0.2, 1], delay: i * 0.012 }}
-              style={{
-                position: 'absolute', left: '50%', top: '50%',
-                width: 4, height: 4, marginLeft: -2, marginTop: -2,
-                borderRadius: '50%',
-                background: i % 2 === 0 ? '#F59E0B' : '#FBBF24',
-                pointerEvents: 'none',
-              }}
+              className={`absolute left-1/2 top-1/2 w-1 h-1 -ml-0.5 -mt-0.5 rounded-full pointer-events-none ${i % 2 === 0 ? 'bg-[#F59E0B]' : 'bg-[#FBBF24]'}`}
             />
           ))}
         </AnimatePresence>
@@ -123,45 +101,25 @@ export function Header({ tool, kind }: {
 
   return (
     <div>
-      <div style={{
-        display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 6, marginBottom: 12,
-      }}>
+      <div className="flex flex-wrap items-center gap-1.5 mb-3">
         {kind && (
-          <span style={{
-            padding: '3px 10px', fontSize: 11,
-            fontFamily: 'var(--font-body)', fontWeight: 500,
-            borderRadius: 999,
-            backgroundColor: '#E2E4EA', color: '#374151',
-          }}>
+          <span className="py-[3px] px-2.5 text-[11px] font-[var(--font-body)] font-medium rounded-full bg-[#E2E4EA] text-[#374151]">
             {kind}
           </span>
         )}
-        <span style={{
-          padding: '3px 10px', fontSize: 11,
-          fontFamily: 'var(--font-body)', fontWeight: 400,
-          color: '#6B7280', background: '#F0F1F5', borderRadius: 999,
-        }}>
+        <span className="py-[3px] px-2.5 text-[11px] font-[var(--font-body)] font-normal text-[#6B7280] bg-[#F0F1F5] rounded-full">
           {tool.subcategory}
         </span>
         {/* Country tags — shown as sibling pills so the user sees at a
             glance where the tool is used. Same pill style as subcategory. */}
         {toolCountries.slice(0, 3).map((c) => (
-          <span key={c.name} title={c.name} style={{
-            display: 'inline-flex', alignItems: 'center', gap: 5,
-            padding: '3px 10px', fontSize: 11,
-            fontFamily: 'var(--font-body)', fontWeight: 400,
-            color: '#6B7280', background: '#F0F1F5', borderRadius: 999,
-          }}>
+          <span key={c.name} title={c.name} className="inline-flex items-center gap-[5px] py-[3px] px-2.5 text-[11px] font-[var(--font-body)] font-normal text-[#6B7280] bg-[#F0F1F5] rounded-full">
             <EmojiOrFlag emoji={c.flag} size={12} />
             {c.name}
           </span>
         ))}
         {toolCountries.length > 3 && (
-          <span style={{
-            padding: '3px 8px', fontSize: 11,
-            fontFamily: 'var(--font-mono)', fontWeight: 600,
-            color: '#6B7280', background: '#F0F1F5', borderRadius: 999,
-          }}>
+          <span className="py-[3px] px-2 text-[11px] font-[var(--font-mono)] font-semibold text-[#6B7280] bg-[#F0F1F5] rounded-full">
             +{toolCountries.length - 3}
           </span>
         )}
@@ -175,25 +133,11 @@ export function Header({ tool, kind }: {
           onToggle={() => toggleFav(tool.id)}
         />
       </div>
-      <h1 style={{
-        fontFamily: 'var(--font-display)',
-        fontSize: 'var(--text-2xl)',
-        fontWeight: 700,
-        color: 'var(--md-sys-color-on-surface)',
-        marginBottom: 8,
-        letterSpacing: '-0.02em',
-        lineHeight: 1.2,
-      }}>
+      <h1 className="font-[var(--font-display)] text-[length:var(--text-2xl)] font-bold text-[color:var(--md-sys-color-on-surface)] mb-2 tracking-[-0.02em] leading-[1.2]">
         {tool.title}
       </h1>
       {tool.description && (
-        <p style={{
-          fontFamily: 'var(--font-body)',
-          fontSize: 'var(--text-sm)',
-          color: 'var(--md-sys-color-on-surface-variant)',
-          maxWidth: 'var(--content-max)',
-          lineHeight: 1.6,
-        }}>
+        <p className="font-[var(--font-body)] text-[length:var(--text-sm)] text-[color:var(--md-sys-color-on-surface-variant)] max-w-[var(--content-max)] leading-[1.6]">
           {tool.description}
         </p>
       )}
@@ -203,27 +147,14 @@ export function Header({ tool, kind }: {
 
 export function InfoPill({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
-    <div style={{
-      flex: 1, minWidth: 160,
-      background: '#F5F6F8',
-      borderRadius: 12,
-      padding: '12px 16px',
-      display: 'flex', flexDirection: 'column', gap: 4,
-    }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#6B7280' }}>
+    <div className="flex-1 min-w-[160px] bg-[#F5F6F8] rounded-[12px] py-3 px-4 flex flex-col gap-1">
+      <div className="flex items-center gap-1.5 text-[#6B7280]">
         {icon}
-        <span style={{
-          fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-          color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.06em',
-        }}>
+        <span className="font-[var(--font-mono)] text-[10px] font-bold text-[#6B7280] uppercase tracking-[0.06em]">
           {label}
         </span>
       </div>
-      <span style={{
-        fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
-        color: '#1A1A1A', lineHeight: 1.35,
-        overflow: 'hidden', textOverflow: 'ellipsis',
-      }}>
+      <span className="font-[var(--font-body)] text-[13px] font-semibold text-[#1A1A1A] leading-[1.35] overflow-hidden text-ellipsis">
         {value}
       </span>
     </div>
