@@ -61,12 +61,12 @@ const ToolDeepLinkHandler = dynamic(
 // ────────────────────────────────────────────────────────────────────
 function ViewLoading() {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 14, paddingTop: 4 }}>
-      <div className="lc-shimmer" style={{ height: 36, width: 240, borderRadius: 10 }} />
-      <div className="lc-shimmer" style={{ height: 18, width: '60%', borderRadius: 6 }} />
-      <div className="lc-shimmer" style={{ height: 120, width: '100%', borderRadius: 14, marginTop: 10 }} />
-      <div className="lc-shimmer" style={{ height: 120, width: '100%', borderRadius: 14 }} />
-      <div className="lc-shimmer" style={{ height: 120, width: '100%', borderRadius: 14 }} />
+    <div className="flex flex-col gap-[14px] pt-1">
+      <div className="lc-shimmer h-9 w-60 rounded-[10px]" />
+      <div className="lc-shimmer h-[18px] w-3/5 rounded-md" />
+      <div className="lc-shimmer h-[120px] w-full rounded-[14px] mt-2.5" />
+      <div className="lc-shimmer h-[120px] w-full rounded-[14px]" />
+      <div className="lc-shimmer h-[120px] w-full rounded-[14px]" />
     </div>
   );
 }
@@ -84,29 +84,9 @@ function ComingSoonStub({
   title, description, eta = 'скоро',
 }: { title: string; description: string; eta?: string }) {
   return (
-    <div style={{
-      minHeight: '50vh',
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      padding: '40px 16px',
-    }}>
-      <div style={{
-        maxWidth: 480, width: '100%',
-        background: '#FFFFFF',
-        border: '1px solid #F0F1F5',
-        borderRadius: 18,
-        padding: '28px 28px 30px',
-        textAlign: 'center',
-      }}>
-        <div style={{
-          display: 'inline-flex', alignItems: 'center', gap: 6,
-          padding: '4px 12px',
-          borderRadius: 999,
-          background: '#F5F6F8',
-          color: '#4B5563',
-          fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 600,
-          letterSpacing: '0.04em',
-          marginBottom: 14,
-        }}>
+    <div className="min-h-[50vh] flex items-center justify-center py-10 px-4">
+      <div className="max-w-[480px] w-full bg-white border border-[#F0F1F5] rounded-[18px] pt-7 px-7 pb-[30px] text-center">
+        <div className="inline-flex items-center gap-1.5 py-1 px-3 rounded-full bg-[#F5F6F8] text-[#4B5563] font-[var(--font-mono)] text-[11px] font-semibold tracking-[0.04em] mb-[14px]">
           <svg width={11} height={11} viewBox="0 0 24 24" fill="none"
             stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">
             <circle cx="12" cy="12" r="10" />
@@ -114,17 +94,10 @@ function ComingSoonStub({
           </svg>
           В разработке · {eta}
         </div>
-        <h2 style={{
-          fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 700,
-          color: '#1A1A1A', letterSpacing: '-0.02em',
-          marginBottom: 8,
-        }}>
+        <h2 className="font-[var(--font-display)] text-[22px] font-bold text-[#1A1A1A] tracking-[-0.02em] mb-2">
           {title}
         </h2>
-        <p style={{
-          fontFamily: 'var(--font-body)', fontSize: 14, color: '#6B7280',
-          lineHeight: 1.6,
-        }}>
+        <p className="font-[var(--font-body)] text-sm text-[#6B7280] leading-[1.6]">
           {description}
         </p>
       </div>
@@ -167,37 +140,12 @@ const ModuleGrid = dynamic(() => import('@/components/home/ModuleGrid'), { ssr: 
 const CourseGrid = dynamic(() => import('@/components/home/CourseGrid'), { ssr: false, loading: ViewLoading });
 import { ArrowLeft, ArrowRight } from '@/components/icons';
 
-const SECTION_BG: Record<SectionId, string> = {
-  fundamentals: '#F5F6F8',
-  biomedical: '#F5F6F8',
-  clinical: '#F5F6F8',
-  allied: '#F5F6F8',
-  skills: '#F5F6F8',
-  hss: '#F5F6F8',
-  threads: '#F5F6F8',
-  frontier: '#F5F6F8',
-  business: '#F5F6F8',
-  regulatory: '#F5F6F8',
-  career: '#F5F6F8',
-  tech: '#F5F6F8',
-};
-
 /* Back button reusable */
 function BackButton({ onClick, label }: { onClick: () => void; label: string }) {
   return (
     <button
       onClick={onClick}
-      style={{
-        display: 'inline-flex', alignItems: 'center', gap: 'var(--space-2)',
-        fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', fontWeight: 500,
-        color: 'var(--md-sys-color-on-surface-variant)', background: 'transparent',
-        border: 'none', cursor: 'pointer', marginBottom: 16,
-        alignSelf: 'flex-start', padding: 'var(--space-1) var(--space-2)',
-        borderRadius: 'var(--md-sys-shape-corner-small)',
-        transition: 'background 200ms cubic-bezier(0.2,0,0,1)',
-      }}
-      onMouseEnter={(e) => { e.currentTarget.style.background = '#E8E9ED'; }}
-      onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+      className="inline-flex items-center gap-[var(--space-2)] font-[var(--font-body)] text-[length:var(--text-xs)] font-medium text-[color:var(--md-sys-color-on-surface-variant)] bg-transparent hover:bg-[#E8E9ED] border-none cursor-pointer mb-4 self-start py-[var(--space-1)] px-[var(--space-2)] rounded-[var(--md-sys-shape-corner-small)] transition-colors duration-200 ease-[cubic-bezier(0.2,0,0,1)]"
     >
       <ArrowLeft size={16} />
       {label}
@@ -298,46 +246,17 @@ function SectionCards({ onSelect }: { onSelect: (id: SectionId) => void }) {
             aria-label={isUnlocked
               ? `Открыть раздел: ${sec.title}`
               : `Раздел «${sec.title}» в разработке, откроется ${eta}`}
-            style={{
-              background: SECTION_BG[sec.id],
-              borderRadius: 'var(--md-sys-shape-corner-extra-large)',
-              border: 'none',
-              padding: 'var(--space-5)', textAlign: 'left',
-              cursor: isUnlocked ? 'pointer' : 'default',
-              // Заблокированные карточки больше не выглядят мёртвыми:
-              // оставляем читаемый opacity + soft визуальный сигнал,
-              // что это roadmap-карточка, а не битая ссылка.
-              opacity: isUnlocked ? 1 : 0.78,
-              position: 'relative', overflow: 'hidden', minHeight: 160,
-              display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
-              transition: 'background 400ms cubic-bezier(0.22,1,0.36,1), transform 400ms cubic-bezier(0.22,1,0.36,1)',
-            }}
-            onMouseEnter={(e) => {
-              if (isUnlocked) {
-                e.currentTarget.style.background = '#F0F2F5';
-                e.currentTarget.style.transform = 'translateY(-1px)';
-              }
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = SECTION_BG[sec.id];
-              e.currentTarget.style.transform = 'translateY(0)';
-            }}
+            className={`bg-[#F5F6F8] rounded-[var(--md-sys-shape-corner-extra-large)] border-none p-[var(--space-5)] text-left relative overflow-hidden min-h-[160px] flex flex-col justify-between transition-[background,transform] duration-[400ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
+              isUnlocked
+                ? 'cursor-pointer opacity-100 hover:bg-[#F0F2F5] hover:-translate-y-px'
+                : 'cursor-default opacity-[0.78]'
+            }`}
           >
             {/* Roadmap-бейдж: заменили чёрный padlock на дружелюбную
                 soft-pill «В разработке · Q3 2026». Показывает, что
                 раздел жив и движется, а не «навсегда закрыт». */}
             {!isUnlocked && (
-              <div style={{
-                position: 'absolute', top: 12, right: 12, zIndex: 2,
-                display: 'inline-flex', alignItems: 'center', gap: 6,
-                padding: '4px 10px',
-                borderRadius: 999,
-                background: '#FFFFFF',
-                color: '#4B5563',
-                fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 600,
-                letterSpacing: '0.04em',
-                boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-              }}>
+              <div className="absolute top-3 right-3 z-[2] inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full bg-white text-[#4B5563] font-[var(--font-mono)] text-[10px] font-semibold tracking-[0.04em] shadow-[0_1px_2px_rgba(16,24,40,0.06),0_2px_6px_rgba(16,24,40,0.06)]">
                 <svg width={10} height={10} viewBox="0 0 24 24" fill="none"
                   stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="12" cy="12" r="10" />
@@ -347,32 +266,25 @@ function SectionCards({ onSelect }: { onSelect: (id: SectionId) => void }) {
               </div>
             )}
 
-            <div style={{ marginBottom: 'var(--space-3)', position: 'relative', zIndex: 1 }}>
-              <span style={{
-                display: 'inline-flex', alignItems: 'center', gap: 'var(--space-1)',
-                padding: '4px var(--space-2)', borderRadius: 'var(--md-sys-shape-corner-full)',
-                background: '#FFFFFF',
-                boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-                fontFamily: 'var(--font-mono)',
-                fontSize: '0.625rem', fontWeight: completedCount > 0 ? 600 : 500,
-                color: completedCount > 0 ? 'var(--md-sys-color-primary)' : 'var(--md-sys-color-on-surface-variant)',
-              }}>
+            <div className="mb-[var(--space-3)] relative z-[1]">
+              <span className={`inline-flex items-center gap-[var(--space-1)] py-1 px-[var(--space-2)] rounded-[var(--md-sys-shape-corner-full)] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.06),0_2px_6px_rgba(16,24,40,0.06)] font-[var(--font-mono)] text-[0.625rem] ${
+                completedCount > 0
+                  ? 'font-semibold text-[color:var(--md-sys-color-primary)]'
+                  : 'font-medium text-[color:var(--md-sys-color-on-surface-variant)]'
+              }`}>
                 {completedCount > 0 ? `${pct}% пройдено` : `${totalCourses} курсов`}
               </span>
             </div>
-            <div style={{ position: 'relative', zIndex: 1, flex: 1 }}>
-              <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--text-base)', fontWeight: 700, color: 'var(--md-sys-color-on-surface)', marginBottom: 'var(--space-1)', lineHeight: 1.25 }}>
+            <div className="relative z-[1] flex-1">
+              <h3 className="font-[var(--font-display)] text-[length:var(--text-base)] font-bold text-[color:var(--md-sys-color-on-surface)] mb-[var(--space-1)] leading-[1.25]">
                 {sec.title}
               </h3>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--md-sys-color-on-surface-variant)', lineHeight: 1.4, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+              <p className="font-[var(--font-body)] text-[length:var(--text-xs)] text-[color:var(--md-sys-color-on-surface-variant)] leading-[1.4] overflow-hidden [-webkit-line-clamp:2] [-webkit-box-orient:vertical] [display:-webkit-box]">
                 {sec.description}
               </p>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-1)', marginTop: 'var(--space-3)', position: 'relative', zIndex: 1 }}>
-              <span style={{
-                fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', fontWeight: 500,
-                color: isUnlocked ? 'var(--md-sys-color-on-surface)' : '#6B7280',
-              }}>
+            <div className="flex items-center gap-[var(--space-1)] mt-[var(--space-3)] relative z-[1]">
+              <span className={`font-[var(--font-body)] text-[length:var(--text-xs)] font-medium ${isUnlocked ? 'text-[color:var(--md-sys-color-on-surface)]' : 'text-[#6B7280]'}`}>
                 {isUnlocked
                   ? 'Начать обучение'
                   : `Готовим контент · откроется ${eta}`}
@@ -386,12 +298,8 @@ function SectionCards({ onSelect }: { onSelect: (id: SectionId) => void }) {
   return (
     <div>
       {SECTION_CATEGORIES.map(({ title, ids }) => (
-        <section key={title} style={{ marginBottom: 28 }}>
-          <h3 style={{
-            fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700,
-            color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
-            marginBottom: 12,
-          }}>
+        <section key={title} className="mb-7">
+          <h3 className="font-[var(--font-mono)] text-[11px] font-bold text-[#9CA3AF] uppercase tracking-[0.08em] mb-3">
             {title}
           </h3>
           <div className="rg-3">
@@ -476,32 +384,19 @@ export default function HomeApp() {
 
   const toggleSidebar = useAppStore((s) => s.toggleSidebar);
   return (
-    <div style={{ display: 'flex', height: '100dvh', overflow: 'hidden' }}>
+    <div className="flex h-[100dvh] overflow-hidden">
       <SupabaseSyncMounter />
       <ToolDeepLinkHandler />
       <Sidebar />
       <div
-        className="app-main-wrap"
-        style={{
-          flex: 1, display: 'flex', flexDirection: 'column',
-          minWidth: 0, height: '100dvh',
-          // Visually lift the main content over the sidebar — creates a soft card feel.
-          borderTopLeftRadius: 32,
-          borderBottomLeftRadius: 32,
-          background: '#FFFFFF',
-          overflow: 'hidden', // clip inner main's scroll to the rounded corners
-          boxShadow: '0 0 0 1px #F0F1F5',
-        }}>
+        className="app-main-wrap flex-1 flex flex-col min-w-0 h-[100dvh] rounded-tl-[32px] rounded-bl-[32px] bg-white overflow-hidden shadow-[0_0_0_1px_#F0F1F5]"
+      >
         {/* Mobile hamburger + title — only shown < 768px */}
         <div className="mobile-topbar">
           <button
             onClick={toggleSidebar}
             aria-label="Открыть меню"
-            style={{
-              padding: 8, background: 'transparent', border: 'none',
-              borderRadius: 8, cursor: 'pointer', display: 'inline-flex',
-              alignItems: 'center', justifyContent: 'center', color: '#1A1A1A',
-            }}
+            className="p-2 bg-transparent border-none rounded-lg cursor-pointer inline-flex items-center justify-center text-[#1A1A1A]"
           >
             <svg width={22} height={22} viewBox="0 0 24 24" fill="none"
               stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
@@ -512,13 +407,10 @@ export default function HomeApp() {
           </button>
           <picture>
             <source srcSet="/logo-bordik.webp" type="image/webp" />
-            <img src="/logo-bordik.png" alt="Bordik" style={{ height: 22, width: 'auto' }} />
+            <img src="/logo-bordik.png" alt="Bordik" className="h-[22px] w-auto" />
           </picture>
         </div>
-        <main id="main-content" style={{
-          flex: 1, overflowY: 'auto', background: '#FFFFFF',
-          display: 'flex', flexDirection: 'column',
-        }}>
+        <main id="main-content" className="flex-1 overflow-y-auto bg-white flex flex-col">
           <div className="app-main-inner">
 
           {/* Profile and Home (NewsFeed) views are parked in the backlog —
@@ -541,7 +433,7 @@ export default function HomeApp() {
             change; the hidden subtree is inert and skipped by layout/paint.
           */}
           {(view === 'tools' || view === 'tool') && (
-            <div style={{ display: view === 'tool' ? 'none' : 'block' }} aria-hidden={view === 'tool'}>
+            <div className={view === 'tool' ? 'hidden' : 'block'} aria-hidden={view === 'tool'}>
               <ToolsPage />
             </div>
           )}
@@ -575,7 +467,7 @@ export default function HomeApp() {
             calc).
           */}
           {(view === 'neonatal' || (view === 'tool' && showNeonatal)) && (
-            <div style={{ display: view === 'tool' ? 'none' : 'block' }} aria-hidden={view === 'tool'}>
+            <div className={view === 'tool' ? 'hidden' : 'block'} aria-hidden={view === 'tool'}>
               <NeonatalHandbook />
             </div>
           )}
@@ -592,19 +484,13 @@ export default function HomeApp() {
           )}
 
           {view === 'module' && mod && (
-            <div style={{ margin: '0' }}>
+            <div>
               <BackButton onClick={closeModule} label={section?.title || 'Назад'} />
-              <div style={{ marginBottom: 'var(--space-6)' }}>
-                <h2 style={{
-                  fontFamily: 'var(--font-display)', fontSize: 'var(--text-2xl)', fontWeight: 700,
-                  color: 'var(--md-sys-color-on-surface)', marginBottom: 'var(--space-2)', letterSpacing: '-0.02em',
-                }}>
+              <div className="mb-[var(--space-6)]">
+                <h2 className="font-[var(--font-display)] text-[length:var(--text-2xl)] font-bold text-[color:var(--md-sys-color-on-surface)] mb-[var(--space-2)] tracking-[-0.02em]">
                   {mod.title}
                 </h2>
-                <p style={{
-                  fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)',
-                  color: 'var(--md-sys-color-on-surface-variant)', lineHeight: 1.6, maxWidth: 'var(--content-max)',
-                }}>
+                <p className="font-[var(--font-body)] text-[length:var(--text-sm)] text-[color:var(--md-sys-color-on-surface-variant)] leading-[1.6] max-w-[var(--content-max)]">
                   {mod.description}
                 </p>
               </div>
@@ -613,19 +499,13 @@ export default function HomeApp() {
           )}
 
           {view === 'section' && section && (
-            <div style={{ margin: '0' }}>
+            <div>
               <BackButton onClick={() => setShowLearning(true)} label="Все разделы" />
-              <div style={{ marginBottom: 'var(--space-6)' }}>
-                <h2 style={{
-                  fontFamily: 'var(--font-display)', fontSize: 'var(--text-2xl)', fontWeight: 700,
-                  color: 'var(--md-sys-color-on-surface)', marginBottom: 'var(--space-2)', letterSpacing: '-0.02em',
-                }}>
+              <div className="mb-[var(--space-6)]">
+                <h2 className="font-[var(--font-display)] text-[length:var(--text-2xl)] font-bold text-[color:var(--md-sys-color-on-surface)] mb-[var(--space-2)] tracking-[-0.02em]">
                   {section.title}
                 </h2>
-                <p style={{
-                  fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)',
-                  color: 'var(--md-sys-color-on-surface-variant)', lineHeight: 1.6, maxWidth: 'var(--content-max)',
-                }}>
+                <p className="font-[var(--font-body)] text-[length:var(--text-sm)] text-[color:var(--md-sys-color-on-surface-variant)] leading-[1.6] max-w-[var(--content-max)]">
                   {section.description}
                 </p>
               </div>
@@ -660,24 +540,18 @@ export default function HomeApp() {
           )}
 
           {view === 'learning' && (
-            <div style={{ margin: '0' }}>
+            <div>
               <ZetDisclaimer />
 
               {/* Staggered fade-in для Learning-вью. CSS-only animation
                   (.bordik-fade-up) — без framer-motion рантайма, чтобы
                   не утяжелять home-chunk. Параллель с motion-паттерном
                   из /tools / Icd10Lookup. */}
-              <div className="bordik-fade-up" style={{ marginBottom: 'var(--space-5)' }}>
-                <h2 style={{
-                  fontFamily: 'var(--font-display)', fontSize: 'var(--text-xl)', fontWeight: 700,
-                  color: 'var(--md-sys-color-on-surface)', marginBottom: 'var(--space-1)', letterSpacing: '-0.01em',
-                }}>
+              <div className="bordik-fade-up mb-[var(--space-5)]">
+                <h2 className="font-[var(--font-display)] text-[length:var(--text-xl)] font-bold text-[color:var(--md-sys-color-on-surface)] mb-[var(--space-1)] tracking-[-0.01em]">
                   Разделы обучения
                 </h2>
-                <p style={{
-                  fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)',
-                  color: 'var(--md-sys-color-on-surface-variant)', lineHeight: 1.5,
-                }}>
+                <p className="font-[var(--font-body)] text-[length:var(--text-xs)] text-[color:var(--md-sys-color-on-surface-variant)] leading-[1.5]">
                   Выберите раздел для начала
                 </p>
               </div>
@@ -694,19 +568,9 @@ export default function HomeApp() {
                vertical space and pushes the footer to the bottom of the
                viewport. When content is taller than viewport, the footer
                flows naturally at the very end of the scroll area. */}
-          <footer style={{
-            marginTop: 'auto',
-            padding: '16px 24px',
-            borderTop: '1px solid #F0F1F5',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-            fontFamily: 'var(--font-body)', fontSize: 12, color: '#9CA3AF',
-            letterSpacing: '0.01em',
-          }}>
+          <footer className="mt-auto py-4 px-6 border-t border-[#F0F1F5] flex items-center justify-center gap-1.5 font-[var(--font-body)] text-xs text-[#9CA3AF] tracking-[0.01em]">
             <span>Powered by</span>
-            <span style={{
-              fontFamily: 'var(--font-display)', fontSize: 13, fontWeight: 700,
-              color: '#1A1A1A', letterSpacing: '-0.01em',
-            }}>
+            <span className="font-[var(--font-display)] text-[13px] font-bold text-[#1A1A1A] tracking-[-0.01em]">
               Desli
             </span>
           </footer>
