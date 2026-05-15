@@ -63,22 +63,13 @@ interface RowProps {
 
 export function Row({ icon, label, children }: RowProps) {
   return (
-    <div style={{
-      display: 'flex', alignItems: 'center', gap: 12,
-      padding: '8px 12px',
-      minHeight: 54,
-      background: '#FFFFFF',
-      borderRadius: 10,
-    }}>
-      <span style={{ color: '#888', display: 'flex', flexShrink: 0 }}>{ICONS[icon]}</span>
-      <span style={{
-        fontFamily: 'var(--font-body)', fontSize: 11, color: '#888',
-        flexShrink: 0, minWidth: 100,
-      }}>
+    <div className="flex items-center gap-3 py-2 px-3 min-h-[54px] bg-white rounded-[10px]">
+      <span className="text-[#888] flex shrink-0">{ICONS[icon]}</span>
+      <span className="font-[var(--font-body)] text-[11px] text-[#888] shrink-0 min-w-[100px]">
         {label}
       </span>
-      <div style={{ flex: 1, minWidth: 0, display: 'flex', justifyContent: 'flex-end' }}>
-        <div style={{ width: '100%', maxWidth: 240 }}>
+      <div className="flex-1 min-w-0 flex justify-end">
+        <div className="w-full max-w-[240px]">
           {children}
         </div>
       </div>

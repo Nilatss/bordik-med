@@ -27,22 +27,12 @@ export default function NeonatologyDisclaimer() {
     <aside
       role="note"
       aria-label="Специализированный дисклеймер для неонатологического раздела"
-      style={{
-        marginBottom: 'var(--space-5)',
-        padding: '14px 18px',
-        background: '#FEF3C7',
-        border: '1px solid #F59E0B',
-        borderRadius: 12,
-        fontSize: 13,
-        lineHeight: 1.6,
-        color: '#78350F',
-        fontFamily: 'var(--font-body)',
-      }}
+      className="mb-[var(--space-5)] py-[14px] px-[18px] bg-[#FEF3C7] border border-[#F59E0B] rounded-[12px] text-[13px] leading-[1.6] text-[#78350F] font-[var(--font-body)]"
     >
-      <strong style={{ color: '#7C2D12', fontSize: 14 }}>
+      <strong className="text-[#7C2D12] text-sm">
         ⚠️ Калькуляторы родзала и NICU — стартовая оценка, не финальное решение
       </strong>
-      <ul style={{ margin: '8px 0 0', paddingLeft: 20 }}>
+      <ul className="mt-2 mb-0 mx-0 pl-5">
         <li>
           Все расчёты (ЭТТ, UVC/UAC, GIR, реанимационные дозы) —{' '}
           <strong>стартовая оценка</strong>. X-ray верификация для
@@ -59,7 +49,7 @@ export default function NeonatologyDisclaimer() {
             href="https://peditools.org"
             target="_blank"
             rel="noopener noreferrer"
-            style={{ color: '#7C2D12', textDecoration: 'underline' }}
+            className="text-[#7C2D12] underline"
           >
             peditools.org
           </a>
@@ -71,7 +61,7 @@ export default function NeonatologyDisclaimer() {
             href="https://cr.minzdrav.gov.ru"
             target="_blank"
             rel="noopener noreferrer"
-            style={{ color: '#7C2D12', textDecoration: 'underline' }}
+            className="text-[#7C2D12] underline"
           >
             cr.minzdrav.gov.ru
           </a>
@@ -80,7 +70,7 @@ export default function NeonatologyDisclaimer() {
             href="https://gov.uz/ru/ssv/pages/milliy-klinik-protokollar"
             target="_blank"
             rel="noopener noreferrer"
-            style={{ color: '#7C2D12', textDecoration: 'underline' }}
+            className="text-[#7C2D12] underline"
           >
             gov.uz UZ-протоколы
           </a>

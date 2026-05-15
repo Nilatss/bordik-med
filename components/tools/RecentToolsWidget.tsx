@@ -50,58 +50,27 @@ export default function RecentToolsWidget({ catalog, onOpen }: Props) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, ease: [0.05, 0.7, 0.1, 1], delay: 0.04 }}
       aria-label="Недавно использованные инструменты"
-      style={{ marginBottom: 18 }}
+      className="mb-[18px]"
     >
-      <h3 style={{
-        margin: '0 0 10px',
-        fontFamily: 'var(--font-mono, ui-monospace)', fontSize: 11, fontWeight: 700,
-        color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
-      }}>
+      <h3 className="mt-0 mb-2.5 mx-0 font-[var(--font-mono,ui-monospace)] text-[11px] font-bold text-[#9CA3AF] uppercase tracking-[0.08em]">
         Недавние
       </h3>
 
-      <div style={{
-        display: 'flex', gap: 8, flexWrap: 'wrap',
-      }}>
+      <div className="flex gap-2 flex-wrap">
         {items.map((t) => (
           <button
             key={t.id}
             type="button"
             onClick={() => onOpen(t.id)}
             title={t.title}
-            style={{
-              display: 'inline-flex', alignItems: 'center', gap: 8,
-              padding: '8px 14px',
-              maxWidth: 320,
-              background: '#F5F6F8',
-              border: '1px solid transparent',
-              borderRadius: 999,
-              cursor: 'pointer',
-              fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 500,
-              color: '#1A1A1A',
-              textAlign: 'left',
-              transition: 'background 160ms, border-color 160ms, color 160ms',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = '#EFF6FF';
-              e.currentTarget.style.borderColor = '#DBEAFE';
-              e.currentTarget.style.color = '#2563EB';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = '#F5F6F8';
-              e.currentTarget.style.borderColor = 'transparent';
-              e.currentTarget.style.color = '#1A1A1A';
-            }}
+            className="inline-flex items-center gap-2 py-2 px-3.5 max-w-[320px] bg-[#F5F6F8] hover:bg-[#EFF6FF] border border-transparent hover:border-[#DBEAFE] rounded-full cursor-pointer font-[var(--font-body)] text-[13px] font-medium text-[#1A1A1A] hover:text-[#2563EB] text-left transition-[background,border-color,color] duration-[160ms]"
           >
-            <span style={{
-              flex: 1, minWidth: 0,
-              whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
-            }}>
+            <span className="flex-1 min-w-0 whitespace-nowrap overflow-hidden text-ellipsis">
               {t.title}
             </span>
             <svg width={12} height={12} viewBox="0 0 24 24" fill="none"
               stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round"
-              style={{ flexShrink: 0, opacity: 0.6 }}>
+              className="shrink-0 opacity-60">
               <line x1="5" y1="12" x2="19" y2="12" />
               <polyline points="12 5 19 12 12 19" />
             </svg>

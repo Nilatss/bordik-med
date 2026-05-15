@@ -52,22 +52,13 @@ export function StorageBanner() {
       aria-label="Уведомление о хранении данных"
       aria-live="polite"
       data-banner="storage"
-      style={{
-        position: 'fixed', right: 16, bottom: 16, zIndex: 9999,
-        maxWidth: 380,
-        padding: '14px 16px',
-        background: '#1A1A1A', color: '#FFFFFF',
-        borderRadius: 14, border: '1px solid rgba(255,255,255,0.12)',
-        boxShadow: '0 12px 32px rgba(0,0,0,0.30)',
-        display: 'flex', alignItems: 'center', gap: 12,
-        fontFamily: 'var(--font-body)', fontSize: 13, lineHeight: 1.55,
-      }}
+      className="fixed right-4 bottom-4 z-[9999] max-w-[380px] py-[14px] px-4 bg-[#1A1A1A] text-white rounded-[14px] border border-white/[0.12] shadow-[0_12px_32px_rgba(0,0,0,0.30)] flex items-center gap-3 font-[var(--font-body)] text-[13px] leading-[1.55]"
     >
-      <div style={{ flex: 1, minWidth: 0 }}>
+      <div className="flex-1 min-w-0">
         Bordik использует <strong>localStorage</strong> и кэш браузера для
         хранения вашего прогресса, сессии входа и офлайн-доступа. Мы{' '}
         <strong>не используем</strong> рекламные cookie или трекеры.{' '}
-        <a href="/privacy" style={{ color: '#93C5FD', textDecoration: 'underline' }}>
+        <a href="/privacy" className="text-[#93C5FD] underline">
           Политика конфиденциальности
         </a>
         .
@@ -78,14 +69,7 @@ export function StorageBanner() {
           try { localStorage.setItem(KEY, '1'); } catch {/* */}
           setShow(false);
         }}
-        style={{
-          flex: '0 0 auto',
-          padding: '8px 14px',
-          background: '#3B82F6', color: '#FFFFFF',
-          border: 'none', borderRadius: 10,
-          fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
-          cursor: 'pointer',
-        }}
+        className="flex-[0_0_auto] py-2 px-3.5 bg-[#3B82F6] text-white border-none rounded-[10px] font-[var(--font-body)] text-[13px] font-semibold cursor-pointer"
       >
         Понятно
       </button>

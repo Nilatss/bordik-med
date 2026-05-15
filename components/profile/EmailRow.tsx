@@ -58,7 +58,7 @@ export function EmailRow({ value, onSave, t }: EmailRowProps) {
   if (isEditing) {
     return (
       <Row icon="mail" label={t('profile.email')}>
-        <div style={{ position: 'relative' }}>
+        <div className="relative">
           <input
             ref={ref}
             type="email"
@@ -73,35 +73,18 @@ export function EmailRow({ value, onSave, t }: EmailRowProps) {
             placeholder="name@example.com"
             aria-invalid={showError || undefined}
             title={showError ? t('profile.invalidEmail') : undefined}
-            style={{
-              width: '100%',
-              height: 38,
-              padding: showError ? '8px 36px 8px 14px' : '8px 14px',
-              background: showError ? '#FDF3F3' : (focused ? '#DFE2E8' : '#E8EAEF'),
-              border: 'none',
-              borderRadius: 8,
-              fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 500,
-              color: showError ? '#9F4848' : '#1A1A1A',
-              outline: 'none',
-              textAlign: 'left',
-              transition: 'background 180ms, color 180ms, padding 180ms',
-            }}
+            className={`w-full h-[38px] ${showError ? 'pl-3.5 pr-9' : 'px-3.5'} py-2 border-none rounded-lg font-[var(--font-body)] text-[13px] font-medium outline-none text-left transition-[background,color,padding] duration-[180ms] ${
+              showError
+                ? 'bg-[#FDF3F3] text-[#9F4848]'
+                : focused
+                  ? 'bg-[#DFE2E8] text-[#1A1A1A]'
+                  : 'bg-[#E8EAEF] text-[#1A1A1A]'
+            }`}
           />
           {showError && (
             <span
               aria-hidden
-              style={{
-                position: 'absolute',
-                right: 12,
-                top: '50%',
-                transform: 'translateY(-50%)',
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: 18, height: 18,
-                color: '#C97878',
-                pointerEvents: 'none',
-              }}
+              className="absolute right-3 top-1/2 -translate-y-1/2 inline-flex items-center justify-center w-[18px] h-[18px] text-[#C97878] pointer-events-none"
             >
               <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
@@ -120,27 +103,12 @@ export function EmailRow({ value, onSave, t }: EmailRowProps) {
     <Row icon="mail" label={t('profile.email')}>
       <button
         onClick={() => { setDraft(value); setIsEditing(true); }}
-        style={{
-          width: '100%',
-          height: 38,
-          padding: '8px 12px 8px 14px',
-          background: '#EEF0F3',
-          border: 'none',
-          borderRadius: 8,
-          cursor: 'pointer',
-          display: 'flex', alignItems: 'center', gap: 8,
-          fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 500,
-          color: value ? '#1A1A1A' : '#9CA3AF',
-          textAlign: 'left',
-          transition: 'background 150ms',
-        }}
-        onMouseEnter={(e) => { e.currentTarget.style.background = '#E8EAEF'; }}
-        onMouseLeave={(e) => { e.currentTarget.style.background = '#EEF0F3'; }}
+        className={`w-full h-[38px] py-2 pr-3 pl-3.5 bg-[#EEF0F3] hover:bg-[#E8EAEF] border-none rounded-lg cursor-pointer flex items-center gap-2 font-[var(--font-body)] text-[13px] font-medium text-left transition-colors duration-150 ${value ? 'text-[#1A1A1A]' : 'text-[#9CA3AF]'}`}
       >
-        <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        <span className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap">
           {value || t('profile.chooseEmail')}
         </span>
-        <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+        <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
           <path d="M17 3a2.828 2.828 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
         </svg>
       </button>
