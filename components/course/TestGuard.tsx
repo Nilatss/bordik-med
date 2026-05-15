@@ -172,51 +172,19 @@ export default function TestGuard({ active, onViolation, onForceSubmit, violatio
 
       {/* Grace-period countdown: user has left, must return before timer ends */}
       {active && graceLeft > 0 && (
-        <div style={{
-          position: 'fixed', inset: 0, zIndex: 9998,
-          background: 'rgba(15, 20, 30, 0.65)',
-          backdropFilter: 'blur(10px)',
-          WebkitBackdropFilter: 'blur(10px)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          padding: 20,
-          animation: 'bordik-dropdown-fadein 200ms ease-out',
-        }}>
-          <div style={{
-            background: '#FFFFFF',
-            borderRadius: 20,
-            padding: '32px 36px',
-            maxWidth: 440, width: '100%',
-            textAlign: 'center',
-            boxShadow: '0 20px 60px rgba(0,0,0,0.25)',
-          }}>
-            <div style={{
-              display: 'inline-flex', alignItems: 'center', gap: 8,
-              padding: '6px 14px', borderRadius: 999,
-              background: '#FEF2F2', color: '#B91C1C',
-              fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-              letterSpacing: '0.08em', textTransform: 'uppercase',
-              marginBottom: 18,
-            }}>
+        <div className="fixed inset-0 z-[9998] bg-[rgba(15,20,30,0.65)] backdrop-blur-[10px] [-webkit-backdrop-filter:blur(10px)] flex items-center justify-center p-5 animate-[bordik-dropdown-fadein_200ms_ease-out]">
+          <div className="bg-white rounded-[20px] pt-8 px-9 pb-8 max-w-[440px] w-full text-center shadow-[0_20px_60px_rgba(0,0,0,0.25)]">
+            <div className="inline-flex items-center gap-2 py-1.5 px-3.5 rounded-full bg-[#FEF2F2] text-[#B91C1C] font-[var(--font-mono)] text-[10px] font-bold tracking-[0.08em] uppercase mb-[18px]">
               <svg width={12} height={12} viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="10" /><polyline points="12,6 12,12 16,14" />
               </svg>
               Вернитесь в окно теста
             </div>
-            <div style={{
-              fontFamily: 'var(--font-mono)', fontSize: 52, fontWeight: 700,
-              color: graceLeft <= 3 ? '#B91C1C' : '#1A1A1A',
-              lineHeight: 1, marginBottom: 12,
-              letterSpacing: '-0.04em',
-              animation: graceLeft <= 3 ? 'bordik-timer-pulse 1s ease-in-out infinite' : undefined,
-            }}>
+            <div className={`font-[var(--font-mono)] text-[52px] font-bold leading-none mb-3 tracking-[-0.04em] ${graceLeft <= 3 ? 'text-[#B91C1C] animate-[bordik-timer-pulse_1s_ease-in-out_infinite]' : 'text-[#1A1A1A]'}`}>
               {graceLeft}
             </div>
-            <p style={{
-              fontFamily: 'var(--font-body)', fontSize: 14,
-              color: '#6B7280', lineHeight: 1.5,
-              maxWidth: 340, margin: '0 auto',
-            }}>
+            <p className="font-[var(--font-body)] text-sm text-[#6B7280] leading-[1.5] max-w-[340px] mx-auto">
               Если вы не вернётесь за {graceLeft} сек - нарушение будет засчитано.
               Снимки экрана, devtools, копирование и закрытие вкладки тоже считаются нарушением.
             </p>
@@ -229,32 +197,13 @@ export default function TestGuard({ active, onViolation, onForceSubmit, violatio
 
       {/* Real violation modal (after grace expired) */}
       {showViolation && active && (
-        <div style={{
-          position: 'fixed', inset: 0, zIndex: 9999,
-          background: 'rgba(15,20,30,0.55)',
-          backdropFilter: 'blur(8px)',
-          WebkitBackdropFilter: 'blur(8px)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          padding: 20,
-          animation: 'bordik-dropdown-fadein 200ms ease-out',
-        }}>
-          <div style={{
-            background: '#FFFFFF',
-            borderRadius: 20,
-            padding: '32px 36px',
-            maxWidth: 440, width: '100%',
-            textAlign: 'center',
-            boxShadow: '0 20px 60px rgba(0,0,0,0.25), 0 4px 12px rgba(0,0,0,0.12)',
-          }}>
-            <div style={{
-              display: 'inline-flex', alignItems: 'center', gap: 8,
-              padding: '6px 14px', borderRadius: 999,
-              background: violationCount >= MAX_VIOLATIONS ? '#FEF2F2' : '#FFFBEB',
-              color: violationCount >= MAX_VIOLATIONS ? '#B91C1C' : '#B45309',
-              fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-              letterSpacing: '0.08em', textTransform: 'uppercase',
-              marginBottom: 18,
-            }}>
+        <div className="fixed inset-0 z-[9999] bg-[rgba(15,20,30,0.55)] backdrop-blur-[8px] [-webkit-backdrop-filter:blur(8px)] flex items-center justify-center p-5 animate-[bordik-dropdown-fadein_200ms_ease-out]">
+          <div className="bg-white rounded-[20px] pt-8 px-9 pb-8 max-w-[440px] w-full text-center shadow-[0_20px_60px_rgba(0,0,0,0.25),0_4px_12px_rgba(0,0,0,0.12)]">
+            <div className={`inline-flex items-center gap-2 py-1.5 px-3.5 rounded-full font-[var(--font-mono)] text-[10px] font-bold tracking-[0.08em] uppercase mb-[18px] ${
+              violationCount >= MAX_VIOLATIONS
+                ? 'bg-[#FEF2F2] text-[#B91C1C]'
+                : 'bg-[#FFFBEB] text-[#B45309]'
+            }`}>
               <svg width={12} height={12} viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
                 <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
@@ -264,78 +213,42 @@ export default function TestGuard({ active, onViolation, onForceSubmit, violatio
               {violationCount >= MAX_VIOLATIONS ? 'Тест завершается' : 'Нарушение зафиксировано'}
             </div>
 
-            <h3 style={{
-              fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 700,
-              color: '#1A1A1A', marginBottom: 8,
-              letterSpacing: '-0.02em',
-            }}>
+            <h3 className="font-[var(--font-display)] text-[22px] font-bold text-[#1A1A1A] mb-2 tracking-[-0.02em]">
               Вы покинули окно теста
             </h3>
 
-            <p style={{
-              fontFamily: 'var(--font-body)', fontSize: 14,
-              color: '#6B7280', lineHeight: 1.55,
-              marginBottom: 20,
-              maxWidth: 340, marginLeft: 'auto', marginRight: 'auto',
-            }}>
+            <p className="font-[var(--font-body)] text-sm text-[#6B7280] leading-[1.55] mb-5 max-w-[340px] mx-auto">
               Вы либо покинули окно теста дольше чем на {Math.round(GRACE_MS / 1000)} секунд, либо нажали запрещённое сочетание клавиш (PrintScreen, F12, Ctrl+C / P / S и т.п.). Нарушение засчитано.
             </p>
 
-            <div style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              gap: 10, marginBottom: 24,
-            }}>
-              <span style={{
-                fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 600,
-                color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.06em',
-              }}>
+            <div className="flex items-center justify-center gap-2.5 mb-6">
+              <span className="font-[var(--font-mono)] text-[11px] font-semibold text-[#6B7280] uppercase tracking-[0.06em]">
                 Нарушений
               </span>
-              <div style={{ display: 'flex', gap: 6 }}>
+              <div className="flex gap-1.5">
                 {Array.from({ length: MAX_VIOLATIONS }).map((_, i) => {
                   const filled = i < violationCount;
+                  const dotBg = filled
+                    ? (violationCount >= MAX_VIOLATIONS ? 'bg-[#EF4444]' : 'bg-[#F59E0B]')
+                    : 'bg-[#E5E7EB]';
                   return (
-                    <span key={i} style={{
-                      width: 10, height: 10, borderRadius: '50%',
-                      background: filled
-                        ? (violationCount >= MAX_VIOLATIONS ? '#EF4444' : '#F59E0B')
-                        : '#E5E7EB',
-                      transition: 'background 200ms',
-                    }} />
+                    <span key={i} className={`w-2.5 h-2.5 rounded-full transition-colors duration-200 ${dotBg}`} />
                   );
                 })}
               </div>
-              <span style={{
-                fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 700,
-                color: violationCount >= MAX_VIOLATIONS ? '#B91C1C' : '#1A1A1A',
-              }}>
+              <span className={`font-[var(--font-mono)] text-xs font-bold ${violationCount >= MAX_VIOLATIONS ? 'text-[#B91C1C]' : 'text-[#1A1A1A]'}`}>
                 {violationCount} / {MAX_VIOLATIONS}
               </span>
             </div>
 
             {violationCount >= MAX_VIOLATIONS ? (
-              <div style={{
-                padding: '12px 16px',
-                background: '#FEF2F2',
-                borderRadius: 10,
-                fontFamily: 'var(--font-body)', fontSize: 13,
-                color: '#B91C1C', fontWeight: 600,
-              }}>
+              <div className="py-3 px-4 bg-[#FEF2F2] rounded-[10px] font-[var(--font-body)] text-[13px] text-[#B91C1C] font-semibold">
                 Максимум нарушений. Тест завершён. Повторная попытка через 48 часов.
               </div>
             ) : (
-              <button onClick={dismiss} style={{
-                width: '100%',
-                padding: '12px 24px',
-                borderRadius: 10,
-                background: '#3B82F6',
-                color: '#FFFFFF',
-                border: 'none', cursor: 'pointer',
-                fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: 600,
-                transition: 'background 180ms',
-              }}
-                onMouseEnter={(e) => { e.currentTarget.style.background = '#2563EB'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = '#3B82F6'; }}
+              <button
+                onClick={dismiss}
+                className="w-full py-3 px-6 rounded-[10px] bg-[#3B82F6] hover:bg-[#2563EB] text-white border-none cursor-pointer font-[var(--font-body)] text-sm font-semibold transition-colors duration-[180ms]"
               >
                 Продолжить тест
               </button>

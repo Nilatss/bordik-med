@@ -696,39 +696,19 @@ export default function Proctoring({
 
   if (error) {
     return (
-      <div style={{
-        position: 'fixed', inset: 0, zIndex: 60,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        background: 'rgba(15,23,42,0.6)', backdropFilter: 'blur(6px)',
-        padding: 20,
-      }}>
-        <div style={{
-          maxWidth: 440, width: '100%',
-          background: '#FFFFFF', borderRadius: 18,
-          padding: '28px 28px 24px', textAlign: 'center',
-          boxShadow: '0 24px 48px rgba(15,23,42,0.24)',
-        }}>
-          <div style={{
-            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-            width: 48, height: 48, borderRadius: 14,
-            background: '#FEF2F2', color: '#B91C1C', marginBottom: 14,
-          }}>
+      <div className="fixed inset-0 z-[60] flex items-center justify-center bg-[rgba(15,23,42,0.6)] backdrop-blur-[6px] p-5">
+        <div className="max-w-[440px] w-full bg-white rounded-[18px] pt-7 px-7 pb-6 text-center shadow-[0_24px_48px_rgba(15,23,42,0.24)]">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-[14px] bg-[#FEF2F2] text-[#B91C1C] mb-[14px]">
             <svg width={22} height={22} viewBox="0 0 24 24" fill="none"
               stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">
               <rect x="3" y="11" width="18" height="11" rx="2" />
               <path d="M7 11V7a5 5 0 0110 0v4" />
             </svg>
           </div>
-          <h3 style={{
-            fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 700,
-            color: '#1A1A1A', margin: '0 0 8px 0', letterSpacing: '-0.01em',
-          }}>
+          <h3 className="font-[var(--font-display)] text-lg font-bold text-[#1A1A1A] mt-0 mb-2 mx-0 tracking-[-0.01em]">
             Доступ к камере и микрофону обязателен
           </h3>
-          <p style={{
-            fontFamily: 'var(--font-body)', fontSize: 13.5, color: '#6B7280',
-            lineHeight: 1.55, margin: '0 0 20px 0',
-          }}>
+          <p className="font-[var(--font-body)] text-[13.5px] text-[#6B7280] leading-[1.55] mt-0 mb-5 mx-0">
             {error}{' '}Разрешите доступ в настройках браузера и попробуйте начать тест ещё раз.
           </p>
           <button
@@ -739,12 +719,7 @@ export default function Proctoring({
               // here we just reload as the simplest cross-browser approach.
               window.location.reload();
             }}
-            style={{
-              padding: '10px 18px', borderRadius: 10,
-              background: '#3B82F6', color: '#FFFFFF',
-              border: 'none', cursor: 'pointer',
-              fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
-            }}
+            className="py-2.5 px-[18px] rounded-[10px] bg-[#3B82F6] text-white border-none cursor-pointer font-[var(--font-body)] text-[13px] font-semibold"
           >
             Попробовать снова
           </button>
@@ -755,23 +730,11 @@ export default function Proctoring({
 
   if (!stream) {
     return (
-      <div style={{
-        position: 'fixed', inset: 0, zIndex: 60,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        background: '#FFFFFF',
-      }}>
-        <div style={{
-          textAlign: 'center',
-          fontFamily: 'var(--font-body)', fontSize: 14,
-          color: '#6B7280', lineHeight: 1.6,
-        }}>
-          <div style={{
-            width: 36, height: 36, margin: '0 auto 12px',
-            border: '3px solid #E2E4EA', borderTopColor: '#3B82F6',
-            borderRadius: '50%', animation: 'spin 0.9s linear infinite',
-          }} />
+      <div className="fixed inset-0 z-[60] flex items-center justify-center bg-white">
+        <div className="text-center font-[var(--font-body)] text-sm text-[#6B7280] leading-[1.6]">
+          <div className="w-9 h-9 mx-auto mb-3 border-[3px] border-[#E2E4EA] border-t-[#3B82F6] rounded-full animate-[spin_0.9s_linear_infinite]" />
           <p>Запрашиваем доступ к камере и микрофону…</p>
-          <p style={{ fontSize: 12, color: '#9CA3AF', marginTop: 6 }}>
+          <p className="text-xs text-[#9CA3AF] mt-1.5">
             Разрешите доступ в подсказке браузера, чтобы начать тест.
           </p>
         </div>
@@ -782,6 +745,16 @@ export default function Proctoring({
     );
   }
 
+  const statusBg = faceState.status === 'error'
+    ? 'bg-[#FEF2F2] text-[#991B1B] border-[#FCA5A5]'
+    : faceState.status === 'ready'
+      ? 'bg-white/85 text-[#64748B] border-[#E2E8F0]'
+      : 'bg-[#FFF7ED] text-[#9A3412] border-[#FCD34D]';
+  const statusDot = faceState.status === 'error'
+    ? 'bg-[#DC2626]'
+    : faceState.status === 'ready'
+      ? 'bg-[#10B981]'
+      : 'bg-[#F59E0B]';
   return (
     <>
       <video
@@ -789,54 +762,14 @@ export default function Proctoring({
         muted
         playsInline
         autoPlay
-        style={{
-          position: 'fixed',
-          right: 16, bottom: 16,
-          width: 'clamp(120px, 18vw, 180px)',
-          aspectRatio: '4 / 3',
-          borderRadius: 12,
-          background: '#000000',
-          objectFit: 'cover',
-          zIndex: 60,
-          boxShadow: '0 12px 32px rgba(15,23,42,0.18), 0 0 0 1px rgba(255,255,255,0.6)',
-        }}
+        className="fixed right-4 bottom-4 w-[clamp(120px,18vw,180px)] aspect-[4/3] rounded-[12px] bg-black object-cover z-[60] shadow-[0_12px_32px_rgba(15,23,42,0.18),0_0_0_1px_rgba(255,255,255,0.6)]"
       />
       {/* Discreet bottom-of-screen proctoring status pill — visible enough
            to confirm detection is alive, but not so prominent that it
            steals attention from the test content. Errors get a clearly
            red palette so the user can't miss a model failure. */}
-      <div style={{
-        position: 'fixed',
-        bottom: 14, left: 16,
-        zIndex: 61,
-        display: 'inline-flex', alignItems: 'center', gap: 8,
-        padding: '5px 11px',
-        borderRadius: 999,
-        background: faceState.status === 'error' ? '#FEF2F2'
-          : faceState.status === 'ready' ? 'rgba(255,255,255,0.85)'
-          : '#FFF7ED',
-        color: faceState.status === 'error' ? '#991B1B'
-          : faceState.status === 'ready' ? '#64748B'
-          : '#9A3412',
-        border: `1px solid ${
-          faceState.status === 'error' ? '#FCA5A5'
-          : faceState.status === 'ready' ? '#E2E8F0'
-          : '#FCD34D'
-        }`,
-        boxShadow: '0 1px 2px rgba(15,23,42,0.04)',
-        // backdrop-filter: blur is expensive on mobile - skip on low-power
-        backdropFilter: lowPowerRef.current ? undefined : 'blur(6px)',
-        fontFamily: 'var(--font-mono)', fontSize: 10.5, fontWeight: 600,
-        letterSpacing: '0.03em',
-        maxWidth: '70vw',
-        whiteSpace: 'nowrap',
-      }}>
-        <span style={{
-          width: 6, height: 6, borderRadius: '50%',
-          background: faceState.status === 'error' ? '#DC2626'
-            : faceState.status === 'ready' ? '#10B981'
-            : '#F59E0B',
-        }} />
+      <div className={`fixed bottom-[14px] left-4 z-[61] inline-flex items-center gap-2 py-[5px] px-[11px] rounded-full border shadow-[0_1px_2px_rgba(15,23,42,0.04)] ${lowPowerRef.current ? '' : 'backdrop-blur-[6px]'} font-[var(--font-mono)] text-[10.5px] font-semibold tracking-[0.03em] max-w-[70vw] whitespace-nowrap ${statusBg}`}>
+        <span className={`w-1.5 h-1.5 rounded-full ${statusDot}`} />
         {faceState.status === 'error' ? (
           <>прокторинг: ошибка - {faceState.error ?? 'unknown'}</>
         ) : faceState.status === 'ready' ? (
@@ -847,19 +780,8 @@ export default function Proctoring({
       </div>
 
       {/* Compact REC dot on the preview itself */}
-      <div style={{
-        position: 'fixed',
-        right: 24, bottom: 'calc(clamp(120px, 18vw, 180px) * 0.75 + 22px)',
-        display: 'inline-flex', alignItems: 'center', gap: 6,
-        padding: '3px 9px', borderRadius: 999,
-        background: '#1A1A1A', color: '#FFFFFF',
-        fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-        letterSpacing: '0.08em', textTransform: 'uppercase',
-        zIndex: 61,
-      }}>
-        <span style={{
-          width: 7, height: 7, borderRadius: '50%', background: '#F87171',
-        }} />
+      <div className="fixed right-6 bottom-[calc(clamp(120px,18vw,180px)*0.75+22px)] inline-flex items-center gap-1.5 py-[3px] px-[9px] rounded-full bg-[#1A1A1A] text-white font-[var(--font-mono)] text-[10px] font-bold tracking-[0.08em] uppercase z-[61]">
+        <span className="w-[7px] h-[7px] rounded-full bg-[#F87171]" />
         REC
       </div>
       <style jsx global>{`

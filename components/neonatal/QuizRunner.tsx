@@ -282,11 +282,7 @@ export default function QuizRunner({
 
   if (error) {
     return (
-      <div style={{
-        padding: '24px 16px', background: '#FEF2F2',
-        border: '1px solid #FECACA', borderRadius: 12,
-        color: '#991B1B', fontSize: 14,
-      }}>
+      <div className="py-6 px-4 bg-[#FEF2F2] border border-[#FECACA] rounded-[12px] text-[#991B1B] text-sm">
         Не удалось загрузить тесты: {error}.
       </div>
     );
@@ -295,9 +291,9 @@ export default function QuizRunner({
   if (!bank) {
     return (
       <div>
-        <div className="lc-shimmer" style={{ height: 48, width: '100%', borderRadius: 12, marginBottom: 12 }} />
-        <div className="lc-shimmer" style={{ height: 160, width: '100%', borderRadius: 24, marginBottom: 12 }} />
-        <div className="lc-shimmer" style={{ height: 160, width: '100%', borderRadius: 24 }} />
+        <div className="lc-shimmer h-12 w-full rounded-[12px] mb-3" />
+        <div className="lc-shimmer h-[160px] w-full rounded-[24px] mb-3" />
+        <div className="lc-shimmer h-[160px] w-full rounded-[24px]" />
       </div>
     );
   }
@@ -324,11 +320,11 @@ export default function QuizRunner({
 
   // List view
   return (
-    <div style={{ width: '100%' }}>
-      <p style={{ fontSize: 13, color: '#6B7280', margin: '0 0 14px' }}>
-        Показано: <strong style={{ color: '#1A1A1A' }}>{filteredQuizzes.length}</strong> из {bank.quizzes.length} тестов
+    <div className="w-full">
+      <p className="text-[13px] text-[#6B7280] mt-0 mb-[14px] mx-0">
+        Показано: <strong className="text-[#1A1A1A]">{filteredQuizzes.length}</strong> из {bank.quizzes.length} тестов
         {' · '}
-        <span style={{ color: '#9CA3AF' }}>
+        <span className="text-[#9CA3AF]">
           выберите тест и нажмите карточку чтобы начать
         </span>
       </p>
@@ -342,13 +338,9 @@ export default function QuizRunner({
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1], delay: 0.06 + catIdx * 0.06 }}
-          style={{ marginBottom: 28 }}
+          className="mb-7"
         >
-          <h3 id={headingId} style={{
-            fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700,
-            color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
-            marginBottom: 12,
-          }}>
+          <h3 id={headingId} className="font-[var(--font-mono)] text-[11px] font-bold text-[#9CA3AF] uppercase tracking-[0.08em] mb-3">
             {topic}
           </h3>
           <div className="rg-3">
@@ -373,107 +365,40 @@ export default function QuizRunner({
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.03, duration: 0.3, ease: [0.05, 0.7, 0.1, 1] }}
                   onClick={() => setActiveQuiz(quiz.id)}
-                  style={{
-                    background: '#F5F6F8',
-                    borderRadius: 'var(--md-sys-shape-corner-extra-large)',
-                    border: 'none',
-                    padding: 'var(--space-5)',
-                    textAlign: 'left',
-                    cursor: 'pointer',
-                    position: 'relative',
-                    overflow: 'hidden',
-                    minHeight: 160,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                    transition: 'background 400ms cubic-bezier(0.22,1,0.36,1), transform 400ms cubic-bezier(0.22,1,0.36,1)',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = '#F0F2F5';
-                    e.currentTarget.style.transform = 'translateY(-1px)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = '#F5F6F8';
-                    e.currentTarget.style.transform = 'translateY(0)';
-                  }}
+                  className="bg-[#F5F6F8] hover:bg-[#F0F2F5] hover:-translate-y-px rounded-[var(--md-sys-shape-corner-extra-large)] border-none p-[var(--space-5)] text-left cursor-pointer relative overflow-hidden min-h-[160px] flex flex-col justify-between transition-[background,transform] duration-[400ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
                 >
                   {/* Status badge top-right (submitted score or level) */}
                   {submitted ? (
-                    <div style={{
-                      position: 'absolute', top: 12, right: 12, zIndex: 2,
-                      display: 'inline-flex', alignItems: 'center', gap: 4,
-                      padding: '4px 10px',
-                      borderRadius: 999,
-                      background: passed ? '#059669' : '#B45309',
-                      color: '#FFFFFF',
-                      fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-                      letterSpacing: '0.06em', textTransform: 'uppercase',
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
-                    }}>
+                    <div className={`absolute top-3 right-3 z-[2] inline-flex items-center gap-1 py-1 px-2.5 rounded-full text-white font-[var(--font-mono)] text-[10px] font-bold tracking-[0.06em] uppercase shadow-[0_2px_8px_rgba(0,0,0,0.12)] ${passed ? 'bg-[#059669]' : 'bg-[#B45309]'}`}>
                       {passed ? 'PASS' : 'FAIL'} {score}/{total}
                     </div>
                   ) : null}
 
                   {/* Top pills - questions + duration + level */}
-                  <div style={{
-                    marginBottom: 'var(--space-3)', position: 'relative', zIndex: 1,
-                    display: 'flex', flexWrap: 'wrap', gap: 6,
-                  }}>
-                    <span style={{
-                      display: 'inline-flex', alignItems: 'center', gap: 'var(--space-1)',
-                      padding: '4px var(--space-2)',
-                      borderRadius: 'var(--md-sys-shape-corner-full)',
-                      background: '#FFFFFF',
-                      boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-                      fontFamily: 'var(--font-mono)', fontSize: '0.625rem', fontWeight: 500,
-                      color: 'var(--md-sys-color-on-surface-variant)',
-                    }}>
+                  <div className="mb-[var(--space-3)] relative z-[1] flex flex-wrap gap-1.5">
+                    <span className="inline-flex items-center gap-[var(--space-1)] py-1 px-[var(--space-2)] rounded-[var(--md-sys-shape-corner-full)] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.06),0_2px_6px_rgba(16,24,40,0.06)] font-[var(--font-mono)] text-[0.625rem] font-medium text-[color:var(--md-sys-color-on-surface-variant)]">
                       {total} вопросов · {estimateDuration(total)}
                     </span>
                     {lvl && (
-                      <span style={{
-                        display: 'inline-flex', alignItems: 'center',
-                        padding: '4px var(--space-2)',
-                        borderRadius: 'var(--md-sys-shape-corner-full)',
-                        background: '#FFFFFF',
-                        boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-                        fontFamily: 'var(--font-mono)', fontSize: '0.625rem', fontWeight: 500,
-                        color: 'var(--md-sys-color-on-surface-variant)',
-                        textTransform: 'uppercase', letterSpacing: '0.04em',
-                      }}>
+                      <span className="inline-flex items-center py-1 px-[var(--space-2)] rounded-[var(--md-sys-shape-corner-full)] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.06),0_2px_6px_rgba(16,24,40,0.06)] font-[var(--font-mono)] text-[0.625rem] font-medium text-[color:var(--md-sys-color-on-surface-variant)] uppercase tracking-[0.04em]">
                         {lvl.label}
                       </span>
                     )}
                   </div>
 
                   {/* Middle: title + description */}
-                  <div style={{ position: 'relative', zIndex: 1, flex: 1 }}>
-                    <h3 style={{
-                      fontFamily: 'var(--font-display)', fontSize: 'var(--text-base)', fontWeight: 700,
-                      color: 'var(--md-sys-color-on-surface)',
-                      marginBottom: 'var(--space-1)', lineHeight: 1.25,
-                    }}>
+                  <div className="relative z-[1] flex-1">
+                    <h3 className="font-[var(--font-display)] text-[length:var(--text-base)] font-bold text-[color:var(--md-sys-color-on-surface)] mb-[var(--space-1)] leading-[1.25]">
                       {quiz.title_ru}
                     </h3>
-                    <p style={{
-                      fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)',
-                      color: 'var(--md-sys-color-on-surface-variant)', lineHeight: 1.4,
-                      display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
-                      overflow: 'hidden',
-                    }}>
+                    <p className="font-[var(--font-body)] text-[length:var(--text-xs)] text-[color:var(--md-sys-color-on-surface-variant)] leading-[1.4] overflow-hidden [-webkit-line-clamp:2] [-webkit-box-orient:vertical] [display:-webkit-box]">
                       {description}
                     </p>
                   </div>
 
                   {/* Footer */}
-                  <div style={{
-                    display: 'flex', alignItems: 'center', gap: 'var(--space-1)',
-                    marginTop: 'var(--space-3)', position: 'relative', zIndex: 1,
-                  }}>
-                    <span style={{
-                      fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', fontWeight: 500,
-                      color: 'var(--md-sys-color-on-surface)',
-                    }}>
+                  <div className="flex items-center gap-[var(--space-1)] mt-[var(--space-3)] relative z-[1]">
+                    <span className="font-[var(--font-body)] text-[length:var(--text-xs)] font-medium text-[color:var(--md-sys-color-on-surface)]">
                       {submitted ? 'Пройти ещё раз' : 'Начать тест'}
                     </span>
                     <ArrowRight size={14} color="var(--md-sys-color-on-surface)" />
@@ -487,10 +412,7 @@ export default function QuizRunner({
       })}
 
       {filteredQuizzes.length === 0 && (
-        <div style={{
-          padding: '32px 16px', background: '#F5F6F8', borderRadius: 12,
-          textAlign: 'center', color: '#6B7280', fontSize: 14,
-        }}>
+        <div className="py-8 px-4 bg-[#F5F6F8] rounded-[12px] text-center text-[#6B7280] text-sm">
           Ничего не найдено.
         </div>
       )}
@@ -547,29 +469,15 @@ function ActiveQuizView({
   const remainingFresh = Math.max(0, bankSize - seenSize);
 
   const quizTitleId = `quiz-title-${quiz.id}`;
+  const pillClass = 'inline-flex items-center py-1 px-[var(--space-2)] rounded-[var(--md-sys-shape-corner-full)] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.06),0_2px_6px_rgba(16,24,40,0.06)] font-[var(--font-mono)] text-[0.625rem] font-medium text-[color:var(--md-sys-color-on-surface-variant)] uppercase tracking-[0.04em] whitespace-nowrap';
   return (
-    <div role="region" aria-labelledby={quizTitleId} style={{ width: '100%' }}>
+    <div role="region" aria-labelledby={quizTitleId} className="w-full">
       {/* Back button + title */}
       <button
         type="button"
         onClick={onClose}
         aria-label="Вернуться к списку тестов"
-        style={{
-          display: 'inline-flex', alignItems: 'center', gap: 8,
-          padding: '8px 14px',
-          marginBottom: 16,
-          background: '#F5F6F8',
-          color: '#374151',
-          border: 'none',
-          borderRadius: 10,
-          cursor: 'pointer',
-          fontSize: 13,
-          fontWeight: 500,
-          fontFamily: 'inherit',
-          transition: 'background 150ms',
-        }}
-        onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
-        onMouseLeave={(e) => { e.currentTarget.style.background = '#F5F6F8'; }}
+        className="inline-flex items-center gap-2 py-2 px-3.5 mb-4 bg-[#F5F6F8] hover:bg-[#EFF1F4] text-[#374151] border-none rounded-[10px] cursor-pointer text-[13px] font-medium font-[inherit] transition-colors duration-150"
       >
         <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
           stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
@@ -583,67 +491,35 @@ function ActiveQuizView({
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1] }}
-        style={{ marginBottom: 24 }}
+        className="mb-6"
       >
-        <div style={{
-          display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 8,
-        }}>
-          <span style={{
-            display: 'inline-flex', alignItems: 'center',
-            padding: '4px var(--space-2)',
-            borderRadius: 'var(--md-sys-shape-corner-full)',
-            background: '#FFFFFF',
-            boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-            fontFamily: 'var(--font-mono)',
-            fontSize: '0.625rem', fontWeight: 500,
-            color: 'var(--md-sys-color-on-surface-variant)',
-            textTransform: 'uppercase',
-            letterSpacing: '0.04em',
-            whiteSpace: 'nowrap',
-          }}>
+        <div className="flex items-center gap-2 flex-wrap mb-2">
+          <span className={pillClass}>
             {TOPIC_LABELS[quiz.topic] ?? quiz.topic}
           </span>
           {lvl && (
-            <span style={{
-              display: 'inline-flex', alignItems: 'center',
-              padding: '4px var(--space-2)',
-              borderRadius: 'var(--md-sys-shape-corner-full)',
-              background: '#FFFFFF',
-              boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-              fontFamily: 'var(--font-mono)',
-              fontSize: '0.625rem', fontWeight: 500,
-              color: 'var(--md-sys-color-on-surface-variant)',
-              textTransform: 'uppercase',
-              letterSpacing: '0.04em',
-              whiteSpace: 'nowrap',
-            }}>
+            <span className={pillClass}>
               {lvl.label}
             </span>
           )}
         </div>
-        <h2 id={quizTitleId} style={{
-          fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 700,
-          color: '#1A1A1A', marginBottom: 6, letterSpacing: '-0.02em',
-        }}>
+        <h2 id={quizTitleId} className="font-[var(--font-display)] text-[28px] font-bold text-[#1A1A1A] mb-1.5 tracking-[-0.02em]">
           {quiz.title_ru}
         </h2>
         <p
           aria-live="polite"
-          style={{
-            fontFamily: 'var(--font-body)', fontSize: 14, color: '#6B7280',
-            lineHeight: 1.5,
-          }}
+          className="font-[var(--font-body)] text-sm text-[#6B7280] leading-[1.5]"
         >
           {total} вопросов · {estimateDuration(total)} ·{' '}
           {submitted ? (
-            <span style={{ color: passed ? '#059669' : '#B45309', fontWeight: 700 }}>
+            <span className={`font-bold ${passed ? 'text-[#059669]' : 'text-[#B45309]'}`}>
               Результат: {score}/{total} ({Math.round((score / total) * 100)}%) — {passed ? 'PASS' : 'FAIL'}
             </span>
           ) : (
             <span>Прогресс: {answeredCount}/{total} ответов</span>
           )}
           {bankSize > total && (
-            <span style={{ color: '#9CA3AF', marginLeft: 6 }}>
+            <span className="text-[#9CA3AF] ml-1.5">
               · бaнк {bankSize} вопросов{remainingFresh > 0 && remainingFresh < bankSize ? `, ещё ${remainingFresh} новых при retry` : ''}
             </span>
           )}
@@ -662,33 +538,10 @@ function ActiveQuizView({
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: qIdx * 0.05, duration: 0.3 }}
-            style={{
-              padding: '20px 22px',
-              background: '#F5F6F8',
-              borderRadius: 14,
-              marginBottom: 14,
-            }}
+            className="py-5 px-[22px] bg-[#F5F6F8] rounded-[14px] mb-[14px]"
           >
-            <div id={questionLabelId} style={{
-              fontSize: 14.5, fontWeight: 600,
-              color: '#1F2937',
-              marginBottom: 14,
-              lineHeight: 1.45,
-              display: 'flex', alignItems: 'baseline', gap: 10,
-            }}>
-              <span aria-hidden="true" style={{
-                flexShrink: 0,
-                display: 'inline-flex', alignItems: 'center',
-                padding: '4px var(--space-2)',
-                borderRadius: 'var(--md-sys-shape-corner-full)',
-                background: '#FFFFFF',
-                boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-                fontFamily: 'var(--font-mono)',
-                fontSize: '0.625rem', fontWeight: 700,
-                color: '#2563EB',
-                letterSpacing: '0.04em',
-                whiteSpace: 'nowrap',
-              }}>
+            <div id={questionLabelId} className="text-[14.5px] font-semibold text-[#1F2937] mb-[14px] leading-[1.45] flex items-baseline gap-2.5">
+              <span aria-hidden="true" className="shrink-0 inline-flex items-center py-1 px-[var(--space-2)] rounded-[var(--md-sys-shape-corner-full)] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.06),0_2px_6px_rgba(16,24,40,0.06)] font-[var(--font-mono)] text-[0.625rem] font-bold text-[#2563EB] tracking-[0.04em] whitespace-nowrap">
                 Q{qIdx + 1}
               </span>
               <span>
@@ -696,32 +549,25 @@ function ActiveQuizView({
                 {qu.q}
               </span>
             </div>
-            <div role="radiogroup" aria-labelledby={questionLabelId} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <div role="radiogroup" aria-labelledby={questionLabelId} className="flex flex-col gap-1.5">
               {qu.options.map((opt, optIdx) => {
                 const isSelected = selected === optIdx;
                 const isCorrect = qu.answer === optIdx;
-                let bg = '#FFFFFF';
-                let border = '1px solid transparent';
-                let color = '#374151';
+                let optClass = 'bg-white border border-transparent text-[#374151]';
                 if (submitted) {
-                  if (isCorrect) {
-                    bg = '#ECFDF5';
-                    border = '1px solid #A7F3D0';
-                    color = '#065F46';
-                  } else if (isSelected && !isCorrect) {
-                    bg = '#FEF2F2';
-                    border = '1px solid #FECACA';
-                    color = '#991B1B';
-                  }
+                  if (isCorrect) optClass = 'bg-[#ECFDF5] border border-[#A7F3D0] text-[#065F46]';
+                  else if (isSelected && !isCorrect) optClass = 'bg-[#FEF2F2] border border-[#FECACA] text-[#991B1B]';
+                  else optClass = 'bg-white border border-transparent text-[#374151]';
                 } else if (isSelected) {
-                  bg = '#EFF6FF';
-                  border = '1px solid #BFDBFE';
-                  color = '#1E40AF';
+                  optClass = 'bg-[#EFF6FF] border border-[#BFDBFE] text-[#1E40AF]';
                 }
                 const optLetter = String.fromCharCode(65 + optIdx);
                 const optAriaLabel = submitted
                   ? `Вариант ${optLetter}: ${opt}.${isCorrect ? ' Правильный ответ.' : ''}${isSelected && !isCorrect ? ' Ваш ответ — неверно.' : ''}${isSelected && isCorrect ? ' Ваш ответ — верно.' : ''}`
                   : `Вариант ${optLetter}: ${opt}`;
+                const radioClass = isSelected
+                  ? 'border-[#2563EB] bg-[#2563EB]'
+                  : 'border-[#D1D5DB] bg-transparent';
                 return (
                   <button
                     key={optIdx}
@@ -731,41 +577,18 @@ function ActiveQuizView({
                     aria-label={optAriaLabel}
                     onClick={() => onSelect(qIdx, optIdx)}
                     disabled={submitted}
-                    style={{
-                      width: '100%',
-                      display: 'flex', alignItems: 'flex-start', gap: 12,
-                      padding: '12px 14px',
-                      background: bg,
-                      border: border,
-                      borderRadius: 10,
-                      cursor: submitted ? 'default' : 'pointer',
-                      fontSize: 13.5,
-                      fontFamily: 'inherit',
-                      color: color,
-                      textAlign: 'left',
-                      transition: 'background 120ms',
-                    }}
+                    className={`w-full flex items-start gap-3 py-3 px-3.5 rounded-[10px] text-[13.5px] font-[inherit] text-left transition-colors duration-[120ms] ${submitted ? 'cursor-default' : 'cursor-pointer'} ${optClass}`}
                   >
-                    <span aria-hidden="true" style={{
-                      flexShrink: 0,
-                      width: 22, height: 22,
-                      borderRadius: '50%',
-                      border: `2px solid ${isSelected ? '#2563EB' : '#D1D5DB'}`,
-                      background: isSelected ? '#2563EB' : 'transparent',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      color: '#FFFFFF',
-                      fontSize: 11, fontWeight: 700,
-                      marginTop: 1,
-                    }}>
+                    <span aria-hidden="true" className={`shrink-0 w-[22px] h-[22px] rounded-full border-2 flex items-center justify-center text-white text-[11px] font-bold mt-px ${radioClass}`}>
                       {optLetter}
                     </span>
-                    <span aria-hidden="true" style={{ lineHeight: 1.45, flex: 1 }}>
+                    <span aria-hidden="true" className="leading-[1.45] flex-1">
                       {opt}
                       {submitted && isCorrect && (
-                        <span style={{ marginLeft: 8, color: '#059669', fontWeight: 700 }}>✓</span>
+                        <span className="ml-2 text-[#059669] font-bold">✓</span>
                       )}
                       {submitted && isSelected && !isCorrect && (
-                        <span style={{ marginLeft: 8, color: '#DC2626', fontWeight: 700 }}>✗</span>
+                        <span className="ml-2 text-[#DC2626] font-bold">✗</span>
                       )}
                     </span>
                   </button>
@@ -773,16 +596,7 @@ function ActiveQuizView({
               })}
             </div>
             {submitted && (
-              <div role="note" style={{
-                marginTop: 12,
-                padding: '12px 14px',
-                background: '#FFFFFF',
-                borderRadius: 8,
-                fontSize: 12.5,
-                lineHeight: 1.55,
-                color: '#374151',
-                borderLeft: '3px solid #2563EB',
-              }}>
+              <div role="note" className="mt-3 py-3 px-3.5 bg-white rounded-lg text-[12.5px] leading-[1.55] text-[#374151] border-l-[3px] border-[#2563EB]">
                 <strong>Объяснение:</strong> {qu.explanation}
               </div>
             )}
@@ -791,16 +605,7 @@ function ActiveQuizView({
       })}
 
       {/* Submit / reset */}
-      <div style={{
-        position: 'sticky',
-        bottom: 0,
-        marginTop: 20,
-        padding: '14px 0',
-        background: 'linear-gradient(to top, #FFFFFF 80%, transparent)',
-        display: 'flex',
-        gap: 10,
-        flexWrap: 'wrap',
-      }}>
+      <div className="sticky bottom-0 mt-5 py-[14px] bg-gradient-to-t from-white from-80% to-transparent flex gap-2.5 flex-wrap">
         {!submitted ? (
           <button
             type="button"
@@ -810,18 +615,7 @@ function ActiveQuizView({
               ? `Проверить тест: дано ${answeredCount} из ${total} ответов`
               : `Проверить тест недоступно: дано ${answeredCount} из ${total} ответов, ответьте на все вопросы`
             }
-            style={{
-              padding: '12px 24px',
-              background: allAnswered ? '#2563EB' : '#9CA3AF',
-              color: '#FFFFFF',
-              border: 'none',
-              borderRadius: 10,
-              cursor: allAnswered ? 'pointer' : 'not-allowed',
-              fontSize: 14,
-              fontWeight: 600,
-              fontFamily: 'inherit',
-              transition: 'background 150ms',
-            }}
+            className={`py-3 px-6 text-white border-none rounded-[10px] text-sm font-semibold font-[inherit] transition-colors duration-150 ${allAnswered ? 'bg-[#2563EB] cursor-pointer' : 'bg-[#9CA3AF] cursor-not-allowed'}`}
           >
             Проверить ({answeredCount}/{total})
           </button>
@@ -831,17 +625,7 @@ function ActiveQuizView({
               type="button"
               onClick={onReset}
               aria-label="Сбросить ответы и пройти тест ещё раз"
-              style={{
-                padding: '12px 24px',
-                background: '#F5F6F8',
-                color: '#374151',
-                border: 'none',
-                borderRadius: 10,
-                cursor: 'pointer',
-                fontSize: 14,
-                fontWeight: 500,
-                fontFamily: 'inherit',
-              }}
+              className="py-3 px-6 bg-[#F5F6F8] text-[#374151] border-none rounded-[10px] cursor-pointer text-sm font-medium font-[inherit]"
             >
               Пройти ещё раз
             </button>
@@ -849,17 +633,7 @@ function ActiveQuizView({
               type="button"
               onClick={onClose}
               aria-label="Закрыть тест и вернуться к списку"
-              style={{
-                padding: '12px 24px',
-                background: '#2563EB',
-                color: '#FFFFFF',
-                border: 'none',
-                borderRadius: 10,
-                cursor: 'pointer',
-                fontSize: 14,
-                fontWeight: 600,
-                fontFamily: 'inherit',
-              }}
+              className="py-3 px-6 bg-[#2563EB] text-white border-none rounded-[10px] cursor-pointer text-sm font-semibold font-[inherit]"
             >
               К списку тестов
             </button>
