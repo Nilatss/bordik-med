@@ -37,48 +37,32 @@ export function ResultCard({ result }: { result: CalculatorResult }) {
   };
 
   return (
-    <div style={{
-      marginTop: 24,
-      padding: '20px 24px',
-      borderRadius: 16,
-      background: `${color}0F`,
-      borderLeft: `4px solid ${color}`,
-    }}>
+    <div
+      className="mt-6 py-5 px-6 rounded-[16px] bg-[var(--result-bg)] border-l-4 border-[var(--result-color)]"
+      // eslint-disable-next-line react/forbid-dom-props -- dynamic result color tied to band
+      style={{ ['--result-color' as string]: color, ['--result-bg' as string]: `${color}0F` }}
+    >
       {/* Headline */}
-      <p style={{
-        fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-        color, textTransform: 'uppercase', letterSpacing: '0.1em',
-        margin: 0, marginBottom: 10,
-      }}>
+      <p className="font-[var(--font-mono)] text-[10px] font-bold uppercase tracking-[0.1em] m-0 mb-2.5 text-[color:var(--result-color)]">
         Результат
       </p>
-      <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, flexWrap: 'wrap' }}>
-        <span style={{
-          fontFamily: 'var(--font-display)', fontSize: 44, fontWeight: 800,
-          color, letterSpacing: '-0.02em', lineHeight: 1,
-        }}>
+      <div className="flex items-baseline gap-2.5 flex-wrap">
+        <span className="font-[var(--font-display)] text-[44px] font-extrabold tracking-[-0.02em] leading-none text-[color:var(--result-color)]">
           {value}
         </span>
         {unit && (
-          <span style={{
-            fontFamily: 'var(--font-body)', fontSize: 16, color: '#6B7280',
-            fontWeight: 500,
-          }}>
+          <span className="font-[var(--font-body)] text-base text-[#6B7280] font-medium">
             {unit}
           </span>
         )}
       </div>
-      <p style={{
-        marginTop: 14,
-        fontFamily: 'var(--font-body)', fontSize: 14, color: '#1A1A1A',
-        lineHeight: 1.6, fontWeight: 500, margin: 0,
-      }}>
+      <p className="mt-[14px] font-[var(--font-body)] text-sm text-[#1A1A1A] leading-[1.6] font-medium mb-0 mx-0">
         {linkify(interpretation)}
       </p>
 
       {/* Visual band scale */}
       {scale && scale.segments.length > 0 && (
-        <div style={{ marginTop: 20 }}>
+        <div className="mt-5">
           {/* P0-CR-1 interface widening — scale.current опционально, fallback
               на scale.value (legacy alias некоторых runners) или 0. */}
           <ResultScale
@@ -92,7 +76,7 @@ export function ResultCard({ result }: { result: CalculatorResult }) {
       {/* Longer clinical narrative */}
       {details && (
         <ResultSection title={t('tool.section.interpretation')} icon="info">
-          <p style={{ margin: 0, color: '#374151', fontSize: 13.5, lineHeight: 1.55 }}>
+          <p className="m-0 text-[#374151] text-[13.5px] leading-[1.55]">
             {linkify(details)}
           </p>
         </ResultSection>
@@ -102,19 +86,12 @@ export function ResultCard({ result }: { result: CalculatorResult }) {
           (interface widening разрешает (string|null|undefined)[]). */}
       {actions && actions.filter((a): a is string => typeof a === 'string' && a.length > 0).length > 0 && (
         <ResultSection title={t('tool.section.actions')} icon="arrow">
-          <ul style={{ margin: 0, paddingLeft: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <ul className="m-0 pl-0 list-none flex flex-col gap-1.5">
             {actions
               .filter((a): a is string => typeof a === 'string' && a.length > 0)
               .map((a, i) => (
-              <li key={i} style={{
-                display: 'flex', gap: 8, alignItems: 'flex-start',
-                color: '#374151', fontSize: 13.5, lineHeight: 1.5,
-              }}>
-                <span style={{
-                  flexShrink: 0, marginTop: 7,
-                  width: 5, height: 5, borderRadius: '50%',
-                  background: color,
-                }} />
+              <li key={i} className="flex gap-2 items-start text-[#374151] text-[13.5px] leading-[1.5]">
+                <span className="shrink-0 mt-[7px] w-[5px] h-[5px] rounded-full bg-[color:var(--result-color)]" />
                 <span>{linkify(a)}</span>
               </li>
             ))}
@@ -125,19 +102,13 @@ export function ResultCard({ result }: { result: CalculatorResult }) {
       {/* Differential / mnemonic breakdown (MUDPILES etc.) */}
       {differential && differential.length > 0 && (
         <ResultSection title={t('tool.section.differential')} icon="list">
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+          <div className="flex flex-col gap-1">
             {differential.map((d, i) => (
-              <div key={i} style={{
-                display: 'grid', gridTemplateColumns: '20px 1fr', gap: 10,
-                padding: '4px 0',
-              }}>
-                <span style={{
-                  fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 700,
-                  color, lineHeight: 1.5,
-                }}>
+              <div key={i} className="grid grid-cols-[20px_1fr] gap-2.5 py-1">
+                <span className="font-[var(--font-mono)] text-xs font-bold leading-[1.5] text-[color:var(--result-color)]">
                   {d.term}
                 </span>
-                <span style={{ color: '#374151', fontSize: 13.5, lineHeight: 1.5 }}>
+                <span className="text-[#374151] text-[13.5px] leading-[1.5]">
                   {d.desc}
                 </span>
               </div>
@@ -149,15 +120,10 @@ export function ResultCard({ result }: { result: CalculatorResult }) {
       {/* Caveats / pitfalls */}
       {caveats && caveats.length > 0 && (
         <ResultSection title={t('tool.section.caveats')} icon="warn">
-          <ul style={{ margin: 0, paddingLeft: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <ul className="m-0 pl-0 list-none flex flex-col gap-1.5">
             {caveats.map((c, i) => (
-              <li key={i} style={{
-                display: 'flex', gap: 8, alignItems: 'flex-start',
-                color: '#374151', fontSize: 13.5, lineHeight: 1.5,
-              }}>
-                <span style={{
-                  flexShrink: 0, marginTop: 5, color: '#F59E0B', fontSize: 12, fontWeight: 700,
-                }}>⚠</span>
+              <li key={i} className="flex gap-2 items-start text-[#374151] text-[13.5px] leading-[1.5]">
+                <span className="shrink-0 mt-[5px] text-[#F59E0B] text-xs font-bold">⚠</span>
                 <span>{linkify(c)}</span>
               </li>
             ))}
@@ -168,28 +134,12 @@ export function ResultCard({ result }: { result: CalculatorResult }) {
       {/* Related tools */}
       {related && related.length > 0 && (
         <ResultSection title={t('tool.section.related')} icon="link">
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+          <div className="flex flex-wrap gap-1.5">
             {related.map((r) => (
               <button
                 key={r.id}
                 onClick={() => openTool(r.id)}
-                style={{
-                  display: 'inline-flex', alignItems: 'center', gap: 6,
-                  padding: '5px 12px',
-                  background: '#FFFFFF', color: '#1A1A1A',
-                  border: '1px solid #E5E7EB', borderRadius: 999,
-                  cursor: 'pointer',
-                  fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 500,
-                  transition: 'background 150ms, border-color 150ms',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = '#F5F6F8';
-                  e.currentTarget.style.borderColor = '#D1D5DB';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = '#FFFFFF';
-                  e.currentTarget.style.borderColor = '#E5E7EB';
-                }}
+                className="inline-flex items-center gap-1.5 py-[5px] px-3 bg-white hover:bg-[#F5F6F8] text-[#1A1A1A] border border-[#E5E7EB] hover:border-[#D1D5DB] rounded-full cursor-pointer font-[var(--font-body)] text-xs font-medium transition-[background,border-color] duration-150"
               >
                 {r.title}
                 <svg width={11} height={11} viewBox="0 0 24 24" fill="none"
@@ -208,28 +158,12 @@ export function ResultCard({ result }: { result: CalculatorResult }) {
           send the user to a lesson that doesn't actually cover this tool. */}
       {relatedCourses && relatedCourses.length > 0 && (
         <ResultSection title={t('tool.section.relatedCourses')} icon="book">
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+          <div className="flex flex-wrap gap-1.5">
             {relatedCourses.slice(0, 3).map((c) => (
               <button
                 key={c.id}
                 onClick={() => openRelatedCourse(c.id)}
-                style={{
-                  display: 'inline-flex', alignItems: 'center', gap: 6,
-                  padding: '5px 12px',
-                  background: '#FFFFFF', color: '#1A1A1A',
-                  border: '1px solid #E5E7EB', borderRadius: 999,
-                  cursor: 'pointer',
-                  fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 500,
-                  transition: 'background 150ms, border-color 150ms',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = '#F5F6F8';
-                  e.currentTarget.style.borderColor = '#D1D5DB';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = '#FFFFFF';
-                  e.currentTarget.style.borderColor = '#E5E7EB';
-                }}
+                className="inline-flex items-center gap-1.5 py-[5px] px-3 bg-white hover:bg-[#F5F6F8] text-[#1A1A1A] border border-[#E5E7EB] hover:border-[#D1D5DB] rounded-full cursor-pointer font-[var(--font-body)] text-xs font-medium transition-[background,border-color] duration-150"
               >
                 {c.title}
                 <svg width={11} height={11} viewBox="0 0 24 24" fill="none"
@@ -261,17 +195,10 @@ export function ResultSection({ title, icon, children }: {
   }[icon];
 
   return (
-    <div style={{ marginTop: 18, paddingTop: 14, borderTop: '1px solid rgba(0,0,0,0.06)' }}>
-      <div style={{
-        display: 'flex', alignItems: 'center', gap: 7,
-        marginBottom: 10,
-        color: '#6B7280',
-      }}>
+    <div className="mt-[18px] pt-[14px] border-t border-black/[0.06]">
+      <div className="flex items-center gap-[7px] mb-2.5 text-[#6B7280]">
         {iconEl}
-        <span style={{
-          fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-          textTransform: 'uppercase', letterSpacing: '0.08em',
-        }}>
+        <span className="font-[var(--font-mono)] text-[10px] font-bold uppercase tracking-[0.08em]">
           {title}
         </span>
       </div>
@@ -354,27 +281,25 @@ export function ResultScale({ segments, current, unit }: {
   // marker width; compute через translateX вместо fixed pixel offset.
   return (
     <div>
-      <div style={{
-        position: 'relative', height: 10, borderRadius: 999,
-        overflow: 'hidden', display: 'flex',
-        background: '#EEF0F4',
-      }}>
+      <div className="relative h-2.5 rounded-full overflow-hidden flex bg-[#EEF0F4]">
         {normalised.map((s, i) => {
           const w = (segWidth(s) / total) * 100;
           return (
-            <div key={i} title={`${s.label} (${s.min}${Number.isFinite(s.max) ? (s.min === s.max ? '' : '-' + s.max) : '+'})`}
-              style={{ flex: `0 0 ${w}%`, background: s.color, opacity: 0.65 }} />
+            <div
+              key={i}
+              title={`${s.label} (${s.min}${Number.isFinite(s.max) ? (s.min === s.max ? '' : '-' + s.max) : '+'})`}
+              className="opacity-65 bg-[var(--seg-color)] basis-[var(--seg-width)] flex-grow-0 flex-shrink-0"
+              // eslint-disable-next-line react/forbid-dom-props -- per-segment dynamic width + color
+              style={{ ['--seg-width' as string]: `${w}%`, ['--seg-color' as string]: s.color }}
+            />
           );
         })}
         {/* Marker — 4px wide, centred at markerPct via translateX. */}
-        <div style={{
-          position: 'absolute', top: -3, bottom: -3,
-          left: `${markerPct}%`,
-          width: 4, borderRadius: 2,
-          transform: 'translateX(-50%)',
-          background: '#1A1A1A',
-          boxShadow: '0 0 0 2px #FFFFFF',
-        }} />
+        <div
+          className="absolute -top-[3px] -bottom-[3px] w-1 rounded-[2px] -translate-x-1/2 bg-[#1A1A1A] shadow-[0_0_0_2px_#FFFFFF] left-[var(--marker-pct)]"
+          // eslint-disable-next-line react/forbid-dom-props -- dynamic marker position
+          style={{ ['--marker-pct' as string]: `${markerPct}%` }}
+        />
       </div>
       {/*
         Label row. Current-value label absolutely positioned так sit'ит
@@ -382,43 +307,33 @@ export function ResultScale({ segments, current, unit }: {
         к edge (≤ 12 % или ≥ 88 %) suppress'им near edge label так
         current-value text не collides с ним.
       */}
-      <div style={{
-        position: 'relative',
-        marginTop: 6,
-        height: 14,
-        fontFamily: 'var(--font-mono)', fontSize: 10.5, color: '#9CA3AF',
-      }}>
+      <div className="relative mt-1.5 h-[14px] font-[var(--font-mono)] text-[10.5px] text-[#9CA3AF]">
         {markerPct > 12 && (
-          <span style={{ position: 'absolute', left: 0, top: 0 }}>
+          <span className="absolute left-0 top-0">
             {finiteMin}{unit ? ' ' + unit : ''}
           </span>
         )}
-        <span style={{
-          position: 'absolute',
-          left: `${markerPct}%`,
-          top: 0,
-          transform: 'translateX(-50%)',
-          color: '#374151', fontWeight: 700,
-          whiteSpace: 'nowrap',
-        }}>
+        <span
+          className="absolute top-0 -translate-x-1/2 text-[#374151] font-bold whitespace-nowrap left-[var(--marker-pct)]"
+          // eslint-disable-next-line react/forbid-dom-props -- dynamic marker position
+          style={{ ['--marker-pct' as string]: `${markerPct}%` }}
+        >
           {current}{unit ? ' ' + unit : ''}
         </span>
         {markerPct < 88 && (
-          <span style={{ position: 'absolute', right: 0, top: 0 }}>
+          <span className="absolute right-0 top-0">
             {Number.isFinite(finiteMax) ? finiteMax : `${spanMax}+`}{unit ? ' ' + unit : ''}
           </span>
         )}
       </div>
-      <div style={{
-        display: 'flex', flexWrap: 'wrap', gap: 10,
-        marginTop: 10,
-      }}>
+      <div className="flex flex-wrap gap-2.5 mt-2.5">
         {segments.map((s, i) => (
-          <div key={i} style={{
-            display: 'inline-flex', alignItems: 'center', gap: 6,
-            fontSize: 11.5, color: '#6B7280',
-          }}>
-            <span style={{ width: 8, height: 8, borderRadius: 2, background: s.color }} />
+          <div key={i} className="inline-flex items-center gap-1.5 text-[11.5px] text-[#6B7280]">
+            <span
+              className="w-2 h-2 rounded-[2px] bg-[var(--seg-color)]"
+              // eslint-disable-next-line react/forbid-dom-props -- legend swatch dynamic color
+              style={{ ['--seg-color' as string]: s.color }}
+            />
             <span>{s.label}</span>
           </div>
         ))}
