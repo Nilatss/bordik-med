@@ -44,19 +44,7 @@ export function EditableName({ value, onSave }: EditableNameProps) {
           if (e.key === 'Enter') commit();
           if (e.key === 'Escape') { setDraft(value); setIsEditing(false); }
         }}
-        style={{
-          fontFamily: 'var(--font-display)', fontSize: 16, fontWeight: 600,
-          color: '#1A1A1A',
-          background: '#DFE2E8',
-          border: 'none',
-          borderRadius: 8,
-          padding: '6px 14px',
-          marginBottom: 6,
-          textAlign: 'center',
-          outline: 'none',
-          minWidth: 180,
-          maxWidth: '80%',
-        }}
+        className="font-[var(--font-display)] text-base font-semibold text-[#1A1A1A] bg-[#DFE2E8] border-none rounded-lg py-1.5 px-3.5 mb-1.5 text-center outline-none min-w-[180px] max-w-[80%]"
       />
     );
   }
@@ -64,15 +52,7 @@ export function EditableName({ value, onSave }: EditableNameProps) {
   return (
     <button
       onClick={() => { setDraft(value); setIsEditing(true); }}
-      style={{
-        fontFamily: 'var(--font-display)', fontSize: 16, fontWeight: 600,
-        color: '#1A1A1A', marginBottom: 6,
-        background: 'transparent', border: 'none', padding: '2px 8px',
-        borderRadius: 6, cursor: 'pointer',
-        display: 'inline-flex', alignItems: 'center', gap: 6,
-      }}
-      onMouseEnter={(e) => { e.currentTarget.style.background = '#EEF0F3'; }}
-      onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+      className="font-[var(--font-display)] text-base font-semibold text-[#1A1A1A] mb-1.5 bg-transparent hover:bg-[#EEF0F3] border-none py-0.5 px-2 rounded-md cursor-pointer inline-flex items-center gap-1.5 transition-colors duration-150"
     >
       {value}
       <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="#BBB" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">

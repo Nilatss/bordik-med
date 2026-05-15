@@ -20,19 +20,9 @@ export default function ZetDisclaimer() {
     <aside
       role="note"
       aria-label="Юридическое уведомление: образовательный сервис, не выдаёт ЗЕТ"
-      style={{
-        marginBottom: 'var(--space-5)',
-        padding: '12px 16px',
-        background: '#F5F6F8',
-        border: '1px solid #E5E7EB',
-        borderRadius: 12,
-        fontSize: 13,
-        lineHeight: 1.55,
-        color: '#4B5563',
-        fontFamily: 'var(--font-body)',
-      }}
+      className="mb-5 py-3 px-4 bg-[#F5F6F8] border border-[#E5E7EB] rounded-xl text-[13px] leading-[1.55] text-[#4B5563] font-[var(--font-body)]"
     >
-      <strong style={{ color: '#1A1A1A' }}>
+      <strong className="text-[#1A1A1A]">
         Bordik — образовательный справочный сервис.
       </strong>{' '}
       Мы не выдаём ЗЕТ для периодической аккредитации в РФ, не заменяем
@@ -40,11 +30,7 @@ export default function ZetDisclaimer() {
       пациентам.{' '}
       <a
         href="/terms#zet"
-        style={{
-          color: '#1A1A1A',
-          textDecoration: 'underline',
-          textUnderlineOffset: 2,
-        }}
+        className="text-[#1A1A1A] underline underline-offset-2"
       >
         Подробнее
       </a>

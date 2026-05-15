@@ -20,7 +20,7 @@ export function linkify(text: string): ReactNode {
           href={part}
           target="_blank"
           rel="noopener noreferrer"
-          style={{ color: '#2563EB', textDecoration: 'underline', wordBreak: 'break-all' }}
+          className="text-[#2563EB] underline break-all"
         >
           {part}
         </a>

@@ -18,21 +18,14 @@ interface DetailBlockProps {
 }
 
 export function DetailBlock({ label, tone = 'neutral', children }: DetailBlockProps) {
+  const labelColor = tone === 'warning' ? 'text-[#92400E]' : 'text-[#9CA3AF]';
+  const bodyColor = tone === 'warning' ? 'text-[#78350F]' : 'text-[#374151]';
   return (
     <div>
-      <div style={{
-        fontSize: 11,
-        fontWeight: 600,
-        letterSpacing: '0.06em',
-        textTransform: 'uppercase',
-        color: tone === 'warning' ? '#92400E' : '#9CA3AF',
-        marginBottom: 6,
-      }}>
+      <div className={`text-[11px] font-semibold tracking-[0.06em] uppercase mb-1.5 ${labelColor}`}>
         {label}
       </div>
-      <div style={{
-        color: tone === 'warning' ? '#78350F' : '#374151',
-      }}>
+      <div className={bodyColor}>
         {children}
       </div>
     </div>

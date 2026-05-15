@@ -63,19 +63,14 @@ export function ShareButton({ title, text, url, className, children }: Props) {
     setTimeout(() => setState('idle'), 2200);
   }
 
+  // P1-CR-4: migrated from inline style to Tailwind utility classes.
+  const bgClass = state === 'copied' ? 'bg-[#22C55E]' : 'bg-[#3B82F6]';
   return (
     <button
       type="button"
       onClick={onClick}
       aria-label={`Поделиться: ${title}`}
-      className={className}
-      style={{
-        padding: '8px 14px',
-        background: state === 'copied' ? '#22C55E' : '#3B82F6',
-        color: '#FFFFFF', border: 'none', borderRadius: 10,
-        fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
-        cursor: 'pointer', transition: 'background 180ms',
-      }}
+      className={`py-2 px-3.5 ${bgClass} text-white border-none rounded-[10px] font-[var(--font-body)] text-[13px] font-semibold cursor-pointer transition-colors duration-[180ms] ${className ?? ''}`.trim()}
     >
       {state === 'copied' ? 'Ссылка скопирована' :
        state === 'error'  ? 'Не удалось скопировать' :

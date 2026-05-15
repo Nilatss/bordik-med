@@ -285,7 +285,7 @@ export default function DiagnosticTest({ onClose }: { onClose: () => void }) {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, ease: [0.05, 0.7, 0.1, 1] }}
-      style={{ maxWidth: 760, margin: '0 auto', padding: '0 var(--space-4)' }}
+      className="max-w-[760px] mx-auto px-4"
     >
       <DiagnosticHeader onClose={onClose} />
       <DiagnosticProgress

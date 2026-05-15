@@ -18,31 +18,17 @@ interface Props {
 
 export default function DifficultyFilter({ value, onChange }: Props) {
   return (
-    <div style={{
-      display: 'flex', gap: 8, marginBottom: 'var(--space-4)', flexWrap: 'wrap',
-    }}>
+    <div className="flex gap-2 mb-4 flex-wrap">
       {OPTIONS.map((opt) => {
         const isActive = value === opt.value;
+        const activeClass = isActive
+          ? 'bg-[#1A1A1A] text-white font-semibold'
+          : 'bg-[#F5F6F8] text-[#555] font-medium hover:bg-[#E8E9ED]';
         return (
           <button
             key={opt.value}
             onClick={() => onChange(opt.value)}
-            style={{
-              padding: '8px 16px',
-              borderRadius: 'var(--md-sys-shape-corner-full)',
-              background: isActive ? '#1A1A1A' : '#F5F6F8',
-              color: isActive ? '#FFFFFF' : '#555',
-              border: 'none', cursor: 'pointer',
-              fontFamily: 'var(--font-body)', fontSize: 13,
-              fontWeight: isActive ? 600 : 500,
-              transition: 'all 150ms ease',
-            }}
-            onMouseEnter={(e) => {
-              if (!isActive) e.currentTarget.style.background = '#E8E9ED';
-            }}
-            onMouseLeave={(e) => {
-              if (!isActive) e.currentTarget.style.background = '#F5F6F8';
-            }}
+            className={`py-2 px-4 rounded-[var(--md-sys-shape-corner-full)] ${activeClass} border-none cursor-pointer font-[var(--font-body)] text-[13px] transition-all duration-150 ease-in`}
           >
             {opt.label}
           </button>

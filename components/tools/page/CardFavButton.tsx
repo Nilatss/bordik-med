@@ -32,6 +32,10 @@ export const CardFavButton = React.memo(function CardFavButton({
     }),
     [],
   );
+  // P1-CR-4: migrated from inline style to Tailwind classes (hover via :hover variant).
+  const stateClass = isFavourite
+    ? 'bg-[#FEF3C7] text-[#D97706] border border-[#FDE68A] hover:bg-[#FDE68A]'
+    : 'bg-white text-[#9CA3AF] border border-transparent shadow-[0_1px_2px_rgba(16,24,40,0.06),0_2px_6px_rgba(16,24,40,0.06)] hover:bg-[#F5F6F8]';
   return (
     <motion.div
       role="button"
@@ -46,33 +50,14 @@ export const CardFavButton = React.memo(function CardFavButton({
       aria-label={ariaLabel}
       whileTap={{ scale: 0.92 }}
       transition={{ type: 'spring', stiffness: 480, damping: 22 }}
-      style={{
-        width: 26, height: 26, borderRadius: 8,
-        position: 'relative',
-        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-        background: isFavourite ? '#FEF3C7' : '#FFFFFF',
-        color: isFavourite ? '#D97706' : '#9CA3AF',
-        border: isFavourite ? '1px solid #FDE68A' : '1px solid transparent',
-        cursor: 'pointer', flexShrink: 0,
-        overflow: 'visible',
-        boxShadow: isFavourite
-          ? 'none'
-          : '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-        transition: 'background 160ms, color 160ms, box-shadow 160ms, border-color 160ms',
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.background = isFavourite ? '#FDE68A' : '#F5F6F8';
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.background = isFavourite ? '#FEF3C7' : '#FFFFFF';
-      }}
+      className={`w-[26px] h-[26px] rounded-lg relative inline-flex items-center justify-center cursor-pointer shrink-0 overflow-visible transition-[background,color,box-shadow,border-color] duration-[160ms] ${stateClass}`}
     >
       <motion.span
         animate={isFavourite
           ? { scale: [0.6, 1.4, 1], rotate: [-90, 12, 0] }
           : { scale: 1, rotate: 0 }}
         transition={{ duration: 0.45, ease: [0.05, 0.7, 0.1, 1] }}
-        style={{ display: 'inline-flex' }}
+        className="inline-flex"
       >
         <svg width={13} height={13} viewBox="0 0 24 24"
           fill={isFavourite ? 'currentColor' : 'none'}
@@ -88,13 +73,7 @@ export const CardFavButton = React.memo(function CardFavButton({
             initial={{ x: 0, y: 0, opacity: 1, scale: 0.6 }}
             animate={{ x: s.x, y: s.y, opacity: 0, scale: 0.2 }}
             transition={{ duration: 0.6, ease: [0.2, 0.8, 0.2, 1], delay: i * 0.012 }}
-            style={{
-              position: 'absolute', left: '50%', top: '50%',
-              width: 4, height: 4, marginLeft: -2, marginTop: -2,
-              borderRadius: '50%',
-              background: i % 2 === 0 ? '#F59E0B' : '#FBBF24',
-              pointerEvents: 'none',
-            }}
+            className={`absolute left-1/2 top-1/2 w-1 h-1 -ml-0.5 -mt-0.5 rounded-full pointer-events-none ${i % 2 === 0 ? 'bg-[#F59E0B]' : 'bg-[#FBBF24]'}`}
           />
         ))}
       </AnimatePresence>

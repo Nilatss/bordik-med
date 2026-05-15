@@ -45,6 +45,14 @@ export const CardOfflineButton = React.memo(function CardOfflineButton({
     setState(ok ? 'cached' : 'available');
   };
 
+  // P1-CR-4: migrated from inline style to Tailwind utility classes.
+  // Hover states теперь через `hover:` modifier (CSS) вместо JS handlers.
+  const baseClass = 'relative w-[26px] h-[26px] rounded-lg inline-flex items-center justify-center shrink-0 transition-[background,color,box-shadow,border-color] duration-[160ms]';
+  const stateClass = isCached
+    ? 'bg-[#ECFDF5] text-[#065F46] border border-[#A7F3D0] hover:bg-[#D1FAE5]'
+    : 'bg-white text-[#9CA3AF] border border-transparent shadow-[0_1px_2px_rgba(16,24,40,0.06),0_2px_6px_rgba(16,24,40,0.06)] hover:bg-[#F5F6F8]';
+  const cursorClass = isSaving ? 'cursor-wait opacity-60' : 'cursor-pointer opacity-100';
+
   return (
     <motion.div
       role="button"
@@ -62,29 +70,7 @@ export const CardOfflineButton = React.memo(function CardOfflineButton({
         : isSaving ? 'Сохраняем…' : 'Скачать для офлайн-доступа'}
       whileTap={{ scale: 0.92 }}
       transition={{ type: 'spring', stiffness: 480, damping: 22 }}
-      style={{
-        width: 26, height: 26, borderRadius: 8,
-        position: 'relative',
-        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-        background: isCached ? '#ECFDF5' : '#FFFFFF',
-        color: isCached ? '#065F46' : '#9CA3AF',
-        border: isCached ? '1px solid #A7F3D0' : '1px solid transparent',
-        cursor: isSaving ? 'wait' : 'pointer',
-        flexShrink: 0,
-        boxShadow: isCached
-          ? 'none'
-          : '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-        transition: 'background 160ms, color 160ms, box-shadow 160ms, border-color 160ms',
-        opacity: isSaving ? 0.6 : 1,
-      }}
-      onMouseEnter={(e) => {
-        if (isSaving) return;
-        e.currentTarget.style.background = isCached ? '#D1FAE5' : '#F5F6F8';
-      }}
-      onMouseLeave={(e) => {
-        if (isSaving) return;
-        e.currentTarget.style.background = isCached ? '#ECFDF5' : '#FFFFFF';
-      }}
+      className={`${baseClass} ${stateClass} ${cursorClass}`}
     >
       {isCached ? (
         <svg width={13} height={13} viewBox="0 0 24 24" fill="none"
