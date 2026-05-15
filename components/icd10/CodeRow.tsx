@@ -44,103 +44,40 @@ export function CodeRow({ code, query, variant = 'compact' }: CodeRowProps) {
   const isCard = variant === 'card';
   const titleText = displayTitle(code);
 
-  // Compact (внутри ChapterAccordion) и Card (в FlatList search results) —
-  // одна и та же модель, но разная плотность.
-  const containerStyle: React.CSSProperties = isCard ? {
-    background: '#FFFFFF',
-    border: '1px solid #F0F1F5',
-    borderRadius: 14,
-    overflow: 'hidden',
-    transition: 'border-color 150ms, background 150ms',
-  } : {
-    transition: 'background 120ms',
-  };
+  const containerClass = isCard
+    ? 'bg-white hover:bg-[#F5F6F8] border border-[#F0F1F5] hover:border-[#E2E4EA] rounded-[14px] overflow-hidden transition-[border-color,background] duration-150'
+    : 'bg-transparent hover:bg-[#EFF1F4] transition-colors duration-[120ms]';
 
-  const headerStyle: React.CSSProperties = {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 14,
-    padding: isCard ? '14px 20px' : '10px 20px',
-    background: 'transparent',
-    border: 'none',
-    width: '100%',
-    cursor: hasDetails ? 'pointer' : 'default',
-    textAlign: 'left',
-    fontFamily: 'inherit',
-    color: 'inherit',
-  };
+  const headerClass = `flex items-center gap-[14px] ${isCard ? 'py-[14px] px-5' : 'py-2.5 px-5'} bg-transparent border-none w-full text-left font-[inherit] text-inherit ${hasDetails ? 'cursor-pointer' : 'cursor-default'}`;
 
   const TitleNode = query
     ? <Highlight text={titleText} query={query} />
     : titleText;
 
   return (
-    <div
-      style={containerStyle}
-      onMouseEnter={(e) => {
-        if (isCard) {
-          // Card variant: parent — белая сетка, hover из белого → серый
-          e.currentTarget.style.background = '#F5F6F8';
-          e.currentTarget.style.borderColor = '#E2E4EA';
-        } else {
-          // Compact variant: parent уже #F5F6F8 — hover нужен темнее
-          // чтобы было видно. #EFF1F4 — на 1 шаг темнее серого.
-          e.currentTarget.style.background = '#EFF1F4';
-        }
-      }}
-      onMouseLeave={(e) => {
-        if (isCard) {
-          e.currentTarget.style.background = '#FFFFFF';
-          e.currentTarget.style.borderColor = '#F0F1F5';
-        } else {
-          e.currentTarget.style.background = 'transparent';
-        }
-      }}
-    >
+    <div className={containerClass}>
       <button
         type="button"
         onClick={() => { if (hasDetails) setExpanded((v) => !v); }}
         aria-expanded={hasDetails ? expanded : undefined}
-        style={headerStyle}
+        className={headerClass}
       >
-        <span style={{
-          flex: '0 0 80px',
-          fontFamily: 'var(--font-mono, ui-monospace)',
-          fontWeight: 700, fontSize: isCard ? 13 : 12.5, color: '#2563EB',
-          letterSpacing: '0.02em',
-        }}>
+        <span className={`flex-[0_0_80px] font-[var(--font-mono,ui-monospace)] font-bold ${isCard ? 'text-[13px]' : 'text-[12.5px]'} text-[#2563EB] tracking-[0.02em]`}>
           {query ? <Highlight text={code.code} query={query} /> : code.code}
         </span>
-        <span style={{
-          flex: 1, fontSize: isCard ? 14 : 13.5,
-          color: '#1A1A1A', lineHeight: 1.45,
-        }}>
+        <span className={`flex-1 ${isCard ? 'text-sm' : 'text-[13.5px]'} text-[#1A1A1A] leading-[1.45]`}>
           {TitleNode}
         </span>
         {isCard && (
-          <span style={{
-            flex: '0 0 auto',
-            fontFamily: 'var(--font-mono, ui-monospace)',
-            fontSize: 11, fontWeight: 700,
-            color: '#2563EB',
-            background: '#EFF6FF',
-            border: '1px solid #DBEAFE',
-            padding: '2px 8px', borderRadius: 999,
-            whiteSpace: 'nowrap',
-            letterSpacing: '0.04em',
-          }}>
+          <span className="flex-[0_0_auto] font-[var(--font-mono,ui-monospace)] text-[11px] font-bold text-[#2563EB] bg-[#EFF6FF] border border-[#DBEAFE] py-0.5 px-2 rounded-full whitespace-nowrap tracking-[0.04em]">
             {code.chapter}
           </span>
         )}
         {hasDetails && (
-          <span style={{
-            flex: '0 0 auto',
-            color: '#9CA3AF',
-            fontSize: 12,
-            transform: expanded ? 'rotate(90deg)' : 'rotate(0deg)',
-            transition: 'transform 150ms',
-            display: 'inline-flex',
-          }} aria-hidden>
+          <span
+            className={`flex-[0_0_auto] text-[#9CA3AF] text-xs transition-transform duration-150 inline-flex ${expanded ? 'rotate-90' : ''}`}
+            aria-hidden
+          >
             ▶
           </span>
         )}
@@ -157,15 +94,9 @@ export function CodeRow({ code, query, variant = 'compact' }: CodeRowProps) {
               height: { duration: 0.22, ease: [0.05, 0.7, 0.1, 1] },
               opacity: { duration: 0.16 },
             }}
-            style={{ overflow: 'hidden' }}
+            className="overflow-hidden"
           >
-            <div style={{
-              padding: '14px 20px 18px',
-              background: isCard ? '#FAFBFC' : '#FFFFFF',
-              borderTop: '1px solid #F0F1F5',
-              fontSize: 13.5, lineHeight: 1.55, color: '#374151',
-              display: 'flex', flexDirection: 'column', gap: 12,
-            }}>
+            <div className={`pt-[14px] px-5 pb-[18px] ${isCard ? 'bg-[#FAFBFC]' : 'bg-white'} border-t border-[#F0F1F5] text-[13.5px] leading-[1.55] text-[#374151] flex flex-col gap-3`}>
               {code.definition && (
                 <DetailBlock label="Определение">
                   {code.definition}
@@ -194,21 +125,21 @@ export function CodeRow({ code, query, variant = 'compact' }: CodeRowProps) {
               )}
               {code.inclusion && code.inclusion.length > 0 && (
                 <DetailBlock label="Включает">
-                  <ul style={{ margin: 0, paddingLeft: 18 }}>
+                  <ul className="m-0 pl-[18px]">
                     {code.inclusion.map((x, i) => <li key={i}>{x}</li>)}
                   </ul>
                 </DetailBlock>
               )}
               {!code.inclusion?.length && code.inheritedInclusion && code.inheritedInclusion.length > 0 && (
                 <DetailBlock label={`Включает (от родителя ${code.inheritedFrom ?? ''})`}>
-                  <ul style={{ margin: 0, paddingLeft: 18 }}>
+                  <ul className="m-0 pl-[18px]">
                     {code.inheritedInclusion.map((x, i) => <li key={i}>{x}</li>)}
                   </ul>
                 </DetailBlock>
               )}
               {code.exclusion && code.exclusion.length > 0 && (
                 <DetailBlock label="Не включает (исключения)">
-                  <ul style={{ margin: 0, paddingLeft: 18 }}>
+                  <ul className="m-0 pl-[18px]">
                     {code.exclusion.map((x, i) => <li key={i}>{x}</li>)}
                   </ul>
                 </DetailBlock>
