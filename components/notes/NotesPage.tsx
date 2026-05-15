@@ -97,131 +97,67 @@ export default function NotesPage() {
   }, [editingTitle, editingBody]);
 
   return (
-    <div style={{ width: '100%', maxWidth: 'var(--content-max)', margin: '0 auto' }}>
-      <div style={{ marginBottom: 22 }}>
-        <h1 style={{
-          fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 700,
-          color: '#1A1A1A', letterSpacing: '-0.02em', marginBottom: 4, marginTop: 0,
-        }}>
+    <div className="w-full max-w-[var(--content-max)] mx-auto">
+      <div className="mb-[22px]">
+        <h1 className="font-[var(--font-display)] text-[28px] font-bold text-[#1A1A1A] tracking-[-0.02em] mb-1 mt-0">
           Мои заметки
         </h1>
-        <p style={{
-          fontFamily: 'var(--font-body)', fontSize: 14, color: '#6B7280',
-          margin: 0, lineHeight: 1.5,
-        }}>
+        <p className="font-[var(--font-body)] text-sm text-[#6B7280] m-0 leading-[1.5]">
           Личные заметки — клинические наблюдения, ссылки, кастомные подсказки.
           Хранятся локально в браузере.
         </p>
       </div>
 
       {notes.length === 0 && !activeId ? (
-        <div style={{
-          padding: '40px 20px',
-          background: '#F5F6F8',
-          borderRadius: 14,
-          textAlign: 'center',
-          color: '#6B7280',
-        }}>
-          <div style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: 17, fontWeight: 700,
-            color: '#1A1A1A',
-            marginBottom: 8,
-          }}>
+        <div className="py-10 px-5 bg-[#F5F6F8] rounded-[14px] text-center text-[#6B7280]">
+          <div className="font-[var(--font-display)] text-[17px] font-bold text-[#1A1A1A] mb-2">
             Пока нет заметок
           </div>
-          <p style={{ margin: '0 auto 18px', maxWidth: 460, fontSize: 13.5, lineHeight: 1.55 }}>
+          <p className="mx-auto mb-[18px] max-w-[460px] text-[13.5px] leading-[1.55]">
             Создайте заметку для записи клинических наблюдений, ссылок,
             кастомных подсказок.
           </p>
           <button
             type="button"
             onClick={createNew}
-            style={{
-              padding: '10px 20px',
-              background: '#1A1A1A',
-              color: '#FFFFFF',
-              border: 'none',
-              borderRadius: 999,
-              cursor: 'pointer',
-              fontFamily: 'var(--font-body)',
-              fontSize: 13,
-              fontWeight: 600,
-            }}
+            className="py-2.5 px-5 bg-[#1A1A1A] text-white border-none rounded-full cursor-pointer font-[var(--font-body)] text-[13px] font-semibold"
           >
             Создать первую заметку
           </button>
         </div>
       ) : (
         <>
-          <div style={{
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            gap: 10, marginBottom: 14, flexWrap: 'wrap',
-          }}>
-            <p style={{ fontSize: 13, color: '#6B7280', margin: 0 }}>
-              Всего заметок: <strong style={{ color: '#1A1A1A' }}>{notes.length}</strong>
+          <div className="flex items-center justify-between gap-2.5 mb-[14px] flex-wrap">
+            <p className="text-[13px] text-[#6B7280] m-0">
+              Всего заметок: <strong className="text-[#1A1A1A]">{notes.length}</strong>
               {' · '}
-              <span style={{ color: '#9CA3AF' }}>
+              <span className="text-[#9CA3AF]">
                 хранятся локально в браузере, синхронизация скоро
               </span>
             </p>
             <button
               type="button"
               onClick={createNew}
-              style={{
-                padding: '8px 14px',
-                background: '#1A1A1A',
-                color: '#FFFFFF',
-                border: 'none',
-                borderRadius: 999,
-                cursor: 'pointer',
-                fontFamily: 'var(--font-body)',
-                fontSize: 12, fontWeight: 600,
-              }}
+              className="py-2 px-3.5 bg-[#1A1A1A] text-white border-none rounded-full cursor-pointer font-[var(--font-body)] text-xs font-semibold"
             >
               + Новая заметка
             </button>
           </div>
 
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: '260px 1fr',
-            gap: 14,
-            minHeight: 400,
-          }}>
+          <div className="grid grid-cols-[260px_1fr] gap-[14px] min-h-[400px]">
             {/* Notes list */}
-            <div style={{
-              background: '#F5F6F8',
-              borderRadius: 12,
-              padding: 8,
-              maxHeight: 600,
-              overflowY: 'auto',
-            }}>
+            <div className="bg-[#F5F6F8] rounded-[12px] p-2 max-h-[600px] overflow-y-auto">
               {notes.map((n) => (
                 <button
                   key={n.id}
                   type="button"
                   onClick={() => setActiveId(n.id)}
-                  style={{
-                    display: 'block',
-                    width: '100%',
-                    padding: '10px 12px',
-                    background: n.id === activeId ? '#FFFFFF' : 'transparent',
-                    border: 'none',
-                    borderRadius: 8,
-                    cursor: 'pointer',
-                    textAlign: 'left',
-                    marginBottom: 2,
-                    fontFamily: 'inherit',
-                  }}
+                  className={`block w-full py-2.5 px-3 border-none rounded-lg cursor-pointer text-left mb-0.5 font-[inherit] ${n.id === activeId ? 'bg-white' : 'bg-transparent'}`}
                 >
-                  <div style={{
-                    fontSize: 13, fontWeight: 600, color: '#1A1A1A',
-                    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                  }}>
+                  <div className="text-[13px] font-semibold text-[#1A1A1A] overflow-hidden text-ellipsis whitespace-nowrap">
                     {n.title || '(без названия)'}
                   </div>
-                  <div style={{ fontSize: 11, color: '#9CA3AF', marginTop: 2 }}>
+                  <div className="text-[11px] text-[#9CA3AF] mt-0.5">
                     {new Date(n.updated).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })}
                   </div>
                 </button>
@@ -229,12 +165,7 @@ export default function NotesPage() {
             </div>
 
             {/* Editor */}
-            <div style={{
-              background: '#F5F6F8',
-              borderRadius: 12,
-              padding: 16,
-              display: 'flex', flexDirection: 'column', gap: 10,
-            }}>
+            <div className="bg-[#F5F6F8] rounded-[12px] p-4 flex flex-col gap-2.5">
               {activeNote ? (
                 <>
                   <input
@@ -242,67 +173,31 @@ export default function NotesPage() {
                     value={editingTitle}
                     onChange={(e) => setEditingTitle(e.target.value)}
                     aria-label="Заголовок заметки"
-                    style={{
-                      width: '100%',
-                      padding: '10px 12px',
-                      background: '#FFFFFF',
-                      border: 'none',
-                      borderRadius: 8,
-                      fontFamily: 'var(--font-display)',
-                      fontSize: 18, fontWeight: 700,
-                      color: '#1A1A1A',
-                      outline: 'none',
-                    }}
+                    className="w-full py-2.5 px-3 bg-white border-none rounded-lg font-[var(--font-display)] text-lg font-bold text-[#1A1A1A] outline-none"
                   />
                   <textarea
                     value={editingBody}
                     onChange={(e) => setEditingBody(e.target.value)}
                     aria-label="Содержимое заметки"
                     placeholder="Введите содержимое заметки. Поддерживается plain text + Markdown..."
-                    style={{
-                      width: '100%',
-                      minHeight: 400,
-                      padding: '12px 14px',
-                      background: '#FFFFFF',
-                      border: 'none',
-                      borderRadius: 8,
-                      fontFamily: 'var(--font-body)',
-                      fontSize: 14, lineHeight: 1.55,
-                      color: '#1F2937',
-                      resize: 'vertical',
-                      outline: 'none',
-                    }}
+                    className="w-full min-h-[400px] py-3 px-[14px] bg-white border-none rounded-lg font-[var(--font-body)] text-sm leading-[1.55] text-[#1F2937] resize-y outline-none"
                   />
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
-                    <span style={{ fontSize: 11, color: '#9CA3AF' }}>
+                  <div className="flex items-center justify-between gap-2.5">
+                    <span className="text-[11px] text-[#9CA3AF]">
                       {editingBody.length} символов · автосохранение
                     </span>
                     <button
                       type="button"
                       onClick={deleteCurrent}
                       aria-label="Удалить заметку"
-                      style={{
-                        padding: '6px 12px',
-                        background: '#F5F6F8',
-                        color: '#374151',
-                        border: 'none',
-                        borderRadius: 999,
-                        cursor: 'pointer',
-                        fontFamily: 'var(--font-body)',
-                        fontSize: 12, fontWeight: 600,
-                      }}
-                      onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
-                      onMouseLeave={(e) => { e.currentTarget.style.background = '#F5F6F8'; }}
+                      className="py-1.5 px-3 bg-[#F5F6F8] hover:bg-[#EFF1F4] text-[#374151] border-none rounded-full cursor-pointer font-[var(--font-body)] text-xs font-semibold transition-colors"
                     >
                       Удалить
                     </button>
                   </div>
                 </>
               ) : (
-                <div style={{
-                  padding: '40px 20px', textAlign: 'center', color: '#9CA3AF',
-                  fontSize: 13.5,
-                }}>
+                <div className="py-10 px-5 text-center text-[#9CA3AF] text-[13.5px]">
                   Выберите заметку из списка или создайте новую.
                 </div>
               )}

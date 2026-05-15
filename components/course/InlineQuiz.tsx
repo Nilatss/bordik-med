@@ -145,67 +145,36 @@ function QuestionCard({
   const pickedOption = revealed ? shuffledOptions.find((o) => o.letter === pickedLetter) : null;
   const isCorrect = pickedOption?.correct ?? false;
 
+  const badgeBg = revealed ? (isCorrect ? 'bg-[#22C55E]' : 'bg-[#F87171]') : 'bg-[#1A1A1A]';
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, delay: index * 0.04, ease: [0.05, 0.7, 0.1, 1] }}
-      style={{
-      background: '#F5F6F8',
-      border: 'none',
-      borderRadius: 14,
-      padding: '14px 18px',
-      marginBottom: 6,
-    }}>
+      className="bg-[#F5F6F8] border-none rounded-[14px] py-[14px] px-[18px] mb-1.5"
+    >
       {/* Header row - clickable if revealed */}
       <div
         onClick={revealed ? onToggle : undefined}
-        style={{
-          display: 'flex', alignItems: 'center', gap: 10,
-          cursor: revealed ? 'pointer' : 'default',
-          userSelect: revealed ? 'none' : 'auto',
-        }}
+        className={`flex items-center gap-2.5 ${revealed ? 'cursor-pointer select-none' : 'cursor-default'}`}
       >
-        <span style={{
-          background: revealed ? (isCorrect ? '#22C55E' : '#F87171') : '#1A1A1A',
-          color: '#FFFFFF',
-          borderRadius: 999, minWidth: 26, height: 26,
-          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-          fontFamily: 'var(--font-display)', fontSize: 12, fontWeight: 700,
-          flexShrink: 0,
-          transition: 'background 180ms',
-        }}>
+        <span className={`${badgeBg} text-white rounded-full min-w-[26px] h-[26px] inline-flex items-center justify-center font-[var(--font-display)] text-xs font-bold shrink-0 transition-colors duration-[180ms]`}>
           {revealed ? (isCorrect ? '✓' : '✗') : q.id}
         </span>
-        <p style={{
-          fontFamily: 'var(--font-display)',
-          fontSize: 14,
-          fontWeight: 600,
-          color: '#1A1A1A',
-          margin: 0, lineHeight: 1.4, flex: 1,
-        }}>
+        <p className="font-[var(--font-display)] text-sm font-semibold text-[#1A1A1A] m-0 leading-[1.4] flex-1">
           {q.text}
         </p>
         {revealed && (
           <>
             {collapsed && pickedOption && (
-              <span style={{
-                fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 600,
-                color: isCorrect ? '#15803D' : '#B91C1C',
-                padding: '3px 8px', borderRadius: 999,
-                background: isCorrect ? '#F0FDF4' : '#FEF7F7',
-                flexShrink: 0,
-              }}>
+              <span className={`font-[var(--font-mono)] text-[11px] font-semibold py-[3px] px-2 rounded-full shrink-0 ${isCorrect ? 'text-[#15803D] bg-[#F0FDF4]' : 'text-[#B91C1C] bg-[#FEF7F7]'}`}>
                 {isCorrect ? 'Верно' : 'Ошибка'}
               </span>
             )}
             <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
               stroke="#9CA3AF" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
-              style={{
-                flexShrink: 0,
-                transform: collapsed ? 'rotate(0deg)' : 'rotate(180deg)',
-                transition: 'transform 200ms',
-              }}>
+              className={`shrink-0 transition-transform duration-200 ${collapsed ? '' : 'rotate-180'}`}>
               <polyline points="6,9 12,15 18,9" />
             </svg>
           </>
@@ -224,107 +193,53 @@ function QuestionCard({
               height: { duration: 0.4, ease: [0.22, 1, 0.36, 1] },
               opacity: { duration: 0.25, ease: [0.22, 1, 0.36, 1] },
             }}
-            style={{ overflow: 'hidden' }}
+            className="overflow-hidden"
           >
-            <div style={{ paddingTop: 12 }}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <div className="pt-3">
+              <div className="flex flex-col gap-1.5">
                 {shuffledOptions.map((opt, i) => {
                   const displayLetter = String.fromCharCode(65 + i); // A, B, C, D after shuffle
                   const isPicked = pickedLetter === opt.letter;
                   const isCorrectOpt = opt.correct;
-                  let bg = '#FFFFFF';
-                  let color = '#1A1A1A';
+                  let bodyClass = 'bg-white hover:bg-[#FAFBFC] text-[#1A1A1A]';
                   if (revealed) {
-                    if (isCorrectOpt) {
-                      bg = '#F0FDF4'; color = '#15803D';
-                    } else if (isPicked) {
-                      bg = '#FEF7F7'; color = '#B91C1C';
-                    }
+                    if (isCorrectOpt) bodyClass = 'bg-[#F0FDF4] text-[#15803D]';
+                    else if (isPicked) bodyClass = 'bg-[#FEF7F7] text-[#B91C1C]';
+                    else bodyClass = 'bg-white text-[#1A1A1A]';
                   }
+                  const letterBg = revealed && isCorrectOpt
+                    ? 'bg-[#22C55E] text-white'
+                    : revealed && isPicked
+                      ? 'bg-[#F87171] text-white'
+                      : 'bg-[#F0F1F5] text-[#666]';
                   return (
                     <button
                       key={opt.letter}
                       disabled={revealed}
                       onClick={() => onPick(opt.letter)}
-                      style={{
-                        display: 'flex', alignItems: 'center', gap: 12,
-                        padding: '12px 14px',
-                        background: bg,
-                        border: 'none',
-                        borderRadius: 10,
-                        cursor: revealed ? 'default' : 'pointer',
-                        textAlign: 'left', width: '100%',
-                        fontFamily: 'var(--font-body)', fontSize: 14,
-                        color,
-                        transition: 'background 180ms',
-                      }}
-                      onMouseEnter={(e) => {
-                        if (!revealed) e.currentTarget.style.background = '#FAFBFC';
-                      }}
-                      onMouseLeave={(e) => {
-                        if (!revealed) e.currentTarget.style.background = '#FFFFFF';
-                      }}
+                      className={`flex items-center gap-3 py-3 px-[14px] border-none rounded-[10px] text-left w-full font-[var(--font-body)] text-sm transition-colors duration-[180ms] ${revealed ? 'cursor-default' : 'cursor-pointer'} ${bodyClass}`}
                     >
-                      <span style={{
-                        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                        width: 24, height: 24, borderRadius: 6,
-                        background: revealed && isCorrectOpt ? '#22C55E' : revealed && isPicked ? '#F87171' : '#F0F1F5',
-                        color: revealed && (isCorrectOpt || isPicked) ? '#FFFFFF' : '#666',
-                        fontFamily: 'var(--font-display)', fontSize: 12, fontWeight: 700,
-                        border: 'none',
-                        flexShrink: 0,
-                      }}>
+                      <span className={`inline-flex items-center justify-center w-6 h-6 rounded-[6px] font-[var(--font-display)] text-xs font-bold border-none shrink-0 ${letterBg}`}>
                         {revealed && isCorrectOpt ? '✓' : revealed && isPicked ? '✗' : displayLetter}
                       </span>
-                      <span style={{ flex: 1 }}>{opt.text}</span>
+                      <span className="flex-1">{opt.text}</span>
                     </button>
                   );
                 })}
               </div>
 
               {revealed && q.explanation && (
-                <div style={{
-                  marginTop: 14, padding: '14px 18px',
-                  background: '#EEF4FF',
-                  borderLeft: '3px solid #3B82F6',
-                  borderRadius: 12,
-                }}>
-                  <div style={{
-                    fontFamily: 'var(--font-display)', fontSize: 12, fontWeight: 700,
-                    color: '#1D4ED8', textTransform: 'uppercase', letterSpacing: '0.05em',
-                    marginBottom: 8,
-                  }}>
+                <div className="mt-[14px] py-[14px] px-[18px] bg-[#EEF4FF] border-l-[3px] border-[#3B82F6] rounded-[12px]">
+                  <div className="font-[var(--font-display)] text-xs font-bold text-[#1D4ED8] uppercase tracking-[0.05em] mb-2">
                     Объяснение
                   </div>
-                  <p style={{
-                    fontFamily: 'var(--font-body)', fontSize: 14, color: '#333',
-                    margin: 0, lineHeight: 1.6,
-                  }}>
+                  <p className="font-[var(--font-body)] text-sm text-[#333] m-0 leading-[1.6]">
                     {q.explanation}
                   </p>
                   {topic && onNavigateToTab && (
                     <button
                       onClick={(e) => { e.stopPropagation(); onNavigateToTab(topic.short); }}
-                      style={{
-                        display: 'inline-flex', alignItems: 'center', gap: 6,
-                        marginTop: 12,
-                        padding: '7px 12px',
-                        background: '#FFFFFF',
-                        border: '1px solid #C7DDFF',
-                        borderRadius: 8,
-                        cursor: 'pointer',
-                        fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 600,
-                        color: '#1D4ED8',
-                        transition: 'background 180ms, border-color 180ms',
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = '#EEF4FF';
-                        e.currentTarget.style.borderColor = '#3B82F6';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = '#FFFFFF';
-                        e.currentTarget.style.borderColor = '#C7DDFF';
-                      }}
+                      className="inline-flex items-center gap-1.5 mt-3 py-[7px] px-3 bg-white hover:bg-[#EEF4FF] border border-[#C7DDFF] hover:border-[#3B82F6] rounded-lg cursor-pointer font-[var(--font-body)] text-xs font-semibold text-[#1D4ED8] transition-[background,border-color] duration-[180ms]"
                     >
                       <svg width={12} height={12} viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
@@ -445,7 +360,7 @@ export default function InlineQuiz({
   };
 
   if (questions.length === 0) {
-    return <p style={{ color: '#888' }}>Нет вопросов для самопроверки.</p>;
+    return <p className="text-[#888]">Нет вопросов для самопроверки.</p>;
   }
 
   const correctCount = questions.reduce((acc, q) => {
@@ -457,10 +372,7 @@ export default function InlineQuiz({
   return (
     <div>
       {intro && (
-        <p style={{
-          fontFamily: 'var(--font-body)', fontSize: 14, color: '#555',
-          lineHeight: 1.65, marginBottom: 18,
-        }}>
+        <p className="font-[var(--font-body)] text-sm text-[#555] leading-[1.65] mb-[18px]">
           {intro}
         </p>
       )}
@@ -470,43 +382,27 @@ export default function InlineQuiz({
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.25, ease: [0.05, 0.7, 0.1, 1] }}
-        style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '14px 18px', marginBottom: 6,
-        background: '#F5F6F8', borderRadius: 14,
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <span style={{
-            fontFamily: 'var(--font-display)', fontSize: 13, fontWeight: 600,
-            color: '#1A1A1A',
-          }}>
+        className="flex items-center justify-between py-[14px] px-[18px] mb-1.5 bg-[#F5F6F8] rounded-[14px]"
+      >
+        <div className="flex items-center gap-2.5">
+          <span className="font-[var(--font-display)] text-[13px] font-semibold text-[#1A1A1A]">
             {Object.keys(answers).length} / {questions.length}
           </span>
           {allAnswered && (
-            <span style={{
-              fontFamily: 'var(--font-body)', fontSize: 12, color: '#047857',
-              fontWeight: 600,
-            }}>
+            <span className="font-[var(--font-body)] text-xs text-[#047857] font-semibold">
               · Правильных: {correctCount} из {questions.length}
             </span>
           )}
         </div>
         {remainingMs > 0 ? (
-          <span style={{
-            fontFamily: 'var(--font-mono)', fontSize: 11,
-            color: '#888',
-          }}>
+          <span className="font-[var(--font-mono)] text-[11px] text-[#888]">
             Сброс через {formatRemaining(remainingMs)}
           </span>
         ) : (
           Object.keys(answers).length > 0 && (
             <button
               onClick={resetNow}
-              style={{
-                background: 'transparent', border: 'none',
-                color: '#1D4ED8', fontFamily: 'var(--font-body)',
-                fontSize: 12, fontWeight: 600, cursor: 'pointer',
-              }}
+              className="bg-transparent border-none text-[#1D4ED8] font-[var(--font-body)] text-xs font-semibold cursor-pointer"
             >
               Сбросить ответы
             </button>

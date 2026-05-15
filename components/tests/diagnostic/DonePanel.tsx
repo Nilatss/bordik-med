@@ -13,7 +13,7 @@ import { modules } from '@/lib/curriculum';
 import type { FinalResult } from '@/lib/diagnostic/types';
 import { levelRu } from '@/lib/diagnostic/utils';
 import { ListPanel } from './ListPanel';
-import { fadeProps, primaryBtn, secondaryBtn, pillStyle } from './styles';
+import { fadeProps, primaryBtnClass, secondaryBtnClass, pillClass } from './styles';
 
 interface Props {
   final: FinalResult;
@@ -33,47 +33,27 @@ export function DonePanel({
   onClose,
 }: Props) {
   return (
-    <motion.div key="done" {...fadeProps} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+    <motion.div key="done" {...fadeProps} className="flex flex-col gap-[18px]">
       {/* Hero card with profession */}
-      <div style={{
-        padding: 'clamp(20px, 4vw, 32px)',
-        background: '#F5F6F8',
-        borderRadius: 18,
-      }}>
-        <p style={{
-          margin: 0,
-          fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700,
-          color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.08em',
-        }}>
+      <div className="p-[clamp(20px,4vw,32px)] bg-[#F5F6F8] rounded-[18px]">
+        <p className="m-0 font-[var(--font-mono)] text-[11px] font-bold text-[#6B7280] uppercase tracking-[0.08em]">
           Рекомендуемое направление
         </p>
-        <h3 style={{
-          margin: '8px 0 10px',
-          fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 700,
-          color: '#1A1A1A', letterSpacing: '-0.02em', lineHeight: 1.1,
-        }}>
+        <h3 className="mt-2 mb-2.5 mx-0 font-[var(--font-display)] text-[28px] font-bold text-[#1A1A1A] tracking-[-0.02em] leading-[1.1]">
           {final.profession}
         </h3>
-        <p style={{
-          margin: 0,
-          fontFamily: 'var(--font-body)', fontSize: 14, color: '#374151',
-          lineHeight: 1.55,
-        }}>
+        <p className="m-0 font-[var(--font-body)] text-sm text-[#374151] leading-[1.55]">
           {final.professionRationale}
         </p>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 14 }}>
-          <span style={pillStyle}>Уровень: {levelRu(final.level)}</span>
-          <span style={pillStyle}>{correctSoFar}/{historyLength} верных ответов</span>
+        <div className="flex flex-wrap gap-2 mt-[14px]">
+          <span className={pillClass}>Уровень: {levelRu(final.level)}</span>
+          <span className={pillClass}>{correctSoFar}/{historyLength} верных ответов</span>
         </div>
       </div>
 
       {/* Strengths + weaknesses */}
       {(final.strengths.length > 0 || final.weaknesses.length > 0) && (
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-          gap: 14,
-        }}>
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-[14px]">
           {final.strengths.length > 0 && (
             <ListPanel title="Сильные стороны" tone="green" items={final.strengths} />
           )}
@@ -85,22 +65,11 @@ export function DonePanel({
 
       {/* Study plan */}
       {final.studyPlan && (
-        <div style={{
-          padding: '16px 18px', borderRadius: 14,
-          background: '#FFFFFF', border: '1px solid #E5E7EB',
-        }}>
-          <p style={{
-            margin: 0,
-            fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-            color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.08em',
-          }}>
+        <div className="py-4 px-[18px] rounded-[14px] bg-white border border-[#E5E7EB]">
+          <p className="m-0 font-[var(--font-mono)] text-[10px] font-bold text-[#6B7280] uppercase tracking-[0.08em]">
             План обучения
           </p>
-          <p style={{
-            margin: '6px 0 0',
-            fontFamily: 'var(--font-body)', fontSize: 14, color: '#1A1A1A',
-            lineHeight: 1.55,
-          }}>
+          <p className="mt-1.5 mb-0 mx-0 font-[var(--font-body)] text-sm text-[#1A1A1A] leading-[1.55]">
             {final.studyPlan}
           </p>
         </div>
@@ -109,14 +78,10 @@ export function DonePanel({
       {/* Recommended modules */}
       {final.recommendedModuleIds.length > 0 && (
         <div>
-          <h4 style={{
-            margin: '0 0 12px',
-            fontFamily: 'var(--font-display)', fontSize: 16, fontWeight: 700,
-            color: '#1A1A1A',
-          }}>
+          <h4 className="mt-0 mb-3 mx-0 font-[var(--font-display)] text-base font-bold text-[#1A1A1A]">
             Рекомендуемые модули
           </h4>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <div className="flex flex-col gap-2">
             {final.recommendedModuleIds.map((id, idx) => {
               const mod = modules.find((m) => m.id === id);
               if (!mod) return null;
@@ -127,49 +92,22 @@ export function DonePanel({
                     // Open the module — if it has courses, jump to the first one
                     if (mod.courses[0]) onOpenCourse(mod.courses[0].id);
                   }}
-                  style={{
-                    textAlign: 'left',
-                    display: 'flex', alignItems: 'center', gap: 14,
-                    padding: '14px 16px',
-                    background: '#F5F6F8', border: 'none',
-                    borderRadius: 12, cursor: 'pointer',
-                    transition: 'background 150ms',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = '#F0F2F5';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = '#F5F6F8';
-                  }}
+                  className="text-left flex items-center gap-[14px] py-[14px] px-4 bg-[#F5F6F8] hover:bg-[#F0F2F5] border-none rounded-[12px] cursor-pointer transition-colors duration-150"
                 >
-                  <span style={{
-                    width: 32, height: 32, borderRadius: 10,
-                    background: '#2563EB', color: '#FFFFFF',
-                    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                    fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 700,
-                    flexShrink: 0,
-                  }}>
+                  <span className="w-8 h-8 rounded-[10px] bg-[#2563EB] text-white inline-flex items-center justify-center font-[var(--font-mono)] text-xs font-bold shrink-0">
                     {idx + 1}
                   </span>
-                  <span style={{ flex: 1, minWidth: 0 }}>
-                    <span style={{
-                      display: 'block',
-                      fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: 600,
-                      color: '#1A1A1A', lineHeight: 1.3,
-                    }}>
+                  <span className="flex-1 min-w-0">
+                    <span className="block font-[var(--font-body)] text-sm font-semibold text-[#1A1A1A] leading-[1.3]">
                       {mod.title}
                     </span>
-                    <span style={{
-                      display: 'block', marginTop: 2,
-                      fontFamily: 'var(--font-body)', fontSize: 12, color: '#6B7280',
-                      lineHeight: 1.4,
-                    }}>
+                    <span className="block mt-0.5 font-[var(--font-body)] text-xs text-[#6B7280] leading-[1.4]">
                       {mod.description}
                     </span>
                   </span>
                   <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
                     stroke="#9CA3AF" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
-                    style={{ flexShrink: 0 }}>
+                    className="shrink-0">
                     <line x1="5" y1="12" x2="19" y2="12" />
                     <polyline points="12 5 19 12 12 19" />
                   </svg>
@@ -181,9 +119,9 @@ export function DonePanel({
       )}
 
       {/* Footer actions */}
-      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 6 }}>
-        <button onClick={onRestart} style={secondaryBtn}>Пройти заново</button>
-        <button onClick={onClose} style={primaryBtn}>Закрыть</button>
+      <div className="flex justify-end gap-2 mt-1.5">
+        <button onClick={onRestart} className={secondaryBtnClass}>Пройти заново</button>
+        <button onClick={onClose} className={primaryBtnClass}>Закрыть</button>
       </div>
     </motion.div>
   );
