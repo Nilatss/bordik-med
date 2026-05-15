@@ -46,14 +46,7 @@ export function LessonTOC({
 
   return (
     <aside
-      className={`toc-sidebar${collapsed ? ' is-collapsed' : ''}`}
-      style={{
-        position: 'sticky', top: 20,
-        background: '#F5F6F8',
-        borderRadius: 'var(--md-sys-shape-corner-extra-large)',
-        padding: 16,
-        display: 'flex', flexDirection: 'column', gap: 4,
-      }}
+      className={`toc-sidebar sticky top-5 bg-[#F5F6F8] rounded-[var(--md-sys-shape-corner-extra-large)] p-4 flex flex-col gap-1${collapsed ? ' is-collapsed' : ''}`}
     >
       {/* Mobile-only toggle header. Desktop CSS hides it. */}
       <button
@@ -63,17 +56,10 @@ export function LessonTOC({
         aria-expanded={!collapsed}
       >
         <span className="toc-toggle-label">
-          <span style={{
-            fontFamily: 'var(--font-body)', fontSize: 11,
-            fontWeight: 600, color: '#888',
-            textTransform: 'uppercase', letterSpacing: '0.08em',
-          }}>
+          <span className="font-[var(--font-body)] text-[11px] font-semibold text-[#888] uppercase tracking-[0.08em]">
             {t('course.toc.title')}
           </span>
-          <span style={{
-            fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
-            color: '#1A1A1A',
-          }}>
+          <span className="font-[var(--font-body)] text-[13px] font-semibold text-[#1A1A1A]">
             {active.short} · {activeIndex + 1}/{tabs.length}
           </span>
         </span>
@@ -86,12 +72,7 @@ export function LessonTOC({
       </button>
 
       {/* Desktop static label */}
-      <p className="toc-static-title" style={{
-        fontFamily: 'var(--font-body)', fontSize: 11,
-        fontWeight: 600, color: '#888',
-        textTransform: 'uppercase', letterSpacing: '0.08em',
-        padding: '4px 12px 6px',
-      }}>
+      <p className="toc-static-title font-[var(--font-body)] text-[11px] font-semibold text-[#888] uppercase tracking-[0.08em] pt-1 px-3 pb-1.5">
         {t('course.toc.title')}
       </p>
 
@@ -100,18 +81,17 @@ export function LessonTOC({
         {!collapsed && (
           <motion.div
             key="toc-body"
-            className="toc-body"
+            className="toc-body overflow-hidden flex flex-col gap-1"
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.25, ease: [0.05, 0.7, 0.1, 1] }}
-            style={{ overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: 4 }}
           >
             {/* Live progress — striped green bar identical to the intro page */}
             {tabs.length > 1 && (() => {
               const pct = Math.round(((activeIndex + 1) / tabs.length) * 100);
               return (
-                <div style={{ padding: '0 12px 10px' }}>
+                <div className="px-3 pb-2.5">
                   <CourseProgressBar
                     pct={pct}
                     currentLabel={t('course.intro.topicN', { n: activeIndex + 1 })}
@@ -135,47 +115,19 @@ export function LessonTOC({
                       onCollapseAfterSelect();
                     }
                   }}
-                  className={`toc-tab${isActive ? ' is-active' : ''}`}
-                  style={{
-                    position: 'relative',
-                    display: 'flex', alignItems: 'center', gap: 10,
-                    padding: '10px 12px',
-                    color: isActive ? '#1A1A1A' : '#9CA3AF',
-                    border: 'none', borderRadius: 10,
-                    cursor: 'pointer', textAlign: 'left',
-                    fontFamily: 'var(--font-body)', fontSize: 13,
-                    fontWeight: isActive ? 600 : 500,
-                    transition: 'color 200ms ease',
-                  }}
+                  className={`toc-tab relative flex items-center gap-2.5 py-2.5 px-3 border-none rounded-[10px] cursor-pointer text-left font-[var(--font-body)] text-[13px] transition-colors duration-200 ${isActive ? 'is-active text-[#1A1A1A] font-semibold' : 'text-[#9CA3AF] font-medium'}`}
                 >
                   {isActive && (
                     <motion.span
                       layoutId="toc-active-pill"
-                      style={{
-                        position: 'absolute', inset: 0,
-                        background: '#FFFFFF',
-                        borderRadius: 10,
-                        boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 1px 3px rgba(16,24,40,0.04)',
-                        zIndex: 0,
-                      }}
+                      className="absolute inset-0 bg-white rounded-[10px] shadow-[0_1px_2px_rgba(16,24,40,0.06),0_1px_3px_rgba(16,24,40,0.04)] z-0"
                       transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                     />
                   )}
-                  <span style={{
-                    position: 'relative', zIndex: 1,
-                    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                    width: 24, height: 24, borderRadius: '50%', flexShrink: 0,
-                    background: isActive ? '#3B82F6' : '#E2E4EA',
-                    color: isActive ? '#FFF' : '#9CA3AF',
-                    fontSize: 11.5, fontWeight: 700,
-                    transition: 'background 200ms ease, color 200ms ease',
-                  }}>
+                  <span className={`relative z-[1] inline-flex items-center justify-center w-6 h-6 rounded-full shrink-0 text-[11.5px] font-bold transition-colors duration-200 ${isActive ? 'bg-[#3B82F6] text-white' : 'bg-[#E2E4EA] text-[#9CA3AF]'}`}>
                     {i + 1}
                   </span>
-                  <span style={{
-                    position: 'relative', zIndex: 1,
-                    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                  }}>
+                  <span className="relative z-[1] overflow-hidden text-ellipsis whitespace-nowrap">
                     {tab.short}
                   </span>
                 </button>

@@ -76,11 +76,11 @@ export default function NewsFeed() {
 
   if (!releases) {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-        <div className="lc-shimmer" style={{ height: 28, width: 240, borderRadius: 8 }} />
-        <div className="lc-shimmer" style={{ height: 16, width: '60%', borderRadius: 6, marginBottom: 8 }} />
-        <div className="lc-shimmer" style={{ height: 140, width: '100%', borderRadius: 14 }} />
-        <div className="lc-shimmer" style={{ height: 140, width: '100%', borderRadius: 14 }} />
+      <div className="flex flex-col gap-4">
+        <div className="lc-shimmer h-7 w-60 rounded-lg" />
+        <div className="lc-shimmer h-4 w-3/5 rounded-md mb-2" />
+        <div className="lc-shimmer h-[140px] w-full rounded-[14px]" />
+        <div className="lc-shimmer h-[140px] w-full rounded-[14px]" />
       </div>
     );
   }
@@ -88,102 +88,54 @@ export default function NewsFeed() {
   if (releases.length === 0) return null;
 
   return (
-    <div style={{ width: '100%' }}>
+    <div className="w-full">
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1] }}
-        style={{ marginBottom: 24 }}
+        className="mb-6"
       >
-        <h2 style={{
-          fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 700,
-          color: '#1A1A1A', marginBottom: 6, letterSpacing: '-0.02em',
-        }}>
+        <h2 className="font-[var(--font-display)] text-[28px] font-bold text-[#1A1A1A] mb-1.5 tracking-[-0.02em]">
           Что нового
         </h2>
-        <p style={{
-          fontFamily: 'var(--font-body)', fontSize: 14, color: '#6B7280', lineHeight: 1.5,
-        }}>
+        <p className="font-[var(--font-body)] text-sm text-[#6B7280] leading-[1.5]">
           Свежие апдейты Bordik: новые калькуляторы, контент, фичи и улучшения
           интерфейса.{' '}
-          <a href="/releases" style={{ color: '#1A1A1A', textDecoration: 'underline', textUnderlineOffset: 2 }}>
+          <a href="/releases" className="text-[#1A1A1A] underline underline-offset-2">
             Полная история →
           </a>
         </p>
       </motion.div>
 
-      <ul style={{
-        listStyle: 'none', padding: 0, margin: 0,
-        display: 'flex', flexDirection: 'column', gap: 14,
-      }}>
+      <ul className="list-none p-0 m-0 flex flex-col gap-[14px]">
         {releases.map((r, i) => (
           <motion.li
             key={r.version}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1], delay: 0.06 + i * 0.04 }}
-            style={{
-              padding: '20px 22px',
-              background: '#FFFFFF',
-              border: '1px solid #F0F1F5',
-              borderRadius: 14,
-            }}
+            className="py-5 px-[22px] bg-white border border-[#F0F1F5] rounded-[14px]"
           >
-            <div style={{
-              display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap',
-              marginBottom: 8,
-            }}>
-              <span style={{
-                fontFamily: 'var(--font-mono, ui-monospace)',
-                fontSize: 11, fontWeight: 700,
-                padding: '2px 8px',
-                borderRadius: 999,
-                background: '#1A1A1A',
-                color: '#FFFFFF',
-                letterSpacing: '0.02em',
-              }}>
+            <div className="flex items-center gap-2.5 flex-wrap mb-2">
+              <span className="font-[var(--font-mono,ui-monospace)] text-[11px] font-bold py-0.5 px-2 rounded-full bg-[#1A1A1A] text-white tracking-[0.02em]">
                 v{r.version}
               </span>
-              <span style={{
-                fontFamily: 'var(--font-mono, ui-monospace)',
-                fontSize: 11, color: '#9CA3AF',
-              }}>
+              <span className="font-[var(--font-mono,ui-monospace)] text-[11px] text-[#9CA3AF]">
                 {formatDate(r.date)}
               </span>
             </div>
-            <h3 style={{
-              margin: 0,
-              fontFamily: 'var(--font-display)',
-              fontSize: 18, fontWeight: 700,
-              color: '#1A1A1A',
-              letterSpacing: '-0.01em',
-              lineHeight: 1.3,
-            }}>
+            <h3 className="m-0 font-[var(--font-display)] text-lg font-bold text-[#1A1A1A] tracking-[-0.01em] leading-[1.3]">
               {r.title}
             </h3>
-            <p style={{
-              margin: '8px 0 0',
-              fontSize: 14, color: '#4B5563', lineHeight: 1.55,
-            }}>
+            <p className="mt-2 mb-0 text-sm text-[#4B5563] leading-[1.55]">
               {r.summary}
             </p>
             {r.changes.length > 0 && (
-              <ul style={{
-                margin: '14px 0 0',
-                padding: 0, listStyle: 'none',
-                display: 'flex', flexDirection: 'column', gap: 6,
-              }}>
+              <ul className="mt-[14px] mb-0 p-0 list-none flex flex-col gap-1.5">
                 {r.changes.map((change, j) => (
-                  <li key={j} style={{
-                    display: 'flex', gap: 10,
-                    fontSize: 13, color: '#374151', lineHeight: 1.5,
-                  }}>
-                    <span aria-hidden="true" style={{
-                      flex: '0 0 4px', marginTop: 8,
-                      width: 4, height: 4, borderRadius: '50%',
-                      background: '#1A1A1A',
-                    }} />
-                    <span style={{ flex: 1 }}>{change}</span>
+                  <li key={j} className="flex gap-2.5 text-[13px] text-[#374151] leading-[1.5]">
+                    <span aria-hidden="true" className="flex-[0_0_4px] mt-2 w-1 h-1 rounded-full bg-[#1A1A1A]" />
+                    <span className="flex-1">{change}</span>
                   </li>
                 ))}
               </ul>
@@ -192,11 +144,9 @@ export default function NewsFeed() {
         ))}
       </ul>
 
-      <p style={{
-        marginTop: 20, fontSize: 12, color: '#9CA3AF',
-      }}>
+      <p className="mt-5 text-xs text-[#9CA3AF]">
         Показано {releases.length} последн{releases.length === 1 ? 'ий' : 'их'} релиз{releases.length === 1 ? '' : 'а'}.{' '}
-        <a href="/releases" style={{ color: '#6B7280', textDecoration: 'underline', textUnderlineOffset: 2 }}>
+        <a href="/releases" className="text-[#6B7280] underline underline-offset-2">
           Все релизы
         </a>
       </p>

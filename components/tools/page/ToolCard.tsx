@@ -53,43 +53,20 @@ export const ToolCard = React.memo(function ToolCard({ tool }: { tool: CatalogTo
       .catch(() => { /* missing runner / network — silent */ });
   }, [available, tool.id]);
 
+  const stateClass = available
+    ? 'cursor-pointer opacity-100 hover:bg-[#F0F2F5]'
+    : 'cursor-not-allowed opacity-[0.48]';
+
   return (
     <button
       onClick={handleClick}
-      onMouseEnter={(e) => {
-        handlePrefetch();
-        if (available) e.currentTarget.style.background = '#F0F2F5';
-      }}
+      onMouseEnter={handlePrefetch}
       onFocus={handlePrefetch}
-      onMouseLeave={(e) => { e.currentTarget.style.background = '#F5F6F8'; }}
       disabled={!available}
-      style={{
-        background: '#F5F6F8',
-        borderRadius: 'var(--md-sys-shape-corner-extra-large)',
-        border: 'none',
-        padding: 'var(--space-5)', textAlign: 'left',
-        cursor: available ? 'pointer' : 'not-allowed',
-        opacity: available ? 1 : 0.48,
-        position: 'relative', overflow: 'hidden', minHeight: 160,
-        display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
-        transition: 'background 300ms cubic-bezier(0.22,1,0.36,1)',
-        // Browser skips layout/paint for off-screen cards — zero visual diff.
-        contentVisibility: 'auto',
-        containIntrinsicSize: '160px 220px',
-      } as React.CSSProperties}
+      className={`bg-[#F5F6F8] rounded-[var(--md-sys-shape-corner-extra-large)] border-none p-[var(--space-5)] text-left relative overflow-hidden min-h-[160px] flex flex-col justify-between transition-colors duration-[300ms] ease-[cubic-bezier(0.22,1,0.36,1)] [content-visibility:auto] [contain-intrinsic-size:160px_220px] ${stateClass}`}
     >
       {!available && (
-        <div style={{
-          position: 'absolute', top: 12, right: 12, zIndex: 2,
-          display: 'inline-flex', alignItems: 'center', gap: 6,
-          padding: '4px 10px',
-          borderRadius: 999,
-          background: '#1A1A1A',
-          color: '#FFFFFF',
-          fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-          letterSpacing: '0.06em', textTransform: 'uppercase',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
-        }}>
+        <div className="absolute top-3 right-3 z-[2] inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full bg-[#1A1A1A] text-white font-[var(--font-mono)] text-[10px] font-bold tracking-[0.06em] uppercase shadow-[0_2px_8px_rgba(0,0,0,0.12)]">
           <svg width={10} height={10} viewBox="0 0 24 24" fill="none"
             stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round">
             <rect x="3" y="11" width="18" height="11" rx="2" />
@@ -99,23 +76,9 @@ export const ToolCard = React.memo(function ToolCard({ tool }: { tool: CatalogTo
         </div>
       )}
 
-      <div style={{
-        marginBottom: 'var(--space-3)', position: 'relative', zIndex: 1,
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8,
-      }}>
-        <div style={{
-          display: 'flex', alignItems: 'center', gap: 4, flex: 1, minWidth: 0,
-          flexWrap: 'wrap',
-        }}>
-          <span style={{
-            display: 'inline-flex', alignItems: 'center', gap: 'var(--space-1)',
-            padding: '4px var(--space-2)', borderRadius: 'var(--md-sys-shape-corner-full)',
-            background: '#FFFFFF',
-            boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-            fontFamily: 'var(--font-mono)',
-            fontSize: '0.625rem', fontWeight: 500,
-            color: 'var(--md-sys-color-on-surface-variant)',
-          }}>
+      <div className="mb-[var(--space-3)] relative z-[1] flex items-center justify-between gap-2">
+        <div className="flex items-center gap-1 flex-1 min-w-0 flex-wrap">
+          <span className="inline-flex items-center gap-[var(--space-1)] py-1 px-[var(--space-2)] rounded-[var(--md-sys-shape-corner-full)] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.06),0_2px_6px_rgba(16,24,40,0.06)] font-[var(--font-mono)] text-[0.625rem] font-medium text-[color:var(--md-sys-color-on-surface-variant)]">
             {tool.subcategory}
           </span>
           {/* Country tags — same pill style as subcategory. The countries
@@ -130,31 +93,14 @@ export const ToolCard = React.memo(function ToolCard({ tool }: { tool: CatalogTo
                   <span
                     key={c.name}
                     title={c.name}
-                    style={{
-                      display: 'inline-flex', alignItems: 'center', gap: 4,
-                      padding: '4px var(--space-2)', borderRadius: 'var(--md-sys-shape-corner-full)',
-                      background: '#FFFFFF',
-                      boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-                      fontFamily: 'var(--font-mono)',
-                      fontSize: '0.625rem', fontWeight: 500,
-                      color: 'var(--md-sys-color-on-surface-variant)',
-                      whiteSpace: 'nowrap',
-                    }}
+                    className="inline-flex items-center gap-1 py-1 px-[var(--space-2)] rounded-[var(--md-sys-shape-corner-full)] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.06),0_2px_6px_rgba(16,24,40,0.06)] font-[var(--font-mono)] text-[0.625rem] font-medium text-[color:var(--md-sys-color-on-surface-variant)] whitespace-nowrap"
                   >
                     <EmojiOrFlag emoji={c.flag} size={12} />
                     {c.name}
                   </span>
                 ))}
                 {extra > 0 && (
-                  <span style={{
-                    display: 'inline-flex', alignItems: 'center',
-                    padding: '4px 8px', borderRadius: 999,
-                    background: '#FFFFFF',
-                    boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: '0.625rem', fontWeight: 600,
-                    color: '#6B7280',
-                  }}>
+                  <span className="inline-flex items-center py-1 px-2 rounded-full bg-white shadow-[0_1px_2px_rgba(16,24,40,0.06),0_2px_6px_rgba(16,24,40,0.06)] font-[var(--font-mono)] text-[0.625rem] font-semibold text-[#6B7280]">
                     +{extra}
                   </span>
                 )}
@@ -167,7 +113,7 @@ export const ToolCard = React.memo(function ToolCard({ tool }: { tool: CatalogTo
             читаются как комплект. Скрываем оба на недоступных инструментах
             чтобы не пересекаться с абсолютно-позиционированным «Скоро»-бейджем. */}
         {available && (
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
+          <span className="inline-flex items-center gap-1.5 shrink-0">
             <CardOfflineButton toolId={tool.id} />
             <CardFavButton
               isFavourite={isFavourite}
@@ -178,32 +124,17 @@ export const ToolCard = React.memo(function ToolCard({ tool }: { tool: CatalogTo
         )}
       </div>
 
-      <div style={{ position: 'relative', zIndex: 1, flex: 1 }}>
-        <h3 style={{
-          fontFamily: 'var(--font-display)', fontSize: 'var(--text-base)', fontWeight: 700,
-          color: 'var(--md-sys-color-on-surface)',
-          marginBottom: 'var(--space-1)', lineHeight: 1.25,
-        }}>
+      <div className="relative z-[1] flex-1">
+        <h3 className="font-[var(--font-display)] text-[length:var(--text-base)] font-bold text-[color:var(--md-sys-color-on-surface)] mb-[var(--space-1)] leading-[1.25]">
           {tool.title}
         </h3>
-        <p style={{
-          fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)',
-          color: 'var(--md-sys-color-on-surface-variant)', lineHeight: 1.4,
-          display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical',
-          overflow: 'hidden',
-        }}>
+        <p className="font-[var(--font-body)] text-[length:var(--text-xs)] text-[color:var(--md-sys-color-on-surface-variant)] leading-[1.4] overflow-hidden [-webkit-line-clamp:3] [-webkit-box-orient:vertical] [display:-webkit-box]">
           {tool.description}
         </p>
       </div>
 
-      <div style={{
-        display: 'flex', alignItems: 'center', gap: 'var(--space-1)',
-        marginTop: 'var(--space-3)', position: 'relative', zIndex: 1,
-      }}>
-        <span style={{
-          fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', fontWeight: 500,
-          color: available ? 'var(--md-sys-color-on-surface)' : '#9CA3AF',
-        }}>
+      <div className="flex items-center gap-[var(--space-1)] mt-[var(--space-3)] relative z-[1]">
+        <span className={`font-[var(--font-body)] text-[length:var(--text-xs)] font-medium ${available ? 'text-[color:var(--md-sys-color-on-surface)]' : 'text-[#9CA3AF]'}`}>
           {available ? t('tools.openTool') : t('tools.cardInDevelopment')}
         </span>
         {available && <ArrowRight size={14} color="var(--md-sys-color-on-surface)" />}
