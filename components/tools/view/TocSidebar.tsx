@@ -20,20 +20,8 @@ export function TocSidebar({ tabs, activeId, onSelect }: {
 }) {
   const t = useT();
   return (
-    <aside className="toc-sidebar" style={{
-      position: 'sticky', top: 20,
-      background: '#F5F6F8',
-      borderRadius: 'var(--md-sys-shape-corner-extra-large)',
-      padding: 16,
-      display: 'flex', flexDirection: 'column', gap: 4,
-    }}>
-      <p style={{
-        fontFamily: 'var(--font-body)', fontSize: 11,
-        fontWeight: 600, color: '#888',
-        textTransform: 'uppercase', letterSpacing: '0.08em',
-        padding: '4px 12px 10px',
-        margin: 0,
-      }}>
+    <aside className="toc-sidebar sticky top-5 bg-[#F5F6F8] rounded-[var(--md-sys-shape-corner-extra-large)] p-4 flex flex-col gap-1">
+      <p className="font-[var(--font-body)] text-[11px] font-semibold text-[#888] uppercase tracking-[0.08em] pt-1 px-3 pb-2.5 m-0">
         {t('course.toc.title')}
       </p>
       {tabs.map((tab) => {
@@ -42,45 +30,21 @@ export function TocSidebar({ tabs, activeId, onSelect }: {
           <button
             key={tab.id}
             onClick={() => onSelect(tab.id)}
-            className={`toc-tab${isActive ? ' is-active' : ''}`}
-            style={{
-              position: 'relative',
-              display: 'flex', alignItems: 'center', gap: 10,
-              padding: '10px 12px',
-              color: isActive ? '#1A1A1A' : '#333',
-              border: 'none', borderRadius: 10,
-              cursor: 'pointer', textAlign: 'left',
-              fontFamily: 'var(--font-body)', fontSize: 13,
-              fontWeight: isActive ? 600 : 500,
-              transition: 'color 200ms ease',
-            }}
+            className={`toc-tab relative flex items-center gap-2.5 py-2.5 px-3 border-none rounded-[10px] cursor-pointer text-left font-[var(--font-body)] text-[13px] transition-colors duration-200 ${
+              isActive ? 'is-active text-[#1A1A1A] font-semibold' : 'text-[#333] font-medium'
+            }`}
           >
             {isActive && (
               <motion.span
                 layoutId="tool-toc-active-pill"
-                style={{
-                  position: 'absolute', inset: 0,
-                  background: '#FFFFFF',
-                  borderRadius: 10,
-                  boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 1px 3px rgba(16,24,40,0.04)',
-                  zIndex: 0,
-                }}
+                className="absolute inset-0 bg-white rounded-[10px] shadow-[0_1px_2px_rgba(16,24,40,0.06),0_1px_3px_rgba(16,24,40,0.04)] z-0"
                 transition={{ type: 'spring', stiffness: 380, damping: 30 }}
               />
             )}
-            <span style={{
-              position: 'relative', zIndex: 1,
-              display: 'flex', flexShrink: 0,
-              color: isActive ? '#1A1A1A' : '#6B7280',
-              transition: 'color 200ms ease',
-            }}>
+            <span className={`relative z-[1] flex shrink-0 transition-colors duration-200 ${isActive ? 'text-[#1A1A1A]' : 'text-[#6B7280]'}`}>
               <TabIcon name={tab.iconKey} size={16} />
             </span>
-            <span style={{
-              position: 'relative', zIndex: 1,
-              overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-              minWidth: 0, flex: 1,
-            }}>
+            <span className="relative z-[1] overflow-hidden text-ellipsis whitespace-nowrap min-w-0 flex-1">
               {tab.short}
             </span>
           </button>

@@ -97,26 +97,15 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
 
   if (!content) {
     return (
-      <div style={{
-        flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
-      }}>
-        <div style={{ textAlign: 'center', maxWidth: 'var(--content-max)', padding: 'var(--space-8)' }}>
-          <div style={{
-            color: 'var(--md-sys-color-on-surface-variant)',
-            marginBottom: 'var(--space-4)', display: 'flex', justifyContent: 'center',
-          }}>
+      <div className="flex-1 flex items-center justify-center">
+        <div className="text-center max-w-[var(--content-max)] p-[var(--space-8)]">
+          <div className="text-[color:var(--md-sys-color-on-surface-variant)] mb-[var(--space-4)] flex justify-center">
             <BookOpen size={40} strokeWidth={1} />
           </div>
-          <h3 style={{
-            fontFamily: 'var(--font-display)', fontSize: 'var(--text-lg)', fontWeight: 500,
-            color: 'var(--md-sys-color-on-surface)', marginBottom: 'var(--space-2)',
-          }}>
+          <h3 className="font-[var(--font-display)] text-[length:var(--text-lg)] font-medium text-[color:var(--md-sys-color-on-surface)] mb-[var(--space-2)]">
             {t('course.contentNotReady.title')}
           </h3>
-          <p style={{
-            fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)',
-            color: 'var(--md-sys-color-on-surface-variant)', lineHeight: 1.6,
-          }}>
+          <p className="font-[var(--font-body)] text-[length:var(--text-sm)] text-[color:var(--md-sys-color-on-surface-variant)] leading-[1.6]">
             {t('course.contentNotReady.body')}
           </p>
         </div>
@@ -127,8 +116,8 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
   // No tabs? Just render content as single article
   if (tabs.length <= 1) {
     return (
-      <div style={{ flex: 1, overflowY: 'auto' }}>
-        <div className="lesson-content" style={{ maxWidth: 'var(--content-max)' }}>
+      <div className="flex-1 overflow-y-auto">
+        <div className="lesson-content max-w-[var(--content-max)]">
           <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[[rehypeSanitize, sanitizeSchema]]} urlTransform={safeUrlTransform}>{content}</ReactMarkdown>
         </div>
       </div>
@@ -154,13 +143,8 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
            visibly stutter. Switching tabs instantly is far smoother. */}
       <div
         key={active.id}
-        className="lesson-card"
-        style={{
-        background: '#FFFFFF',
-        borderRadius: 'var(--md-sys-shape-corner-extra-large)',
-        padding: 'var(--space-6)',
-        minHeight: 300,
-      }}>
+        className="lesson-card bg-white rounded-[var(--md-sys-shape-corner-extra-large)] p-[var(--space-6)] min-h-[300px]"
+      >
         <LessonHeader iconKey={active.iconKey} title={active.title} />
 
         {active.kind === 'tests' ? (

@@ -182,29 +182,10 @@ export default function PwaRegistrar() {
   // Non-intrusive update prompt — bottom-right toast with release headline
   return (
     <div
-      style={{
-        position: 'fixed',
-        bottom: 20,
-        right: 20,
-        zIndex: 9998,
-        background: '#FFFFFF',
-        borderRadius: 12,
-        padding: '12px 14px 12px 16px',
-        boxShadow: '0 8px 24px rgba(15, 23, 42, 0.18)',
-        display: 'flex',
-        alignItems: 'center',
-        gap: 12,
-        maxWidth: 380,
-        fontFamily: 'var(--font-body, system-ui, -apple-system, sans-serif)',
-      }}
+      className="fixed bottom-5 right-5 z-[9998] bg-white rounded-[12px] pt-3 pr-3.5 pb-3 pl-4 shadow-[0_8px_24px_rgba(15,23,42,0.18)] flex items-center gap-3 max-w-[380px] font-[var(--font-body,system-ui,-apple-system,sans-serif)]"
       role="status"
     >
-      <div style={{
-        width: 32, height: 32, borderRadius: 8,
-        background: '#ECFDF5', color: '#059669',
-        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-        flexShrink: 0,
-      }}>
+      <div className="w-8 h-8 rounded-lg bg-[#ECFDF5] text-[#059669] inline-flex items-center justify-center shrink-0">
         <svg width={18} height={18} viewBox="0 0 24 24" fill="none"
           stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
           <polyline points="23 4 23 10 17 10" />
@@ -212,21 +193,12 @@ export default function PwaRegistrar() {
           <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
         </svg>
       </div>
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <p style={{
-          fontSize: 13, fontWeight: 600, color: '#1A1A1A',
-          margin: 0, lineHeight: 1.3,
-        }}>
+      <div className="flex-1 min-w-0">
+        <p className="text-[13px] font-semibold text-[#1A1A1A] m-0 leading-[1.3]">
           {release.title}
         </p>
-        <p style={{
-          fontSize: 12, color: '#6B7280',
-          margin: '2px 0 0 0', lineHeight: 1.3,
-        }}>
-          <a
-            href="/releases"
-            style={{ color: '#2563EB', textDecoration: 'underline' }}
-          >
+        <p className="text-xs text-[#6B7280] mt-0.5 mb-0 mx-0 leading-[1.3]">
+          <a href="/releases" className="text-[#2563EB] underline">
             Что нового
           </a>
           {' · '}
@@ -235,21 +207,7 @@ export default function PwaRegistrar() {
       </div>
       <button
         onClick={applyUpdate}
-        style={{
-          padding: '6px 12px',
-          borderRadius: 8,
-          background: '#1A1A1A',
-          color: '#FFFFFF',
-          border: 'none',
-          cursor: 'pointer',
-          fontSize: 12,
-          fontWeight: 600,
-          fontFamily: 'inherit',
-          flexShrink: 0,
-          transition: 'background 150ms',
-        }}
-        onMouseEnter={(e) => { e.currentTarget.style.background = '#000000'; }}
-        onMouseLeave={(e) => { e.currentTarget.style.background = '#1A1A1A'; }}
+        className="py-1.5 px-3 rounded-lg bg-[#1A1A1A] hover:bg-black text-white border-none cursor-pointer text-xs font-semibold font-[inherit] shrink-0 transition-colors duration-150"
       >
         Обновить
       </button>
@@ -257,11 +215,7 @@ export default function PwaRegistrar() {
         type="button"
         onClick={dismiss}
         aria-label="Закрыть"
-        style={{
-          background: 'transparent', border: 'none', cursor: 'pointer',
-          padding: 4, marginLeft: -4, color: '#9CA3AF', lineHeight: 1,
-          fontSize: 16, fontFamily: 'inherit',
-        }}
+        className="bg-transparent border-none cursor-pointer p-1 -ml-1 text-[#9CA3AF] leading-none text-base font-[inherit]"
       >
         ×
       </button>

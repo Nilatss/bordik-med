@@ -13,26 +13,15 @@ interface LessonViewerProps {
 export default function LessonViewer({ content }: LessonViewerProps) {
   if (!content) {
     return (
-      <div style={{
-        flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
-      }}>
-        <div style={{ textAlign: 'center', maxWidth: 'var(--content-max)', padding: 'var(--space-8)' }}>
-          <div style={{
-            color: 'var(--md-sys-color-on-surface-variant)',
-            marginBottom: 'var(--space-4)', display: 'flex', justifyContent: 'center',
-          }}>
+      <div className="flex-1 flex items-center justify-center">
+        <div className="text-center max-w-[var(--content-max)] p-[var(--space-8)]">
+          <div className="text-[color:var(--md-sys-color-on-surface-variant)] mb-[var(--space-4)] flex justify-center">
             <BookOpen size={40} strokeWidth={1} />
           </div>
-          <h3 style={{
-            fontFamily: 'var(--font-display)', fontSize: 'var(--text-lg)', fontWeight: 500,
-            color: 'var(--md-sys-color-on-surface)', marginBottom: 'var(--space-2)',
-          }}>
+          <h3 className="font-[var(--font-display)] text-[length:var(--text-lg)] font-medium text-[color:var(--md-sys-color-on-surface)] mb-[var(--space-2)]">
             Контент готовится
           </h3>
-          <p style={{
-            fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)',
-            color: 'var(--md-sys-color-on-surface-variant)', lineHeight: 1.6,
-          }}>
+          <p className="font-[var(--font-body)] text-[length:var(--text-sm)] text-[color:var(--md-sys-color-on-surface-variant)] leading-[1.6]">
             Статья для этого курса ещё не добавлена. Она появится здесь по мере наполнения.
           </p>
         </div>
@@ -41,8 +30,8 @@ export default function LessonViewer({ content }: LessonViewerProps) {
   }
 
   return (
-    <div style={{ flex: 1, overflowY: 'auto' }}>
-      <div className="lesson-content" style={{ maxWidth: 'var(--content-max)' }}>
+    <div className="flex-1 overflow-y-auto">
+      <div className="lesson-content max-w-[var(--content-max)]">
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
           rehypePlugins={[[rehypeSanitize, sanitizeSchema]]}
