@@ -5,19 +5,11 @@
  */
 export function DiagnosticHeader({ onClose }: { onClose: () => void }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 18 }}>
+    <div className="flex items-center gap-3 mb-[18px]">
       <button
         onClick={onClose}
         aria-label="Закрыть"
-        style={{
-          width: 36, height: 36, borderRadius: 10,
-          background: '#F5F6F8', color: '#1A1A1A', border: 'none',
-          cursor: 'pointer',
-          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-          transition: 'background 150ms',
-        }}
-        onMouseEnter={(e) => { e.currentTarget.style.background = '#E8E9ED'; }}
-        onMouseLeave={(e) => { e.currentTarget.style.background = '#F5F6F8'; }}
+        className="w-9 h-9 rounded-[10px] bg-[#F5F6F8] hover:bg-[#E8E9ED] text-[#1A1A1A] border-none cursor-pointer inline-flex items-center justify-center transition-colors duration-150"
       >
         <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
           stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">
@@ -25,19 +17,11 @@ export function DiagnosticHeader({ onClose }: { onClose: () => void }) {
           <polyline points="12 19 5 12 12 5" />
         </svg>
       </button>
-      <div style={{ flex: 1 }}>
-        <p style={{
-          margin: 0,
-          fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 600,
-          color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
-        }}>
+      <div className="flex-1">
+        <p className="m-0 font-[var(--font-mono)] text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-[0.08em]">
           Диагностика
         </p>
-        <h2 style={{
-          margin: '2px 0 0',
-          fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 700,
-          color: '#1A1A1A', letterSpacing: '-0.02em', lineHeight: 1.2,
-        }}>
+        <h2 className="mt-0.5 mb-0 mx-0 font-[var(--font-display)] text-[22px] font-bold text-[#1A1A1A] tracking-[-0.02em] leading-[1.2]">
           Адаптивный тест уровня знаний
         </h2>
       </div>

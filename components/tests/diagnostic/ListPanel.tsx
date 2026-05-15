@@ -14,31 +14,16 @@ export function ListPanel({ title, tone, items }: {
   tone: 'green' | 'amber';
   items: string[];
 }) {
-  const dotColor = tone === 'green' ? '#22C55E' : '#F59E0B';
+  const dotClass = tone === 'green' ? 'bg-[#22C55E]' : 'bg-[#F59E0B]';
   return (
-    <div style={{
-      padding: '14px 16px',
-      background: '#F5F6F8',
-      borderRadius: 14,
-    }}>
-      <p style={{
-        margin: '0 0 10px',
-        fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-        color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.08em',
-      }}>
+    <div className="py-[14px] px-4 bg-[#F5F6F8] rounded-[14px]">
+      <p className="mt-0 mb-2.5 mx-0 font-[var(--font-mono)] text-[10px] font-bold text-[#6B7280] uppercase tracking-[0.08em]">
         {title}
       </p>
-      <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 6 }}>
+      <ul className="m-0 p-0 list-none flex flex-col gap-1.5">
         {items.map((s, i) => (
-          <li key={i} style={{
-            display: 'flex', alignItems: 'flex-start', gap: 8,
-            fontFamily: 'var(--font-body)', fontSize: 13, color: '#1A1A1A',
-            lineHeight: 1.45,
-          }}>
-            <span style={{
-              flexShrink: 0, marginTop: 6,
-              width: 6, height: 6, borderRadius: '50%', background: dotColor,
-            }} />
+          <li key={i} className="flex items-start gap-2 font-[var(--font-body)] text-[13px] text-[#1A1A1A] leading-[1.45]">
+            <span className={`shrink-0 mt-1.5 w-1.5 h-1.5 rounded-full ${dotClass}`} />
             <span>{s}</span>
           </li>
         ))}

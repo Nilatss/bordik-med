@@ -37,18 +37,7 @@ export default function UserMenu() {
     return (
       <a
         href="/auth/login"
-        style={{
-          display: 'flex', alignItems: 'center', gap: 10,
-          padding: '10px 14px', margin: '8px 12px',
-          borderRadius: 12,
-          background: '#1A1A1A',
-          color: '#FFFFFF',
-          textDecoration: 'none',
-          fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
-          transition: 'background 180ms',
-        }}
-        onMouseEnter={(e) => { e.currentTarget.style.background = '#2B2B2B'; }}
-        onMouseLeave={(e) => { e.currentTarget.style.background = '#1A1A1A'; }}
+        className="flex items-center gap-2.5 py-2.5 px-3.5 my-2 mx-3 rounded-[12px] bg-[#1A1A1A] hover:bg-[#2B2B2B] text-white no-underline font-[var(--font-body)] text-[13px] font-semibold transition-colors duration-[180ms]"
       >
         <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
           stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round">
@@ -71,44 +60,17 @@ export default function UserMenu() {
   };
 
   return (
-    <div style={{
-      margin: '8px 12px',
-      padding: '10px 12px',
-      borderRadius: 12,
-      background: '#E2E4EA',
-      display: 'flex', alignItems: 'center', gap: 10,
-      minWidth: 0,
-    }}>
-      <span style={{
-        width: 28, height: 28, flexShrink: 0,
-        borderRadius: '50%',
-        background: '#1A1A1A', color: '#FFFFFF',
-        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-        fontFamily: 'var(--font-display)', fontSize: 12, fontWeight: 700,
-        textTransform: 'uppercase',
-      }}>
+    <div className="my-2 mx-3 py-2.5 px-3 rounded-[12px] bg-[#E2E4EA] flex items-center gap-2.5 min-w-0">
+      <span className="w-7 h-7 shrink-0 rounded-full bg-[#1A1A1A] text-white inline-flex items-center justify-center font-[var(--font-display)] text-xs font-bold uppercase">
         {email.charAt(0)}
       </span>
-      <span style={{
-        flex: 1, minWidth: 0,
-        fontFamily: 'var(--font-body)', fontSize: 12.5, fontWeight: 500,
-        color: '#1A1A1A',
-        overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-      }}>
+      <span className="flex-1 min-w-0 font-[var(--font-body)] text-[12.5px] font-medium text-[#1A1A1A] overflow-hidden text-ellipsis whitespace-nowrap">
         {email}
       </span>
       <button
         onClick={signOut}
         title="Выйти"
-        style={{
-          background: 'transparent', border: 'none', cursor: 'pointer',
-          color: '#6B7280', flexShrink: 0,
-          display: 'inline-flex', alignItems: 'center',
-          padding: 4, borderRadius: 6,
-          transition: 'color 150ms, background 150ms',
-        }}
-        onMouseEnter={(e) => { e.currentTarget.style.color = '#1A1A1A'; e.currentTarget.style.background = '#D1D4DA'; }}
-        onMouseLeave={(e) => { e.currentTarget.style.color = '#6B7280'; e.currentTarget.style.background = 'transparent'; }}
+        className="bg-transparent hover:bg-[#D1D4DA] border-none cursor-pointer text-[#6B7280] hover:text-[#1A1A1A] shrink-0 inline-flex items-center p-1 rounded-md transition-[color,background] duration-150"
       >
         <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
           stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">

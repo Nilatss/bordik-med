@@ -22,12 +22,12 @@ const COLORS = {
 };
 
 const SvgFrame = ({ children, ratio = 'auto' }: { children: React.ReactNode; ratio?: string }) => (
-  <svg viewBox="0 0 600 340" xmlns="http://www.w3.org/2000/svg"
-    style={{
-      width: '100%', maxWidth: 600, height: 'auto',
-      aspectRatio: ratio,
-      display: 'block', margin: '0 auto',
-    }}
+  <svg
+    viewBox="0 0 600 340"
+    xmlns="http://www.w3.org/2000/svg"
+    className="w-full max-w-[600px] h-auto block mx-auto aspect-[var(--svg-ratio)]"
+    // eslint-disable-next-line react/forbid-dom-props -- dynamic aspect ratio
+    style={{ ['--svg-ratio' as string]: ratio }}
   >
     <rect width="600" height="340" fill="#FAFBFC" rx="12" />
     {children}
@@ -407,16 +407,7 @@ function ImageWithSkeleton({ src, alt }: { src: string; alt: string }) {
 
   if (errored) {
     return (
-      <div style={{
-        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-        gap: 8,
-        padding: '32px 16px',
-        background: '#F5F6F8',
-        borderRadius: 8,
-        color: '#9CA3AF',
-        fontSize: 13,
-        textAlign: 'center',
-      }}>
+      <div className="flex flex-col items-center justify-center gap-2 py-8 px-4 bg-[#F5F6F8] rounded-lg text-[#9CA3AF] text-[13px] text-center">
         <svg width={28} height={28} viewBox="0 0 24 24" fill="none"
           stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
           <rect x="3" y="3" width="18" height="18" rx="2" />
@@ -429,16 +420,11 @@ function ImageWithSkeleton({ src, alt }: { src: string; alt: string }) {
   }
 
   return (
-    <div style={{ position: 'relative', minHeight: 80 }}>
+    <div className="relative min-h-[80px]">
       {!loaded && (
         <div
-          className="lc-shimmer"
+          className="lc-shimmer absolute inset-0 rounded-lg aspect-[16/9]"
           aria-hidden
-          style={{
-            position: 'absolute', inset: 0,
-            borderRadius: 8,
-            aspectRatio: '16 / 9',
-          }}
         />
       )}
       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -451,11 +437,7 @@ function ImageWithSkeleton({ src, alt }: { src: string; alt: string }) {
           decoding="async"
           onLoad={() => setLoaded(true)}
           onError={() => setErrored(true)}
-          style={{
-            width: '100%', height: 'auto', display: 'block', borderRadius: 8,
-            opacity: loaded ? 1 : 0,
-            transition: 'opacity 200ms cubic-bezier(0.22,1,0.36,1)',
-          }}
+          className={`w-full h-auto block rounded-lg transition-opacity duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] ${loaded ? 'opacity-100' : 'opacity-0'}`}
         />
       </picture>
     </div>
@@ -467,14 +449,7 @@ export function CourseIllustration({ id }: { id: string }) {
   const Cmp = illustrationMap[id];
   if (!img && !Cmp) return null;
   return (
-    <div style={{
-      margin: '14px 0',
-      borderRadius: 12,
-      overflow: 'hidden',
-      background: '#FAFBFC',
-      border: '1px solid #EAECEF',
-      padding: 12,
-    }}>
+    <div className="my-[14px] mx-0 rounded-[12px] overflow-hidden bg-[#FAFBFC] border border-[#EAECEF] p-3">
       {img ? (
         <ImageWithSkeleton src={img.src} alt={img.alt} />
       ) : Cmp ? (
