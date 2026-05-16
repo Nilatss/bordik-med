@@ -1140,33 +1140,33 @@ export default function NeonatalHandbook() {
                     tableLayout: 'fixed',
                   }}>
                     <colgroup>
-                      <col style={{ width: '35%' }} />
-                      <col style={{ width: '23%' }} />
-                      <col style={{ width: '27%' }} />
-                      <col style={{ width: '15%' }} />
+                      <col className="w-[35%]" />
+                      <col className="w-[23%]" />
+                      <col className="w-[27%]" />
+                      <col className="w-[15%]" />
                     </colgroup>
                     <thead>
-                      <tr style={{ background: '#E5E7EB' }}>
-                        <th style={{ padding: '12px 18px', textAlign: 'left', fontWeight: 600, color: '#374151' }}>Показатель</th>
-                        <th style={{ padding: '12px 18px', textAlign: 'left', fontWeight: 600, color: '#374151' }}>Term</th>
-                        <th style={{ padding: '12px 18px', textAlign: 'left', fontWeight: 600, color: '#374151' }}>Preterm</th>
-                        <th style={{ padding: '12px 18px', textAlign: 'left', fontWeight: 600, color: '#374151' }}>Ед.</th>
+                      <tr className="bg-[#E5E7EB]">
+                        <th className="px-[18px] py-3 text-left font-semibold text-[#374151]">Показатель</th>
+                        <th className="px-[18px] py-3 text-left font-semibold text-[#374151]">Term</th>
+                        <th className="px-[18px] py-3 text-left font-semibold text-[#374151]">Preterm</th>
+                        <th className="px-[18px] py-3 text-left font-semibold text-[#374151]">Ед.</th>
                       </tr>
                     </thead>
                     <tbody>
                       {group.values.map((v, i) => (
-                        <tr key={i} style={{ borderTop: '1px solid #E5E7EB' }}>
-                          <td style={{ padding: '14px 18px', color: '#1A1A1A', fontWeight: 500, wordBreak: 'break-word', verticalAlign: 'top' }}>
+                        <tr key={i} className="border-t border-[#E5E7EB]">
+                          <td className="px-[18px] py-3.5 text-[#1A1A1A] font-medium break-words align-top">
                             {v.name_ru}
                             {v.notes && (
-                              <div style={{ fontSize: 12, color: '#6B7280', marginTop: 4, lineHeight: 1.45 }}>
+                              <div className="text-xs text-[#6B7280] mt-1 leading-[1.45]">
                                 {v.notes}
                               </div>
                             )}
                           </td>
-                          <td style={{ padding: '14px 18px', color: '#1A1A1A', wordBreak: 'break-word', verticalAlign: 'top' }}>{v.term}</td>
-                          <td style={{ padding: '14px 18px', color: '#1A1A1A', wordBreak: 'break-word', verticalAlign: 'top' }}>{v.preterm}</td>
-                          <td style={{ padding: '14px 18px', color: '#6B7280', fontFamily: 'var(--font-mono, monospace)', fontSize: 12, wordBreak: 'break-word', verticalAlign: 'top' }}>{v.unit}</td>
+                          <td className="px-[18px] py-3.5 text-[#1A1A1A] break-words align-top">{v.term}</td>
+                          <td className="px-[18px] py-3.5 text-[#1A1A1A] break-words align-top">{v.preterm}</td>
+                          <td className="px-[18px] py-3.5 text-[#6B7280] font-[var(--font-mono,monospace)] text-xs break-words align-top">{v.unit}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -1460,14 +1460,11 @@ function DrugCard({
     : drug.name_ru;
 
   return (
-    <div style={{
-      background: '#F5F6F8',
-      border: isOpen ? '1px solid #E5E7EB' : 'none',
-      borderRadius: 14,
-      overflow: 'hidden',
-      transition: 'border-color 150ms ease',
-      position: 'relative',
-    }}>
+    <div
+      className={`bg-[#F5F6F8] rounded-[14px] overflow-hidden transition-[border-color] duration-150 ease-out relative ${
+        isOpen ? 'border border-[#E5E7EB]' : 'border-0'
+      }`}
+    >
       <div className="absolute top-3 right-[50px] z-[2]">
         <FavoriteStarButton id={`drug:${drug.id}`} type="drug" title={drug.name_ru} />
       </div>
@@ -1477,37 +1474,24 @@ function DrugCard({
         aria-expanded={isOpen}
         aria-controls={panelId}
         aria-label={isOpen ? `Свернуть ${labelText}` : `Развернуть ${labelText}`}
-        style={{
-          width: '100%',
-          display: 'flex', alignItems: 'center', gap: 14,
-          padding: '14px 18px',
-          background: 'transparent', border: 'none',
-          cursor: 'pointer', textAlign: 'left',
-          fontFamily: 'inherit',
-          transition: 'background 150ms',
-        }}
-        onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
-        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+        className="w-full flex items-center gap-3.5 px-[18px] py-3.5 bg-transparent hover:bg-[#EFF1F4] border-0 cursor-pointer text-left font-[inherit] transition-[background-color] duration-150"
       >
         <span aria-hidden="true" className="flex-1 min-w-0">
-          <span style={{
-            display: 'block', fontFamily: 'var(--font-display)',
-            fontSize: 15, fontWeight: 600, color: '#1A1A1A',
-            lineHeight: 1.35, letterSpacing: '-0.01em',
-          }}>
+          <span className="block font-[var(--font-display)] text-[15px] font-semibold text-[#1A1A1A] leading-[1.35] tracking-[-0.01em]">
             <Highlight text={drug.name_ru} query={query} />
             {drug.name_en !== drug.name_ru && (
-              <span style={{ fontWeight: 400, color: '#6B7280', marginLeft: 6 }}>
+              <span className="font-normal text-[#6B7280] ml-1.5">
                 (<Highlight text={drug.name_en} query={query} />)
               </span>
             )}
           </span>
         </span>
-        <span aria-hidden="true" style={{
-          color: '#6B7280',
-          transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-          transition: 'transform 200ms',
-        }}>
+        <span
+          aria-hidden="true"
+          className={`text-[#6B7280] transition-transform duration-200 ${
+            isOpen ? 'rotate-180' : 'rotate-0'
+          }`}
+        >
           <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
             stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
             aria-hidden="true" focusable="false">
@@ -2070,14 +2054,11 @@ function GuidelineCard({
 }) {
   const panelId = `guideline-panel-${guideline.id}`;
   return (
-    <div style={{
-      background: '#F5F6F8',
-      border: isOpen ? '1px solid #E5E7EB' : 'none',
-      borderRadius: 14,
-      overflow: 'hidden',
-      transition: 'border-color 150ms ease',
-      position: 'relative',
-    }}>
+    <div
+      className={`bg-[#F5F6F8] rounded-[14px] overflow-hidden transition-[border-color] duration-150 ease-out relative ${
+        isOpen ? 'border border-[#E5E7EB]' : 'border-0'
+      }`}
+    >
       <div className="absolute top-3 right-[50px] z-[2]">
         <FavoriteStarButton id={`guideline:${guideline.id}`} type="guideline" title={guideline.title_ru} />
       </div>
@@ -2087,26 +2068,11 @@ function GuidelineCard({
         aria-expanded={isOpen}
         aria-controls={panelId}
         aria-label={isOpen ? `Свернуть протокол: ${guideline.title_ru}` : `Развернуть протокол: ${guideline.title_ru}`}
-        style={{
-          width: '100%',
-          display: 'flex', alignItems: 'flex-start', gap: 14,
-          padding: '14px 18px',
-          background: 'transparent', border: 'none',
-          cursor: 'pointer', textAlign: 'left',
-          fontFamily: 'inherit',
-          transition: 'background 150ms',
-        }}
-        onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
-        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+        className="w-full flex items-start gap-3.5 px-[18px] py-3.5 bg-transparent hover:bg-[#EFF1F4] border-0 cursor-pointer text-left font-[inherit] transition-[background-color] duration-150"
       >
         <span aria-hidden="true" className="flex-1 min-w-0">
-          <span style={{
-            display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap',
-          }}>
-            <span style={{
-              fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 600,
-              color: '#111827', letterSpacing: '-0.01em', lineHeight: 1.35,
-            }}>
+          <span className="flex items-center gap-2 flex-wrap">
+            <span className="font-[var(--font-display)] text-[15px] font-semibold text-[#111827] tracking-[-0.01em] leading-[1.35]">
               <Highlight text={guideline.title_ru} query={query} />
             </span>
             {/* Region chips — visualise каждый region из guideline.regions[].
@@ -2167,13 +2133,12 @@ function GuidelineCard({
             </span>
           )}
         </span>
-        <span aria-hidden="true" style={{
-          flexShrink: 0,
-          color: '#9CA3AF',
-          transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-          transition: 'transform 200ms',
-          marginTop: 4,
-        }}>
+        <span
+          aria-hidden="true"
+          className={`shrink-0 text-[#9CA3AF] transition-transform duration-200 mt-1 ${
+            isOpen ? 'rotate-180' : 'rotate-0'
+          }`}
+        >
           <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
             stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
             aria-hidden="true" focusable="false">
@@ -2196,19 +2161,11 @@ function GuidelineCard({
             }}
             className="overflow-hidden"
           >
-            <div style={{
-              padding: '18px 20px 20px',
-              background: '#FFFFFF',
-              borderTop: '1px solid #E5E7EB',
-            }}>
+            <div className="pt-[18px] px-5 pb-5 bg-white border-t border-[#E5E7EB]">
               <GuidelineContent content={guideline.content} />
               {guideline.references.length > 0 && (
                 <div className="mt-[18px] pt-3.5 border-t border-[#E5E7EB]">
-                  <div style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
-                    textTransform: 'uppercase', color: '#9CA3AF', marginBottom: 8,
-                  }}>
+                  <div className="font-[var(--font-mono)] text-[11px] font-bold tracking-[0.06em] uppercase text-[#9CA3AF] mb-2">
                     References
                   </div>
                   <ol className="m-0 pl-5 text-xs text-[#6B7280] leading-[1.55] list-decimal">
@@ -2270,7 +2227,7 @@ function NeonatalCalcCard({
   }, [calc.id]);
 
   return (
-    <div style={{ position: 'relative' }}>
+    <div className="relative">
       {/* Favorite star — absolute pos, sibling of button (avoids nested-button HTML invalid) */}
       <div className="absolute top-3 right-3 z-[2]">
         <FavoriteStarButton id={`calc:${calc.id}`} type="calc" title={calc.title_ru} />
@@ -2417,14 +2374,11 @@ function ArticleCard({
 }) {
   const panelId = `article-panel-${article.id}`;
   return (
-    <div style={{
-      background: '#F5F6F8',
-      border: isOpen ? '1px solid #E5E7EB' : 'none',
-      borderRadius: 14,
-      overflow: 'hidden',
-      transition: 'border-color 150ms ease',
-      position: 'relative',
-    }}>
+    <div
+      className={`bg-[#F5F6F8] rounded-[14px] overflow-hidden transition-[border-color] duration-150 ease-out relative ${
+        isOpen ? 'border border-[#E5E7EB]' : 'border-0'
+      }`}
+    >
       {/* Favorite star — absolutely positioned, sibling of toggle button (avoids nested-button HTML invalid).
           Top-right above chevron. Click stopPropagation в самом StarButton. */}
       <div className="absolute top-3 right-[50px] z-[2]">
@@ -2436,29 +2390,14 @@ function ArticleCard({
         aria-expanded={isOpen}
         aria-controls={panelId}
         aria-label={isOpen ? `Свернуть статью: ${article.title_ru}` : `Развернуть статью: ${article.title_ru}. Тема: ${article.topic}`}
-        style={{
-          width: '100%',
-          display: 'flex', alignItems: 'flex-start', gap: 14,
-          padding: '14px 18px',
-          background: 'transparent', border: 'none',
-          cursor: 'pointer', textAlign: 'left',
-          fontFamily: 'inherit',
-          transition: 'background 150ms',
-        }}
-        onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
-        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+        className="w-full flex items-start gap-3.5 px-[18px] py-3.5 bg-transparent hover:bg-[#EFF1F4] border-0 cursor-pointer text-left font-[inherit] transition-[background-color] duration-150"
       >
         <span aria-hidden="true" className="flex-1 min-w-0">
           {/* Collapsed header матчит GuidelineCard: только title + topic pill.
               Сводка (article.summary) перенесена внутрь раскрытой панели как
               лид-абзац — мирror «подробнее» pattern из протоколов. */}
-          <span style={{
-            display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap',
-          }}>
-            <span style={{
-              fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 600,
-              color: '#111827', letterSpacing: '-0.01em', lineHeight: 1.35,
-            }}>
+          <span className="flex items-center gap-2 flex-wrap">
+            <span className="font-[var(--font-display)] text-[15px] font-semibold text-[#111827] tracking-[-0.01em] leading-[1.35]">
               <Highlight text={article.title_ru} query={query} />
             </span>
             <span style={{
@@ -2477,13 +2416,12 @@ function ArticleCard({
             </span>
           </span>
         </span>
-        <span aria-hidden="true" style={{
-          flexShrink: 0,
-          color: '#9CA3AF',
-          transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-          transition: 'transform 200ms',
-          marginTop: 4,
-        }}>
+        <span
+          aria-hidden="true"
+          className={`shrink-0 text-[#9CA3AF] transition-transform duration-200 mt-1 ${
+            isOpen ? 'rotate-180' : 'rotate-0'
+          }`}
+        >
           <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
             stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
             aria-hidden="true" focusable="false">
@@ -2506,11 +2444,7 @@ function ArticleCard({
             }}
             className="overflow-hidden"
           >
-            <div style={{
-              padding: '18px 20px 20px',
-              background: '#FFFFFF',
-              borderTop: '1px solid #E5E7EB',
-            }}>
+            <div className="pt-[18px] px-5 pb-5 bg-white border-t border-[#E5E7EB]">
               {/* Лид: краткая сводка статьи (бывший collapsed-summary).
                   Mirrors протокольный intro — visually distinct paragraph
                   выше основного содержимого. */}
@@ -2530,11 +2464,7 @@ function ArticleCard({
               <ArticleContent content={article.content} />
               {article.related_calculators.length > 0 && (
                 <div className="mt-[18px] pt-3.5 border-t border-[#E5E7EB]">
-                  <div style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
-                    textTransform: 'uppercase', color: '#9CA3AF', marginBottom: 8,
-                  }}>
+                  <div className="font-[var(--font-mono)] text-[11px] font-bold tracking-[0.06em] uppercase text-[#9CA3AF] mb-2">
                     Связанные калькуляторы
                   </div>
                   <ul style={{
@@ -2565,11 +2495,7 @@ function ArticleCard({
               )}
               {article.references.length > 0 && (
                 <div className="mt-[18px] pt-3.5 border-t border-[#E5E7EB]">
-                  <div style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
-                    textTransform: 'uppercase', color: '#9CA3AF', marginBottom: 8,
-                  }}>
+                  <div className="font-[var(--font-mono)] text-[11px] font-bold tracking-[0.06em] uppercase text-[#9CA3AF] mb-2">
                     References
                   </div>
                   <ol className="m-0 pl-5 text-xs text-[#6B7280] leading-[1.55] list-decimal">
@@ -2625,7 +2551,7 @@ function ArticleContent({ content }: { content: string }) {
           return (
             <ul key={idx} style={{ margin: '6px 0', paddingLeft: 22 }}>
               {items.map((it, i) => (
-                <li key={i} style={{ marginBottom: 3 }}>
+                <li key={i} className="mb-[3px]">
                   <FormattedText text={it} />
                 </li>
               ))}
@@ -2637,7 +2563,7 @@ function ArticleContent({ content }: { content: string }) {
           return (
             <ol key={idx} style={{ margin: '6px 0', paddingLeft: 22 }}>
               {items.map((it, i) => (
-                <li key={i} style={{ marginBottom: 3 }}>
+                <li key={i} className="mb-[3px]">
                   <FormattedText text={it} />
                 </li>
               ))}
@@ -2766,14 +2692,11 @@ function LactCard({
   const panelId = `lact-panel-${drug.id}`;
 
   return (
-    <div style={{
-      background: '#F5F6F8',
-      border: isOpen ? '1px solid #E5E7EB' : 'none',
-      borderRadius: 14,
-      overflow: 'hidden',
-      transition: 'border-color 150ms ease',
-      position: 'relative',
-    }}>
+    <div
+      className={`bg-[#F5F6F8] rounded-[14px] overflow-hidden transition-[border-color] duration-150 ease-out relative ${
+        isOpen ? 'border border-[#E5E7EB]' : 'border-0'
+      }`}
+    >
       <div className="absolute top-3 right-[50px] z-[2]">
         <FavoriteStarButton id={`lactmed:${drug.id}`} type="lactmed" title={drug.name_ru} />
       </div>
@@ -2783,26 +2706,11 @@ function LactCard({
         aria-expanded={isOpen}
         aria-controls={panelId}
         aria-label={isOpen ? `Свернуть LactMed: ${drug.name_ru}` : `Развернуть LactMed: ${drug.name_ru}. Совместимость с грудным вскармливанием: ${colors.label}.`}
-        style={{
-          width: '100%',
-          display: 'flex', alignItems: 'flex-start', gap: 14,
-          padding: '14px 18px',
-          background: 'transparent', border: 'none',
-          cursor: 'pointer', textAlign: 'left',
-          fontFamily: 'inherit',
-          transition: 'background 150ms',
-        }}
-        onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
-        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+        className="w-full flex items-start gap-3.5 px-[18px] py-3.5 bg-transparent hover:bg-[#EFF1F4] border-0 cursor-pointer text-left font-[inherit] transition-[background-color] duration-150"
       >
         <span aria-hidden="true" className="flex-1 min-w-0">
-          <span style={{
-            display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 4,
-          }}>
-            <span style={{
-              fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 600,
-              color: '#111827', letterSpacing: '-0.01em', lineHeight: 1.35,
-            }}>
+          <span className="flex items-center gap-2 flex-wrap mb-1">
+            <span className="font-[var(--font-display)] text-[15px] font-semibold text-[#111827] tracking-[-0.01em] leading-[1.35]">
               <Highlight text={drug.name_ru} query={query} />
             </span>
             <span style={{
@@ -2825,13 +2733,12 @@ function LactCard({
             <Highlight text={drug.summary} query={query} />
           </span>
         </span>
-        <span aria-hidden="true" style={{
-          flexShrink: 0,
-          color: '#9CA3AF',
-          transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-          transition: 'transform 200ms',
-          marginTop: 4,
-        }}>
+        <span
+          aria-hidden="true"
+          className={`shrink-0 text-[#9CA3AF] transition-transform duration-200 mt-1 ${
+            isOpen ? 'rotate-180' : 'rotate-0'
+          }`}
+        >
           <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
             stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
             aria-hidden="true" focusable="false">
@@ -2854,12 +2761,7 @@ function LactCard({
             }}
             className="overflow-hidden"
           >
-            <div style={{
-              padding: '18px 20px 20px',
-              background: '#FFFFFF',
-              borderTop: '1px solid #E5E7EB',
-              fontSize: 13.5, lineHeight: 1.6, color: '#1F2937',
-            }}>
+            <div className="pt-[18px] px-5 pb-5 bg-white border-t border-[#E5E7EB] text-[13.5px] leading-[1.6] text-[#1F2937]">
               {/* Лид-абзац (summary) — то же что было в свернутой карточке. */}
               {drug.summary && (
                 <p style={{
@@ -2955,13 +2857,8 @@ function NurseProcedureCard({
         }}
       >
         <span aria-hidden="true" className="flex-1 min-w-0">
-          <span style={{
-            display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 4,
-          }}>
-            <span style={{
-              fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 600,
-              color: '#111827', letterSpacing: '-0.01em', lineHeight: 1.35,
-            }}>
+          <span className="flex items-center gap-2 flex-wrap mb-1">
+            <span className="font-[var(--font-display)] text-[15px] font-semibold text-[#111827] tracking-[-0.01em] leading-[1.35]">
               {procedure.title_ru}
             </span>
             <span style={{
@@ -2987,13 +2884,12 @@ function NurseProcedureCard({
             </span>
           </span>
         </span>
-        <span aria-hidden="true" style={{
-          flexShrink: 0,
-          color: '#9CA3AF',
-          transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-          transition: 'transform 200ms',
-          marginTop: 4,
-        }}>
+        <span
+          aria-hidden="true"
+          className={`shrink-0 text-[#9CA3AF] transition-transform duration-200 mt-1 ${
+            isOpen ? 'rotate-180' : 'rotate-0'
+          }`}
+        >
           <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
             stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
             aria-hidden="true" focusable="false">
@@ -3045,7 +2941,7 @@ function NurseProcedureCard({
                   </div>
                   <ul style={{ margin: 0, paddingLeft: 32, fontSize: 12.5, lineHeight: 1.55, color: '#374151' }}>
                     {step.items.map((it, i) => (
-                      <li key={i} style={{ marginBottom: 3 }}>{it}</li>
+                      <li key={i} className="mb-[3px]">{it}</li>
                     ))}
                   </ul>
                 </div>
@@ -3076,7 +2972,7 @@ function NurseProcedureCard({
                   </div>
                   <ul style={{ margin: 0, paddingLeft: 18, fontSize: 12.5, color: '#374151', lineHeight: 1.55 }}>
                     {procedure.warnings.map((w, i) => (
-                      <li key={i} style={{ marginBottom: 3 }}>{w}</li>
+                      <li key={i} className="mb-[3px]">{w}</li>
                     ))}
                   </ul>
                 </div>
@@ -3094,7 +2990,7 @@ function NurseProcedureCard({
                   </div>
                   <ol style={{ margin: 0, paddingLeft: 18, fontSize: 12, color: '#6B7280', lineHeight: 1.55 }}>
                     {procedure.references.map((r, i) => (
-                      <li key={i} style={{ marginBottom: 3 }}>{r}</li>
+                      <li key={i} className="mb-[3px]">{r}</li>
                     ))}
                   </ol>
                 </div>
@@ -3260,24 +3156,13 @@ function ClinicalCasesView({
       >
         {grouped.map(([label, items]) => (
           <div key={label}>
-            <h3 style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: 17, fontWeight: 700,
-              color: '#1A1A1A',
-              margin: '0 0 18px',
-              letterSpacing: '-0.01em',
-              display: 'flex', alignItems: 'baseline', gap: 8,
-            }}>
+            <h3 className="font-[var(--font-display)] text-[17px] font-bold text-[#1A1A1A] mt-0 mb-[18px] tracking-[-0.01em] flex items-baseline gap-2">
               {label}
-              <span style={{
-                fontFamily: 'var(--font-mono)',
-                fontSize: 11, fontWeight: 600,
-                color: '#9CA3AF',
-              }}>
+              <span className="font-[var(--font-mono)] text-[11px] font-semibold text-[#9CA3AF]">
                 {items.length}
               </span>
             </h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <div className="flex flex-col gap-2">
               {items.map((c) => (
                 <ClinicalCaseCard
                   key={c.id}
@@ -3292,10 +3177,7 @@ function ClinicalCasesView({
         ))}
 
         {filtered.length === 0 && (
-          <div style={{
-            padding: '32px 16px', background: '#F5F6F8', borderRadius: 12,
-            textAlign: 'center', color: '#6B7280', fontSize: 14,
-          }}>
+          <div className="px-4 py-8 bg-[#F5F6F8] rounded-xl text-center text-[#6B7280] text-sm">
             Ничего не найдено.
           </div>
         )}
@@ -3316,14 +3198,11 @@ function ClinicalCaseCard({
   const panelId = `case-panel-${c.id}`;
   const levelLabel = c.level === 'basic' ? 'Базовый' : c.level === 'advanced' ? 'Продвинутый' : 'Средний';
   return (
-    <div style={{
-      background: '#F5F6F8',
-      border: isOpen ? '1px solid #E5E7EB' : 'none',
-      borderRadius: 14,
-      overflow: 'hidden',
-      transition: 'border-color 150ms ease',
-      position: 'relative',
-    }}>
+    <div
+      className={`bg-[#F5F6F8] rounded-[14px] overflow-hidden transition-[border-color] duration-150 ease-out relative ${
+        isOpen ? 'border border-[#E5E7EB]' : 'border-0'
+      }`}
+    >
       <div className="absolute top-3 right-[50px] z-[2]">
         <FavoriteStarButton id={`case:${c.id}`} type="case" title={c.title_ru} />
       </div>
@@ -3333,26 +3212,11 @@ function ClinicalCaseCard({
         aria-expanded={isOpen}
         aria-controls={panelId}
         aria-label={isOpen ? `Свернуть кейс: ${c.title_ru}` : `Развернуть кейс: ${c.title_ru}. Уровень: ${levelLabel}.`}
-        style={{
-          width: '100%',
-          display: 'flex', alignItems: 'flex-start', gap: 14,
-          padding: '14px 18px',
-          background: 'transparent', border: 'none',
-          cursor: 'pointer', textAlign: 'left',
-          fontFamily: 'inherit',
-          transition: 'background 150ms',
-        }}
-        onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
-        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+        className="w-full flex items-start gap-3.5 px-[18px] py-3.5 bg-transparent hover:bg-[#EFF1F4] border-0 cursor-pointer text-left font-[inherit] transition-[background-color] duration-150"
       >
         <span aria-hidden="true" className="flex-1 min-w-0">
-          <span style={{
-            display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap',
-          }}>
-            <span style={{
-              fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 600,
-              color: '#111827', letterSpacing: '-0.01em', lineHeight: 1.35,
-            }}>
+          <span className="flex items-center gap-2 flex-wrap">
+            <span className="font-[var(--font-display)] text-[15px] font-semibold text-[#111827] tracking-[-0.01em] leading-[1.35]">
               <Highlight text={c.title_ru} query={query} />
             </span>
             <span style={{
@@ -3370,13 +3234,12 @@ function ClinicalCaseCard({
             </span>
           </span>
         </span>
-        <span aria-hidden="true" style={{
-          flexShrink: 0,
-          color: '#9CA3AF',
-          transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-          transition: 'transform 200ms',
-          marginTop: 4,
-        }}>
+        <span
+          aria-hidden="true"
+          className={`shrink-0 text-[#9CA3AF] transition-transform duration-200 mt-1 ${
+            isOpen ? 'rotate-180' : 'rotate-0'
+          }`}
+        >
           <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
             stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
             aria-hidden="true" focusable="false">
@@ -3399,12 +3262,7 @@ function ClinicalCaseCard({
             }}
             className="overflow-hidden"
           >
-            <div style={{
-              padding: '18px 20px 20px',
-              background: '#FFFFFF',
-              borderTop: '1px solid #E5E7EB',
-              fontSize: 13.5, lineHeight: 1.6, color: '#1F2937',
-            }}>
+            <div className="pt-[18px] px-5 pb-5 bg-white border-t border-[#E5E7EB] text-[13.5px] leading-[1.6] text-[#1F2937]">
               {/* Виньетка — первый блок (контекст случая) */}
               <p style={{
                 margin: '0 0 16px',
@@ -3425,11 +3283,7 @@ function ClinicalCaseCard({
 
               {c.references.length > 0 && (
                 <div className="mt-[18px] pt-3.5 border-t border-[#E5E7EB]">
-                  <div style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
-                    textTransform: 'uppercase', color: '#9CA3AF', marginBottom: 8,
-                  }}>
+                  <div className="font-[var(--font-mono)] text-[11px] font-bold tracking-[0.06em] uppercase text-[#9CA3AF] mb-2">
                     References
                   </div>
                   <ol className="m-0 pl-5 text-xs text-[#6B7280] leading-[1.55] list-decimal">
@@ -3465,7 +3319,7 @@ function CaseSection({
   if (items.length === 0) return null;
   const ListTag: 'ol' | 'ul' = ordered ? 'ol' : 'ul';
   return (
-    <div style={{ marginBottom: 14 }}>
+    <div className="mb-3.5">
       <div style={{
         display: 'inline-flex', alignItems: 'center', gap: 6,
         fontFamily: 'var(--font-mono)',
@@ -3593,24 +3447,13 @@ function CommonMistakesView({
       >
         {grouped.map(([label, items]) => (
           <div key={label}>
-            <h3 style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: 17, fontWeight: 700,
-              color: '#1A1A1A',
-              margin: '0 0 18px',
-              letterSpacing: '-0.01em',
-              display: 'flex', alignItems: 'baseline', gap: 8,
-            }}>
+            <h3 className="font-[var(--font-display)] text-[17px] font-bold text-[#1A1A1A] mt-0 mb-[18px] tracking-[-0.01em] flex items-baseline gap-2">
               {label}
-              <span style={{
-                fontFamily: 'var(--font-mono)',
-                fontSize: 11, fontWeight: 600,
-                color: '#9CA3AF',
-              }}>
+              <span className="font-[var(--font-mono)] text-[11px] font-semibold text-[#9CA3AF]">
                 {items.length}
               </span>
             </h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <div className="flex flex-col gap-2">
               {items.map((m) => (
                 <CommonMistakeCard
                   key={m.id}
@@ -3625,10 +3468,7 @@ function CommonMistakesView({
         ))}
 
         {filtered.length === 0 && (
-          <div style={{
-            padding: '32px 16px', background: '#F5F6F8', borderRadius: 12,
-            textAlign: 'center', color: '#6B7280', fontSize: 14,
-          }}>
+          <div className="px-4 py-8 bg-[#F5F6F8] rounded-xl text-center text-[#6B7280] text-sm">
             Ничего не найдено.
           </div>
         )}
@@ -3651,14 +3491,11 @@ function CommonMistakeCard({
     : m.severity === 'medium' ? 'Средняя'
     : 'Низкая';
   return (
-    <div style={{
-      background: '#F5F6F8',
-      border: isOpen ? '1px solid #E5E7EB' : 'none',
-      borderRadius: 14,
-      overflow: 'hidden',
-      transition: 'border-color 150ms ease',
-      position: 'relative',
-    }}>
+    <div
+      className={`bg-[#F5F6F8] rounded-[14px] overflow-hidden transition-[border-color] duration-150 ease-out relative ${
+        isOpen ? 'border border-[#E5E7EB]' : 'border-0'
+      }`}
+    >
       <div className="absolute top-3 right-[50px] z-[2]">
         <FavoriteStarButton id={`mistake:${m.id}`} type="mistake" title={m.title_ru} />
       </div>
@@ -3668,26 +3505,11 @@ function CommonMistakeCard({
         aria-expanded={isOpen}
         aria-controls={panelId}
         aria-label={isOpen ? `Свернуть: ${m.title_ru}` : `Развернуть: ${m.title_ru}. Тяжесть последствий: ${sevLabel}.`}
-        style={{
-          width: '100%',
-          display: 'flex', alignItems: 'flex-start', gap: 14,
-          padding: '14px 18px',
-          background: 'transparent', border: 'none',
-          cursor: 'pointer', textAlign: 'left',
-          fontFamily: 'inherit',
-          transition: 'background 150ms',
-        }}
-        onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
-        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+        className="w-full flex items-start gap-3.5 px-[18px] py-3.5 bg-transparent hover:bg-[#EFF1F4] border-0 cursor-pointer text-left font-[inherit] transition-[background-color] duration-150"
       >
         <span aria-hidden="true" className="flex-1 min-w-0">
-          <span style={{
-            display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap',
-          }}>
-            <span style={{
-              fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 600,
-              color: '#111827', letterSpacing: '-0.01em', lineHeight: 1.35,
-            }}>
+          <span className="flex items-center gap-2 flex-wrap">
+            <span className="font-[var(--font-display)] text-[15px] font-semibold text-[#111827] tracking-[-0.01em] leading-[1.35]">
               <Highlight text={m.title_ru} query={query} />
             </span>
             <span style={{
@@ -3705,13 +3527,12 @@ function CommonMistakeCard({
             </span>
           </span>
         </span>
-        <span aria-hidden="true" style={{
-          flexShrink: 0,
-          color: '#9CA3AF',
-          transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-          transition: 'transform 200ms',
-          marginTop: 4,
-        }}>
+        <span
+          aria-hidden="true"
+          className={`shrink-0 text-[#9CA3AF] transition-transform duration-200 mt-1 ${
+            isOpen ? 'rotate-180' : 'rotate-0'
+          }`}
+        >
           <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
             stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
             aria-hidden="true" focusable="false">
@@ -3734,12 +3555,7 @@ function CommonMistakeCard({
             }}
             className="overflow-hidden"
           >
-            <div style={{
-              padding: '18px 20px 20px',
-              background: '#FFFFFF',
-              borderTop: '1px solid #E5E7EB',
-              fontSize: 13.5, lineHeight: 1.6, color: '#1F2937',
-            }}>
+            <div className="pt-[18px] px-5 pb-5 bg-white border-t border-[#E5E7EB] text-[13.5px] leading-[1.6] text-[#1F2937]">
               <MistakeBlock label="Что часто делают неправильно" text={m.mistake} />
               <MistakeBlock label="Почему ошибка типична" text={m.why_it_happens} />
               <MistakeBlock label="Как должно быть" text={m.correct_approach} tone="ok" />
@@ -3747,11 +3563,7 @@ function CommonMistakeCard({
 
               {m.references.length > 0 && (
                 <div className="mt-[18px] pt-3.5 border-t border-[#E5E7EB]">
-                  <div style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
-                    textTransform: 'uppercase', color: '#9CA3AF', marginBottom: 8,
-                  }}>
+                  <div className="font-[var(--font-mono)] text-[11px] font-bold tracking-[0.06em] uppercase text-[#9CA3AF] mb-2">
                     References
                   </div>
                   <ol className="m-0 pl-5 text-xs text-[#6B7280] leading-[1.55] list-decimal">
@@ -3784,7 +3596,7 @@ function MistakeBlock({
   tone?: 'ok' | 'warning';
 }) {
   return (
-    <div style={{ marginBottom: 14 }}>
+    <div className="mb-3.5">
       <div style={{
         fontFamily: 'var(--font-mono)',
         fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
@@ -3889,24 +3701,13 @@ function ChecklistsView({
       >
         {grouped.map(([label, items]) => (
           <div key={label}>
-            <h3 style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: 17, fontWeight: 700,
-              color: '#1A1A1A',
-              margin: '0 0 18px',
-              letterSpacing: '-0.01em',
-              display: 'flex', alignItems: 'baseline', gap: 8,
-            }}>
+            <h3 className="font-[var(--font-display)] text-[17px] font-bold text-[#1A1A1A] mt-0 mb-[18px] tracking-[-0.01em] flex items-baseline gap-2">
               {label}
-              <span style={{
-                fontFamily: 'var(--font-mono)',
-                fontSize: 11, fontWeight: 600,
-                color: '#9CA3AF',
-              }}>
+              <span className="font-[var(--font-mono)] text-[11px] font-semibold text-[#9CA3AF]">
                 {items.length}
               </span>
             </h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <div className="flex flex-col gap-2">
               {items.map((c) => (
                 <ChecklistCard
                   key={c.id}
@@ -3920,10 +3721,7 @@ function ChecklistsView({
           </div>
         ))}
         {filtered.length === 0 && (
-          <div style={{
-            padding: '32px 16px', background: '#F5F6F8', borderRadius: 12,
-            textAlign: 'center', color: '#6B7280', fontSize: 14,
-          }}>
+          <div className="px-4 py-8 bg-[#F5F6F8] rounded-xl text-center text-[#6B7280] text-sm">
             Ничего не найдено.
           </div>
         )}
@@ -3970,14 +3768,11 @@ function ChecklistCard({
   const percent = totalItems > 0 ? Math.round((doneItems / totalItems) * 100) : 0;
 
   return (
-    <div style={{
-      background: '#F5F6F8',
-      border: isOpen ? '1px solid #E5E7EB' : 'none',
-      borderRadius: 14,
-      overflow: 'hidden',
-      transition: 'border-color 150ms ease',
-      position: 'relative',
-    }}>
+    <div
+      className={`bg-[#F5F6F8] rounded-[14px] overflow-hidden transition-[border-color] duration-150 ease-out relative ${
+        isOpen ? 'border border-[#E5E7EB]' : 'border-0'
+      }`}
+    >
       <div className="absolute top-3 right-[50px] z-[2]">
         <FavoriteStarButton id={`checklist:${c.id}`} type="checklist" title={c.title_ru} />
       </div>
@@ -3987,26 +3782,11 @@ function ChecklistCard({
         aria-expanded={isOpen}
         aria-controls={panelId}
         aria-label={isOpen ? `Свернуть чек-лист: ${c.title_ru}` : `Развернуть чек-лист: ${c.title_ru}. Длительность ~${c.estimated_minutes} минут.`}
-        style={{
-          width: '100%',
-          display: 'flex', alignItems: 'flex-start', gap: 14,
-          padding: '14px 18px',
-          background: 'transparent', border: 'none',
-          cursor: 'pointer', textAlign: 'left',
-          fontFamily: 'inherit',
-          transition: 'background 150ms',
-        }}
-        onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
-        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+        className="w-full flex items-start gap-3.5 px-[18px] py-3.5 bg-transparent hover:bg-[#EFF1F4] border-0 cursor-pointer text-left font-[inherit] transition-[background-color] duration-150"
       >
         <span aria-hidden="true" className="flex-1 min-w-0">
-          <span style={{
-            display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap',
-          }}>
-            <span style={{
-              fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 600,
-              color: '#111827', letterSpacing: '-0.01em', lineHeight: 1.35,
-            }}>
+          <span className="flex items-center gap-2 flex-wrap">
+            <span className="font-[var(--font-display)] text-[15px] font-semibold text-[#111827] tracking-[-0.01em] leading-[1.35]">
               <Highlight text={c.title_ru} query={query} />
             </span>
             <span style={{
@@ -4039,13 +3819,12 @@ function ChecklistCard({
             )}
           </span>
         </span>
-        <span aria-hidden="true" style={{
-          flexShrink: 0,
-          color: '#9CA3AF',
-          transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-          transition: 'transform 200ms',
-          marginTop: 4,
-        }}>
+        <span
+          aria-hidden="true"
+          className={`shrink-0 text-[#9CA3AF] transition-transform duration-200 mt-1 ${
+            isOpen ? 'rotate-180' : 'rotate-0'
+          }`}
+        >
           <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
             stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
             aria-hidden="true" focusable="false">
@@ -4068,12 +3847,7 @@ function ChecklistCard({
             }}
             className="overflow-hidden"
           >
-            <div style={{
-              padding: '18px 20px 20px',
-              background: '#FFFFFF',
-              borderTop: '1px solid #E5E7EB',
-              fontSize: 13.5, lineHeight: 1.55, color: '#1F2937',
-            }}>
+            <div className="pt-[18px] px-5 pb-5 bg-white border-t border-[#E5E7EB] text-[13.5px] leading-[1.55] text-[#1F2937]">
               {/* Audience + indications */}
               <div style={{
                 marginBottom: 16,
@@ -4083,11 +3857,11 @@ function ChecklistCard({
                 <div style={{
                   fontSize: 12, color: '#6B7280', marginBottom: 6,
                 }}>
-                  <strong style={{ color: '#1A1A1A' }}>Аудитория:</strong> {c.audience}
+                  <strong className="text-[#1A1A1A]">Аудитория:</strong> {c.audience}
                 </div>
                 {c.indications.length > 0 && (
                   <div style={{ fontSize: 12, color: '#6B7280' }}>
-                    <strong style={{ color: '#1A1A1A' }}>Показания:</strong>
+                    <strong className="text-[#1A1A1A]">Показания:</strong>
                     <ul style={{ margin: '4px 0 0 18px', padding: 0 }}>
                       {c.indications.map((it, i) => (
                         <li key={i}>{it}</li>
@@ -4108,7 +3882,7 @@ function ChecklistCard({
                   }}>
                     {sec.title}
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  <div className="flex flex-col gap-1.5">
                     {sec.items.map((it, ii) => {
                       const key = `${si}:${ii}`;
                       const checked = !!progress[key];
@@ -4181,11 +3955,7 @@ function ChecklistCard({
 
               {c.references.length > 0 && (
                 <div className="mt-[18px] pt-3.5 border-t border-[#E5E7EB]">
-                  <div style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
-                    textTransform: 'uppercase', color: '#9CA3AF', marginBottom: 8,
-                  }}>
+                  <div className="font-[var(--font-mono)] text-[11px] font-bold tracking-[0.06em] uppercase text-[#9CA3AF] mb-2">
                     References
                   </div>
                   <ol className="m-0 pl-5 text-xs text-[#6B7280] leading-[1.55] list-decimal">
@@ -4307,20 +4077,9 @@ function VideosView({
       >
         {grouped.map(([label, items]) => (
           <div key={label}>
-            <h3 style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: 17, fontWeight: 700,
-              color: '#1A1A1A',
-              margin: '0 0 18px',
-              letterSpacing: '-0.01em',
-              display: 'flex', alignItems: 'baseline', gap: 8,
-            }}>
+            <h3 className="font-[var(--font-display)] text-[17px] font-bold text-[#1A1A1A] mt-0 mb-[18px] tracking-[-0.01em] flex items-baseline gap-2">
               {label}
-              <span style={{
-                fontFamily: 'var(--font-mono)',
-                fontSize: 11, fontWeight: 600,
-                color: '#9CA3AF',
-              }}>
+              <span className="font-[var(--font-mono)] text-[11px] font-semibold text-[#9CA3AF]">
                 {items.length}
               </span>
             </h3>
@@ -4332,10 +4091,7 @@ function VideosView({
           </div>
         ))}
         {filtered.length === 0 && (
-          <div style={{
-            padding: '32px 16px', background: '#F5F6F8', borderRadius: 12,
-            textAlign: 'center', color: '#6B7280', fontSize: 14,
-          }}>
+          <div className="px-4 py-8 bg-[#F5F6F8] rounded-xl text-center text-[#6B7280] text-sm">
             Ничего не найдено.
           </div>
         )}
@@ -4359,7 +4115,7 @@ function ProcedureVideoCard({ video }: { video: ProcedureVideo }) {
     // single-url: native link behavior
   };
   return (
-    <div style={{ position: 'relative' }}>
+    <div className="relative">
       <div className="absolute top-3 right-3 z-[2]">
         <FavoriteStarButton id={`video:${v.id}`} type="video" title={v.title_ru} />
       </div>
@@ -4532,7 +4288,7 @@ function VideoPickerModal({
             </svg>
           </button>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <div className="flex flex-col gap-2">
           {videos.map((video, idx) => (
             <a
               key={idx}
@@ -4654,7 +4410,7 @@ function AtlasView({
   }
 
   return (
-    <div style={{ width: '100%' }}>
+    <div className="w-full">
       <p style={{ fontSize: 13, color: '#6B7280', margin: '0 0 14px' }}>
         Показано: <strong className="text-[#1A1A1A]">{filtered.length}</strong> из {bank.atlas.length} атласов
         {' · '}
@@ -4675,24 +4431,13 @@ function AtlasView({
       >
         {grouped.map(([label, items]) => (
           <div key={label}>
-            <h3 style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: 17, fontWeight: 700,
-              color: '#1A1A1A',
-              margin: '0 0 18px',
-              letterSpacing: '-0.01em',
-              display: 'flex', alignItems: 'baseline', gap: 8,
-            }}>
+            <h3 className="font-[var(--font-display)] text-[17px] font-bold text-[#1A1A1A] mt-0 mb-[18px] tracking-[-0.01em] flex items-baseline gap-2">
               {label}
-              <span style={{
-                fontFamily: 'var(--font-mono)',
-                fontSize: 11, fontWeight: 600,
-                color: '#9CA3AF',
-              }}>
+              <span className="font-[var(--font-mono)] text-[11px] font-semibold text-[#9CA3AF]">
                 {items.length}
               </span>
             </h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <div className="flex flex-col gap-2">
               {items.map((a) => (
                 <AtlasCard
                   key={a.id}
@@ -4706,10 +4451,7 @@ function AtlasView({
           </div>
         ))}
         {filtered.length === 0 && (
-          <div style={{
-            padding: '32px 16px', background: '#F5F6F8', borderRadius: 12,
-            textAlign: 'center', color: '#6B7280', fontSize: 14,
-          }}>
+          <div className="px-4 py-8 bg-[#F5F6F8] rounded-xl text-center text-[#6B7280] text-sm">
             Ничего не найдено.
           </div>
         )}
@@ -4730,14 +4472,11 @@ function AtlasCard({
   const panelId = `atlas-panel-${a.id}`;
   const sourceLabel = ATLAS_SOURCE_TYPE_LABELS[a.source_type] ?? a.source_type;
   return (
-    <div style={{
-      background: '#F5F6F8',
-      border: isOpen ? '1px solid #E5E7EB' : 'none',
-      borderRadius: 14,
-      overflow: 'hidden',
-      transition: 'border-color 150ms ease',
-      position: 'relative',
-    }}>
+    <div
+      className={`bg-[#F5F6F8] rounded-[14px] overflow-hidden transition-[border-color] duration-150 ease-out relative ${
+        isOpen ? 'border border-[#E5E7EB]' : 'border-0'
+      }`}
+    >
       <div className="absolute top-3 right-[50px] z-[2]">
         <FavoriteStarButton id={`atlas:${a.id}`} type="atlas" title={a.title_ru} />
       </div>
@@ -4747,26 +4486,11 @@ function AtlasCard({
         aria-expanded={isOpen}
         aria-controls={panelId}
         aria-label={isOpen ? `Свернуть атлас: ${a.title_ru}` : `Развернуть атлас: ${a.title_ru}. Источник: ${a.source}.`}
-        style={{
-          width: '100%',
-          display: 'flex', alignItems: 'flex-start', gap: 14,
-          padding: '14px 18px',
-          background: 'transparent', border: 'none',
-          cursor: 'pointer', textAlign: 'left',
-          fontFamily: 'inherit',
-          transition: 'background 150ms',
-        }}
-        onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
-        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+        className="w-full flex items-start gap-3.5 px-[18px] py-3.5 bg-transparent hover:bg-[#EFF1F4] border-0 cursor-pointer text-left font-[inherit] transition-[background-color] duration-150"
       >
         <span aria-hidden="true" className="flex-1 min-w-0">
-          <span style={{
-            display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap',
-          }}>
-            <span style={{
-              fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 600,
-              color: '#111827', letterSpacing: '-0.01em', lineHeight: 1.35,
-            }}>
+          <span className="flex items-center gap-2 flex-wrap">
+            <span className="font-[var(--font-display)] text-[15px] font-semibold text-[#111827] tracking-[-0.01em] leading-[1.35]">
               <Highlight text={a.title_ru} query={query} />
             </span>
             <span style={{
@@ -4784,13 +4508,12 @@ function AtlasCard({
             </span>
           </span>
         </span>
-        <span aria-hidden="true" style={{
-          flexShrink: 0,
-          color: '#9CA3AF',
-          transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-          transition: 'transform 200ms',
-          marginTop: 4,
-        }}>
+        <span
+          aria-hidden="true"
+          className={`shrink-0 text-[#9CA3AF] transition-transform duration-200 mt-1 ${
+            isOpen ? 'rotate-180' : 'rotate-0'
+          }`}
+        >
           <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
             stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
             aria-hidden="true" focusable="false">
@@ -4813,12 +4536,7 @@ function AtlasCard({
             }}
             className="overflow-hidden"
           >
-            <div style={{
-              padding: '18px 20px 20px',
-              background: '#FFFFFF',
-              borderTop: '1px solid #E5E7EB',
-              fontSize: 13.5, lineHeight: 1.6, color: '#1F2937',
-            }}>
+            <div className="pt-[18px] px-5 pb-5 bg-white border-t border-[#E5E7EB] text-[13.5px] leading-[1.6] text-[#1F2937]">
               <p style={{
                 margin: '0 0 16px',
                 paddingBottom: 14,
@@ -5008,7 +4726,7 @@ export function ProgressDashboard({ bank: _bank, quizzesBank: _quizzesBank }: { 
   }
 
   return (
-    <div style={{ width: '100%' }}>
+    <div className="w-full">
       {/* Aggregate stats — 4 KPI cards */}
       <div style={{
         display: 'grid',
@@ -5024,18 +4742,14 @@ export function ProgressDashboard({ bank: _bank, quizzesBank: _quizzesBank }: { 
 
       {/* Suggestions — what to do next */}
       {suggestions.length > 0 && (
-        <div style={{ marginBottom: 24 }}>
-          <h3 style={{
-            fontFamily: 'var(--font-display)', fontSize: 17, fontWeight: 700,
-            color: '#1A1A1A', margin: '0 0 12px', letterSpacing: '-0.01em',
-            display: 'flex', alignItems: 'baseline', gap: 8,
-          }}>
+        <div className="mb-6">
+          <h3 className="font-[var(--font-display)] text-[17px] font-bold text-[#1A1A1A] mt-0 mb-3 tracking-[-0.01em] flex items-baseline gap-2">
             Рекомендуем пройти
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 600, color: '#9CA3AF' }}>
+            <span className="font-[var(--font-mono)] text-[11px] font-semibold text-[#9CA3AF]">
               {suggestions.length}
             </span>
           </h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <div className="flex flex-col gap-2">
             {suggestions.map((s) => {
               const reason = s.attempts === 0
                 ? 'Ещё не пробовали'
@@ -5076,18 +4790,14 @@ export function ProgressDashboard({ bank: _bank, quizzesBank: _quizzesBank }: { 
       )}
 
       {/* Per-topic breakdown */}
-      <div style={{ marginBottom: 24 }}>
-        <h3 style={{
-          fontFamily: 'var(--font-display)', fontSize: 17, fontWeight: 700,
-          color: '#1A1A1A', margin: '0 0 12px', letterSpacing: '-0.01em',
-          display: 'flex', alignItems: 'baseline', gap: 8,
-        }}>
+      <div className="mb-6">
+        <h3 className="font-[var(--font-display)] text-[17px] font-bold text-[#1A1A1A] mt-0 mb-3 tracking-[-0.01em] flex items-baseline gap-2">
           По темам
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 600, color: '#9CA3AF' }}>
+          <span className="font-[var(--font-mono)] text-[11px] font-semibold text-[#9CA3AF]">
             {byTopic.length}
           </span>
         </h3>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+        <div className="flex flex-col gap-1.5">
           {byTopic.map(([topic, bucket]) => {
             const passPct = Math.round(bucket.passed / Math.max(1, bucket.total) * 100);
             return (
@@ -5122,17 +4832,13 @@ export function ProgressDashboard({ bank: _bank, quizzesBank: _quizzesBank }: { 
 
       {/* Per-quiz table */}
       <div>
-        <h3 style={{
-          fontFamily: 'var(--font-display)', fontSize: 17, fontWeight: 700,
-          color: '#1A1A1A', margin: '0 0 12px', letterSpacing: '-0.01em',
-          display: 'flex', alignItems: 'baseline', gap: 8,
-        }}>
+        <h3 className="font-[var(--font-display)] text-[17px] font-bold text-[#1A1A1A] mt-0 mb-3 tracking-[-0.01em] flex items-baseline gap-2">
           Все тесты
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 600, color: '#9CA3AF' }}>
+          <span className="font-[var(--font-mono)] text-[11px] font-semibold text-[#9CA3AF]">
             {snapshots.length}
           </span>
         </h3>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+        <div className="flex flex-col gap-1.5">
           {snapshots.map((s) => (
             <div key={s.id} style={{
               display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap',
@@ -5281,7 +4987,7 @@ function DrugDoseCalculator() {
   }, [visibleDrugs]);
 
   return (
-    <div style={{ width: '100%' }}>
+    <div className="w-full">
       {/* Disclaimer */}
       <div style={{
         padding: '12px 14px',
@@ -5390,11 +5096,11 @@ function DrugDoseCalculator() {
               display: 'flex', alignItems: 'baseline', gap: 8,
             }}>
               {DRUG_CATEGORY_LABELS[cat]}
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 600, color: '#9CA3AF' }}>
+              <span className="font-[var(--font-mono)] text-[11px] font-semibold text-[#9CA3AF]">
                 {drugs.length}
               </span>
             </h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <div className="flex flex-col gap-1.5">
               {drugs.map((d) => {
                 const calculated = weight !== null && d.dose_per_kg > 0 ? (d.dose_per_kg * weight) : null;
                 const capped = d.max_total !== undefined && calculated !== null && calculated > d.max_total ? d.max_total : calculated;
