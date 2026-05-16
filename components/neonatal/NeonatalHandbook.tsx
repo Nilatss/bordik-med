@@ -25,6 +25,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore } from '@/lib/store';
 import { FilterDropdown } from '@/components/tools/page/FilterDropdown';
 import EmojiOrFlag from '@/components/ui/EmojiOrFlag';
+import { PrintCardButton } from '@/components/ui/PrintCardButton';
 import { countryMatches, matchCountry } from '@/lib/tool-meta-helpers';
 import type { FilterOption } from '@/lib/tools-page/types';
 
@@ -1360,17 +1361,25 @@ function DrugCard({
 }) {
   const showStructured = !!(drug.brand || drug.dose || drug.precautions);
   const panelId = `drug-panel-${drug.id}`;
+  const cardId = `drug-card-${drug.id}`;
   const labelText = drug.name_en !== drug.name_ru
     ? `${drug.name_ru} (${drug.name_en})`
     : drug.name_ru;
 
   return (
     <div
+      id={cardId}
       className={`bg-[#F5F6F8] rounded-[14px] overflow-hidden transition-[border-color] duration-150 ease-out relative ${
         isOpen ? 'border border-[#E5E7EB]' : 'border-0'
       }`}
     >
-      <div className="absolute top-3 right-[50px] z-[2]">
+      <div className="absolute top-3 right-[50px] z-[2] flex items-center gap-1.5 print-hide">
+        {isOpen && (
+          <PrintCardButton
+            targetId={cardId}
+            pdfTitle={`Препарат — ${drug.name_ru}`}
+          />
+        )}
         <FavoriteStarButton id={`drug:${drug.id}`} type="drug" title={drug.name_ru} />
       </div>
       <button
@@ -1420,6 +1429,17 @@ function DrugCard({
             className="overflow-hidden"
           >
             <div className="border-t border-[#E5E7EB] bg-white px-5 text-[13.5px] leading-[1.55] text-[#374151]">
+              {/* Print-only title — appears at the top of the printed PDF
+                  to provide context (the toggle button containing the drug
+                  name is hidden in @media print). */}
+              <h2 className="hidden print:block font-[var(--font-display)] text-[20px] font-bold text-[#1A1A1A] tracking-[-0.01em] mb-3 pb-3 border-b border-[#E5E7EB]">
+                {drug.name_ru}
+                {drug.name_en !== drug.name_ru && (
+                  <span className="font-normal text-[#6B7280] ml-2 text-[15px]">
+                    ({drug.name_en})
+                  </span>
+                )}
+              </h2>
               {showStructured ? (() => {
                 // Собираем массив видимых блоков. Предосторожности всегда
                 // последним блоком (визуально-важно: пользователь видит
@@ -1897,13 +1917,21 @@ function GuidelineCard({
   onToggle: () => void;
 }) {
   const panelId = `guideline-panel-${guideline.id}`;
+  const cardId = `guideline-card-${guideline.id}`;
   return (
     <div
+      id={cardId}
       className={`bg-[#F5F6F8] rounded-[14px] overflow-hidden transition-[border-color] duration-150 ease-out relative ${
         isOpen ? 'border border-[#E5E7EB]' : 'border-0'
       }`}
     >
-      <div className="absolute top-3 right-[50px] z-[2]">
+      <div className="absolute top-3 right-[50px] z-[2] flex items-center gap-1.5 print-hide">
+        {isOpen && (
+          <PrintCardButton
+            targetId={cardId}
+            pdfTitle={`Протокол — ${guideline.title_ru}`}
+          />
+        )}
         <FavoriteStarButton id={`guideline:${guideline.id}`} type="guideline" title={guideline.title_ru} />
       </div>
       <button
@@ -1987,6 +2015,10 @@ function GuidelineCard({
             className="overflow-hidden"
           >
             <div className="pt-[18px] px-5 pb-5 bg-white border-t border-[#E5E7EB]">
+              {/* Print-only title — provides context in PDF since toggle button is hidden. */}
+              <h2 className="hidden print:block font-[var(--font-display)] text-[20px] font-bold text-[#1A1A1A] tracking-[-0.01em] mb-3 pb-3 border-b border-[#E5E7EB]">
+                {guideline.title_ru}
+              </h2>
               <GuidelineContent content={guideline.content} />
               {guideline.references.length > 0 && (
                 <div className="mt-[18px] pt-3.5 border-t border-[#E5E7EB]">
@@ -2131,15 +2163,23 @@ function ArticleCard({
   onToggle: () => void;
 }) {
   const panelId = `article-panel-${article.id}`;
+  const cardId = `article-card-${article.id}`;
   return (
     <div
+      id={cardId}
       className={`bg-[#F5F6F8] rounded-[14px] overflow-hidden transition-[border-color] duration-150 ease-out relative ${
         isOpen ? 'border border-[#E5E7EB]' : 'border-0'
       }`}
     >
       {/* Favorite star — absolutely positioned, sibling of toggle button (avoids nested-button HTML invalid).
           Top-right above chevron. Click stopPropagation в самом StarButton. */}
-      <div className="absolute top-3 right-[50px] z-[2]">
+      <div className="absolute top-3 right-[50px] z-[2] flex items-center gap-1.5 print-hide">
+        {isOpen && (
+          <PrintCardButton
+            targetId={cardId}
+            pdfTitle={`Статья — ${article.title_ru}`}
+          />
+        )}
         <FavoriteStarButton id={`article:${article.id}`} type="article" title={article.title_ru} />
       </div>
       <button
@@ -2192,6 +2232,10 @@ function ArticleCard({
             className="overflow-hidden"
           >
             <div className="pt-[18px] px-5 pb-5 bg-white border-t border-[#E5E7EB]">
+              {/* Print-only title — provides context in PDF since toggle button is hidden. */}
+              <h2 className="hidden print:block font-[var(--font-display)] text-[20px] font-bold text-[#1A1A1A] tracking-[-0.01em] mb-3 pb-3 border-b border-[#E5E7EB]">
+                {article.title_ru}
+              </h2>
               {/* Лид: краткая сводка статьи (бывший collapsed-summary).
                   Mirrors протокольный intro — visually distinct paragraph
                   выше основного содержимого. */}
@@ -2393,14 +2437,22 @@ function LactCard({
   } as const;
   const colors = compatColors[drug.compatibility];
   const panelId = `lact-panel-${drug.id}`;
+  const cardId = `lact-card-${drug.id}`;
 
   return (
     <div
+      id={cardId}
       className={`bg-[#F5F6F8] rounded-[14px] overflow-hidden transition-[border-color] duration-150 ease-out relative ${
         isOpen ? 'border border-[#E5E7EB]' : 'border-0'
       }`}
     >
-      <div className="absolute top-3 right-[50px] z-[2]">
+      <div className="absolute top-3 right-[50px] z-[2] flex items-center gap-1.5 print-hide">
+        {isOpen && (
+          <PrintCardButton
+            targetId={cardId}
+            pdfTitle={`LactMed — ${drug.name_ru}`}
+          />
+        )}
         <FavoriteStarButton id={`lactmed:${drug.id}`} type="lactmed" title={drug.name_ru} />
       </div>
       <button
@@ -2453,6 +2505,10 @@ function LactCard({
             className="overflow-hidden"
           >
             <div className="pt-[18px] px-5 pb-5 bg-white border-t border-[#E5E7EB] text-[13.5px] leading-[1.6] text-[#1F2937]">
+              {/* Print-only title — provides context in PDF since toggle button is hidden. */}
+              <h2 className="hidden print:block font-[var(--font-display)] text-[20px] font-bold text-[#1A1A1A] tracking-[-0.01em] mb-3 pb-3 border-b border-[#E5E7EB]">
+                {drug.name_ru} <span className="font-normal text-[#6B7280] ml-2 text-[15px]">— LactMed ({colors.label})</span>
+              </h2>
               {/* Лид-абзац (summary) — то же что было в свернутой карточке. */}
               {drug.summary && (
                 <p className="mt-0 mb-4 pb-3.5 border-b border-[#F0F1F5] text-sm leading-[1.55] text-[#4B5563]">
@@ -2507,12 +2563,22 @@ function NurseProcedureCard({
   onToggle: () => void;
 }) {
   const panelId = `nurse-panel-${procedure.id}`;
+  const cardId = `nurse-card-${procedure.id}`;
   return (
     <div
-      className={`bg-[#F5F6F8] rounded-[14px] overflow-hidden transition-[border-color] duration-150 ease-out ${
+      id={cardId}
+      className={`relative bg-[#F5F6F8] rounded-[14px] overflow-hidden transition-[border-color] duration-150 ease-out ${
         isOpen ? 'border border-[#E5E7EB]' : 'border-0'
       }`}
     >
+      {isOpen && (
+        <div className="absolute top-3 right-[50px] z-[2] flex items-center gap-1.5 print-hide">
+          <PrintCardButton
+            targetId={cardId}
+            pdfTitle={`Процедура — ${procedure.title_ru}`}
+          />
+        </div>
+      )}
       <button
         type="button"
         onClick={onToggle}
@@ -2566,6 +2632,10 @@ function NurseProcedureCard({
             className="overflow-hidden"
           >
             <div className="pt-3.5 px-5 pb-[18px] bg-white border-t border-[#E5E7EB] text-[13.5px] leading-[1.55] text-[#1F2937]">
+              {/* Print-only title — provides context in PDF since toggle button is hidden. */}
+              <h2 className="hidden print:block font-[var(--font-display)] text-[20px] font-bold text-[#1A1A1A] tracking-[-0.01em] mb-3 pb-3 border-b border-[#E5E7EB]">
+                {procedure.title_ru} <span className="font-normal text-[#6B7280] ml-2 text-[15px]">— Процедура ({procedure.category}, ~{procedure.duration_min} мин)</span>
+              </h2>
               {procedure.steps.map((step, idx) => (
                 <div key={idx} className="mb-3.5">
                   <div className="text-[13px] font-bold text-[#1F2937] mb-1.5 flex items-center gap-2">
@@ -2790,14 +2860,22 @@ function ClinicalCaseCard({
 }) {
   const c = caseEntry;
   const panelId = `case-panel-${c.id}`;
+  const cardId = `case-card-${c.id}`;
   const levelLabel = c.level === 'basic' ? 'Базовый' : c.level === 'advanced' ? 'Продвинутый' : 'Средний';
   return (
     <div
+      id={cardId}
       className={`bg-[#F5F6F8] rounded-[14px] overflow-hidden transition-[border-color] duration-150 ease-out relative ${
         isOpen ? 'border border-[#E5E7EB]' : 'border-0'
       }`}
     >
-      <div className="absolute top-3 right-[50px] z-[2]">
+      <div className="absolute top-3 right-[50px] z-[2] flex items-center gap-1.5 print-hide">
+        {isOpen && (
+          <PrintCardButton
+            targetId={cardId}
+            pdfTitle={`Кейс — ${c.title_ru}`}
+          />
+        )}
         <FavoriteStarButton id={`case:${c.id}`} type="case" title={c.title_ru} />
       </div>
       <button
@@ -2847,6 +2925,10 @@ function ClinicalCaseCard({
             className="overflow-hidden"
           >
             <div className="pt-[18px] px-5 pb-5 bg-white border-t border-[#E5E7EB] text-[13.5px] leading-[1.6] text-[#1F2937]">
+              {/* Print-only title — provides context in PDF since toggle button is hidden. */}
+              <h2 className="hidden print:block font-[var(--font-display)] text-[20px] font-bold text-[#1A1A1A] tracking-[-0.01em] mb-3 pb-3 border-b border-[#E5E7EB]">
+                {c.title_ru} <span className="font-normal text-[#6B7280] ml-2 text-[15px]">— Кейс ({levelLabel})</span>
+              </h2>
               {/* Виньетка — первый блок (контекст случая) */}
               <p className="mt-0 mb-4 pb-3.5 border-b border-[#F0F1F5] text-sm leading-[1.6] text-[#374151] italic">
                 <Highlight text={c.vignette} query={query} />
@@ -3056,16 +3138,24 @@ function CommonMistakeCard({
 }) {
   const m = mistakeEntry;
   const panelId = `mistake-panel-${m.id}`;
+  const cardId = `mistake-card-${m.id}`;
   const sevLabel = m.severity === 'high' ? 'Высокая'
     : m.severity === 'medium' ? 'Средняя'
     : 'Низкая';
   return (
     <div
+      id={cardId}
       className={`bg-[#F5F6F8] rounded-[14px] overflow-hidden transition-[border-color] duration-150 ease-out relative ${
         isOpen ? 'border border-[#E5E7EB]' : 'border-0'
       }`}
     >
-      <div className="absolute top-3 right-[50px] z-[2]">
+      <div className="absolute top-3 right-[50px] z-[2] flex items-center gap-1.5 print-hide">
+        {isOpen && (
+          <PrintCardButton
+            targetId={cardId}
+            pdfTitle={`Ошибка — ${m.title_ru}`}
+          />
+        )}
         <FavoriteStarButton id={`mistake:${m.id}`} type="mistake" title={m.title_ru} />
       </div>
       <button
@@ -3115,6 +3205,10 @@ function CommonMistakeCard({
             className="overflow-hidden"
           >
             <div className="pt-[18px] px-5 pb-5 bg-white border-t border-[#E5E7EB] text-[13.5px] leading-[1.6] text-[#1F2937]">
+              {/* Print-only title — provides context in PDF since toggle button is hidden. */}
+              <h2 className="hidden print:block font-[var(--font-display)] text-[20px] font-bold text-[#1A1A1A] tracking-[-0.01em] mb-3 pb-3 border-b border-[#E5E7EB]">
+                {m.title_ru} <span className="font-normal text-[#6B7280] ml-2 text-[15px]">— Типичная ошибка (тяжесть: {sevLabel})</span>
+              </h2>
               <MistakeBlock label="Что часто делают неправильно" text={m.mistake} />
               <MistakeBlock label="Почему ошибка типична" text={m.why_it_happens} />
               <MistakeBlock label="Как должно быть" text={m.correct_approach} tone="ok" />
@@ -3290,6 +3384,7 @@ function ChecklistCard({
 }) {
   const c = checklist;
   const panelId = `checklist-panel-${c.id}`;
+  const cardId = `checklist-card-${c.id}`;
   // Прогресс хранится в localStorage. Ключ — bordik-neonatal-checklist-<id>.
   // Map item-key (section_idx:item_idx) → bool checked.
   const [progress, setProgress] = useState<Record<string, boolean>>(() => {
@@ -3319,11 +3414,18 @@ function ChecklistCard({
 
   return (
     <div
+      id={cardId}
       className={`bg-[#F5F6F8] rounded-[14px] overflow-hidden transition-[border-color] duration-150 ease-out relative ${
         isOpen ? 'border border-[#E5E7EB]' : 'border-0'
       }`}
     >
-      <div className="absolute top-3 right-[50px] z-[2]">
+      <div className="absolute top-3 right-[50px] z-[2] flex items-center gap-1.5 print-hide">
+        {isOpen && (
+          <PrintCardButton
+            targetId={cardId}
+            pdfTitle={`Чек-лист — ${c.title_ru}`}
+          />
+        )}
         <FavoriteStarButton id={`checklist:${c.id}`} type="checklist" title={c.title_ru} />
       </div>
       <button
@@ -3380,6 +3482,10 @@ function ChecklistCard({
             className="overflow-hidden"
           >
             <div className="pt-[18px] px-5 pb-5 bg-white border-t border-[#E5E7EB] text-[13.5px] leading-[1.55] text-[#1F2937]">
+              {/* Print-only title — provides context in PDF since toggle button is hidden. */}
+              <h2 className="hidden print:block font-[var(--font-display)] text-[20px] font-bold text-[#1A1A1A] tracking-[-0.01em] mb-3 pb-3 border-b border-[#E5E7EB]">
+                {c.title_ru} <span className="font-normal text-[#6B7280] ml-2 text-[15px]">— Чек-лист (~{c.estimated_minutes} мин)</span>
+              </h2>
               {/* Audience + indications */}
               <div className="mb-4 pb-3.5 border-b border-[#F0F1F5]">
                 <div className="text-xs text-[#6B7280] mb-1.5">
@@ -3864,14 +3970,22 @@ function AtlasCard({
 }) {
   const a = entry;
   const panelId = `atlas-panel-${a.id}`;
+  const cardId = `atlas-card-${a.id}`;
   const sourceLabel = ATLAS_SOURCE_TYPE_LABELS[a.source_type] ?? a.source_type;
   return (
     <div
+      id={cardId}
       className={`bg-[#F5F6F8] rounded-[14px] overflow-hidden transition-[border-color] duration-150 ease-out relative ${
         isOpen ? 'border border-[#E5E7EB]' : 'border-0'
       }`}
     >
-      <div className="absolute top-3 right-[50px] z-[2]">
+      <div className="absolute top-3 right-[50px] z-[2] flex items-center gap-1.5 print-hide">
+        {isOpen && (
+          <PrintCardButton
+            targetId={cardId}
+            pdfTitle={`Атлас — ${a.title_ru}`}
+          />
+        )}
         <FavoriteStarButton id={`atlas:${a.id}`} type="atlas" title={a.title_ru} />
       </div>
       <button
@@ -3921,6 +4035,10 @@ function AtlasCard({
             className="overflow-hidden"
           >
             <div className="pt-[18px] px-5 pb-5 bg-white border-t border-[#E5E7EB] text-[13.5px] leading-[1.6] text-[#1F2937]">
+              {/* Print-only title — provides context in PDF since toggle button is hidden. */}
+              <h2 className="hidden print:block font-[var(--font-display)] text-[20px] font-bold text-[#1A1A1A] tracking-[-0.01em] mb-3 pb-3 border-b border-[#E5E7EB]">
+                {a.title_ru} <span className="font-normal text-[#6B7280] ml-2 text-[15px]">— Атлас ({sourceLabel})</span>
+              </h2>
               <p className="mt-0 mb-4 pb-3.5 border-b border-[#F0F1F5] text-sm leading-[1.55] text-[#4B5563]">
                 <Highlight text={a.description} query={query} />
               </p>

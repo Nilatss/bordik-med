@@ -1474,3 +1474,97 @@ main:has(.stats-page) {
     font-size: 11px;
   }
 }
+
+/* ──────────────────────────────────────────────────────────────────
+   Print / PDF export (см. lib/pdf/printCard.ts).
+   Когда пользователь нажимает «Печать» в раскрытой карточке —
+   printCard() выставляет body.print-mode + [data-print-target] на
+   целевой карточке. Эти правила:
+     1. Скрывают всё что не входит в карточку (sidebar, header, search)
+     2. Растягивают карточку на всю печатную страницу
+     3. Прячут интерактивные элементы (chevron, кнопки collapse)
+     4. Forсят цвета (color-adjust: exact) чтобы pills/severity
+        bg-цвета попали в PDF, а не выпадали в чёрно-белое
+     5. Avoid page breaks внутри логических секций
+   ────────────────────────────────────────────────────────────────── */
+@media print {
+  @page {
+    size: A4;
+    margin: 1.5cm;
+  }
+
+  /* Classic visibility trick: hide всё, потом показать только дерево
+     с data-print-target. visibility: hidden сохраняет layout space, но
+     printer ничего не рисует. Затем мы позиционируем target absolute и
+     показываем его + всех потомков. */
+  body.print-mode > * {
+    visibility: hidden !important;
+  }
+  body.print-mode [data-print-target],
+  body.print-mode [data-print-target] * {
+    visibility: visible !important;
+  }
+  body.print-mode [data-print-target] {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 16px !important;
+    background: #FFFFFF !important;
+    color: #1A1A1A !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  /* Force colour reproduction in print — без этого Chrome/Safari выкидывают
+     coloured backgrounds (severity pills, status badges, accent borders). */
+  body.print-mode [data-print-target],
+  body.print-mode [data-print-target] * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Hide interactive controls inside the printed card — chevron rotators,
+     favorite stars, collapse buttons. They добавляют визуальный шум и
+     не имеют смысла на бумаге. */
+  body.print-mode [data-print-target] button:not(.print-keep),
+  body.print-mode [data-print-target] [role="button"]:not(.print-keep),
+  body.print-mode [data-print-target] [aria-expanded] > svg,
+  body.print-mode [data-print-target] .print-hide {
+    display: none !important;
+  }
+
+  /* Avoid page-breaks inside table rows + list items (better readability). */
+  body.print-mode [data-print-target] tr,
+  body.print-mode [data-print-target] li,
+  body.print-mode [data-print-target] .neo-detail-row {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Section headings (h2, h3, h4) keep with next block — avoid orphans. */
+  body.print-mode [data-print-target] h2,
+  body.print-mode [data-print-target] h3,
+  body.print-mode [data-print-target] h4 {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  /* Force underline + visible URLs on print (clinical handover use case). */
+  body.print-mode [data-print-target] a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.85em;
+    color: #6B7280;
+    word-break: break-all;
+  }
+  /* Skip URL inlining for internal links / mailto / tel. */
+  body.print-mode [data-print-target] a[href^="#"]::after,
+  body.print-mode [data-print-target] a[href^="/"]::after,
+  body.print-mode [data-print-target] a[href^="mailto:"]::after,
+  body.print-mode [data-print-target] a[href^="tel:"]::after {
+    content: "";
+  }
+}
