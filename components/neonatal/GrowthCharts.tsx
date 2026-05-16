@@ -823,11 +823,11 @@ function ChartView({
         const isRightHalf = tooltipLeftPct > 60;
         return (
           <div
-            className={`neo-chart-tooltip ${isRightHalf ? '-translate-x-[calc(100%+12px)]' : 'translate-x-3'}`}
-            // eslint-disable-next-line react/forbid-dom-props -- dynamic hover tooltip position
+            className={`neo-chart-tooltip left-[var(--tt-left)] top-[var(--tt-top)] ${isRightHalf ? '-translate-x-[calc(100%+12px)]' : 'translate-x-3'}`}
+            // eslint-disable-next-line react/forbid-dom-props -- dynamic hover tooltip position via CSS-var
             style={{
-              left: `${tooltipLeftPct}%`,
-              top: `${(margin.top / height) * 100 + 2}%`,
+              ['--tt-left' as string]: `${tooltipLeftPct}%`,
+              ['--tt-top' as string]: `${(margin.top / height) * 100 + 2}%`,
             }}
           >
             <div className="font-[var(--font-display)] text-[13px] font-semibold text-[#111827] mb-2 tracking-[-0.005em]">
