@@ -47,24 +47,11 @@ const EQUIPMENT: Equipment[] = [
   { name: 'НГ зонд', formula: (w) => { if (w < 4) return '5 Fr'; if (w < 10) return '8 Fr'; if (w < 20) return '10 Fr'; if (w < 30) return '12 Fr'; return '14-16 Fr'; } },
 ];
 
-const thStyle: React.CSSProperties = {
-  background: 'var(--md-sys-color-surface-container-high)',
-  padding: 'var(--space-2) var(--space-3)',
-  textAlign: 'left',
-  fontFamily: 'var(--font-body)',
-  fontWeight: 500,
-  fontSize: 'var(--text-xs)',
-  color: 'var(--md-sys-color-on-surface)',
-  borderBottom: '1px solid var(--md-sys-color-outline-variant)',
-};
+const thClass =
+  'bg-[var(--md-sys-color-surface-container-high)] py-[var(--space-2)] px-[var(--space-3)] text-left font-[var(--font-body)] font-medium text-[length:var(--text-xs)] text-[color:var(--md-sys-color-on-surface)] border-b border-[color:var(--md-sys-color-outline-variant)]';
 
-const tdStyle: React.CSSProperties = {
-  padding: 'var(--space-2) var(--space-3)',
-  fontSize: 'var(--text-xs)',
-  fontFamily: 'var(--font-body)',
-  borderBottom: '1px solid var(--md-sys-color-outline-variant)',
-  color: 'var(--md-sys-color-on-surface-variant)',
-};
+const tdClass =
+  'py-[var(--space-2)] px-[var(--space-3)] text-[length:var(--text-xs)] font-[var(--font-body)] border-b border-[color:var(--md-sys-color-outline-variant)] text-[color:var(--md-sys-color-on-surface-variant)]';
 
 export default function PediatricCalculator() {
   const [weight, setWeight] = useState(10);
@@ -84,85 +71,61 @@ export default function PediatricCalculator() {
   const equipmentSizes = useMemo(() => EQUIPMENT.map((eq) => ({ name: eq.name, size: eq.formula(weight) })), [weight]);
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ maxWidth: 'var(--container-max)' }}>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-[var(--container-max)]">
       {/* Weight slider */}
-      <div style={{
-        padding: 'var(--space-4)',
-        background: 'var(--md-sys-color-surface-container)',
-        borderRadius: 'var(--md-sys-shape-corner-medium)',
-        marginBottom: 'var(--space-6)',
-      }}>
-        <h3 style={{
-          fontFamily: 'var(--font-display)',
-          fontSize: 'var(--text-sm)',
-          fontWeight: 500,
-          color: 'var(--md-sys-color-on-surface)',
-          marginBottom: 'var(--space-3)',
-        }}>Вес ребёнка (кг)</h3>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)' }}>
+      <div className="p-[var(--space-4)] bg-[var(--md-sys-color-surface-container)] rounded-[var(--md-sys-shape-corner-medium)] mb-[var(--space-6)]">
+        <h3 className="font-[var(--font-display)] text-[length:var(--text-sm)] font-medium text-[color:var(--md-sys-color-on-surface)] mb-[var(--space-3)]">Вес ребёнка (кг)</h3>
+        <div className="flex items-center gap-[var(--space-4)]">
           <input
             type="range" min={1} max={50} step={0.5} value={weight}
             onChange={(e) => setWeight(parseFloat(e.target.value))}
-            style={{ flex: 1, accentColor: 'var(--md-sys-color-primary)' }}
+            className="flex-1 accent-[color:var(--md-sys-color-primary)]"
           />
           <input
             type="number" min={1} max={100} step={0.5} value={weight}
             onChange={(e) => setWeight(Math.max(1, Math.min(100, parseFloat(e.target.value) || 1)))}
-            style={{
-              width: 64,
-              background: 'var(--md-sys-color-surface-container-high)',
-              border: '1px solid var(--md-sys-color-outline-variant)',
-              borderRadius: 'var(--md-sys-shape-corner-small)',
-              padding: 'var(--space-1) var(--space-2)',
-              fontFamily: 'var(--font-mono)',
-              fontSize: 'var(--text-sm)',
-              color: 'var(--md-sys-color-on-surface)',
-              textAlign: 'center',
-              outline: 'none',
-            }}
+            className="w-16 bg-[var(--md-sys-color-surface-container-high)] border border-[color:var(--md-sys-color-outline-variant)] rounded-[var(--md-sys-shape-corner-small)] py-[var(--space-1)] px-[var(--space-2)] font-[var(--font-mono)] text-[length:var(--text-sm)] text-[color:var(--md-sys-color-on-surface)] text-center outline-none"
           />
-          <span style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--md-sys-color-on-surface-variant)' }}>кг</span>
+          <span className="font-[var(--font-body)] text-[length:var(--text-xs)] text-[color:var(--md-sys-color-on-surface-variant)]">кг</span>
         </div>
-        <div style={{ display: 'flex', gap: 'var(--space-2)', marginTop: 'var(--space-2)' }}>
+        <div className="flex gap-[var(--space-2)] mt-[var(--space-2)]">
           {[3, 5, 10, 15, 20, 25, 30].map((w) => (
-            <button key={w} onClick={() => setWeight(w)} style={{
-              padding: '2px var(--space-2)',
-              fontFamily: 'var(--font-mono)',
-              fontSize: '0.625rem',
-              borderRadius: 'var(--md-sys-shape-corner-extra-small)',
-              background: weight === w ? 'var(--md-sys-color-primary-container)' : 'var(--md-sys-color-surface-container-high)',
-              color: weight === w ? 'var(--md-sys-color-on-primary-container)' : 'var(--md-sys-color-on-surface-variant)',
-              border: 'none',
-              cursor: 'pointer',
-              transition: `background var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard)`,
-            }}>{w}</button>
+            <button
+              key={w}
+              onClick={() => setWeight(w)}
+              className={`py-0.5 px-[var(--space-2)] font-[var(--font-mono)] text-[0.625rem] rounded-[var(--md-sys-shape-corner-extra-small)] border-none cursor-pointer transition-colors duration-[var(--md-sys-motion-duration-short4)] [transition-timing-function:var(--md-sys-motion-easing-standard)] ${
+                weight === w
+                  ? 'bg-[var(--md-sys-color-primary-container)] text-[color:var(--md-sys-color-on-primary-container)]'
+                  : 'bg-[var(--md-sys-color-surface-container-high)] text-[color:var(--md-sys-color-on-surface-variant)]'
+              }`}
+            >{w}</button>
           ))}
         </div>
       </div>
 
       {/* Drug table */}
-      <div style={{ marginBottom: 'var(--space-6)' }}>
-        <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--text-sm)', fontWeight: 500, color: 'var(--md-sys-color-on-surface)', marginBottom: 'var(--space-3)' }}>Дозировки препаратов</h3>
-        <div style={{ overflowX: 'auto', borderRadius: 'var(--md-sys-shape-corner-medium)', border: '1px solid var(--md-sys-color-outline-variant)' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+      <div className="mb-[var(--space-6)]">
+        <h3 className="font-[var(--font-display)] text-[length:var(--text-sm)] font-medium text-[color:var(--md-sys-color-on-surface)] mb-[var(--space-3)]">Дозировки препаратов</h3>
+        <div className="overflow-x-auto rounded-[var(--md-sys-shape-corner-medium)] border border-[color:var(--md-sys-color-outline-variant)]">
+          <table className="w-full border-collapse">
             <thead><tr>
-              <th style={thStyle}>Препарат</th>
-              <th style={thStyle}>Доза</th>
-              <th style={thStyle}>Объём</th>
-              <th style={thStyle}>Путь</th>
-              <th style={thStyle}>Примечание</th>
+              <th className={thClass}>Препарат</th>
+              <th className={thClass}>Доза</th>
+              <th className={thClass}>Объём</th>
+              <th className={thClass}>Путь</th>
+              <th className={thClass}>Примечание</th>
             </tr></thead>
             <tbody>
               {calculations.map((drug, i) => (
-                <tr key={drug.name} style={{ background: i % 2 === 0 ? 'var(--md-sys-color-surface)' : 'var(--md-sys-color-surface-container-low)' }}>
-                  <td style={{ ...tdStyle, fontWeight: 500, color: 'var(--md-sys-color-on-surface)' }}>{drug.name}</td>
-                  <td style={{ ...tdStyle, fontFamily: 'var(--font-mono)' }}>
+                <tr key={drug.name} className={i % 2 === 0 ? 'bg-[var(--md-sys-color-surface)]' : 'bg-[var(--md-sys-color-surface-container-low)]'}>
+                  <td className={`${tdClass} font-medium text-[color:var(--md-sys-color-on-surface)]`}>{drug.name}</td>
+                  <td className={`${tdClass} font-[var(--font-mono)]`}>
                     {drug.calculatedDose.toFixed(2)} {drug.unit}
-                    {drug.isMaxed && <span style={{ marginLeft: 'var(--space-1)', fontSize: '0.5625rem', color: 'var(--md-sys-color-error)' }}>(MAX)</span>}
+                    {drug.isMaxed && <span className="ml-[var(--space-1)] text-[0.5625rem] text-[color:var(--md-sys-color-error)]">(MAX)</span>}
                   </td>
-                  <td style={{ ...tdStyle, fontFamily: 'var(--font-mono)', color: 'var(--md-sys-color-secondary)' }}>{drug.volume || '-'}</td>
-                  <td style={tdStyle}>{drug.route}</td>
-                  <td style={tdStyle}>{drug.notes || ''}</td>
+                  <td className={`${tdClass} font-[var(--font-mono)] text-[color:var(--md-sys-color-secondary)]`}>{drug.volume || '-'}</td>
+                  <td className={tdClass}>{drug.route}</td>
+                  <td className={tdClass}>{drug.notes || ''}</td>
                 </tr>
               ))}
             </tbody>
@@ -171,19 +134,19 @@ export default function PediatricCalculator() {
       </div>
 
       {/* Equipment table */}
-      <div style={{ marginBottom: 'var(--space-6)' }}>
-        <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--text-sm)', fontWeight: 500, color: 'var(--md-sys-color-on-surface)', marginBottom: 'var(--space-3)' }}>Размеры оборудования</h3>
-        <div style={{ overflowX: 'auto', borderRadius: 'var(--md-sys-shape-corner-medium)', border: '1px solid var(--md-sys-color-outline-variant)' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+      <div className="mb-[var(--space-6)]">
+        <h3 className="font-[var(--font-display)] text-[length:var(--text-sm)] font-medium text-[color:var(--md-sys-color-on-surface)] mb-[var(--space-3)]">Размеры оборудования</h3>
+        <div className="overflow-x-auto rounded-[var(--md-sys-shape-corner-medium)] border border-[color:var(--md-sys-color-outline-variant)]">
+          <table className="w-full border-collapse">
             <thead><tr>
-              <th style={thStyle}>Оборудование</th>
-              <th style={thStyle}>Размер</th>
+              <th className={thClass}>Оборудование</th>
+              <th className={thClass}>Размер</th>
             </tr></thead>
             <tbody>
               {equipmentSizes.map((eq, i) => (
-                <tr key={eq.name} style={{ background: i % 2 === 0 ? 'var(--md-sys-color-surface)' : 'var(--md-sys-color-surface-container-low)' }}>
-                  <td style={{ ...tdStyle, fontWeight: 500, color: 'var(--md-sys-color-on-surface)' }}>{eq.name}</td>
-                  <td style={{ ...tdStyle, fontFamily: 'var(--font-mono)', color: 'var(--md-sys-color-tertiary)' }}>{eq.size}</td>
+                <tr key={eq.name} className={i % 2 === 0 ? 'bg-[var(--md-sys-color-surface)]' : 'bg-[var(--md-sys-color-surface-container-low)]'}>
+                  <td className={`${tdClass} font-medium text-[color:var(--md-sys-color-on-surface)]`}>{eq.name}</td>
+                  <td className={`${tdClass} font-[var(--font-mono)] text-[color:var(--md-sys-color-tertiary)]`}>{eq.size}</td>
                 </tr>
               ))}
             </tbody>
@@ -192,24 +155,9 @@ export default function PediatricCalculator() {
       </div>
 
       {/* Print */}
-      <button onClick={() => window.print()} style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: 'var(--space-2)',
-        padding: '0 var(--space-6)',
-        height: 40,
-        borderRadius: 'var(--md-sys-shape-corner-full)',
-        background: 'transparent',
-        border: '1px solid var(--md-sys-color-outline)',
-        color: 'var(--md-sys-color-primary)',
-        fontFamily: 'var(--font-body)',
-        fontSize: 'var(--text-sm)',
-        fontWeight: 500,
-        cursor: 'pointer',
-        transition: `background var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard)`,
-      }}
-        onMouseEnter={(e) => { e.currentTarget.style.background = `color-mix(in srgb, var(--md-sys-color-primary) 8%, transparent)`; }}
-        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+      <button
+        onClick={() => window.print()}
+        className="inline-flex items-center gap-[var(--space-2)] px-[var(--space-6)] h-10 rounded-[var(--md-sys-shape-corner-full)] bg-transparent hover:bg-[color-mix(in_srgb,var(--md-sys-color-primary)_8%,transparent)] border border-[color:var(--md-sys-color-outline)] text-[color:var(--md-sys-color-primary)] font-[var(--font-body)] text-[length:var(--text-sm)] font-medium cursor-pointer transition-colors duration-[var(--md-sys-motion-duration-short4)] [transition-timing-function:var(--md-sys-motion-easing-standard)]"
       >
         <Printer size={18} />
         Печать таблицы

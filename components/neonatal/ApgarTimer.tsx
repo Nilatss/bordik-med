@@ -200,51 +200,18 @@ export default function ApgarTimer({ onClose }: { onClose: () => void }) {
       role="dialog"
       aria-modal="true"
       aria-labelledby={titleId}
-      style={{
-        position: 'fixed',
-        top: 0, left: 0, right: 0, bottom: 0,
-        background: '#0F172A',
-        color: '#FFFFFF',
-        zIndex: 9999,
-        display: 'flex',
-        flexDirection: 'column',
-        padding: '24px',
-        overflow: 'auto',
-      }}
+      className="fixed inset-0 bg-[#0F172A] text-white z-[9999] flex flex-col p-6 overflow-auto"
     >
       {/* Top bar — close button + tab title */}
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 20,
-      }}>
-        <h2 id={titleId} style={{
-          fontFamily: 'var(--font-display)',
-          fontSize: 18, fontWeight: 700,
-          letterSpacing: '-0.01em',
-          margin: 0,
-        }}>
+      <div className="flex justify-between items-center mb-5">
+        <h2 id={titleId} className="font-[var(--font-display)] text-lg font-bold tracking-[-0.01em] m-0">
           Apgar Timer — оценка новорождённого
         </h2>
         <button
           type="button"
           onClick={onClose}
           aria-label="Закрыть Apgar Timer"
-          style={{
-            padding: '8px 14px',
-            background: 'rgba(255,255,255,0.12)',
-            color: '#FFFFFF',
-            border: 'none',
-            borderRadius: 8,
-            cursor: 'pointer',
-            fontSize: 13,
-            fontWeight: 500,
-            fontFamily: 'inherit',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 6,
-          }}
+          className="py-2 px-3.5 bg-white/10 text-white border-none rounded-lg cursor-pointer text-[13px] font-medium font-[inherit] inline-flex items-center gap-1.5"
         >
           <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
             stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
@@ -257,51 +224,25 @@ export default function ApgarTimer({ onClose }: { onClose: () => void }) {
       </div>
 
       {/* Main timer display */}
-      <div style={{
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: 24,
-      }}>
+      <div className="flex-1 flex flex-col items-center justify-center gap-6">
         <div
           role="timer"
           aria-live="off"
           aria-atomic="true"
           aria-label={`Прошло ${Math.floor(elapsed / 60)} минут ${elapsed % 60} секунд`}
-          style={{
-            fontSize: 'clamp(96px, 25vw, 220px)',
-            fontWeight: 700,
-            fontFamily: 'var(--font-mono, monospace)',
-            lineHeight: 1,
-            letterSpacing: '-0.04em',
-            color: running ? '#FFFFFF' : '#94A3B8',
-            transition: 'color 200ms',
-          }}
+          className={`text-[clamp(96px,25vw,220px)] font-bold font-[var(--font-mono,monospace)] leading-none tracking-[-0.04em] transition-colors duration-200 ${running ? 'text-white' : 'text-[#94A3B8]'}`}
         >
           {formatTime(elapsed)}
         </div>
 
         {/* Controls */}
-        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
+        <div className="flex gap-3 flex-wrap justify-center">
           <button
             type="button"
             onClick={handleStart}
             aria-pressed={running}
             aria-label={running ? 'Пауза таймера' : (elapsed === 0 ? 'Старт таймера' : 'Продолжить таймер')}
-            style={{
-              padding: '14px 32px',
-              background: running ? '#EF4444' : '#10B981',
-              color: '#FFFFFF',
-              border: 'none',
-              borderRadius: 12,
-              cursor: 'pointer',
-              fontSize: 18,
-              fontWeight: 700,
-              fontFamily: 'inherit',
-              minWidth: 140,
-            }}
+            className={`py-[14px] px-8 text-white border-none rounded-[12px] cursor-pointer text-lg font-bold font-[inherit] min-w-[140px] ${running ? 'bg-[#EF4444]' : 'bg-[#10B981]'}`}
           >
             {running ? 'Пауза' : (elapsed === 0 ? 'Старт' : 'Продолжить')}
           </button>
@@ -309,17 +250,7 @@ export default function ApgarTimer({ onClose }: { onClose: () => void }) {
             type="button"
             onClick={handleReset}
             aria-label="Сбросить таймер и оценки"
-            style={{
-              padding: '14px 28px',
-              background: 'rgba(255,255,255,0.12)',
-              color: '#FFFFFF',
-              border: 'none',
-              borderRadius: 12,
-              cursor: 'pointer',
-              fontSize: 16,
-              fontWeight: 500,
-              fontFamily: 'inherit',
-            }}
+            className="py-[14px] px-7 bg-white/10 text-white border-none rounded-[12px] cursor-pointer text-base font-medium font-[inherit]"
           >
             Сброс
           </button>
@@ -329,13 +260,7 @@ export default function ApgarTimer({ onClose }: { onClose: () => void }) {
         <div
           role="group"
           aria-label="Отметки оценки Apgar"
-          style={{
-            display: 'flex',
-            gap: 10,
-            flexWrap: 'wrap',
-            justifyContent: 'center',
-            marginTop: 12,
-          }}
+          className="flex gap-2.5 flex-wrap justify-center mt-3"
         >
           {MARKS.map((m) => {
             const reached = elapsed >= m.sec;
@@ -347,6 +272,11 @@ export default function ApgarTimer({ onClose }: { onClose: () => void }) {
                 ? `${m.label}: оценка ${reading.total} из 10, ${interpretApgar(reading.total).label}. Нажмите чтобы изменить.`
                 : `${m.label}: ввести оценку Apgar`)
               : `${m.label}: повторная оценка состояния`;
+            const markStateClass = active
+              ? 'bg-[#FACC15] text-[#0F172A] border-2 border-[#FACC15]'
+              : reached
+                ? 'bg-[rgba(16,185,129,0.18)] text-white border-2 border-transparent'
+                : 'bg-white/[0.08] text-white border-2 border-transparent';
             return (
               <button
                 key={m.sec}
@@ -355,36 +285,22 @@ export default function ApgarTimer({ onClose }: { onClose: () => void }) {
                 disabled={!m.minute}
                 aria-label={ariaLabel}
                 aria-current={active ? 'time' : undefined}
-                style={{
-                  padding: '12px 16px',
-                  background: active ? '#FACC15' : (reached ? 'rgba(16,185,129,0.18)' : 'rgba(255,255,255,0.08)'),
-                  color: active ? '#0F172A' : '#FFFFFF',
-                  border: active ? '2px solid #FACC15' : '2px solid transparent',
-                  borderRadius: 10,
-                  cursor: m.minute ? 'pointer' : 'default',
-                  fontSize: 13,
-                  fontWeight: 600,
-                  fontFamily: 'inherit',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  gap: 4,
-                  minWidth: 110,
-                }}
+                className={`py-3 px-4 rounded-[10px] ${m.minute ? 'cursor-pointer' : 'cursor-default'} text-[13px] font-semibold font-[inherit] flex flex-col items-center gap-1 min-w-[110px] ${markStateClass}`}
               >
-                <span aria-hidden="true" style={{ fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.05em', opacity: 0.7 }}>
+                <span aria-hidden="true" className="font-[var(--font-mono)] text-[11px] tracking-[0.05em] opacity-70">
                   {m.label.toUpperCase()}
                 </span>
                 {reading && intent ? (
-                  <span aria-hidden="true" style={{
-                    fontSize: 18,
-                    color: intent.color,
-                    fontWeight: 700,
-                  }}>
+                  <span
+                    aria-hidden="true"
+                    className="text-lg font-bold text-[var(--apgar-intent-color)]"
+                    // eslint-disable-next-line react/forbid-dom-props -- dynamic intent color
+                    style={{ ['--apgar-intent-color' as string]: intent.color }}
+                  >
                     {reading.total}/10
                   </span>
                 ) : (
-                  <span aria-hidden="true" style={{ fontSize: 13, opacity: 0.7 }}>
+                  <span aria-hidden="true" className="text-[13px] opacity-70">
                     {m.minute ? 'tap для ввода' : 're-eval'}
                   </span>
                 )}
@@ -398,54 +314,30 @@ export default function ApgarTimer({ onClose }: { onClose: () => void }) {
           <section
             aria-label="Сводка оценок Apgar"
             aria-live="polite"
-            style={{
-              marginTop: 16,
-              padding: '14px 18px',
-              background: 'rgba(255,255,255,0.06)',
-              borderRadius: 10,
-              maxWidth: 600,
-            }}
+            className="mt-4 py-[14px] px-[18px] bg-white/[0.06] rounded-[10px] max-w-[600px]"
           >
-            <div style={{
-              fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
-              textTransform: 'uppercase', color: '#94A3B8',
-              marginBottom: 8,
-              fontFamily: 'var(--font-mono)',
-            }}>
+            <div className="text-[11px] font-bold tracking-[0.06em] uppercase text-[#94A3B8] mb-2 font-[var(--font-mono)]">
               Сводка
             </div>
-            {readings.map((r) => {
+            {readings.map((r, idx) => {
               const intent = interpretApgar(r.total);
               return (
                 <div
                   key={r.minute}
                   role="status"
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    padding: '6px 0',
-                    fontSize: 14,
-                    borderTop: r.minute === readings[0]?.minute ? 'none' : '1px solid rgba(255,255,255,0.08)',
-                  }}
+                  className={`flex justify-between items-center py-1.5 text-sm ${idx === 0 ? 'border-t-0' : 'border-t border-white/[0.08]'}`}
                 >
                   <span>
                     <strong>{r.minute} мин:</strong> {r.total}/10
-                    <span style={{ marginLeft: 10, color: '#94A3B8' }}>
+                    <span className="ml-2.5 text-[#94A3B8]">
                       A{r.score.appearance} P{r.score.pulse} G{r.score.grimace} A{r.score.activity} R{r.score.respiration}
                     </span>
                   </span>
-                  <span style={{
-                    display: 'inline-flex', alignItems: 'center',
-                    padding: '4px var(--space-2)',
-                    borderRadius: 'var(--md-sys-shape-corner-full)',
-                    background: 'rgba(255,255,255,0.10)',
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: '0.625rem', fontWeight: 600,
-                    color: intent.color,
-                    textTransform: 'uppercase', letterSpacing: '0.04em',
-                    whiteSpace: 'nowrap',
-                  }}>
+                  <span
+                    className="inline-flex items-center py-1 px-[var(--space-2)] rounded-[var(--md-sys-shape-corner-full)] bg-white/[0.10] font-[var(--font-mono)] text-[0.625rem] font-semibold uppercase tracking-[0.04em] whitespace-nowrap text-[var(--apgar-intent-color)]"
+                    // eslint-disable-next-line react/forbid-dom-props -- dynamic intent color
+                    style={{ ['--apgar-intent-color' as string]: intent.color }}
+                  >
                     {intent.label.toUpperCase()}
                   </span>
                 </div>
@@ -455,18 +347,7 @@ export default function ApgarTimer({ onClose }: { onClose: () => void }) {
               type="button"
               onClick={copySummary}
               aria-label="Копировать сводку оценок Apgar в буфер обмена"
-              style={{
-                marginTop: 10,
-                padding: '8px 14px',
-                background: '#2563EB',
-                color: '#FFFFFF',
-                border: 'none',
-                borderRadius: 8,
-                cursor: 'pointer',
-                fontSize: 12,
-                fontWeight: 600,
-                fontFamily: 'inherit',
-              }}
+              className="mt-2.5 py-2 px-3.5 bg-[#2563EB] text-white border-none rounded-lg cursor-pointer text-xs font-semibold font-[inherit]"
             >
               Копировать в буфер
             </button>
@@ -475,34 +356,22 @@ export default function ApgarTimer({ onClose }: { onClose: () => void }) {
       </div>
 
       {/* Footer disclaimer */}
-      <div style={{
-        marginTop: 16,
-        padding: '10px 14px',
-        fontSize: 11, color: '#94A3B8',
-        textAlign: 'center',
-        lineHeight: 1.45,
-      }}>
+      <div className="mt-4 py-2.5 px-3.5 text-[11px] text-[#94A3B8] text-center leading-[1.45]">
         Тактильный feedback и звук на отметках 1, 3, 5, 10 мин. AAP/ACOG 2015 + NRP 8 ed. 2021.
         Apgar score не используется для решения о реанимации (использовать NRP алгоритм).
       </div>
 
       {/* Scoring modal */}
       <AnimatePresence>
-        {scoring && (
+        {scoring && (() => {
+          const total = scoring.score.appearance + scoring.score.pulse + scoring.score.grimace + scoring.score.activity + scoring.score.respiration;
+          const intent = interpretApgar(total);
+          return (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            style={{
-              position: 'fixed',
-              top: 0, left: 0, right: 0, bottom: 0,
-              background: 'rgba(0,0,0,0.6)',
-              zIndex: 10000,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: 16,
-            }}
+            className="fixed inset-0 bg-black/60 z-[10000] flex items-center justify-center p-4"
             onClick={() => setScoring(null)}
           >
             <motion.div
@@ -513,28 +382,12 @@ export default function ApgarTimer({ onClose }: { onClose: () => void }) {
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
               onClick={(e) => e.stopPropagation()}
-              style={{
-                background: '#FFFFFF',
-                color: '#1A1A1A',
-                borderRadius: 16,
-                padding: 24,
-                maxWidth: 460,
-                width: '100%',
-                maxHeight: '90vh',
-                overflowY: 'auto',
-              }}
+              className="bg-white text-[#1A1A1A] rounded-[16px] p-6 max-w-[460px] w-full max-h-[90vh] overflow-y-auto"
             >
-              <h3 id={scoringTitleId} style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: 18, fontWeight: 700,
-                margin: '0 0 4px',
-              }}>
+              <h3 id={scoringTitleId} className="font-[var(--font-display)] text-lg font-bold mt-0 mb-1 mx-0">
                 Apgar — {scoring.minute} мин
               </h3>
-              <p style={{
-                fontSize: 12, color: '#6B7280',
-                margin: '0 0 16px',
-              }}>
+              <p className="text-xs text-[#6B7280] mt-0 mb-4 mx-0">
                 Выберите 0/1/2 для каждого критерия
               </p>
 
@@ -547,15 +400,11 @@ export default function ApgarTimer({ onClose }: { onClose: () => void }) {
               ] as const).map((row) => {
                 const groupId = `apgar-${row.key}-group`;
                 return (
-                  <div key={row.key} style={{ marginBottom: 14 }} role="radiogroup" aria-labelledby={groupId}>
-                    <div id={groupId} style={{
-                      fontSize: 13, fontWeight: 600,
-                      marginBottom: 6,
-                      color: '#374151',
-                    }}>
+                  <div key={row.key} className="mb-[14px]" role="radiogroup" aria-labelledby={groupId}>
+                    <div id={groupId} className="text-[13px] font-semibold mb-1.5 text-[#374151]">
                       {row.label}
                     </div>
-                    <div style={{ display: 'flex', gap: 6 }}>
+                    <div className="flex gap-1.5">
                       {[0, 1, 2].map((v) => {
                         const selected = scoring.score[row.key] === v;
                         return (
@@ -569,22 +418,9 @@ export default function ApgarTimer({ onClose }: { onClose: () => void }) {
                               ...scoring,
                               score: { ...scoring.score, [row.key]: v },
                             })}
-                            style={{
-                              flex: 1,
-                              padding: '10px 8px',
-                              background: selected ? '#2563EB' : '#F5F6F8',
-                              color: selected ? '#FFFFFF' : '#374151',
-                              border: 'none',
-                              borderRadius: 8,
-                              cursor: 'pointer',
-                              fontSize: 12,
-                              fontWeight: 500,
-                              fontFamily: 'inherit',
-                              lineHeight: 1.3,
-                              textAlign: 'left',
-                            }}
+                            className={`flex-1 py-2.5 px-2 border-none rounded-lg cursor-pointer text-xs font-medium font-[inherit] leading-[1.3] text-left ${selected ? 'bg-[#2563EB] text-white' : 'bg-[#F5F6F8] text-[#374151]'}`}
                           >
-                            <strong aria-hidden="true" style={{ fontSize: 18, display: 'block', marginBottom: 2 }}>{v}</strong>
+                            <strong aria-hidden="true" className="text-lg block mb-0.5">{v}</strong>
                             <span aria-hidden="true">{row.options[v]}</span>
                           </button>
                         );
@@ -598,70 +434,40 @@ export default function ApgarTimer({ onClose }: { onClose: () => void }) {
               <div
                 role="status"
                 aria-live="polite"
-                style={{
-                  padding: '12px 14px',
-                  background: '#EFF6FF',
-                  borderRadius: 10,
-                  marginBottom: 16,
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}
+                className="py-3 px-[14px] bg-[#EFF6FF] rounded-[10px] mb-4 flex justify-between items-center"
               >
-                <span style={{ fontSize: 13, color: '#1E40AF', fontWeight: 600 }}>
-                  Итого: {scoring.score.appearance + scoring.score.pulse + scoring.score.grimace + scoring.score.activity + scoring.score.respiration} / 10
+                <span className="text-[13px] text-[#1E40AF] font-semibold">
+                  Итого: {total} / 10
                 </span>
-                <span style={{
-                  fontSize: 11, fontWeight: 700,
-                  color: interpretApgar(
-                    scoring.score.appearance + scoring.score.pulse + scoring.score.grimace + scoring.score.activity + scoring.score.respiration
-                  ).color,
-                }}>
-                  {interpretApgar(
-                    scoring.score.appearance + scoring.score.pulse + scoring.score.grimace + scoring.score.activity + scoring.score.respiration
-                  ).label.toUpperCase()}
+                <span
+                  className="text-[11px] font-bold text-[var(--apgar-intent-color)]"
+                  // eslint-disable-next-line react/forbid-dom-props -- dynamic intent color
+                  style={{ ['--apgar-intent-color' as string]: intent.color }}
+                >
+                  {intent.label.toUpperCase()}
                 </span>
               </div>
 
-              <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+              <div className="flex gap-2 justify-end">
                 <button
                   type="button"
                   onClick={() => setScoring(null)}
-                  style={{
-                    padding: '10px 20px',
-                    background: '#F5F6F8',
-                    color: '#374151',
-                    border: 'none',
-                    borderRadius: 8,
-                    cursor: 'pointer',
-                    fontSize: 13,
-                    fontWeight: 500,
-                    fontFamily: 'inherit',
-                  }}
+                  className="py-2.5 px-5 bg-[#F5F6F8] text-[#374151] border-none rounded-lg cursor-pointer text-[13px] font-medium font-[inherit]"
                 >
                   Отмена
                 </button>
                 <button
                   type="button"
                   onClick={submitScoring}
-                  style={{
-                    padding: '10px 20px',
-                    background: '#10B981',
-                    color: '#FFFFFF',
-                    border: 'none',
-                    borderRadius: 8,
-                    cursor: 'pointer',
-                    fontSize: 13,
-                    fontWeight: 600,
-                    fontFamily: 'inherit',
-                  }}
+                  className="py-2.5 px-5 bg-[#10B981] text-white border-none rounded-lg cursor-pointer text-[13px] font-semibold font-[inherit]"
                 >
                   Сохранить
                 </button>
               </div>
             </motion.div>
           </motion.div>
-        )}
+          );
+        })()}
       </AnimatePresence>
     </div>
   );
