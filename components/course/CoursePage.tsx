@@ -28,8 +28,8 @@ export default function CoursePage({ courseId }: CoursePageProps) {
 
   if (!course) {
     return (
-      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <p style={{ fontSize: 'var(--text-sm)', color: 'var(--md-sys-color-on-surface-variant)' }}>{t('course.notFound')}</p>
+      <div className="flex-1 flex items-center justify-center">
+        <p className="text-[length:var(--text-sm)] text-[color:var(--md-sys-color-on-surface-variant)]">{t('course.notFound')}</p>
       </div>
     );
   }
@@ -73,7 +73,7 @@ export default function CoursePage({ courseId }: CoursePageProps) {
       <div>
         <CourseHeader courseId={courseId} />
         {isPediatricCalc && (
-          <div style={{ marginBottom: 20 }}>
+          <div className="mb-5">
             <PediatricCalculator />
           </div>
         )}

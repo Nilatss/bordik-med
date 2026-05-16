@@ -1713,10 +1713,7 @@ function NeonatalDetailBlock({
   // negative margins или border-radius — это разрушало гармонию остальных полей
   // и читалось как inline-callout вместо органичной строки данных.
   return (
-    <div className="neo-detail-row" style={{
-      padding: '14px 0',
-      borderBottom: isLast ? 'none' : '1px solid #F0F1F5',
-    }}>
+    <div className={`neo-detail-row py-3.5 ${isLast ? '' : 'border-b border-[#F0F1F5]'}`}>
       <div style={{
         display: 'inline-flex', alignItems: 'center', gap: 6,
         fontSize: 11, fontWeight: 600, letterSpacing: '0.06em',
@@ -1995,9 +1992,7 @@ function GuidelineContent({ content }: { content: string }) {
                 </thead>
                 <tbody>
                   {b.rows.map((row, ri) => (
-                    <tr key={ri} style={{
-                      borderTop: ri === 0 ? 'none' : '1px solid #F0F1F5',
-                    }}>
+                    <tr key={ri} className={ri === 0 ? '' : 'border-t border-[#F0F1F5]'}>
                       {row.map((cell, ci) => (
                         <td key={ci} style={{
                           padding: '10px 12px',
@@ -2329,7 +2324,7 @@ function NeonatalCalcCard({
         </div>
       </div>
 
-      <div style={{ position: 'relative', zIndex: 1, flex: 1 }}>
+      <div className="relative z-[1] flex-1">
         <h3 style={{
           fontFamily: 'var(--font-display)', fontSize: 'var(--text-base)', fontWeight: 700,
           color: 'var(--md-sys-color-on-surface)',
@@ -2549,7 +2544,7 @@ function ArticleContent({ content }: { content: string }) {
         if (block.startsWith('- ') || block.startsWith('* ')) {
           const items = block.split('\n').map((l) => l.replace(/^[-*]\s+/, ''));
           return (
-            <ul key={idx} style={{ margin: '6px 0', paddingLeft: 22 }}>
+            <ul key={idx} className="my-1.5 pl-[22px]">
               {items.map((it, i) => (
                 <li key={i} className="mb-[3px]">
                   <FormattedText text={it} />
@@ -2561,7 +2556,7 @@ function ArticleContent({ content }: { content: string }) {
         if (/^\d+\.\s/.test(block)) {
           const items = block.split('\n').map((l) => l.replace(/^\d+\.\s+/, ''));
           return (
-            <ol key={idx} style={{ margin: '6px 0', paddingLeft: 22 }}>
+            <ol key={idx} className="my-1.5 pl-[22px]">
               {items.map((it, i) => (
                 <li key={i} className="mb-[3px]">
                   <FormattedText text={it} />
@@ -2573,7 +2568,7 @@ function ArticleContent({ content }: { content: string }) {
         if (block.startsWith('| ')) {
           const rows = block.split('\n').filter((l) => l.startsWith('|'));
           if (rows.length < 2) {
-            return <p key={idx} style={{ margin: '8px 0' }}><FormattedText text={block} /></p>;
+            return <p key={idx} className="my-2"><FormattedText text={block} /></p>;
           }
           const headerCells = rows[0]?.split('|').map((c) => c.trim()).filter(Boolean) ?? [];
           const bodyRows = rows.slice(2).map((r) => r.split('|').map((c) => c.trim()).filter(Boolean));
@@ -2612,7 +2607,7 @@ function ArticleContent({ content }: { content: string }) {
           );
         }
         return (
-          <p key={idx} style={{ margin: '8px 0' }}>
+          <p key={idx} className="my-2">
             <FormattedText text={block} />
           </p>
         );
@@ -2792,11 +2787,7 @@ function LactCard({
 
               {/* Footer: link button — design-system pill (white BG + soft
                   shadow + mono uppercase, matching all other pills). */}
-              <div style={{
-                marginTop: 16,
-                display: 'flex', alignItems: 'center',
-                flexWrap: 'wrap', gap: 12,
-              }}>
+              <div className="mt-4 flex items-center flex-wrap gap-3">
                 <DesignSystemLinkButton
                   href={drug.lactmed_url}
                   ariaLabel={`Открыть статью LactMed (NCBI) по препарату ${drug.name_ru}`}
@@ -3860,7 +3851,7 @@ function ChecklistCard({
                   <strong className="text-[#1A1A1A]">Аудитория:</strong> {c.audience}
                 </div>
                 {c.indications.length > 0 && (
-                  <div style={{ fontSize: 12, color: '#6B7280' }}>
+                  <div className="text-xs text-[#6B7280]">
                     <strong className="text-[#1A1A1A]">Показания:</strong>
                     <ul style={{ margin: '4px 0 0 18px', padding: 0 }}>
                       {c.indications.map((it, i) => (
@@ -4569,10 +4560,7 @@ function AtlasCard({
                 </div>
               )}
 
-              <div style={{
-                marginTop: 16,
-                display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 12,
-              }}>
+              <div className="mt-4 flex items-center flex-wrap gap-3">
                 <DesignSystemLinkButton
                   href={a.url}
                   ariaLabel={`Открыть атлас: ${a.title_ru} на ${a.source}`}

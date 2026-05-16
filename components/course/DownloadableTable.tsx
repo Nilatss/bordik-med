@@ -229,41 +229,19 @@ export default function DownloadableTable({ children, title = 'Таблица' }
   };
 
   return (
-    <div style={{ margin: '18px 0' }}>
+    <div className="my-[18px]">
       <div ref={ref}>
         {children}
       </div>
-      <div style={{
-        display: 'flex', justifyContent: 'flex-end',
-        marginTop: 10,
-      }}>
+      <div className="flex justify-end mt-2.5">
         <button
           type="button"
           onClick={handleDownload}
           disabled={busy}
           title="Скачать таблицу как PDF"
-          style={{
-            display: 'inline-flex', alignItems: 'center', gap: 6,
-            padding: '6px 12px',
-            background: '#FFFFFF',
-            border: '1px solid #E2E4EA',
-            borderRadius: 8,
-            cursor: busy ? 'wait' : 'pointer',
-            opacity: busy ? 0.6 : 1,
-            fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 600,
-            color: '#374151',
-            transition: 'background 180ms, border-color 180ms',
-          }}
-          onMouseEnter={(e) => {
-            if (busy) return;
-            e.currentTarget.style.background = '#F5F6F8';
-            e.currentTarget.style.borderColor = '#D1D5DB';
-          }}
-          onMouseLeave={(e) => {
-            if (busy) return;
-            e.currentTarget.style.background = '#FFFFFF';
-            e.currentTarget.style.borderColor = '#E2E4EA';
-          }}
+          className={`inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-[#F5F6F8] border border-[#E2E4EA] hover:border-[#D1D5DB] rounded-lg font-[var(--font-body)] text-xs font-semibold text-[#374151] transition-[background-color,border-color] duration-[180ms] ${
+            busy ? 'cursor-wait opacity-60' : 'cursor-pointer opacity-100'
+          }`}
         >
           <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
             stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
