@@ -755,15 +755,7 @@ export default function NeonatalHandbook() {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1], delay: 0.06 }}
-        className="bordik-search"
-        style={{
-          display: 'flex', alignItems: 'center', gap: 10,
-          padding: '10px 16px',
-          background: '#F5F6F8',
-          borderRadius: 12,
-          maxWidth: 480,
-          marginBottom: 18,
-        }}
+        className="bordik-search flex items-center gap-2.5 px-4 py-2.5 bg-[#F5F6F8] rounded-xl max-w-[480px] mb-[18px]"
       >
         <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
           stroke="#9CA3AF" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
@@ -787,20 +779,14 @@ export default function NeonatalHandbook() {
               : tab === 'nurse' ? 'Поиск процедуры'
               : 'Поиск'
           }
-          style={{
-            flex: 1, background: 'transparent', border: 'none', outline: 'none',
-            fontFamily: 'inherit', fontSize: 14, color: '#1A1A1A',
-          }}
+          className="flex-1 bg-transparent border-0 outline-none font-[inherit] text-sm text-[#1A1A1A]"
         />
         {q && (
           <button
             type="button"
             onClick={() => setQ('')}
             aria-label="Очистить поле поиска"
-            style={{
-              background: 'transparent', border: 'none', cursor: 'pointer',
-              color: '#9CA3AF', fontSize: 16, padding: 0,
-            }}
+            className="bg-transparent border-0 cursor-pointer text-[#9CA3AF] text-base p-0"
           >×</button>
         )}
       </motion.div>
@@ -842,32 +828,18 @@ export default function NeonatalHandbook() {
           <div
             role="navigation"
             aria-label="Текущий раздел"
-            style={{
-              display: 'flex', alignItems: 'baseline', gap: 8,
-              paddingBottom: 14, marginBottom: 18,
-              borderBottom: '1px solid #E5E7EB',
-            }}
+            className="flex items-baseline gap-2 pb-3.5 mb-[18px] border-b border-[#E5E7EB]"
           >
             <h2
               aria-current="page"
-              style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: 22, fontWeight: 700,
-                letterSpacing: '-0.02em',
-                color: '#1A1A1A',
-                margin: 0,
-              }}
+              className="font-[var(--font-display)] text-[22px] font-bold tracking-[-0.02em] text-[#1A1A1A] m-0"
             >
               {meta.label}
             </h2>
             {meta.count !== null && (
               <span
                 aria-label={`всего ${meta.count}`}
-                style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: 14, fontWeight: 700,
-                  color: '#9CA3AF',
-                }}
+                className="font-[var(--font-mono)] text-sm font-bold text-[#9CA3AF]"
               >
                 {meta.count}
               </span>
@@ -1015,20 +987,7 @@ export default function NeonatalHandbook() {
             <button
               type="button"
               onClick={() => setApgarTimerOpen(true)}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 8,
-                padding: '10px 14px',
-                background: '#0F172A',
-                color: '#FFFFFF',
-                border: 'none',
-                borderRadius: 10,
-                cursor: 'pointer',
-                fontSize: 13,
-                fontWeight: 600,
-                fontFamily: 'inherit',
-              }}
+              className="inline-flex items-center gap-2 px-3.5 py-2.5 bg-[#0F172A] text-white border-0 rounded-[10px] cursor-pointer text-[13px] font-semibold font-[inherit]"
             >
               <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
@@ -1881,80 +1840,62 @@ function renderInlineMd(text: string): React.ReactNode {
 function GuidelineContent({ content }: { content: string }) {
   const blocks = parseGuidelineContent(content);
   return (
-    <div style={{ fontSize: 13, lineHeight: 1.6, color: '#374151' }}>
+    <div className="text-[13px] leading-[1.6] text-[#374151]">
       {blocks.map((b, i) => {
+        const firstClass = i === 0 ? 'mt-0' : '';
         if (b.kind === 'step') {
           return (
-            <div key={i} style={{
-              marginTop: i === 0 ? 0 : 18, marginBottom: 10,
-              padding: '6px 10px',
-              background: '#F3F4F6',
-              borderLeft: '3px solid #6B7280',
-              borderRadius: 4,
-              fontFamily: 'var(--font-mono, ui-monospace)',
-              fontSize: 11, fontWeight: 700,
-              color: '#111827',
-              letterSpacing: '0.06em',
-              textTransform: 'uppercase',
-            }}>
+            <div
+              key={i}
+              className={`${i === 0 ? 'mt-0' : 'mt-[18px]'} mb-2.5 px-2.5 py-1.5 bg-[#F3F4F6] border-l-[3px] border-l-[#6B7280] rounded font-[var(--font-mono,ui-monospace)] text-[11px] font-bold text-[#111827] tracking-[0.06em] uppercase`}
+            >
               {b.text}
             </div>
           );
         }
         if (b.kind === 'h1') {
           return (
-            <h2 key={i} style={{
-              marginTop: i === 0 ? 0 : 22, marginBottom: 10,
-              fontFamily: 'var(--font-display)',
-              fontSize: 18, fontWeight: 700, color: '#0F172A',
-              letterSpacing: '-0.015em', lineHeight: 1.3,
-            }}>
+            <h2
+              key={i}
+              className={`${i === 0 ? 'mt-0' : 'mt-[22px]'} mb-2.5 font-[var(--font-display)] text-lg font-bold text-[#0F172A] tracking-[-0.015em] leading-[1.3]`}
+            >
               {renderInlineMd(b.text)}
             </h2>
           );
         }
         if (b.kind === 'h2') {
           return (
-            <h3 key={i} style={{
-              marginTop: i === 0 ? 0 : 18, marginBottom: 8,
-              fontFamily: 'var(--font-display)',
-              fontSize: 15, fontWeight: 700, color: '#111827',
-              letterSpacing: '-0.01em', lineHeight: 1.35,
-            }}>
+            <h3
+              key={i}
+              className={`${i === 0 ? 'mt-0' : 'mt-[18px]'} mb-2 font-[var(--font-display)] text-[15px] font-bold text-[#111827] tracking-[-0.01em] leading-[1.35]`}
+            >
               {renderInlineMd(b.text)}
             </h3>
           );
         }
         if (b.kind === 'h3') {
           return (
-            <h4 key={i} style={{
-              marginTop: i === 0 ? 0 : 14, marginBottom: 6,
-              fontFamily: 'var(--font-display)',
-              fontSize: 13.5, fontWeight: 700, color: '#1F2937',
-              letterSpacing: '-0.005em', lineHeight: 1.4,
-            }}>
+            <h4
+              key={i}
+              className={`${i === 0 ? 'mt-0' : 'mt-3.5'} mb-1.5 font-[var(--font-display)] text-[13.5px] font-bold text-[#1F2937] tracking-[-0.005em] leading-[1.4]`}
+            >
               {renderInlineMd(b.text)}
             </h4>
           );
         }
         if (b.kind === 'heading') {
           return (
-            <div key={i} style={{
-              marginTop: i === 0 ? 0 : 14, marginBottom: 6,
-              fontFamily: 'var(--font-display)',
-              fontSize: 13, fontWeight: 700, color: '#111827',
-              letterSpacing: '-0.005em',
-            }}>
+            <div
+              key={i}
+              className={`${i === 0 ? 'mt-0' : 'mt-3.5'} mb-1.5 font-[var(--font-display)] text-[13px] font-bold text-[#111827] tracking-[-0.005em]`}
+            >
               {b.text}
             </div>
           );
         }
         if (b.kind === 'list') {
           return (
-            <ul key={i} style={{
-              margin: '0 0 12px', paddingLeft: 20,
-              fontSize: 13, lineHeight: 1.6, color: '#374151',
-            }}>
+            <ul key={i} className="mt-0 mb-3 pl-5 text-[13px] leading-[1.6] text-[#374151] list-disc">
               {b.items.map((it, j) => (
                 <li key={j} className="mb-1">{renderInlineMd(it)}</li>
               ))}
@@ -1963,28 +1904,18 @@ function GuidelineContent({ content }: { content: string }) {
         }
         if (b.kind === 'table') {
           return (
-            <div key={i} style={{
-              margin: '0 0 14px',
-              overflowX: 'auto',
-              borderRadius: 10,
-              background: '#FFFFFF',
-              boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-            }}>
-              <table style={{
-                width: '100%', borderCollapse: 'collapse',
-                fontSize: 12.5, lineHeight: 1.5,
-              }}>
+            <div
+              key={i}
+              className="mt-0 mb-3.5 overflow-x-auto rounded-[10px] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.06),0_2px_6px_rgba(16,24,40,0.06)]"
+            >
+              <table className="w-full border-collapse text-[12.5px] leading-[1.5]">
                 <thead>
                   <tr>
                     {b.headers.map((h, j) => (
-                      <th key={j} style={{
-                        padding: '10px 12px',
-                        textAlign: 'left',
-                        fontFamily: 'var(--font-body)',
-                        fontWeight: 700, color: '#111827',
-                        borderBottom: '1px solid #E5E7EB',
-                        whiteSpace: 'nowrap',
-                      }}>
+                      <th
+                        key={j}
+                        className="px-3 py-2.5 text-left font-[var(--font-body)] font-bold text-[#111827] border-b border-[#E5E7EB] whitespace-nowrap"
+                      >
                         {renderInlineMd(h)}
                       </th>
                     ))}
@@ -1994,11 +1925,7 @@ function GuidelineContent({ content }: { content: string }) {
                   {b.rows.map((row, ri) => (
                     <tr key={ri} className={ri === 0 ? '' : 'border-t border-[#F0F1F5]'}>
                       {row.map((cell, ci) => (
-                        <td key={ci} style={{
-                          padding: '10px 12px',
-                          color: '#374151',
-                          verticalAlign: 'top',
-                        }}>
+                        <td key={ci} className="px-3 py-2.5 text-[#374151] align-top">
                           {renderInlineMd(cell)}
                         </td>
                       ))}
@@ -2011,26 +1938,16 @@ function GuidelineContent({ content }: { content: string }) {
         }
         if (b.kind === 'formula') {
           return (
-            <pre key={i} style={{
-              margin: '0 0 12px',
-              padding: '10px 12px',
-              background: '#F9FAFB',
-              border: '1px solid #E5E7EB',
-              borderRadius: 8,
-              fontFamily: 'var(--font-mono, ui-monospace)',
-              fontSize: 12, lineHeight: 1.7,
-              color: '#1F2937',
-              whiteSpace: 'pre-wrap', wordBreak: 'break-word',
-            }}>
+            <pre
+              key={i}
+              className="mt-0 mb-3 px-3 py-2.5 bg-[#F9FAFB] border border-[#E5E7EB] rounded-lg font-[var(--font-mono,ui-monospace)] text-xs leading-[1.7] text-[#1F2937] whitespace-pre-wrap break-words"
+            >
               {b.text}
             </pre>
           );
         }
         return (
-          <p key={i} style={{
-            margin: '0 0 10px',
-            fontSize: 13, lineHeight: 1.6, color: '#374151',
-          }}>
+          <p key={i} className={`${firstClass} mb-2.5 text-[13px] leading-[1.6] text-[#374151]`}>
             {renderInlineMd(b.text)}
           </p>
         );
@@ -2515,28 +2432,18 @@ function ArticleCard({
 function ArticleContent({ content }: { content: string }) {
   const blocks = content.split(/\n\n+/).map((block) => block.trim()).filter(Boolean);
   return (
-    <div style={{ fontSize: 13.5, lineHeight: 1.65, color: '#1F2937' }}>
+    <div className="text-[13.5px] leading-[1.65] text-[#1F2937]">
       {blocks.map((block, idx) => {
         if (block.startsWith('## ')) {
           return (
-            <h3 key={idx} style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: 16, fontWeight: 700,
-              color: '#111827', margin: '20px 0 8px',
-              letterSpacing: '-0.01em',
-            }}>
+            <h3 key={idx} className="font-[var(--font-display)] text-base font-bold text-[#111827] mt-5 mb-2 tracking-[-0.01em]">
               {block.slice(3)}
             </h3>
           );
         }
         if (block.startsWith('### ')) {
           return (
-            <h4 key={idx} style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: 14, fontWeight: 700,
-              color: '#1F2937', margin: '16px 0 6px',
-              letterSpacing: '-0.005em',
-            }}>
+            <h4 key={idx} className="font-[var(--font-display)] text-sm font-bold text-[#1F2937] mt-4 mb-1.5 tracking-[-0.005em]">
               {block.slice(4)}
             </h4>
           );
@@ -2573,19 +2480,12 @@ function ArticleContent({ content }: { content: string }) {
           const headerCells = rows[0]?.split('|').map((c) => c.trim()).filter(Boolean) ?? [];
           const bodyRows = rows.slice(2).map((r) => r.split('|').map((c) => c.trim()).filter(Boolean));
           return (
-            <div key={idx} style={{
-              overflowX: 'auto', margin: '12px 0',
-              borderRadius: 8, border: '1px solid #E5E7EB',
-            }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12.5 }}>
+            <div key={idx} className="overflow-x-auto my-3 rounded-lg border border-[#E5E7EB]">
+              <table className="w-full border-collapse text-[12.5px]">
                 <thead>
-                  <tr style={{ background: '#F3F4F6' }}>
+                  <tr className="bg-[#F3F4F6]">
                     {headerCells.map((h, i) => (
-                      <th key={i} style={{
-                        padding: '8px 10px', textAlign: 'left',
-                        fontWeight: 600, color: '#374151',
-                        borderBottom: '1px solid #E5E7EB',
-                      }}>
+                      <th key={i} className="px-2.5 py-2 text-left font-semibold text-[#374151] border-b border-[#E5E7EB]">
                         <FormattedText text={h} />
                       </th>
                     ))}
@@ -2593,9 +2493,9 @@ function ArticleContent({ content }: { content: string }) {
                 </thead>
                 <tbody>
                   {bodyRows.map((row, ri) => (
-                    <tr key={ri} style={{ borderTop: ri > 0 ? '1px solid #F3F4F6' : 'none' }}>
+                    <tr key={ri} className={ri > 0 ? 'border-t border-[#F3F4F6]' : ''}>
                       {row.map((c, ci) => (
-                        <td key={ci} style={{ padding: '6px 10px', color: '#1F2937' }}>
+                        <td key={ci} className="px-2.5 py-1.5 text-[#1F2937]">
                           <FormattedText text={c} />
                         </td>
                       ))}
@@ -2648,16 +2548,9 @@ function FormattedText({ text }: { text: string }) {
   return (
     <>
       {parts.map((p, i) => {
-        if (p.type === 'bold') return <strong key={i} style={{ fontWeight: 600, color: '#111827' }}>{p.value}</strong>;
+        if (p.type === 'bold') return <strong key={i} className="font-semibold text-[#111827]">{p.value}</strong>;
         if (p.type === 'code') return (
-          <code key={i} style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: '0.9em',
-            background: '#F3F4F6',
-            padding: '1px 4px',
-            borderRadius: 3,
-            color: '#7C2D12',
-          }}>{p.value}</code>
+          <code key={i} className="font-[var(--font-mono)] text-[0.9em] bg-[#F3F4F6] px-1 py-[1px] rounded-[3px] text-[#7C2D12]">{p.value}</code>
         );
         return <span key={i}>{p.value}</span>;
       })}
@@ -2708,23 +2601,11 @@ function LactCard({
             <span className="font-[var(--font-display)] text-[15px] font-semibold text-[#111827] tracking-[-0.01em] leading-[1.35]">
               <Highlight text={drug.name_ru} query={query} />
             </span>
-            <span style={{
-              display: 'inline-flex', alignItems: 'center',
-              padding: '4px 10px',
-              borderRadius: 'var(--md-sys-shape-corner-full)',
-              background: '#FFFFFF',
-              boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-              fontFamily: 'var(--font-body)',
-              fontSize: 11, fontWeight: 600,
-              color: 'var(--md-sys-color-on-surface-variant)',
-              whiteSpace: 'nowrap',
-            }}>
+            <span className="inline-flex items-center px-2.5 py-1 rounded-[var(--md-sys-shape-corner-full)] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.06),0_2px_6px_rgba(16,24,40,0.06)] font-[var(--font-body)] text-[11px] font-semibold text-[color:var(--md-sys-color-on-surface-variant)] whitespace-nowrap">
               {colors.label}
             </span>
           </span>
-          <span style={{
-            display: 'block', fontSize: 12, color: '#6B7280', lineHeight: 1.5,
-          }}>
+          <span className="block text-xs text-[#6B7280] leading-[1.5]">
             <Highlight text={drug.summary} query={query} />
           </span>
         </span>
@@ -2972,11 +2853,7 @@ function NurseProcedureCard({
                 <div style={{
                   marginTop: 14, paddingTop: 12, borderTop: '1px solid #E5E7EB',
                 }}>
-                  <div style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
-                    textTransform: 'uppercase', color: '#9CA3AF', marginBottom: 6,
-                  }}>
+                  <div className="font-[var(--font-mono)] text-[11px] font-bold tracking-[0.06em] uppercase text-[#9CA3AF] mb-1.5">
                     References
                   </div>
                   <ol style={{ margin: 0, paddingLeft: 18, fontSize: 12, color: '#6B7280', lineHeight: 1.55 }}>
@@ -3042,17 +2919,7 @@ function EducationPlaceholder({
       }}>
         {m.subtitle}
       </p>
-      <span style={{
-        display: 'inline-flex', alignItems: 'center',
-        padding: '4px var(--space-2)',
-        borderRadius: 'var(--md-sys-shape-corner-full)',
-        background: '#FFFFFF',
-        boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-        fontFamily: 'var(--font-mono)',
-        fontSize: '0.625rem', fontWeight: 600,
-        color: '#9CA3AF',
-        textTransform: 'uppercase', letterSpacing: '0.06em',
-      }}>
+      <span className="inline-flex items-center px-[var(--space-2)] py-1 rounded-[var(--md-sys-shape-corner-full)] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.06),0_2px_6px_rgba(16,24,40,0.06)] font-[var(--font-mono)] text-[0.625rem] font-semibold text-[#9CA3AF] uppercase tracking-[0.06em]">
         В разработке
       </span>
     </motion.div>
@@ -3864,13 +3731,8 @@ function ChecklistCard({
 
               {/* Sections с интерактивными checkbox */}
               {c.sections.map((sec, si) => (
-                <div key={si} style={{ marginBottom: 18 }}>
-                  <div style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
-                    textTransform: 'uppercase', color: '#9CA3AF',
-                    marginBottom: 8,
-                  }}>
+                <div key={si} className="mb-[18px]">
+                  <div className="font-[var(--font-mono)] text-[11px] font-bold tracking-[0.06em] uppercase text-[#9CA3AF] mb-2">
                     {sec.title}
                   </div>
                   <div className="flex flex-col gap-1.5">
