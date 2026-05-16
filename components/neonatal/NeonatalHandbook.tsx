@@ -1937,31 +1937,14 @@ function GuidelineCard({
                     <span
                       key={r}
                       title={r}
-                      style={{
-                        display: 'inline-flex', alignItems: 'center', gap: 4,
-                        padding: '4px var(--space-2)', borderRadius: 'var(--md-sys-shape-corner-full)',
-                        background: '#FFFFFF',
-                        boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-                        fontFamily: 'var(--font-mono)',
-                        fontSize: '0.625rem', fontWeight: 500,
-                        color: 'var(--md-sys-color-on-surface-variant)',
-                        whiteSpace: 'nowrap',
-                      }}
+                      className="inline-flex items-center gap-1 px-[var(--space-2)] py-1 rounded-[var(--md-sys-shape-corner-full)] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.06),0_2px_6px_rgba(16,24,40,0.06)] font-[var(--font-mono)] text-[0.625rem] font-medium text-[color:var(--md-sys-color-on-surface-variant)] whitespace-nowrap"
                     >
                       <EmojiOrFlag emoji={flagMap[r] ?? '🏳️'} size={12} />
                       {r}
                     </span>
                   ))}
                   {extra > 0 && (
-                    <span style={{
-                      display: 'inline-flex', alignItems: 'center',
-                      padding: '4px 8px', borderRadius: 999,
-                      background: '#FFFFFF',
-                      boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-                      fontFamily: 'var(--font-mono)',
-                      fontSize: '0.625rem', fontWeight: 600,
-                      color: '#6B7280',
-                    }}>
+                    <span className="inline-flex items-center px-2 py-1 rounded-full bg-white shadow-[0_1px_2px_rgba(16,24,40,0.06),0_2px_6px_rgba(16,24,40,0.06)] font-[var(--font-mono)] text-[0.625rem] font-semibold text-[#6B7280]">
                       +{extra}
                     </span>
                   )}
@@ -1970,9 +1953,7 @@ function GuidelineCard({
             })()}
           </span>
           {guideline.title_en !== guideline.title_ru && (
-            <span style={{
-              display: 'block', marginTop: 3, fontSize: 12, color: '#6B7280',
-            }}>
+            <span className="block mt-[3px] text-xs text-[#6B7280]">
               <Highlight text={guideline.title_en} query={query} />
             </span>
           )}
@@ -2474,14 +2455,7 @@ function LactCard({
             <div className="pt-[18px] px-5 pb-5 bg-white border-t border-[#E5E7EB] text-[13.5px] leading-[1.6] text-[#1F2937]">
               {/* Лид-абзац (summary) — то же что было в свернутой карточке. */}
               {drug.summary && (
-                <p style={{
-                  margin: '0 0 16px',
-                  paddingBottom: 14,
-                  borderBottom: '1px solid #F0F1F5',
-                  fontSize: 14,
-                  lineHeight: 1.55,
-                  color: '#4B5563',
-                }}>
+                <p className="mt-0 mb-4 pb-3.5 border-b border-[#F0F1F5] text-sm leading-[1.55] text-[#4B5563]">
                   <Highlight text={drug.summary} query={query} />
                 </p>
               )}
@@ -2508,10 +2482,7 @@ function LactCard({
                   ariaLabel={`Открыть статью LactMed (NCBI) по препарату ${drug.name_ru}`}
                   label="Открыть на LactMed"
                 />
-                <span style={{
-                  fontSize: 11, color: '#9CA3AF', lineHeight: 1.4,
-                  flex: 1, minWidth: 200,
-                }}>
+                <span className="text-[11px] text-[#9CA3AF] leading-[1.4] flex-1 min-w-[200px]">
                   Резюме адаптировано из LactMed (NIH, public domain).
                   Не заменяет клиническое решение.
                 </span>
@@ -2537,13 +2508,11 @@ function NurseProcedureCard({
 }) {
   const panelId = `nurse-panel-${procedure.id}`;
   return (
-    <div style={{
-      background: '#F5F6F8',
-      border: isOpen ? '1px solid #E5E7EB' : 'none',
-      borderRadius: 14,
-      overflow: 'hidden',
-      transition: 'border-color 150ms ease',
-    }}>
+    <div
+      className={`bg-[#F5F6F8] rounded-[14px] overflow-hidden transition-[border-color] duration-150 ease-out ${
+        isOpen ? 'border border-[#E5E7EB]' : 'border-0'
+      }`}
+    >
       <button
         type="button"
         onClick={onToggle}
@@ -2553,39 +2522,17 @@ function NurseProcedureCard({
           ? `Свернуть процедуру: ${procedure.title_ru}`
           : `Развернуть процедуру: ${procedure.title_ru}. Категория: ${procedure.category}. Длительность около ${procedure.duration_min} минут.`
         }
-        style={{
-          width: '100%',
-          display: 'flex', alignItems: 'flex-start', gap: 14,
-          padding: '14px 18px',
-          background: 'transparent', border: 'none',
-          cursor: 'pointer', textAlign: 'left',
-          fontFamily: 'inherit',
-        }}
+        className="w-full flex items-start gap-3.5 px-[18px] py-3.5 bg-transparent border-0 cursor-pointer text-left font-[inherit]"
       >
         <span aria-hidden="true" className="flex-1 min-w-0">
           <span className="flex items-center gap-2 flex-wrap mb-1">
             <span className="font-[var(--font-display)] text-[15px] font-semibold text-[#111827] tracking-[-0.01em] leading-[1.35]">
               {procedure.title_ru}
             </span>
-            <span style={{
-              display: 'inline-flex', alignItems: 'center',
-              padding: '4px var(--space-2)',
-              borderRadius: 'var(--md-sys-shape-corner-full)',
-              background: '#FFFFFF',
-              boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-              fontFamily: 'var(--font-mono)',
-              fontSize: '0.625rem', fontWeight: 500,
-              color: 'var(--md-sys-color-on-surface-variant)',
-              textTransform: 'uppercase', letterSpacing: '0.04em',
-              whiteSpace: 'nowrap',
-            }}>
+            <span className="inline-flex items-center px-[var(--space-2)] py-1 rounded-[var(--md-sys-shape-corner-full)] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.06),0_2px_6px_rgba(16,24,40,0.06)] font-[var(--font-mono)] text-[0.625rem] font-medium text-[color:var(--md-sys-color-on-surface-variant)] uppercase tracking-[0.04em] whitespace-nowrap">
               {procedure.category}
             </span>
-            <span style={{
-              fontSize: 11, fontWeight: 500,
-              color: '#6B7280',
-              fontFamily: 'var(--font-mono)',
-            }}>
+            <span className="text-[11px] font-medium text-[#6B7280] font-[var(--font-mono)]">
               ~{procedure.duration_min} мин
             </span>
           </span>
@@ -2618,34 +2565,16 @@ function NurseProcedureCard({
             }}
             className="overflow-hidden"
           >
-            <div style={{
-              padding: '14px 20px 18px',
-              background: '#FFFFFF',
-              borderTop: '1px solid #E5E7EB',
-              fontSize: 13.5, lineHeight: 1.55, color: '#1F2937',
-            }}>
+            <div className="pt-3.5 px-5 pb-[18px] bg-white border-t border-[#E5E7EB] text-[13.5px] leading-[1.55] text-[#1F2937]">
               {procedure.steps.map((step, idx) => (
-                <div key={idx} style={{ marginBottom: 14 }}>
-                  <div style={{
-                    fontSize: 13, fontWeight: 700,
-                    color: '#1F2937',
-                    marginBottom: 6,
-                    display: 'flex', alignItems: 'center', gap: 8,
-                  }}>
-                    <span style={{
-                      display: 'inline-flex',
-                      alignItems: 'center', justifyContent: 'center',
-                      width: 22, height: 22,
-                      background: '#2563EB',
-                      color: '#FFFFFF',
-                      borderRadius: '50%',
-                      fontSize: 11, fontWeight: 700,
-                    }}>
+                <div key={idx} className="mb-3.5">
+                  <div className="text-[13px] font-bold text-[#1F2937] mb-1.5 flex items-center gap-2">
+                    <span className="inline-flex items-center justify-center w-[22px] h-[22px] bg-[#2563EB] text-white rounded-full text-[11px] font-bold">
                       {idx + 1}
                     </span>
                     {step.title}
                   </div>
-                  <ul style={{ margin: 0, paddingLeft: 32, fontSize: 12.5, lineHeight: 1.55, color: '#374151' }}>
+                  <ul className="m-0 pl-8 text-[12.5px] leading-[1.55] text-[#374151]">
                     {step.items.map((it, i) => (
                       <li key={i} className="mb-[3px]">{it}</li>
                     ))}
@@ -2653,16 +2582,8 @@ function NurseProcedureCard({
                 </div>
               ))}
               {procedure.warnings.length > 0 && (
-                <div style={{
-                  marginTop: 14, paddingTop: 12,
-                  borderTop: '1px solid #F0F1F5',
-                }}>
-                  <div style={{
-                    display: 'inline-flex', alignItems: 'center', gap: 6,
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
-                    textTransform: 'uppercase', color: '#B45309', marginBottom: 6,
-                  }}>
+                <div className="mt-3.5 pt-3 border-t border-[#F0F1F5]">
+                  <div className="inline-flex items-center gap-1.5 font-[var(--font-mono)] text-[11px] font-bold tracking-[0.06em] uppercase text-[#B45309] mb-1.5">
                     <svg
                       aria-hidden="true" focusable="false"
                       width={11} height={11} viewBox="0 0 24 24" fill="none"
@@ -2676,7 +2597,7 @@ function NurseProcedureCard({
                     </svg>
                     Предупреждения
                   </div>
-                  <ul style={{ margin: 0, paddingLeft: 18, fontSize: 12.5, color: '#374151', lineHeight: 1.55 }}>
+                  <ul className="m-0 pl-[18px] text-[12.5px] text-[#374151] leading-[1.55]">
                     {procedure.warnings.map((w, i) => (
                       <li key={i} className="mb-[3px]">{w}</li>
                     ))}
@@ -2684,13 +2605,11 @@ function NurseProcedureCard({
                 </div>
               )}
               {procedure.references.length > 0 && (
-                <div style={{
-                  marginTop: 14, paddingTop: 12, borderTop: '1px solid #E5E7EB',
-                }}>
+                <div className="mt-3.5 pt-3 border-t border-[#E5E7EB]">
                   <div className="font-[var(--font-mono)] text-[11px] font-bold tracking-[0.06em] uppercase text-[#9CA3AF] mb-1.5">
                     References
                   </div>
-                  <ol style={{ margin: 0, paddingLeft: 18, fontSize: 12, color: '#6B7280', lineHeight: 1.55 }}>
+                  <ol className="m-0 pl-[18px] text-xs text-[#6B7280] leading-[1.55]">
                     {procedure.references.map((r, i) => (
                       <li key={i} className="mb-[3px]">{r}</li>
                     ))}
@@ -2728,29 +2647,12 @@ function EducationPlaceholder({
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      style={{
-        padding: '24px 20px',
-        background: '#F5F6F8',
-        borderRadius: 14,
-        border: '1px dashed #D1D5DB',
-        textAlign: 'center',
-      }}
+      className="px-5 py-6 bg-[#F5F6F8] rounded-[14px] border border-dashed border-[#D1D5DB] text-center"
     >
-      <div style={{
-        fontFamily: 'var(--font-display)',
-        fontSize: 17, fontWeight: 700,
-        color: '#1A1A1A',
-        marginBottom: 6,
-        letterSpacing: '-0.01em',
-      }}>
+      <div className="font-[var(--font-display)] text-[17px] font-bold text-[#1A1A1A] mb-1.5 tracking-[-0.01em]">
         {m.title}
       </div>
-      <p style={{
-        margin: '0 auto 12px',
-        maxWidth: 520,
-        fontSize: 13.5, lineHeight: 1.55,
-        color: '#6B7280',
-      }}>
+      <p className="mx-auto mt-0 mb-3 max-w-[520px] text-[13.5px] leading-[1.55] text-[#6B7280]">
         {m.subtitle}
       </p>
       <span className="inline-flex items-center px-[var(--space-2)] py-1 rounded-[var(--md-sys-shape-corner-full)] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.06),0_2px_6px_rgba(16,24,40,0.06)] font-[var(--font-mono)] text-[0.625rem] font-semibold text-[#9CA3AF] uppercase tracking-[0.06em]">
