@@ -503,65 +503,42 @@ export default function Sidebar() {
       />
 
       <aside
-        className="app-sidebar-aside sidebar-drawer fixed md:sticky top-0 z-50"
+        className="app-sidebar-aside sidebar-drawer fixed md:sticky top-0 z-50 w-[280px] h-[100dvh] bg-[#F0F1F5] flex flex-col shrink-0"
         data-open={sidebarOpen ? 'true' : 'false'}
-        style={{
-          width: 280,
-          height: '100dvh',
-          background: '#F0F1F5',
-          borderRight: 'none',
-          display: 'flex',
-          flexDirection: 'column',
-          flexShrink: 0,
-        }}
       >
         {/* Logo — WebP first (55 kB), PNG fallback (53 kB) for any
             browsers that somehow can't handle WebP in 2026. */}
-        <div style={{ padding: '20px 24px 0' }}>
+        <div className="pt-5 px-6 pb-0">
           <picture>
             <source srcSet="/logo-bordik.webp" type="image/webp" />
             <img
               src="/logo-bordik.png"
               alt="Bordik"
-              style={{ height: 28, width: 'auto', display: 'block' }}
+              className="h-7 w-auto block"
             />
           </picture>
         </div>
 
         {/* Date + welcome */}
-        <div style={{ padding: '24px 24px 16px' }}>
-          <p style={{
-            fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: 500,
-            color: '#6B7280', marginBottom: 8,
-          }}>
+        <div className="pt-6 px-6 pb-4">
+          <p className="font-[var(--font-body)] text-sm font-medium text-[#6B7280] mb-2">
             {new Date().toLocaleDateString(
               { ru: 'ru-RU', en: 'en-GB', uz: 'uz-UZ' }[lang] || 'ru-RU',
               { day: 'numeric', month: 'long', year: 'numeric' }
             )}
           </p>
-          <p style={{
-            fontFamily: 'var(--font-display)', fontSize: 24, fontWeight: 700,
-            color: '#1A1A1A', lineHeight: 1.15, letterSpacing: '-0.02em',
-            whiteSpace: 'pre-line',
-          }}>
+          <p className="font-[var(--font-display)] text-2xl font-bold text-[#1A1A1A] leading-[1.15] tracking-[-0.02em] whitespace-pre-line">
             {t('sidebar.welcome')}
           </p>
         </div>
 
         {/* Search - matches nav item size */}
-        <div style={{ padding: '0 12px 12px' }}>
-          <div
-            style={{
-              display: 'flex', alignItems: 'center', gap: 14,
-              padding: '10px 16px',
-              background: searchFocus ? '#E8E9ED' : '#E2E4EA',
-              borderRadius: 12,
-              transition: 'background 150ms',
-            }}>
+        <div className="pt-0 px-3 pb-3">
+          <div className={`flex items-center gap-[14px] py-2.5 px-4 rounded-[12px] transition-colors duration-150 ${searchFocus ? 'bg-[#E8E9ED]' : 'bg-[#E2E4EA]'}`}>
             <svg width={18} height={18} viewBox="0 0 24 24" fill="none"
               stroke={searchFocus ? '#555' : '#8B8F96'} strokeWidth={1.8}
               strokeLinecap="round" strokeLinejoin="round"
-              style={{ flexShrink: 0, transition: 'stroke 150ms' }}>
+              className="shrink-0 transition-[stroke] duration-150">
               <circle cx="11" cy="11" r="8" />
               <line x1="21" y1="21" x2="16.65" y2="16.65" />
             </svg>
@@ -571,22 +548,12 @@ export default function Sidebar() {
               onFocus={() => setSearchFocus(true)}
               onBlur={() => setSearchFocus(false)}
               placeholder={t('nav.search')}
-              style={{
-                flex: 1, minWidth: 0,
-                border: 'none', outline: 'none',
-                background: 'transparent',
-                fontFamily: 'var(--font-body)', fontSize: 14.5,
-                color: '#1A1A1A',
-              }}
+              className="flex-1 min-w-0 border-none outline-none bg-transparent font-[var(--font-body)] text-[14.5px] text-[#1A1A1A]"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery('')}
-                style={{
-                  background: 'transparent', border: 'none', padding: 0,
-                  cursor: 'pointer', color: '#8B8F96',
-                  display: 'flex', alignItems: 'center', flexShrink: 0,
-                }}
+                className="bg-transparent border-none p-0 cursor-pointer text-[#8B8F96] flex items-center shrink-0"
                 aria-label="Clear"
               >
                 <svg width={16} height={16} viewBox="0 0 24 24" fill="none"
@@ -601,33 +568,20 @@ export default function Sidebar() {
         </div>
 
         {/* Navigation - grouped + course search results */}
-        <nav style={{
-          padding: '0 12px',
-          flex: 1,
-          overflowY: 'auto',
-          scrollbarGutter: 'stable',
-        }}>
+        <nav className="pt-0 px-3 pb-0 flex-1 overflow-y-auto [scrollbar-gutter:stable]">
           {isSearching && !hasResults ? (
-            <div style={{
-              padding: '20px 16px',
-              fontFamily: 'var(--font-body)', fontSize: 13, color: '#9CA3AF',
-              textAlign: 'center',
-            }}>
+            <div className="py-5 px-4 font-[var(--font-body)] text-[13px] text-[#9CA3AF] text-center">
               {t('nav.nothingFound')}
             </div>
           ) : (
             <>
               {/* Nav groups */}
               {visibleGroups.map((group, gi) => (
-                <div key={group.id} style={{ marginBottom: gi < visibleGroups.length - 1 ? 12 : 10 }}>
-                  <p style={{
-                    padding: '6px 16px 6px',
-                    fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-                    color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
-                  }}>
+                <div key={group.id} className={gi < visibleGroups.length - 1 ? 'mb-3' : 'mb-2.5'}>
+                  <p className="pt-1.5 px-4 pb-1.5 font-[var(--font-mono)] text-[10px] font-bold text-[#9CA3AF] uppercase tracking-[0.08em]">
                     {group.title}
                   </p>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  <div className="flex flex-col gap-0.5">
                     {group.items.map((id) => {
                       const item = navItems[id];
                       const isActive = activeNav === id;
@@ -649,44 +603,25 @@ export default function Sidebar() {
                               handleNav(id);
                             }}
                             onFocus={() => prefetch(id)}
-                            style={{
-                              width: '100%', display: 'flex', alignItems: 'center', gap: 14,
-                              padding: '11px 16px',
-                              borderRadius: 12,
-                              background: isActive ? '#E2E4EA' : 'transparent',
-                              border: 'none', cursor: 'pointer',
-                              transition: 'background 150ms ease',
-                            }}
-                            onMouseEnter={(e) => {
-                              prefetch(id);
-                              if (!isActive) e.currentTarget.style.background = '#E8E9ED';
-                            }}
-                            onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.background = 'transparent'; }}
+                            onMouseEnter={() => prefetch(id)}
+                            className={`w-full flex items-center gap-[14px] py-[11px] px-4 rounded-[12px] border-none cursor-pointer transition-colors duration-150 ${
+                              isActive ? 'bg-[#E2E4EA]' : 'bg-transparent hover:bg-[#E8E9ED]'
+                            }`}
                           >
-                            <span style={{
-                              display: 'flex',
-                              color: isActive ? '#1A1A1A' : '#999',
-                            }}>
+                            <span className={`flex ${isActive ? 'text-[#1A1A1A]' : 'text-[#999]'}`}>
                               {item.icon}
                             </span>
-                            <span style={{
-                              flex: 1,
-                              fontFamily: 'var(--font-body)', fontSize: 14.5,
-                              fontWeight: isActive ? 600 : 400,
-                              color: isActive ? '#1A1A1A' : '#777',
-                              textAlign: 'left',
-                            }}>
+                            <span className={`flex-1 font-[var(--font-body)] text-[14.5px] text-left ${
+                              isActive ? 'font-semibold text-[#1A1A1A]' : 'font-normal text-[#777]'
+                            }`}>
                               {item.label}
                             </span>
                             {isNeonatal && (
                               <span
                                 aria-hidden="true"
-                                style={{
-                                  display: 'flex',
-                                  color: isActive ? '#1A1A1A' : '#999',
-                                  transform: neonatalExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
-                                  transition: 'transform 200ms ease',
-                                }}
+                                className={`flex transition-transform duration-200 ${
+                                  isActive ? 'text-[#1A1A1A]' : 'text-[#999]'
+                                } ${neonatalExpanded ? 'rotate-180' : ''}`}
                               >
                                 <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
                                   stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
@@ -703,33 +638,16 @@ export default function Sidebar() {
                             <div
                               role="menu"
                               aria-label="Разделы неонатологии"
-                              style={{
-                                display: 'flex', flexDirection: 'column', gap: 8,
-                                paddingLeft: 22, paddingTop: 6, paddingBottom: 6,
-                                marginLeft: 16,
-                                borderLeft: '2px solid #DCDFE5',
-                              }}
+                              className="flex flex-col gap-2 pl-[22px] pt-1.5 pb-1.5 ml-4 border-l-2 border-[#DCDFE5]"
                             >
                               {neonatalGroups.map((group, gIdx) => (
                                 <div
                                   key={group.title}
                                   role="group"
                                   aria-label={group.title}
-                                  style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    gap: 1,
-                                  }}
+                                  className="flex flex-col gap-px"
                                 >
-                                  <div style={{
-                                    padding: gIdx === 0 ? '2px 12px 4px' : '6px 12px 4px',
-                                    fontFamily: 'var(--font-mono)',
-                                    fontSize: 10,
-                                    fontWeight: 700,
-                                    color: '#9CA3AF',
-                                    textTransform: 'uppercase',
-                                    letterSpacing: '0.08em',
-                                  }}>
+                                  <div className={`${gIdx === 0 ? 'pt-0.5 px-3 pb-1' : 'pt-1.5 px-3 pb-1'} font-[var(--font-mono)] text-[10px] font-bold text-[#9CA3AF] uppercase tracking-[0.08em]`}>
                                     {group.title}
                                   </div>
                                   {group.items.map((sub) => {
@@ -739,26 +657,11 @@ export default function Sidebar() {
                                         key={sub.id}
                                         role="menuitem"
                                         onClick={() => handleNeonatalSubClick(sub.id)}
-                                        style={{
-                                          display: 'flex', alignItems: 'center',
-                                          padding: '7px 12px',
-                                          background: subActive ? '#E2E4EA' : 'transparent',
-                                          color: subActive ? '#1A1A1A' : '#666',
-                                          border: 'none',
-                                          borderRadius: 8,
-                                          cursor: 'pointer',
-                                          fontFamily: 'var(--font-body)',
-                                          fontSize: 13,
-                                          fontWeight: subActive ? 600 : 400,
-                                          textAlign: 'left',
-                                          transition: 'background 150ms ease',
-                                        }}
-                                        onMouseEnter={(e) => {
-                                          if (!subActive) e.currentTarget.style.background = '#E8E9ED';
-                                        }}
-                                        onMouseLeave={(e) => {
-                                          if (!subActive) e.currentTarget.style.background = 'transparent';
-                                        }}
+                                        className={`flex items-center py-[7px] px-3 border-none rounded-lg cursor-pointer font-[var(--font-body)] text-[13px] text-left transition-colors duration-150 ${
+                                          subActive
+                                            ? 'bg-[#E2E4EA] text-[#1A1A1A] font-semibold'
+                                            : 'bg-transparent hover:bg-[#E8E9ED] text-[#666] font-normal'
+                                        }`}
                                       >
                                         {sub.label}
                                       </button>
@@ -777,59 +680,27 @@ export default function Sidebar() {
 
               {/* Tool results — only when user is on the Tools page */}
               {isSearching && toolResults.length > 0 && (
-                <div style={{ marginTop: 4 }}>
-                  <p style={{
-                    padding: '6px 16px 6px',
-                    fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-                    color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
-                    display: 'flex', alignItems: 'center', gap: 6,
-                  }}>
+                <div className="mt-1">
+                  <p className="pt-1.5 px-4 pb-1.5 font-[var(--font-mono)] text-[10px] font-bold text-[#9CA3AF] uppercase tracking-[0.08em] flex items-center gap-1.5">
                     <span>{t('nav.group.tools')}</span>
-                    <span style={{
-                      padding: '1px 6px', borderRadius: 999,
-                      background: '#E2E4EA', color: '#6B7280',
-                      fontSize: 9, fontWeight: 700,
-                    }}>
+                    <span className="py-px px-1.5 rounded-full bg-[#E2E4EA] text-[#6B7280] text-[9px] font-bold">
                       {toolResults.length}
                     </span>
                   </p>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  <div className="flex flex-col gap-0.5">
                     {toolResults.map((tool) => (
                       <button
                         key={tool.id}
                         onClick={() => tool.available && handleToolPick(tool.id)}
                         disabled={!tool.available}
-                        style={{
-                          width: '100%',
-                          display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
-                          gap: 2,
-                          padding: '9px 14px',
-                          borderRadius: 10,
-                          background: 'transparent',
-                          border: 'none',
-                          cursor: tool.available ? 'pointer' : 'not-allowed',
-                          opacity: tool.available ? 1 : 0.55,
-                          textAlign: 'left',
-                          transition: 'background 150ms',
-                        }}
-                        onMouseEnter={(e) => {
-                          if (tool.available) e.currentTarget.style.background = '#E8E9ED';
-                        }}
-                        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+                        className={`w-full flex flex-col items-start gap-0.5 py-[9px] px-3.5 rounded-[10px] bg-transparent hover:bg-[#E8E9ED] border-none text-left transition-colors duration-150 ${
+                          tool.available ? 'cursor-pointer opacity-100' : 'cursor-not-allowed opacity-[0.55]'
+                        }`}
                       >
-                        <span style={{
-                          fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 500,
-                          color: '#1A1A1A',
-                          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                          maxWidth: '100%',
-                        }}>
+                        <span className="font-[var(--font-body)] text-[13px] font-medium text-[#1A1A1A] overflow-hidden text-ellipsis whitespace-nowrap max-w-full">
                           <Highlight text={tool.title} query={q} />
                         </span>
-                        <span style={{
-                          fontFamily: 'var(--font-body)', fontSize: 11, color: '#9CA3AF',
-                          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                          maxWidth: '100%',
-                        }}>
+                        <span className="font-[var(--font-body)] text-[11px] text-[#9CA3AF] overflow-hidden text-ellipsis whitespace-nowrap max-w-full">
                           <Highlight text={tool.subcategory} query={q} />
                         </span>
                       </button>
@@ -840,69 +711,29 @@ export default function Sidebar() {
 
               {/* Course results - available */}
               {isSearching && courseResults.available.length > 0 && (
-                <div style={{ marginTop: 4 }}>
-                  <p style={{
-                    padding: '6px 16px 6px',
-                    fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-                    color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
-                    display: 'flex', alignItems: 'center', gap: 6,
-                  }}>
+                <div className="mt-1">
+                  <p className="pt-1.5 px-4 pb-1.5 font-[var(--font-mono)] text-[10px] font-bold text-[#9CA3AF] uppercase tracking-[0.08em] flex items-center gap-1.5">
                     <span>{t('nav.group.coursesAvailable')}</span>
-                    <span style={{
-                      padding: '1px 6px', borderRadius: 999,
-                      background: '#E2E4EA', color: '#6B7280',
-                      fontSize: 9, fontWeight: 700,
-                    }}>
+                    <span className="py-px px-1.5 rounded-full bg-[#E2E4EA] text-[#6B7280] text-[9px] font-bold">
                       {courseResults.available.length}
                     </span>
                   </p>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  <div className="flex flex-col gap-0.5">
                     {courseResults.available.map(({ course, module, section }) => (
                       <button
                         key={course.id}
                         onClick={() => handleCoursePick(course.id, module.sectionId)}
-                        style={{
-                          width: '100%',
-                          display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
-                          gap: 2,
-                          padding: '9px 14px',
-                          borderRadius: 10,
-                          background: 'transparent',
-                          border: 'none', cursor: 'pointer',
-                          textAlign: 'left',
-                          transition: 'background 150ms',
-                        }}
-                        onMouseEnter={(e) => { e.currentTarget.style.background = '#E8E9ED'; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+                        className="w-full flex flex-col items-start gap-0.5 py-[9px] px-3.5 rounded-[10px] bg-transparent hover:bg-[#E8E9ED] border-none cursor-pointer text-left transition-colors duration-150"
                       >
-                        <div style={{
-                          display: 'flex', alignItems: 'center', gap: 6,
-                          width: '100%',
-                        }}>
-                          <span style={{
-                            fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-                            color: '#6B7280',
-                            padding: '1px 5px', borderRadius: 4,
-                            background: '#E2E4EA',
-                            flexShrink: 0,
-                          }}>
+                        <div className="flex items-center gap-1.5 w-full">
+                          <span className="font-[var(--font-mono)] text-[10px] font-bold text-[#6B7280] py-px px-[5px] rounded bg-[#E2E4EA] shrink-0">
                             {course.id}
                           </span>
-                          <span style={{
-                            fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 500,
-                            color: '#1A1A1A',
-                            overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                            flex: 1, minWidth: 0,
-                          }}>
+                          <span className="font-[var(--font-body)] text-[13px] font-medium text-[#1A1A1A] overflow-hidden text-ellipsis whitespace-nowrap flex-1 min-w-0">
                             <Highlight text={course.title} query={q} />
                           </span>
                         </div>
-                        <span style={{
-                          fontFamily: 'var(--font-body)', fontSize: 11, color: '#9CA3AF',
-                          paddingLeft: 2,
-                          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                          maxWidth: '100%',
-                        }}>
+                        <span className="font-[var(--font-body)] text-[11px] text-[#9CA3AF] pl-0.5 overflow-hidden text-ellipsis whitespace-nowrap max-w-full">
                           <Highlight text={section?.title || module.title} query={q} />
                         </span>
                       </button>
@@ -913,53 +744,24 @@ export default function Sidebar() {
 
               {/* Course results - coming soon (locked) */}
               {isSearching && courseResults.locked.length > 0 && (
-                <div style={{ marginTop: 4 }}>
-                  <p style={{
-                    padding: '10px 16px 6px',
-                    fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-                    color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
-                    borderTop: courseResults.available.length > 0 ? '1px solid #E2E4EA' : 'none',
-                    marginTop: courseResults.available.length > 0 ? 6 : 0,
-                    display: 'flex', alignItems: 'center', gap: 6,
-                  }}>
+                <div className="mt-1">
+                  <p className={`pt-2.5 px-4 pb-1.5 font-[var(--font-mono)] text-[10px] font-bold text-[#9CA3AF] uppercase tracking-[0.08em] flex items-center gap-1.5 ${
+                    courseResults.available.length > 0 ? 'border-t border-[#E2E4EA] mt-1.5' : 'mt-0'
+                  }`}>
                     <span>{t('nav.group.coursesSoon')}</span>
-                    <span style={{
-                      padding: '1px 6px', borderRadius: 999,
-                      background: '#1A1A1A', color: '#FFFFFF',
-                      fontSize: 9, fontWeight: 700,
-                    }}>
+                    <span className="py-px px-1.5 rounded-full bg-[#1A1A1A] text-white text-[9px] font-bold">
                       {courseResults.locked.length}
                     </span>
                   </p>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  <div className="flex flex-col gap-0.5">
                     {courseResults.locked.map(({ course, module, section }) => (
                       <div
                         key={course.id}
-                        style={{
-                          width: '100%',
-                          display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
-                          gap: 2,
-                          padding: '9px 14px',
-                          borderRadius: 10,
-                          background: 'transparent',
-                          cursor: 'not-allowed',
-                          textAlign: 'left',
-                          opacity: 0.7,
-                        }}
+                        className="w-full flex flex-col items-start gap-0.5 py-[9px] px-3.5 rounded-[10px] bg-transparent cursor-not-allowed text-left opacity-70"
                         title={t('sidebar.courseSoonTooltip')}
                       >
-                        <div style={{
-                          display: 'flex', alignItems: 'center', gap: 6,
-                          width: '100%',
-                        }}>
-                          <span style={{
-                            fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-                            color: '#9CA3AF',
-                            padding: '1px 5px', borderRadius: 4,
-                            background: '#ECEEF2',
-                            flexShrink: 0,
-                            display: 'inline-flex', alignItems: 'center', gap: 3,
-                          }}>
+                        <div className="flex items-center gap-1.5 w-full">
+                          <span className="font-[var(--font-mono)] text-[10px] font-bold text-[#9CA3AF] py-px px-[5px] rounded bg-[#ECEEF2] shrink-0 inline-flex items-center gap-[3px]">
                             <svg width={8} height={8} viewBox="0 0 24 24" fill="none"
                               stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
                               <rect x="3" y="11" width="18" height="11" rx="2" />
@@ -967,21 +769,11 @@ export default function Sidebar() {
                             </svg>
                             {course.id}
                           </span>
-                          <span style={{
-                            fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 500,
-                            color: '#6B7280',
-                            overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                            flex: 1, minWidth: 0,
-                          }}>
+                          <span className="font-[var(--font-body)] text-[13px] font-medium text-[#6B7280] overflow-hidden text-ellipsis whitespace-nowrap flex-1 min-w-0">
                             <Highlight text={course.title} query={q} />
                           </span>
                         </div>
-                        <span style={{
-                          fontFamily: 'var(--font-body)', fontSize: 11, color: '#9CA3AF',
-                          paddingLeft: 2,
-                          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                          maxWidth: '100%',
-                        }}>
+                        <span className="font-[var(--font-body)] text-[11px] text-[#9CA3AF] pl-0.5 overflow-hidden text-ellipsis whitespace-nowrap max-w-full">
                           <Highlight text={section?.title || module.title} query={q} />
                         </span>
                       </div>
@@ -998,12 +790,7 @@ export default function Sidebar() {
             text prefilled so we get the email in our inbox. */}
         <FeedbackBlock t={t} />
         {/* App version - small muted text centered under the feedback section. */}
-        <p style={{
-          margin: '0 0 8px',
-          fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 500,
-          color: '#9CA3AF', letterSpacing: '0.04em',
-          textAlign: 'center',
-        }}>
+        <p className="mt-0 mb-2 mx-0 font-[var(--font-mono)] text-[10px] font-medium text-[#9CA3AF] tracking-[0.04em] text-center">
           {t('sidebar.version', { version: '0.1.0' })}
         </p>
         {/* User menu — login state at the bottom of the sidebar */}
@@ -1108,41 +895,23 @@ function FeedbackBlock({ t }: { t: (k: string, vars?: Record<string, string | nu
     <>
       {/* Same visual language as nav items: section header + flat
           transparent button with hover grey, neutral icon. */}
-      <div style={{ padding: '4px 12px 12px', marginTop: 4 }}>
-        <p style={{
-          padding: '6px 16px 6px',
-          fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-          color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
-          margin: 0,
-        }}>
+      <div className="pt-1 px-3 pb-3 mt-1">
+        <p className="pt-1.5 px-4 pb-1.5 font-[var(--font-mono)] text-[10px] font-bold text-[#9CA3AF] uppercase tracking-[0.08em] m-0">
           {t('sidebar.feedback.section')}
         </p>
         <button
           type="button"
           onClick={() => setOpen(true)}
           aria-label={t('sidebar.feedback.title')}
-          style={{
-            width: '100%', display: 'flex', alignItems: 'center', gap: 14,
-            padding: '11px 16px',
-            borderRadius: 12,
-            background: 'transparent',
-            border: 'none', cursor: 'pointer',
-            transition: 'background 150ms ease',
-            textAlign: 'left',
-          }}
-          onMouseEnter={(e) => { e.currentTarget.style.background = '#E8E9ED'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+          className="w-full flex items-center gap-[14px] py-[11px] px-4 rounded-[12px] bg-transparent hover:bg-[#E8E9ED] border-none cursor-pointer transition-colors duration-150 text-left"
         >
-          <span style={{ display: 'flex', color: '#999', flexShrink: 0 }}>
+          <span className="flex text-[#999] shrink-0">
             <svg width={20} height={20} viewBox="0 0 24 24" fill="none"
               stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
               <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
             </svg>
           </span>
-          <span style={{
-            fontFamily: 'var(--font-body)', fontSize: 14.5, fontWeight: 400,
-            color: '#777',
-          }}>
+          <span className="font-[var(--font-body)] text-[14.5px] font-normal text-[#777]">
             {t('sidebar.feedback.title')}
           </span>
         </button>
@@ -1150,51 +919,25 @@ function FeedbackBlock({ t }: { t: (k: string, vars?: Record<string, string | nu
 
       {open && (
         <div
-          className="feedback-modal-overlay"
+          className="feedback-modal-overlay fixed inset-0 z-[9999] bg-[rgba(15,23,42,0.45)] backdrop-blur-[2px] flex items-center justify-center p-5"
           onClick={() => !sending && setOpen(false)}
-          style={{
-            position: 'fixed', inset: 0, zIndex: 9999,
-            background: 'rgba(15,23,42,0.45)',
-            backdropFilter: 'blur(2px)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            padding: 20,
-          }}
         >
           <div
-            className="feedback-modal-card"
+            className="feedback-modal-card w-full max-w-[460px] bg-white rounded-[16px] pt-6 px-6 pb-5 shadow-[0_24px_48px_rgba(15,23,42,0.24)]"
             onClick={(e) => e.stopPropagation()}
-            style={{
-              width: '100%', maxWidth: 460,
-              background: '#FFFFFF', borderRadius: 16,
-              padding: '24px 24px 20px',
-              boxShadow: '0 24px 48px rgba(15,23,42,0.24)',
-            }}
           >
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
-                <span style={{
-                  width: 36, height: 36, borderRadius: 10,
-                  background: '#F5F6F8', color: '#6B7280',
-                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                  boxShadow: '0 1px 2px rgba(16,24,40,0.06)',
-                }}>
+              <div className="flex items-center gap-3 mb-3">
+                <span className="w-9 h-9 rounded-[10px] bg-[#F5F6F8] text-[#6B7280] inline-flex items-center justify-center shadow-[0_1px_2px_rgba(16,24,40,0.06)]">
                   <svg width={18} height={18} viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                     <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
                   </svg>
                 </span>
-                <h3 style={{
-                  margin: 0,
-                  fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 700,
-                  color: '#1A1A1A', letterSpacing: '-0.01em',
-                }}>
+                <h3 className="m-0 font-[var(--font-display)] text-lg font-bold text-[#1A1A1A] tracking-[-0.01em]">
                   {t('sidebar.feedback.modalTitle')}
                 </h3>
               </div>
-              <p style={{
-                margin: '0 0 14px',
-                fontFamily: 'var(--font-body)', fontSize: 13, color: '#6B7280',
-                lineHeight: 1.5,
-              }}>
+              <p className="mt-0 mb-[14px] mx-0 font-[var(--font-body)] text-[13px] text-[#6B7280] leading-[1.5]">
                 {t('sidebar.feedback.modalDescription')}
               </p>
               <textarea
@@ -1203,25 +946,7 @@ function FeedbackBlock({ t }: { t: (k: string, vars?: Record<string, string | nu
                 placeholder={t('sidebar.feedback.placeholder')}
                 disabled={sending}
                 rows={5}
-                style={{
-                  width: '100%', resize: 'vertical', minHeight: 120,
-                  padding: '12px 14px',
-                  borderRadius: 12, border: 'none',
-                  background: '#F5F6F8',
-                  fontFamily: 'var(--font-body)', fontSize: 13.5, color: '#1A1A1A',
-                  lineHeight: 1.5,
-                  outline: 'none',
-                  boxShadow: 'inset 0 0 0 1px transparent',
-                  transition: 'box-shadow 150ms, background 150ms',
-                }}
-                onFocus={(e) => {
-                  e.currentTarget.style.boxShadow = 'inset 0 0 0 1px #1A1A1A';
-                  e.currentTarget.style.background = '#FFFFFF';
-                }}
-                onBlur={(e) => {
-                  e.currentTarget.style.boxShadow = 'inset 0 0 0 1px transparent';
-                  e.currentTarget.style.background = '#F5F6F8';
-                }}
+                className="w-full resize-y min-h-[120px] py-3 px-3.5 rounded-[12px] border-none bg-[#F5F6F8] focus:bg-white font-[var(--font-body)] text-[13.5px] text-[#1A1A1A] leading-[1.5] outline-none shadow-[inset_0_0_0_1px_transparent] focus:shadow-[inset_0_0_0_1px_#1A1A1A] transition-[box-shadow,background] duration-150"
               />
 
               {/* Hidden file input + visible "Прикрепить" trigger.
@@ -1236,32 +961,16 @@ function FeedbackBlock({ t }: { t: (k: string, vars?: Record<string, string | nu
                   addFiles(e.target.files);
                   e.target.value = '';
                 }}
-                style={{ display: 'none' }}
+                className="hidden"
               />
-              <div style={{
-                marginTop: 12,
-                display: 'flex', flexWrap: 'wrap', gap: 8, alignItems: 'center',
-              }}>
+              <div className="mt-3 flex flex-wrap gap-2 items-center">
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
                   disabled={sending || files.length >= FEEDBACK_MAX_FILES}
-                  style={{
-                    display: 'inline-flex', alignItems: 'center', gap: 6,
-                    padding: '7px 12px', borderRadius: 10,
-                    background: '#F5F6F8',
-                    color: files.length >= FEEDBACK_MAX_FILES ? '#9CA3AF' : '#1A1A1A',
-                    border: 'none',
-                    cursor: sending || files.length >= FEEDBACK_MAX_FILES ? 'not-allowed' : 'pointer',
-                    fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 600,
-                    transition: 'background 150ms',
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!sending && files.length < FEEDBACK_MAX_FILES) {
-                      e.currentTarget.style.background = '#E8E9ED';
-                    }
-                  }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = '#F5F6F8'; }}
+                  className={`inline-flex items-center gap-1.5 py-[7px] px-3 rounded-[10px] bg-[#F5F6F8] hover:bg-[#E8E9ED] border-none font-[var(--font-body)] text-xs font-semibold transition-colors duration-150 ${
+                    files.length >= FEEDBACK_MAX_FILES ? 'text-[#9CA3AF] cursor-not-allowed' : 'text-[#1A1A1A] cursor-pointer'
+                  } disabled:cursor-not-allowed`}
                 >
                   <svg width={13} height={13} viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
@@ -1269,9 +978,7 @@ function FeedbackBlock({ t }: { t: (k: string, vars?: Record<string, string | nu
                   </svg>
                   {t('sidebar.feedback.attach')}
                 </button>
-                <span style={{
-                  fontFamily: 'var(--font-mono)', fontSize: 10.5, color: '#9CA3AF',
-                }}>
+                <span className="font-[var(--font-mono)] text-[10.5px] text-[#9CA3AF]">
                   {t('sidebar.feedback.attachHint', {
                     count: files.length,
                     max: FEEDBACK_MAX_FILES,
@@ -1281,34 +988,19 @@ function FeedbackBlock({ t }: { t: (k: string, vars?: Record<string, string | nu
 
               {/* File chips */}
               {files.length > 0 && (
-                <ul style={{
-                  margin: '10px 0 0', padding: 0, listStyle: 'none',
-                  display: 'flex', flexDirection: 'column', gap: 6,
-                }}>
+                <ul className="mt-2.5 mb-0 mx-0 p-0 list-none flex flex-col gap-1.5">
                   {files.map((f, i) => (
-                    <li key={`${f.name}-${i}`} style={{
-                      display: 'flex', alignItems: 'center', gap: 10,
-                      padding: '8px 10px',
-                      background: '#F5F6F8',
-                      borderRadius: 8,
-                    }}>
+                    <li key={`${f.name}-${i}`} className="flex items-center gap-2.5 py-2 px-2.5 bg-[#F5F6F8] rounded-lg">
                       <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
                         stroke="#6B7280" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
-                        style={{ flexShrink: 0 }}>
+                        className="shrink-0">
                         <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
                         <polyline points="14 2 14 8 20 8" />
                       </svg>
-                      <span style={{
-                        flex: 1, minWidth: 0,
-                        overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                        fontFamily: 'var(--font-body)', fontSize: 12.5, color: '#1A1A1A',
-                      }}>
+                      <span className="flex-1 min-w-0 overflow-hidden text-ellipsis whitespace-nowrap font-[var(--font-body)] text-[12.5px] text-[#1A1A1A]">
                         {f.name}
                       </span>
-                      <span style={{
-                        fontFamily: 'var(--font-mono)', fontSize: 10.5, color: '#9CA3AF',
-                        flexShrink: 0,
-                      }}>
+                      <span className="font-[var(--font-mono)] text-[10.5px] text-[#9CA3AF] shrink-0">
                         {formatBytes(f.size)}
                       </span>
                       <button
@@ -1316,17 +1008,9 @@ function FeedbackBlock({ t }: { t: (k: string, vars?: Record<string, string | nu
                         onClick={() => removeFile(i)}
                         disabled={sending}
                         aria-label={t('sidebar.feedback.removeFile')}
-                        style={{
-                          padding: 4, borderRadius: 6,
-                          background: 'transparent', border: 'none',
-                          color: '#6B7280',
-                          cursor: sending ? 'not-allowed' : 'pointer',
-                          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                          flexShrink: 0,
-                          transition: 'background 150ms, color 150ms',
-                        }}
-                        onMouseEnter={(e) => { e.currentTarget.style.background = '#E8E9ED'; e.currentTarget.style.color = '#1A1A1A'; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#6B7280'; }}
+                        className={`p-1 rounded-md bg-transparent hover:bg-[#E8E9ED] border-none text-[#6B7280] hover:text-[#1A1A1A] inline-flex items-center justify-center shrink-0 transition-colors duration-150 ${
+                          sending ? 'cursor-not-allowed' : 'cursor-pointer'
+                        }`}
                       >
                         <svg width={12} height={12} viewBox="0 0 24 24" fill="none"
                           stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round">
@@ -1341,33 +1025,19 @@ function FeedbackBlock({ t }: { t: (k: string, vars?: Record<string, string | nu
 
               {/* Error message */}
               {error && (
-                <p style={{
-                  margin: '10px 0 0',
-                  padding: '8px 10px',
-                  background: '#FEF2F2',
-                  border: '1px solid #FECACA',
-                  borderRadius: 8,
-                  fontFamily: 'var(--font-body)', fontSize: 12, color: '#991B1B',
-                  lineHeight: 1.5,
-                }}>
+                <p className="mt-2.5 mb-0 mx-0 py-2 px-2.5 bg-[#FEF2F2] border border-[#FECACA] rounded-lg font-[var(--font-body)] text-xs text-[#991B1B] leading-[1.5]">
                   {error}
                 </p>
               )}
 
-              <div style={{
-                display: 'flex', justifyContent: 'flex-end', gap: 8,
-                marginTop: 14,
-              }}>
+              <div className="flex justify-end gap-2 mt-[14px]">
                 <button
                   type="button"
                   onClick={() => !sending && reset()}
                   disabled={sending}
-                  style={{
-                    padding: '9px 16px', borderRadius: 10,
-                    background: 'transparent', border: 'none',
-                    color: '#6B7280', cursor: sending ? 'not-allowed' : 'pointer',
-                    fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
-                  }}
+                  className={`py-[9px] px-4 rounded-[10px] bg-transparent border-none text-[#6B7280] font-[var(--font-body)] text-[13px] font-semibold ${
+                    sending ? 'cursor-not-allowed' : 'cursor-pointer'
+                  }`}
                 >
                   {t('sidebar.feedback.cancel')}
                 </button>
@@ -1375,22 +1045,13 @@ function FeedbackBlock({ t }: { t: (k: string, vars?: Record<string, string | nu
                   type="button"
                   onClick={submit}
                   disabled={sending || !text.trim()}
-                  style={{
-                    padding: '9px 18px', borderRadius: 10,
-                    background: sent ? '#10B981' : (!text.trim() ? '#E2E4EA' : '#3B82F6'),
-                    color: !text.trim() && !sent ? '#9CA3AF' : '#FFFFFF',
-                    border: 'none',
-                    cursor: sending || !text.trim() ? 'not-allowed' : 'pointer',
-                    fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
-                    transition: 'background 180ms',
-                    minWidth: 110,
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!sending && !sent && text.trim()) e.currentTarget.style.background = '#2563EB';
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!sending && !sent && text.trim()) e.currentTarget.style.background = '#3B82F6';
-                  }}
+                  className={`py-[9px] px-[18px] rounded-[10px] border-none font-[var(--font-body)] text-[13px] font-semibold transition-colors duration-[180ms] min-w-[110px] ${
+                    sent
+                      ? 'bg-[#10B981] text-white cursor-pointer'
+                      : !text.trim()
+                        ? 'bg-[#E2E4EA] text-[#9CA3AF] cursor-not-allowed'
+                        : 'bg-[#3B82F6] hover:bg-[#2563EB] text-white cursor-pointer'
+                  }`}
                 >
                   {sent ? t('sidebar.feedback.sent') : sending ? t('sidebar.feedback.sending') : t('sidebar.feedback.send')}
                 </button>

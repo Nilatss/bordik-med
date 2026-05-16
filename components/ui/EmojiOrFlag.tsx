@@ -72,21 +72,12 @@ export default function EmojiOrFlag({ emoji, size = 18 }: Props) {
   if (region) {
     return (
       <span
+        className="inline-flex items-center justify-center shrink-0 rounded-[2px] font-[var(--font-mono,monospace)] font-bold tracking-[-0.02em] align-middle bg-[var(--region-bg)] text-[var(--region-fg)] w-[calc(var(--region-size)*1.33)] h-[var(--region-size)] text-[calc(var(--region-size)*0.55)]"
+        // eslint-disable-next-line react/forbid-dom-props -- dynamic region palette + size
         style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: size * 1.33, // keep roughly the same aspect ratio as country flags (4:3)
-          height: size,
-          flexShrink: 0,
-          borderRadius: 2,
-          background: region.bg,
-          color: region.fg,
-          fontFamily: 'var(--font-mono, monospace)',
-          fontSize: Math.round(size * 0.55),
-          fontWeight: 700,
-          letterSpacing: '-0.02em',
-          verticalAlign: 'middle',
+          ['--region-bg' as string]: region.bg,
+          ['--region-fg' as string]: region.fg,
+          ['--region-size' as string]: `${size}px`,
         }}
       >
         {region.label}
@@ -104,6 +95,7 @@ export default function EmojiOrFlag({ emoji, size = 18 }: Props) {
     if (Flag) {
       return (
         <Flag
+          // eslint-disable-next-line react/forbid-dom-props -- country-flag-icons accepts inline style with dynamic width/height
           style={{
             display: 'inline-block',
             verticalAlign: 'middle',
@@ -120,20 +112,11 @@ export default function EmojiOrFlag({ emoji, size = 18 }: Props) {
     // 2-letter code in a grey pill so the UI doesn't break silently.
     return (
       <span
+        className="inline-flex items-center justify-center bg-[#E2E4EA] text-[#374151] font-bold rounded-[2px] font-[var(--font-mono,monospace)] align-middle shrink-0 h-[var(--flag-h)] w-[var(--flag-w)] text-[calc(var(--flag-h)*0.55)]"
+        // eslint-disable-next-line react/forbid-dom-props -- dynamic flag size
         style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width,
-          height: size,
-          background: '#E2E4EA',
-          color: '#374151',
-          fontSize: Math.round(size * 0.55),
-          fontWeight: 700,
-          borderRadius: 2,
-          fontFamily: 'var(--font-mono, monospace)',
-          verticalAlign: 'middle',
-          flexShrink: 0,
+          ['--flag-w' as string]: `${width}px`,
+          ['--flag-h' as string]: `${size}px`,
         }}
       >
         {iso}
@@ -143,16 +126,11 @@ export default function EmojiOrFlag({ emoji, size = 18 }: Props) {
 
   // Anything else → native emoji font.
   return (
-    <span style={{
-      fontSize: size,
-      lineHeight: 1,
-      display: 'inline-flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      width: size * 1.2,
-      flexShrink: 0,
-      fontFamily: '"Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Twemoji Mozilla", sans-serif',
-    }}>
+    <span
+      className="leading-none inline-flex items-center justify-center shrink-0 font-['Apple_Color_Emoji','Segoe_UI_Emoji','Noto_Color_Emoji','Twemoji_Mozilla',sans-serif] text-[var(--emoji-size)] w-[calc(var(--emoji-size)*1.2)]"
+      // eslint-disable-next-line react/forbid-dom-props -- dynamic emoji size
+      style={{ ['--emoji-size' as string]: `${size}px` }}
+    >
       {emoji}
     </span>
   );

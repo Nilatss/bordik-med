@@ -58,59 +58,33 @@ export function FlatList({ filtered, activeChapter, chapterById, query }: FlatLi
 
   return (
     <>
-      <p style={{ margin: '0 0 12px', fontSize: 13, color: '#6B7280' }}>
+      <p className="mt-0 mb-3 mx-0 text-[13px] text-[#6B7280]">
         {activeChapter ? (
           <>
-            <strong style={{ color: '#1A1A1A' }}>Глава {activeChapter}: {chapterById[activeChapter]?.title}</strong>
-            {' '}· найдено <strong style={{ color: '#1A1A1A' }}>{filtered.length}</strong>
+            <strong className="text-[#1A1A1A]">Глава {activeChapter}: {chapterById[activeChapter]?.title}</strong>
+            {' '}· найдено <strong className="text-[#1A1A1A]">{filtered.length}</strong>
           </>
         ) : (
-          <>Найдено: <strong style={{ color: '#1A1A1A' }}>{filtered.length}</strong></>
+          <>Найдено: <strong className="text-[#1A1A1A]">{filtered.length}</strong></>
         )}
       </p>
       {filtered.length === 0 ? (
-        <div style={{
-          padding: '32px 16px',
-          background: '#F5F6F8',
-          borderRadius: 12,
-          textAlign: 'center',
-          color: '#6B7280',
-          fontSize: 14,
-        }}>
+        <div className="py-8 px-4 bg-[#F5F6F8] rounded-[12px] text-center text-[#6B7280] text-sm">
           Ничего не найдено. Попробуйте другой запрос или сбросьте фильтр главы.
         </div>
       ) : (
         <>
-          <div style={{
-            display: 'flex', flexDirection: 'column', gap: 8,
-          }}>
+          <div className="flex flex-col gap-2">
             {visible.map((c) => (
               <CodeRow key={c.code} code={c} query={query} variant="card" />
             ))}
           </div>
           {remaining > 0 && (
-            <div style={{ display: 'flex', justifyContent: 'center', marginTop: 16 }}>
+            <div className="flex justify-center mt-4">
               <button
                 type="button"
                 onClick={() => setShowCount((s) => s + FLATLIST_CHUNK_SIZE)}
-                style={{
-                  padding: '10px 18px',
-                  background: '#EFF6FF',
-                  border: '1px solid #DBEAFE',
-                  borderRadius: 999,
-                  cursor: 'pointer',
-                  fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
-                  color: '#2563EB',
-                  transition: 'background 150ms, border-color 150ms',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = '#DBEAFE';
-                  e.currentTarget.style.borderColor = '#BFDBFE';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = '#EFF6FF';
-                  e.currentTarget.style.borderColor = '#DBEAFE';
-                }}
+                className="py-2.5 px-[18px] bg-[#EFF6FF] hover:bg-[#DBEAFE] border border-[#DBEAFE] hover:border-[#BFDBFE] rounded-full cursor-pointer font-[var(--font-body)] text-[13px] font-semibold text-[#2563EB] transition-[background,border-color] duration-150"
               >
                 Показать ещё {Math.min(FLATLIST_CHUNK_SIZE, remaining)} (осталось {remaining})
               </button>

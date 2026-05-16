@@ -163,23 +163,19 @@ export function BodyMap({ completedCourses }: { completedCourses: string[] }) {
   const masteredSystems = stats.filter((s) => s.pct >= 75).length;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+    <div className="flex flex-col gap-[14px]">
       {/* Summary stats */}
-      <div style={{
-        display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)',
-        gap: 0, padding: '4px 0 12px',
-        borderBottom: '1px solid #F0F1F5',
-      }}>
+      <div className="grid grid-cols-3 gap-0 pt-1 pb-3 border-b border-[#F0F1F5]">
         <BodyStat dotColor={ACCENT}    value={`${avg}%`}            label="Средний охват" />
         <BodyStat dotColor="#7AA5FA"   value={`${startedSystems}`}  label="Систем затронуто" border />
         <BodyStat dotColor="#A8C7FF"   value={`${masteredSystems}`} label="Освоено систем" />
       </div>
 
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
+      <div className="flex justify-center">
         <svg
           viewBox={`0 0 ${VBW} ${VBH}`}
           width="100%"
-          style={{ maxWidth: 640, display: 'block' }}
+          className="max-w-[640px] block"
           role="img"
           aria-label="Карта систем тела по уровню освоения"
         >
@@ -237,7 +233,7 @@ export function BodyMap({ completedCourses }: { completedCourses: string[] }) {
                   fill="#1A1A1A"
                   textAnchor={s.side === 'left' ? 'start' : 'end'}
                   dominantBaseline="middle"
-                  style={{ letterSpacing: '-0.005em' }}
+                  className="[letter-spacing:-0.005em]"
                 >
                   {s.label}
                 </text>
@@ -266,21 +262,16 @@ function BodyStat({ dotColor, value, label, border }: {
   dotColor: string; value: string; label: string; border?: boolean;
 }) {
   return (
-    <div style={{
-      padding: '0 12px',
-      borderLeft:  border ? '1px solid #F0F1F5' : 'none',
-      borderRight: border ? '1px solid #F0F1F5' : 'none',
-      textAlign: 'left',
-    }}>
-      <div style={{
-        display: 'flex', alignItems: 'center', gap: 6,
-        fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 18,
-        color: '#1A1A1A', letterSpacing: '-0.01em',
-      }}>
-        <span style={{ width: 10, height: 10, borderRadius: '50%', background: dotColor }} />
+    <div className={`px-3 text-left ${border ? 'border-x border-[#F0F1F5]' : ''}`}>
+      <div className="flex items-center gap-1.5 font-[var(--font-display)] font-bold text-lg text-[#1A1A1A] tracking-[-0.01em]">
+        <span
+          className="w-2.5 h-2.5 rounded-full bg-[var(--stat-dot)]"
+          // eslint-disable-next-line react/forbid-dom-props -- dynamic dot color
+          style={{ ['--stat-dot' as string]: dotColor }}
+        />
         {value}
       </div>
-      <div style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: '#9CA3AF', marginTop: 2 }}>
+      <div className="font-[var(--font-body)] text-[11px] text-[#9CA3AF] mt-0.5">
         {label}
       </div>
     </div>

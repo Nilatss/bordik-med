@@ -784,26 +784,16 @@ function MediaCheck({ onReady, onCalibrated }: {
 
   if (error) {
     return (
-      <div style={{
-        background: '#FEF2F2',
-        border: '1px solid #FECACA',
-        borderRadius: 12,
-        padding: '14px 16px',
-        marginBottom: 18,
-        display: 'flex', alignItems: 'flex-start', gap: 10,
-      }}>
+      <div className="bg-[#FEF2F2] border border-[#FECACA] rounded-xl px-4 py-3.5 mb-[18px] flex items-start gap-2.5">
         <svg width={18} height={18} viewBox="0 0 24 24" fill="none"
           stroke="#B91C1C" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
-          style={{ flexShrink: 0, marginTop: 1 }}>
+          className="shrink-0 mt-px">
           <circle cx="12" cy="12" r="10" />
           <line x1="12" y1="8" x2="12" y2="12" />
           <line x1="12" y1="16" x2="12.01" y2="16" />
         </svg>
-        <div style={{
-          fontFamily: 'var(--font-body)', fontSize: 13, lineHeight: 1.5,
-          color: '#991B1B',
-        }}>
-          <strong style={{ fontWeight: 700 }}>{error}</strong>
+        <div className="font-[var(--font-body)] text-[13px] leading-[1.5] text-[#991B1B]">
+          <strong className="font-bold">{error}</strong>
           {' '}Разрешите доступ в настройках браузера и обновите страницу.
         </div>
       </div>
@@ -811,69 +801,33 @@ function MediaCheck({ onReady, onCalibrated }: {
   }
 
   return (
-    <div style={{
-      background: '#FFFFFF',
-      borderRadius: 12,
-      padding: 14,
-      marginBottom: 18,
-      borderLeft: '3px solid #3B82F6',
-    }}>
-    <div style={{
-      display: isNarrow ? 'flex' : 'grid',
-      flexDirection: isNarrow ? 'column' : undefined,
-      gridTemplateColumns: isNarrow ? undefined : 'auto minmax(0, 1fr)',
-      columnGap: 14,
-      rowGap: isNarrow ? 12 : undefined,
-      alignItems: isNarrow ? 'stretch' : 'center',
-    }}>
+    <div className="bg-white rounded-xl p-3.5 mb-[18px] border-l-[3px] border-l-[#3B82F6]">
+    <div className="flex flex-col items-stretch gap-y-3 sm:grid sm:grid-cols-[auto_minmax(0,1fr)] sm:gap-x-3.5 sm:gap-y-0 sm:items-center sm:flex-row">
       {/* Video preview */}
-      <div style={{
-        position: 'relative',
-        width: isNarrow ? '100%' : 132,
-        height: isNarrow ? 180 : 100,
-        borderRadius: 10,
-        background: '#0F172A',
-        overflow: 'hidden',
-        flexShrink: 0,
-        aspectRatio: isNarrow ? '16 / 9' : undefined,
-      }}>
+      <div className="relative w-full sm:w-[132px] h-[180px] sm:h-[100px] aspect-video sm:aspect-auto rounded-[10px] bg-[#0F172A] overflow-hidden shrink-0">
         <video
           ref={videoRef}
           muted
           playsInline
           autoPlay
-          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          className="w-full h-full object-cover"
         />
         {/* REC dot */}
-        <span style={{
-          position: 'absolute', top: 6, left: 6,
-          display: 'inline-flex', alignItems: 'center', gap: 4,
-          padding: '2px 6px', borderRadius: 999,
-          background: 'rgba(0,0,0,0.55)', color: '#FFFFFF',
-          fontFamily: 'var(--font-mono)', fontSize: 9, fontWeight: 700,
-          letterSpacing: '0.06em',
-        }}>
-          <span style={{
-            width: 6, height: 6, borderRadius: '50%', background: stream ? '#F87171' : '#94A3B8',
-                      }} />
+        <span className="absolute top-1.5 left-1.5 inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-black/55 text-white font-[var(--font-mono)] text-[9px] font-bold tracking-[0.06em]">
+          <span className={`w-1.5 h-1.5 rounded-full ${stream ? 'bg-[#F87171]' : 'bg-[#94A3B8]'}`} />
           {stream ? 'LIVE' : 'OFF'}
         </span>
       </div>
 
       {/* Status + mic meter */}
-      <div style={{ minWidth: 0 }}>
-        <div style={{
-          display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap',
-          fontFamily: 'var(--font-mono)', fontSize: 10.5, fontWeight: 700,
-          color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
-          marginBottom: 8,
-        }}>
+      <div className="min-w-0">
+        <div className="flex items-center gap-2 flex-wrap font-[var(--font-mono)] text-[10.5px] font-bold text-[#9CA3AF] uppercase tracking-[0.08em] mb-2">
           <StatusDot ok={!!stream && !!cameraQuality?.ok} />
           Камера {stream ? (cameraQuality?.ok ? 'готова' : 'не годится') : 'отключена'}
-          <span style={{ width: 8 }} />
+          <span className="w-2" />
           <StatusDot ok={hasAudioSignal} />
           Микрофон {hasAudioSignal ? 'слышит звук' : 'ждёт звук'}
-          <span style={{ width: 8 }} />
+          <span className="w-2" />
           <StatusDot ok={aiModelStatus === 'ready'} />
           AI {
             aiModelStatus === 'ready' ? 'готов' :
@@ -883,62 +837,56 @@ function MediaCheck({ onReady, onCalibrated }: {
         {/* Audio meter - fill width is the live amplitude; coloured zones
              behind it mark the natural / warning / violation bands. */}
         <div>
-          <div style={{
-            position: 'relative',
-            height: 12, borderRadius: 999,
-            background: '#F1F3F6', overflow: 'hidden',
-          }}>
+          <div className="relative h-3 rounded-full bg-[#F1F3F6] overflow-hidden">
             {/* Background zones */}
-            <div style={{
-              position: 'absolute', inset: 0,
-              background: `linear-gradient(90deg,
+            <div
+              className="absolute inset-0 bg-[image:var(--audio-meter-bg)]"
+              // eslint-disable-next-line react/forbid-dom-props -- dynamic gradient stops driven by amplitude thresholds
+              style={{
+                ['--audio-meter-bg' as string]: `linear-gradient(90deg,
                 rgba(16,185,129,0.18) 0%,
                 rgba(16,185,129,0.18) ${(MEDIA_CHECK_NATURAL_MAX_AMP / MEDIA_CHECK_METER_MAX) * 100}%,
                 rgba(245,158,11,0.20) ${(MEDIA_CHECK_NATURAL_MAX_AMP / MEDIA_CHECK_METER_MAX) * 100}%,
                 rgba(245,158,11,0.20) ${(MEDIA_CHECK_VIOLATION_AMP / MEDIA_CHECK_METER_MAX) * 100}%,
                 rgba(220,38,38,0.22) ${(MEDIA_CHECK_VIOLATION_AMP / MEDIA_CHECK_METER_MAX) * 100}%,
                 rgba(220,38,38,0.22) 100%)`,
-            }} />
+              }}
+            />
             {/* Live fill */}
-            <div style={{
-              position: 'absolute', top: 0, left: 0, bottom: 0,
-              width: `${Math.min(100, (audioAmp / MEDIA_CHECK_METER_MAX) * 100)}%`,
-              background: audioAmp >= MEDIA_CHECK_VIOLATION_AMP
-                ? '#DC2626'
-                : audioAmp >= MEDIA_CHECK_WARNING_AMP
-                  ? '#F59E0B'
-                  : '#10B981',
-              borderRadius: 999,
-              transition: 'width 60ms linear, background 200ms',
-            }} />
+            <div
+              className="absolute top-0 left-0 bottom-0 rounded-full bg-[var(--fill-color)] w-[var(--fill-width)] transition-[width,background-color] duration-[60ms]"
+              // eslint-disable-next-line react/forbid-dom-props -- live amplitude → width/color
+              style={{
+                ['--fill-width' as string]: `${Math.min(100, (audioAmp / MEDIA_CHECK_METER_MAX) * 100)}%`,
+                ['--fill-color' as string]: audioAmp >= MEDIA_CHECK_VIOLATION_AMP
+                  ? '#DC2626'
+                  : audioAmp >= MEDIA_CHECK_WARNING_AMP
+                    ? '#F59E0B'
+                    : '#10B981',
+              }}
+            />
             {/* Threshold ticks */}
             <ThresholdTick pct={(MEDIA_CHECK_NATURAL_MAX_AMP / MEDIA_CHECK_METER_MAX) * 100} />
             <ThresholdTick pct={(MEDIA_CHECK_VIOLATION_AMP / MEDIA_CHECK_METER_MAX) * 100} />
           </div>
           {/* Threshold + live readouts */}
-          <div style={{
-            display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
-            marginTop: 6,
-            fontFamily: 'var(--font-mono)', fontSize: 10, color: '#9CA3AF',
-            letterSpacing: '0.03em',
-          }}>
-            <span><strong style={{ color: '#10B981' }}>норма</strong> ≤ {ampToDb(MEDIA_CHECK_NATURAL_MAX_AMP)} dB</span>
-            <span><strong style={{ color: '#F59E0B' }}>предупр.</strong> {ampToDb(MEDIA_CHECK_NATURAL_MAX_AMP)}…{ampToDb(MEDIA_CHECK_VIOLATION_AMP)} dB</span>
-            <span><strong style={{ color: '#DC2626' }}>наруш.</strong> {`>`} {ampToDb(MEDIA_CHECK_VIOLATION_AMP)} dB</span>
+          <div className="flex justify-between items-baseline mt-1.5 font-[var(--font-mono)] text-[10px] text-[#9CA3AF] tracking-[0.03em]">
+            <span><strong className="text-[#10B981]">норма</strong> ≤ {ampToDb(MEDIA_CHECK_NATURAL_MAX_AMP)} dB</span>
+            <span><strong className="text-[#F59E0B]">предупр.</strong> {ampToDb(MEDIA_CHECK_NATURAL_MAX_AMP)}…{ampToDb(MEDIA_CHECK_VIOLATION_AMP)} dB</span>
+            <span><strong className="text-[#DC2626]">наруш.</strong> {`>`} {ampToDb(MEDIA_CHECK_VIOLATION_AMP)} dB</span>
           </div>
           {/* Live measurement */}
-          <p style={{
-            margin: '8px 0 0',
-            fontFamily: 'var(--font-body)', fontSize: 12, color: '#6B7280',
-            lineHeight: 1.5,
-          }}>
+          <p className="mt-2 mb-0 font-[var(--font-body)] text-xs text-[#6B7280] leading-[1.5]">
             Сейчас:{' '}
-            <strong style={{
-              fontFamily: 'var(--font-mono)',
-              color: audioAmp >= MEDIA_CHECK_VIOLATION_AMP ? '#B91C1C'
-                : audioAmp >= MEDIA_CHECK_WARNING_AMP ? '#B45309'
-                : '#047857',
-            }}>
+            <strong
+              className="font-[var(--font-mono)] text-[var(--db-color)]"
+              // eslint-disable-next-line react/forbid-dom-props -- live dB color reflects current amplitude band
+              style={{
+                ['--db-color' as string]: audioAmp >= MEDIA_CHECK_VIOLATION_AMP ? '#B91C1C'
+                  : audioAmp >= MEDIA_CHECK_WARNING_AMP ? '#B45309'
+                  : '#047857',
+              }}
+            >
               {ampToDb(audioAmp)} dB
             </strong>
             {' · '}
@@ -947,38 +895,26 @@ function MediaCheck({ onReady, onCalibrated }: {
         </div>
         {/* Per-issue hint when camera quality blocks the start */}
         {stream && cameraQuality && !cameraQuality.ok && cameraQuality.reason && (
-          <p style={{
-            margin: '8px 0 0',
-            fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 600,
-            color: '#B91C1C', lineHeight: 1.5,
-          }}>
+          <p className="mt-2 mb-0 font-[var(--font-body)] text-xs font-semibold text-[#B91C1C] leading-[1.5]">
             {cameraQuality.reason}
           </p>
         )}
         {/* Environment hints (earphones / RDP / VM / screen mismatch). */}
         {hints.length > 0 && (
-          <div style={{
-            display: 'flex', flexDirection: 'column', gap: 8,
-            margin: '10px 0 0',
-          }}>
-            <ul style={{
-              margin: 0, padding: 0,
-              listStyle: 'none',
-              display: 'flex', flexDirection: 'column', gap: 6,
-            }}>
+          <div className="flex flex-col gap-2 mt-2.5">
+            <ul className="m-0 p-0 list-none flex flex-col gap-1.5">
               {hints.map((h) => (
-                <li key={h.id} style={{
-                  display: 'flex', alignItems: 'flex-start', gap: 8,
-                  padding: '8px 10px', borderRadius: 8,
-                  background: h.level === 'block' ? '#FEF2F2' : '#FFFBEB',
-                  border: `1px solid ${h.level === 'block' ? '#FECACA' : '#FCD34D'}`,
-                  fontFamily: 'var(--font-body)', fontSize: 12,
-                  color: h.level === 'block' ? '#991B1B' : '#92400E',
-                  lineHeight: 1.5,
-                }}>
+                <li
+                  key={h.id}
+                  className={`flex items-start gap-2 px-2.5 py-2 rounded-lg border font-[var(--font-body)] text-xs leading-[1.5] ${
+                    h.level === 'block'
+                      ? 'bg-[#FEF2F2] border-[#FECACA] text-[#991B1B]'
+                      : 'bg-[#FFFBEB] border-[#FCD34D] text-[#92400E]'
+                  }`}
+                >
                   <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round"
-                    style={{ flexShrink: 0, marginTop: 2 }}>
+                    className="shrink-0 mt-0.5">
                     <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
                     <line x1="12" y1="9" x2="12" y2="13" />
                     <line x1="12" y1="17" x2="12.01" y2="17" />
@@ -994,24 +930,15 @@ function MediaCheck({ onReady, onCalibrated }: {
               type="button"
               onClick={runEnvCheck}
               disabled={envChecking}
-              style={{
-                alignSelf: 'flex-start',
-                display: 'inline-flex', alignItems: 'center', gap: 6,
-                padding: '6px 12px', borderRadius: 8,
-                background: '#FFFFFF',
-                color: '#1A1A1A',
-                border: '1px solid #CBD5E1',
-                fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 600,
-                cursor: envChecking ? 'wait' : 'pointer',
-                opacity: envChecking ? 0.65 : 1,
-                transition: 'background 150ms, border-color 150ms',
-              }}
+              className={`self-start inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white text-[#1A1A1A] border border-[#CBD5E1] font-[var(--font-body)] text-xs font-semibold transition-[background-color,border-color] duration-150 ${
+                envChecking ? 'cursor-wait opacity-[0.65]' : 'cursor-pointer opacity-100'
+              }`}
             >
-              <svg width={12} height={12} viewBox="0 0 24 24" fill="none"
+              <svg
+                width={12} height={12} viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round"
-                style={{
-                  animation: envChecking ? 'consent-recheck-spin 0.8s linear infinite' : undefined,
-                }}>
+                className={envChecking ? 'animate-[consent-recheck-spin_0.8s_linear_infinite]' : ''}
+              >
                 <polyline points="23 4 23 10 17 10" />
                 <polyline points="1 20 1 14 7 14" />
                 <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15" />
@@ -1028,24 +955,19 @@ function MediaCheck({ onReady, onCalibrated }: {
            outside the camera/status grid so it can span full width and
            visually anchor under the camera preview. */}
       {stream && cameraQuality?.ok && aiModelStatus === 'ready' && (
-        <div style={{
-          marginTop: 12,
-          padding: '12px 14px',
-          borderRadius: 10,
-          background: calibStatus === 'done' ? '#ECFDF5' : '#F8FAFC',
-          border: `1px solid ${calibStatus === 'done' ? '#A7F3D0' : '#E2E8F0'}`,
-        }}>
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: 10,
-            flexWrap: 'wrap',
-          }}>
-            <span style={{
-              width: 22, height: 22, borderRadius: 6,
-              background: calibStatus === 'done' ? '#10B981' : '#94A3B8',
-              color: '#FFFFFF',
-              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-              flexShrink: 0,
-            }}>
+        <div
+          className={`mt-3 px-3.5 py-3 rounded-[10px] border ${
+            calibStatus === 'done'
+              ? 'bg-[#ECFDF5] border-[#A7F3D0]'
+              : 'bg-[#F8FAFC] border-[#E2E8F0]'
+          }`}
+        >
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <span
+              className={`w-[22px] h-[22px] rounded-md text-white inline-flex items-center justify-center shrink-0 ${
+                calibStatus === 'done' ? 'bg-[#10B981]' : 'bg-[#94A3B8]'
+              }`}
+            >
               {calibStatus === 'done' ? (
                 <svg width={13} height={13} viewBox="0 0 24 24" fill="none"
                   stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round">
@@ -1059,12 +981,8 @@ function MediaCheck({ onReady, onCalibrated }: {
                 </svg>
               )}
             </span>
-            <div style={{ minWidth: 0, flex: 1 }}>
-              <p style={{
-                margin: 0,
-                fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
-                color: '#1A1A1A', lineHeight: 1.4,
-              }}>
+            <div className="min-w-0 flex-1">
+              <p className="m-0 font-[var(--font-body)] text-[13px] font-semibold text-[#1A1A1A] leading-[1.4]">
                 {calibStatus === 'done'
                   ? 'Камера зафиксирована'
                   : calibStatus === 'capturing'
@@ -1073,11 +991,7 @@ function MediaCheck({ onReady, onCalibrated }: {
                       ? 'Не удалось зафиксировать камеру'
                       : 'Зафиксируйте положение камеры'}
               </p>
-              <p style={{
-                margin: '2px 0 0',
-                fontFamily: 'var(--font-body)', fontSize: 11.5, color: '#6B7280',
-                lineHeight: 1.45,
-              }}>
+              <p className="mt-0.5 mb-0 font-[var(--font-body)] text-[11.5px] text-[#6B7280] leading-[1.45]">
                 {calibStatus === 'done'
                   ? 'После старта теста не двигайте камеру и не меняйте позу - система запомнила ваш базовый ракурс.'
                   : calibStatus === 'capturing'
@@ -1091,29 +1005,23 @@ function MediaCheck({ onReady, onCalibrated }: {
               <button
                 type="button"
                 onClick={runCalibration}
-                style={{
-                  padding: '8px 14px', borderRadius: 8,
-                  background: calibStatus === 'done' ? '#FFFFFF' : '#1A1A1A',
-                  color: calibStatus === 'done' ? '#1A1A1A' : '#FFFFFF',
-                  border: calibStatus === 'done' ? '1px solid #CBD5E1' : 'none',
-                  fontFamily: 'var(--font-body)', fontSize: 12.5, fontWeight: 600,
-                  cursor: 'pointer', flexShrink: 0,
-                }}
+                className={`px-3.5 py-2 rounded-lg font-[var(--font-body)] text-[12.5px] font-semibold cursor-pointer shrink-0 ${
+                  calibStatus === 'done'
+                    ? 'bg-white text-[#1A1A1A] border border-[#CBD5E1]'
+                    : 'bg-[#1A1A1A] text-white border-0'
+                }`}
               >
                 {calibStatus === 'done' ? 'Перекалибровать' : 'Зафиксировать'}
               </button>
             )}
           </div>
           {calibStatus === 'capturing' && (
-            <div style={{
-              marginTop: 10, height: 4, borderRadius: 999,
-              background: '#E2E8F0', overflow: 'hidden',
-            }}>
-              <div style={{
-                height: '100%', width: `${calibProgress * 100}%`,
-                background: '#3B82F6',
-                transition: 'width 90ms linear',
-              }} />
+            <div className="mt-2.5 h-1 rounded-full bg-[#E2E8F0] overflow-hidden">
+              <div
+                className="h-full bg-[#3B82F6] w-[var(--calib-progress)] transition-[width] duration-[90ms] ease-linear"
+                // eslint-disable-next-line react/forbid-dom-props -- dynamic calibration progress (0..1)
+                style={{ ['--calib-progress' as string]: `${calibProgress * 100}%` }}
+              />
             </div>
           )}
         </div>
@@ -1235,46 +1143,24 @@ function RuleSection({ severity, rules }: { severity: Severity; rules: Rule[] })
   // something the user has to read on every test attempt.
   const [open, setOpen] = useState(false);
   return (
-    <div style={{
-      background: '#FFFFFF', borderRadius: 14,
-      marginBottom: 12,
-      border: `1px solid ${m.border}`,
-      overflow: 'hidden',
-    }}>
+    <div
+      className="bg-white rounded-[14px] mb-3 overflow-hidden border border-[var(--sev-border)]"
+      // eslint-disable-next-line react/forbid-dom-props -- severity palette injected via CSS-var
+      style={{ ['--sev-border' as string]: m.border, ['--sev-bg' as string]: m.bg, ['--sev-color' as string]: m.color }}
+    >
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        style={{
-          width: '100%',
-          display: 'flex', alignItems: 'center', gap: 12,
-          padding: '14px 18px',
-          background: 'transparent',
-          border: 'none',
-          cursor: 'pointer',
-          textAlign: 'left',
-        }}
+        className="w-full flex items-center gap-3 px-[18px] py-3.5 bg-transparent border-0 cursor-pointer text-left"
         aria-expanded={open}
       >
-        <span style={{
-          width: 32, height: 32, borderRadius: 8,
-          background: m.bg, color: m.color,
-          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-          flexShrink: 0,
-          border: `1px solid ${m.border}`,
-        }}>
+        <span className="w-8 h-8 rounded-lg bg-[var(--sev-bg)] text-[var(--sev-color)] inline-flex items-center justify-center shrink-0 border border-[var(--sev-border)]">
           <SeverityIcon severity={severity} />
         </span>
-        <h4 style={{
-          margin: 0, flex: 1,
-          fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 700,
-          color: '#1A1A1A', letterSpacing: '-0.01em',
-        }}>
+        <h4 className="m-0 flex-1 font-[var(--font-display)] text-[15px] font-bold text-[#1A1A1A] tracking-[-0.01em]">
           {m.title}
         </h4>
-        <span style={{
-          fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 600,
-          color: '#9CA3AF',
-        }}>
+        <span className="font-[var(--font-mono)] text-[11px] font-semibold text-[#9CA3AF]">
           {rules.length}
         </span>
         <motion.svg
@@ -1282,7 +1168,7 @@ function RuleSection({ severity, rules }: { severity: Severity; rules: Rule[] })
           stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round"
           animate={{ rotate: open ? 180 : 0 }}
           transition={{ duration: 0.25, ease: [0.05, 0.7, 0.1, 1] }}
-          style={{ color: '#6B7280', flexShrink: 0 }}
+          className="text-[#6B7280] shrink-0"
         >
           <polyline points="6 9 12 15 18 9" />
         </motion.svg>
@@ -1298,51 +1184,27 @@ function RuleSection({ severity, rules }: { severity: Severity; rules: Rule[] })
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.25, ease: [0.05, 0.7, 0.1, 1] }}
-            style={{ overflow: 'hidden' }}
+            className="overflow-hidden"
           >
-            <div style={{ padding: '0 20px 18px' }}>
-              <p style={{
-                margin: '0 0 12px 0',
-                fontFamily: 'var(--font-body)', fontSize: 12.5, color: '#6B7280',
-                lineHeight: 1.55,
-              }}>
+            <div className="px-5 pb-[18px]">
+              <p className="mt-0 mb-3 font-[var(--font-body)] text-[12.5px] text-[#6B7280] leading-[1.55]">
                 {m.subtitle}
               </p>
-              <ul style={{
-                margin: 0, padding: 0, listStyle: 'none',
-                display: 'flex', flexDirection: 'column', gap: 10,
-              }}>
+              <ul className="m-0 p-0 list-none flex flex-col gap-2.5">
                 {rules.map((r, i) => (
-                  <li key={i} style={{
-                    display: 'flex', gap: 12,
-                    paddingTop: 10,
-                    borderTop: i === 0 ? 'none' : '1px solid #F0F1F5',
-                  }}>
-                    <span style={{
-                      minWidth: 22, height: 22, padding: '0 6px',
-                      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                      borderRadius: 6,
-                      background: m.bg, color: m.color,
-                      fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700,
-                      flexShrink: 0, marginTop: 1,
-                      border: `1px solid ${m.border}`,
-                    }}>
+                  <li
+                    key={i}
+                    className={`flex gap-3 pt-2.5 ${i === 0 ? '' : 'border-t border-[#F0F1F5]'}`}
+                  >
+                    <span className="min-w-[22px] h-[22px] px-1.5 inline-flex items-center justify-center rounded-md bg-[var(--sev-bg)] text-[var(--sev-color)] font-[var(--font-mono)] text-[11px] font-bold shrink-0 mt-px border border-[var(--sev-border)]">
                       {i + 1}
                     </span>
-                    <div style={{ minWidth: 0 }}>
-                      <p style={{
-                        margin: 0,
-                        fontFamily: 'var(--font-body)', fontSize: 13.5, fontWeight: 600,
-                        color: '#1A1A1A', lineHeight: 1.45,
-                      }}>
+                    <div className="min-w-0">
+                      <p className="m-0 font-[var(--font-body)] text-[13.5px] font-semibold text-[#1A1A1A] leading-[1.45]">
                         {r.title}
                       </p>
                       {r.detail && (
-                        <p style={{
-                          margin: '2px 0 0',
-                          fontFamily: 'var(--font-body)', fontSize: 12.5, color: '#6B7280',
-                          lineHeight: 1.55,
-                        }}>
+                        <p className="mt-0.5 mb-0 font-[var(--font-body)] text-[12.5px] text-[#6B7280] leading-[1.55]">
                           {r.detail}
                         </p>
                       )}
@@ -1360,13 +1222,9 @@ function RuleSection({ severity, rules }: { severity: Severity; rules: Rule[] })
 
 function RulesAccordion() {
   return (
-    <div style={{ marginBottom: 8 }}>
+    <div className="mb-2">
       {/* Section heading */}
-      <p style={{
-        fontFamily: 'var(--font-mono)', fontSize: 10.5, fontWeight: 700,
-        color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
-        margin: '6px 0 8px 0',
-      }}>
+      <p className="font-[var(--font-mono)] text-[10.5px] font-bold text-[#9CA3AF] uppercase tracking-[0.08em] mt-1.5 mb-2">
         Что отслеживает прокторинг
       </p>
       <RuleSection severity="warn" rules={WARN_RULES} />
@@ -1379,24 +1237,20 @@ function RulesAccordion() {
 function ThresholdTick({ pct }: { pct: number }) {
   return (
     <span
-      style={{
-        position: 'absolute', top: -2, bottom: -2,
-        left: `${pct}%`,
-        width: 1.5, background: 'rgba(15, 23, 42, 0.42)',
-        borderRadius: 1,
-      }}
+      className="absolute -top-0.5 -bottom-0.5 left-[var(--tick-pos)] w-[1.5px] bg-[rgba(15,23,42,0.42)] rounded-[1px]"
+      // eslint-disable-next-line react/forbid-dom-props -- dynamic horizontal position (% across meter)
+      style={{ ['--tick-pos' as string]: `${pct}%` }}
     />
   );
 }
 
 function StatusDot({ ok }: { ok: boolean }) {
   return (
-    <span style={{
-      width: 8, height: 8, borderRadius: '50%',
-      background: ok ? '#10B981' : '#D1D5DB',
-      flexShrink: 0,
-      boxShadow: ok ? '0 0 0 2px rgba(16,185,129,0.18)' : 'none',
-    }} />
+    <span
+      className={`w-2 h-2 rounded-full shrink-0 ${
+        ok ? 'bg-[#10B981] shadow-[0_0_0_2px_rgba(16,185,129,0.18)]' : 'bg-[#D1D5DB]'
+      }`}
+    />
   );
 }
 
@@ -1423,30 +1277,16 @@ export default function TestStartConsent({
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, ease: [0.05, 0.7, 0.1, 1] }}
-      style={{
-        padding: 'clamp(16px, 4vw, 32px)',
-        background: '#F5F6F8',
-        borderRadius: 'clamp(12px, 2vw, 20px)',
-      }}
+      className="p-[clamp(16px,4vw,32px)] bg-[#F5F6F8] rounded-[clamp(12px,2vw,20px)]"
     >
       {/* Label */}
-      <p style={{
-        fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 600,
-        color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
-        margin: '0 0 8px 0',
-      }}>
+      <p className="font-[var(--font-mono)] text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-[0.08em] mt-0 mb-2">
         {testLabel}
       </p>
 
       {/* Title + neutral icon */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
-        <span style={{
-          width: 36, height: 36, borderRadius: 10,
-          background: '#FFFFFF', color: '#6B7280',
-          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-          flexShrink: 0,
-          boxShadow: '0 1px 2px rgba(16,24,40,0.06)',
-        }}>
+      <div className="flex items-center gap-3 mb-5">
+        <span className="w-9 h-9 rounded-[10px] bg-white text-[#6B7280] inline-flex items-center justify-center shrink-0 shadow-[0_1px_2px_rgba(16,24,40,0.06)]">
           <svg width={18} height={18} viewBox="0 0 24 24" fill="none"
             stroke="currentColor" strokeWidth={2}
             strokeLinecap="round" strokeLinejoin="round">
@@ -1454,11 +1294,7 @@ export default function TestStartConsent({
             <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2h11" />
           </svg>
         </span>
-        <h3 style={{
-          fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 700,
-          color: '#1A1A1A', margin: 0,
-          letterSpacing: '-0.02em', lineHeight: 1.2,
-        }}>
+        <h3 className="font-[var(--font-display)] text-[22px] font-bold text-[#1A1A1A] m-0 tracking-[-0.02em] leading-[1.2]">
           Правила прохождения теста
         </h3>
       </div>
@@ -1470,23 +1306,11 @@ export default function TestStartConsent({
       <RulesAccordion />
 
       {/* Pre-flight requirements card */}
-      <div style={{
-        background: '#FFFFFF', borderRadius: 12,
-        padding: '18px 20px', marginBottom: 18,
-        borderLeft: '3px solid #3B82F6',
-      }}>
-        <p style={{
-          fontFamily: 'var(--font-mono)', fontSize: 10.5, fontWeight: 700,
-          color: '#2563EB', textTransform: 'uppercase', letterSpacing: '0.08em',
-          margin: '0 0 10px 0',
-        }}>
+      <div className="bg-white rounded-xl px-5 py-[18px] mb-[18px] border-l-[3px] border-l-[#3B82F6]">
+        <p className="font-[var(--font-mono)] text-[10.5px] font-bold text-[#2563EB] uppercase tracking-[0.08em] mt-0 mb-2.5">
           Перед стартом проверьте
         </p>
-        <ul style={{
-          margin: 0, paddingLeft: 18,
-          fontFamily: 'var(--font-body)', fontSize: 13.5,
-          color: '#374151', lineHeight: 1.7,
-        }}>
+        <ul className="m-0 pl-[18px] font-[var(--font-body)] text-[13.5px] text-[#374151] leading-[1.7] list-disc">
           <li>Камера и микрофон включены, лицо хорошо освещено</li>
           <li>Никаких наушников, гарнитур, earbuds в ушах</li>
           <li>Тест не запущен из удалённого рабочего стола или виртуальной машины</li>
@@ -1496,47 +1320,29 @@ export default function TestStartConsent({
       </div>
 
       {/* Test params - chip pills in the muted-neutral palette */}
-      <div style={{
-        display: 'flex', gap: 10, marginBottom: 18,
-      }}>
-        <div style={{
-          flex: 1, padding: '12px 16px',
-          background: '#FFFFFF', borderRadius: 12,
-          display: 'flex', alignItems: 'center', gap: 12,
-        }}>
-          <span style={{
-            width: 28, height: 28, borderRadius: 8,
-            background: '#F5F6F8', color: '#6B7280',
-            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-          }}>
+      <div className="flex gap-2.5 mb-[18px]">
+        <div className="flex-1 px-4 py-3 bg-white rounded-xl flex items-center gap-3">
+          <span className="w-7 h-7 rounded-lg bg-[#F5F6F8] text-[#6B7280] inline-flex items-center justify-center">
             <svg width={15} height={15} viewBox="0 0 24 24" fill="none"
               stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
               <path d="M9 11l3 3 8-8" /><path d="M20 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2h11" />
             </svg>
           </span>
           <div>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.06em', margin: 0 }}>Вопросов</p>
-            <p style={{ fontFamily: 'var(--font-display)', fontSize: 17, fontWeight: 700, color: '#1A1A1A', margin: 0 }}>{questionCount}</p>
+            <p className="font-[var(--font-mono)] text-[10px] text-[#9CA3AF] uppercase tracking-[0.06em] m-0">Вопросов</p>
+            <p className="font-[var(--font-display)] text-[17px] font-bold text-[#1A1A1A] m-0">{questionCount}</p>
           </div>
         </div>
-        <div style={{
-          flex: 1, padding: '12px 16px',
-          background: '#FFFFFF', borderRadius: 12,
-          display: 'flex', alignItems: 'center', gap: 12,
-        }}>
-          <span style={{
-            width: 28, height: 28, borderRadius: 8,
-            background: '#F5F6F8', color: '#6B7280',
-            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-          }}>
+        <div className="flex-1 px-4 py-3 bg-white rounded-xl flex items-center gap-3">
+          <span className="w-7 h-7 rounded-lg bg-[#F5F6F8] text-[#6B7280] inline-flex items-center justify-center">
             <svg width={15} height={15} viewBox="0 0 24 24" fill="none"
               stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="12" r="10" /><polyline points="12,6 12,12 16,14" />
             </svg>
           </span>
           <div>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.06em', margin: 0 }}>Время</p>
-            <p style={{ fontFamily: 'var(--font-display)', fontSize: 17, fontWeight: 700, color: '#1A1A1A', margin: 0 }}>{timeMinutes} мин</p>
+            <p className="font-[var(--font-mono)] text-[10px] text-[#9CA3AF] uppercase tracking-[0.06em] m-0">Время</p>
+            <p className="font-[var(--font-display)] text-[17px] font-bold text-[#1A1A1A] m-0">{timeMinutes} мин</p>
           </div>
         </div>
       </div>
@@ -1544,29 +1350,20 @@ export default function TestStartConsent({
       {/* Self-attestation: user explicitly confirms they removed forbidden
           items / are not wearing headphones. Backstop for cases where
           auto-detection (device labels, object detector) misses the item. */}
-      <label style={{
-        display: 'flex', alignItems: 'flex-start', gap: 12,
-        padding: '14px 16px',
-        background: '#FFFFFF',
-        borderRadius: 12,
-        cursor: 'pointer',
-        marginBottom: 10,
-        transition: 'background 180ms',
-      }}>
+      <label className="flex items-start gap-3 px-4 py-3.5 bg-white rounded-xl cursor-pointer mb-2.5 transition-[background-color] duration-[180ms] relative">
         <input
           type="checkbox"
           checked={confirmedClean}
           onChange={(e) => setConfirmedClean(e.target.checked)}
-          style={{ position: 'absolute', opacity: 0, width: 0, height: 0 }}
+          className="absolute opacity-0 w-0 h-0"
         />
-        <span style={{
-          width: 20, height: 20, borderRadius: 6,
-          background: confirmedClean ? '#3B82F6' : '#F5F6F8',
-          boxShadow: confirmedClean ? 'none' : '0 0 0 1px #E2E4EA inset',
-          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-          flexShrink: 0, marginTop: 1,
-          transition: 'background 150ms, box-shadow 150ms',
-        }}>
+        <span
+          className={`w-5 h-5 rounded-md inline-flex items-center justify-center shrink-0 mt-px transition-[background-color,box-shadow] duration-150 ${
+            confirmedClean
+              ? 'bg-[#3B82F6] shadow-none'
+              : 'bg-[#F5F6F8] shadow-[0_0_0_1px_#E2E4EA_inset]'
+          }`}
+        >
           {confirmedClean && (
             <svg width={13} height={13} viewBox="0 0 24 24" fill="none"
               stroke="#FFFFFF" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round">
@@ -1574,39 +1371,27 @@ export default function TestStartConsent({
             </svg>
           )}
         </span>
-        <span style={{
-          fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: 500,
-          color: '#1A1A1A', lineHeight: 1.5,
-        }}>
+        <span className="font-[var(--font-body)] text-sm font-medium text-[#1A1A1A] leading-[1.5]">
           На мне нет наушников и гарнитуры, на столе нет телефона, книги, второго экрана и других посторонних предметов.
         </span>
       </label>
 
       {/* Consent - matches the checkbox look used elsewhere in the app
           (square with black tick on check, white 1px shadow idle). */}
-      <label style={{
-        display: 'flex', alignItems: 'flex-start', gap: 12,
-        padding: '14px 16px',
-        background: '#FFFFFF',
-        borderRadius: 12,
-        cursor: 'pointer',
-        marginBottom: 18,
-        transition: 'background 180ms',
-      }}>
+      <label className="flex items-start gap-3 px-4 py-3.5 bg-white rounded-xl cursor-pointer mb-[18px] transition-[background-color] duration-[180ms] relative">
         <input
           type="checkbox"
           checked={agreed}
           onChange={(e) => setAgreed(e.target.checked)}
-          style={{ position: 'absolute', opacity: 0, width: 0, height: 0 }}
+          className="absolute opacity-0 w-0 h-0"
         />
-        <span style={{
-          width: 20, height: 20, borderRadius: 6,
-          background: agreed ? '#3B82F6' : '#F5F6F8',
-          boxShadow: agreed ? 'none' : '0 0 0 1px #E2E4EA inset',
-          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-          flexShrink: 0, marginTop: 1,
-          transition: 'background 150ms, box-shadow 150ms',
-        }}>
+        <span
+          className={`w-5 h-5 rounded-md inline-flex items-center justify-center shrink-0 mt-px transition-[background-color,box-shadow] duration-150 ${
+            agreed
+              ? 'bg-[#3B82F6] shadow-none'
+              : 'bg-[#F5F6F8] shadow-[0_0_0_1px_#E2E4EA_inset]'
+          }`}
+        >
           {agreed && (
             <svg width={13} height={13} viewBox="0 0 24 24" fill="none"
               stroke="#FFFFFF" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round">
@@ -1614,10 +1399,7 @@ export default function TestStartConsent({
             </svg>
           )}
         </span>
-        <span style={{
-          fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: 500,
-          color: '#1A1A1A', lineHeight: 1.5,
-        }}>
+        <span className="font-[var(--font-body)] text-sm font-medium text-[#1A1A1A] leading-[1.5]">
           Я прочитал правила, согласен с ними и понимаю последствия нарушений.
         </span>
       </label>
@@ -1628,32 +1410,21 @@ export default function TestStartConsent({
           We don't lock them out; instead we surface a mailto link to
           arrange examiner-supervised testing (proctor-code mode reuses
           the existing 4-eye editorial inviting flow). */}
-      <p style={{
-        marginTop: 12, fontSize: 12, color: '#6B7280', textAlign: 'center',
-        lineHeight: 1.55,
-      }}>
+      <p className="mt-3 text-xs text-[#6B7280] text-center leading-[1.55]">
         Не можете использовать камеру (нарушения подвижности, протез, технические причины)?{' '}
         <a
           href="mailto:hello@bordik.app?subject=Accessibility%3A%20alternative%20proctoring"
-          style={{ color: '#3B82F6', textDecoration: 'underline' }}
+          className="text-[#3B82F6] underline"
         >
           Запросить тест без камеры
         </a>
       </p>
 
       {/* Actions */}
-      <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
+      <div className="flex gap-2.5 justify-end">
         <button
           onClick={onDecline}
-          style={{
-            padding: '10px 20px', borderRadius: 10,
-            background: 'transparent', color: '#6B7280',
-            border: 'none', cursor: 'pointer',
-            fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
-            transition: 'color 180ms',
-          }}
-          onMouseEnter={(e) => { e.currentTarget.style.color = '#1A1A1A'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.color = '#6B7280'; }}
+          className="px-5 py-2.5 rounded-[10px] bg-transparent text-[#6B7280] hover:text-[#1A1A1A] border-0 cursor-pointer font-[var(--font-body)] text-[13px] font-semibold transition-[color] duration-[180ms]"
         >
           Отмена
         </button>
@@ -1674,18 +1445,11 @@ export default function TestStartConsent({
             : !agreed         ? 'Сначала примите правила'
             : undefined
           }
-          style={{
-            display: 'inline-flex', alignItems: 'center', gap: 6,
-            padding: '10px 20px', borderRadius: 10,
-            background: canStart ? '#3B82F6' : '#E2E4EA',
-            color: canStart ? '#FFFFFF' : '#9CA3AF',
-            border: 'none',
-            cursor: canStart ? 'pointer' : 'not-allowed',
-            fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
-            transition: 'background 180ms',
-          }}
-          onMouseEnter={(e) => { if (canStart) e.currentTarget.style.background = '#2563EB'; }}
-          onMouseLeave={(e) => { if (canStart) e.currentTarget.style.background = '#3B82F6'; }}
+          className={`inline-flex items-center gap-1.5 px-5 py-2.5 rounded-[10px] border-0 font-[var(--font-body)] text-[13px] font-semibold transition-[background-color] duration-[180ms] ${
+            canStart
+              ? 'bg-[#3B82F6] hover:bg-[#2563EB] text-white cursor-pointer'
+              : 'bg-[#E2E4EA] text-[#9CA3AF] cursor-not-allowed'
+          }`}
         >
           Начать тест
           {canStart && (

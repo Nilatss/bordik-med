@@ -103,32 +103,16 @@ export function InstallPrompt() {
     <div
       role="dialog"
       aria-label="Установить Bordik"
-      style={{
-        // Stacks above StorageBanner (bottom: 16, height ~ 90 + gap 8 → 114)
-        position: 'fixed', right: 16, bottom: 130, zIndex: 9998,
-        maxWidth: 380,
-        padding: '14px 16px',
-        background: '#1A1A1A', color: '#FFFFFF',
-        borderRadius: 14, border: '1px solid rgba(255,255,255,0.12)',
-        boxShadow: '0 12px 32px rgba(0,0,0,0.30)',
-        display: 'flex', alignItems: 'center', gap: 12,
-        fontFamily: 'var(--font-body)', fontSize: 13, lineHeight: 1.55,
-      }}
+      className="fixed right-4 bottom-[130px] z-[9998] max-w-[380px] py-[14px] px-4 bg-[#1A1A1A] text-white rounded-[14px] border border-white/[0.12] shadow-[0_12px_32px_rgba(0,0,0,0.30)] flex items-center gap-3 font-[var(--font-body)] text-[13px] leading-[1.55]"
     >
-      <div style={{ flex: 1, minWidth: 0 }}>
+      <div className="flex-1 min-w-0">
         <strong>Установить Bordik</strong> на главный экран — быстрый офлайн-доступ
         к курсам и калькуляторам.
       </div>
       <button
         type="button"
         onClick={install}
-        style={{
-          flex: '0 0 auto',
-          padding: '8px 14px',
-          background: '#3B82F6', color: '#FFFFFF',
-          border: 'none', borderRadius: 10,
-          fontSize: 13, fontWeight: 600, cursor: 'pointer',
-        }}
+        className="flex-[0_0_auto] py-2 px-3.5 bg-[#3B82F6] text-white border-none rounded-[10px] text-[13px] font-semibold cursor-pointer"
       >
         Установить
       </button>
@@ -136,13 +120,7 @@ export function InstallPrompt() {
         type="button"
         onClick={dismiss}
         aria-label="Скрыть"
-        style={{
-          flex: '0 0 auto',
-          padding: '8px 10px',
-          background: 'transparent', color: 'rgba(255,255,255,0.6)',
-          border: 'none', cursor: 'pointer',
-          fontSize: 18, lineHeight: 1,
-        }}
+        className="flex-[0_0_auto] py-2 px-2.5 bg-transparent text-white/60 border-none cursor-pointer text-lg leading-none"
       >
         ×
       </button>

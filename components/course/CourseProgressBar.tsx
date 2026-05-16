@@ -35,40 +35,23 @@ export default function CourseProgressBar({
   const labelOnGreen = safePct >= 80;
 
   return (
-    <div style={{ width: '100%' }}>
+    <div className="w-full">
       {/* Bar */}
-      <div style={{
-        position: 'relative',
-        height: 32,
-        borderRadius: 6,
-        background: '#F1F3F6',
-        overflow: 'hidden',
-      }}>
+      <div className="relative h-8 rounded-md bg-[#F1F3F6] overflow-hidden">
         {/* Filled portion — solid green base + translucent white diagonal
             stripes overlay. Static (no animation): drift kept causing a
             visible snap at the keyframe boundary regardless of period math. */}
         <motion.div
-          style={{
-            position: 'absolute', top: 0, left: 0, bottom: 0,
-            width: widthString,
-            backgroundColor: '#22C55E',
-            backgroundImage:
-              'repeating-linear-gradient(115deg, rgba(255,255,255,0.16) 0 10px, transparent 10px 20px)',
-            borderRadius: 6,
-            display: 'flex', alignItems: 'center', paddingLeft: 12,
-          }}
+          className="absolute top-0 left-0 bottom-0 bg-[#22C55E] bg-[repeating-linear-gradient(115deg,rgba(255,255,255,0.16)_0_10px,transparent_10px_20px)] rounded-md flex items-center pl-3"
+          // eslint-disable-next-line react/forbid-dom-props -- framer-motion animated width
+          style={{ width: widthString }}
         >
           <motion.span
             initial={{ opacity: 0, x: -4 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.3, ease: [0.05, 0.7, 0.1, 1] }}
             key={currentLabel}
-            style={{
-              position: 'relative',
-              fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 600,
-              color: '#FFFFFF', whiteSpace: 'nowrap',
-              textShadow: '0 1px 1px rgba(0,0,0,0.12)',
-            }}
+            className="relative font-[var(--font-body)] text-xs font-semibold text-white whitespace-nowrap [text-shadow:0_1px_1px_rgba(0,0,0,0.12)]"
           >
             {currentLabel}
           </motion.span>
@@ -81,23 +64,16 @@ export default function CourseProgressBar({
             textShadow: labelOnGreen ? '0 1px 1px rgba(0,0,0,0.18)' : '0 0 0 rgba(0,0,0,0)',
           }}
           transition={{ duration: 0.25 }}
-          style={{
-            position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)',
-            fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 600,
-          }}
+          className="absolute right-3 top-1/2 -translate-y-1/2 font-[var(--font-body)] text-xs font-semibold"
         >
           {endLabel}
         </motion.span>
       </div>
 
       {/* Captions row */}
-      <div style={{
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        marginTop: 6,
-        fontFamily: 'var(--font-body)', fontSize: 11, color: '#6B7280',
-      }}>
+      <div className="flex justify-between items-center mt-1.5 font-[var(--font-body)] text-[11px] text-[#6B7280]">
         <span>{startCaption}</span>
-        <span style={{ fontWeight: 600, color: '#3B82F6' }}>
+        <span className="font-semibold text-[#3B82F6]">
           {safePct}% пройдено
         </span>
         <span>{endCaption}</span>

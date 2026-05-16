@@ -26,17 +26,10 @@ export const RenderedRow = React.memo(function RenderedRow({
 
   if (row.kind === 'category') {
     return (
-      <div style={{ paddingTop: 14, paddingBottom: 2 }}>
-        <h2 style={{
-          fontFamily: 'var(--font-display)', fontSize: 17, fontWeight: 700,
-          color: '#1A1A1A', marginBottom: 18, letterSpacing: '-0.01em',
-          display: 'flex', alignItems: 'baseline', gap: 8,
-        }}>
+      <div className="pt-[14px] pb-0.5">
+        <h2 className="font-[var(--font-display)] text-[17px] font-bold text-[#1A1A1A] mb-[18px] tracking-[-0.01em] flex items-baseline gap-2">
           {stripCategoryNumber(row.category)}
-          <span style={{
-            fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 600,
-            color: '#9CA3AF',
-          }}>
+          <span className="font-[var(--font-mono)] text-[11px] font-semibold text-[#9CA3AF]">
             {row.count}
           </span>
         </h2>
@@ -46,14 +39,10 @@ export const RenderedRow = React.memo(function RenderedRow({
 
   if (row.kind === 'subcategory') {
     return (
-      <div style={{ paddingTop: 4 }}>
-        <h3 style={{
-          fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700,
-          color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
-          marginBottom: 12,
-        }}>
+      <div className="pt-1">
+        <h3 className="font-[var(--font-mono)] text-[11px] font-bold text-[#9CA3AF] uppercase tracking-[0.08em] mb-3">
           {row.subcategory}
-          <span style={{ marginLeft: 8, color: '#D1D5DB' }}>· {row.count}</span>
+          <span className="ml-2 text-[#D1D5DB]">· {row.count}</span>
         </h3>
       </div>
     );
@@ -63,12 +52,11 @@ export const RenderedRow = React.memo(function RenderedRow({
   const padded = [...row.tools];
   while (padded.length < cols) padded.push(null as unknown as CatalogTool);
   return (
-    <div className="tools-row-grid" style={{
-      display: 'grid',
-      gridTemplateColumns: `repeat(${cols}, 1fr)`,
-      gap: 'var(--space-3)',
-      marginBottom: 12,
-    }}>
+    <div
+      className="tools-row-grid grid gap-[var(--space-3)] mb-3 grid-cols-[var(--cols)]"
+      // eslint-disable-next-line react/forbid-dom-props -- dynamic columns count
+      style={{ ['--cols' as string]: `repeat(${cols}, 1fr)` }}
+    >
       {padded.map((tool, idx) =>
         tool ? (
           // Plain <div> с CSS cascade keyframe вместо motion.div.
@@ -77,13 +65,9 @@ export const RenderedRow = React.memo(function RenderedRow({
           // runs on the compositor и GC'д браузером.
           <div
             key={tool.id}
-            className="tools-card-cascade"
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              minWidth: 0,
-              animationDelay: `${idx * 40}ms`,
-            }}
+            className="tools-card-cascade flex flex-col min-w-0 [animation-delay:var(--anim-delay)]"
+            // eslint-disable-next-line react/forbid-dom-props -- dynamic animation delay per card
+            style={{ ['--anim-delay' as string]: `${idx * 40}ms` }}
           >
             <ToolCard tool={tool} />
           </div>

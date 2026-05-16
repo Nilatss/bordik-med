@@ -53,17 +53,17 @@ export function CalculatorBody({ inputs, values, setValues, result }: {
 
   return (
     <div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+      <div className="flex flex-col gap-6">
         {nonCheckboxes.length > 0 && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <div className="flex flex-col gap-1.5">
             {nonCheckboxes.map(renderInput)}
           </div>
         )}
         {checkboxes.length > 0 && nonCheckboxes.length > 0 && (
-          <div style={{ borderTop: '1px dashed #E2E4EA' }} />
+          <div className="border-t border-dashed border-[#E2E4EA]" />
         )}
         {checkboxes.length > 0 && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <div className="flex flex-col gap-1.5">
             {checkboxes.map(renderInput)}
           </div>
         )}

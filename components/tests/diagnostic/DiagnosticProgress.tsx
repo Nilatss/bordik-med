@@ -27,27 +27,22 @@ export function DiagnosticProgress({
   // safety + чтобы компонент был «honest» в self-contained использовании.
   if (phase === 'done' || phase === 'error') return null;
   return (
-    <div style={{ marginBottom: 22 }}>
-      <div style={{
-        display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
-        marginBottom: 6,
-      }}>
-        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: '#6B7280' }}>
+    <div className="mb-[22px]">
+      <div className="flex justify-between items-baseline mb-1.5">
+        <span className="font-[var(--font-mono)] text-[11px] text-[#6B7280]">
           {phase === 'finalizing'
             ? 'Собираем рекомендацию…'
             : `Вопрос ${Math.min(indexNow + 1, total)} из ${total}`}
         </span>
-        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: '#9CA3AF' }}>
+        <span className="font-[var(--font-mono)] text-[11px] text-[#9CA3AF]">
           {correctSoFar}/{historyLength} верных
         </span>
       </div>
-      <div style={{
-        height: 6, borderRadius: 999, background: '#F1F3F6', overflow: 'hidden',
-      }}>
+      <div className="h-1.5 rounded-full bg-[#F1F3F6] overflow-hidden">
         <motion.div
           animate={{ width: `${progressPct}%` }}
           transition={{ duration: 0.4, ease: [0.05, 0.7, 0.1, 1] }}
-          style={{ height: '100%', background: '#2563EB', borderRadius: 999 }}
+          className="h-full bg-[#2563EB] rounded-full"
         />
       </div>
     </div>

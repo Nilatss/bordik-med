@@ -185,66 +185,38 @@ export default function TestPanel({ courseId }: TestPanelProps) {
 
   // ═══ RESULT VIEW ═══
   if (result) {
-    const accent = result.passed ? '#16A34A' : '#DC2626';
-    const accentBg = result.passed ? '#F0FDF4' : '#FEF2F2';
-    const accentBorder = result.passed ? '#BBF7D0' : '#FECACA';
+    const cardClass = result.passed
+      ? 'bg-[#F0FDF4] border border-[#BBF7D0] text-[#16A34A]'
+      : 'bg-[#FEF2F2] border border-[#FECACA] text-[#DC2626]';
+    const denomClass = result.passed ? 'text-[#86EFAC]' : 'text-[#FCA5A5]';
     return (
-      <div style={{
-        display: 'flex', flexDirection: 'column', gap: 14,
-      }}>
+      <div className="flex flex-col gap-[14px]">
         {/* Score card — soft tint, large number, status pill style */}
-        <div style={{
-          textAlign: 'center',
-          padding: '28px 24px',
-          borderRadius: 14,
-          background: accentBg,
-          border: `1px solid ${accentBorder}`,
-        }}>
-          <div style={{
-            fontFamily: 'var(--font-display)', fontSize: 38, fontWeight: 700,
-            color: accent,
-            marginBottom: 6, letterSpacing: '-0.02em', lineHeight: 1,
-          }}>
-            {result.score} <span style={{ color: result.passed ? '#86EFAC' : '#FCA5A5' }}>/ {result.total}</span>
+        <div className={`text-center py-7 px-6 rounded-[14px] ${cardClass}`}>
+          <div className="font-[var(--font-display)] text-[38px] font-bold mb-1.5 tracking-[-0.02em] leading-none">
+            {result.score} <span className={denomClass}>/ {result.total}</span>
           </div>
-          <p style={{
-            fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: 600,
-            color: accent,
-          }}>
+          <p className="font-[var(--font-body)] text-sm font-semibold">
             {result.passed ? t('test.result.passed') : t('test.result.failed')}
           </p>
         </div>
 
         {/* Per-question breakdown — same row aesthetic as test list */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6, maxHeight: 420, overflowY: 'auto', paddingRight: 4 }}>
+        <div className="flex flex-col gap-1.5 max-h-[420px] overflow-y-auto pr-1">
           {result.questions.map((q, i) => {
             const userAnswer = result.answers[i];
             const isCorrect = userAnswer === q.correctIndex;
             return (
-              <div key={q.id} style={{
-                padding: '10px 14px',
-                borderRadius: 10,
-                background: isCorrect ? '#F5F6F8' : '#FEF2F2',
-                border: isCorrect ? '1px solid transparent' : '1px solid #FECACA',
-              }}>
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
-                  <span style={{
-                    width: 18, height: 18, borderRadius: 6,
-                    background: isCorrect ? '#16A34A' : '#DC2626',
-                    color: '#FFFFFF', flexShrink: 0,
-                    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: 10, fontWeight: 700, marginTop: 1,
-                  }}>
+              <div key={q.id} className={`py-2.5 px-3.5 rounded-[10px] ${isCorrect ? 'bg-[#F5F6F8] border border-transparent' : 'bg-[#FEF2F2] border border-[#FECACA]'}`}>
+                <div className="flex items-start gap-2.5">
+                  <span className={`w-[18px] h-[18px] rounded-[6px] text-white shrink-0 inline-flex items-center justify-center text-[10px] font-bold mt-px ${isCorrect ? 'bg-[#16A34A]' : 'bg-[#DC2626]'}`}>
                     {isCorrect ? (
                       <svg width={10} height={10} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
                     ) : (
                       <svg width={10} height={10} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round"><line x1={18} y1={6} x2={6} y2={18}/><line x1={6} y1={6} x2={18} y2={18}/></svg>
                     )}
                   </span>
-                  <span style={{
-                    fontFamily: 'var(--font-body)', fontSize: 13,
-                    color: '#1A1A1A', lineHeight: 1.45, fontWeight: 500,
-                  }}>
+                  <span className="font-[var(--font-body)] text-[13px] text-[#1A1A1A] leading-[1.45] font-medium">
                     {q.question}
                   </span>
                 </div>
@@ -253,18 +225,10 @@ export default function TestPanel({ courseId }: TestPanelProps) {
           })}
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 4 }}>
-          <button onClick={() => setResult(null)} style={{
-            padding: '11px 28px',
-            borderRadius: 10,
-            background: '#3B82F6',
-            color: '#FFFFFF',
-            border: 'none', cursor: 'pointer',
-            fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: 600,
-            transition: 'background 180ms',
-          }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = '#2563EB'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = '#3B82F6'; }}
+        <div className="flex justify-center pt-1">
+          <button
+            onClick={() => setResult(null)}
+            className="py-[11px] px-7 rounded-[10px] bg-[#3B82F6] hover:bg-[#2563EB] text-white border-none cursor-pointer font-[var(--font-body)] text-sm font-semibold transition-colors duration-[180ms]"
           >
             {t('common.close')}
           </button>
@@ -279,40 +243,23 @@ export default function TestPanel({ courseId }: TestPanelProps) {
   const totalProgress = Math.round((passedCount / MAX_TEST_LEVELS) * 100);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+    <div className="flex flex-col gap-2.5">
       {/* Header panel */}
-      <div style={{
-        padding: '20px 24px',
-        background: '#F5F6F8',
-        borderRadius: 16,
-        color: '#1A1A1A',
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+      <div className="py-5 px-6 bg-[#F5F6F8] rounded-[16px] text-[#1A1A1A]">
+        <div className="flex items-center justify-between mb-3">
           <div>
-            <p style={{
-              fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 600,
-              color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em',
-              marginBottom: 4,
-            }}>
+            <p className="font-[var(--font-mono)] text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-[0.08em] mb-1">
               {t('test.title')}
             </p>
-            <h3 style={{
-              fontFamily: 'var(--font-display)', fontSize: 20, fontWeight: 700,
-              color: '#1A1A1A', margin: 0, letterSpacing: '-0.01em',
-            }}>
+            <h3 className="font-[var(--font-display)] text-xl font-bold text-[#1A1A1A] m-0 tracking-[-0.01em]">
               {t('test.subtitle')}
             </h3>
           </div>
-          <div style={{ textAlign: 'right' }}>
-            <p style={{
-              fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 700,
-              color: '#1A1A1A', lineHeight: 1,
-            }}>
-              {passedCount}<span style={{ color: '#C4C7CD', fontSize: 18 }}>/{MAX_TEST_LEVELS}</span>
+          <div className="text-right">
+            <p className="font-[var(--font-display)] text-[28px] font-bold text-[#1A1A1A] leading-none">
+              {passedCount}<span className="text-[#C4C7CD] text-lg">/{MAX_TEST_LEVELS}</span>
             </p>
-            <p style={{
-              fontFamily: 'var(--font-body)', fontSize: 11, color: '#888', marginTop: 2,
-            }}>
+            <p className="font-[var(--font-body)] text-[11px] text-[#888] mt-0.5">
               {t('test.percentComplete', { p: totalProgress })}
             </p>
           </div>
@@ -325,18 +272,6 @@ export default function TestPanel({ courseId }: TestPanelProps) {
           startCaption={t('course.progress.start')}
           endCaption={t('course.progress.final')}
         />
-        {/* Legacy block — kept disabled for fallback / git diff continuity */}
-        {false && (<div style={{
-          height: 6, background: '#E2E4EA', borderRadius: 999,
-        }}>
-          <div style={{
-            height: '100%',
-            width: `${totalProgress}%`,
-            background: 'linear-gradient(90deg, #10B981 0%, #34D399 100%)',
-            borderRadius: 999,
-            transition: 'width 400ms ease',
-          }} />
-        </div>)}
       </div>
 
       {/* 5 course test rows */}
@@ -405,18 +340,12 @@ export default function TestPanel({ courseId }: TestPanelProps) {
       {/* Visual divider — separates per-course tests from the module-final
           row, signals the «boss-fight» moment in the user's progression. */}
       {moduleId !== undefined && (
-        <div style={{
-          display: 'flex', alignItems: 'center', gap: 12,
-          margin: '6px 4px 2px',
-        }}>
-          <span style={{ flex: 1, height: 1, background: '#E5E7EB' }} />
-          <span style={{
-            fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-            color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.1em',
-          }}>
+        <div className="flex items-center gap-3 mt-1.5 mx-1 mb-0.5">
+          <span className="flex-1 h-px bg-[#E5E7EB]" />
+          <span className="font-[var(--font-mono)] text-[10px] font-bold text-[#9CA3AF] uppercase tracking-[0.1em]">
             {t('test.divider.courseFinal')}
           </span>
-          <span style={{ flex: 1, height: 1, background: '#E5E7EB' }} />
+          <span className="flex-1 h-px bg-[#E5E7EB]" />
         </div>
       )}
 
@@ -534,17 +463,11 @@ function StatusBadge({ status }: { status: TestStatus }) {
   const m = STATUS_META[status];
   const isWhiteChip = m.bg === '#FFFFFF';
   return (
-    <span style={{
-      display: 'inline-flex', alignItems: 'center', gap: 5,
-      padding: '3px 9px',
-      borderRadius: 8,
-      background: m.bg, color: m.fg,
-      fontFamily: 'var(--font-body)', fontSize: 11, fontWeight: 600,
-      flexShrink: 0,
-      boxShadow: isWhiteChip
-        ? '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)'
-        : 'none',
-    }}>
+    <span
+      className={`inline-flex items-center gap-[5px] py-[3px] px-[9px] rounded-lg font-[var(--font-body)] text-[11px] font-semibold shrink-0 bg-[var(--status-bg)] text-[var(--status-fg)] ${isWhiteChip ? 'shadow-[0_1px_2px_rgba(16,24,40,0.06),0_2px_6px_rgba(16,24,40,0.06)]' : ''}`}
+      // eslint-disable-next-line react/forbid-dom-props -- dynamic palette per status
+      style={{ ['--status-bg' as string]: m.bg, ['--status-fg' as string]: m.fg }}
+    >
       <StatusIcon name={status} color={m.iconColor} />
       {t(`test.status.${status}`)}
     </span>
@@ -573,83 +496,44 @@ function TestRow({
   const [open, setOpen] = useState(false);
   const meta = STATUS_META[status];
 
+  const containerClass = open
+    ? 'bg-white border border-[#E5E7EB] shadow-[0_1px_2px_rgba(16,24,40,0.04),0_4px_16px_rgba(16,24,40,0.04)]'
+    : highlight
+      ? 'bg-[linear-gradient(135deg,#FFFBEB_0%,#F5F6F8_100%)] border border-[#FDE68A] shadow-[0_1px_2px_rgba(217,119,6,0.06),0_2px_6px_rgba(217,119,6,0.04)]'
+      : 'bg-[var(--row-accent)] border border-transparent';
   return (
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.04, duration: 0.3, ease: [0.05, 0.7, 0.1, 1] }}
-      style={{
-        // Highlight mode = the final module-test row. Gives it a soft
-        // amber→cream gradient accent so it visually stands out from the
-        // per-course rows above without breaking the project palette.
-        background: open
-          ? '#FFFFFF'
-          : highlight
-            ? 'linear-gradient(135deg, #FFFBEB 0%, #F5F6F8 100%)'
-            : meta.rowAccent,
-        border: open
-          ? '1px solid #E5E7EB'
-          : highlight ? '1px solid #FDE68A' : '1px solid transparent',
-        borderRadius: 14,
-        overflow: 'hidden',
-        boxShadow: open
-          ? '0 1px 2px rgba(16,24,40,0.04), 0 4px 16px rgba(16,24,40,0.04)'
-          : highlight
-            ? '0 1px 2px rgba(217,119,6,0.06), 0 2px 6px rgba(217,119,6,0.04)'
-            : 'none',
-        transition: 'background 200ms ease, border-color 200ms ease, box-shadow 200ms ease',
-      }}
+      className={`rounded-[14px] overflow-hidden transition-[background,border-color,box-shadow] duration-200 ${containerClass}`}
+      // eslint-disable-next-line react/forbid-dom-props -- row accent tied to status
+      style={{ ['--row-accent' as string]: meta.rowAccent }}
     >
       <button
         onClick={() => setOpen((v) => !v)}
-        className="test-row-header"
-        style={{
-          width: '100%', display: 'flex', alignItems: 'center', gap: 12,
-          padding: '14px 18px',
-          background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left',
-          minWidth: 0,
-        }}
+        className="test-row-header w-full flex items-center gap-3 py-[14px] px-[18px] bg-transparent border-none cursor-pointer text-left min-w-0"
       >
         {/* Kind tag — gold pill for the module-final row only. Per-level
             rows pass an empty `kind` and skip the tag entirely (the title
             «Тест N» already conveys the level). */}
         {highlight && kind ? (
-          <span style={{
-            display: 'inline-flex', alignItems: 'center', gap: 5,
-            padding: '3px 9px', borderRadius: 8,
-            background: '#FEF3C7', color: '#92400E',
-            fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-            textTransform: 'uppercase', letterSpacing: '0.06em',
-            flexShrink: 0,
-          }}>
+          <span className="inline-flex items-center gap-[5px] py-[3px] px-[9px] rounded-lg bg-[#FEF3C7] text-[#92400E] font-[var(--font-mono)] text-[10px] font-bold uppercase tracking-[0.06em] shrink-0">
             <svg width={11} height={11} viewBox="0 0 24 24" fill="#D97706" stroke="none">
               <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z" />
             </svg>
             {kind}
           </span>
         ) : null}
-        <span style={{
-          fontFamily: 'var(--font-display)', fontSize: 14.5, fontWeight: 600,
-          color: '#1A1A1A', flexShrink: 0,
-          display: 'inline-flex', alignItems: 'center', gap: 8,
-        }}>
+        <span className="font-[var(--font-display)] text-[14.5px] font-semibold text-[#1A1A1A] shrink-0 inline-flex items-center gap-2">
           {title}
         </span>
         <StatusBadge status={status} />
-        <span style={{ flex: 1 }} />
-        <span className="test-row-info" style={{
-          fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
-          color: '#1A1A1A', flexShrink: 0,
-        }}>
+        <span className="flex-1" />
+        <span className="test-row-info font-[var(--font-body)] text-[13px] font-semibold text-[#1A1A1A] shrink-0">
           {rightInfo}
         </span>
-        <span style={{
-          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-          width: 24, height: 24, borderRadius: 6,
-          background: '#F5F6F8', color: '#6B7280', flexShrink: 0,
-          transition: 'transform 250ms cubic-bezier(0.2,0,0,1)',
-          transform: open ? 'rotate(180deg)' : 'rotate(0deg)',
-        }}>
+        <span className={`inline-flex items-center justify-center w-6 h-6 rounded-[6px] bg-[#F5F6F8] text-[#6B7280] shrink-0 transition-transform duration-[250ms] ease-[cubic-bezier(0.2,0,0,1)] ${open ? 'rotate-180' : ''}`}>
           <svg width={12} height={12} viewBox="0 0 24 24" fill="none"
             stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
             <polyline points="6 9 12 15 18 9" />
@@ -665,84 +549,42 @@ function TestRow({
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.25, ease: [0.05, 0.7, 0.1, 1] }}
-            style={{ overflow: 'hidden' }}
+            className="overflow-hidden"
           >
             {/* Info-pill grid — matches CourseHeader Уровень/Аудитория/Объём
                 so the expanded card visually rhymes with the page header. */}
-            <div style={{
-              display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
-              gap: 10,
-              padding: '14px 18px 6px',
-              borderTop: '1px solid #F0F1F5',
-            }}>
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(140px,1fr))] gap-2.5 pt-[14px] px-[18px] pb-1.5 border-t border-[#F0F1F5]">
               {detailRows.map(({ label, value, icon }) => (
-                <div key={label} style={{
-                  background: '#F5F6F8',
-                  borderRadius: 12,
-                  padding: '12px 16px',
-                  display: 'flex', flexDirection: 'column', gap: 4,
-                  minWidth: 0,
-                }}>
-                  <div style={{
-                    display: 'flex', alignItems: 'center', gap: 6,
-                    color: '#6B7280',
-                  }}>
+                <div key={label} className="bg-[#F5F6F8] rounded-[12px] py-3 px-4 flex flex-col gap-1 min-w-0">
+                  <div className="flex items-center gap-1.5 text-[#6B7280]">
                     {icon && <PillIconSvg name={icon} />}
-                    <span style={{
-                      fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-                      color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.06em',
-                    }}>
+                    <span className="font-[var(--font-mono)] text-[10px] font-bold text-[#6B7280] uppercase tracking-[0.06em]">
                       {label}
                     </span>
                   </div>
-                  <span style={{
-                    fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
-                    color: '#1A1A1A', lineHeight: 1.35,
-                    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                  }}>
+                  <span className="font-[var(--font-body)] text-[13px] font-semibold text-[#1A1A1A] leading-[1.35] overflow-hidden text-ellipsis whitespace-nowrap">
                     {value}
                   </span>
                 </div>
               ))}
             </div>
             {description && (
-              <div style={{
-                padding: '0 18px 14px',
-                fontFamily: 'var(--font-body)', fontSize: 13, color: '#4B5563',
-                lineHeight: 1.55,
-              }}>
+              <div className="pt-0 px-[18px] pb-[14px] font-[var(--font-body)] text-[13px] text-[#4B5563] leading-[1.55]">
                 {description}
               </div>
             )}
             {actionLabel && (
-              <div className="test-row-action-wrap" style={{
-                padding: '0 18px 16px',
-                display: 'flex', justifyContent: 'flex-end',
-              }}>
+              <div className="test-row-action-wrap pt-0 px-[18px] pb-4 flex justify-end">
                 <button
                   onClick={(e) => { e.stopPropagation(); if (!disabled && onAction) onAction(); }}
                   disabled={disabled}
-                  className="test-row-action-btn"
-                  style={{
-                    display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-                    padding: '10px 18px',
-                    fontFamily: 'var(--font-body)', fontSize: 13.5, fontWeight: 600,
-                    color: actionVariant === 'primary' ? '#FFFFFF' : '#1F2937',
-                    background: actionVariant === 'primary' ? '#3B82F6' : '#F5F6F8',
-                    border: actionVariant === 'secondary' ? '1px solid #E5E7EB' : 'none',
-                    borderRadius: 10,
-                    cursor: disabled ? 'not-allowed' : 'pointer',
-                    opacity: disabled ? 0.5 : 1,
-                    transition: 'background 180ms ease',
-                  }}
-                  onMouseEnter={(e) => {
-                    if (disabled) return;
-                    e.currentTarget.style.background = actionVariant === 'primary' ? '#2563EB' : '#EEF1F4';
-                  }}
-                  onMouseLeave={(e) => {
-                    if (disabled) return;
-                    e.currentTarget.style.background = actionVariant === 'primary' ? '#3B82F6' : '#F5F6F8';
-                  }}
+                  className={`test-row-action-btn inline-flex items-center justify-center gap-2 py-2.5 px-[18px] font-[var(--font-body)] text-[13.5px] font-semibold rounded-[10px] transition-colors duration-[180ms] ${
+                    disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer opacity-100'
+                  } ${
+                    actionVariant === 'primary'
+                      ? 'text-white bg-[#3B82F6] hover:bg-[#2563EB] border-none'
+                      : 'text-[#1F2937] bg-[#F5F6F8] hover:bg-[#EEF1F4] border border-[#E5E7EB]'
+                  }`}
                 >
                   {actionLabel}
                   {actionVariant === 'primary' && (
