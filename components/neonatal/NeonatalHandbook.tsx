@@ -2858,15 +2858,7 @@ function ClinicalCaseCard({
           >
             <div className="pt-[18px] px-5 pb-5 bg-white border-t border-[#E5E7EB] text-[13.5px] leading-[1.6] text-[#1F2937]">
               {/* Виньетка — первый блок (контекст случая) */}
-              <p style={{
-                margin: '0 0 16px',
-                paddingBottom: 14,
-                borderBottom: '1px solid #F0F1F5',
-                fontSize: 14,
-                lineHeight: 1.6,
-                color: '#374151',
-                fontStyle: 'italic',
-              }}>
+              <p className="mt-0 mb-4 pb-3.5 border-b border-[#F0F1F5] text-sm leading-[1.6] text-[#374151] italic">
                 <Highlight text={c.vignette} query={query} />
               </p>
 
@@ -2914,14 +2906,11 @@ function CaseSection({
   const ListTag: 'ol' | 'ul' = ordered ? 'ol' : 'ul';
   return (
     <div className="mb-3.5">
-      <div style={{
-        display: 'inline-flex', alignItems: 'center', gap: 6,
-        fontFamily: 'var(--font-mono)',
-        fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
-        textTransform: 'uppercase',
-        color: tone === 'pearl' ? '#B45309' : '#9CA3AF',
-        marginBottom: 6,
-      }}>
+      <div
+        className={`inline-flex items-center gap-1.5 font-[var(--font-mono)] text-[11px] font-bold tracking-[0.06em] uppercase mb-1.5 ${
+          tone === 'pearl' ? 'text-[#B45309]' : 'text-[#9CA3AF]'
+        }`}
+      >
         {tone === 'pearl' && (
           <svg
             aria-hidden="true" focusable="false"
@@ -2937,11 +2926,7 @@ function CaseSection({
         )}
         {label}
       </div>
-      <ListTag style={{
-        margin: 0, paddingLeft: 22,
-        display: 'flex', flexDirection: 'column', gap: 4,
-        fontSize: 13, lineHeight: 1.55, color: '#374151',
-      }}>
+      <ListTag className="m-0 pl-[22px] flex flex-col gap-1 text-[13px] leading-[1.55] text-[#374151]">
         {items.map((it, i) => (
           <li key={i}>{it}</li>
         ))}
@@ -3478,32 +3463,19 @@ function ChecklistCard({
                       return (
                         <label
                           key={ii}
-                          style={{
-                            display: 'flex', alignItems: 'flex-start', gap: 10,
-                            padding: '8px 10px',
-                            background: checked ? '#ECFDF5' : '#F9FAFB',
-                            borderRadius: 8,
-                            cursor: 'pointer',
-                            transition: 'background 150ms',
-                            fontSize: 13.5,
-                            color: checked ? '#065F46' : '#1F2937',
-                            textDecoration: checked ? 'line-through' : 'none',
-                            opacity: checked ? 0.75 : 1,
-                          }}
+                          className={`flex items-start gap-2.5 px-2.5 py-2 rounded-lg cursor-pointer transition-[background-color] duration-150 text-[13.5px] ${
+                            checked
+                              ? 'bg-[#ECFDF5] text-[#065F46] line-through opacity-75'
+                              : 'bg-[#F9FAFB] text-[#1F2937] opacity-100'
+                          }`}
                         >
                           <input
                             type="checkbox"
                             checked={checked}
                             onChange={() => toggleItem(key)}
-                            style={{
-                              flexShrink: 0,
-                              marginTop: 3,
-                              width: 16, height: 16,
-                              accentColor: '#059669',
-                              cursor: 'pointer',
-                            }}
+                            className="shrink-0 mt-[3px] w-4 h-4 cursor-pointer [accent-color:#059669]"
                           />
-                          <span style={{ lineHeight: 1.5 }}>{it}</span>
+                          <span className="leading-[1.5]">{it}</span>
                         </label>
                       );
                     })}
@@ -3512,31 +3484,16 @@ function ChecklistCard({
               ))}
 
               {/* Reset button + references */}
-              <div style={{
-                marginTop: 14, paddingTop: 14, borderTop: '1px solid #E5E7EB',
-                display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 12,
-              }}>
+              <div className="mt-3.5 pt-3.5 border-t border-[#E5E7EB] flex items-center flex-wrap gap-3">
                 <button
                   type="button"
                   onClick={resetAll}
                   aria-label="Сбросить прогресс чек-листа"
-                  style={{
-                    display: 'inline-flex', alignItems: 'center', gap: 6,
-                    padding: '8px 14px',
-                    borderRadius: 'var(--md-sys-shape-corner-full)',
-                    background: '#FFFFFF',
-                    boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-                    border: 'none',
-                    fontFamily: 'var(--font-body)',
-                    fontSize: 12.5, fontWeight: 600,
-                    color: '#1A1A1A',
-                    cursor: 'pointer',
-                    whiteSpace: 'nowrap',
-                  }}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-[var(--md-sys-shape-corner-full)] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.06),0_2px_6px_rgba(16,24,40,0.06)] border-0 font-[var(--font-body)] text-[12.5px] font-semibold text-[#1A1A1A] cursor-pointer whitespace-nowrap"
                 >
                   Сбросить прогресс
                 </button>
-                <span style={{ fontSize: 11, color: '#9CA3AF', flex: 1 }}>
+                <span className="text-[11px] text-[#9CA3AF] flex-1">
                   Прогресс сохраняется локально в браузере. Не заменяет
                   институциональный чек-лист.
                 </span>
@@ -3716,89 +3673,32 @@ function ProcedureVideoCard({ video }: { video: ProcedureVideo }) {
       aria-label={videoList
         ? `Открыть список видео: ${v.title_ru} (${videoList.length} ${videoList.length === 1 ? 'видео' : 'видео'})`
         : `Открыть видео: ${v.title_ru}. Источник: ${v.source}. Длительность ~${v.duration_min} минут.`}
-      style={{
-        display: 'flex', flexDirection: 'column',
-        background: '#F5F6F8',
-        borderRadius: 'var(--md-sys-shape-corner-extra-large)',
-        padding: 'var(--space-5)',
-        textDecoration: 'none',
-        color: 'inherit',
-        minHeight: 180,
-        transition: 'background 300ms cubic-bezier(0.22,1,0.36,1)',
-        contentVisibility: 'auto',
-        containIntrinsicSize: '180px 240px',
-      } as React.CSSProperties}
-      onMouseEnter={(e) => { e.currentTarget.style.background = '#F0F2F5'; }}
-      onMouseLeave={(e) => { e.currentTarget.style.background = '#F5F6F8'; }}
+      className="flex flex-col bg-[#F5F6F8] hover:bg-[#F0F2F5] rounded-[var(--md-sys-shape-corner-extra-large)] p-[var(--space-5)] no-underline text-[color:inherit] min-h-[180px] transition-[background-color] duration-300 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] [content-visibility:auto] [contain-intrinsic-size:180px_240px]"
     >
-      <div style={{
-        display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 'var(--space-3)',
-      }}>
-        <span style={{
-          display: 'inline-flex', alignItems: 'center',
-          padding: '4px 10px', borderRadius: 'var(--md-sys-shape-corner-full)',
-          background: '#FFFFFF',
-          boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-          fontFamily: 'var(--font-body)',
-          fontSize: 11, fontWeight: 500,
-          color: 'var(--md-sys-color-on-surface-variant)',
-          whiteSpace: 'nowrap',
-        }}>
+      <div className="flex flex-wrap gap-1 mb-[var(--space-3)]">
+        <span className="inline-flex items-center px-2.5 py-1 rounded-[var(--md-sys-shape-corner-full)] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.06),0_2px_6px_rgba(16,24,40,0.06)] font-[var(--font-body)] text-[11px] font-medium text-[color:var(--md-sys-color-on-surface-variant)] whitespace-nowrap">
           ~{v.duration_min} мин
         </span>
-        <span style={{
-          display: 'inline-flex', alignItems: 'center',
-          padding: '4px 10px', borderRadius: 'var(--md-sys-shape-corner-full)',
-          background: '#FFFFFF',
-          boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-          fontFamily: 'var(--font-body)',
-          fontSize: 11, fontWeight: 500,
-          color: 'var(--md-sys-color-on-surface-variant)',
-          whiteSpace: 'nowrap',
-        }}>
+        <span className="inline-flex items-center px-2.5 py-1 rounded-[var(--md-sys-shape-corner-full)] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.06),0_2px_6px_rgba(16,24,40,0.06)] font-[var(--font-body)] text-[11px] font-medium text-[color:var(--md-sys-color-on-surface-variant)] whitespace-nowrap">
           {sourceLabel}
         </span>
       </div>
-      <div style={{ flex: 1 }}>
-        <h3 style={{
-          fontFamily: 'var(--font-display)',
-          fontSize: 'var(--text-base)', fontWeight: 700,
-          color: 'var(--md-sys-color-on-surface)',
-          marginBottom: 'var(--space-1)', lineHeight: 1.25,
-        }}>
+      <div className="flex-1">
+        <h3 className="font-[var(--font-display)] text-[length:var(--text-base)] font-bold text-[color:var(--md-sys-color-on-surface)] mb-[var(--space-1)] leading-[1.25]">
           {v.title_ru}
         </h3>
-        <p style={{
-          fontFamily: 'var(--font-body)',
-          fontSize: 'var(--text-xs)',
-          color: 'var(--md-sys-color-on-surface-variant)',
-          lineHeight: 1.4,
-          display: '-webkit-box',
-          WebkitLineClamp: 3,
-          WebkitBoxOrient: 'vertical',
-          overflow: 'hidden',
-          margin: 0,
-        }}>
+        <p className="font-[var(--font-body)] text-[length:var(--text-xs)] text-[color:var(--md-sys-color-on-surface-variant)] leading-[1.4] [display:-webkit-box] [-webkit-line-clamp:3] [-webkit-box-orient:vertical] overflow-hidden m-0">
           {v.description}
         </p>
       </div>
-      <div style={{
-        marginTop: 'var(--space-3)',
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        gap: 8,
-      }}>
-        <span style={{
-          fontFamily: 'var(--font-body)',
-          fontSize: 'var(--text-xs)', fontWeight: 500,
-          color: 'var(--md-sys-color-on-surface)',
-          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-        }}>
+      <div className="mt-[var(--space-3)] flex items-center justify-between gap-2">
+        <span className="font-[var(--font-body)] text-[length:var(--text-xs)] font-medium text-[color:var(--md-sys-color-on-surface)] overflow-hidden text-ellipsis whitespace-nowrap">
           {v.source}
         </span>
         <svg width={14} height={14} viewBox="0 0 24 24" fill="none"
           stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
           aria-hidden="true" focusable="false"
-          style={{ flexShrink: 0, color: 'var(--md-sys-color-on-surface)' }}>
+          className="shrink-0 text-[color:var(--md-sys-color-on-surface)]">
           <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" />
           <polyline points="15 3 21 3 21 9" />
           <line x1="10" y1="14" x2="21" y2="3" />
@@ -3834,29 +3734,14 @@ function VideoPickerModal({
       aria-modal="true"
       aria-label={`Выбор видео: ${title}`}
       onClick={onClose}
-      style={{
-        position: 'fixed', inset: 0, zIndex: 9999,
-        background: 'rgba(0,0,0,0.5)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        padding: 16,
-      }}
+      className="fixed inset-0 z-[9999] bg-black/50 flex items-center justify-center p-4"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        style={{
-          background: '#FFFFFF',
-          borderRadius: 16,
-          padding: 24,
-          maxWidth: 480, width: '100%', maxHeight: '80vh', overflow: 'auto',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.25)',
-        }}
+        className="bg-white rounded-2xl p-6 max-w-[480px] w-full max-h-[80vh] overflow-auto shadow-[0_20px_60px_rgba(0,0,0,0.25)]"
       >
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 16, marginBottom: 16 }}>
-          <h3 style={{
-            margin: 0,
-            fontFamily: 'var(--font-display)',
-            fontSize: 18, fontWeight: 700, color: '#111827', lineHeight: 1.3,
-          }}>
+        <div className="flex justify-between items-start gap-4 mb-4">
+          <h3 className="m-0 font-[var(--font-display)] text-lg font-bold text-[#111827] leading-[1.3]">
             {title}
           </h3>
           <button
