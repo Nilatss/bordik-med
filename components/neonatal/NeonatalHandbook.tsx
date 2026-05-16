@@ -1009,24 +1009,9 @@ export default function NeonatalHandbook() {
                 {/* Section header — visually 1:1 с RenderedRow.kind="category"
                     из ToolsPage: display-font 17/700, маленький mono count
                     справа цвета #9CA3AF. */}
-                <h3 style={{
-                  fontFamily: 'var(--font-display)',
-                  fontSize: 17,
-                  fontWeight: 700,
-                  color: '#1A1A1A',
-                  margin: '0 0 18px',
-                  letterSpacing: '-0.01em',
-                  display: 'flex',
-                  alignItems: 'baseline',
-                  gap: 8,
-                }}>
+                <h3 className="font-[var(--font-display)] text-[17px] font-bold text-[#1A1A1A] mt-0 mb-[18px] tracking-[-0.01em] flex items-baseline gap-2">
                   {group.title_ru}
-                  <span style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: 11,
-                    fontWeight: 600,
-                    color: '#9CA3AF',
-                  }}>
+                  <span className="font-[var(--font-mono)] text-[11px] font-semibold text-[#9CA3AF]">
                     {group.calculators.length}
                   </span>
                 </h3>
@@ -1067,21 +1052,10 @@ export default function NeonatalHandbook() {
           >
             {filteredLabs.map((group) => (
               <div key={group.id}>
-                <h3 style={{
-                  fontFamily: 'var(--font-display)',
-                  fontSize: 16,
-                  fontWeight: 700,
-                  color: '#1F2937',
-                  margin: '0 0 10px',
-                  letterSpacing: '-0.01em',
-                }}>
+                <h3 className="font-[var(--font-display)] text-base font-bold text-[#1F2937] mt-0 mb-2.5 tracking-[-0.01em]">
                   {group.title_ru}
                 </h3>
-                <div style={{
-                  background: '#F5F6F8',
-                  borderRadius: 10,
-                  overflow: 'hidden',
-                }}>
+                <div className="bg-[#F5F6F8] rounded-[10px] overflow-hidden">
                   {/*
                     Fixed column widths via <colgroup> + table-layout: fixed —
                     обеспечивает identical layout across all groups (без
@@ -1092,12 +1066,7 @@ export default function NeonatalHandbook() {
                     Padding ячеек увеличен с 8/10 → 14/18 для better
                     breathing room; font-size 12.5 → 13.5 для readability.
                   */}
-                  <table style={{
-                    width: '100%',
-                    borderCollapse: 'collapse',
-                    fontSize: 13.5,
-                    tableLayout: 'fixed',
-                  }}>
+                  <table className="w-full border-collapse text-[13.5px] table-fixed">
                     <colgroup>
                       <col className="w-[35%]" />
                       <col className="w-[23%]" />
@@ -1311,30 +1280,12 @@ export default function NeonatalHandbook() {
       {(tab === 'drugs' || tab === 'growth' || tab === 'bilirubin') && (
       <section
         aria-labelledby="neonatal-provenance"
-        style={{
-          marginTop: 32,
-          padding: '20px 22px',
-          background: '#F5F6F8',
-          border: 'none',
-          borderRadius: 14,
-          fontSize: 13,
-          color: '#4B5563',
-          lineHeight: 1.55,
-        }}
+        className="mt-8 px-[22px] py-5 bg-[#F5F6F8] border-0 rounded-[14px] text-[13px] text-[#4B5563] leading-[1.55]"
       >
-        <h3 id="neonatal-provenance" style={{
-          margin: '0 0 14px',
-          fontFamily: 'var(--font-display)',
-          fontSize: 15, fontWeight: 700,
-          color: '#1A1A1A',
-          letterSpacing: '-0.01em',
-        }}>
+        <h3 id="neonatal-provenance" className="mt-0 mb-3.5 font-[var(--font-display)] text-[15px] font-bold text-[#1A1A1A] tracking-[-0.01em]">
           Источник и обновление
         </h3>
-        <dl style={{
-          margin: 0, display: 'grid',
-          gridTemplateColumns: 'auto 1fr', columnGap: 18, rowGap: 10,
-        }}>
+        <dl className="m-0 grid grid-cols-[auto_1fr] gap-x-[18px] gap-y-2.5">
           {tab === 'drugs' && (
             <>
               <dt className="text-[#9CA3AF] text-xs">Препараты + протоколы</dt>
@@ -1372,12 +1323,7 @@ export default function NeonatalHandbook() {
           )}
         </dl>
 
-        <p role="note" style={{
-          marginTop: 18, paddingTop: 16,
-          borderTop: '1px solid #E5E7EB',
-          fontSize: 12, color: '#6B7280', lineHeight: 1.55,
-          margin: '18px 0 0',
-        }}>
+        <p role="note" className="mt-[18px] mb-0 pt-4 border-t border-[#E5E7EB] text-xs text-[#6B7280] leading-[1.55]">
           <strong className="text-[#1A1A1A]">Не заменяет клиническое решение.</strong>{' '}
           {tab === 'drugs' && (
             <>Дозы у новорождённых критически зависят от гестационного возраста, дней жизни, веса,
@@ -1473,12 +1419,7 @@ function DrugCard({
             }}
             className="overflow-hidden"
           >
-            <div style={{
-              borderTop: '1px solid #E5E7EB',
-              background: '#FFFFFF',
-              padding: '0 20px',
-              fontSize: 13.5, lineHeight: 1.55, color: '#374151',
-            }}>
+            <div className="border-t border-[#E5E7EB] bg-white px-5 text-[13.5px] leading-[1.55] text-[#374151]">
               {showStructured ? (() => {
                 // Собираем массив видимых блоков. Предосторожности всегда
                 // последним блоком (визуально-важно: пользователь видит
@@ -1552,11 +1493,7 @@ function renderFieldValue(value: string): React.ReactNode {
   const parts = splitIntoSentences(clean);
   if (parts.length < 2) return clean;
   return (
-    <ul style={{
-      margin: 0, paddingLeft: 18,
-      listStyle: 'disc',
-      display: 'flex', flexDirection: 'column', gap: 6,
-    }}>
+    <ul className="m-0 pl-[18px] list-disc flex flex-col gap-1.5">
       {parts.map((p, i) => (
         <li key={i}>{p}</li>
       ))}
@@ -1673,13 +1610,11 @@ function NeonatalDetailBlock({
   // и читалось как inline-callout вместо органичной строки данных.
   return (
     <div className={`neo-detail-row py-3.5 ${isLast ? '' : 'border-b border-[#F0F1F5]'}`}>
-      <div style={{
-        display: 'inline-flex', alignItems: 'center', gap: 6,
-        fontSize: 11, fontWeight: 600, letterSpacing: '0.06em',
-        textTransform: 'uppercase',
-        color: isWarning ? '#B45309' : '#9CA3AF',
-        paddingTop: 1,
-      }}>
+      <div
+        className={`inline-flex items-center gap-1.5 text-[11px] font-semibold tracking-[0.06em] uppercase pt-px ${
+          isWarning ? 'text-[#B45309]' : 'text-[#9CA3AF]'
+        }`}
+      >
         {isWarning && (
           <svg
             aria-hidden="true" focusable="false"
@@ -1695,10 +1630,7 @@ function NeonatalDetailBlock({
         )}
         {label}
       </div>
-      <div style={{
-        color: '#374151',
-        fontSize: 13.5, lineHeight: 1.55,
-      }}>
+      <div className="text-[#374151] text-[13.5px] leading-[1.55]">
         {children}
       </div>
     </div>
@@ -2147,53 +2079,18 @@ function NeonatalCalcCard({
       <button
       type="button"
       onClick={handleClick}
-      onMouseEnter={(e) => {
-        handlePrefetch();
-        e.currentTarget.style.background = '#F0F2F5';
-      }}
+      onMouseEnter={handlePrefetch}
       onFocus={handlePrefetch}
-      onMouseLeave={(e) => { e.currentTarget.style.background = '#F5F6F8'; }}
       aria-label={`Открыть калькулятор: ${calc.title_ru}. Категория: ${subcategoryLabel}.${calc.audit_id ? ` Audit ID: ${calc.audit_id}.` : ''} Источник: ${calc.source}`}
-      style={{
-        background: '#F5F6F8',
-        borderRadius: 'var(--md-sys-shape-corner-extra-large)',
-        border: 'none',
-        padding: 'var(--space-5)',
-        textAlign: 'left',
-        cursor: 'pointer',
-        position: 'relative',
-        overflow: 'hidden',
-        minHeight: 160,
-        display: 'flex',
-        width: '100%',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        transition: 'background 300ms cubic-bezier(0.22,1,0.36,1)',
-        contentVisibility: 'auto',
-        containIntrinsicSize: '160px 220px',
-      } as React.CSSProperties}
+      className="bg-[#F5F6F8] hover:bg-[#F0F2F5] rounded-[var(--md-sys-shape-corner-extra-large)] border-0 p-[var(--space-5)] text-left cursor-pointer relative overflow-hidden min-h-[160px] flex w-full flex-col justify-between transition-[background-color] duration-300 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] [content-visibility:auto] [contain-intrinsic-size:160px_220px]"
     >
-      <div style={{
-        marginBottom: 'var(--space-3)', position: 'relative', zIndex: 1,
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8,
-      }}>
-        <div style={{
-          display: 'flex', alignItems: 'center', gap: 4, flex: 1, minWidth: 0,
-          flexWrap: 'wrap',
-        }}>
+      <div className="mb-[var(--space-3)] relative z-[1] flex items-center justify-between gap-2">
+        <div className="flex items-center gap-1 flex-1 min-w-0 flex-wrap">
           {/* Single short pill (mirrors ToolCard subcategory chip).
               audit_id (e.g. "A1", "A24/A25") is the natural short label;
               full group title is already shown in the section heading above. */}
           {calc.audit_id && (
-            <span style={{
-              display: 'inline-flex', alignItems: 'center', gap: 'var(--space-1)',
-              padding: '4px var(--space-2)', borderRadius: 'var(--md-sys-shape-corner-full)',
-              background: '#FFFFFF',
-              boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-              fontFamily: 'var(--font-mono)',
-              fontSize: '0.625rem', fontWeight: 500,
-              color: 'var(--md-sys-color-on-surface-variant)',
-            }}>
+            <span className="inline-flex items-center gap-[var(--space-1)] px-[var(--space-2)] py-1 rounded-[var(--md-sys-shape-corner-full)] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.06),0_2px_6px_rgba(16,24,40,0.06)] font-[var(--font-mono)] text-[0.625rem] font-medium text-[color:var(--md-sys-color-on-surface-variant)]">
               {calc.audit_id}
             </span>
           )}
@@ -2207,31 +2104,14 @@ function NeonatalCalcCard({
                   <span
                     key={c.name}
                     title={c.name}
-                    style={{
-                      display: 'inline-flex', alignItems: 'center', gap: 4,
-                      padding: '4px var(--space-2)', borderRadius: 'var(--md-sys-shape-corner-full)',
-                      background: '#FFFFFF',
-                      boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-                      fontFamily: 'var(--font-mono)',
-                      fontSize: '0.625rem', fontWeight: 500,
-                      color: 'var(--md-sys-color-on-surface-variant)',
-                      whiteSpace: 'nowrap',
-                    }}
+                    className="inline-flex items-center gap-1 px-[var(--space-2)] py-1 rounded-[var(--md-sys-shape-corner-full)] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.06),0_2px_6px_rgba(16,24,40,0.06)] font-[var(--font-mono)] text-[0.625rem] font-medium text-[color:var(--md-sys-color-on-surface-variant)] whitespace-nowrap"
                   >
                     <EmojiOrFlag emoji={c.flag} size={12} />
                     {c.name}
                   </span>
                 ))}
                 {extra > 0 && (
-                  <span style={{
-                    display: 'inline-flex', alignItems: 'center',
-                    padding: '4px 8px', borderRadius: 999,
-                    background: '#FFFFFF',
-                    boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: '0.625rem', fontWeight: 600,
-                    color: '#6B7280',
-                  }}>
+                  <span className="inline-flex items-center px-2 py-1 rounded-full bg-white shadow-[0_1px_2px_rgba(16,24,40,0.06),0_2px_6px_rgba(16,24,40,0.06)] font-[var(--font-mono)] text-[0.625rem] font-semibold text-[#6B7280]">
                     +{extra}
                   </span>
                 )}
@@ -2242,31 +2122,16 @@ function NeonatalCalcCard({
       </div>
 
       <div className="relative z-[1] flex-1">
-        <h3 style={{
-          fontFamily: 'var(--font-display)', fontSize: 'var(--text-base)', fontWeight: 700,
-          color: 'var(--md-sys-color-on-surface)',
-          marginBottom: 'var(--space-1)', lineHeight: 1.25,
-        }}>
+        <h3 className="font-[var(--font-display)] text-[length:var(--text-base)] font-bold text-[color:var(--md-sys-color-on-surface)] mb-[var(--space-1)] leading-[1.25]">
           {calc.title_ru}
         </h3>
-        <p style={{
-          fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)',
-          color: 'var(--md-sys-color-on-surface-variant)', lineHeight: 1.4,
-          display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical',
-          overflow: 'hidden',
-        }}>
+        <p className="font-[var(--font-body)] text-[length:var(--text-xs)] text-[color:var(--md-sys-color-on-surface-variant)] leading-[1.4] [display:-webkit-box] [-webkit-line-clamp:3] [-webkit-box-orient:vertical] overflow-hidden">
           {calc.source}
         </p>
       </div>
 
-      <div style={{
-        display: 'flex', alignItems: 'center', gap: 'var(--space-1)',
-        marginTop: 'var(--space-3)', position: 'relative', zIndex: 1,
-      }}>
-        <span style={{
-          fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', fontWeight: 500,
-          color: 'var(--md-sys-color-on-surface)',
-        }}>
+      <div className="flex items-center gap-[var(--space-1)] mt-[var(--space-3)] relative z-[1]">
+        <span className="font-[var(--font-body)] text-[length:var(--text-xs)] font-medium text-[color:var(--md-sys-color-on-surface)]">
           Открыть калькулятор
         </span>
         <ArrowRight size={14} color="var(--md-sys-color-on-surface)" />
@@ -2312,18 +2177,7 @@ function ArticleCard({
             <span className="font-[var(--font-display)] text-[15px] font-semibold text-[#111827] tracking-[-0.01em] leading-[1.35]">
               <Highlight text={article.title_ru} query={query} />
             </span>
-            <span style={{
-              display: 'inline-flex', alignItems: 'center',
-              padding: '4px var(--space-2)',
-              borderRadius: 'var(--md-sys-shape-corner-full)',
-              background: '#FFFFFF',
-              boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-              fontFamily: 'var(--font-mono)',
-              fontSize: '0.625rem', fontWeight: 500,
-              color: 'var(--md-sys-color-on-surface-variant)',
-              textTransform: 'uppercase', letterSpacing: '0.04em',
-              whiteSpace: 'nowrap',
-            }}>
+            <span className="inline-flex items-center px-[var(--space-2)] py-1 rounded-[var(--md-sys-shape-corner-full)] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.06),0_2px_6px_rgba(16,24,40,0.06)] font-[var(--font-mono)] text-[0.625rem] font-medium text-[color:var(--md-sys-color-on-surface-variant)] uppercase tracking-[0.04em] whitespace-nowrap">
               {article.topic}
             </span>
           </span>
@@ -2361,15 +2215,7 @@ function ArticleCard({
                   Mirrors протокольный intro — visually distinct paragraph
                   выше основного содержимого. */}
               {article.summary && (
-                <p style={{
-                  margin: '0 0 16px',
-                  paddingBottom: 14,
-                  borderBottom: '1px solid #F0F1F5',
-                  fontSize: 14,
-                  lineHeight: 1.55,
-                  color: '#4B5563',
-                  fontWeight: 400,
-                }}>
+                <p className="mt-0 mb-4 pb-3.5 border-b border-[#F0F1F5] text-sm leading-[1.55] text-[#4B5563] font-normal">
                   <Highlight text={article.summary} query={query} />
                 </p>
               )}
@@ -2379,25 +2225,13 @@ function ArticleCard({
                   <div className="font-[var(--font-mono)] text-[11px] font-bold tracking-[0.06em] uppercase text-[#9CA3AF] mb-2">
                     Связанные калькуляторы
                   </div>
-                  <ul style={{
-                    margin: 0, padding: 0, listStyle: 'none',
-                    display: 'flex', flexWrap: 'wrap', gap: 6,
-                  }}>
+                  <ul className="m-0 p-0 list-none flex flex-wrap gap-1.5">
                     {article.related_calculators.map((calcId) => (
                       <li key={calcId}>
-                        <a href={`/tools/${calcId}`} style={{
-                          display: 'inline-flex', alignItems: 'center',
-                          padding: '4px var(--space-2)',
-                          borderRadius: 'var(--md-sys-shape-corner-full)',
-                          background: '#FFFFFF',
-                          boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-                          fontFamily: 'var(--font-mono)',
-                          fontSize: '0.625rem', fontWeight: 500,
-                          color: '#4338CA',
-                          textTransform: 'uppercase', letterSpacing: '0.04em',
-                          whiteSpace: 'nowrap',
-                          textDecoration: 'none',
-                        }}>
+                        <a
+                          href={`/tools/${calcId}`}
+                          className="inline-flex items-center px-[var(--space-2)] py-1 rounded-[var(--md-sys-shape-corner-full)] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.06),0_2px_6px_rgba(16,24,40,0.06)] font-[var(--font-mono)] text-[0.625rem] font-medium text-[#4338CA] uppercase tracking-[0.04em] whitespace-nowrap no-underline"
+                        >
                           {calcId}
                         </a>
                       </li>
