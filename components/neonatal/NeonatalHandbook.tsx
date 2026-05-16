@@ -3368,31 +3368,13 @@ function ChecklistCard({
             <span className="font-[var(--font-display)] text-[15px] font-semibold text-[#111827] tracking-[-0.01em] leading-[1.35]">
               <Highlight text={c.title_ru} query={query} />
             </span>
-            <span style={{
-              display: 'inline-flex', alignItems: 'center',
-              padding: '4px var(--space-2)',
-              borderRadius: 'var(--md-sys-shape-corner-full)',
-              background: '#FFFFFF',
-              boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-              fontFamily: 'var(--font-mono)',
-              fontSize: '0.625rem', fontWeight: 500,
-              color: 'var(--md-sys-color-on-surface-variant)',
-              whiteSpace: 'nowrap',
-            }}>
+            <span className="inline-flex items-center px-[var(--space-2)] py-1 rounded-[var(--md-sys-shape-corner-full)] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.06),0_2px_6px_rgba(16,24,40,0.06)] font-[var(--font-mono)] text-[0.625rem] font-medium text-[color:var(--md-sys-color-on-surface-variant)] whitespace-nowrap">
               ~{c.estimated_minutes} мин
             </span>
             {percent > 0 && (
-              <span style={{
-                display: 'inline-flex', alignItems: 'center',
-                padding: '4px var(--space-2)',
-                borderRadius: 'var(--md-sys-shape-corner-full)',
-                background: '#FFFFFF',
-                boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-                fontFamily: 'var(--font-mono)',
-                fontSize: '0.625rem', fontWeight: 600,
-                color: percent === 100 ? '#059669' : '#2563EB',
-                whiteSpace: 'nowrap',
-              }}>
+              <span className={`inline-flex items-center px-[var(--space-2)] py-1 rounded-[var(--md-sys-shape-corner-full)] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.06),0_2px_6px_rgba(16,24,40,0.06)] font-[var(--font-mono)] text-[0.625rem] font-semibold whitespace-nowrap ${
+                percent === 100 ? 'text-[#059669]' : 'text-[#2563EB]'
+              }`}>
                 {doneItems}/{totalItems} · {percent}%
               </span>
             )}
@@ -3428,20 +3410,14 @@ function ChecklistCard({
           >
             <div className="pt-[18px] px-5 pb-5 bg-white border-t border-[#E5E7EB] text-[13.5px] leading-[1.55] text-[#1F2937]">
               {/* Audience + indications */}
-              <div style={{
-                marginBottom: 16,
-                paddingBottom: 14,
-                borderBottom: '1px solid #F0F1F5',
-              }}>
-                <div style={{
-                  fontSize: 12, color: '#6B7280', marginBottom: 6,
-                }}>
+              <div className="mb-4 pb-3.5 border-b border-[#F0F1F5]">
+                <div className="text-xs text-[#6B7280] mb-1.5">
                   <strong className="text-[#1A1A1A]">Аудитория:</strong> {c.audience}
                 </div>
                 {c.indications.length > 0 && (
                   <div className="text-xs text-[#6B7280]">
                     <strong className="text-[#1A1A1A]">Показания:</strong>
-                    <ul style={{ margin: '4px 0 0 18px', padding: 0 }}>
+                    <ul className="mt-1 mb-0 ml-[18px] p-0">
                       {c.indications.map((it, i) => (
                         <li key={i}>{it}</li>
                       ))}
@@ -4228,31 +4204,12 @@ export function ProgressDashboard({ bank: _bank, quizzesBank: _quizzesBank }: { 
                 ? `Текущий результат ${s.bestPercent}% — ниже 70%`
                 : `Bank ${s.bankSize}, видели ${s.seenIndices.length} — ещё ${s.bankSize - s.seenIndices.length} новых`;
               return (
-                <div key={s.id} style={{
-                  display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap',
-                  padding: '14px 16px',
-                  background: '#F5F6F8',
-                  borderRadius: 12,
-                }}>
-                  <span style={{
-                    fontFamily: 'var(--font-display)', fontSize: 14, fontWeight: 600,
-                    color: '#1A1A1A', flex: 1, minWidth: 200,
-                  }}>{s.title}</span>
-                  <span style={{
-                    display: 'inline-flex', alignItems: 'center',
-                    padding: '4px var(--space-2)',
-                    borderRadius: 'var(--md-sys-shape-corner-full)',
-                    background: '#FFFFFF',
-                    boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: '0.625rem', fontWeight: 500,
-                    color: 'var(--md-sys-color-on-surface-variant)',
-                    textTransform: 'uppercase', letterSpacing: '0.04em',
-                    whiteSpace: 'nowrap',
-                  }}>
+                <div key={s.id} className="flex items-center gap-3 flex-wrap px-4 py-3.5 bg-[#F5F6F8] rounded-xl">
+                  <span className="font-[var(--font-display)] text-sm font-semibold text-[#1A1A1A] flex-1 min-w-[200px]">{s.title}</span>
+                  <span className="inline-flex items-center px-[var(--space-2)] py-1 rounded-[var(--md-sys-shape-corner-full)] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.06),0_2px_6px_rgba(16,24,40,0.06)] font-[var(--font-mono)] text-[0.625rem] font-medium text-[color:var(--md-sys-color-on-surface-variant)] uppercase tracking-[0.04em] whitespace-nowrap">
                     {TOPIC_LABELS_DASHBOARD[s.topic] ?? s.topic}
                   </span>
-                  <span style={{ fontSize: 12, color: '#6B7280' }}>{reason}</span>
+                  <span className="text-xs text-[#6B7280]">{reason}</span>
                 </div>
               );
             })}
@@ -4272,27 +4229,16 @@ export function ProgressDashboard({ bank: _bank, quizzesBank: _quizzesBank }: { 
           {byTopic.map(([topic, bucket]) => {
             const passPct = Math.round(bucket.passed / Math.max(1, bucket.total) * 100);
             return (
-              <div key={topic} style={{
-                display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap',
-                padding: '12px 16px',
-                background: '#F5F6F8',
-                borderRadius: 10,
-              }}>
-                <span style={{ fontWeight: 600, flex: 1, minWidth: 160, fontSize: 14 }}>
+              <div key={topic} className="flex items-center gap-3 flex-wrap px-4 py-3 bg-[#F5F6F8] rounded-[10px]">
+                <span className="font-semibold flex-1 min-w-[160px] text-sm">
                   {TOPIC_LABELS_DASHBOARD[topic] ?? topic}
                 </span>
-                <span style={{ fontSize: 12, color: '#6B7280' }}>
+                <span className="text-xs text-[#6B7280]">
                   {bucket.passed}/{bucket.total} сдано
                 </span>
-                <span style={{
-                  display: 'inline-flex', alignItems: 'center',
-                  padding: '4px var(--space-2)', borderRadius: 'var(--md-sys-shape-corner-full)',
-                  background: '#FFFFFF',
-                  boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-                  fontFamily: 'var(--font-mono)', fontSize: '0.625rem', fontWeight: 600,
-                  color: passPct === 100 ? '#059669' : passPct >= 70 ? '#B45309' : '#9CA3AF',
-                  whiteSpace: 'nowrap',
-                }}>
+                <span className={`inline-flex items-center px-[var(--space-2)] py-1 rounded-[var(--md-sys-shape-corner-full)] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.06),0_2px_6px_rgba(16,24,40,0.06)] font-[var(--font-mono)] text-[0.625rem] font-semibold whitespace-nowrap ${
+                  passPct === 100 ? 'text-[#059669]' : passPct >= 70 ? 'text-[#B45309]' : 'text-[#9CA3AF]'
+                }`}>
                   {passPct}%
                 </span>
               </div>
@@ -4311,29 +4257,20 @@ export function ProgressDashboard({ bank: _bank, quizzesBank: _quizzesBank }: { 
         </h3>
         <div className="flex flex-col gap-1.5">
           {snapshots.map((s) => (
-            <div key={s.id} style={{
-              display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap',
-              padding: '12px 16px',
-              background: s.passed ? '#ECFDF5' : '#F5F6F8',
-              borderRadius: 10,
-            }}>
-              <span style={{ fontWeight: 600, flex: 1, minWidth: 200, fontSize: 13.5 }}>
+            <div key={s.id} className={`flex items-center gap-3 flex-wrap px-4 py-3 rounded-[10px] ${
+              s.passed ? 'bg-[#ECFDF5]' : 'bg-[#F5F6F8]'
+            }`}>
+              <span className="font-semibold flex-1 min-w-[200px] text-[13.5px]">
                 {s.title}
               </span>
               {s.attempts > 0 ? (
                 <>
-                  <span style={{
-                    display: 'inline-flex', alignItems: 'center',
-                    padding: '4px var(--space-2)', borderRadius: 'var(--md-sys-shape-corner-full)',
-                    background: '#FFFFFF',
-                    boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-                    fontFamily: 'var(--font-mono)', fontSize: '0.625rem', fontWeight: 600,
-                    color: s.passed ? '#059669' : '#B45309',
-                    whiteSpace: 'nowrap',
-                  }}>
+                  <span className={`inline-flex items-center px-[var(--space-2)] py-1 rounded-[var(--md-sys-shape-corner-full)] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.06),0_2px_6px_rgba(16,24,40,0.06)] font-[var(--font-mono)] text-[0.625rem] font-semibold whitespace-nowrap ${
+                    s.passed ? 'text-[#059669]' : 'text-[#B45309]'
+                  }`}>
                     {s.passed ? 'PASS' : 'FAIL'} {s.bestScore}/{Math.min(10, s.bankSize)}
                   </span>
-                  <span style={{ fontSize: 11, color: '#9CA3AF' }}>
+                  <span className="text-[11px] text-[#9CA3AF]">
                     Видели {s.seenIndices.length}/{s.bankSize}
                   </span>
                 </>
@@ -4350,26 +4287,15 @@ export function ProgressDashboard({ bank: _bank, quizzesBank: _quizzesBank }: { 
 
 function ProgressKpi({ label, value, sublabel, accent }: { label: string; value: string; sublabel?: string; accent?: string }) {
   return (
-    <div style={{
-      padding: '16px 18px',
-      background: '#F5F6F8',
-      borderRadius: 14,
-    }}>
-      <div style={{
-        fontFamily: 'var(--font-mono)',
-        fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
-        textTransform: 'uppercase', color: '#9CA3AF',
-        marginBottom: 4,
-      }}>{label}</div>
-      <div style={{
-        fontFamily: 'var(--font-display)',
-        fontSize: 26, fontWeight: 700,
-        color: accent ?? '#1A1A1A',
-        letterSpacing: '-0.02em',
-        lineHeight: 1.1,
-      }}>{value}</div>
+    <div className="px-[18px] py-4 bg-[#F5F6F8] rounded-[14px]">
+      <div className="font-[var(--font-mono)] text-[11px] font-bold tracking-[0.06em] uppercase text-[#9CA3AF] mb-1">{label}</div>
+      <div
+        className="font-[var(--font-display)] text-[26px] font-bold text-[var(--kpi-color,#1A1A1A)] tracking-[-0.02em] leading-[1.1]"
+        // eslint-disable-next-line react/forbid-dom-props -- dynamic KPI accent color via CSS-var
+        style={accent ? { ['--kpi-color' as string]: accent } : undefined}
+      >{value}</div>
       {sublabel && (
-        <div style={{ fontSize: 11, color: '#6B7280', marginTop: 4 }}>{sublabel}</div>
+        <div className="text-[11px] text-[#6B7280] mt-1">{sublabel}</div>
       )}
     </div>
   );
@@ -4513,7 +4439,7 @@ function DrugDoseCalculator() {
           }}
         />
         {weight === null && (
-          <div style={{ marginTop: 8, fontSize: 12, color: '#DC2626' }}>
+          <div className="mt-2 text-xs text-[#DC2626]">
             Введите вес 0.4 — 10.0 кг
           </div>
         )}
@@ -4521,10 +4447,7 @@ function DrugDoseCalculator() {
 
       {/* Category filter — design-system pills (mirrors ToolsPage favorites
           + sidebar groups: dark-on-active, body-font, sentence-case, no CAPS). */}
-      <div style={{
-        display: 'flex', flexWrap: 'wrap', gap: 8,
-        marginBottom: 16,
-      }}>
+      <div className="flex flex-wrap gap-2 mb-4">
         {(['all', 'resuscitation', 'metabolic', 'sedation', 'cardio'] as const).map((c) => {
           const isActive = filterCategory === c;
           return (
@@ -4533,20 +4456,11 @@ function DrugDoseCalculator() {
               type="button"
               onClick={() => setFilterCategory(c)}
               aria-pressed={isActive}
-              style={{
-                padding: '7px 12px',
-                background: isActive ? '#1A1A1A' : '#F5F6F8',
-                color: isActive ? '#FFFFFF' : '#374151',
-                border: 'none',
-                borderRadius: 999,
-                cursor: 'pointer',
-                fontFamily: 'var(--font-body)',
-                fontSize: 12, fontWeight: 600,
-                whiteSpace: 'nowrap',
-                transition: 'background 180ms, color 180ms',
-              }}
-              onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.background = '#EFF1F4'; }}
-              onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.background = '#F5F6F8'; }}
+              className={`px-3 py-[7px] border-0 rounded-full cursor-pointer font-[var(--font-body)] text-xs font-semibold whitespace-nowrap transition-[background-color,color] duration-[180ms] ${
+                isActive
+                  ? 'bg-[#1A1A1A] text-white'
+                  : 'bg-[#F5F6F8] hover:bg-[#EFF1F4] text-[#374151]'
+              }`}
             >
               {c === 'all' ? 'Все' : DRUG_CATEGORY_LABELS[c]}
             </button>
@@ -4555,17 +4469,10 @@ function DrugDoseCalculator() {
       </div>
 
       {/* Drug rows grouped */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+      <div className="flex flex-col gap-6">
         {grouped.map(([cat, drugs]) => (
           <div key={cat}>
-            <h3 style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: 17, fontWeight: 700,
-              color: '#1A1A1A',
-              margin: '0 0 12px',
-              letterSpacing: '-0.01em',
-              display: 'flex', alignItems: 'baseline', gap: 8,
-            }}>
+            <h3 className="font-[var(--font-display)] text-[17px] font-bold text-[#1A1A1A] mt-0 mb-3 tracking-[-0.01em] flex items-baseline gap-2">
               {DRUG_CATEGORY_LABELS[cat]}
               <span className="font-[var(--font-mono)] text-[11px] font-semibold text-[#9CA3AF]">
                 {drugs.length}
@@ -4579,40 +4486,25 @@ function DrugDoseCalculator() {
                   ? `${capped.toFixed(d.unit.includes('мкг') ? 0 : 2)} ${d.unit.replace('/кг', '')}`
                   : (d.dose_per_kg === 0 ? d.formula_text : '—');
                 return (
-                  <div key={d.id} style={{
-                    padding: '14px 16px',
-                    background: '#F5F6F8',
-                    borderRadius: 12,
-                  }}>
-                    <div style={{ display: 'flex', alignItems: 'baseline', gap: 12, flexWrap: 'wrap' }}>
-                      <span style={{
-                        fontFamily: 'var(--font-display)',
-                        fontSize: 14, fontWeight: 600,
-                        color: '#1A1A1A',
-                        flex: 1, minWidth: 200,
-                      }}>{d.name_ru}</span>
+                  <div key={d.id} className="px-4 py-3.5 bg-[#F5F6F8] rounded-xl">
+                    <div className="flex items-baseline gap-3 flex-wrap">
+                      <span className="font-[var(--font-display)] text-sm font-semibold text-[#1A1A1A] flex-1 min-w-[200px]">{d.name_ru}</span>
                       {capped !== null && (
-                        <span style={{
-                          fontFamily: 'var(--font-mono)',
-                          fontSize: 18, fontWeight: 700,
-                          color: '#2563EB',
-                          letterSpacing: '-0.01em',
-                          whiteSpace: 'nowrap',
-                        }}>
+                        <span className="font-[var(--font-mono)] text-lg font-bold text-[#2563EB] tracking-[-0.01em] whitespace-nowrap">
                           {calcText}
                           {d.max_total !== undefined && calculated !== null && calculated > d.max_total && (
-                            <span style={{ fontSize: 11, color: '#B45309', marginLeft: 6 }}>
+                            <span className="text-[11px] text-[#B45309] ml-1.5">
                               (max)
                             </span>
                           )}
                         </span>
                       )}
                     </div>
-                    <div style={{ marginTop: 6, fontSize: 12, color: '#6B7280' }}>
+                    <div className="mt-1.5 text-xs text-[#6B7280]">
                       {d.formula_text} · {d.route}
                       {d.concentration && <> · {d.concentration}</>}
                     </div>
-                    <div style={{ marginTop: 4, fontSize: 11, color: '#9CA3AF', lineHeight: 1.4 }}>
+                    <div className="mt-1 text-[11px] text-[#9CA3AF] leading-[1.4]">
                       {d.notes}
                     </div>
                   </div>
@@ -4685,20 +4577,7 @@ function DesignSystemLinkButton({
       target="_blank"
       rel="noopener noreferrer"
       aria-label={ariaLabel}
-      style={{
-        display: 'inline-flex', alignItems: 'center', gap: 6,
-        padding: '8px 14px',
-        borderRadius: 999,
-        background: '#F5F6F8',
-        color: '#374151',
-        fontFamily: 'var(--font-body)',
-        fontSize: 12, fontWeight: 600,
-        textDecoration: 'none',
-        whiteSpace: 'nowrap',
-        transition: 'background 180ms',
-      }}
-      onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
-      onMouseLeave={(e) => { e.currentTarget.style.background = '#F5F6F8'; }}
+      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-[#F5F6F8] hover:bg-[#EFF1F4] text-[#374151] font-[var(--font-body)] text-xs font-semibold no-underline whitespace-nowrap transition-[background-color] duration-[180ms]"
     >
       {label}
       <svg width={12} height={12} viewBox="0 0 24 24" fill="none"
