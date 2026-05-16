@@ -2813,17 +2813,7 @@ function ClinicalCaseCard({
             <span className="font-[var(--font-display)] text-[15px] font-semibold text-[#111827] tracking-[-0.01em] leading-[1.35]">
               <Highlight text={c.title_ru} query={query} />
             </span>
-            <span style={{
-              display: 'inline-flex', alignItems: 'center',
-              padding: '4px 10px',
-              borderRadius: 'var(--md-sys-shape-corner-full)',
-              background: '#FFFFFF',
-              boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-              fontFamily: 'var(--font-body)',
-              fontSize: 11, fontWeight: 600,
-              color: 'var(--md-sys-color-on-surface-variant)',
-              whiteSpace: 'nowrap',
-            }}>
+            <span className="inline-flex items-center px-2.5 py-1 rounded-[var(--md-sys-shape-corner-full)] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.06),0_2px_6px_rgba(16,24,40,0.06)] font-[var(--font-body)] text-[11px] font-semibold text-[color:var(--md-sys-color-on-surface-variant)] whitespace-nowrap">
               {levelLabel}
             </span>
           </span>
@@ -3091,17 +3081,7 @@ function CommonMistakeCard({
             <span className="font-[var(--font-display)] text-[15px] font-semibold text-[#111827] tracking-[-0.01em] leading-[1.35]">
               <Highlight text={m.title_ru} query={query} />
             </span>
-            <span style={{
-              display: 'inline-flex', alignItems: 'center',
-              padding: '4px 10px',
-              borderRadius: 'var(--md-sys-shape-corner-full)',
-              background: '#FFFFFF',
-              boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-              fontFamily: 'var(--font-body)',
-              fontSize: 11, fontWeight: 600,
-              color: 'var(--md-sys-color-on-surface-variant)',
-              whiteSpace: 'nowrap',
-            }}>
+            <span className="inline-flex items-center px-2.5 py-1 rounded-[var(--md-sys-shape-corner-full)] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.06),0_2px_6px_rgba(16,24,40,0.06)] font-[var(--font-body)] text-[11px] font-semibold text-[color:var(--md-sys-color-on-surface-variant)] whitespace-nowrap">
               {sevLabel}
             </span>
           </span>
@@ -3176,19 +3156,10 @@ function MistakeBlock({
 }) {
   return (
     <div className="mb-3.5">
-      <div style={{
-        fontFamily: 'var(--font-mono)',
-        fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
-        textTransform: 'uppercase',
-        color: '#9CA3AF',
-        marginBottom: 6,
-      }}>
+      <div className="font-[var(--font-mono)] text-[11px] font-bold tracking-[0.06em] uppercase text-[#9CA3AF] mb-1.5">
         {label}
       </div>
-      <p style={{
-        margin: 0,
-        fontSize: 13.5, lineHeight: 1.55, color: '#374151',
-      }}>
+      <p className="m-0 text-[13.5px] leading-[1.55] text-[#374151]">
         {text}
       </p>
     </div>
@@ -3724,11 +3695,7 @@ function VideoPickerModal({
             type="button"
             onClick={onClose}
             aria-label="Закрыть"
-            style={{
-              flexShrink: 0,
-              background: 'transparent', border: 'none', cursor: 'pointer',
-              padding: 4, color: '#6B7280',
-            }}
+            className="shrink-0 bg-transparent border-0 cursor-pointer p-1 text-[#6B7280]"
           >
             <svg width={20} height={20} viewBox="0 0 24 24" fill="none"
               stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
@@ -3745,36 +3712,13 @@ function VideoPickerModal({
               href={video.url}
               target="_blank"
               rel="noopener noreferrer"
-              style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                gap: 12,
-                padding: '12px 14px',
-                background: '#F5F6F8',
-                borderRadius: 12,
-                textDecoration: 'none',
-                color: 'inherit',
-                transition: 'background 150ms',
-              }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = '#F5F6F8'; }}
+              className="flex items-center justify-between gap-3 px-3.5 py-3 bg-[#F5F6F8] hover:bg-[#EFF1F4] rounded-xl no-underline text-[color:inherit] transition-[background-color] duration-150"
             >
-              <span style={{
-                flex: 1, fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: 500,
-                color: '#111827', lineHeight: 1.4,
-              }}>
+              <span className="flex-1 font-[var(--font-body)] text-sm font-medium text-[#111827] leading-[1.4]">
                 {video.title}
               </span>
               {video.duration_min && (
-                <span style={{
-                  flexShrink: 0,
-                  display: 'inline-flex', alignItems: 'center',
-                  padding: '4px 10px', borderRadius: 'var(--md-sys-shape-corner-full)',
-                  background: '#FFFFFF',
-                  boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-                  fontFamily: 'var(--font-mono)', fontSize: '0.625rem', fontWeight: 500,
-                  color: 'var(--md-sys-color-on-surface-variant)',
-                  whiteSpace: 'nowrap',
-                }}>
+                <span className="shrink-0 inline-flex items-center px-2.5 py-1 rounded-[var(--md-sys-shape-corner-full)] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.06),0_2px_6px_rgba(16,24,40,0.06)] font-[var(--font-mono)] text-[0.625rem] font-medium text-[color:var(--md-sys-color-on-surface-variant)] whitespace-nowrap">
                   ~{video.duration_min} мин
                 </span>
               )}
@@ -3861,10 +3805,10 @@ function AtlasView({
 
   return (
     <div className="w-full">
-      <p style={{ fontSize: 13, color: '#6B7280', margin: '0 0 14px' }}>
+      <p className="text-[13px] text-[#6B7280] mt-0 mb-3.5">
         Показано: <strong className="text-[#1A1A1A]">{filtered.length}</strong> из {bank.atlas.length} атласов
         {' · '}
-        <span style={{ color: '#9CA3AF' }}>линки на authoritative источники (Radiopaedia, NEJM, AAP)</span>
+        <span className="text-[#9CA3AF]">линки на authoritative источники (Radiopaedia, NEJM, AAP)</span>
       </p>
       <div className="flex items-center flex-wrap gap-2.5 mb-4">
         <FavoritesToggleChip
@@ -3943,17 +3887,7 @@ function AtlasCard({
             <span className="font-[var(--font-display)] text-[15px] font-semibold text-[#111827] tracking-[-0.01em] leading-[1.35]">
               <Highlight text={a.title_ru} query={query} />
             </span>
-            <span style={{
-              display: 'inline-flex', alignItems: 'center',
-              padding: '4px 10px',
-              borderRadius: 'var(--md-sys-shape-corner-full)',
-              background: '#FFFFFF',
-              boxShadow: '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-              fontFamily: 'var(--font-body)',
-              fontSize: 11, fontWeight: 500,
-              color: 'var(--md-sys-color-on-surface-variant)',
-              whiteSpace: 'nowrap',
-            }}>
+            <span className="inline-flex items-center px-2.5 py-1 rounded-[var(--md-sys-shape-corner-full)] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.06),0_2px_6px_rgba(16,24,40,0.06)] font-[var(--font-body)] text-[11px] font-medium text-[color:var(--md-sys-color-on-surface-variant)] whitespace-nowrap">
               {sourceLabel}
             </span>
           </span>
@@ -3987,31 +3921,16 @@ function AtlasCard({
             className="overflow-hidden"
           >
             <div className="pt-[18px] px-5 pb-5 bg-white border-t border-[#E5E7EB] text-[13.5px] leading-[1.6] text-[#1F2937]">
-              <p style={{
-                margin: '0 0 16px',
-                paddingBottom: 14,
-                borderBottom: '1px solid #F0F1F5',
-                fontSize: 14, lineHeight: 1.55,
-                color: '#4B5563',
-              }}>
+              <p className="mt-0 mb-4 pb-3.5 border-b border-[#F0F1F5] text-sm leading-[1.55] text-[#4B5563]">
                 <Highlight text={a.description} query={query} />
               </p>
 
               {a.key_findings.length > 0 && (
-                <div style={{ marginBottom: 16 }}>
-                  <div style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
-                    textTransform: 'uppercase', color: '#9CA3AF',
-                    marginBottom: 6,
-                  }}>
+                <div className="mb-4">
+                  <div className="font-[var(--font-mono)] text-[11px] font-bold tracking-[0.06em] uppercase text-[#9CA3AF] mb-1.5">
                     Ключевые находки
                   </div>
-                  <ul style={{
-                    margin: 0, paddingLeft: 22,
-                    fontSize: 13, lineHeight: 1.55, color: '#374151',
-                    display: 'flex', flexDirection: 'column', gap: 4,
-                  }}>
+                  <ul className="m-0 pl-[22px] text-[13px] leading-[1.55] text-[#374151] flex flex-col gap-1">
                     {a.key_findings.map((f, i) => (
                       <li key={i}>{f}</li>
                     ))}
@@ -4025,10 +3944,7 @@ function AtlasCard({
                   ariaLabel={`Открыть атлас: ${a.title_ru} на ${a.source}`}
                   label={`Открыть на ${a.source}`}
                 />
-                <span style={{
-                  fontSize: 11, color: '#9CA3AF', flex: 1,
-                  lineHeight: 1.4, minWidth: 200,
-                }}>
+                <span className="text-[11px] text-[#9CA3AF] flex-1 leading-[1.4] min-w-[200px]">
                   Изображения остаются в источнике для соблюдения copyright.
                   Не клиническое заключение.
                 </span>
@@ -4166,8 +4082,8 @@ export function ProgressDashboard({ bank: _bank, quizzesBank: _quizzesBank }: { 
   if (!quizzes) {
     return (
       <div>
-        <div className="lc-shimmer" style={{ height: 120, width: '100%', borderRadius: 14, marginBottom: 12 }} />
-        <div className="lc-shimmer" style={{ height: 200, width: '100%', borderRadius: 14 }} />
+        <div className="lc-shimmer h-[120px] w-full rounded-[14px] mb-3" />
+        <div className="lc-shimmer h-[200px] w-full rounded-[14px]" />
       </div>
     );
   }
@@ -4175,12 +4091,7 @@ export function ProgressDashboard({ bank: _bank, quizzesBank: _quizzesBank }: { 
   return (
     <div className="w-full">
       {/* Aggregate stats — 4 KPI cards */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-        gap: 12,
-        marginBottom: 24,
-      }}>
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-3 mb-6">
         <ProgressKpi label="Тестов всего" value={`${stats.total}`} />
         <ProgressKpi label="Пройдено хоть раз" value={`${stats.attempted}`} sublabel={`${Math.round(stats.attempted / Math.max(1, stats.total) * 100)}%`} />
         <ProgressKpi label="Сдано (≥70%)" value={`${stats.passed}`} sublabel={`${Math.round(stats.passed / Math.max(1, stats.total) * 100)}%`} accent="#059669" />
@@ -4386,35 +4297,15 @@ function DrugDoseCalculator() {
   return (
     <div className="w-full">
       {/* Disclaimer */}
-      <div style={{
-        padding: '12px 14px',
-        background: '#FEF3C7',
-        border: '1px solid #FDE68A',
-        borderRadius: 10,
-        marginBottom: 16,
-        fontSize: 12.5,
-        color: '#78350F',
-        lineHeight: 1.5,
-      }}>
+      <div className="px-3.5 py-3 bg-[#FEF3C7] border border-[#FDE68A] rounded-[10px] mb-4 text-[12.5px] text-[#78350F] leading-[1.5]">
         <strong>⚠ Только справочный инструмент.</strong> Расчёты по формуле doses × weight.
         Перед применением проверьте индивидуально по протоколу учреждения и LCP/PALS дозам.
         Не заменяет клиническое решение.
       </div>
 
       {/* Weight input */}
-      <div style={{
-        padding: '16px 18px',
-        background: '#F5F6F8',
-        borderRadius: 14,
-        marginBottom: 16,
-      }}>
-        <label style={{
-          display: 'block',
-          fontFamily: 'var(--font-mono)',
-          fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
-          textTransform: 'uppercase', color: '#9CA3AF',
-          marginBottom: 8,
-        }}>
+      <div className="px-[18px] py-4 bg-[#F5F6F8] rounded-[14px] mb-4">
+        <label className="block font-[var(--font-mono)] text-[11px] font-bold tracking-[0.06em] uppercase text-[#9CA3AF] mb-2">
           Вес ребёнка (кг)
         </label>
         <input
@@ -4426,17 +4317,7 @@ function DrugDoseCalculator() {
           value={weightStr}
           onChange={(e) => setWeightStr(e.target.value)}
           aria-label="Вес ребёнка в килограммах"
-          style={{
-            width: '100%',
-            padding: '12px 14px',
-            background: '#FFFFFF',
-            border: '1px solid #E5E7EB',
-            borderRadius: 10,
-            fontFamily: 'var(--font-mono)',
-            fontSize: 24, fontWeight: 700,
-            color: '#1A1A1A',
-            outline: 'none',
-          }}
+          className="w-full px-3.5 py-3 bg-white border border-[#E5E7EB] rounded-[10px] font-[var(--font-mono)] text-2xl font-bold text-[#1A1A1A] outline-none"
         />
         {weight === null && (
           <div className="mt-2 text-xs text-[#DC2626]">
@@ -4625,18 +4506,13 @@ function FavoritesToggleChip({
       aria-pressed={active}
       aria-label={active ? 'Показать все' : `Показать только избранные (${count})`}
       title={disabled ? 'Сначала добавьте элементы в избранное' : undefined}
-      style={{
-        display: 'inline-flex', alignItems: 'center', gap: 6,
-        padding: '7px 12px',
-        background: active ? '#1A1A1A' : '#F5F6F8',
-        color: active ? '#FFFFFF' : disabled ? '#B0B3BA' : '#374151',
-        border: 'none', borderRadius: 999,
-        cursor: disabled ? 'not-allowed' : 'pointer',
-        fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 600,
-        transition: 'background 180ms, color 180ms',
-      }}
-      onMouseEnter={(e) => { if (!active && !disabled) e.currentTarget.style.background = '#EFF1F4'; }}
-      onMouseLeave={(e) => { if (!active && !disabled) e.currentTarget.style.background = '#F5F6F8'; }}
+      className={`inline-flex items-center gap-1.5 px-3 py-[7px] border-0 rounded-full font-[var(--font-body)] text-xs font-semibold transition-[background-color,color] duration-[180ms] ${
+        active
+          ? 'bg-[#1A1A1A] text-white cursor-pointer'
+          : disabled
+            ? 'bg-[#F5F6F8] text-[#B0B3BA] cursor-not-allowed'
+            : 'bg-[#F5F6F8] hover:bg-[#EFF1F4] text-[#374151] cursor-pointer'
+      }`}
     >
       <svg width={12} height={12} viewBox="0 0 24 24"
         fill={active ? 'currentColor' : 'none'}
@@ -4686,24 +4562,11 @@ function FavoriteStarButton({ id, type, title }: { id: string; type: FavoriteEnt
       onClick={toggle}
       aria-label={isFav ? `Убрать из избранного: ${title}` : `Добавить в избранное: ${title}`}
       aria-pressed={isFav}
-      style={{
-        flexShrink: 0,
-        width: 26, height: 26, borderRadius: 8,
-        position: 'relative',
-        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-        background: isFav ? '#FEF3C7' : '#FFFFFF',
-        color: isFav ? '#D97706' : '#9CA3AF',
-        border: isFav ? '1px solid #FDE68A' : '1px solid transparent',
-        cursor: 'pointer',
-        boxShadow: isFav ? 'none' : '0 1px 2px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06)',
-        transition: 'background 160ms, color 160ms, box-shadow 160ms, border-color 160ms',
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.background = isFav ? '#FDE68A' : '#F5F6F8';
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.background = isFav ? '#FEF3C7' : '#FFFFFF';
-      }}
+      className={`shrink-0 w-[26px] h-[26px] rounded-lg relative inline-flex items-center justify-center cursor-pointer transition-[background-color,color,box-shadow,border-color] duration-[160ms] border ${
+        isFav
+          ? 'bg-[#FEF3C7] hover:bg-[#FDE68A] text-[#D97706] border-[#FDE68A] shadow-none'
+          : 'bg-white hover:bg-[#F5F6F8] text-[#9CA3AF] border-transparent shadow-[0_1px_2px_rgba(16,24,40,0.06),0_2px_6px_rgba(16,24,40,0.06)]'
+      }`}
     >
       <svg width={13} height={13} viewBox="0 0 24 24"
         fill={isFav ? 'currentColor' : 'none'}
