@@ -708,11 +708,8 @@ export default function NeonatalHandbook() {
 
   if (error) {
     return (
-      <main style={{ padding: '24px', maxWidth: 980, margin: '0 auto' }}>
-        <div style={{
-          padding: 24, borderRadius: 12, background: '#FEF2F2',
-          border: '1px solid #FECACA', color: '#991B1B', fontSize: 14,
-        }}>
+      <main className="p-6 max-w-[980px] mx-auto">
+        <div className="p-6 rounded-xl bg-[#FEF2F2] border border-[#FECACA] text-[#991B1B] text-sm">
           Не удалось загрузить справочник: {error}.
         </div>
       </main>
@@ -721,23 +718,19 @@ export default function NeonatalHandbook() {
 
   if (!bank) {
     return (
-      <main style={{ padding: '24px', maxWidth: 980, margin: '0 auto' }}>
-        <div style={{ padding: '8px 0' }}>
-          <div className="lc-shimmer" style={{ height: 32, width: 280, borderRadius: 8, marginBottom: 16 }} />
-          <div className="lc-shimmer" style={{ height: 16, width: '70%', borderRadius: 6, marginBottom: 24 }} />
-          <div className="lc-shimmer" style={{ height: 48, width: '100%', borderRadius: 12, marginBottom: 12 }} />
-          <div className="lc-shimmer" style={{ height: 64, width: '100%', borderRadius: 12 }} />
+      <main className="p-6 max-w-[980px] mx-auto">
+        <div className="py-2">
+          <div className="lc-shimmer h-8 w-[280px] rounded-lg mb-4" />
+          <div className="lc-shimmer h-4 w-[70%] rounded-md mb-6" />
+          <div className="lc-shimmer h-12 w-full rounded-xl mb-3" />
+          <div className="lc-shimmer h-16 w-full rounded-xl" />
         </div>
       </main>
     );
   }
 
   return (
-    <main id="main-content" style={{
-      padding: 0,
-      fontFamily: 'var(--font-body, system-ui)',
-      color: 'var(--md-sys-color-on-surface, #1A1A1A)',
-    }}>
+    <main id="main-content" className="p-0 font-[var(--font-body,system-ui)] text-[var(--md-sys-color-on-surface,#1A1A1A)]">
       {/* Page header removed (PR #50, fix G3) — each tab has its own H1
           via SECTION_META and breadcrumb-style title. The repeated
           «Неонатология — справочник доз» banner was redundant and ate
@@ -885,10 +878,10 @@ export default function NeonatalHandbook() {
 
       {tab === 'drugs' ? (
         <>
-          <p style={{ fontSize: 13, color: '#6B7280', margin: '0 0 14px' }}>
-            Показано: <strong style={{ color: '#1A1A1A' }}>{filteredDrugs.length}</strong> из {bank.drugs.length}
+          <p className="text-[13px] text-[#6B7280] mt-0 mb-3.5">
+            Показано: <strong className="text-[#1A1A1A]">{filteredDrugs.length}</strong> из {bank.drugs.length}
           </p>
-          <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 10, marginBottom: 16 }}>
+          <div className="flex items-center flex-wrap gap-2.5 mb-4">
             <FavoritesToggleChip
               active={showFavOnly}
               onToggle={() => setShowFavOnly(!showFavOnly)}
@@ -899,7 +892,7 @@ export default function NeonatalHandbook() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3 }}
-            style={{ display: 'flex', flexDirection: 'column', gap: 8 }}
+            className="flex flex-col gap-2"
           >
             {filteredDrugs.map((d) => (
               <DrugCard
@@ -911,10 +904,7 @@ export default function NeonatalHandbook() {
               />
             ))}
             {filteredDrugs.length === 0 && (
-              <div style={{
-                padding: '32px 16px', background: '#F5F6F8', borderRadius: 12,
-                textAlign: 'center', color: '#6B7280', fontSize: 14,
-              }}>
+              <div className="px-4 py-8 bg-[#F5F6F8] rounded-xl text-center text-[#6B7280] text-sm">
                 Ничего не найдено.
               </div>
             )}
@@ -922,10 +912,10 @@ export default function NeonatalHandbook() {
         </>
       ) : tab === 'guidelines' ? (
         <>
-          <p style={{ fontSize: 13, color: '#6B7280', margin: '0 0 14px' }}>
-            Показано: <strong style={{ color: '#1A1A1A' }}>{filteredGuidelines.length}</strong> из {guidelines?.guidelines.length ?? 0}
+          <p className="text-[13px] text-[#6B7280] mt-0 mb-3.5">
+            Показано: <strong className="text-[#1A1A1A]">{filteredGuidelines.length}</strong> из {guidelines?.guidelines.length ?? 0}
             {' · '}
-            <span style={{ color: '#9CA3AF' }}>
+            <span className="text-[#9CA3AF]">
               сгруппированы по разделам
             </span>
           </p>
@@ -934,10 +924,7 @@ export default function NeonatalHandbook() {
               США / Европы / Узбекистана / Международные. Mirror UI
               калькуляторов; теги region берутся из guideline.regions[]
               auto-derived from references. */}
-          <div style={{
-            display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 10,
-            marginBottom: 16,
-          }}>
+          <div className="flex items-center flex-wrap gap-2.5 mb-4">
             <FilterDropdown
               label="Регионы"
               icon={<svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><circle cx={12} cy={12} r={10}/><line x1={2} y1={12} x2={22} y2={12}/><path d="M12 2a15 15 0 014 10 15 15 0 01-4 10 15 15 0 01-4-10 15 15 0 014-10z"/></svg>}
@@ -954,7 +941,7 @@ export default function NeonatalHandbook() {
               count={(guidelines?.guidelines ?? []).filter((g) => favsSet.has(`guideline:${g.id}`)).length}
             />
             {selectedRegions.length > 0 && (
-              <span style={{ fontSize: 12, color: '#9CA3AF' }}>
+              <span className="text-xs text-[#9CA3AF]">
                 фильтр: {selectedRegions.join(', ')}
               </span>
             )}
@@ -964,29 +951,17 @@ export default function NeonatalHandbook() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3 }}
-            style={{ display: 'flex', flexDirection: 'column', gap: 24 }}
+            className="flex flex-col gap-6"
           >
             {groupedGuidelines.map((group) => (
               <div key={group.meta.id}>
-                <h3 style={{
-                  fontFamily: 'var(--font-display)',
-                  fontSize: 16,
-                  fontWeight: 700,
-                  color: '#1F2937',
-                  margin: '0 0 12px',
-                  letterSpacing: '-0.01em',
-                  display: 'flex', alignItems: 'baseline', gap: 8,
-                }}>
+                <h3 className="font-[var(--font-display)] text-base font-bold text-[#1F2937] mt-0 mb-3 tracking-[-0.01em] flex items-baseline gap-2">
                   <span>{group.meta.title_ru}</span>
-                  <span style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
-                    color: '#9CA3AF',
-                  }}>
+                  <span className="font-[var(--font-mono)] text-[11px] font-bold tracking-[0.06em] text-[#9CA3AF]">
                     {group.items.length}
                   </span>
                 </h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <div className="flex flex-col gap-2">
                   {group.items.map((g) => (
                     <GuidelineCard
                       key={g.id}
@@ -1000,10 +975,7 @@ export default function NeonatalHandbook() {
               </div>
             ))}
             {groupedGuidelines.length === 0 && (
-              <div style={{
-                padding: '32px 16px', background: '#F5F6F8', borderRadius: 12,
-                textAlign: 'center', color: '#6B7280', fontSize: 14,
-              }}>
+              <div className="px-4 py-8 bg-[#F5F6F8] rounded-xl text-center text-[#6B7280] text-sm">
                 Ничего не найдено.
               </div>
             )}
@@ -1011,20 +983,17 @@ export default function NeonatalHandbook() {
         </>
       ) : tab === 'calculators' ? (
         <>
-          <p style={{ fontSize: 13, color: '#6B7280', margin: '0 0 14px' }}>
-            Показано: <strong style={{ color: '#1A1A1A' }}>{filteredCalcCount}</strong> из {totalCalculators} калькуляторов
+          <p className="text-[13px] text-[#6B7280] mt-0 mb-3.5">
+            Показано: <strong className="text-[#1A1A1A]">{filteredCalcCount}</strong> из {totalCalculators} калькуляторов
             {' · '}
-            <span style={{ color: '#9CA3AF' }}>
+            <span className="text-[#9CA3AF]">
               нажмите на карточку чтобы открыть калькулятор
             </span>
           </p>
 
           {/* Filter row: country dropdown (same pattern как у ToolsPage) +
               Apgar Timer launcher на одной строке. */}
-          <div style={{
-            display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 10,
-            marginBottom: 16,
-          }}>
+          <div className="flex items-center flex-wrap gap-2.5 mb-4">
             <FilterDropdown
               label="Страны"
               icon={<svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><circle cx={12} cy={12} r={10}/><line x1={2} y1={12} x2={22} y2={12}/><path d="M12 2a15 15 0 014 10 15 15 0 01-4 10 15 15 0 01-4-10 15 15 0 014-10z"/></svg>}
@@ -1074,7 +1043,7 @@ export default function NeonatalHandbook() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3 }}
-            style={{ display: 'flex', flexDirection: 'column', gap: 24 }}
+            className="flex flex-col gap-6"
           >
             {filteredCalculators.map((group) => (
               <div key={group.id}>
@@ -1116,10 +1085,7 @@ export default function NeonatalHandbook() {
               </div>
             ))}
             {filteredCalcCount === 0 && (
-              <div style={{
-                padding: '32px 16px', background: '#F5F6F8', borderRadius: 12,
-                textAlign: 'center', color: '#6B7280', fontSize: 14,
-              }}>
+              <div className="px-4 py-8 bg-[#F5F6F8] rounded-xl text-center text-[#6B7280] text-sm">
                 Ничего не найдено.
               </div>
             )}
@@ -1127,10 +1093,10 @@ export default function NeonatalHandbook() {
         </>
       ) : tab === 'labs' ? (
         <>
-          <p style={{ fontSize: 13, color: '#6B7280', margin: '0 0 14px' }}>
-            Показано: <strong style={{ color: '#1A1A1A' }}>{filteredLabsCount}</strong> из {totalLabs} показателей
+          <p className="text-[13px] text-[#6B7280] mt-0 mb-3.5">
+            Показано: <strong className="text-[#1A1A1A]">{filteredLabsCount}</strong> из {totalLabs} показателей
             {' · '}
-            <span style={{ color: '#9CA3AF' }}>
+            <span className="text-[#9CA3AF]">
               normal ranges: term + preterm columns
             </span>
           </p>
@@ -1138,7 +1104,7 @@ export default function NeonatalHandbook() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3 }}
-            style={{ display: 'flex', flexDirection: 'column', gap: 24 }}
+            className="flex flex-col gap-6"
           >
             {filteredLabs.map((group) => (
               <div key={group.id}>
@@ -1209,10 +1175,7 @@ export default function NeonatalHandbook() {
               </div>
             ))}
             {filteredLabsCount === 0 && (
-              <div style={{
-                padding: '32px 16px', background: '#F5F6F8', borderRadius: 12,
-                textAlign: 'center', color: '#6B7280', fontSize: 14,
-              }}>
+              <div className="px-4 py-8 bg-[#F5F6F8] rounded-xl text-center text-[#6B7280] text-sm">
                 Ничего не найдено.
               </div>
             )}
@@ -1220,14 +1183,14 @@ export default function NeonatalHandbook() {
         </>
       ) : tab === 'articles' ? (
         <>
-          <p style={{ fontSize: 13, color: '#6B7280', margin: '0 0 14px' }}>
-            Показано: <strong style={{ color: '#1A1A1A' }}>{filteredArticles.length}</strong> из {articles?.articles.length ?? 0} статей
+          <p className="text-[13px] text-[#6B7280] mt-0 mb-3.5">
+            Показано: <strong className="text-[#1A1A1A]">{filteredArticles.length}</strong> из {articles?.articles.length ?? 0} статей
             {' · '}
-            <span style={{ color: '#9CA3AF' }}>
+            <span className="text-[#9CA3AF]">
               кликните чтобы открыть полный текст
             </span>
           </p>
-          <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 10, marginBottom: 16 }}>
+          <div className="flex items-center flex-wrap gap-2.5 mb-4">
             <FavoritesToggleChip
               active={showFavOnly}
               onToggle={() => setShowFavOnly(!showFavOnly)}
@@ -1238,7 +1201,7 @@ export default function NeonatalHandbook() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3 }}
-            style={{ display: 'flex', flexDirection: 'column', gap: 8 }}
+            className="flex flex-col gap-2"
           >
             {filteredArticles.map((a) => (
               <ArticleCard
@@ -1250,10 +1213,7 @@ export default function NeonatalHandbook() {
               />
             ))}
             {filteredArticles.length === 0 && (
-              <div style={{
-                padding: '32px 16px', background: '#F5F6F8', borderRadius: 12,
-                textAlign: 'center', color: '#6B7280', fontSize: 14,
-              }}>
+              <div className="px-4 py-8 bg-[#F5F6F8] rounded-xl text-center text-[#6B7280] text-sm">
                 Ничего не найдено.
               </div>
             )}
@@ -1269,14 +1229,14 @@ export default function NeonatalHandbook() {
         </motion.div>
       ) : tab === 'lactmed' ? (
         <>
-          <p style={{ fontSize: 13, color: '#6B7280', margin: '0 0 14px' }}>
-            Показано: <strong style={{ color: '#1A1A1A' }}>{filteredLactmed.length}</strong> из {lactmed?.drugs.length ?? 0} препаратов
+          <p className="text-[13px] text-[#6B7280] mt-0 mb-3.5">
+            Показано: <strong className="text-[#1A1A1A]">{filteredLactmed.length}</strong> из {lactmed?.drugs.length ?? 0} препаратов
             {' · '}
-            <span style={{ color: '#9CA3AF' }}>
+            <span className="text-[#9CA3AF]">
               совместимость с грудным вскармливанием (LactMed NCBI)
             </span>
           </p>
-          <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 10, marginBottom: 16 }}>
+          <div className="flex items-center flex-wrap gap-2.5 mb-4">
             <FavoritesToggleChip
               active={showFavOnly}
               onToggle={() => setShowFavOnly(!showFavOnly)}
@@ -1287,29 +1247,17 @@ export default function NeonatalHandbook() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3 }}
-            style={{ display: 'flex', flexDirection: 'column', gap: 24 }}
+            className="flex flex-col gap-6"
           >
             {groupedLactmed.map((group) => (
               <div key={group.meta.id}>
-                <h3 style={{
-                  fontFamily: 'var(--font-display)',
-                  fontSize: 16,
-                  fontWeight: 700,
-                  color: '#1F2937',
-                  margin: '0 0 12px',
-                  letterSpacing: '-0.01em',
-                  display: 'flex', alignItems: 'baseline', gap: 8,
-                }}>
+                <h3 className="font-[var(--font-display)] text-base font-bold text-[#1F2937] mt-0 mb-3 tracking-[-0.01em] flex items-baseline gap-2">
                   <span>{group.meta.title_ru}</span>
-                  <span style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
-                    color: '#9CA3AF',
-                  }}>
+                  <span className="font-[var(--font-mono)] text-[11px] font-bold tracking-[0.06em] text-[#9CA3AF]">
                     {group.items.length}
                   </span>
                 </h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <div className="flex flex-col gap-2">
                   {group.items.map((d) => (
                     <LactCard
                       key={d.id}
@@ -1323,10 +1271,7 @@ export default function NeonatalHandbook() {
               </div>
             ))}
             {groupedLactmed.length === 0 && (
-              <div style={{
-                padding: '32px 16px', background: '#F5F6F8', borderRadius: 12,
-                textAlign: 'center', color: '#6B7280', fontSize: 14,
-              }}>
+              <div className="px-4 py-8 bg-[#F5F6F8] rounded-xl text-center text-[#6B7280] text-sm">
                 Ничего не найдено.
               </div>
             )}
@@ -1342,10 +1287,10 @@ export default function NeonatalHandbook() {
         </motion.div>
       ) : tab === 'nurse' ? (
         <>
-          <p style={{ fontSize: 13, color: '#6B7280', margin: '0 0 14px' }}>
-            Показано: <strong style={{ color: '#1A1A1A' }}>{filteredNurse.length}</strong> из {nurse?.procedures.length ?? 0} процедур
+          <p className="text-[13px] text-[#6B7280] mt-0 mb-3.5">
+            Показано: <strong className="text-[#1A1A1A]">{filteredNurse.length}</strong> из {nurse?.procedures.length ?? 0} процедур
             {' · '}
-            <span style={{ color: '#9CA3AF' }}>
+            <span className="text-[#9CA3AF]">
               bedside reference для медсестёр и фельдшеров
             </span>
           </p>
@@ -1353,7 +1298,7 @@ export default function NeonatalHandbook() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3 }}
-            style={{ display: 'flex', flexDirection: 'column', gap: 8 }}
+            className="flex flex-col gap-2"
           >
             {filteredNurse.map((proc) => (
               <NurseProcedureCard
@@ -1364,10 +1309,7 @@ export default function NeonatalHandbook() {
               />
             ))}
             {filteredNurse.length === 0 && (
-              <div style={{
-                padding: '32px 16px', background: '#F5F6F8', borderRadius: 12,
-                textAlign: 'center', color: '#6B7280', fontSize: 14,
-              }}>
+              <div className="px-4 py-8 bg-[#F5F6F8] rounded-xl text-center text-[#6B7280] text-sm">
                 Ничего не найдено.
               </div>
             )}
@@ -1436,10 +1378,10 @@ export default function NeonatalHandbook() {
         }}>
           {tab === 'drugs' && (
             <>
-              <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Препараты + протоколы</dt>
-              <dd style={{ margin: 0, color: '#1A1A1A' }}>
+              <dt className="text-[#9CA3AF] text-xs">Препараты + протоколы</dt>
+              <dd className="m-0 text-[#1A1A1A]">
                 {bank.source} — {bank.drugs.length} препаратов NICU + 13 практических протоколов.
-                <span style={{ color: '#6B7280', display: 'block', marginTop: 2, fontSize: 12 }}>
+                <span className="text-[#6B7280] block mt-0.5 text-xs">
                   Авторы: {bank.authors.join('; ')}
                 </span>
               </dd>
@@ -1448,10 +1390,10 @@ export default function NeonatalHandbook() {
 
           {tab === 'growth' && (
             <>
-              <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Графики роста</dt>
-              <dd style={{ margin: 0, color: '#1A1A1A' }}>
+              <dt className="text-[#9CA3AF] text-xs">Графики роста</dt>
+              <dd className="m-0 text-[#1A1A1A]">
                 Fenton TR, Kim JH. BMC Pediatrics 2013;13:59 — кривые для недоношенных 22–50 нед PMA.
-                <span style={{ color: '#6B7280', display: 'block', marginTop: 2, fontSize: 12 }}>
+                <span className="text-[#6B7280] block mt-0.5 text-xs">
                   Лицензия: CC-BY 2.0 (open access)
                 </span>
               </dd>
@@ -1460,10 +1402,10 @@ export default function NeonatalHandbook() {
 
           {tab === 'bilirubin' && (
             <>
-              <dt style={{ color: '#9CA3AF', fontSize: 12 }}>Билирубин</dt>
-              <dd style={{ margin: 0, color: '#1A1A1A' }}>
+              <dt className="text-[#9CA3AF] text-xs">Билирубин</dt>
+              <dd className="m-0 text-[#1A1A1A]">
                 AAP 2022 — Kemper AR, Newman TB, Slaughter JL, et al. Pediatrics 2022;150(3):e2022058859. Пороги фототерапии и обменного переливания.
-                <span style={{ color: '#6B7280', display: 'block', marginTop: 2, fontSize: 12 }}>
+                <span className="text-[#6B7280] block mt-0.5 text-xs">
                   Лицензия: AAP Clinical Practice Guideline (открыт для клинического использования)
                 </span>
               </dd>
@@ -1477,7 +1419,7 @@ export default function NeonatalHandbook() {
           fontSize: 12, color: '#6B7280', lineHeight: 1.55,
           margin: '18px 0 0',
         }}>
-          <strong style={{ color: '#1A1A1A' }}>Не заменяет клиническое решение.</strong>{' '}
+          <strong className="text-[#1A1A1A]">Не заменяет клиническое решение.</strong>{' '}
           {tab === 'drugs' && (
             <>Дозы у новорождённых критически зависят от гестационного возраста, дней жизни, веса,
             функции почек и печени. Решение по конкретному пациенту принимает
@@ -1526,7 +1468,7 @@ function DrugCard({
       transition: 'border-color 150ms ease',
       position: 'relative',
     }}>
-      <div style={{ position: 'absolute', top: 12, right: 50, zIndex: 2 }}>
+      <div className="absolute top-3 right-[50px] z-[2]">
         <FavoriteStarButton id={`drug:${drug.id}`} type="drug" title={drug.name_ru} />
       </div>
       <button
@@ -1547,7 +1489,7 @@ function DrugCard({
         onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
         onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
       >
-        <span aria-hidden="true" style={{ flex: 1, minWidth: 0 }}>
+        <span aria-hidden="true" className="flex-1 min-w-0">
           <span style={{
             display: 'block', fontFamily: 'var(--font-display)',
             fontSize: 15, fontWeight: 600, color: '#1A1A1A',
@@ -1586,7 +1528,7 @@ function DrugCard({
               height: { duration: 0.25, ease: [0.05, 0.7, 0.1, 1] },
               opacity: { duration: 0.18 },
             }}
-            style={{ overflow: 'hidden' }}
+            className="overflow-hidden"
           >
             <div style={{
               borderTop: '1px solid #E5E7EB',
@@ -1804,7 +1746,7 @@ function NeonatalDetailBlock({
             width={11} height={11} viewBox="0 0 24 24" fill="none"
             stroke="currentColor" strokeWidth={2.4}
             strokeLinecap="round" strokeLinejoin="round"
-            style={{ flexShrink: 0 }}
+            className="shrink-0"
           >
             <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z" />
             <line x1="12" y1="9" x2="12" y2="13" />
@@ -1949,7 +1891,7 @@ function renderInlineMd(text: string): React.ReactNode {
   const parts = text.split(/(\*\*[^*]+\*\*)/g);
   return parts.map((p, idx) => {
     if (p.startsWith('**') && p.endsWith('**')) {
-      return <strong key={idx} style={{ fontWeight: 600, color: '#111827' }}>{p.slice(2, -2)}</strong>;
+      return <strong key={idx} className="font-semibold text-[#111827]">{p.slice(2, -2)}</strong>;
     }
     return <span key={idx}>{p}</span>;
   });
@@ -2033,7 +1975,7 @@ function GuidelineContent({ content }: { content: string }) {
               fontSize: 13, lineHeight: 1.6, color: '#374151',
             }}>
               {b.items.map((it, j) => (
-                <li key={j} style={{ marginBottom: 4 }}>{renderInlineMd(it)}</li>
+                <li key={j} className="mb-1">{renderInlineMd(it)}</li>
               ))}
             </ul>
           );
@@ -2136,7 +2078,7 @@ function GuidelineCard({
       transition: 'border-color 150ms ease',
       position: 'relative',
     }}>
-      <div style={{ position: 'absolute', top: 12, right: 50, zIndex: 2 }}>
+      <div className="absolute top-3 right-[50px] z-[2]">
         <FavoriteStarButton id={`guideline:${guideline.id}`} type="guideline" title={guideline.title_ru} />
       </div>
       <button
@@ -2157,7 +2099,7 @@ function GuidelineCard({
         onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
         onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
       >
-        <span aria-hidden="true" style={{ flex: 1, minWidth: 0 }}>
+        <span aria-hidden="true" className="flex-1 min-w-0">
           <span style={{
             display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap',
           }}>
@@ -2252,7 +2194,7 @@ function GuidelineCard({
               height: { duration: 0.25, ease: [0.05, 0.7, 0.1, 1] },
               opacity: { duration: 0.18 },
             }}
-            style={{ overflow: 'hidden' }}
+            className="overflow-hidden"
           >
             <div style={{
               padding: '18px 20px 20px',
@@ -2261,7 +2203,7 @@ function GuidelineCard({
             }}>
               <GuidelineContent content={guideline.content} />
               {guideline.references.length > 0 && (
-                <div style={{ marginTop: 18, paddingTop: 14, borderTop: '1px solid #E5E7EB' }}>
+                <div className="mt-[18px] pt-3.5 border-t border-[#E5E7EB]">
                   <div style={{
                     fontFamily: 'var(--font-mono)',
                     fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
@@ -2269,9 +2211,9 @@ function GuidelineCard({
                   }}>
                     References
                   </div>
-                  <ol style={{ margin: 0, paddingLeft: 20, fontSize: 12, color: '#6B7280', lineHeight: 1.55 }}>
+                  <ol className="m-0 pl-5 text-xs text-[#6B7280] leading-[1.55] list-decimal">
                     {guideline.references.map((ref, i) => (
-                      <li key={i} style={{ marginBottom: 4 }}>{ref}</li>
+                      <li key={i} className="mb-1">{ref}</li>
                     ))}
                   </ol>
                 </div>
@@ -2330,7 +2272,7 @@ function NeonatalCalcCard({
   return (
     <div style={{ position: 'relative' }}>
       {/* Favorite star — absolute pos, sibling of button (avoids nested-button HTML invalid) */}
-      <div style={{ position: 'absolute', top: 12, right: 12, zIndex: 2 }}>
+      <div className="absolute top-3 right-3 z-[2]">
         <FavoriteStarButton id={`calc:${calc.id}`} type="calc" title={calc.title_ru} />
       </div>
       <button
@@ -2485,7 +2427,7 @@ function ArticleCard({
     }}>
       {/* Favorite star — absolutely positioned, sibling of toggle button (avoids nested-button HTML invalid).
           Top-right above chevron. Click stopPropagation в самом StarButton. */}
-      <div style={{ position: 'absolute', top: 12, right: 50, zIndex: 2 }}>
+      <div className="absolute top-3 right-[50px] z-[2]">
         <FavoriteStarButton id={`article:${article.id}`} type="article" title={article.title_ru} />
       </div>
       <button
@@ -2506,7 +2448,7 @@ function ArticleCard({
         onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
         onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
       >
-        <span aria-hidden="true" style={{ flex: 1, minWidth: 0 }}>
+        <span aria-hidden="true" className="flex-1 min-w-0">
           {/* Collapsed header матчит GuidelineCard: только title + topic pill.
               Сводка (article.summary) перенесена внутрь раскрытой панели как
               лид-абзац — мирror «подробнее» pattern из протоколов. */}
@@ -2562,7 +2504,7 @@ function ArticleCard({
               height: { duration: 0.25, ease: [0.05, 0.7, 0.1, 1] },
               opacity: { duration: 0.18 },
             }}
-            style={{ overflow: 'hidden' }}
+            className="overflow-hidden"
           >
             <div style={{
               padding: '18px 20px 20px',
@@ -2587,7 +2529,7 @@ function ArticleCard({
               )}
               <ArticleContent content={article.content} />
               {article.related_calculators.length > 0 && (
-                <div style={{ marginTop: 18, paddingTop: 14, borderTop: '1px solid #E5E7EB' }}>
+                <div className="mt-[18px] pt-3.5 border-t border-[#E5E7EB]">
                   <div style={{
                     fontFamily: 'var(--font-mono)',
                     fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
@@ -2622,7 +2564,7 @@ function ArticleCard({
                 </div>
               )}
               {article.references.length > 0 && (
-                <div style={{ marginTop: 18, paddingTop: 14, borderTop: '1px solid #E5E7EB' }}>
+                <div className="mt-[18px] pt-3.5 border-t border-[#E5E7EB]">
                   <div style={{
                     fontFamily: 'var(--font-mono)',
                     fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
@@ -2630,9 +2572,9 @@ function ArticleCard({
                   }}>
                     References
                   </div>
-                  <ol style={{ margin: 0, paddingLeft: 20, fontSize: 12, color: '#6B7280', lineHeight: 1.55 }}>
+                  <ol className="m-0 pl-5 text-xs text-[#6B7280] leading-[1.55] list-decimal">
                     {article.references.map((ref, i) => (
-                      <li key={i} style={{ marginBottom: 4 }}>{ref}</li>
+                      <li key={i} className="mb-1">{ref}</li>
                     ))}
                   </ol>
                 </div>
@@ -2832,7 +2774,7 @@ function LactCard({
       transition: 'border-color 150ms ease',
       position: 'relative',
     }}>
-      <div style={{ position: 'absolute', top: 12, right: 50, zIndex: 2 }}>
+      <div className="absolute top-3 right-[50px] z-[2]">
         <FavoriteStarButton id={`lactmed:${drug.id}`} type="lactmed" title={drug.name_ru} />
       </div>
       <button
@@ -2853,7 +2795,7 @@ function LactCard({
         onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
         onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
       >
-        <span aria-hidden="true" style={{ flex: 1, minWidth: 0 }}>
+        <span aria-hidden="true" className="flex-1 min-w-0">
           <span style={{
             display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 4,
           }}>
@@ -2910,7 +2852,7 @@ function LactCard({
               height: { duration: 0.25, ease: [0.05, 0.7, 0.1, 1] },
               opacity: { duration: 0.18 },
             }}
-            style={{ overflow: 'hidden' }}
+            className="overflow-hidden"
           >
             <div style={{
               padding: '18px 20px 20px',
@@ -3012,7 +2954,7 @@ function NurseProcedureCard({
           fontFamily: 'inherit',
         }}
       >
-        <span aria-hidden="true" style={{ flex: 1, minWidth: 0 }}>
+        <span aria-hidden="true" className="flex-1 min-w-0">
           <span style={{
             display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 4,
           }}>
@@ -3072,7 +3014,7 @@ function NurseProcedureCard({
               height: { duration: 0.25, ease: [0.05, 0.7, 0.1, 1] },
               opacity: { duration: 0.18 },
             }}
-            style={{ overflow: 'hidden' }}
+            className="overflow-hidden"
           >
             <div style={{
               padding: '14px 20px 18px',
@@ -3124,7 +3066,7 @@ function NurseProcedureCard({
                       width={11} height={11} viewBox="0 0 24 24" fill="none"
                       stroke="currentColor" strokeWidth={2.4}
                       strokeLinecap="round" strokeLinejoin="round"
-                      style={{ flexShrink: 0 }}
+                      className="shrink-0"
                     >
                       <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z" />
                       <line x1="12" y1="9" x2="12" y2="13" />
@@ -3288,21 +3230,21 @@ function ClinicalCasesView({
   if (!bank) {
     return (
       <div>
-        <div className="lc-shimmer" style={{ height: 48, width: '100%', borderRadius: 12, marginBottom: 12 }} />
-        <div className="lc-shimmer" style={{ height: 160, width: '100%', borderRadius: 14 }} />
+        <div className="lc-shimmer h-12 w-full rounded-xl mb-3" />
+        <div className="lc-shimmer h-40 w-full rounded-[14px]" />
       </div>
     );
   }
 
   return (
-    <div style={{ width: '100%' }}>
-      <p style={{ fontSize: 13, color: '#6B7280', margin: '0 0 14px' }}>
-        Показано: <strong style={{ color: '#1A1A1A' }}>{filtered.length}</strong> из {bank.cases.length} кейсов
+    <div className="w-full">
+      <p className="text-[13px] text-[#6B7280] mt-0 mb-3.5">
+        Показано: <strong className="text-[#1A1A1A]">{filtered.length}</strong> из {bank.cases.length} кейсов
         {' · '}
-        <span style={{ color: '#9CA3AF' }}>сгруппированы по системе</span>
+        <span className="text-[#9CA3AF]">сгруппированы по системе</span>
       </p>
 
-      <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 10, marginBottom: 16 }}>
+      <div className="flex items-center flex-wrap gap-2.5 mb-4">
         <FavoritesToggleChip
           active={showFavOnly}
           onToggle={() => setShowFavOnly(!showFavOnly)}
@@ -3314,7 +3256,7 @@ function ClinicalCasesView({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.3 }}
-        style={{ display: 'flex', flexDirection: 'column', gap: 24 }}
+        className="flex flex-col gap-6"
       >
         {grouped.map(([label, items]) => (
           <div key={label}>
@@ -3382,7 +3324,7 @@ function ClinicalCaseCard({
       transition: 'border-color 150ms ease',
       position: 'relative',
     }}>
-      <div style={{ position: 'absolute', top: 12, right: 50, zIndex: 2 }}>
+      <div className="absolute top-3 right-[50px] z-[2]">
         <FavoriteStarButton id={`case:${c.id}`} type="case" title={c.title_ru} />
       </div>
       <button
@@ -3403,7 +3345,7 @@ function ClinicalCaseCard({
         onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
         onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
       >
-        <span aria-hidden="true" style={{ flex: 1, minWidth: 0 }}>
+        <span aria-hidden="true" className="flex-1 min-w-0">
           <span style={{
             display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap',
           }}>
@@ -3455,7 +3397,7 @@ function ClinicalCaseCard({
               height: { duration: 0.25, ease: [0.05, 0.7, 0.1, 1] },
               opacity: { duration: 0.18 },
             }}
-            style={{ overflow: 'hidden' }}
+            className="overflow-hidden"
           >
             <div style={{
               padding: '18px 20px 20px',
@@ -3482,7 +3424,7 @@ function ClinicalCaseCard({
               <CaseSection label="Pearls (запомнить)" items={c.pearls} tone="pearl" />
 
               {c.references.length > 0 && (
-                <div style={{ marginTop: 18, paddingTop: 14, borderTop: '1px solid #E5E7EB' }}>
+                <div className="mt-[18px] pt-3.5 border-t border-[#E5E7EB]">
                   <div style={{
                     fontFamily: 'var(--font-mono)',
                     fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
@@ -3490,9 +3432,9 @@ function ClinicalCaseCard({
                   }}>
                     References
                   </div>
-                  <ol style={{ margin: 0, paddingLeft: 20, fontSize: 12, color: '#6B7280', lineHeight: 1.55 }}>
+                  <ol className="m-0 pl-5 text-xs text-[#6B7280] leading-[1.55] list-decimal">
                     {c.references.map((ref, i) => (
-                      <li key={i} style={{ marginBottom: 4 }}>{ref}</li>
+                      <li key={i} className="mb-1">{ref}</li>
                     ))}
                   </ol>
                 </div>
@@ -3538,7 +3480,7 @@ function CaseSection({
             width={11} height={11} viewBox="0 0 24 24" fill="none"
             stroke="currentColor" strokeWidth={2.4}
             strokeLinecap="round" strokeLinejoin="round"
-            style={{ flexShrink: 0 }}
+            className="shrink-0"
           >
             <circle cx="12" cy="12" r="10" />
             <line x1="12" y1="8" x2="12" y2="12" />
@@ -3621,21 +3563,21 @@ function CommonMistakesView({
   if (!bank) {
     return (
       <div>
-        <div className="lc-shimmer" style={{ height: 48, width: '100%', borderRadius: 12, marginBottom: 12 }} />
-        <div className="lc-shimmer" style={{ height: 160, width: '100%', borderRadius: 14 }} />
+        <div className="lc-shimmer h-12 w-full rounded-xl mb-3" />
+        <div className="lc-shimmer h-40 w-full rounded-[14px]" />
       </div>
     );
   }
 
   return (
-    <div style={{ width: '100%' }}>
-      <p style={{ fontSize: 13, color: '#6B7280', margin: '0 0 14px' }}>
-        Показано: <strong style={{ color: '#1A1A1A' }}>{filtered.length}</strong> из {bank.mistakes.length} ошибок
+    <div className="w-full">
+      <p className="text-[13px] text-[#6B7280] mt-0 mb-3.5">
+        Показано: <strong className="text-[#1A1A1A]">{filtered.length}</strong> из {bank.mistakes.length} ошибок
         {' · '}
-        <span style={{ color: '#9CA3AF' }}>сгруппированы по системе</span>
+        <span className="text-[#9CA3AF]">сгруппированы по системе</span>
       </p>
 
-      <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 10, marginBottom: 16 }}>
+      <div className="flex items-center flex-wrap gap-2.5 mb-4">
         <FavoritesToggleChip
           active={showFavOnly}
           onToggle={() => setShowFavOnly(!showFavOnly)}
@@ -3647,7 +3589,7 @@ function CommonMistakesView({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.3 }}
-        style={{ display: 'flex', flexDirection: 'column', gap: 24 }}
+        className="flex flex-col gap-6"
       >
         {grouped.map(([label, items]) => (
           <div key={label}>
@@ -3717,7 +3659,7 @@ function CommonMistakeCard({
       transition: 'border-color 150ms ease',
       position: 'relative',
     }}>
-      <div style={{ position: 'absolute', top: 12, right: 50, zIndex: 2 }}>
+      <div className="absolute top-3 right-[50px] z-[2]">
         <FavoriteStarButton id={`mistake:${m.id}`} type="mistake" title={m.title_ru} />
       </div>
       <button
@@ -3738,7 +3680,7 @@ function CommonMistakeCard({
         onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
         onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
       >
-        <span aria-hidden="true" style={{ flex: 1, minWidth: 0 }}>
+        <span aria-hidden="true" className="flex-1 min-w-0">
           <span style={{
             display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap',
           }}>
@@ -3790,7 +3732,7 @@ function CommonMistakeCard({
               height: { duration: 0.25, ease: [0.05, 0.7, 0.1, 1] },
               opacity: { duration: 0.18 },
             }}
-            style={{ overflow: 'hidden' }}
+            className="overflow-hidden"
           >
             <div style={{
               padding: '18px 20px 20px',
@@ -3804,7 +3746,7 @@ function CommonMistakeCard({
               <MistakeBlock label="Последствия ошибки" text={m.consequence} tone="warning" />
 
               {m.references.length > 0 && (
-                <div style={{ marginTop: 18, paddingTop: 14, borderTop: '1px solid #E5E7EB' }}>
+                <div className="mt-[18px] pt-3.5 border-t border-[#E5E7EB]">
                   <div style={{
                     fontFamily: 'var(--font-mono)',
                     fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
@@ -3812,9 +3754,9 @@ function CommonMistakeCard({
                   }}>
                     References
                   </div>
-                  <ol style={{ margin: 0, paddingLeft: 20, fontSize: 12, color: '#6B7280', lineHeight: 1.55 }}>
+                  <ol className="m-0 pl-5 text-xs text-[#6B7280] leading-[1.55] list-decimal">
                     {m.references.map((ref, i) => (
-                      <li key={i} style={{ marginBottom: 4 }}>{ref}</li>
+                      <li key={i} className="mb-1">{ref}</li>
                     ))}
                   </ol>
                 </div>
@@ -3919,20 +3861,20 @@ function ChecklistsView({
   if (!bank) {
     return (
       <div>
-        <div className="lc-shimmer" style={{ height: 48, width: '100%', borderRadius: 12, marginBottom: 12 }} />
-        <div className="lc-shimmer" style={{ height: 160, width: '100%', borderRadius: 14 }} />
+        <div className="lc-shimmer h-12 w-full rounded-xl mb-3" />
+        <div className="lc-shimmer h-40 w-full rounded-[14px]" />
       </div>
     );
   }
 
   return (
-    <div style={{ width: '100%' }}>
-      <p style={{ fontSize: 13, color: '#6B7280', margin: '0 0 14px' }}>
-        Показано: <strong style={{ color: '#1A1A1A' }}>{filtered.length}</strong> из {bank.checklists.length} чек-листов
+    <div className="w-full">
+      <p className="text-[13px] text-[#6B7280] mt-0 mb-3.5">
+        Показано: <strong className="text-[#1A1A1A]">{filtered.length}</strong> из {bank.checklists.length} чек-листов
         {' · '}
-        <span style={{ color: '#9CA3AF' }}>прогресс сохраняется на устройстве</span>
+        <span className="text-[#9CA3AF]">прогресс сохраняется на устройстве</span>
       </p>
-      <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 10, marginBottom: 16 }}>
+      <div className="flex items-center flex-wrap gap-2.5 mb-4">
         <FavoritesToggleChip
           active={showFavOnly}
           onToggle={() => setShowFavOnly(!showFavOnly)}
@@ -3943,7 +3885,7 @@ function ChecklistsView({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.3 }}
-        style={{ display: 'flex', flexDirection: 'column', gap: 24 }}
+        className="flex flex-col gap-6"
       >
         {grouped.map(([label, items]) => (
           <div key={label}>
@@ -4036,7 +3978,7 @@ function ChecklistCard({
       transition: 'border-color 150ms ease',
       position: 'relative',
     }}>
-      <div style={{ position: 'absolute', top: 12, right: 50, zIndex: 2 }}>
+      <div className="absolute top-3 right-[50px] z-[2]">
         <FavoriteStarButton id={`checklist:${c.id}`} type="checklist" title={c.title_ru} />
       </div>
       <button
@@ -4057,7 +3999,7 @@ function ChecklistCard({
         onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
         onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
       >
-        <span aria-hidden="true" style={{ flex: 1, minWidth: 0 }}>
+        <span aria-hidden="true" className="flex-1 min-w-0">
           <span style={{
             display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap',
           }}>
@@ -4124,7 +4066,7 @@ function ChecklistCard({
               height: { duration: 0.25, ease: [0.05, 0.7, 0.1, 1] },
               opacity: { duration: 0.18 },
             }}
-            style={{ overflow: 'hidden' }}
+            className="overflow-hidden"
           >
             <div style={{
               padding: '18px 20px 20px',
@@ -4238,7 +4180,7 @@ function ChecklistCard({
               </div>
 
               {c.references.length > 0 && (
-                <div style={{ marginTop: 18, paddingTop: 14, borderTop: '1px solid #E5E7EB' }}>
+                <div className="mt-[18px] pt-3.5 border-t border-[#E5E7EB]">
                   <div style={{
                     fontFamily: 'var(--font-mono)',
                     fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
@@ -4246,9 +4188,9 @@ function ChecklistCard({
                   }}>
                     References
                   </div>
-                  <ol style={{ margin: 0, paddingLeft: 20, fontSize: 12, color: '#6B7280', lineHeight: 1.55 }}>
+                  <ol className="m-0 pl-5 text-xs text-[#6B7280] leading-[1.55] list-decimal">
                     {c.references.map((ref, i) => (
-                      <li key={i} style={{ marginBottom: 4 }}>{ref}</li>
+                      <li key={i} className="mb-1">{ref}</li>
                     ))}
                   </ol>
                 </div>
@@ -4337,20 +4279,20 @@ function VideosView({
   if (!bank) {
     return (
       <div>
-        <div className="lc-shimmer" style={{ height: 48, width: '100%', borderRadius: 12, marginBottom: 12 }} />
-        <div className="lc-shimmer" style={{ height: 160, width: '100%', borderRadius: 14 }} />
+        <div className="lc-shimmer h-12 w-full rounded-xl mb-3" />
+        <div className="lc-shimmer h-40 w-full rounded-[14px]" />
       </div>
     );
   }
 
   return (
-    <div style={{ width: '100%' }}>
-      <p style={{ fontSize: 13, color: '#6B7280', margin: '0 0 14px' }}>
-        Показано: <strong style={{ color: '#1A1A1A' }}>{filtered.length}</strong> из {bank.videos.length} видео
+    <div className="w-full">
+      <p className="text-[13px] text-[#6B7280] mt-0 mb-3.5">
+        Показано: <strong className="text-[#1A1A1A]">{filtered.length}</strong> из {bank.videos.length} видео
         {' · '}
-        <span style={{ color: '#9CA3AF' }}>линки на authoritative источники (AAP, WHO, NEJM, EFCNI и др.)</span>
+        <span className="text-[#9CA3AF]">линки на authoritative источники (AAP, WHO, NEJM, EFCNI и др.)</span>
       </p>
-      <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 10, marginBottom: 16 }}>
+      <div className="flex items-center flex-wrap gap-2.5 mb-4">
         <FavoritesToggleChip
           active={showFavOnly}
           onToggle={() => setShowFavOnly(!showFavOnly)}
@@ -4361,7 +4303,7 @@ function VideosView({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.3 }}
-        style={{ display: 'flex', flexDirection: 'column', gap: 24 }}
+        className="flex flex-col gap-6"
       >
         {grouped.map(([label, items]) => (
           <div key={label}>
@@ -4418,7 +4360,7 @@ function ProcedureVideoCard({ video }: { video: ProcedureVideo }) {
   };
   return (
     <div style={{ position: 'relative' }}>
-      <div style={{ position: 'absolute', top: 12, right: 12, zIndex: 2 }}>
+      <div className="absolute top-3 right-3 z-[2]">
         <FavoriteStarButton id={`video:${v.id}`} type="video" title={v.title_ru} />
       </div>
     <a
@@ -4705,8 +4647,8 @@ function AtlasView({
   if (!bank) {
     return (
       <div>
-        <div className="lc-shimmer" style={{ height: 48, width: '100%', borderRadius: 12, marginBottom: 12 }} />
-        <div className="lc-shimmer" style={{ height: 160, width: '100%', borderRadius: 14 }} />
+        <div className="lc-shimmer h-12 w-full rounded-xl mb-3" />
+        <div className="lc-shimmer h-40 w-full rounded-[14px]" />
       </div>
     );
   }
@@ -4714,11 +4656,11 @@ function AtlasView({
   return (
     <div style={{ width: '100%' }}>
       <p style={{ fontSize: 13, color: '#6B7280', margin: '0 0 14px' }}>
-        Показано: <strong style={{ color: '#1A1A1A' }}>{filtered.length}</strong> из {bank.atlas.length} атласов
+        Показано: <strong className="text-[#1A1A1A]">{filtered.length}</strong> из {bank.atlas.length} атласов
         {' · '}
         <span style={{ color: '#9CA3AF' }}>линки на authoritative источники (Radiopaedia, NEJM, AAP)</span>
       </p>
-      <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 10, marginBottom: 16 }}>
+      <div className="flex items-center flex-wrap gap-2.5 mb-4">
         <FavoritesToggleChip
           active={showFavOnly}
           onToggle={() => setShowFavOnly(!showFavOnly)}
@@ -4729,7 +4671,7 @@ function AtlasView({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.3 }}
-        style={{ display: 'flex', flexDirection: 'column', gap: 24 }}
+        className="flex flex-col gap-6"
       >
         {grouped.map(([label, items]) => (
           <div key={label}>
@@ -4796,7 +4738,7 @@ function AtlasCard({
       transition: 'border-color 150ms ease',
       position: 'relative',
     }}>
-      <div style={{ position: 'absolute', top: 12, right: 50, zIndex: 2 }}>
+      <div className="absolute top-3 right-[50px] z-[2]">
         <FavoriteStarButton id={`atlas:${a.id}`} type="atlas" title={a.title_ru} />
       </div>
       <button
@@ -4817,7 +4759,7 @@ function AtlasCard({
         onMouseEnter={(e) => { e.currentTarget.style.background = '#EFF1F4'; }}
         onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
       >
-        <span aria-hidden="true" style={{ flex: 1, minWidth: 0 }}>
+        <span aria-hidden="true" className="flex-1 min-w-0">
           <span style={{
             display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap',
           }}>
@@ -4869,7 +4811,7 @@ function AtlasCard({
               height: { duration: 0.25, ease: [0.05, 0.7, 0.1, 1] },
               opacity: { duration: 0.18 },
             }}
-            style={{ overflow: 'hidden' }}
+            className="overflow-hidden"
           >
             <div style={{
               padding: '18px 20px 20px',
@@ -5219,7 +5161,7 @@ export function ProgressDashboard({ bank: _bank, quizzesBank: _quizzesBank }: { 
                   </span>
                 </>
               ) : (
-                <span style={{ fontSize: 12, color: '#9CA3AF' }}>не пройден</span>
+                <span className="text-xs text-[#9CA3AF]">не пройден</span>
               )}
             </div>
           ))}
