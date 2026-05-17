@@ -69,6 +69,26 @@ interface AppState {
    *  чтобы пользователь возвращался к привычным инструментам мгновенно
    *  через дежурство / разные устройства одной сессии. */
   recentToolIds: string[];
+  /** Patient context — sticky widget на /neonatology для anti-repetition
+   *  workflow. Клиницист один раз вводит weight/GA/postnatal day, и они
+   *  auto-fill в калькуляторы которые их требуют (Apgar, Bili-2022, Fluid,
+   *  GIR, Fenton, Resuscitation doses, Surfactant). Persisted сессионно
+   *  через localStorage — сохраняется между переключениями вкладок и
+   *  cold reload'ом за дежурство. Очищается через explicit «Сбросить
+   *  контекст» (или auto-clear через 24ч TTL — см. patientContextSetAt). */
+  patientContext: {
+    /** Вес ребёнка, граммы (NICU стандарт). 0 = не задано. */
+    weightG: number;
+    /** Гестационный возраст при рождении, недели. 0 = не задано. Range 22-44. */
+    gaWeeks: number;
+    /** Постнатальный день (день жизни). 0 = день рождения. */
+    postnatalDay: number;
+  };
+  /** Timestamp последнего изменения patientContext (epoch ms). Используется
+   *  для TTL: контекст auto-clears через 24h неактивности, чтобы данные
+   *  предыдущего пациента не утекали на следующего. 0 = ещё не задано. */
+  patientContextSetAt: number;
+
   /** Последний результат адаптивного диагностического теста.
    *  Сохраняется при завершении теста, доступ через TestsPage —
    *  пользователь может вернуться и пересмотреть рекомендации. */
@@ -126,6 +146,14 @@ interface AppState {
    *  submenu — clicking sub-item also calls setShowNeonatal(true). */
   setNeonatalActiveTab: (tab: AppState['neonatalActiveTab']) => void;
   setLastDiagnosticResult: (r: AppState['lastDiagnosticResult']) => void;
+
+  /** Update patient context partial (any of weight/GA/day). Always bumps
+   *  `patientContextSetAt` to now. Use `clearPatientContext()` to reset
+   *  всё вместе (e.g. при смене пациента). */
+  setPatientContext: (ctx: Partial<AppState['patientContext']>) => void;
+  /** Reset patient context to defaults (all zero) — кнопка «Сбросить»
+   *  в widget'е + auto-call по TTL >24h. */
+  clearPatientContext: () => void;
   toggleProfile: () => void;
   addStudyTime: (courseId: string, seconds: number) => void;
   openTool: (id: string) => void;
@@ -232,6 +260,8 @@ export const useAppStore = create<AppState>()(
       toolsFavourites: [],
       toolUsage: {},
       recentToolIds: [],
+      patientContext: { weightG: 0, gaWeeks: 0, postnatalDay: 0 },
+      patientContextSetAt: 0,
       lastDiagnosticResult: null,
 
       setToolsQuery: (q) => set({ toolsQuery: q }),
@@ -402,6 +432,21 @@ export const useAppStore = create<AppState>()(
 
       setLastDiagnosticResult: (r) => set({ lastDiagnosticResult: r }),
 
+      setPatientContext: (partial) => {
+        const cur = get().patientContext;
+        // Sanitize input: numeric coerce, clamp to ranges valid in neonatology.
+        const next = {
+          weightG: clampNum(partial.weightG ?? cur.weightG, 0, 10_000),
+          gaWeeks: clampNum(partial.gaWeeks ?? cur.gaWeeks, 0, 44),
+          postnatalDay: clampNum(partial.postnatalDay ?? cur.postnatalDay, 0, 365),
+        };
+        set({ patientContext: next, patientContextSetAt: Date.now() });
+      },
+      clearPatientContext: () => set({
+        patientContext: { weightG: 0, gaWeeks: 0, postnatalDay: 0 },
+        patientContextSetAt: 0,
+      }),
+
       toggleProfile: () => set({ showProfile: true, showLearning: false, showTools: false, showStats: false, showTests: false, activeSection: null, activeModuleId: null, currentCourseId: null, activeToolId: null }),
 
       // Open a specific tool — flip into appropriate view + clear other
@@ -517,6 +562,22 @@ export const useAppStore = create<AppState>()(
         if (isObj(raw.toolUsage))           safe.toolUsage = raw.toolUsage;
         if (isStrArr(raw.recentToolIds))    safe.recentToolIds = raw.recentToolIds.slice(0, 10);
 
+        // Patient context — defensive hydrate. Clamp every field; reject if
+        // older than 24h (sessions don't carry over between dejours).
+        const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
+        if (isObj(raw.patientContext) && typeof raw.patientContextSetAt === 'number') {
+          const age = Date.now() - raw.patientContextSetAt;
+          if (age >= 0 && age < TWENTY_FOUR_HOURS) {
+            const pc = raw.patientContext as Record<string, unknown>;
+            safe.patientContext = {
+              weightG: clampNum(pc.weightG, 0, 10_000),
+              gaWeeks: clampNum(pc.gaWeeks, 0, 44),
+              postnatalDay: clampNum(pc.postnatalDay, 0, 365),
+            };
+            safe.patientContextSetAt = raw.patientContextSetAt;
+          }
+        }
+
         return safe as unknown as AppState;
       },
       partialize: (state) => ({
@@ -546,11 +607,24 @@ export const useAppStore = create<AppState>()(
         toolsFavourites: state.toolsFavourites,
         toolUsage: state.toolUsage,
         recentToolIds: state.recentToolIds,
+        // Patient context — persists weight/GA/postnatal day for the current
+        // dejour. Auto-cleared by 24h TTL in usePatientContext hook to avoid
+        // leaking from previous-patient session into next-patient.
+        patientContext: state.patientContext,
+        patientContextSetAt: state.patientContextSetAt,
         lastDiagnosticResult: state.lastDiagnosticResult,
       }),
     }
   )
 );
+
+/** Clamp a number to [min, max]; non-finite → min. Used by patient context
+ *  setters to prevent garbage-input from corrupting localStorage state. */
+function clampNum(v: unknown, min: number, max: number): number {
+  const n = Number(v);
+  if (!Number.isFinite(n)) return min;
+  return Math.max(min, Math.min(max, n));
+}
 
 /** Format seconds to human-readable string */
 export function formatStudyTime(seconds: number): string {
