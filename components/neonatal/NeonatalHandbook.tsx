@@ -20,6 +20,7 @@ import BilirubinNomogram from '@/components/neonatal/BilirubinNomogram';
 import ResuscitationFlowchart from '@/components/neonatal/ResuscitationFlowchart';
 import ApgarTimer from '@/components/neonatal/ApgarTimer';
 import QuizRunner from '@/components/neonatal/QuizRunner';
+import PatientContextBar from '@/components/neonatal/PatientContextBar';
 import { ArrowRight } from '@/components/icons';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore } from '@/lib/store';
@@ -732,6 +733,14 @@ export default function NeonatalHandbook() {
 
   return (
     <main id="main-content" className="p-0 font-[var(--font-body,system-ui)] text-[var(--md-sys-color-on-surface,#1A1A1A)]">
+      {/* Patient context bar — sticky widget с базовыми параметрами
+          ребёнка (weight/GA/postnatal day) которые auto-fill в калькуляторы.
+          Скрыт во время exam-таба (quiz active) и на information-only вкладках
+          (cases/mistakes/articles/atlas) где контекст не используется. */}
+      {!(tab === 'quizzes' && quizActive) && !['articles', 'cases', 'mistakes', 'videos', 'atlas', 'lactmed'].includes(tab) && (
+        <PatientContextBar />
+      )}
+
       {/* Page header removed (PR #50, fix G3) — each tab has its own H1
           via SECTION_META and breadcrumb-style title. The repeated
           «Неонатология — справочник доз» banner was redundant and ate
