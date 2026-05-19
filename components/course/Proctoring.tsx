@@ -155,8 +155,20 @@ export default function Proctoring({
   const [audioDb, setAudioDb] = useState<number>(-100);
   // Detected once on mount. We use it to throttle every analysis loop
   // and lower the camera resolution on phones / low-RAM devices.
-  const lowPowerRef = useRef<boolean>(false);
-  useEffect(() => { lowPowerRef.current = detectLowPower(); }, []);
+  // Audit B-7: lazy initialiser pattern instead of `useRef(false) +
+  // useEffect`. Pre-fix the ref was `false` during the render that
+  // declared monitoring effects, then updated by a follow-up effect.
+  // Monitoring effects ran ONCE on mount and captured `lowPowerRef
+  // .current` into a local const — if the timing changed (effect order,
+  // suspense boundary) they could lock in the placeholder `false`.
+  // `useState(() => detectLowPower())` guarantees the value is correct
+  // on the FIRST render, before any monitoring effects fire. We use
+  // useState (not useRef) so React knows about the value and can
+  // include it in effect deps if needed later. Initial-state function
+  // runs once per component instance, same cost as the previous effect.
+  const [lowPower] = useState(() => detectLowPower());
+  const lowPowerRef = useRef<boolean>(lowPower);
+  lowPowerRef.current = lowPower;
 
   // ── Acquire stream once, release on unmount or when `active` flips off
   useEffect(() => {

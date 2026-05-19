@@ -613,8 +613,13 @@ export const useAppStore = create<AppState>()(
         toolUsage: state.toolUsage,
         recentToolIds: state.recentToolIds,
         // Patient context — persists weight/GA/postnatal day for the current
-        // dejour. Auto-cleared by 24h TTL in usePatientContext hook to avoid
-        // leaking from previous-patient session into next-patient.
+        // dejour. Two TTL guards work together (audit B-13):
+        //   1. Hydrate-side TTL rejects rows older than 24h on load
+        //      (see `partialize`/`merge` in this file).
+        //   2. Runtime TTL in `PatientContextBar` polls every minute
+        //      while the bar is mounted and calls clearPatientContext()
+        //      once setAt + 24h is past — covers long dejours with the
+        //      tab kept open.
         patientContext: state.patientContext,
         patientContextSetAt: state.patientContextSetAt,
         lastDiagnosticResult: state.lastDiagnosticResult,

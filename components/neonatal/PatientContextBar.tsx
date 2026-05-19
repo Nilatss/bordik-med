@@ -32,8 +32,14 @@
 import { useEffect, useState } from 'react';
 import { useAppStore } from '@/lib/store';
 
+/** 24h TTL for patient context in milliseconds. */
+const PATIENT_CONTEXT_TTL_MS = 24 * 60 * 60 * 1000;
+/** Poll interval for the runtime TTL check (1 minute). */
+const TTL_CHECK_PERIOD_MS = 60 * 1000;
+
 export default function PatientContextBar(): React.JSX.Element {
   const ctx = useAppStore((s) => s.patientContext);
+  const setAt = useAppStore((s) => s.patientContextSetAt);
   const setCtx = useAppStore((s) => s.setPatientContext);
   const clearCtx = useAppStore((s) => s.clearPatientContext);
 
@@ -53,6 +59,25 @@ export default function PatientContextBar(): React.JSX.Element {
     setGaStr(String(ctx.gaWeeks || ''));
     setDayStr(String(ctx.postnatalDay || ''));
   }, [ctx.weightG, ctx.gaWeeks, ctx.postnatalDay]);
+
+  // Audit B-13: runtime 24h TTL. Pre-fix the comments in store.ts and
+  // this file claimed an auto-clear hook existed, but only the hydrate
+  // path enforced TTL — a long dejour with the tab open past 24h
+  // would carry stale patient context. Now we poll once per minute
+  // while the bar is mounted; if the stored timestamp is past TTL,
+  // call clearPatientContext(). Granularity is intentionally 1 minute
+  // — finer would burn battery for a soft data-hygiene rule, coarser
+  // could keep stale context visible too long.
+  useEffect(() => {
+    if (setAt <= 0) return; // No context set — nothing to expire.
+    const check = () => {
+      const age = Date.now() - setAt;
+      if (age >= PATIENT_CONTEXT_TTL_MS) clearCtx();
+    };
+    check(); // Immediate check on mount / when setAt changes.
+    const id = setInterval(check, TTL_CHECK_PERIOD_MS);
+    return () => clearInterval(id);
+  }, [setAt, clearCtx]);
 
   const commit = (): void => {
     const w = parseInt(weightStr, 10);
