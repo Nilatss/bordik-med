@@ -21,6 +21,7 @@ import ResuscitationFlowchart from '@/components/neonatal/ResuscitationFlowchart
 import ApgarTimer from '@/components/neonatal/ApgarTimer';
 import QuizRunner from '@/components/neonatal/QuizRunner';
 import PatientContextBar from '@/components/neonatal/PatientContextBar';
+import { MarkdownLite } from '@/components/ui/MarkdownLite';
 import { ArrowRight } from '@/components/icons';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore } from '@/lib/store';
@@ -431,6 +432,11 @@ export default function NeonatalHandbook() {
   // (auto-tagged from references). Mirror UI pattern.
   const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
   const [regionFilterOpen, setRegionFilterOpen] = useState(false);
+
+  // Topic filter на Статьи tab — отфильтровать статьи по `article.topic`
+  // (respiratory / metabolic / cardiopulmonary / etc.). Тот же UI-паттерн.
+  const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
+  const [topicFilterOpen, setTopicFilterOpen] = useState(false);
 
   // Quiz active flag — when QuizRunner enters fullscreen takeover (user
   // clicks a test card), we hide the page header / search / breadcrumb
@@ -882,9 +888,26 @@ export default function NeonatalHandbook() {
     if (query) {
       result = articlesIndex.filter((idx) => idx.haystack.includes(query)).map((idx) => idx.a);
     }
+    if (selectedTopics.length > 0) {
+      result = result.filter((a) => selectedTopics.includes(a.topic));
+    }
     if (showFavOnly) result = result.filter((a) => favsSet.has(`article:${a.id}`));
     return result;
-  }, [articles, articlesIndex, q, showFavOnly, favsSet]);
+  }, [articles, articlesIndex, q, selectedTopics, showFavOnly, favsSet]);
+
+  // Topic counts for the filter dropdown — derived from ALL articles
+  // (not the filtered set) so the user sees how many articles exist per
+  // topic, even when a search query is active.
+  const articleTopicCounts = useMemo<FilterOption[]>(() => {
+    if (!articles) return [];
+    const counts: Record<string, number> = Object.create(null);
+    for (const a of articles.articles) {
+      counts[a.topic] = (counts[a.topic] ?? 0) + 1;
+    }
+    return Object.entries(counts)
+      .map(([value, count]) => ({ value, count, label: ARTICLE_TOPIC_LABELS[value] ?? value }))
+      .sort((a, b) => b.count - a.count);
+  }, [articles]);
 
   // Audit P-3: precomputed lowercase haystack for ~49 LactMed entries.
   const lactmedIndex = useMemo(
@@ -1385,11 +1408,26 @@ export default function NeonatalHandbook() {
             </span>
           </p>
           <div className="flex items-center flex-wrap gap-2.5 mb-4">
+            <FilterDropdown
+              label="Темы"
+              icon={<svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1={7} y1={7} x2="7.01" y2={7}/></svg>}
+              options={articleTopicCounts}
+              selected={selectedTopics}
+              onChange={setSelectedTopics}
+              open={topicFilterOpen}
+              onOpen={setTopicFilterOpen}
+              searchable
+            />
             <FavoritesToggleChip
               active={showFavOnly}
               onToggle={handleToggleFavOnly}
               count={articlesFavCount}
             />
+            {selectedTopics.length > 0 && (
+              <span className="text-xs text-[#9CA3AF]">
+                фильтр: {selectedTopics.map((t) => ARTICLE_TOPIC_LABELS[t] ?? t).join(', ')}
+              </span>
+            )}
           </div>
           <motion.div
             initial={{ opacity: 0 }}
@@ -2514,7 +2552,7 @@ const ArticleCard = React.memo(function ArticleCard({
                   <Highlight text={article.summary} query={query} />
                 </p>
               )}
-              <ArticleContent content={article.content} />
+              <ArticleContent content={stripDuplicateArticleSections(article.content)} />
               {article.related_calculators.length > 0 && (
                 <div className="mt-[18px] pt-3.5 border-t border-[#E5E7EB]">
                   <div className="font-[var(--font-mono)] text-[11px] font-bold tracking-[0.06em] uppercase text-[#9CA3AF] mb-2">
@@ -2537,7 +2575,7 @@ const ArticleCard = React.memo(function ArticleCard({
               {article.references.length > 0 && (
                 <div className="mt-[18px] pt-3.5 border-t border-[#E5E7EB]">
                   <div className="font-[var(--font-mono)] text-[11px] font-bold tracking-[0.06em] uppercase text-[#9CA3AF] mb-2">
-                    References
+                    Источники
                   </div>
                   <ol className="m-0 pl-5 text-xs text-[#6B7280] leading-[1.55] list-decimal">
                     {article.references.map((ref, i) => (
@@ -2555,137 +2593,53 @@ const ArticleCard = React.memo(function ArticleCard({
 });
 
 /**
- * ArticleContent — render markdown-like text for articles.
- * Supports: ## headings, ### subheadings, **bold**, lists, tables, paragraphs.
+ * stripDuplicateArticleSections — removes the trailing `## Источники`
+ * and `## Калькуляторы Bordik` sections from an article's markdown body.
+ *
+ * Background: many articles in `neonatal-articles.json` end with these
+ * two sections in the markdown content AND also populate the structured
+ * `article.references[]` + `article.related_calculators[]` arrays. The
+ * card renders the structured arrays as proper UI chips/lists below the
+ * body, so the duplicate bottom blocks in the body would be shown TWICE
+ * to the clinician (audit: 2026-05-19 user feedback on /articles).
+ *
+ * Strip rules — case-insensitive, matches both Cyrillic and Latin
+ * variants seen in the data. Cuts from the first matching heading to
+ * end-of-content. Falls back to the full content if no heading is
+ * found, so it's safe on articles that legitimately don't include
+ * these sections.
+ */
+function stripDuplicateArticleSections(content: string): string {
+  // Match `## Heading` on a line by itself (modulo trailing whitespace),
+  // where Heading is exactly one of the dedup'd labels — must NOT continue
+  // with more words ("## Источники инфекции" is a legitimate clinical
+  // heading and stays). Multiline-mode `$` requires end-of-line after
+  // the keyword. Then `[\s\S]*` consumes everything to end of content.
+  const re = /\s*^##\s+(?:Источники|References?|Источник|Калькуляторы\s+Bordik|Related\s+calculators?)\s*$[\s\S]*$/im;
+  return content.replace(re, '').trimEnd();
+}
+
+/**
+ * ArticleContent — render markdown-like text for articles via the shared
+ * `MarkdownLite` parser. Pre-fix (audit B-9 follow-up 2026-05-19) this
+ * was a custom inline parser that incorrectly merged a `### heading`
+ * with its following bullet list when separated by a SINGLE newline
+ * (rather than `\n\n`) — the entire block was rendered as a single H4
+ * with literal `- **Stage 1:**` text inside. Switching to MarkdownLite
+ * fixes the rendering for every article and brings inline-table /
+ * inline-bold support consistent with calculator details and protocols.
  */
 function ArticleContent({ content }: { content: string }) {
-  const blocks = content.split(/\n\n+/).map((block) => block.trim()).filter(Boolean);
   return (
     <div className="text-[13.5px] leading-[1.65] text-[#1F2937]">
-      {blocks.map((block, idx) => {
-        if (block.startsWith('## ')) {
-          return (
-            <h3 key={idx} className="font-[var(--font-display)] text-base font-bold text-[#111827] mt-5 mb-2 tracking-[-0.01em]">
-              {block.slice(3)}
-            </h3>
-          );
-        }
-        if (block.startsWith('### ')) {
-          return (
-            <h4 key={idx} className="font-[var(--font-display)] text-sm font-bold text-[#1F2937] mt-4 mb-1.5 tracking-[-0.005em]">
-              {block.slice(4)}
-            </h4>
-          );
-        }
-        if (block.startsWith('- ') || block.startsWith('* ')) {
-          const items = block.split('\n').map((l) => l.replace(/^[-*]\s+/, ''));
-          return (
-            <ul key={idx} className="my-1.5 pl-[22px]">
-              {items.map((it, i) => (
-                <li key={i} className="mb-[3px]">
-                  <FormattedText text={it} />
-                </li>
-              ))}
-            </ul>
-          );
-        }
-        if (/^\d+\.\s/.test(block)) {
-          const items = block.split('\n').map((l) => l.replace(/^\d+\.\s+/, ''));
-          return (
-            <ol key={idx} className="my-1.5 pl-[22px]">
-              {items.map((it, i) => (
-                <li key={i} className="mb-[3px]">
-                  <FormattedText text={it} />
-                </li>
-              ))}
-            </ol>
-          );
-        }
-        if (block.startsWith('| ')) {
-          const rows = block.split('\n').filter((l) => l.startsWith('|'));
-          if (rows.length < 2) {
-            return <p key={idx} className="my-2"><FormattedText text={block} /></p>;
-          }
-          const headerCells = rows[0]?.split('|').map((c) => c.trim()).filter(Boolean) ?? [];
-          const bodyRows = rows.slice(2).map((r) => r.split('|').map((c) => c.trim()).filter(Boolean));
-          return (
-            <div key={idx} className="overflow-x-auto my-3 rounded-lg border border-[#E5E7EB]">
-              <table className="w-full border-collapse text-[12.5px]">
-                <thead>
-                  <tr className="bg-[#F3F4F6]">
-                    {headerCells.map((h, i) => (
-                      <th key={i} className="px-2.5 py-2 text-left font-semibold text-[#374151] border-b border-[#E5E7EB]">
-                        <FormattedText text={h} />
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {bodyRows.map((row, ri) => (
-                    <tr key={ri} className={ri > 0 ? 'border-t border-[#F3F4F6]' : ''}>
-                      {row.map((c, ci) => (
-                        <td key={ci} className="px-2.5 py-1.5 text-[#1F2937]">
-                          <FormattedText text={c} />
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          );
-        }
-        return (
-          <p key={idx} className="my-2">
-            <FormattedText text={block} />
-          </p>
-        );
-      })}
+      <MarkdownLite content={content} />
     </div>
   );
 }
 
-/**
- * FormattedText — handles inline **bold** and `code` formatting.
- */
-function FormattedText({ text }: { text: string }) {
-  const parts: Array<{ type: 'text' | 'bold' | 'code'; value: string }> = [];
-  let buffer = text;
-  // eslint-disable-next-line no-constant-condition
-  while (true) {
-    const boldMatch = /\*\*([^*]+)\*\*/.exec(buffer);
-    const codeMatch = /`([^`]+)`/.exec(buffer);
-    let nextMatch: RegExpExecArray | null = null;
-    let kind: 'bold' | 'code' = 'bold';
-    if (boldMatch && (!codeMatch || boldMatch.index < codeMatch.index)) {
-      nextMatch = boldMatch;
-      kind = 'bold';
-    } else if (codeMatch) {
-      nextMatch = codeMatch;
-      kind = 'code';
-    }
-    if (!nextMatch) {
-      if (buffer) parts.push({ type: 'text', value: buffer });
-      break;
-    }
-    if (nextMatch.index > 0) {
-      parts.push({ type: 'text', value: buffer.slice(0, nextMatch.index) });
-    }
-    parts.push({ type: kind, value: nextMatch[1] ?? '' });
-    buffer = buffer.slice(nextMatch.index + nextMatch[0].length);
-  }
-  return (
-    <>
-      {parts.map((p, i) => {
-        if (p.type === 'bold') return <strong key={i} className="font-semibold text-[#111827]">{p.value}</strong>;
-        if (p.type === 'code') return (
-          <code key={i} className="font-[var(--font-mono)] text-[0.9em] bg-[#F3F4F6] px-1 py-[1px] rounded-[3px] text-[#7C2D12]">{p.value}</code>
-        );
-        return <span key={i}>{p.value}</span>;
-      })}
-    </>
-  );
-}
+// `FormattedText` (handler для inline **bold** + `code`) удалён в пользу
+// `renderInlineMd` из `@/components/ui/MarkdownLite` — он покрывает те же
+// формы плюс auto-link URLs. Все callsites теперь идут через MarkdownLite.
 
 /**
  * LactCard — карточка LactMed-препарата с совместимостью грудного
@@ -3026,6 +2980,33 @@ const CLINICAL_TOPIC_LABELS: Record<string, string> = {
   metabolic: 'Метаболизм',
   hepatic: 'Гепатобилиарная',
   screening: 'Скрининг',
+};
+
+/** Russian labels for the 20 article `topic` keys used in
+ * `public/neonatal-articles.json`. Falls back to the raw key for any
+ * missing entry so a new topic won't break the UI. Mirror of
+ * CLINICAL_TOPIC_LABELS but covers the broader article taxonomy. */
+const ARTICLE_TOPIC_LABELS: Record<string, string> = {
+  respiratory: 'Респираторная',
+  neonatal: 'Общая неонатология',
+  metabolic: 'Метаболизм',
+  cardiopulmonary: 'Сердечно-лёгочная',
+  infection: 'Инфекции',
+  surgical: 'Хирургия',
+  neuro: 'Неврология',
+  gastro: 'ЖКТ',
+  ophthalmology: 'Офтальмология',
+  hematology: 'Гематология',
+  discharge: 'Выписка',
+  pain_nas_sedation: 'Обезболивание / NAS',
+  hepatic: 'Гепатобилиарная',
+  screening: 'Скрининг',
+  vaccination: 'Вакцинация',
+  procedures: 'Процедуры',
+  renal: 'Почки',
+  growth: 'Рост и питание',
+  endocrine: 'Эндокринология',
+  screening_discharge: 'Скрининг при выписке',
 };
 
 function ClinicalCasesView({
