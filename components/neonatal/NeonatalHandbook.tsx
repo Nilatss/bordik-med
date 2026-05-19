@@ -750,6 +750,35 @@ export default function NeonatalHandbook() {
     return nurseIndex.filter((idx) => idx.haystack.includes(query)).map((idx) => idx.p);
   }, [nurse, nurseIndex, q]);
 
+  // Audit P-5: memoised favourite-counts per section. Pre-fix the JSX
+  // ran a fresh `.filter().length` (or nested `.reduce`) on every render
+  // of the tab — N items × M renders/sec while typing. Each chip count
+  // depends only on the bank + favsSet, so a `useMemo` with those deps
+  // re-evaluates only when either actually changes.
+  const drugsFavCount = useMemo(
+    () => bank ? bank.drugs.filter((d) => favsSet.has(`drug:${d.id}`)).length : 0,
+    [bank, favsSet],
+  );
+  const guidelinesFavCount = useMemo(
+    () => guidelines ? guidelines.guidelines.filter((g) => favsSet.has(`guideline:${g.id}`)).length : 0,
+    [guidelines, favsSet],
+  );
+  const calculatorsFavCount = useMemo(
+    () => (calculators?.groups ?? []).reduce(
+      (s, g) => s + g.calculators.filter((c) => favsSet.has(`calc:${c.id}`)).length,
+      0,
+    ),
+    [calculators, favsSet],
+  );
+  const articlesFavCount = useMemo(
+    () => articles ? articles.articles.filter((a) => favsSet.has(`article:${a.id}`)).length : 0,
+    [articles, favsSet],
+  );
+  const lactmedFavCount = useMemo(
+    () => lactmed ? lactmed.drugs.filter((d) => favsSet.has(`lactmed:${d.id}`)).length : 0,
+    [lactmed, favsSet],
+  );
+
   if (error) {
     return (
       <main className="p-6 max-w-[980px] mx-auto">
@@ -909,7 +938,7 @@ export default function NeonatalHandbook() {
             <FavoritesToggleChip
               active={showFavOnly}
               onToggle={handleToggleFavOnly}
-              count={bank.drugs.filter((d) => favsSet.has(`drug:${d.id}`)).length}
+              count={drugsFavCount}
             />
           </div>
           <motion.div
@@ -962,7 +991,7 @@ export default function NeonatalHandbook() {
             <FavoritesToggleChip
               active={showFavOnly}
               onToggle={handleToggleFavOnly}
-              count={(guidelines?.guidelines ?? []).filter((g) => favsSet.has(`guideline:${g.id}`)).length}
+              count={guidelinesFavCount}
             />
             {selectedRegions.length > 0 && (
               <span className="text-xs text-[#9CA3AF]">
@@ -1031,10 +1060,7 @@ export default function NeonatalHandbook() {
             <FavoritesToggleChip
               active={showFavOnly}
               onToggle={handleToggleFavOnly}
-              count={(calculators?.groups ?? []).reduce(
-                (s, g) => s + g.calculators.filter((c) => favsSet.has(`calc:${c.id}`)).length,
-                0
-              )}
+              count={calculatorsFavCount}
             />
             <button
               type="button"
@@ -1174,7 +1200,7 @@ export default function NeonatalHandbook() {
             <FavoritesToggleChip
               active={showFavOnly}
               onToggle={handleToggleFavOnly}
-              count={(articles?.articles ?? []).filter((a) => favsSet.has(`article:${a.id}`)).length}
+              count={articlesFavCount}
             />
           </div>
           <motion.div
@@ -1220,7 +1246,7 @@ export default function NeonatalHandbook() {
             <FavoritesToggleChip
               active={showFavOnly}
               onToggle={handleToggleFavOnly}
-              count={(lactmed?.drugs ?? []).filter((d) => favsSet.has(`lactmed:${d.id}`)).length}
+              count={lactmedFavCount}
             />
           </div>
           <motion.div

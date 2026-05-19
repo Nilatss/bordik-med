@@ -39,12 +39,42 @@ export const dynamic = 'force-dynamic';
 export async function GET(req: Request) {
   // P1-CR-7 — auth/origin/CSRF guard через withAuthedSupabase helper
   return withAuthedSupabase(req, async (sb, user) => {
-    // Fan out reads in parallel — single round-trip to Supabase.
+    // Audit P-4: explicit column lists. Pre-fix `.select('*')` shipped
+    // every column on every fetch — as the schema grows (e.g. profiles
+    // gaining `bio`, `avatar_url`, `consent_metadata`, `audit_meta`)
+    // the response size and parsing cost grew linearly without the
+    // client needing those columns. Listing the columns explicitly
+    // pins the contract: the client uses exactly these fields (see
+    // SyncPayloadSchema above), nothing else, and the response stays
+    // O(known-columns) regardless of future schema migrations.
+    // Column lists pinned against supabase/schema.sql (lines 9-69).
+    // Any new column added there is intentionally opt-in: the client
+    // doesn't see it until we extend SyncPayloadSchema + this select.
     const [profileQ, progressQ, toolsQ, studyQ] = await Promise.all([
-      sb.from('profiles').select('*').eq('id', user.id).maybeSingle(),
-      sb.from('course_progress').select('*').eq('user_id', user.id),
-      sb.from('tool_settings').select('*').eq('user_id', user.id).maybeSingle(),
-      sb.from('study_time').select('*').eq('user_id', user.id),
+      sb
+        .from('profiles')
+        .select(
+          'id, display_name, email, status, country, specialty, language, goal, updated_at',
+        )
+        .eq('id', user.id)
+        .maybeSingle(),
+      sb
+        .from('course_progress')
+        .select(
+          'user_id, course_id, started_at, completed_at, highest_test_level, module_passed, updated_at',
+        )
+        .eq('user_id', user.id),
+      sb
+        .from('tool_settings')
+        .select(
+          'user_id, query, categories, subcategories, countries, only_available, favourites, updated_at',
+        )
+        .eq('user_id', user.id)
+        .maybeSingle(),
+      sb
+        .from('study_time')
+        .select('user_id, course_id, seconds, updated_at')
+        .eq('user_id', user.id),
     ]);
 
     return apiOk({
