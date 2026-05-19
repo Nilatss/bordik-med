@@ -11,7 +11,7 @@
  * compatibility with existing user data).
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 interface PersonalNote {
   id: string;
@@ -43,6 +43,21 @@ export default function NotesPage() {
   const [editingBody, setEditingBody] = useState('');
 
   const activeNote = notes.find((n) => n.id === activeId);
+
+  // Audit B-4: silent data-loss fix. Mirror the editing state into refs
+  // so the cleanup effect on activeId change can flush the buffer
+  // independent of the debounce timer. Without this, switching to
+  // another note before the 500 ms debounce fires drops the in-flight
+  // edits — the cleanup `clearTimeout()` cancels the save, then the
+  // following effect re-seeds editingTitle/Body from the new note.
+  const editingTitleRef = useRef(editingTitle);
+  const editingBodyRef = useRef(editingBody);
+  const activeIdRef = useRef<string | null>(activeId);
+  const notesRef = useRef(notes);
+  editingTitleRef.current = editingTitle;
+  editingBodyRef.current = editingBody;
+  activeIdRef.current = activeId;
+  notesRef.current = notes;
 
   useEffect(() => {
     if (activeNote) {
@@ -88,13 +103,50 @@ export default function NotesPage() {
     setActiveId(null);
   };
 
-  // Auto-save on body/title change with debounce
+  // Audit B-4: auto-save on body/title change with debounce.
+  // saveCurrent intentionally omitted from deps — it closes over the
+  // latest editingTitle/Body via render; the debounce captures the
+  // values at fire time. Stable identity not required here.
   useEffect(() => {
     if (!activeNote) return;
     const t = setTimeout(() => saveCurrent(), 500);
     return () => clearTimeout(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- debounce
   }, [editingTitle, editingBody]);
+
+  // Audit B-4: flush in-flight edits before switching to another note.
+  // Pre-fix scenario:
+  //   1. User types in note A.
+  //   2. Within 500 ms debounce window, clicks note B.
+  //   3. The debounce-save effect's cleanup runs → clearTimeout cancels
+  //      save A.
+  //   4. The activeId/activeNote effect re-seeds editingTitle/Body from B.
+  //   5. Edits to A are silently lost — localStorage still has the old
+  //      version, no diff history.
+  // Cleanup writes the staged buffer for the OUTGOING note (captured via
+  // closure at effect mount) directly to localStorage. We can't safely
+  // call setState during cleanup (the next render is already mounting),
+  // but localStorage is fine and a future loadNotes() picks it up.
+  // editingTitle/Body are read via refs because they reflect the LATEST
+  // values at cleanup time, not the values when this effect first ran.
+  useEffect(() => {
+    const outgoingId = activeId;
+    return () => {
+      if (!outgoingId) return;
+      const stagedTitle = editingTitleRef.current;
+      const stagedBody = editingBodyRef.current;
+      const list = notesRef.current;
+      const target = list.find((n) => n.id === outgoingId);
+      if (!target) return;
+      if (target.title === stagedTitle && target.body === stagedBody) return;
+      const flushed = list.map((n) =>
+        n.id === outgoingId
+          ? { ...n, title: stagedTitle, body: stagedBody, updated: Date.now() }
+          : n,
+      );
+      saveNotes(flushed);
+    };
+  }, [activeId]);
 
   return (
     <div className="w-full max-w-[var(--content-max)] mx-auto">

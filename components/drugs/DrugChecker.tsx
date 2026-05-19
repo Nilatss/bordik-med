@@ -16,7 +16,7 @@
  * FDA black box warnings, DrugBank Open Data.
  */
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   type Drug,
@@ -172,22 +172,31 @@ export default function DrugChecker() {
     return s;
   }, [interactions]);
 
-  const addDrug = (id: string) => {
-    if (selected.includes(id) || selected.length >= MAX_DRUGS) return;
-    setSelected([...selected, id]);
+  // Audit B-3: functional updaters protect against stale-closure races
+  // when the user clicks several suggestions in rapid succession (or
+  // hits Enter twice). Pre-fix, each handler captured `selected` from
+  // the render that created it; the second click would see the OLD
+  // selected[] from the first handler's closure and overwrite the just-
+  // appended drug. In a medication-interaction checker, a dropped drug
+  // = a missed interaction, so this isn't just polish.
+  const addDrug = useCallback((id: string) => {
+    setSelected((prev) => {
+      if (prev.includes(id) || prev.length >= MAX_DRUGS) return prev;
+      return [...prev, id];
+    });
     setQuery('');
     setShowSuggestions(false);
     inputRef.current?.focus();
-  };
+  }, []);
 
-  const removeDrug = (id: string) => {
-    setSelected(selected.filter((x) => x !== id));
-  };
+  const removeDrug = useCallback((id: string) => {
+    setSelected((prev) => prev.filter((x) => x !== id));
+  }, []);
 
-  const clearAll = () => {
+  const clearAll = useCallback(() => {
     setSelected([]);
     setQuery('');
-  };
+  }, []);
 
   if (loadError) {
     return (

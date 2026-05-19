@@ -150,6 +150,27 @@ export default function ToolView({ toolId }: { toolId: string }) {
             };
           }
         }
+        // Audit B-10: secondary fields (unit, details, interpretation) can
+        // also leak Infinity/NaN when runners compute multiple derived
+        // values from the same input. drip-rate, infusion-rate, и
+        // несколько neonatal-dose runners пишут secondary numbers в `unit`
+        // (e.g. "(50 мл/ч)") и `details` (markdown narrative). Если
+        // primary value прошёл проверку, но secondary fields содержат
+        // Infinity/NaN, мы тоже surface'им N/A — лучше консервативно,
+        // чем дать клиницисту "Infinity мл/ч" в скобках.
+        const leak = /(?:^|[\s(,])(?:Infinity|-Infinity|NaN)(?:[\s),]|$)/;
+        if (
+          (typeof r?.unit === 'string' && leak.test(r.unit))
+          || (typeof r?.details === 'string' && leak.test(r.details))
+          || (typeof r?.interpretation === 'string' && leak.test(r.interpretation))
+        ) {
+          return {
+            ...r,
+            value: 'N/A',
+            interpretation: 'Не удалось вычислить — проверьте корректность значений',
+            color: '#9CA3AF',
+          };
+        }
         return r;
       } catch { return null; }
     }
