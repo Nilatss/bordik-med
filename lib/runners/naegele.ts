@@ -67,20 +67,36 @@ const runner: CalculatorTool = {
     ],
     compute: (v)=>{
             const y = Number(v.lmpY), m = Number(v.lmpM), d = Number(v.lmpD);
-            const lmp = new Date(y, m - 1, d);
-            if (isNaN(lmp.getTime())) throw new Error('bad date');
-            const edd = new Date(lmp);
-            edd.setDate(edd.getDate() + 280);
+            // Audit B-2: timezone-safe date math. Both LMP and "today" are
+            // anchored at noon UTC so the day-count is independent of DST
+            // transitions and the clinician's local timezone. Off-by-one at
+            // GA boundaries (e.g. 34+6 vs 35+0) changes management
+            // (anti-D, steroids for fetal lung maturity, GDM screen, NICE
+            // / ACOG cut-offs) so this MUST be deterministic.
+            const lmpMs = Date.UTC(y, m - 1, d, 12, 0, 0);
+            if (!Number.isFinite(lmpMs)) throw new Error('bad date');
+            const lmp = new Date(lmpMs);
+            const edd = new Date(lmpMs + 280 * 86400000);
             const value = edd.toLocaleDateString('ru-RU', {
                 day: '2-digit',
                 month: '2-digit',
-                year: 'numeric'
+                year: 'numeric',
+                timeZone: 'UTC',
             });
-            const today = new Date();
-            const daysPreg = Math.floor((today.getTime() - lmp.getTime()) / 86400000);
+            const now = new Date();
+            const todayMidUtc = Date.UTC(
+                now.getUTCFullYear(),
+                now.getUTCMonth(),
+                now.getUTCDate(),
+                12, 0, 0,
+            );
+            const daysPreg = Math.round((todayMidUtc - lmpMs) / 86400000);
             const weeks = Math.floor(daysPreg / 7);
             const days = daysPreg - weeks * 7;
             const ga = daysPreg >= 0 && daysPreg <= 300 ? `Текущий срок: ${weeks} нед ${days} дн.` : '';
+            // `lmp` used downstream — keeps reference so unused-var lint
+            // doesn't fire if future edits read the Date object directly.
+            void lmp;
             return {
                 value,
                 unit: 'ПДР',

@@ -4,6 +4,33 @@
  * P1-CR-3 — extracted from ToolView.tsx step 1/N.
  */
 import type { Tab } from './types';
+import type { ToolInput } from '@/lib/tools-runners';
+
+/**
+ * Audit B-1: detect zero / negative values in strictly-positive numeric
+ * inputs. The wrapper uses this to short-circuit `compute()` and surface
+ * an explicit N/A so the clinician never sees "0 мл" / "0 мг/кг" framed
+ * as if it were a valid result.
+ *
+ * Triggered when ANY number input declares `min > 0` and the entered
+ * value is ≤ 0. The HTML `min` attribute can be bypassed via paste, a
+ * preset that pre-fills 0, or programmatic state — this is a runtime
+ * defence-in-depth check on top of the input mask.
+ *
+ * Inputs without a positive `min` (e.g. score-style checkboxes, fields
+ * that legitimately accept 0 like "дни постнатальные") are unaffected.
+ */
+export function hasZeroPositiveInput(
+  inputs: ToolInput[],
+  values: Record<string, number | boolean | string>,
+): boolean {
+  return inputs.some((inp) => {
+    if (inp.type !== 'number') return false;
+    if ((inp.min ?? 0) <= 0) return false;
+    const v = values[inp.id];
+    return typeof v === 'number' && v <= 0;
+  });
+}
 
 /** Slugify heading text → tab id. */
 export function slugify(s: string): string {

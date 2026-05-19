@@ -9,7 +9,7 @@ import { useAppStore } from '@/lib/store';
 import { reportToolTimeToResult } from '@/lib/analytics/tool-time-to-result';
 import { useT } from '@/lib/i18n';
 import type { Tab } from '@/lib/tool-view/types';
-import { URL_REGEX, slugify, shortenTitle, iconKeyForTitle, buildInfoTabs } from '@/lib/tool-view/utils';
+import { URL_REGEX, slugify, shortenTitle, iconKeyForTitle, buildInfoTabs, hasZeroPositiveInput } from '@/lib/tool-view/utils';
 import { MemoisedMarkdown } from './view/Markdown';
 import { linkify } from './view/linkify';
 import { TabIcon } from './view/TabIcon';
@@ -113,6 +113,23 @@ export default function ToolView({ toolId }: { toolId: string }) {
       return values[inp.id] !== undefined;
     });
     if (!ready) return null;
+    // Audit B-1: clinical safety guard — runners with strictly-positive
+    // input ranges (weight, height, BSA, dose, volume, …) must NEVER emit
+    // "0 мл" / "0 мг/кг" as if it were a valid result. HTML `min=0.1`
+    // can be bypassed via paste, programmatic preset, or browser quirk.
+    // We reject the compute() entirely and surface an explicit N/A so the
+    // clinician sees there is no result rather than a misleading zero.
+    // Cockcroft-Gault, CKD-EPI, pediatric-dose already had per-runner
+    // guards (P0-CR-1); this wrapper-level guard covers all other ~700
+    // runners at once. Logic extracted to `hasZeroPositiveInput()` so it
+    // can be unit-tested independently of React.
+    if (hasZeroPositiveInput(runner.inputs, values)) {
+      return {
+        value: 'N/A',
+        interpretation: 'Введите корректные значения — ноль / отрицательные числа недопустимы',
+        color: '#9CA3AF',
+      };
+    }
     if (runner.kind === 'calculator') {
       try {
         const r = runner.compute(values);
