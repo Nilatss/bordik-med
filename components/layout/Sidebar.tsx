@@ -51,35 +51,38 @@ interface NavGroup {
 export default function Sidebar() {
   const t = useT();
   const lang = useLang();
-  const {
-    activeSection,
-    showProfile,
-    showLearning,
-    showTools,
-    showStats,
-    showTests,
-    showIcd10,
-    showDrugs,
-    showNeonatal,
-    showNotes,
-    goHome,
-    setShowLearning,
-    setShowTools,
-    setShowStats,
-    setShowTests,
-    setShowIcd10,
-    setShowDrugs,
-    setShowNeonatal,
-    setShowNotes,
-    neonatalActiveTab,
-    setNeonatalActiveTab,
-    toggleProfile,
-    sidebarOpen,
-    toggleSidebar,
-    openCourse,
-    setActiveSection,
-    openTool,
-  } = useAppStore();
+  // Audit P-1: atomic selectors. Pre-fix `useAppStore()` без селектора
+  // подписывал Sidebar на ВЕСЬ store — useStudyTimer тикает 1×/сек,
+  // что триггерило re-render всего 1064-LOC компонента ежесекундно
+  // на любой странице. Per-field selectors дёргают Sidebar только
+  // когда изменился реально нужный slice.
+  const activeSection = useAppStore((s) => s.activeSection);
+  const showProfile = useAppStore((s) => s.showProfile);
+  const showLearning = useAppStore((s) => s.showLearning);
+  const showTools = useAppStore((s) => s.showTools);
+  const showStats = useAppStore((s) => s.showStats);
+  const showTests = useAppStore((s) => s.showTests);
+  const showIcd10 = useAppStore((s) => s.showIcd10);
+  const showDrugs = useAppStore((s) => s.showDrugs);
+  const showNeonatal = useAppStore((s) => s.showNeonatal);
+  const showNotes = useAppStore((s) => s.showNotes);
+  const goHome = useAppStore((s) => s.goHome);
+  const setShowLearning = useAppStore((s) => s.setShowLearning);
+  const setShowTools = useAppStore((s) => s.setShowTools);
+  const setShowStats = useAppStore((s) => s.setShowStats);
+  const setShowTests = useAppStore((s) => s.setShowTests);
+  const setShowIcd10 = useAppStore((s) => s.setShowIcd10);
+  const setShowDrugs = useAppStore((s) => s.setShowDrugs);
+  const setShowNeonatal = useAppStore((s) => s.setShowNeonatal);
+  const setShowNotes = useAppStore((s) => s.setShowNotes);
+  const neonatalActiveTab = useAppStore((s) => s.neonatalActiveTab);
+  const setNeonatalActiveTab = useAppStore((s) => s.setNeonatalActiveTab);
+  const toggleProfile = useAppStore((s) => s.toggleProfile);
+  const sidebarOpen = useAppStore((s) => s.sidebarOpen);
+  const toggleSidebar = useAppStore((s) => s.toggleSidebar);
+  const openCourse = useAppStore((s) => s.openCourse);
+  const setActiveSection = useAppStore((s) => s.setActiveSection);
+  const openTool = useAppStore((s) => s.openTool);
 
   // Auto-expand Neonatology submenu when user is on /neonatology view.
   // User can collapse manually via caret toggle. Persisted via local state

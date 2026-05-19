@@ -5,7 +5,11 @@ import { getCourseById, getModuleForCourse } from '@/lib/curriculum';
 import { Menu } from '@/components/icons';
 
 export default function Topbar() {
-  const { currentCourseId, toggleSidebar, toggleProfile } = useAppStore();
+  // Audit P-1: atomic selectors avoid Topbar re-rendering on every
+  // unrelated store change (useStudyTimer tick, tool favourites edit).
+  const currentCourseId = useAppStore((s) => s.currentCourseId);
+  const toggleSidebar = useAppStore((s) => s.toggleSidebar);
+  const toggleProfile = useAppStore((s) => s.toggleProfile);
 
   const course = currentCourseId ? getCourseById(currentCourseId) : null;
   const mod = currentCourseId ? getModuleForCourse(currentCourseId) : null;

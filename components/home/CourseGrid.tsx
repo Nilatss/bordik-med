@@ -8,7 +8,11 @@ import { ArrowRight, Check } from '@/components/icons';
 import DifficultyFilter from './DifficultyFilter';
 
 export default function CourseGrid({ moduleId }: { moduleId: number }) {
-  const { openCourse, completedCourses, difficultyFilter, setDifficultyFilter } = useAppStore();
+  // Audit P-1: atomic selectors.
+  const openCourse = useAppStore((s) => s.openCourse);
+  const completedCourses = useAppStore((s) => s.completedCourses);
+  const difficultyFilter = useAppStore((s) => s.difficultyFilter);
+  const setDifficultyFilter = useAppStore((s) => s.setDifficultyFilter);
   const mod = getModuleById(moduleId);
   const filter = difficultyFilter;
 

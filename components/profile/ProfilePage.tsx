@@ -28,11 +28,22 @@ import { EmailRow } from './EmailRow';
 export default function ProfilePage() {
   const t = useT();
   const lang = useLang();
-  const {
-    completedCourses, studyTime, testAttempts, courseTestProgress,
-    userName, userEmail, userStatus, userCountry, userSpecialty, userLanguage, userGoal,
-    setUserProfile,
-  } = useAppStore();
+  // Audit P-1: atomic selectors. ProfilePage shows aggregates derived
+  // from the store — re-rendering on every unrelated mutation
+  // (useStudyTimer 1×/sec) recomputes Object.values().flat().reduce()
+  // chains for nothing.
+  const completedCourses = useAppStore((s) => s.completedCourses);
+  const studyTime = useAppStore((s) => s.studyTime);
+  const testAttempts = useAppStore((s) => s.testAttempts);
+  const courseTestProgress = useAppStore((s) => s.courseTestProgress);
+  const userName = useAppStore((s) => s.userName);
+  const userEmail = useAppStore((s) => s.userEmail);
+  const userStatus = useAppStore((s) => s.userStatus);
+  const userCountry = useAppStore((s) => s.userCountry);
+  const userSpecialty = useAppStore((s) => s.userSpecialty);
+  const userLanguage = useAppStore((s) => s.userLanguage);
+  const userGoal = useAppStore((s) => s.userGoal);
+  const setUserProfile = useAppStore((s) => s.setUserProfile);
 
   const totalCompleted = completedCourses.length;
   const totalTime = getTotalStudyTime(studyTime);

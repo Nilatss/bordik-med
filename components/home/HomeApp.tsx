@@ -204,7 +204,9 @@ const SECTION_CATEGORIES: { title: string; ids: SectionId[] }[] = [
 ];
 
 function SectionCards({ onSelect }: { onSelect: (id: SectionId) => void }) {
-  const { completedCourses } = useAppStore();
+  // Audit P-1: atomic selector. Whole-store destructure here would force
+  // a full SectionCards re-render on every useStudyTimer tick.
+  const completedCourses = useAppStore((s) => s.completedCourses);
 
   // Set lookup is O(1) per check; ~700 completedCourses × 12 sections
   // would be O(n*m) without it. Memoise once per render.
