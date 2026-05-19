@@ -13,7 +13,7 @@
  * UI gracefully показывает то что есть + fallback на full raw text.
  */
 
-import { useEffect, useMemo, useState, useCallback } from 'react';
+import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import Highlight from '@/components/ui/Highlight';
 import GrowthCharts from '@/components/neonatal/GrowthCharts';
 import BilirubinNomogram from '@/components/neonatal/BilirubinNomogram';
@@ -339,6 +339,26 @@ export default function NeonatalHandbook() {
   const [error, setError] = useState<string | null>(null);
   const [q, setQ] = useState('');
   const [openId, setOpenId] = useState<string | null>(null);
+
+  // Audit P-2: stable toggle callback for ALL card types. Pre-fix the
+  // parent passed `onToggle={() => setOpenId(openId === d.id ? null : d.id)}`
+  // — a new closure per card per render, capturing `openId`. With
+  // React.memo wrappers added in this PR, the memo's prop comparison
+  // would see a "changed" onToggle every render and never bail out, so
+  // ALL ~127 DrugCard re-rendered whenever ONE expanded. Post-fix the
+  // closure is created once (deps []), uses a functional updater so
+  // openId capture is moot, and accepts the card's id as a parameter.
+  const handleToggle = useCallback((id: string) => {
+    setOpenId((curr) => (curr === id ? null : id));
+  }, []);
+
+  // Audit P-2: stable favorites-chip toggle. Functional updater avoids
+  // capturing showFavOnly; useCallback locks reference identity so the
+  // 5 FavoritesToggleChip instances scattered across tabs aren't passed
+  // a new function each parent render.
+  const handleToggleFavOnly = useCallback(() => {
+    setShowFavOnly((v) => !v);
+  }, []);
   // Tab state is now driven by store.neonatalActiveTab (set from Sidebar
   // expandable submenu). Local sync via setTab keeps UI responsive while
   // syncing back to store + sessionStorage as defense-in-depth.
@@ -442,43 +462,55 @@ export default function NeonatalHandbook() {
     return () => { cancelled = true; };
   }, []);
 
+  // Audit P-3: precomputed lowercase haystacks. Pre-fix, every keystroke
+  // re-allocated `name_en.toLowerCase()` + `name_ru.toLowerCase()` +
+  // `brand.toLowerCase()` + **`fullText.toLowerCase()`** for all ~127
+  // drugs. `fullText` is the full markdown monograph (5-15 KB each), so
+  // a single character of typing churned ~1 MB of string allocations and
+  // triggered GC pauses on mobile. Post-fix, lowercase is computed ONCE
+  // when the bank loads; the filter does `haystack.includes(query)` only.
+  const drugsIndex = useMemo(
+    () => bank?.drugs.map((d) => ({
+      drug: d,
+      haystack: `${d.name_en} ${d.name_ru} ${d.brand} ${d.fullText}`.toLowerCase(),
+    })) ?? [],
+    [bank],
+  );
   const filteredDrugs = useMemo(() => {
     if (!bank) return [];
     const query = q.trim().toLowerCase();
-    let result = bank.drugs;
+    let result: typeof bank.drugs = bank.drugs;
     if (query) {
-      result = result.filter((d) =>
-        d.name_en.toLowerCase().includes(query)
-        || d.name_ru.toLowerCase().includes(query)
-        || d.brand.toLowerCase().includes(query)
-        || d.fullText.toLowerCase().includes(query)
-      );
+      result = drugsIndex.filter((idx) => idx.haystack.includes(query)).map((idx) => idx.drug);
     }
     if (showFavOnly) result = result.filter((d) => favsSet.has(`drug:${d.id}`));
     return result;
-  }, [bank, q, showFavOnly, favsSet]);
+  }, [bank, drugsIndex, q, showFavOnly, favsSet]);
 
+  // Audit P-3: precomputed lowercase haystack — protocol content can be
+  // multiple KB of markdown × 91 entries.
+  const guidelinesIndex = useMemo(
+    () => guidelines?.guidelines.map((g) => ({
+      g,
+      haystack: `${g.title_en} ${g.title_ru} ${g.content}`.toLowerCase(),
+    })) ?? [],
+    [guidelines],
+  );
   const filteredGuidelines = useMemo(() => {
     if (!guidelines) return [];
     const query = q.trim().toLowerCase();
-    return guidelines.guidelines.filter((g) => {
-      // Search query фильтр
-      if (query
-        && !g.title_en.toLowerCase().includes(query)
-        && !g.title_ru.toLowerCase().includes(query)
-        && !g.content.toLowerCase().includes(query)) return false;
-      // Region фильтр — protocol должен пересекаться хотя бы с одним
-      // selected region. Если selectedRegions пусто — показываем всё.
-      if (selectedRegions.length > 0) {
-        const protoRegions = g.regions ?? ['Международный'];
-        const hit = selectedRegions.some((sel) => protoRegions.includes(sel));
-        if (!hit) return false;
-      }
-      // Favorites filter
-      if (showFavOnly && !favsSet.has(`guideline:${g.id}`)) return false;
-      return true;
-    });
-  }, [guidelines, q, selectedRegions, showFavOnly, favsSet]);
+    return guidelinesIndex
+      .filter(({ g, haystack }) => {
+        if (query && !haystack.includes(query)) return false;
+        if (selectedRegions.length > 0) {
+          const protoRegions = g.regions ?? ['Международный'];
+          if (!selectedRegions.some((sel) => protoRegions.includes(sel))) return false;
+        }
+        if (showFavOnly && !favsSet.has(`guideline:${g.id}`)) return false;
+        return true;
+      })
+      .map(({ g }) => g);
+  }, [guidelines, guidelinesIndex, q, selectedRegions, showFavOnly, favsSet]);
 
   // Region counts — derived from ALL protocols (не отфильтрованные),
   // чтобы dropdown показывал full picture сколько в каждом регионе.
@@ -649,38 +681,43 @@ export default function NeonatalHandbook() {
     [filteredLabs]
   );
 
+  // Audit P-3: precomputed lowercase haystack for ~107 articles.
+  const articlesIndex = useMemo(
+    () => articles?.articles.map((a) => ({
+      a,
+      haystack: `${a.title_ru} ${a.title_en} ${a.summary} ${a.content} ${a.topic}`.toLowerCase(),
+    })) ?? [],
+    [articles],
+  );
   const filteredArticles = useMemo(() => {
     if (!articles) return [];
     const query = q.trim().toLowerCase();
-    let result = articles.articles;
+    let result: typeof articles.articles = articles.articles;
     if (query) {
-      result = result.filter((a) =>
-        a.title_ru.toLowerCase().includes(query)
-        || a.title_en.toLowerCase().includes(query)
-        || a.summary.toLowerCase().includes(query)
-        || a.content.toLowerCase().includes(query)
-        || a.topic.toLowerCase().includes(query)
-      );
+      result = articlesIndex.filter((idx) => idx.haystack.includes(query)).map((idx) => idx.a);
     }
     if (showFavOnly) result = result.filter((a) => favsSet.has(`article:${a.id}`));
     return result;
-  }, [articles, q, showFavOnly, favsSet]);
+  }, [articles, articlesIndex, q, showFavOnly, favsSet]);
 
+  // Audit P-3: precomputed lowercase haystack for ~49 LactMed entries.
+  const lactmedIndex = useMemo(
+    () => lactmed?.drugs.map((d) => ({
+      d,
+      haystack: `${d.name_ru} ${d.name_en} ${d.summary} ${d.details}`.toLowerCase(),
+    })) ?? [],
+    [lactmed],
+  );
   const filteredLactmed = useMemo(() => {
     if (!lactmed) return [];
     const query = q.trim().toLowerCase();
-    let result = lactmed.drugs;
+    let result: typeof lactmed.drugs = lactmed.drugs;
     if (query) {
-      result = result.filter((d) =>
-        d.name_ru.toLowerCase().includes(query)
-        || d.name_en.toLowerCase().includes(query)
-        || d.summary.toLowerCase().includes(query)
-        || d.details.toLowerCase().includes(query)
-      );
+      result = lactmedIndex.filter((idx) => idx.haystack.includes(query)).map((idx) => idx.d);
     }
     if (showFavOnly) result = result.filter((d) => favsSet.has(`lactmed:${d.id}`));
     return result;
-  }, [lactmed, q, showFavOnly, favsSet]);
+  }, [lactmed, lactmedIndex, q, showFavOnly, favsSet]);
 
   /**
    * Group lactmed drugs by category in display order. Empty groups dropped.
@@ -696,17 +733,24 @@ export default function NeonatalHandbook() {
     return Array.from(buckets.values()).filter((b) => b.items.length > 0);
   }, [lactmed, filteredLactmed]);
 
+  // Audit P-3: precomputed lowercase haystack for ~22 nurse procedures.
+  // Steps flattened into one string so we don't iterate them per keystroke.
+  const nurseIndex = useMemo(
+    () => nurse?.procedures.map((p) => {
+      const stepText = p.steps.map((s) => `${s.title} ${s.items.join(' ')}`).join(' ');
+      return {
+        p,
+        haystack: `${p.title_ru} ${p.title_en} ${p.category} ${stepText}`.toLowerCase(),
+      };
+    }) ?? [],
+    [nurse],
+  );
   const filteredNurse = useMemo(() => {
     if (!nurse) return [];
     const query = q.trim().toLowerCase();
     if (!query) return nurse.procedures;
-    return nurse.procedures.filter((p) =>
-      p.title_ru.toLowerCase().includes(query)
-      || p.title_en.toLowerCase().includes(query)
-      || p.category.toLowerCase().includes(query)
-      || p.steps.some((s) => s.title.toLowerCase().includes(query) || s.items.some((it) => it.toLowerCase().includes(query)))
-    );
-  }, [nurse, q]);
+    return nurseIndex.filter((idx) => idx.haystack.includes(query)).map((idx) => idx.p);
+  }, [nurse, nurseIndex, q]);
 
   if (error) {
     return (
@@ -866,7 +910,7 @@ export default function NeonatalHandbook() {
           <div className="flex items-center flex-wrap gap-2.5 mb-4">
             <FavoritesToggleChip
               active={showFavOnly}
-              onToggle={() => setShowFavOnly(!showFavOnly)}
+              onToggle={handleToggleFavOnly}
               count={bank.drugs.filter((d) => favsSet.has(`drug:${d.id}`)).length}
             />
           </div>
@@ -882,7 +926,7 @@ export default function NeonatalHandbook() {
                 drug={d}
                 query={q}
                 isOpen={openId === d.id}
-                onToggle={() => setOpenId(openId === d.id ? null : d.id)}
+                onToggle={handleToggle}
               />
             ))}
             {filteredDrugs.length === 0 && (
@@ -919,7 +963,7 @@ export default function NeonatalHandbook() {
             />
             <FavoritesToggleChip
               active={showFavOnly}
-              onToggle={() => setShowFavOnly(!showFavOnly)}
+              onToggle={handleToggleFavOnly}
               count={(guidelines?.guidelines ?? []).filter((g) => favsSet.has(`guideline:${g.id}`)).length}
             />
             {selectedRegions.length > 0 && (
@@ -950,7 +994,7 @@ export default function NeonatalHandbook() {
                       guideline={g}
                       query={q}
                       isOpen={openId === g.id}
-                      onToggle={() => setOpenId(openId === g.id ? null : g.id)}
+                      onToggle={handleToggle}
                     />
                   ))}
                 </div>
@@ -988,7 +1032,7 @@ export default function NeonatalHandbook() {
             />
             <FavoritesToggleChip
               active={showFavOnly}
-              onToggle={() => setShowFavOnly(!showFavOnly)}
+              onToggle={handleToggleFavOnly}
               count={(calculators?.groups ?? []).reduce(
                 (s, g) => s + g.calculators.filter((c) => favsSet.has(`calc:${c.id}`)).length,
                 0
@@ -1131,7 +1175,7 @@ export default function NeonatalHandbook() {
           <div className="flex items-center flex-wrap gap-2.5 mb-4">
             <FavoritesToggleChip
               active={showFavOnly}
-              onToggle={() => setShowFavOnly(!showFavOnly)}
+              onToggle={handleToggleFavOnly}
               count={(articles?.articles ?? []).filter((a) => favsSet.has(`article:${a.id}`)).length}
             />
           </div>
@@ -1147,7 +1191,7 @@ export default function NeonatalHandbook() {
                 article={a}
                 query={q}
                 isOpen={openId === a.id}
-                onToggle={() => setOpenId(openId === a.id ? null : a.id)}
+                onToggle={handleToggle}
               />
             ))}
             {filteredArticles.length === 0 && (
@@ -1177,7 +1221,7 @@ export default function NeonatalHandbook() {
           <div className="flex items-center flex-wrap gap-2.5 mb-4">
             <FavoritesToggleChip
               active={showFavOnly}
-              onToggle={() => setShowFavOnly(!showFavOnly)}
+              onToggle={handleToggleFavOnly}
               count={(lactmed?.drugs ?? []).filter((d) => favsSet.has(`lactmed:${d.id}`)).length}
             />
           </div>
@@ -1202,7 +1246,7 @@ export default function NeonatalHandbook() {
                       drug={d}
                       query={q}
                       isOpen={openId === d.id}
-                      onToggle={() => setOpenId(openId === d.id ? null : d.id)}
+                      onToggle={handleToggle}
                     />
                   ))}
                 </div>
@@ -1243,7 +1287,7 @@ export default function NeonatalHandbook() {
                 key={proc.id}
                 procedure={proc}
                 isOpen={openId === proc.id}
-                onToggle={() => setOpenId(openId === proc.id ? null : proc.id)}
+                onToggle={handleToggle}
               />
             ))}
             {filteredNurse.length === 0 && (
@@ -1360,13 +1404,16 @@ export default function NeonatalHandbook() {
   );
 }
 
-function DrugCard({
+// Audit P-2: signature accepts an `id` parameter so the parent can pass
+// a single stable `useCallback` for ALL cards in a list. Wrapped in
+// React.memo so cards skip re-render when neighbours toggle.
+const DrugCard = React.memo(function DrugCard({
   drug, query, isOpen, onToggle,
 }: {
   drug: Drug;
   query: string;
   isOpen: boolean;
-  onToggle: () => void;
+  onToggle: (id: string) => void;
 }) {
   const showStructured = !!(drug.brand || drug.dose || drug.precautions);
   const panelId = `drug-panel-${drug.id}`;
@@ -1393,7 +1440,7 @@ function DrugCard({
       </div>
       <button
         type="button"
-        onClick={onToggle}
+        onClick={() => onToggle(drug.id)}
         aria-expanded={isOpen}
         aria-controls={panelId}
         aria-label={isOpen ? `Свернуть ${labelText}` : `Развернуть ${labelText}`}
@@ -1485,7 +1532,7 @@ function DrugCard({
       </AnimatePresence>
     </div>
   );
-}
+});
 
 /** Чистит broken-glyph (�) и схлопывает пробелы. */
 function sanitizeFieldText(s: string): string {
@@ -1917,13 +1964,14 @@ function GuidelineContent({ content }: { content: string }) {
   );
 }
 
-function GuidelineCard({
+// Audit P-2: see DrugCard above.
+const GuidelineCard = React.memo(function GuidelineCard({
   guideline, query, isOpen, onToggle,
 }: {
   guideline: Guideline;
   query: string;
   isOpen: boolean;
-  onToggle: () => void;
+  onToggle: (id: string) => void;
 }) {
   const panelId = `guideline-panel-${guideline.id}`;
   const cardId = `guideline-card-${guideline.id}`;
@@ -1945,7 +1993,7 @@ function GuidelineCard({
       </div>
       <button
         type="button"
-        onClick={onToggle}
+        onClick={() => onToggle(guideline.id)}
         aria-expanded={isOpen}
         aria-controls={panelId}
         aria-label={isOpen ? `Свернуть протокол: ${guideline.title_ru}` : `Развернуть протокол: ${guideline.title_ru}`}
@@ -2047,7 +2095,7 @@ function GuidelineCard({
       </AnimatePresence>
     </div>
   );
-}
+});
 
 /**
  * NeonatalCalcCard — карточка калькулятора, визуально 1:1 с ToolCard
@@ -2163,13 +2211,14 @@ function NeonatalCalcCard({
   );
 }
 
-function ArticleCard({
+// Audit P-2: see DrugCard above.
+const ArticleCard = React.memo(function ArticleCard({
   article, query, isOpen, onToggle,
 }: {
   article: Article;
   query: string;
   isOpen: boolean;
-  onToggle: () => void;
+  onToggle: (id: string) => void;
 }) {
   const panelId = `article-panel-${article.id}`;
   const cardId = `article-card-${article.id}`;
@@ -2193,7 +2242,7 @@ function ArticleCard({
       </div>
       <button
         type="button"
-        onClick={onToggle}
+        onClick={() => onToggle(article.id)}
         aria-expanded={isOpen}
         aria-controls={panelId}
         aria-label={isOpen ? `Свернуть статью: ${article.title_ru}` : `Развернуть статью: ${article.title_ru}. Тема: ${article.topic}`}
@@ -2291,7 +2340,7 @@ function ArticleCard({
       </AnimatePresence>
     </div>
   );
-}
+});
 
 /**
  * ArticleContent — render markdown-like text for articles.
@@ -2431,13 +2480,14 @@ function FormattedText({ text }: { text: string }) {
  * вскармливания. 3 уровня compatibility: compatible (зелёный),
  * use_with_caution (жёлтый), avoid (красный).
  */
-function LactCard({
+// Audit P-2: see DrugCard above.
+const LactCard = React.memo(function LactCard({
   drug, query, isOpen, onToggle,
 }: {
   drug: LactDrug;
   query: string;
   isOpen: boolean;
-  onToggle: () => void;
+  onToggle: (id: string) => void;
 }) {
   const compatColors = {
     compatible: { bg: '#ECFDF5', border: '#A7F3D0', text: '#065F46', label: 'Совместим' },
@@ -2466,7 +2516,7 @@ function LactCard({
       </div>
       <button
         type="button"
-        onClick={onToggle}
+        onClick={() => onToggle(drug.id)}
         aria-expanded={isOpen}
         aria-controls={panelId}
         aria-label={isOpen ? `Свернуть LactMed: ${drug.name_ru}` : `Развернуть LactMed: ${drug.name_ru}. Совместимость с грудным вскармливанием: ${colors.label}.`}
@@ -2558,18 +2608,19 @@ function LactCard({
       </AnimatePresence>
     </div>
   );
-}
+});
 
 /**
  * NurseProcedureCard — bedside procedural reference card.
  * Audit Ж1-3 / З1-3 — closes nursing/feldsher content gap.
+ * Audit P-2: see DrugCard above.
  */
-function NurseProcedureCard({
+const NurseProcedureCard = React.memo(function NurseProcedureCard({
   procedure, isOpen, onToggle,
 }: {
   procedure: NurseProcedure;
   isOpen: boolean;
-  onToggle: () => void;
+  onToggle: (id: string) => void;
 }) {
   const panelId = `nurse-panel-${procedure.id}`;
   const cardId = `nurse-card-${procedure.id}`;
@@ -2590,7 +2641,7 @@ function NurseProcedureCard({
       )}
       <button
         type="button"
-        onClick={onToggle}
+        onClick={() => onToggle(procedure.id)}
         aria-expanded={isOpen}
         aria-controls={panelId}
         aria-label={isOpen
@@ -2710,7 +2761,7 @@ function NurseProcedureCard({
       </AnimatePresence>
     </div>
   );
-}
+});
 
 /**
  * EducationPlaceholder — временный shell для разделов Таблицы 3.Д пока
@@ -2774,6 +2825,8 @@ function ClinicalCasesView({
   setOpenId: (id: string | null) => void;
 }) {
   const { showFavOnly, setShowFavOnly, favsSet } = useFavoritesFilter();
+  // Audit P-2: stable callback so child chip doesn't get a new function each render.
+  const handleToggleFavOnly = useCallback(() => setShowFavOnly((v) => !v), [setShowFavOnly]);
   const filtered = useMemo(() => {
     if (!bank) return [];
     const q = query.trim().toLowerCase();
@@ -2825,7 +2878,7 @@ function ClinicalCasesView({
       <div className="flex items-center flex-wrap gap-2.5 mb-4">
         <FavoritesToggleChip
           active={showFavOnly}
-          onToggle={() => setShowFavOnly(!showFavOnly)}
+          onToggle={handleToggleFavOnly}
           count={favCount}
         />
       </div>
@@ -3054,6 +3107,8 @@ function CommonMistakesView({
   setOpenId: (id: string | null) => void;
 }) {
   const { showFavOnly, setShowFavOnly, favsSet } = useFavoritesFilter();
+  // Audit P-2: stable callback so child chip doesn't get a new function each render.
+  const handleToggleFavOnly = useCallback(() => setShowFavOnly((v) => !v), [setShowFavOnly]);
   const filtered = useMemo(() => {
     if (!bank) return [];
     const q = query.trim().toLowerCase();
@@ -3106,7 +3161,7 @@ function CommonMistakesView({
       <div className="flex items-center flex-wrap gap-2.5 mb-4">
         <FavoritesToggleChip
           active={showFavOnly}
-          onToggle={() => setShowFavOnly(!showFavOnly)}
+          onToggle={handleToggleFavOnly}
           count={favCount}
         />
       </div>
@@ -3334,6 +3389,8 @@ function ChecklistsView({
   setOpenId: (id: string | null) => void;
 }) {
   const { showFavOnly, setShowFavOnly, favsSet } = useFavoritesFilter();
+  // Audit P-2: stable callback so child chip doesn't get a new function each render.
+  const handleToggleFavOnly = useCallback(() => setShowFavOnly((v) => !v), [setShowFavOnly]);
   const filtered = useMemo(() => {
     if (!bank) return [];
     const q = query.trim().toLowerCase();
@@ -3384,7 +3441,7 @@ function ChecklistsView({
       <div className="flex items-center flex-wrap gap-2.5 mb-4">
         <FavoritesToggleChip
           active={showFavOnly}
-          onToggle={() => setShowFavOnly(!showFavOnly)}
+          onToggle={handleToggleFavOnly}
           count={favCount}
         />
       </div>
@@ -3670,6 +3727,8 @@ function VideosView({
   query: string;
 }) {
   const { showFavOnly, setShowFavOnly, favsSet } = useFavoritesFilter();
+  // Audit P-2: stable callback so child chip doesn't get a new function each render.
+  const handleToggleFavOnly = useCallback(() => setShowFavOnly((v) => !v), [setShowFavOnly]);
   const filtered = useMemo(() => {
     if (!bank) return [];
     const q = query.trim().toLowerCase();
@@ -3721,7 +3780,7 @@ function VideosView({
       <div className="flex items-center flex-wrap gap-2.5 mb-4">
         <FavoritesToggleChip
           active={showFavOnly}
-          onToggle={() => setShowFavOnly(!showFavOnly)}
+          onToggle={handleToggleFavOnly}
           count={favCount}
         />
       </div>
@@ -3925,6 +3984,8 @@ function AtlasView({
   setOpenId: (id: string | null) => void;
 }) {
   const { showFavOnly, setShowFavOnly, favsSet } = useFavoritesFilter();
+  // Audit P-2: stable callback so child chip doesn't get a new function each render.
+  const handleToggleFavOnly = useCallback(() => setShowFavOnly((v) => !v), [setShowFavOnly]);
   const filtered = useMemo(() => {
     if (!bank) return [];
     const q = query.trim().toLowerCase();
@@ -3976,7 +4037,7 @@ function AtlasView({
       <div className="flex items-center flex-wrap gap-2.5 mb-4">
         <FavoritesToggleChip
           active={showFavOnly}
-          onToggle={() => setShowFavOnly(!showFavOnly)}
+          onToggle={handleToggleFavOnly}
           count={favCount}
         />
       </div>
