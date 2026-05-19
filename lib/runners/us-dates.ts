@@ -71,10 +71,20 @@ const runner: CalculatorTool = {
     }
     const w = Math.floor(gaDays / 7);
     const d = gaDays - w * 7;
-    const today = new Date();
-    const edd = new Date(today);
-    edd.setDate(edd.getDate() + (280 - gaDays));
-    const eddStr = edd.toLocaleDateString('ru-RU');
+    // Audit B-12: timezone-safe EDD math. Anchor "today" at noon UTC and
+    // render the EDD with explicit timeZone: 'UTC' so the displayed date
+    // is independent of the clinician's local timezone and DST shifts.
+    // Off-by-one at GA boundaries changes management decisions (steroids,
+    // anti-D, GDM screen) so this MUST be deterministic.
+    const now = new Date();
+    const todayMidUtc = Date.UTC(
+      now.getUTCFullYear(),
+      now.getUTCMonth(),
+      now.getUTCDate(),
+      12, 0, 0,
+    );
+    const edd = new Date(todayMidUtc + (280 - gaDays) * 86400000);
+    const eddStr = edd.toLocaleDateString('ru-RU', { timeZone: 'UTC' });
     return {
       value: `${w} нед ${d} дн`,
       unit: '',
