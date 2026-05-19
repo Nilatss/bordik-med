@@ -13,7 +13,7 @@
  * UI gracefully показывает то что есть + fallback на full raw text.
  */
 
-import React, { useEffect, useMemo, useState, useCallback } from 'react';
+import React, { useEffect, useMemo, useState, useCallback, useReducer } from 'react';
 import Highlight from '@/components/ui/Highlight';
 import GrowthCharts from '@/components/neonatal/GrowthCharts';
 import BilirubinNomogram from '@/components/neonatal/BilirubinNomogram';
@@ -323,19 +323,70 @@ interface AtlasBank {
 
 type Tab ='drugs' | 'guidelines' | 'calculators' | 'labs' | 'articles' | 'resuscitation' | 'lactmed' | 'quizzes' | 'nurse' | 'growth' | 'bilirubin' | 'cases' | 'mistakes' | 'checklists' | 'videos' | 'atlas' | 'drugcalc';
 
+// Audit P-8: a single typed reducer replaces 12 parallel `useState`
+// calls. Pre-fix the component declared `setBank` / `setGuidelines` /
+// `setCalculators` / … / `setAtlas` — twelve setters, twelve disposable
+// closures, no single source of truth for "what banks are loaded".
+//
+// Post-fix one `BanksState` object holds every bank slot; one
+// `dispatch({ kind: 'X', data })` loads any of them. The consumer
+// destructure below keeps every downstream variable name identical
+// (`bank`, `guidelines`, `calculators`, …), so the ~4 KB of JSX and
+// memos that read them needs no changes.
+type BanksState = {
+  drugs: Bank | null;
+  guidelines: GuidelinesBank | null;
+  calculators: CalculatorsBank | null;
+  labs: LabBank | null;
+  articles: ArticlesBank | null;
+  lactmed: LactBank | null;
+  nurse: NurseProceduresBank | null;
+  cases: ClinicalCasesBank | null;
+  mistakes: CommonMistakesBank | null;
+  checklists: ProcedureChecklistsBank | null;
+  videos: ProcedureVideosBank | null;
+  atlas: AtlasBank | null;
+};
+type BankKey = keyof BanksState;
+type BankPayload<K extends BankKey> = NonNullable<BanksState[K]>;
+type BanksAction =
+  | { kind: 'drugs'; data: BankPayload<'drugs'> }
+  | { kind: 'guidelines'; data: BankPayload<'guidelines'> }
+  | { kind: 'calculators'; data: BankPayload<'calculators'> }
+  | { kind: 'labs'; data: BankPayload<'labs'> }
+  | { kind: 'articles'; data: BankPayload<'articles'> }
+  | { kind: 'lactmed'; data: BankPayload<'lactmed'> }
+  | { kind: 'nurse'; data: BankPayload<'nurse'> }
+  | { kind: 'cases'; data: BankPayload<'cases'> }
+  | { kind: 'mistakes'; data: BankPayload<'mistakes'> }
+  | { kind: 'checklists'; data: BankPayload<'checklists'> }
+  | { kind: 'videos'; data: BankPayload<'videos'> }
+  | { kind: 'atlas'; data: BankPayload<'atlas'> };
+const INITIAL_BANKS: BanksState = {
+  drugs: null, guidelines: null, calculators: null, labs: null,
+  articles: null, lactmed: null, nurse: null, cases: null,
+  mistakes: null, checklists: null, videos: null, atlas: null,
+};
+function banksReducer(state: BanksState, action: BanksAction): BanksState {
+  return { ...state, [action.kind]: action.data };
+}
+
 export default function NeonatalHandbook() {
-  const [bank, setBank] = useState<Bank | null>(null);
-  const [guidelines, setGuidelines] = useState<GuidelinesBank | null>(null);
-  const [calculators, setCalculators] = useState<CalculatorsBank | null>(null);
-  const [labs, setLabs] = useState<LabBank | null>(null);
-  const [articles, setArticles] = useState<ArticlesBank | null>(null);
-  const [lactmed, setLactmed] = useState<LactBank | null>(null);
-  const [nurse, setNurse] = useState<NurseProceduresBank | null>(null);
-  const [cases, setCases] = useState<ClinicalCasesBank | null>(null);
-  const [mistakes, setMistakes] = useState<CommonMistakesBank | null>(null);
-  const [checklists, setChecklists] = useState<ProcedureChecklistsBank | null>(null);
-  const [videos, setVideos] = useState<ProcedureVideosBank | null>(null);
-  const [atlas, setAtlas] = useState<AtlasBank | null>(null);
+  const [banks, dispatchBanks] = useReducer(banksReducer, INITIAL_BANKS);
+  const {
+    drugs: bank,
+    guidelines,
+    calculators,
+    labs,
+    articles,
+    lactmed,
+    nurse,
+    cases,
+    mistakes,
+    checklists,
+    videos,
+    atlas,
+  } = banks;
   const [error, setError] = useState<string | null>(null);
   const [q, setQ] = useState('');
   const [openId, setOpenId] = useState<string | null>(null);
@@ -432,7 +483,7 @@ export default function NeonatalHandbook() {
         const r = await fetch('/neonatal-monographs.json?v=2.9.0', { cache: 'force-cache' });
         if (!r.ok) throw new Error(`monographs ${r.status}`);
         const json = await r.json();
-        if (!cancelled) setBank(json as Bank);
+        if (!cancelled) dispatchBanks({ kind: 'drugs', data: json as Bank });
       } catch (e) {
         if (!cancelled) setError((e as Error).message ?? 'load failed');
       }
@@ -451,7 +502,7 @@ export default function NeonatalHandbook() {
         const r = await fetch('/neonatal-guidelines.json?v=1.9.0', { cache: 'force-cache' });
         if (!r.ok) return;
         const json = await r.json();
-        if (!cancelled) setGuidelines(json as GuidelinesBank);
+        if (!cancelled) dispatchBanks({ kind: 'guidelines', data: json as GuidelinesBank });
       } catch { /* tab still works without — graceful degrade */ }
     })();
     return () => { cancelled = true; };
@@ -465,7 +516,7 @@ export default function NeonatalHandbook() {
         const r = await fetch('/neonatal-calculators.json?v=1.1.0', { cache: 'force-cache' });
         if (!r.ok) return;
         const json = await r.json();
-        if (!cancelled) setCalculators(json as CalculatorsBank);
+        if (!cancelled) dispatchBanks({ kind: 'calculators', data: json as CalculatorsBank });
       } catch { /* */ }
     })();
     return () => { cancelled = true; };
@@ -479,7 +530,7 @@ export default function NeonatalHandbook() {
         const r = await fetch('/neonatal-lab-norms.json?v=1.1.0', { cache: 'force-cache' });
         if (!r.ok) return;
         const json = await r.json();
-        if (!cancelled) setLabs(json as LabBank);
+        if (!cancelled) dispatchBanks({ kind: 'labs', data: json as LabBank });
       } catch { /* */ }
     })();
     return () => { cancelled = true; };
@@ -493,7 +544,7 @@ export default function NeonatalHandbook() {
         const r = await fetch('/neonatal-articles.json?v=2.2.0', { cache: 'force-cache' });
         if (!r.ok) return;
         const json = await r.json();
-        if (!cancelled) setArticles(json as ArticlesBank);
+        if (!cancelled) dispatchBanks({ kind: 'articles', data: json as ArticlesBank });
       } catch { /* */ }
     })();
     return () => { cancelled = true; };
@@ -507,7 +558,7 @@ export default function NeonatalHandbook() {
         const r = await fetch('/neonatal-lactmed.json?v=1.1.0', { cache: 'force-cache' });
         if (!r.ok) return;
         const json = await r.json();
-        if (!cancelled) setLactmed(json as LactBank);
+        if (!cancelled) dispatchBanks({ kind: 'lactmed', data: json as LactBank });
       } catch { /* */ }
     })();
     return () => { cancelled = true; };
@@ -521,7 +572,7 @@ export default function NeonatalHandbook() {
         const r = await fetch('/neonatal-nurse-procedures.json?v=1.3.0', { cache: 'force-cache' });
         if (!r.ok) return;
         const json = await r.json();
-        if (!cancelled) setNurse(json as NurseProceduresBank);
+        if (!cancelled) dispatchBanks({ kind: 'nurse', data: json as NurseProceduresBank });
       } catch { /* */ }
     })();
     return () => { cancelled = true; };
@@ -535,7 +586,7 @@ export default function NeonatalHandbook() {
         const r = await fetch('/neonatal-clinical-cases.json?v=1.5.0', { cache: 'force-cache' });
         if (!r.ok) return;
         const json = await r.json();
-        if (!cancelled) setCases(json as ClinicalCasesBank);
+        if (!cancelled) dispatchBanks({ kind: 'cases', data: json as ClinicalCasesBank });
       } catch { /* */ }
     })();
     return () => { cancelled = true; };
@@ -549,7 +600,7 @@ export default function NeonatalHandbook() {
         const r = await fetch('/neonatal-common-mistakes.json?v=1.4.0', { cache: 'force-cache' });
         if (!r.ok) return;
         const json = await r.json();
-        if (!cancelled) setMistakes(json as CommonMistakesBank);
+        if (!cancelled) dispatchBanks({ kind: 'mistakes', data: json as CommonMistakesBank });
       } catch { /* */ }
     })();
     return () => { cancelled = true; };
@@ -563,7 +614,7 @@ export default function NeonatalHandbook() {
         const r = await fetch('/neonatal-procedure-checklists.json?v=1.3.0', { cache: 'force-cache' });
         if (!r.ok) return;
         const json = await r.json();
-        if (!cancelled) setChecklists(json as ProcedureChecklistsBank);
+        if (!cancelled) dispatchBanks({ kind: 'checklists', data: json as ProcedureChecklistsBank });
       } catch { /* */ }
     })();
     return () => { cancelled = true; };
@@ -577,7 +628,7 @@ export default function NeonatalHandbook() {
         const r = await fetch('/neonatal-procedure-videos.json?v=1.5.0', { cache: 'force-cache' });
         if (!r.ok) return;
         const json = await r.json();
-        if (!cancelled) setVideos(json as ProcedureVideosBank);
+        if (!cancelled) dispatchBanks({ kind: 'videos', data: json as ProcedureVideosBank });
       } catch { /* */ }
     })();
     return () => { cancelled = true; };
@@ -591,7 +642,7 @@ export default function NeonatalHandbook() {
         const r = await fetch('/neonatal-atlas.json?v=1.4.0', { cache: 'force-cache' });
         if (!r.ok) return;
         const json = await r.json();
-        if (!cancelled) setAtlas(json as AtlasBank);
+        if (!cancelled) dispatchBanks({ kind: 'atlas', data: json as AtlasBank });
       } catch { /* */ }
     })();
     return () => { cancelled = true; };
