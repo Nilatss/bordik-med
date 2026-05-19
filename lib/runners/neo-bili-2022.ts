@@ -64,8 +64,17 @@ import type {
 
 // Simplified phototherapy thresholds (mg/dL) — AAP 2022 для GA 38+0,
 // без neurotoxicity risk factors. Real implementation использует full
-// nomograms через interpolation на peditools.org/bili2022/
-function getPhotoThreshold(hour: number, ga: number, hasRiskFactors: boolean): number {
+// nomograms через interpolation на peditools.org/bili2022/.
+//
+// Audit B-5: return null when inputs are outside the AAP 2022 nomogram
+// scope (GA < 35 нед или HOL > 336 ч). Pre-fix `Math.max(5, base)` clamped
+// out-of-scope inputs to an arbitrary 5 mg/dL, which the UI rendered
+// indistinguishable from a real low threshold — clinician could base a
+// phototherapy decision on extrapolated data. Now compute() short-circuits
+// to an explicit "out of scope, use NICE 2010 / specialised nomogram" N/A.
+function getPhotoThreshold(hour: number, ga: number, hasRiskFactors: boolean): number | null {
+  if (ga < 35) return null;
+  if (hour > 336) return null;
   // Base threshold at GA 38+0, no risk factors
   let base: number;
   if (hour < 12) base = 8;
@@ -83,10 +92,15 @@ function getPhotoThreshold(hour: number, ga: number, hasRiskFactors: boolean): n
   // Risk factor adjustment
   if (hasRiskFactors) base -= 2;
 
+  // Safety floor at 5 mg/dL — applies ONLY within the in-scope range
+  // 35-42 нед × 12-336 ч. Out-of-scope ga / hour already returned null
+  // above so the clinician never sees a clamped extrapolation.
   return Math.max(5, base);
 }
 
-function getExchangeThreshold(hour: number, ga: number, hasRiskFactors: boolean): number {
+function getExchangeThreshold(hour: number, ga: number, hasRiskFactors: boolean): number | null {
+  if (ga < 35) return null;
+  if (hour > 336) return null;
   let base: number;
   if (hour < 24) base = 19;
   else if (hour < 36) base = 21;
@@ -180,8 +194,38 @@ const runner: CalculatorTool = {
   ],
   compute: (v) => {
     const region = String(v.region || 'aap');
-    const ga = Math.max(35, Math.min(42, Number(v.ga) || 38));
-    const hour = Math.max(12, Math.min(336, Number(v.hour) || 48));
+    // Audit B-5: read the RAW gestational age and hour-of-life before
+    // clamping. The HTML min/max only validate the input mask — paste
+    // and programmatic presets can bypass them. Surface an explicit
+    // N/A for out-of-scope inputs so the clinician is redirected to
+    // the correct nomogram (NICE 2010 for <35 нед, etc.) instead of
+    // seeing an arbitrarily-clamped extrapolation.
+    const rawGa = Number(v.ga);
+    const rawHour = Number(v.hour);
+    if (Number.isFinite(rawGa) && (rawGa < 35 || rawGa > 42)) {
+      return {
+        value: 'N/A',
+        unit: '',
+        interpretation: `GA ${rawGa} нед вне диапазона AAP 2022 (35-42 нед)`,
+        color: '#9CA3AF',
+        details: rawGa < 35
+          ? 'Для GA <35 нед используйте **NICE 2010 preterm jaundice nomogram** или **KP NeoBili (peditools.org/bili2014/)** — у глубоко-недоношенных пороги фототерапии существенно ниже и требуют отдельной номограммы.'
+          : 'Для GA >42 нед используйте локальные guidelines — AAP 2022 covers term + late-preterm, post-term jaundice не distinguish-нут от term в номограмме.',
+      };
+    }
+    if (Number.isFinite(rawHour) && (rawHour < 12 || rawHour > 336)) {
+      return {
+        value: 'N/A',
+        unit: '',
+        interpretation: `Час жизни ${rawHour} ч вне диапазона калькулятора (12-336 ч / до 14 дней)`,
+        color: '#9CA3AF',
+        details: rawHour < 12
+          ? 'Для первых 12 ч жизни — TSB рекомендуется только при clinical jaundice (видимая желтуха в первые 24 ч = haemolysis workup, не nomogram).'
+          : 'После 14 дней (336 ч) — рассмотрите prolonged jaundice workup (cholestasis, hemolysis, hypothyroidism) вместо nomogram-based phototherapy decision.',
+      };
+    }
+    const ga = Math.max(35, Math.min(42, rawGa || 38));
+    const hour = Math.max(12, Math.min(336, rawHour || 48));
     const tsb_umol = Math.max(30, Math.min(600, Number(v.tsb) || 200));
     const tsb_mgdl = tsb_umol / 17.1;
 
@@ -191,9 +235,11 @@ const runner: CalculatorTool = {
       v.sepsis === true ||
       v.hypoalbumin === true;
 
-    // Compute thresholds (mg/dL)
-    const photo_mgdl = getPhotoThreshold(hour, ga, hasRiskFactors);
-    const exchange_mgdl = getExchangeThreshold(hour, ga, hasRiskFactors);
+    // Compute thresholds (mg/dL). Both functions now return number|null;
+    // any out-of-scope inputs are already filtered above so we can
+    // safely non-null assert here.
+    const photo_mgdl = getPhotoThreshold(hour, ga, hasRiskFactors)!;
+    const exchange_mgdl = getExchangeThreshold(hour, ga, hasRiskFactors)!;
     const photo_umol = photo_mgdl * 17.1;
     const exchange_umol = exchange_mgdl * 17.1;
 
