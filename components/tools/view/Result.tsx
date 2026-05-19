@@ -18,6 +18,12 @@ import { useT } from '@/lib/i18n';
 import { useAppStore } from '@/lib/store';
 import type { CalculatorResult, ResultScaleSegment } from '@/lib/tools-runners';
 import { linkify } from './linkify';
+import { MarkdownLite } from '@/components/ui/MarkdownLite';
+
+/** Detect markdown syntax that warrants block-level rendering. */
+function hasMarkdownSyntax(text: string): boolean {
+  return /(^|\n)\s*#{1,6}\s|\*\*[^*]+\*\*|(^|\n)\s*\|[^\n]*\|\s*\n\s*\|[\s|:-]+\||(^|\n)\s*[-•*]\s|`[^`]+`/.test(text);
+}
 
 export function ResultCard({ result }: { result: CalculatorResult }) {
   const t = useT();
@@ -73,12 +79,19 @@ export function ResultCard({ result }: { result: CalculatorResult }) {
         </div>
       )}
 
-      {/* Longer clinical narrative */}
+      {/* Longer clinical narrative — renders markdown (###, **bold**, tables,
+          lists) when present, falls back to plain text with auto-linkified
+          URLs otherwise. Fixes Bili-2022 / TPN / etc. where details contain
+          GFM tables that previously displayed as raw `|col1|col2|` syntax. */}
       {details && (
         <ResultSection title={t('tool.section.interpretation')} icon="info">
-          <p className="m-0 text-[#374151] text-[13.5px] leading-[1.55]">
-            {linkify(details)}
-          </p>
+          {hasMarkdownSyntax(details) ? (
+            <MarkdownLite content={details} variant="compact" />
+          ) : (
+            <p className="m-0 text-[#374151] text-[13.5px] leading-[1.55]">
+              {linkify(details)}
+            </p>
+          )}
         </ResultSection>
       )}
 
