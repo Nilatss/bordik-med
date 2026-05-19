@@ -43,7 +43,7 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
       });
     }
     return base;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- t() translator re-creates on every lang change; we deliberately want the tab labels to follow lang. Adding `t` to deps would force a memo recompute on every render (t closure isn't stable), defeating the purpose. Re-eval triggers via lang are handled by useLang() at the consumer level.
   }, [content, showTests]);
   const [activeId, setActiveId] = useState(tabs[0]?.id ?? '');
 

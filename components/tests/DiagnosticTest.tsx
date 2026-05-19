@@ -235,7 +235,7 @@ export default function DiagnosticTest({ onClose }: { onClose: () => void }) {
   useEffect(() => {
     if (cachedResult) return;
     fetchNext([]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- run-once on mount. fetchNext is a stable closure defined in the same render scope; re-firing on its identity change would queue duplicate API calls during state transitions.
   }, []);
 
   const handlePick = (idx: number) => {

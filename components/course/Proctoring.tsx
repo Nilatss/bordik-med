@@ -209,8 +209,7 @@ export default function Proctoring({
       acquired?.getTracks().forEach((t) => t.stop());
       onReadyChange?.(false);
     };
-    // onReadyChange intentionally omitted to keep effect stable
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- onReadyChange intentionally omitted. This effect acquires the camera/mic stream; re-running on a callback identity change would tear down and re-acquire the stream every render of the parent, which prompts the user for permission again. The callback is read at fire time via closure — fine because we only invoke it from the cleanup function (which captures the latest closure).
   }, [active]);
 
   // ── Pipe the stream into the <video> element

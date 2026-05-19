@@ -112,7 +112,7 @@ export default function Sidebar() {
     };
     mq.addEventListener('change', onChange);
     return () => mq.removeEventListener('change', onChange);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- run-once on mount. The MediaQueryList subscription is global; re-running would attach duplicate listeners.
   }, []);
 
   const activeNav: NavItem = showProfile
@@ -393,7 +393,7 @@ export default function Sidebar() {
         ),
       }))
       .filter((g) => g.items.length > 0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- navItems is built from the constant `NAV_GROUPS` + t() translator; its identity depends transitively on `lang` which IS in deps. wordPrefixMatch is defined inside the memo and re-created per render but only ever called within this same useMemo execution.
   }, [q, lang]);
 
   // Course search results — async-loaded curriculum module on first
@@ -428,7 +428,7 @@ export default function Sidebar() {
       if (!cancelled) setCourseResults({ available, locked });
     })();
     return () => { cancelled = true; };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- searchModuleRef is a ref (intentionally stable); UNLOCKED_SECTIONS is a module-level constant.
   }, [q, activeSection]);
 
   // Tools search — context-aware: only fires when user is on the Tools view.
