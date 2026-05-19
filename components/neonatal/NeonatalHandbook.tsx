@@ -408,57 +408,194 @@ export default function NeonatalHandbook() {
   // Reset filter when switching tabs so user always starts fresh.
   useEffect(() => { setShowFavOnly(false); }, [tab]);
 
+  // Audit P-6: on-demand per-tab fetch. Pre-fix the giant Promise.all
+  // pulled ALL 12 banks (~MB total) at mount even if the user only
+  // opened one tab. Slow 3G / metered connections paid for content
+  // they never saw.
+  //
+  // Post-fix:
+  //   1. Drugs is the default tab and gates the initial render
+  //      (`if (!bank) return loading`), so we still fetch it eagerly.
+  //   2. Every other bank loads on-demand the first time its tab is
+  //      selected. A separate useEffect per bank keeps each
+  //      independent (one failing doesn't block others) and avoids
+  //      churn from a single mega-effect with many deps.
+  //
+  // The `cache: 'force-cache'` keeps re-fetch cheap if the SW already
+  // primed the bank. Network panel will still show 12 entries over a
+  // session, but they're spread out and most are skipped entirely for
+  // users who stay on Drugs / Calculators.
   useEffect(() => {
     let cancelled = false;
     void (async () => {
       try {
-        const [drugsR, guidelinesR, calcR, labsR, articlesR, lactR, nurseR, casesR, mistakesR, checklistsR, videosR, atlasR] = await Promise.all([
-          fetch('/neonatal-monographs.json?v=2.9.0', { cache: 'force-cache' }),
-          fetch('/neonatal-guidelines.json?v=1.9.0', { cache: 'force-cache' }),
-          fetch('/neonatal-calculators.json?v=1.1.0', { cache: 'force-cache' }),
-          fetch('/neonatal-lab-norms.json?v=1.1.0', { cache: 'force-cache' }),
-          fetch('/neonatal-articles.json?v=2.2.0', { cache: 'force-cache' }),
-          fetch('/neonatal-lactmed.json?v=1.1.0', { cache: 'force-cache' }),
-          fetch('/neonatal-nurse-procedures.json?v=1.3.0', { cache: 'force-cache' }),
-          fetch('/neonatal-clinical-cases.json?v=1.5.0', { cache: 'force-cache' }),
-          fetch('/neonatal-common-mistakes.json?v=1.4.0', { cache: 'force-cache' }),
-          fetch('/neonatal-procedure-checklists.json?v=1.3.0', { cache: 'force-cache' }),
-          fetch('/neonatal-procedure-videos.json?v=1.5.0', { cache: 'force-cache' }),
-          fetch('/neonatal-atlas.json?v=1.4.0', { cache: 'force-cache' }),
-        ]);
-        if (!drugsR.ok) throw new Error(`monographs ${drugsR.status}`);
-        const drugsJson = await drugsR.json();
-        const guidesJson = guidelinesR.ok ? await guidelinesR.json() : null;
-        const calcJson = calcR.ok ? await calcR.json() : null;
-        const labsJson = labsR.ok ? await labsR.json() : null;
-        const articlesJson = articlesR.ok ? await articlesR.json() : null;
-        const lactJson = lactR.ok ? await lactR.json() : null;
-        const nurseJson = nurseR.ok ? await nurseR.json() : null;
-        const casesJson = casesR.ok ? await casesR.json() : null;
-        const mistakesJson = mistakesR.ok ? await mistakesR.json() : null;
-        const checklistsJson = checklistsR.ok ? await checklistsR.json() : null;
-        const videosJson = videosR.ok ? await videosR.json() : null;
-        const atlasJson = atlasR.ok ? await atlasR.json() : null;
-        if (!cancelled) {
-          setBank(drugsJson as Bank);
-          if (guidesJson) setGuidelines(guidesJson as GuidelinesBank);
-          if (calcJson) setCalculators(calcJson as CalculatorsBank);
-          if (labsJson) setLabs(labsJson as LabBank);
-          if (articlesJson) setArticles(articlesJson as ArticlesBank);
-          if (lactJson) setLactmed(lactJson as LactBank);
-          if (nurseJson) setNurse(nurseJson as NurseProceduresBank);
-          if (casesJson) setCases(casesJson as ClinicalCasesBank);
-          if (mistakesJson) setMistakes(mistakesJson as CommonMistakesBank);
-          if (checklistsJson) setChecklists(checklistsJson as ProcedureChecklistsBank);
-          if (videosJson) setVideos(videosJson as ProcedureVideosBank);
-          if (atlasJson) setAtlas(atlasJson as AtlasBank);
-        }
+        const r = await fetch('/neonatal-monographs.json?v=2.9.0', { cache: 'force-cache' });
+        if (!r.ok) throw new Error(`monographs ${r.status}`);
+        const json = await r.json();
+        if (!cancelled) setBank(json as Bank);
       } catch (e) {
         if (!cancelled) setError((e as Error).message ?? 'load failed');
       }
     })();
     return () => { cancelled = true; };
   }, []);
+
+  // Per-tab on-demand banks. Each effect fetches once when the tab is
+  // first opened. Subsequent tab switches are free because state is
+  // populated. Pattern: bail if (a) wrong tab or (b) already loaded.
+  useEffect(() => {
+    if (tab !== 'guidelines' || guidelines) return;
+    let cancelled = false;
+    void (async () => {
+      try {
+        const r = await fetch('/neonatal-guidelines.json?v=1.9.0', { cache: 'force-cache' });
+        if (!r.ok) return;
+        const json = await r.json();
+        if (!cancelled) setGuidelines(json as GuidelinesBank);
+      } catch { /* tab still works without — graceful degrade */ }
+    })();
+    return () => { cancelled = true; };
+  }, [tab, guidelines]);
+
+  useEffect(() => {
+    if (tab !== 'calculators' || calculators) return;
+    let cancelled = false;
+    void (async () => {
+      try {
+        const r = await fetch('/neonatal-calculators.json?v=1.1.0', { cache: 'force-cache' });
+        if (!r.ok) return;
+        const json = await r.json();
+        if (!cancelled) setCalculators(json as CalculatorsBank);
+      } catch { /* */ }
+    })();
+    return () => { cancelled = true; };
+  }, [tab, calculators]);
+
+  useEffect(() => {
+    if (tab !== 'labs' || labs) return;
+    let cancelled = false;
+    void (async () => {
+      try {
+        const r = await fetch('/neonatal-lab-norms.json?v=1.1.0', { cache: 'force-cache' });
+        if (!r.ok) return;
+        const json = await r.json();
+        if (!cancelled) setLabs(json as LabBank);
+      } catch { /* */ }
+    })();
+    return () => { cancelled = true; };
+  }, [tab, labs]);
+
+  useEffect(() => {
+    if (tab !== 'articles' || articles) return;
+    let cancelled = false;
+    void (async () => {
+      try {
+        const r = await fetch('/neonatal-articles.json?v=2.2.0', { cache: 'force-cache' });
+        if (!r.ok) return;
+        const json = await r.json();
+        if (!cancelled) setArticles(json as ArticlesBank);
+      } catch { /* */ }
+    })();
+    return () => { cancelled = true; };
+  }, [tab, articles]);
+
+  useEffect(() => {
+    if (tab !== 'lactmed' || lactmed) return;
+    let cancelled = false;
+    void (async () => {
+      try {
+        const r = await fetch('/neonatal-lactmed.json?v=1.1.0', { cache: 'force-cache' });
+        if (!r.ok) return;
+        const json = await r.json();
+        if (!cancelled) setLactmed(json as LactBank);
+      } catch { /* */ }
+    })();
+    return () => { cancelled = true; };
+  }, [tab, lactmed]);
+
+  useEffect(() => {
+    if (tab !== 'nurse' || nurse) return;
+    let cancelled = false;
+    void (async () => {
+      try {
+        const r = await fetch('/neonatal-nurse-procedures.json?v=1.3.0', { cache: 'force-cache' });
+        if (!r.ok) return;
+        const json = await r.json();
+        if (!cancelled) setNurse(json as NurseProceduresBank);
+      } catch { /* */ }
+    })();
+    return () => { cancelled = true; };
+  }, [tab, nurse]);
+
+  useEffect(() => {
+    if (tab !== 'cases' || cases) return;
+    let cancelled = false;
+    void (async () => {
+      try {
+        const r = await fetch('/neonatal-clinical-cases.json?v=1.5.0', { cache: 'force-cache' });
+        if (!r.ok) return;
+        const json = await r.json();
+        if (!cancelled) setCases(json as ClinicalCasesBank);
+      } catch { /* */ }
+    })();
+    return () => { cancelled = true; };
+  }, [tab, cases]);
+
+  useEffect(() => {
+    if (tab !== 'mistakes' || mistakes) return;
+    let cancelled = false;
+    void (async () => {
+      try {
+        const r = await fetch('/neonatal-common-mistakes.json?v=1.4.0', { cache: 'force-cache' });
+        if (!r.ok) return;
+        const json = await r.json();
+        if (!cancelled) setMistakes(json as CommonMistakesBank);
+      } catch { /* */ }
+    })();
+    return () => { cancelled = true; };
+  }, [tab, mistakes]);
+
+  useEffect(() => {
+    if (tab !== 'checklists' || checklists) return;
+    let cancelled = false;
+    void (async () => {
+      try {
+        const r = await fetch('/neonatal-procedure-checklists.json?v=1.3.0', { cache: 'force-cache' });
+        if (!r.ok) return;
+        const json = await r.json();
+        if (!cancelled) setChecklists(json as ProcedureChecklistsBank);
+      } catch { /* */ }
+    })();
+    return () => { cancelled = true; };
+  }, [tab, checklists]);
+
+  useEffect(() => {
+    if (tab !== 'videos' || videos) return;
+    let cancelled = false;
+    void (async () => {
+      try {
+        const r = await fetch('/neonatal-procedure-videos.json?v=1.5.0', { cache: 'force-cache' });
+        if (!r.ok) return;
+        const json = await r.json();
+        if (!cancelled) setVideos(json as ProcedureVideosBank);
+      } catch { /* */ }
+    })();
+    return () => { cancelled = true; };
+  }, [tab, videos]);
+
+  useEffect(() => {
+    if (tab !== 'atlas' || atlas) return;
+    let cancelled = false;
+    void (async () => {
+      try {
+        const r = await fetch('/neonatal-atlas.json?v=1.4.0', { cache: 'force-cache' });
+        if (!r.ok) return;
+        const json = await r.json();
+        if (!cancelled) setAtlas(json as AtlasBank);
+      } catch { /* */ }
+    })();
+    return () => { cancelled = true; };
+  }, [tab, atlas]);
 
   // Audit P-3: precomputed lowercase haystacks. Pre-fix, every keystroke
   // re-allocated `name_en.toLowerCase()` + `name_ru.toLowerCase()` +
