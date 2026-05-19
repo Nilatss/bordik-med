@@ -108,6 +108,20 @@ describe('pediatric-dose · MVP-30 drugs', () => {
 
   // ─── Max-cap enforcement ───────────────────────────────────────────
   describe('max-dose capping for large children', () => {
+    // Audit B-6 regression: floating-point capping false-positive.
+    // 0.1 * 1000 returns 100.00000000000001 in IEEE-754, so a naive
+    // `calc > max` compared 100.00000000000001 > 100 → true → falsely
+    // emitted the "превышает максимальную разовую дозу" warning. Now
+    // the comparison has an epsilon tolerance of 1e-6 so a clinically
+    // exact dose lands NOT capped.
+    it('ibuprofen at exact-ceiling weight (40 kg × 10 mg/kg = 400 mg) → NOT flagged as capped (B-6)', () => {
+      // weight 40 kg × 10 mg/kg = exactly 400 mg = max_per_dose_mg.
+      // Pre-fix this could float-drift to 400.000…001 and trip wasCapped.
+      const r = call('ibuprofen|Жаропонижающее / боль', 40, 60);
+      // Result should NOT have the warning color #F59E0B for "capped".
+      expect(r.color).not.toBe('#F59E0B');
+    });
+
     it('paracetamol 80 kg adolescent → capped at 1000 mg (not 1200)', () => {
       const r = call('paracetamol|0', 80, 192);
       // 15 × 80 = 1200, capped to 1000

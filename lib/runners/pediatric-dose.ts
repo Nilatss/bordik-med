@@ -142,16 +142,24 @@ const runner: CalculatorTool = {
       };
     }
 
-    // Compute per-dose
+    // Compute per-dose.
+    // Audit B-6: epsilon-tolerance on the cap comparison. IEEE-754
+    // double-precision multiplication can drift by ~1e-14 on common
+    // inputs (e.g. `0.1 * 1000 === 100.00000000000001`). A naive
+    // `calcMg > max` then falsely flagged a "превышает максимальную
+    // дозу" warning even when the clinical answer is exactly at the
+    // ceiling. Tolerance of 1e-6 (1 µg at mg scale) is well below
+    // clinically-significant rounding for any drug we ship and is
+    // larger than IEEE-754 drift on the multiplications we perform.
     const calcMg = weight * ind.mg_per_kg;
     const cappedMg = Math.min(calcMg, ind.max_per_dose_mg);
-    const wasCapped = calcMg > ind.max_per_dose_mg;
+    const wasCapped = calcMg - ind.max_per_dose_mg > 1e-6;
 
     // Compute per-day if frequency known
     const dosesPerDay = ind.frequency_hours > 0 ? Math.floor(24 / ind.frequency_hours) : 1;
     const totalPerDay = cappedMg * dosesPerDay;
     const maxPerDay = ind.max_per_day_mg ?? (ind.max_per_day_mg_per_kg ? ind.max_per_day_mg_per_kg * weight : Infinity);
-    const dayCapped = totalPerDay > maxPerDay;
+    const dayCapped = totalPerDay - maxPerDay > 1e-6;
 
     const freqHuman = ind.frequency_hours === 0 ? 'однократно'
       : ind.frequency_hours < 1 ? `каждые ${(ind.frequency_hours * 60).toFixed(0)} мин`
