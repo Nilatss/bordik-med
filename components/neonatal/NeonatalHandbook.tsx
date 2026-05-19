@@ -352,13 +352,6 @@ export default function NeonatalHandbook() {
     setOpenId((curr) => (curr === id ? null : id));
   }, []);
 
-  // Audit P-2: stable favorites-chip toggle. Functional updater avoids
-  // capturing showFavOnly; useCallback locks reference identity so the
-  // 5 FavoritesToggleChip instances scattered across tabs aren't passed
-  // a new function each parent render.
-  const handleToggleFavOnly = useCallback(() => {
-    setShowFavOnly((v) => !v);
-  }, []);
   // Tab state is now driven by store.neonatalActiveTab (set from Sidebar
   // expandable submenu). Local sync via setTab keeps UI responsive while
   // syncing back to store + sessionStorage as defense-in-depth.
@@ -398,6 +391,11 @@ export default function NeonatalHandbook() {
   // anywhere keep favsSet in sync. Replaces the centralized "Избранное"
   // tab — favorites now live within their own section.
   const [showFavOnly, setShowFavOnly] = useState(false);
+  // Audit P-2: stable favorites-chip toggle. Functional updater avoids
+  // capturing showFavOnly; useCallback locks reference identity so the
+  // 10 FavoritesToggleChip call-sites scattered across tabs aren't
+  // passed a new function each parent render.
+  const handleToggleFavOnly = useCallback(() => setShowFavOnly((v) => !v), []);
   const [favsSet, setFavsSet] = useState<Set<string>>(() =>
     typeof window === 'undefined' ? new Set() : new Set(loadFavorites().map((f) => f.id))
   );
