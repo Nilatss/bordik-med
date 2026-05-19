@@ -19,6 +19,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { getFaceLandmarker, analyseFaceFrame } from '@/lib/proctoring/face';
 import { getObjectDetector, findForbiddenObjects } from '@/lib/proctoring/objects';
+import { log } from '@/lib/log';
 
 interface ProctoringProps {
   /** Called whenever a suspicious action is detected. Same callback the
@@ -325,8 +326,12 @@ export default function Proctoring({
     let raf = requestAnimationFrame(tick);
     return () => {
       cancelAnimationFrame(raf);
-      try { src.disconnect(); } catch {/* */}
-      try { ctx.close(); } catch {/* */}
+      // Audit B-9: WebAudio cleanup is best-effort. Source disconnection
+      // can throw if the source was already detached (e.g. mid-cleanup
+      // race); AudioContext.close() rejects on already-closed contexts.
+      // Both are no-ops that don't need a Sentry breadcrumb.
+      try { src.disconnect(); } catch {/* docs: silent ok */}
+      try { ctx.close(); } catch {/* docs: silent ok */}
     };
   }, [stream, active, onViolation, onWarning]);
 
@@ -408,7 +413,14 @@ export default function Proctoring({
           } else {
             blurSince = 0;
           }
-        } catch { /* CORS or readback failure — ignore */ }
+        } catch {
+          // Audit B-9: getImageData inside RAF can throw on cross-origin
+          // canvas taint or readback failure (rare GPU driver issue).
+          // RAF fires 10-30×/sec — logging would flood. The detector
+          // re-tries on the next frame; one missed frame is invisible
+          // to the violation-hold heuristics (which require 1+ sec of
+          // sustained signal). Silent is correct here.
+        }
       }
       raf = requestAnimationFrame(tick);
     };
@@ -451,7 +463,13 @@ export default function Proctoring({
         if (typeof b?.yaw === 'number') yawBase = b.yaw;
         if (typeof b?.pitch === 'number') pitchBase = b.pitch;
       }
-    } catch {/* ignore parse errors */}
+    } catch (e) {
+      // Audit B-9: corrupted calibration baseline. Recovers by re-using
+      // defaults; clinician's first frame becomes the implicit baseline.
+      // Worth logging because a sustained spike could indicate sessionStorage
+      // corruption (privacy mode, quota issue) needing investigation.
+      log.warn({ event: 'proctoring_baseline_parse_failed', error: String(e).slice(0, 200) });
+    }
 
     // Mobile: 5 fps face inference (200 ms). Desktop: 10 fps (100 ms).
     // Face landmarker + blendshapes is the heaviest single op in this
@@ -671,7 +689,14 @@ export default function Proctoring({
           // Red violation banner only (no duplicate yellow warning).
           if (top) onViolation('object-' + top.cls);
         }
-      } catch { /* model load failure — silently skip */ }
+      } catch {
+        // Audit B-9: object detector load failure. The model loader
+        // surfaces its own status via aiModelStatus state, and this
+        // is the per-frame inference loop — logging would flood at
+        // 4-10 Hz. Setup-time failures are caught earlier with a user
+        // banner ("AI-модель прокторинга недоступна"); silent skip
+        // here is the correct fallback.
+      }
 
       raf = requestAnimationFrame(loop);
     };

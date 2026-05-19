@@ -16,6 +16,7 @@
  *   - app is not already installed (display-mode standalone)
  */
 import { useEffect, useState } from 'react';
+import { log } from '@/lib/log';
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -87,15 +88,28 @@ export function InstallPrompt() {
       await evt.prompt();
       const { outcome } = await evt.userChoice;
       if (outcome === 'dismissed') {
-        try { localStorage.setItem(DISMISS_KEY, String(Date.now())); } catch {/* */}
+        try { localStorage.setItem(DISMISS_KEY, String(Date.now())); }
+        catch (e) {
+          // Audit B-9: localStorage quota or privacy mode rejection.
+          // Banner re-appears next session — annoying but not broken.
+          log.warn({ event: 'install_prompt_dismiss_persist_failed', error: String(e).slice(0, 200) });
+        }
       }
-    } catch {/* */}
+    } catch (e) {
+      // Audit B-9: BeforeInstallPromptEvent.prompt() rejected — could be
+      // user cancelled, or browser blocked. Either way, the banner closes.
+      log.warn({ event: 'install_prompt_failed', error: String(e).slice(0, 200) });
+    }
     setShow(false);
     setEvt(null);
   }
 
   function dismiss() {
-    try { localStorage.setItem(DISMISS_KEY, String(Date.now())); } catch {/* */}
+    try { localStorage.setItem(DISMISS_KEY, String(Date.now())); }
+    catch (e) {
+      // Audit B-9.
+      log.warn({ event: 'install_prompt_dismiss_persist_failed', error: String(e).slice(0, 200) });
+    }
     setShow(false);
   }
 

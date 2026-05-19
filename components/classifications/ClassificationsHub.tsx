@@ -28,6 +28,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Icd10Lookup from '@/components/icd10/Icd10Lookup';
 import Highlight from '@/components/ui/Highlight';
+import { log } from '@/lib/log';
 
 interface Chapter { id: string; range: string; title: string }
 interface CodeEntry { code: string; title: string; chapter: string }
@@ -512,7 +513,12 @@ function Icd10cmIndexSearch() {
         if (!r.ok) return;
         const json = await r.json();
         if (!cancelled) setIndex(json);
-      } catch { /* */ }
+      } catch (e) {
+        // Audit B-9: log silently-swallowed errors. ICD-10-CM index fetch
+        // can legitimately fail (offline / 404 during deploy) — UI degrades
+        // to empty search, but we should know if it spikes.
+        log.warn({ event: 'icd10cm_index_fetch_failed', error: String(e).slice(0, 200) });
+      }
     })();
     return () => { cancelled = true; };
   }, [open, index]);
@@ -662,7 +668,10 @@ function Icd10cmNeoplasmCoder() {
         if (!r.ok) return;
         const json = await r.json();
         if (!cancelled) setData(json);
-      } catch { /* */ }
+      } catch (e) {
+        // Audit B-9.
+        log.warn({ event: 'icd10cm_neoplasm_fetch_failed', error: String(e).slice(0, 200) });
+      }
     })();
     return () => { cancelled = true; };
   }, [open, data]);
