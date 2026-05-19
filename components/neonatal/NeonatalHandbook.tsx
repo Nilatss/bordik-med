@@ -2645,24 +2645,33 @@ function NurseProcedureCard({
               <h2 className="hidden print:block font-[var(--font-display)] text-[20px] font-bold text-[#1A1A1A] tracking-[-0.01em] mb-3 pb-3 border-b border-[#E5E7EB]">
                 {procedure.title_ru} <span className="font-normal text-[#6B7280] ml-2 text-[15px]">— Процедура ({procedure.category}, ~{procedure.duration_min} мин)</span>
               </h2>
-              {procedure.steps.map((step, idx) => (
-                <div key={idx} className="mb-3.5">
-                  <div className="text-[13px] font-bold text-[#1F2937] mb-1.5 flex items-center gap-2">
-                    <span className="inline-flex items-center justify-center w-[22px] h-[22px] bg-[#2563EB] text-white rounded-full text-[11px] font-bold">
-                      {idx + 1}
-                    </span>
-                    {step.title}
+              {procedure.steps.map((step, idx) => {
+                const isLastStep = idx === procedure.steps.length - 1;
+                const hasFooter = procedure.warnings.length > 0 || procedure.references.length > 0;
+                const isLast = isLastStep && !hasFooter;
+                return (
+                  // Horizontal grid: step number + title on left (160px),
+                  // bulleted items on right. Mobile stacks (см. CSS).
+                  <div key={idx} className={`neo-detail-row py-3.5 ${isLast ? '' : 'border-b border-[#F0F1F5]'}`}>
+                    <div className="flex items-start gap-2 pt-px">
+                      <span className="inline-flex items-center justify-center w-[22px] h-[22px] bg-[#2563EB] text-white rounded-full text-[11px] font-bold shrink-0">
+                        {idx + 1}
+                      </span>
+                      <span className="text-[12px] font-semibold uppercase tracking-[0.04em] text-[#374151] leading-[1.3]">
+                        {step.title}
+                      </span>
+                    </div>
+                    <ul className="m-0 pl-[18px] list-disc text-[13.5px] leading-[1.55] text-[#374151]">
+                      {step.items.map((it, i) => (
+                        <li key={i} className="mb-1">{it}</li>
+                      ))}
+                    </ul>
                   </div>
-                  <ul className="m-0 pl-8 text-[12.5px] leading-[1.55] text-[#374151]">
-                    {step.items.map((it, i) => (
-                      <li key={i} className="mb-[3px]">{it}</li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
+                );
+              })}
               {procedure.warnings.length > 0 && (
-                <div className="mt-3.5 pt-3 border-t border-[#F0F1F5]">
-                  <div className="inline-flex items-center gap-1.5 font-[var(--font-mono)] text-[11px] font-bold tracking-[0.06em] uppercase text-[#B45309] mb-1.5">
+                <div className={`neo-detail-row py-3.5 ${procedure.references.length === 0 ? '' : 'border-b border-[#F0F1F5]'}`}>
+                  <div className="inline-flex items-center gap-1.5 text-[11px] font-semibold tracking-[0.06em] uppercase text-[#B45309] pt-px">
                     <svg
                       aria-hidden="true" focusable="false"
                       width={11} height={11} viewBox="0 0 24 24" fill="none"
@@ -2676,21 +2685,21 @@ function NurseProcedureCard({
                     </svg>
                     Предупреждения
                   </div>
-                  <ul className="m-0 pl-[18px] text-[12.5px] text-[#374151] leading-[1.55]">
+                  <ul className="m-0 pl-[18px] list-disc text-[13.5px] text-[#374151] leading-[1.55]">
                     {procedure.warnings.map((w, i) => (
-                      <li key={i} className="mb-[3px]">{w}</li>
+                      <li key={i} className="mb-1">{w}</li>
                     ))}
                   </ul>
                 </div>
               )}
               {procedure.references.length > 0 && (
-                <div className="mt-3.5 pt-3 border-t border-[#E5E7EB]">
-                  <div className="font-[var(--font-mono)] text-[11px] font-bold tracking-[0.06em] uppercase text-[#9CA3AF] mb-1.5">
+                <div className="neo-detail-row py-3.5">
+                  <div className="text-[11px] font-semibold tracking-[0.06em] uppercase text-[#9CA3AF] pt-px">
                     References
                   </div>
-                  <ol className="m-0 pl-[18px] text-xs text-[#6B7280] leading-[1.55]">
+                  <ol className="m-0 pl-[18px] list-decimal text-[13.5px] text-[#6B7280] leading-[1.55]">
                     {procedure.references.map((r, i) => (
-                      <li key={i} className="mb-[3px]">{r}</li>
+                      <li key={i} className="mb-1">{r}</li>
                     ))}
                   </ol>
                 </div>
@@ -2946,7 +2955,7 @@ function ClinicalCaseCard({
               <CaseSection label="Ключевые находки" items={c.presenting_features} />
               <CaseSection label="Дифференциальный диагноз" items={c.differential} />
               <CaseSection label="Тактика" items={c.management} ordered />
-              <CaseSection label="Pearls (запомнить)" items={c.pearls} tone="pearl" />
+              <CaseSection label="Pearls (запомнить)" items={c.pearls} tone="pearl" isLast={c.references.length === 0} />
 
               {c.references.length > 0 && (
                 <div className="mt-[18px] pt-3.5 border-t border-[#E5E7EB]">
@@ -2976,19 +2985,22 @@ function ClinicalCaseCard({
  * pattern из DrugCard) — pearls = take-home points, важно выделить.
  */
 function CaseSection({
-  label, items, ordered, tone,
+  label, items, ordered, tone, isLast = false,
 }: {
   label: string;
   items: string[];
   ordered?: boolean;
   tone?: 'pearl';
+  isLast?: boolean;
 }) {
   if (items.length === 0) return null;
   const ListTag: 'ol' | 'ul' = ordered ? 'ol' : 'ul';
+  // Match DrugCard NeonatalDetailBlock pattern — horizontal grid (label
+  // left 160px, content right) on desktop, stack on mobile.
   return (
-    <div className="mb-3.5">
+    <div className={`neo-detail-row py-3.5 ${isLast ? '' : 'border-b border-[#F0F1F5]'}`}>
       <div
-        className={`inline-flex items-center gap-1.5 font-[var(--font-mono)] text-[11px] font-bold tracking-[0.06em] uppercase mb-1.5 ${
+        className={`inline-flex items-center gap-1.5 text-[11px] font-semibold tracking-[0.06em] uppercase pt-px ${
           tone === 'pearl' ? 'text-[#B45309]' : 'text-[#9CA3AF]'
         }`}
       >
@@ -3007,7 +3019,7 @@ function CaseSection({
         )}
         {label}
       </div>
-      <ListTag className="m-0 pl-[22px] flex flex-col gap-1 text-[13px] leading-[1.55] text-[#374151]">
+      <ListTag className={`m-0 ${ordered ? 'list-decimal' : 'list-disc'} pl-[18px] flex flex-col gap-1 text-[13.5px] leading-[1.55] text-[#374151]`}>
         {items.map((it, i) => (
           <li key={i}>{it}</li>
         ))}
@@ -3221,7 +3233,7 @@ function CommonMistakeCard({
               <MistakeBlock label="Что часто делают неправильно" text={m.mistake} />
               <MistakeBlock label="Почему ошибка типична" text={m.why_it_happens} />
               <MistakeBlock label="Как должно быть" text={m.correct_approach} tone="ok" />
-              <MistakeBlock label="Последствия ошибки" text={m.consequence} tone="warning" />
+              <MistakeBlock label="Последствия ошибки" text={m.consequence} tone="warning" isLast={m.references.length === 0} />
 
               {m.references.length > 0 && (
                 <div className="mt-[18px] pt-3.5 border-t border-[#E5E7EB]">
@@ -3250,21 +3262,51 @@ function CommonMistakeCard({
  *   neutral design system used elsewhere (no green/amber tints).
  */
 function MistakeBlock({
-  label, text,
+  label, text, tone, isLast = false,
 }: {
   label: string;
   text: string;
-  /** tone is kept in props for back-compat at call sites but visually unused. */
   tone?: 'ok' | 'warning';
+  isLast?: boolean;
 }) {
+  // Match DrugCard NeonatalDetailBlock pattern: horizontal grid (label left
+  // 160px, content right) on desktop, stack on mobile. tone gives subtle
+  // colour cue on the label without disrupting the rhythm.
+  const labelColor = tone === 'warning' ? 'text-[#B45309]'
+    : tone === 'ok' ? 'text-[#047857]'
+    : 'text-[#9CA3AF]';
   return (
-    <div className="mb-3.5">
-      <div className="font-[var(--font-mono)] text-[11px] font-bold tracking-[0.06em] uppercase text-[#9CA3AF] mb-1.5">
+    <div className={`neo-detail-row py-3.5 ${isLast ? '' : 'border-b border-[#F0F1F5]'}`}>
+      <div className={`inline-flex items-center gap-1.5 text-[11px] font-semibold tracking-[0.06em] uppercase pt-px ${labelColor}`}>
+        {tone === 'warning' && (
+          <svg
+            aria-hidden="true" focusable="false"
+            width={11} height={11} viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" strokeWidth={2.4}
+            strokeLinecap="round" strokeLinejoin="round"
+            className="shrink-0"
+          >
+            <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z" />
+            <line x1="12" y1="9" x2="12" y2="13" />
+            <line x1="12" y1="17" x2="12.01" y2="17" />
+          </svg>
+        )}
+        {tone === 'ok' && (
+          <svg
+            aria-hidden="true" focusable="false"
+            width={11} height={11} viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" strokeWidth={2.6}
+            strokeLinecap="round" strokeLinejoin="round"
+            className="shrink-0"
+          >
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        )}
         {label}
       </div>
-      <p className="m-0 text-[13.5px] leading-[1.55] text-[#374151]">
+      <div className="text-[#374151] text-[13.5px] leading-[1.55]">
         {text}
-      </p>
+      </div>
     </div>
   );
 }
@@ -3495,27 +3537,33 @@ function ChecklistCard({
               <h2 className="hidden print:block font-[var(--font-display)] text-[20px] font-bold text-[#1A1A1A] tracking-[-0.01em] mb-3 pb-3 border-b border-[#E5E7EB]">
                 {c.title_ru} <span className="font-normal text-[#6B7280] ml-2 text-[15px]">— Чек-лист (~{c.estimated_minutes} мин)</span>
               </h2>
-              {/* Audience + indications */}
-              <div className="mb-4 pb-3.5 border-b border-[#F0F1F5]">
-                <div className="text-xs text-[#6B7280] mb-1.5">
-                  <strong className="text-[#1A1A1A]">Аудитория:</strong> {c.audience}
+              {/* Audience — horizontal row */}
+              <div className="neo-detail-row py-3.5 border-b border-[#F0F1F5]">
+                <div className="text-[11px] font-semibold tracking-[0.06em] uppercase text-[#9CA3AF] pt-px">
+                  Аудитория
                 </div>
-                {c.indications.length > 0 && (
-                  <div className="text-xs text-[#6B7280]">
-                    <strong className="text-[#1A1A1A]">Показания:</strong>
-                    <ul className="mt-1 mb-0 ml-[18px] p-0">
-                      {c.indications.map((it, i) => (
-                        <li key={i}>{it}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+                <div className="text-[13.5px] text-[#374151] leading-[1.55]">
+                  {c.audience}
+                </div>
               </div>
+              {c.indications.length > 0 && (
+                <div className="neo-detail-row py-3.5 border-b border-[#F0F1F5]">
+                  <div className="text-[11px] font-semibold tracking-[0.06em] uppercase text-[#9CA3AF] pt-px">
+                    Показания
+                  </div>
+                  <ul className="m-0 pl-[18px] list-disc text-[13.5px] text-[#374151] leading-[1.55]">
+                    {c.indications.map((it, i) => (
+                      <li key={i} className="mb-1">{it}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
 
-              {/* Sections с интерактивными checkbox */}
+              {/* Sections с интерактивными checkbox — horizontal row per section,
+                  with checkboxes on right (preserve interactive behaviour). */}
               {c.sections.map((sec, si) => (
-                <div key={si} className="mb-[18px]">
-                  <div className="font-[var(--font-mono)] text-[11px] font-bold tracking-[0.06em] uppercase text-[#9CA3AF] mb-2">
+                <div key={si} className="neo-detail-row py-3.5 border-b border-[#F0F1F5]">
+                  <div className="text-[11px] font-semibold tracking-[0.06em] uppercase text-[#9CA3AF] pt-px">
                     {sec.title}
                   </div>
                   <div className="flex flex-col gap-1.5">
@@ -3562,11 +3610,11 @@ function ChecklistCard({
               </div>
 
               {c.references.length > 0 && (
-                <div className="mt-[18px] pt-3.5 border-t border-[#E5E7EB]">
-                  <div className="font-[var(--font-mono)] text-[11px] font-bold tracking-[0.06em] uppercase text-[#9CA3AF] mb-2">
+                <div className="neo-detail-row py-3.5">
+                  <div className="text-[11px] font-semibold tracking-[0.06em] uppercase text-[#9CA3AF] pt-px">
                     References
                   </div>
-                  <ol className="m-0 pl-5 text-xs text-[#6B7280] leading-[1.55] list-decimal">
+                  <ol className="m-0 pl-[18px] list-decimal text-[13.5px] text-[#6B7280] leading-[1.55]">
                     {c.references.map((ref, i) => (
                       <li key={i} className="mb-1">{ref}</li>
                     ))}
@@ -4048,16 +4096,21 @@ function AtlasCard({
               <h2 className="hidden print:block font-[var(--font-display)] text-[20px] font-bold text-[#1A1A1A] tracking-[-0.01em] mb-3 pb-3 border-b border-[#E5E7EB]">
                 {a.title_ru} <span className="font-normal text-[#6B7280] ml-2 text-[15px]">— Атлас ({sourceLabel})</span>
               </h2>
-              <p className="mt-0 mb-4 pb-3.5 border-b border-[#F0F1F5] text-sm leading-[1.55] text-[#4B5563]">
-                <Highlight text={a.description} query={query} />
-              </p>
+              <div className={`neo-detail-row py-3.5 ${a.key_findings.length > 0 ? 'border-b border-[#F0F1F5]' : ''}`}>
+                <div className="text-[11px] font-semibold tracking-[0.06em] uppercase text-[#9CA3AF] pt-px">
+                  Описание
+                </div>
+                <div className="text-[13.5px] text-[#374151] leading-[1.55]">
+                  <Highlight text={a.description} query={query} />
+                </div>
+              </div>
 
               {a.key_findings.length > 0 && (
-                <div className="mb-4">
-                  <div className="font-[var(--font-mono)] text-[11px] font-bold tracking-[0.06em] uppercase text-[#9CA3AF] mb-1.5">
+                <div className="neo-detail-row py-3.5">
+                  <div className="text-[11px] font-semibold tracking-[0.06em] uppercase text-[#9CA3AF] pt-px">
                     Ключевые находки
                   </div>
-                  <ul className="m-0 pl-[22px] text-[13px] leading-[1.55] text-[#374151] flex flex-col gap-1">
+                  <ul className="m-0 pl-[18px] list-disc text-[13.5px] text-[#374151] leading-[1.55] flex flex-col gap-1">
                     {a.key_findings.map((f, i) => (
                       <li key={i}>{f}</li>
                     ))}
@@ -4065,7 +4118,7 @@ function AtlasCard({
                 </div>
               )}
 
-              <div className="mt-4 flex items-center flex-wrap gap-3">
+              <div className="mt-4 pt-3.5 border-t border-[#E5E7EB] flex items-center flex-wrap gap-3">
                 <DesignSystemLinkButton
                   href={a.url}
                   ariaLabel={`Открыть атлас: ${a.title_ru} на ${a.source}`}
