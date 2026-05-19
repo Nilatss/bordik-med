@@ -26,6 +26,7 @@ import {
   searchDrugs,
   SEVERITY_META,
 } from '@/lib/drug-interactions';
+import { log } from '@/lib/log';
 
 const MAX_DRUGS = 30;
 const MIN_DRUGS = 2;
@@ -146,7 +147,10 @@ export default function DrugChecker() {
         if (!r.ok) return;
         const json = (await r.json()) as DrugTableEntry[];
         if (!cancelled) setDrugTable(json);
-      } catch { /* */ }
+      } catch (e) {
+        // Audit B-9: surface silently-swallowed fetch failures.
+        log.warn({ event: 'icd10_drug_table_fetch_failed', error: String(e).slice(0, 200) });
+      }
     })();
     return () => { cancelled = true; };
   }, [showPoisonCodes, drugTable]);

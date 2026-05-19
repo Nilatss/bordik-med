@@ -85,12 +85,19 @@ export default function ApgarTimer({ onClose }: { onClose: () => void }) {
       gain.connect(ctx.destination);
       osc.start();
       osc.stop(ctx.currentTime + duration / 1000);
-    } catch { /* swallow audio errors */ }
+    } catch { /* Audit B-9: WebAudio API can throw if the AudioContext was
+      auto-suspended by the browser (Safari pre-interaction) or the page
+      lost focus. Beep is purely a UX cue — silent on failure is fine,
+      Sentry log would be noise as this fails routinely. */ }
   }, [ensureAudioCtx]);
 
   const triggerHaptic = useCallback(() => {
     if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
-      try { navigator.vibrate?.([200, 100, 200, 100, 200]); } catch { /* ignore */ }
+      try { navigator.vibrate?.([200, 100, 200, 100, 200]); } catch {
+        /* Audit B-9: vibrate() rejects on Permissions-Policy block or
+           iOS Safari (never supported). Documented browser limitations,
+           not actionable signals. */
+      }
     }
   }, []);
 
@@ -185,7 +192,11 @@ export default function ApgarTimer({ onClose }: { onClose: () => void }) {
     const lines = readings.map((r) => `Apgar ${r.minute} мин = ${r.total}/10 (A${r.score.appearance} P${r.score.pulse} G${r.score.grimace} A${r.score.activity} R${r.score.respiration})`);
     const text = `Apgar — оценка новорождённого\n${lines.join('\n')}`;
     if (typeof navigator !== 'undefined' && 'clipboard' in navigator) {
-      navigator.clipboard?.writeText(text).catch(() => { /* ignore */ });
+      // Audit B-9: clipboard.writeText() is denied without secure context
+      // or when document is not focused. The fallback would be a "select +
+      // Ctrl+C" hint, but the typical NICU clinician copies manually if it
+      // fails — silent is fine, no Sentry value.
+      navigator.clipboard?.writeText(text).catch(() => { /* docs: silent ok */ });
     }
   }, [readings]);
 
