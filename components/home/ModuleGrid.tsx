@@ -8,7 +8,12 @@ import { ArrowRight } from '@/components/icons';
 import DifficultyFilter from './DifficultyFilter';
 
 export default function ModuleGrid() {
-  const { activeSection, openModule, completedCourses, difficultyFilter, setDifficultyFilter } = useAppStore();
+  // Audit P-1: atomic selectors.
+  const activeSection = useAppStore((s) => s.activeSection);
+  const openModule = useAppStore((s) => s.openModule);
+  const completedCourses = useAppStore((s) => s.completedCourses);
+  const difficultyFilter = useAppStore((s) => s.difficultyFilter);
+  const setDifficultyFilter = useAppStore((s) => s.setDifficultyFilter);
   const sectionModules = activeSection ? getModulesBySection(activeSection) : [];
   const filter = difficultyFilter;
 

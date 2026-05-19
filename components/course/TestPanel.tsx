@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useAppStore, getHighestPassedLevel, isModuleTestUnlocked } from '@/lib/store';
+import { useAppStore, getHighestPassedLevel, isModuleTestUnlocked, type AppState } from '@/lib/store';
 import { useT } from '@/lib/i18n';
 import CourseProgressBar from './CourseProgressBar';
 import {
@@ -63,13 +63,27 @@ interface TestResult {
 
 export default function TestPanel({ courseId }: TestPanelProps) {
   const t = useT();
-  const store = useAppStore();
-  const { testAttempts, courseTestProgress, moduleTestAttempts, completedModules, submitTest, submitModuleTest, abortTest, abortModuleTest } = store;
+  // Audit P-1: atomic selectors. Pre-fix `const store = useAppStore()`
+  // subscribed TestPanel to every store mutation (useStudyTimer 1×/sec,
+  // tool usage, etc.) — and TestPanel renders an active test attempt
+  // with frozen state, so re-renders mid-test are wasted work.
+  const testAttempts = useAppStore((s) => s.testAttempts);
+  const courseTestProgress = useAppStore((s) => s.courseTestProgress);
+  const moduleTestAttempts = useAppStore((s) => s.moduleTestAttempts);
+  const completedModules = useAppStore((s) => s.completedModules);
+  const submitTest = useAppStore((s) => s.submitTest);
+  const submitModuleTest = useAppStore((s) => s.submitModuleTest);
+  const abortTest = useAppStore((s) => s.abortTest);
+  const abortModuleTest = useAppStore((s) => s.abortModuleTest);
 
   const mod = getModuleForCourse(courseId);
   const moduleId = mod?.id;
   const highestPassed = courseTestProgress[courseId] || 0;
-  const moduleUnlocked = moduleId !== undefined ? isModuleTestUnlocked(store, moduleId) : false;
+  // isModuleTestUnlocked only reads `courseTestProgress` off the state
+  // — pass a minimal object so we don't need the full store reference.
+  const moduleUnlocked = moduleId !== undefined
+    ? isModuleTestUnlocked({ courseTestProgress } as AppState, moduleId)
+    : false;
   const modulePassed = moduleId !== undefined ? completedModules.includes(moduleId) : false;
 
   const [pendingTest, setPendingTest] = useState<PendingTest>(null);

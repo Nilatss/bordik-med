@@ -24,7 +24,9 @@ import { TocSidebar } from './view/TocSidebar';
 
 export default function ToolView({ toolId }: { toolId: string }) {
   const t = useT();
-  const { closeTool } = useAppStore();
+  // Audit P-1: atomic selector. Was `const { closeTool } = useAppStore()`
+  // — destructure без селектора subscribes ToolView to every store tick.
+  const closeTool = useAppStore((s) => s.closeTool);
   // Catalog arrives async via fetch /catalog.meta.json. While it's loading,
   // `tool` is undefined - the component below shows the loading state. The
   // runner load runs in parallel so by the time both arrive the page can

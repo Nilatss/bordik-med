@@ -1,7 +1,7 @@
 'use client';
 
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, subscribeWithSelector } from 'zustand/middleware';
 import type { SectionId } from './curriculum-types';
 // Use the build-time precomputed module → course IDs map instead of
 // importing the full module objects. This keeps lib/store.ts (eager
@@ -13,7 +13,7 @@ import {
   gradeTest, gradeModuleTest, MAX_TEST_LEVELS,
 } from './quiz';
 
-interface AppState {
+export interface AppState {
   activeSection: SectionId | null;
   activeModuleId: number | null;
   currentCourseId: string | null;
@@ -211,7 +211,12 @@ interface AppState {
 // Sync persist остаётся by design. См. также P2-PERF-NEW-13 в этом же
 // файле — другой пример «WONTFIX из-за конфликта с другим guard'ом».
 // Доку: docs/performance-audit-2026-05.md (P2-PERF-NEW-4 row).
+// Audit B-11: wrap persist with `subscribeWithSelector` so consumers
+// (useSupabaseSync) can use `useAppStore.subscribe(selector, listener,
+// { equalityFn })` instead of the bare `subscribe(listener)` which
+// fires on EVERY state mutation (useStudyTimer ticks 1×/sec).
 export const useAppStore = create<AppState>()(
+  subscribeWithSelector(
   persist(
     (set, get) => ({
       activeSection: null,
@@ -615,6 +620,7 @@ export const useAppStore = create<AppState>()(
         lastDiagnosticResult: state.lastDiagnosticResult,
       }),
     }
+  ),
   )
 );
 

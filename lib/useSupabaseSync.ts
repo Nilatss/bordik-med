@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { shallow as shallowEqual } from 'zustand/shallow';
 import { useAppStore } from './store';
 import { getSupabaseBrowserClient } from './supabase/client';
 import {
@@ -163,29 +164,27 @@ export default function useSupabaseSync() {
       }, 1500);
     };
 
-    // Watch only the fields we sync; ignore noisy ones (scroll position).
-    let prev = JSON.stringify({
-      c: useAppStore.getState().completedCourses,
-      s: useAppStore.getState().startedCourses,
-      ctp: useAppStore.getState().courseTestProgress,
-      st: useAppStore.getState().studyTime,
-      tf: useAppStore.getState().toolsFavourites,
-      un: useAppStore.getState().userName,
-    });
-    const unsub = useAppStore.subscribe((state) => {
-      const next = JSON.stringify({
+    // Audit B-11: selector + shallow equality. Pre-fix `subscribe(listener)`
+    // fired on EVERY store mutation including `useStudyTimer` ticks (1×/s)
+    // and ephemeral UI flags (sidebarOpen, scroll position). Each callback
+    // did `JSON.stringify` on 6 fields (one — completedCourses — can be a
+    // 200+ element array) just to diff: ~12 KB of throwaway string work
+    // per tick on an active session.
+    // Post-fix: zustand subscribeWithSelector calls the listener ONLY when
+    // the selector output changes. Shallow equality compares slice refs
+    // per-field — O(1) per field — and skips re-fires for unrelated state.
+    const unsub = useAppStore.subscribe(
+      (state) => ({
         c: state.completedCourses,
         s: state.startedCourses,
         ctp: state.courseTestProgress,
         st: state.studyTime,
         tf: state.toolsFavourites,
         un: state.userName,
-      });
-      if (next !== prev) {
-        prev = next;
-        queuePush();
-      }
-    });
+      }),
+      () => queuePush(),
+      { equalityFn: shallowEqual },
+    );
     return () => {
       unsub();
       if (debounce.current) clearTimeout(debounce.current);
