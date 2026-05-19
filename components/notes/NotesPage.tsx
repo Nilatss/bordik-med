@@ -181,7 +181,13 @@ export default function NotesPage() {
   }, [notes, query]);
 
   return (
-    <div className="w-full max-w-[var(--content-max)] mx-auto">
+    // Page wrapper matches NeonatalHandbook's grid — 980 px max centered,
+    // no narrower `--content-max` (720 px) column. The surrounding `<main>`
+    // already has `.app-main-inner` padding 20×24 px, so we just need the
+    // outer max + horizontal centring here. Header text + subtitle inherit
+    // the full width and wrap naturally; the editor card below gets a
+    // comfortable ~680 px to itself once the 288 px list takes its column.
+    <div className="w-full max-w-[980px] mx-auto">
       {/* ───── Header — section pill + title + subtitle ─────────────── */}
       <div className="mb-[22px]">
         <p className="font-[var(--font-mono)] text-[10.5px] font-bold tracking-[0.08em] uppercase text-[#9CA3AF] mt-0 mb-2">
