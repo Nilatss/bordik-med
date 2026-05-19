@@ -37,8 +37,8 @@ const runner: ScoreTool = {
       label: 'GA ≤ 34+6 нед?',
       type: 'select',
       options: [
-        { value: '0', label: 'Нет (для GA ≥ 34 нед — Kaiser EOS)' },
-        { value: '1', label: 'Да' },
+        { value: '0', label: 'Нет (для GA ≥ 34 нед — Kaiser EOS)', points: 0 },
+        { value: '1', label: 'Да', points: 1 },
       ],
     },
     {
@@ -46,9 +46,9 @@ const runner: ScoreTool = {
       label: 'Хориоамнионит / triple-I (clinical or pathologic)',
       type: 'select',
       options: [
-        { value: '0', label: 'Нет' },
-        { value: '1', label: 'Подозрение / клиника' },
-        { value: '2', label: 'Подтверждённый / suspected severe' },
+        { value: '0', label: 'Нет', points: 0 },
+        { value: '1', label: 'Подозрение / клиника', points: 1 },
+        { value: '2', label: 'Подтверждённый / suspected severe', points: 2 },
       ],
     },
     {
@@ -56,8 +56,8 @@ const runner: ScoreTool = {
       label: 'PROM (преждевременное излитие вод)',
       type: 'select',
       options: [
-        { value: '0', label: '< 18 ч' },
-        { value: '1', label: '≥ 18 ч' },
+        { value: '0', label: '< 18 ч', points: 0 },
+        { value: '1', label: '≥ 18 ч', points: 1 },
       ],
     },
     {
@@ -65,8 +65,8 @@ const runner: ScoreTool = {
       label: 'Intrapartum AB при показаниях (GBS+, PROM > 18 ч)',
       type: 'select',
       options: [
-        { value: '0', label: 'Adequate (≥ 4 ч до родов или N/A)' },
-        { value: '1', label: 'Inadequate / нет' },
+        { value: '0', label: 'Adequate (≥ 4 ч до родов или N/A)', points: 0 },
+        { value: '1', label: 'Inadequate / нет', points: 1 },
       ],
     },
     {
@@ -80,8 +80,8 @@ const runner: ScoreTool = {
       label: 'Ребёнок симптоматичен (тахипноэ, цианоз, температурная нестабильность, плохое кормление)',
       type: 'select',
       options: [
-        { value: '0', label: 'Нет' },
-        { value: '1', label: 'Да' },
+        { value: '0', label: 'Нет', points: 0 },
+        { value: '1', label: 'Да', points: 1 },
       ],
     },
   ],
