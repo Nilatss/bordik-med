@@ -165,7 +165,7 @@ function MediaCheck({ onReady, onCalibrated }: {
       acquired?.getTracks().forEach((t) => t.stop());
       onReady(false);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- run-once on mount. This effect acquires camera/mic. Re-running on onReady identity change would tear down the stream and ask permission again. Latest onReady is captured via closure at cleanup time, which is the only call site.
   }, []);
 
   // Wire stream into preview
@@ -434,7 +434,7 @@ function MediaCheck({ onReady, onCalibrated }: {
   // if the user later changes camera quality (e.g. the camera goes dark).
   useEffect(() => {
     onCalibrated(calibStatus === 'done');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- onCalibrated is a parent callback; adding it would re-fire this effect whenever the parent re-renders (callback identity churn). The semantic invariant we want is "fire when calibStatus changes" — exactly what the current deps express.
   }, [calibStatus]);
 
   // Live forbidden-object detection on the consent screen - phones, books,
@@ -684,7 +684,7 @@ function MediaCheck({ onReady, onCalibrated }: {
       // Clear any residual object-* hints when the effect tears down
       setHints((prev) => prev.filter((h) => !h.id.startsWith('object-')));
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- updateHints is defined inside this effect's scope and only called from the local tick(); its identity is moot for re-firing the effect. Adding it would re-run the RAF loop setup whenever a hint changes — exactly what we want to avoid.
   }, [stream, aiModelStatus]);
 
   // Reset calibration if any object is currently detected - the user has
@@ -695,7 +695,7 @@ function MediaCheck({ onReady, onCalibrated }: {
       setCalibStatus('idle');
       try { sessionStorage.removeItem('proctoring-baseline'); } catch {}
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- calibStatus intentionally omitted. We only want to RESET calibration when a NEW object is detected, not when calibStatus changes. Adding calibStatus would re-fire on every calibStatus transition and loop infinitely after setCalibStatus('idle') above.
   }, [hints]);
 
   /** Capture neutral pose: average yaw + pitch over ~2 seconds and store
@@ -750,7 +750,7 @@ function MediaCheck({ onReady, onCalibrated }: {
       !!stream && !!cameraQuality?.ok && hasAudioSignal &&
       !blocked && aiModelStatus === 'ready';
     onReady(ok);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- onReady is a parent callback whose identity churns on every parent render. We want the effect to re-fire when any of the readiness inputs change, not when the callback re-identifies — adding onReady would compute ok identically and re-call the parent for no semantic reason.
   }, [stream, cameraQuality?.ok, hasAudioSignal, hints, aiModelStatus]);
 
   // Audio analyser → animate level meter

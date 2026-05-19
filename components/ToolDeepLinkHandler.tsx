@@ -34,9 +34,7 @@ export function ToolDeepLinkHandler() {
       url.searchParams.delete('tool');
       window.history.replaceState(null, '', url.toString());
     }
-  // openTool from Zustand is a stable reference, sp.get only depends
-  // on the search-params snapshot which is itself memoised by Next.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- run-once on mount. openTool from Zustand is a stable reference; sp.get only depends on the search-params snapshot which is itself memoised by Next.js. Re-running would clear the search param a second time (no-op) and could double-fire the openTool action if the URL was rewritten in flight.
   }, []);
 
   return null;
