@@ -17,6 +17,49 @@ import { Children, cloneElement, isValidElement } from 'react';
  * blockquotes (so they render as styled callouts), and normalize dashes.
  * Multi-column tables are left untouched.
  */
+/**
+ * Convert a run of ≥3 consecutive `**Термин**: значение` lines into a
+ * 2-column GFM table (Показатель | Значение).
+ *
+ * Why: markdown joins consecutive non-blank lines into ONE paragraph
+ * (soft breaks → spaces), so a "reference values" appendix written as
+ * 20 bold-term lines rendered as a single unreadable wall of text
+ * (user report 2026-05-19: "что это за груда текста"). A table makes
+ * each parameter scannable. Runs shorter than 3 are left alone — they
+ * are usually inline emphasis inside prose, not a definition list.
+ */
+function convertDefinitionLists(md: string): string {
+  const DEF_RE = /^\*\*(.+?)\*\*:\s*(.+?)\s*$/;
+  const lines = md.split('\n');
+  const out: string[] = [];
+  for (let i = 0; i < lines.length; i++) {
+    // Collect a maximal run of consecutive definition lines.
+    const run: { term: string; value: string }[] = [];
+    let j = i;
+    while (j < lines.length) {
+      const m = (lines[j] ?? '').match(DEF_RE);
+      if (!m || !m[1] || !m[2]) break;
+      run.push({ term: m[1].trim(), value: m[2].trim() });
+      j++;
+    }
+    if (run.length >= 3) {
+      const esc = (s: string) => s.replace(/\|/g, '\\|');
+      // Blank line before the table so markdown starts a fresh block.
+      if (out.length > 0 && out[out.length - 1]?.trim() !== '') out.push('');
+      out.push('| Показатель | Значение |');
+      out.push('| --- | --- |');
+      for (const { term, value } of run) {
+        out.push(`| **${esc(term)}** | ${esc(value)} |`);
+      }
+      out.push(''); // blank line after the table
+      i = j - 1;
+      continue;
+    }
+    out.push(lines[i] ?? '');
+  }
+  return out.join('\n');
+}
+
 export function preprocessContent(md: string): string {
   // Normalize long dashes (em —, en –, horizontal bar ―, figure ‒, minus −)
   // to a plain hyphen. User request 2026-05-19: no long dashes anywhere on
@@ -26,6 +69,9 @@ export function preprocessContent(md: string): string {
   let result = md
     .replace(/(\d)\s*[‒–—―−]\s*(\d)/g, '$1-$2')
     .replace(/\s*[‒–—―−]\s*/g, ' - ');
+
+  // Definition-list runs → tables (before callout/table detection below).
+  result = convertDefinitionLists(result);
 
   const lines = result.split('\n');
   const out: string[] = [];
