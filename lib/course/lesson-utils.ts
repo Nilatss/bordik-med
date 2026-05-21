@@ -18,8 +18,14 @@ import { Children, cloneElement, isValidElement } from 'react';
  * Multi-column tables are left untouched.
  */
 export function preprocessContent(md: string): string {
-  // Replace em-dash / en-dash with hyphen
-  let result = md.replace(/-/g, '-').replace(/-/g, '-');
+  // Normalize long dashes (em —, en –, horizontal bar ―, figure ‒, minus −)
+  // to a plain hyphen. User request 2026-05-19: no long dashes anywhere on
+  // the site. Numeric ranges (1990–2003) get a tight hyphen, prose dashes a
+  // spaced hyphen. NOTE: a previous edit lost the literal dash chars from
+  // this line (mojibake → "-".replace("-","-") no-op); restored explicitly.
+  let result = md
+    .replace(/(\d)\s*[‒–—―−]\s*(\d)/g, '$1-$2')
+    .replace(/\s*[‒–—―−]\s*/g, ' - ');
 
   const lines = result.split('\n');
   const out: string[] = [];
