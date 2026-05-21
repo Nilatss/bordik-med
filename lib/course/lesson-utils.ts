@@ -86,25 +86,54 @@ export function preprocessContent(md: string): string {
   return out.join('\n');
 }
 
-/** Parse a glossary block (plain-text "Term: description" lines) into cards data */
-export function parseGlossary(body: string): { intro: string; terms: { term: string; def: string }[] } {
-  const GLOSSARY_RE = /^([A-Za-zА-ЯЁа-яё0-9][A-Za-zА-ЯЁа-яё0-9 \-()/+]{1,40}):\s+(.+)$/;
+/** Parse a glossary block into cards data.
+ *
+ * Two source formats are recognised:
+ *   1. `Term: description`            — colon-separated plain text
+ *   2. `- **Term** (etymology) — def` — markdown bullet with a bold term,
+ *      optional parenthetical etymology, em-dash definition (the format
+ *      used by the imported довузовые courses). The term keeps just the
+ *      bold text; the etymology + definition become the card body and may
+ *      contain inline markdown (`*italic*`) rendered by the view.
+ *
+ * Leading non-term lines → `intro`, trailing non-term lines → `outro`
+ * (so a closing paragraph after the term list isn't dropped — that would
+ * silently lose author content). Both render as markdown in the view.
+ */
+export function parseGlossary(body: string): { intro: string; outro: string; terms: { term: string; def: string }[] } {
+  const COLON_RE = /^([A-Za-zА-ЯЁа-яё0-9][A-Za-zА-ЯЁа-яё0-9 \-()/+]{1,40}):\s+(.+)$/;
+  const BULLET_RE = /^[-*]\s+\*\*(.+?)\*\*\s*(.*)$/;
   const lines = body.split('\n');
   const intro: string[] = [];
+  const outro: string[] = [];
   const terms: { term: string; def: string }[] = [];
   let foundFirstTerm = false;
   for (const raw of lines) {
     const line = raw.trim();
     if (!line) continue;
-    const m = line.match(GLOSSARY_RE);
-    if (m && m[1] && m[2]) {
+    // Skip a leaked module footer line ("- Конец Модуля 1.2 -") if present.
+    if (/^-\s*Конец Модуля/i.test(line)) continue;
+
+    const bullet = line.match(BULLET_RE);
+    if (bullet && bullet[1]) {
       foundFirstTerm = true;
-      terms.push({ term: m[1].trim(), def: m[2].trim() });
-    } else if (!foundFirstTerm) {
-      intro.push(line);
+      const term = bullet[1].trim();
+      // Strip a leading em-dash from the remainder so "— def" → "def".
+      const def = (bullet[2] ?? '').replace(/^[—–-]\s*/, '').trim();
+      terms.push({ term, def });
+      continue;
     }
+    const colon = line.match(COLON_RE);
+    if (colon && colon[1] && colon[2]) {
+      foundFirstTerm = true;
+      terms.push({ term: colon[1].trim(), def: colon[2].trim() });
+      continue;
+    }
+    // Non-term prose: before the first term it's intro, after it's outro.
+    if (foundFirstTerm) outro.push(line);
+    else intro.push(line);
   }
-  return { intro: intro.join(' '), terms };
+  return { intro: intro.join(' '), outro: outro.join(' '), terms };
 }
 
 export const EMOJI_RE = /^(ℹ|⚠|📷|✓|✅|🎯|💡|i)\s*/;

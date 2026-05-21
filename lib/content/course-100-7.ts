@@ -648,5 +648,9 @@ DNR (do not resuscitate) приказы, отказ от поддерживаю�
 
 **Журналы для дальнейшего чтения**: *Social Science & Medicine*, *Sociology of Health and Illness*, *Medical Anthropology Quarterly*, *Culture, Medicine and Psychiatry*, *The Lancet*, *NEJM*, *JAMA*, *Annual Review of Sociology*, «Социология медицины», «Медицинская антропология и биоэтика».
 
+# Что дальше?
+
+Этот модуль — часть блока довузовской подготовки. Переходите к следующим предметам блока, чтобы собрать полный фундамент для поступления в медицинский вуз.
+
 - Конец Модуля 1.7 -
 `;

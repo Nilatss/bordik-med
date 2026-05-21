@@ -127,8 +127,18 @@ for (const course of COURSES) {
 
   const { body, topicCount } = transformBody(bodyLines);
   const header = headerBlock(course, topicCount);
-  const footer = `\n\n- Конец Модуля 1.${course.n} -`;
-  const full = `${header}\n${body}${footer}\n`;
+  // Footer wrapped in a `# Что дальше?` section so `splitIntoTabs` skips it
+  // (its `заключ|что дальше` rule). Bare-appending the footer leaked the
+  // `- Конец Модуля -` line into the last real tab (e.g. the glossary).
+  const footer = [
+    '',
+    '# Что дальше?',
+    '',
+    'Этот модуль — часть блока довузовской подготовки. Переходите к следующим предметам блока, чтобы собрать полный фундамент для поступления в медицинский вуз.',
+    '',
+    `- Конец Модуля 1.${course.n} -`,
+  ].join('\n');
+  const full = `${header}\n${body}\n${footer}\n`;
 
   const varName = `course100_${course.n}`;
   const ts = `export const ${varName} = \`\n${escapeTemplate(full)}\`;\n`;
