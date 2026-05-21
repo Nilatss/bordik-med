@@ -47,10 +47,7 @@ export function splitIntoTabs(md: string): Tab[] {
       let iconKey = 'intro';
       let short = title;
 
-      if (/введение/i.test(title)) {
-        iconKey = 'intro';
-        short = 'Введение';
-      } else if (/глоссарий/i.test(title)) {
+      if (/глоссарий/i.test(title)) {
         iconKey = 'glossary';
         short = 'Глоссарий';
       } else if (/контроль|самопровер/i.test(title)) {
@@ -65,12 +62,20 @@ export function splitIntoTabs(md: string): Tab[] {
         // name every section after the subject, which would otherwise all
         // collapse to the same subject short-label below. Extract the
         // descriptive part after the marker+number so each tab gets a
-        // distinct label. Runs BEFORE subject detection on purpose.
+        // distinct label.
+        //
+        // MUST run BEFORE both the `введение` check and subject detection:
+        // a section like "Раздел 1. Введение в социологию" otherwise matched
+        // `/введение/` and produced a SECOND "Введение" tab clashing with
+        // the real "# Введение в модуль" intro tab.
         iconKey = 'topic';
         const m = title.match(/^(?:РАЗДЕЛ|Раздел|ЧАСТЬ|Часть|ГЛАВА|Глава|БЛОК|Блок|ТЕМА|Тема)\s+[\dIVXLCМ]+[.):]?\s*(.+)$/i);
         const baseTxt = (m && m[1] ? m[1] : title).trim();
         const rest = (baseTxt.split(/\s[—–-]\s|:/)[0] ?? baseTxt).trim();
         short = rest.length > 24 ? rest.slice(0, 22) + '…' : rest;
+      } else if (/введение/i.test(title)) {
+        iconKey = 'intro';
+        short = 'Введение';
       } else if (/биолог/i.test(title)) {
         iconKey = 'biology';
         short = 'Биология';

@@ -67,7 +67,7 @@ describe('parseGlossary · Biology course glossary (real data)', () => {
     const body = content['100.2']?.main ?? '';
     // Extract the glossary tab body (between the glossary heading and the
     // next `# ` heading).
-    const start = body.indexOf('# ГЛОССАРИЙ');
+    const start = body.search(/# Глоссарий/i);
     expect(start).toBeGreaterThan(0);
     const after = body.slice(start);
     const nextH = after.indexOf('\n# ', 3);
@@ -83,7 +83,7 @@ describe('parseGlossary · Biology course glossary (real data)', () => {
 
   it('footer no longer leaks into the glossary tab', () => {
     const body = content['100.2']?.main ?? '';
-    const start = body.indexOf('# ГЛОССАРИЙ');
+    const start = body.search(/# Глоссарий/i);
     const after = body.slice(start);
     const nextH = after.indexOf('\n# ', 3);
     const glossBody = nextH > 0 ? after.slice(0, nextH) : after;

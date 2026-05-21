@@ -59,6 +59,43 @@ describe('prevuz courses · tab structure', () => {
     expect(distinct.size, `distinct labels among ${sectionShorts.length} sections`).toBeGreaterThan(3);
   });
 
+  it('exactly ONE "Введение" tab per course (no duplicate from section titles)', () => {
+    // Regression: "Раздел 1. Введение в социологию" matched /введение/
+    // before the section-prefix branch → a SECOND "Введение" tab. The
+    // splitter now runs section-prefix detection first.
+    for (const id of COURSE_IDS) {
+      const tabs = splitIntoTabs(content[id]?.main ?? '');
+      const introTabs = tabs.filter((t) => t.short === 'Введение');
+      expect(introTabs.length, `course ${id} should have exactly one "Введение" tab`).toBe(1);
+    }
+  });
+
+  it('section headings are NOT all-caps (de-shouted to sentence case)', () => {
+    for (const id of COURSE_IDS) {
+      const body = content[id]?.main ?? '';
+      const headings = body.split('\n').filter((l) => /^# /.test(l));
+      for (const h of headings) {
+        const text = h.replace(/^#\s+/, '');
+        const letters = text.replace(/[^А-Яа-яЁёA-Za-z]/g, '');
+        const upper = text.replace(/[^А-ЯЁA-Z]/g, '');
+        if (letters.length < 8) continue; // skip very short headings
+        // A de-shouted heading must not be >60% uppercase letters.
+        expect(
+          upper.length / letters.length,
+          `heading in ${id} still shouting: "${text}"`,
+        ).toBeLessThan(0.6);
+      }
+    }
+  });
+
+  it('acronyms survive de-shouting (ДНК / РНК / ЭКГ / ВОЗ stay uppercase)', () => {
+    const bio = content['100.2']?.main ?? '';
+    expect(bio).toContain('ДНК');
+    expect(bio).toContain('РНК');
+    const phys = content['100.4']?.main ?? '';
+    expect(phys).toContain('ЭКГ');
+  });
+
   it('"Заключение" content is preserved (renamed, not skipped)', () => {
     // The splitter skips `# Заключение` / `# Что дальше` tabs. The importer
     // renames Заключение → "Итоги модуля" so the content survives. Verify
