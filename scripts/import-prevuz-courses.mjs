@@ -46,6 +46,64 @@ const INTRO_RE = /^##\s+.*(введ|предислов|концепци|архи
 const CONCLUSION_RE = /(заключ)/i;
 const HR_RE = /^\s*-{3,}\s*$/;
 
+/**
+ * Vowel-containing Cyrillic acronyms that must STAY uppercase. Pure
+ * consonant acronyms (ДНК, РНК, ПЦР, ГХК, ЦНС, ЖКТ, ВКБ, ПТСР…) are
+ * detected automatically by the "no vowel" rule below, so only the ones
+ * that DO contain a vowel need an explicit whitelist.
+ */
+const ACRONYMS_KEEP = new Set([
+  'ВОЗ', 'УЗИ', 'ЭКГ', 'ЭЭГ', 'СОЭ', 'ВИЧ', 'СПИД', 'ИВЛ', 'КОС', 'ОРИТ',
+  'СЛР', 'ИБС', 'ХОБЛ', 'ОПН', 'ХПН', 'ВУИ', 'ЭКО', 'АТФ', 'АДФ', 'АМФ',
+  'ГАМК', 'НМДА', 'АКТГ', 'СТГ', 'ТТГ', 'ФСГ', 'РЭС', 'МКБ', 'ОФВ', 'ЖЕЛ',
+]);
+const CYR_VOWELS = /[АЕЁИОУЫЭЮЯ]/;
+
+/**
+ * De-shout an ALL-CAPS heading into sentence case (user asked not to
+ * render course topics in caps). Only touches headings that are
+ * predominantly uppercase (>60 % of letters), leaving already-mixed
+ * headings ("Глава 1. Психология как наука") untouched.
+ *
+ * Per whitespace-delimited word:
+ *   - all-caps Latin                       → keep (ROP, BEAT — trial/gene)
+ *   - all-caps Cyrillic in ACRONYMS_KEEP   → keep (ВОЗ, УЗИ, ЭКГ…)
+ *   - all-caps Cyrillic with NO vowel      → keep (ДНК, РНК, ПЦР, ВКБ…)
+ *   - all-caps Cyrillic with a vowel       → lowercase (real word:
+ *                                             ОПЫТ, РОЛЬ, ТЕЛО, РАСА…)
+ *   - mixed / lowercase                    → keep
+ * Then capitalise the heading's first letter + the first letter after
+ * each ". " sentence boundary ("раздел 1. введение" → "Раздел 1. Введение").
+ */
+function deCaps(heading) {
+  const letters = heading.replace(/[^А-Яа-яЁёA-Za-z]/g, '');
+  const upper = heading.replace(/[^А-ЯЁA-Z]/g, '');
+  if (letters.length === 0 || upper.length / letters.length < 0.6) return heading;
+
+  const words = heading.split(/(\s+)/); // keep whitespace tokens
+  const deShouted = words.map((w) => {
+    if (/^\s*$/.test(w)) return w;
+    const core = w.replace(/[^А-Яа-яЁёA-Za-z]/g, '');
+    if (!core) return w;
+    const allUpperLat = /^[A-Z]+$/.test(core);
+    const allUpperCyr = /^[А-ЯЁ]+$/.test(core);
+    if (allUpperLat) return w;                       // Latin acronym — keep
+    if (allUpperCyr) {
+      // Single Cyrillic letter = preposition/conjunction (В, С, К, О, У,
+      // А, И, Я) — always lowercase. No letter-label section headings
+      // ("Гепатит В") exist in these courses, so this is safe.
+      if (core.length === 1) return w.toLowerCase();
+      if (ACRONYMS_KEEP.has(core)) return w;         // whitelisted vowel-acronym
+      if (!CYR_VOWELS.test(core)) return w;          // consonant acronym
+      return w.toLowerCase();                        // real word
+    }
+    return w;                                        // mixed / lowercase — keep
+  });
+  let result = deShouted.join('');
+  result = result.replace(/(^\s*|\.\s+)([а-яёa-z])/g, (_m, p, c) => p + c.toUpperCase());
+  return result;
+}
+
 /** Apply heading-level shift + HR removal to the body lines. */
 function transformBody(lines) {
   const out = [];
@@ -61,14 +119,14 @@ function transformBody(lines) {
       introSeen = true;
       continue;
     }
-    // `#### X` → `### X`
+    // `#### X` → `### X`  (de-shout the heading text)
     if (/^####\s+/.test(line)) {
-      out.push(line.replace(/^####\s+/, '### '));
+      out.push('### ' + deCaps(line.replace(/^####\s+/, '')));
       continue;
     }
     // `### X` → `## X`
     if (/^###\s+/.test(line)) {
-      out.push(line.replace(/^###\s+/, '## '));
+      out.push('## ' + deCaps(line.replace(/^###\s+/, '')));
       continue;
     }
     // `## X` → `# X`  (tab). Заключение → "Итоги модуля" (avoid skip-rule).
@@ -77,7 +135,7 @@ function transformBody(lines) {
       if (CONCLUSION_RE.test(text)) {
         out.push('# Итоги модуля');
       } else {
-        out.push('# ' + text);
+        out.push('# ' + deCaps(text));
       }
       topicCount++;
       continue;
