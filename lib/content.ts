@@ -1,5 +1,11 @@
 import type { LessonType } from './curriculum';
 import { course100_1 } from './content/course-100-1';
+import { course100_2 } from './content/course-100-2';
+import { course100_3 } from './content/course-100-3';
+import { course100_4 } from './content/course-100-4';
+import { course100_5 } from './content/course-100-5';
+import { course100_6 } from './content/course-100-6';
+import { course100_7 } from './content/course-100-7';
 
 /**
  * Static article content for each course.
@@ -20,6 +26,24 @@ import { course100_1 } from './content/course-100-1';
 export const content: Record<string, Partial<Record<LessonType, string>>> = {
   '100.1': {
     main: course100_1,
+  },
+  '100.2': {
+    main: course100_2,
+  },
+  '100.3': {
+    main: course100_3,
+  },
+  '100.4': {
+    main: course100_4,
+  },
+  '100.5': {
+    main: course100_5,
+  },
+  '100.6': {
+    main: course100_6,
+  },
+  '100.7': {
+    main: course100_7,
   },
   // Блок 0 - Доклинический фундамент: '0.1', '0.2', '0.3'
   // Блок 1 - Биохимия: '1.1'-'1.6'

@@ -59,6 +59,18 @@ export function splitIntoTabs(md: string): Tab[] {
         current = { id: `t${tabs.length}`, title, short, iconKey, body: '', kind: 'selfcheck' };
         buffer = [];
         continue;
+      } else if (/^(?:РАЗДЕЛ|Раздел|ЧАСТЬ|Часть|ГЛАВА|Глава|БЛОК|Блок|ТЕМА|Тема)\s+[\dIVXLCМ]+/i.test(title)) {
+        // Section-prefixed heading (РАЗДЕЛ 1 / ЧАСТЬ I / Глава 2 / Блок 3 /
+        // Тема N). Deep single-subject courses (Биология, Химия, Физика…)
+        // name every section after the subject, which would otherwise all
+        // collapse to the same subject short-label below. Extract the
+        // descriptive part after the marker+number so each tab gets a
+        // distinct label. Runs BEFORE subject detection on purpose.
+        iconKey = 'topic';
+        const m = title.match(/^(?:РАЗДЕЛ|Раздел|ЧАСТЬ|Часть|ГЛАВА|Глава|БЛОК|Блок|ТЕМА|Тема)\s+[\dIVXLCМ]+[.):]?\s*(.+)$/i);
+        const baseTxt = (m && m[1] ? m[1] : title).trim();
+        const rest = (baseTxt.split(/\s[—–-]\s|:/)[0] ?? baseTxt).trim();
+        short = rest.length > 24 ? rest.slice(0, 22) + '…' : rest;
       } else if (/биолог/i.test(title)) {
         iconKey = 'biology';
         short = 'Биология';
