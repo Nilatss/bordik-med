@@ -21,7 +21,7 @@ import ResuscitationFlowchart from '@/components/neonatal/ResuscitationFlowchart
 import ApgarTimer from '@/components/neonatal/ApgarTimer';
 import QuizRunner from '@/components/neonatal/QuizRunner';
 import PatientContextBar from '@/components/neonatal/PatientContextBar';
-import { MarkdownLite } from '@/components/ui/MarkdownLite';
+import { MarkdownLite, renderInlineMd as renderInlineMdShared, normalizeDashes } from '@/components/ui/MarkdownLite';
 import { ArrowRight } from '@/components/icons';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore } from '@/lib/store';
@@ -1786,7 +1786,7 @@ const DrugCard = React.memo(function DrugCard({
 
 /** Чистит broken-glyph (�) и схлопывает пробелы. */
 function sanitizeFieldText(s: string): string {
-  return s
+  return normalizeDashes(s)
     .replace(/�/g, '÷')
     .replace(/ /g, ' ')
     .replace(/\s+/g, ' ')
@@ -2085,14 +2085,12 @@ function parseGuidelineContent(raw: string): Block[] {
 }
 
 /** Render inline markdown — currently just **bold**. */
+// Delegates to the shared MarkdownLite renderer so protocols/guidelines
+// get the same inline support as articles + calculator details:
+// **bold**, *italic*, `code`, auto-linked URLs, and long-dash → hyphen
+// normalization (user request 2026-05-19).
 function renderInlineMd(text: string): React.ReactNode {
-  const parts = text.split(/(\*\*[^*]+\*\*)/g);
-  return parts.map((p, idx) => {
-    if (p.startsWith('**') && p.endsWith('**')) {
-      return <strong key={idx} className="font-semibold text-[#111827]">{p.slice(2, -2)}</strong>;
-    }
-    return <span key={idx}>{p}</span>;
-  });
+  return renderInlineMdShared(text);
 }
 
 function GuidelineContent({ content }: { content: string }) {
