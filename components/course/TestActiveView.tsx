@@ -129,6 +129,7 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
 
   useEffect(() => () => {
     if (warningTimerRef.current) window.clearTimeout(warningTimerRef.current);
+    if (violationTimerRef.current) window.clearTimeout(violationTimerRef.current);
   }, []);
 
   const selectOption = useCallback((idx: number) => {
