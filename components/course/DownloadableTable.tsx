@@ -123,17 +123,21 @@ export default function DownloadableTable({ children, title = 'Таблица' }
 
       document.body.appendChild(printable);
 
-      // Wait a tick so fonts apply
-      await new Promise((r) => setTimeout(r, 80));
-
-      const canvas = await html2canvas(printable, {
-        scale: 2,
-        backgroundColor: '#FFFFFF',
-        useCORS: true,
-        logging: false,
-      });
-
-      document.body.removeChild(printable);
+      let canvas: Awaited<ReturnType<typeof html2canvas>>;
+      try {
+        // Wait a tick so fonts apply
+        await new Promise((r) => setTimeout(r, 80));
+        canvas = await html2canvas(printable, {
+          scale: 2,
+          backgroundColor: '#FFFFFF',
+          useCORS: true,
+          logging: false,
+        });
+      } finally {
+        // Always remove the offscreen element — even if html2canvas throws
+        // (e.g. CORS error, canvas size limit) so we never leak DOM nodes.
+        document.body.removeChild(printable);
+      }
 
       // Build PDF: A4 portrait, fit the canvas preserving aspect ratio, paginate if needed
       const pdf = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'a4' });
