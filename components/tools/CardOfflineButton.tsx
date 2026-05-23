@@ -25,9 +25,15 @@ export const CardOfflineButton = React.memo(function CardOfflineButton({
 
   useEffect(() => {
     let cancelled = false;
-    isToolCached(toolId).then((c) => {
-      if (!cancelled) setState(c ? 'cached' : 'available');
-    });
+    isToolCached(toolId)
+      .then((c) => {
+        if (!cancelled) setState(c ? 'cached' : 'available');
+      })
+      .catch(() => {
+        // Cache API unavailable (private mode, storage quota) — show the
+        // download button anyway so the user can attempt a cache.
+        if (!cancelled) setState('available');
+      });
     return () => { cancelled = true; };
   }, [toolId]);
 
