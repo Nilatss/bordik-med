@@ -30,7 +30,7 @@
 import { NextResponse } from 'next/server';
 import * as Sentry from '@sentry/nextjs';
 import { makeRateLimiter, identifyRequest } from '@/lib/rate-limit';
-import { classifyDirective, severityFor } from '@/lib/csp-report-classify';
+import { classifyDirective, severityFor, extractSafeFields, type RawCspReport } from '@/lib/csp-report-classify';
 
 export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
@@ -39,16 +39,9 @@ export const dynamic = 'force-dynamic';
 // pathological loops.
 const reportLimiter = makeRateLimiter({ capacity: 60, refillPerSec: 1 });
 
-interface CspReport {
-  'document-uri'?: string;
-  'violated-directive'?: string;
-  'effective-directive'?: string;
-  'blocked-uri'?: string;
-  'source-file'?: string;
-  'line-number'?: number;
-  'script-sample'?: string;
-  disposition?: string;
-}
+// RawCspReport (both wire formats) + extractSafeFields live in
+// lib/csp-report-classify.ts (pure + unit-tested).
+type CspReport = RawCspReport;
 
 export async function POST(req: Request) {
   const ident = await identifyRequest(req, null);
@@ -80,17 +73,9 @@ export async function POST(req: Request) {
   }
 
   for (const r of reports) {
-    // Truncate long fields so a malicious report cannot inflate logs.
-    const safe = {
-      doc:       (r['document-uri']        ?? '').slice(0, 500),
-      violated:  (r['violated-directive']  ?? '').slice(0, 200),
-      effective: (r['effective-directive'] ?? '').slice(0, 200),
-      blocked:   (r['blocked-uri']         ?? '').slice(0, 500),
-      sourceFile:(r['source-file']         ?? '').slice(0, 500),
-      line:      typeof r['line-number'] === 'number' ? r['line-number'] : null,
-      sample:    (r['script-sample']       ?? '').slice(0, 200),
-      disp:      r.disposition,
-    };
+    // Read either wire format (kebab from report-uri, camel from the
+    // Reporting API) into a flat, length-capped shape.
+    const safe = extractSafeFields(r);
     console.warn('[csp-report]', JSON.stringify(safe));
 
     // Mirror the same report into Sentry so violations are searchable

@@ -15,11 +15,75 @@ import {
   looksSuspicious,
   looksKnownBenign,
   severityFor,
+  extractSafeFields,
   type CspSafeFields,
 } from '@/lib/csp-report-classify';
 
 const base: CspSafeFields = { blocked: '', sample: '', violated: '', sourceFile: '' };
 const make = (o: Partial<CspSafeFields>): CspSafeFields => ({ ...base, ...o });
+
+describe('extractSafeFields · dual wire format', () => {
+  it('reads legacy report-uri kebab-case keys', () => {
+    const r = {
+      'document-uri': 'https://bordik.app/',
+      'violated-directive': 'script-src-elem',
+      'effective-directive': 'script-src-elem',
+      'blocked-uri': 'chrome-extension://abc/x.js',
+      'source-file': 'https://bordik.app/a.js',
+      'line-number': 42,
+      'script-sample': 'eval(1)',
+      disposition: 'enforce',
+    };
+    const s = extractSafeFields(r);
+    expect(s.doc).toBe('https://bordik.app/');
+    expect(s.violated).toBe('script-src-elem');
+    expect(s.blocked).toBe('chrome-extension://abc/x.js');
+    expect(s.sourceFile).toBe('https://bordik.app/a.js');
+    expect(s.line).toBe(42);
+    expect(s.sample).toBe('eval(1)');
+    expect(s.disp).toBe('enforce');
+  });
+
+  it('reads Reporting-API camelCase keys (modern Chromium)', () => {
+    const r = {
+      documentURL: 'https://bordik.app/',
+      violatedDirective: 'script-src-elem',
+      effectiveDirective: 'script-src-elem',
+      blockedURL: 'moz-extension://uuid/content.js',
+      sourceFile: 'moz-extension://uuid/content.js',
+      lineNumber: 7,
+      sample: 'foo',
+      disposition: 'report',
+    };
+    const s = extractSafeFields(r);
+    // The camelCase keys must NOT be dropped (the bug this fix addresses).
+    expect(s.blocked).toBe('moz-extension://uuid/content.js');
+    expect(s.violated).toBe('script-src-elem');
+    expect(s.doc).toBe('https://bordik.app/');
+    expect(s.line).toBe(7);
+    expect(s.disp).toBe('report');
+  });
+
+  it('a camelCase extension report classifies as known-benign → info', () => {
+    const s = extractSafeFields({ blockedURL: 'chrome-extension://x/y.js', violatedDirective: 'script-src' });
+    expect(severityFor(s).level).toBe('info');
+    expect(severityFor(s).benign).toBe(true);
+  });
+
+  it('truncates over-long fields (log-inflation defence)', () => {
+    const long = 'a'.repeat(2000);
+    const s = extractSafeFields({ blockedURL: long, sample: long });
+    expect(s.blocked.length).toBe(500);
+    expect(s.sample.length).toBe(200);
+  });
+
+  it('handles an empty report without throwing', () => {
+    const s = extractSafeFields({});
+    expect(s.blocked).toBe('');
+    expect(s.line).toBeNull();
+    expect(s.disp).toBeUndefined();
+  });
+});
 
 describe('classifyDirective', () => {
   it('takes the first token of the effective directive', () => {

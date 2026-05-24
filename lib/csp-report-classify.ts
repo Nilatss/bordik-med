@@ -23,6 +23,59 @@ export interface CspSafeFields {
 export type CspLevel = 'error' | 'warning' | 'info';
 
 /**
+ * A raw CSP report body. Two wire formats exist and the app enables BOTH
+ * reporting directives (`report-uri` + `report-to`), so a report can carry
+ * either key style:
+ *   - legacy `report-uri`        → kebab-case (`blocked-uri`, …)
+ *   - Reporting API `report-to`  → camelCase (`blockedURL`, …)
+ * Modern Chromium prefers the Reporting API, so the camelCase keys are
+ * increasingly the common path — reading only kebab would silently drop
+ * every field from those reports (and defeat the noise filter).
+ */
+export interface RawCspReport {
+  'document-uri'?: string;        documentURL?: string;
+  'violated-directive'?: string;  violatedDirective?: string;
+  'effective-directive'?: string; effectiveDirective?: string;
+  'blocked-uri'?: string;         blockedURL?: string;
+  'source-file'?: string;         sourceFile?: string;
+  'line-number'?: number;         lineNumber?: number;
+  'script-sample'?: string;       sample?: string;
+  disposition?: string;
+}
+
+export interface CspExtracted {
+  doc: string;
+  violated: string;
+  effective: string;
+  blocked: string;
+  sourceFile: string;
+  line: number | null;
+  sample: string;
+  disp: string | undefined;
+}
+
+/**
+ * Read a raw report (either wire format) into the flat, length-capped
+ * shape the route logs + classifies. Truncates long fields so a malicious
+ * report can't inflate logs / Sentry payloads.
+ */
+export function extractSafeFields(r: RawCspReport): CspExtracted {
+  const line = typeof r['line-number'] === 'number'
+    ? r['line-number']
+    : typeof r.lineNumber === 'number' ? r.lineNumber : null;
+  return {
+    doc:       (r['document-uri']        ?? r.documentURL        ?? '').slice(0, 500),
+    violated:  (r['violated-directive']  ?? r.violatedDirective  ?? '').slice(0, 200),
+    effective: (r['effective-directive'] ?? r.effectiveDirective ?? '').slice(0, 200),
+    blocked:   (r['blocked-uri']         ?? r.blockedURL         ?? '').slice(0, 500),
+    sourceFile:(r['source-file']         ?? r.sourceFile         ?? '').slice(0, 500),
+    line,
+    sample:    (r['script-sample']       ?? r.sample             ?? '').slice(0, 200),
+    disp:      r.disposition,
+  };
+}
+
+/**
  * Bucket the directive into a short, stable tag so Sentry groups
  * violations by actionable type rather than fanning out per document-uri.
  */
