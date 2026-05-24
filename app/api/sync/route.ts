@@ -77,10 +77,25 @@ export async function GET(req: Request) {
         .eq('user_id', user.id),
     ]);
 
+    // favourites_updated_at fetched separately + tolerantly: if the column
+    // (supabase/p1-favourites-lww.sql) isn't applied yet, supabase-js returns
+    // an error we ignore, and the client falls back to the legacy union merge.
+    let favUpdatedAt: string | null = null;
+    {
+      const r = await sb
+        .from('tool_settings')
+        .select('favourites_updated_at')
+        .eq('user_id', user.id)
+        .maybeSingle();
+      if (!r.error && r.data) {
+        favUpdatedAt = (r.data as { favourites_updated_at?: string | null }).favourites_updated_at ?? null;
+      }
+    }
+
     return apiOk({
       profile: profileQ.data ?? null,
       courseProgress: progressQ.data ?? [],
-      toolSettings: toolsQ.data ?? null,
+      toolSettings: toolsQ.data ? { ...toolsQ.data, favourites_updated_at: favUpdatedAt } : null,
       studyTime: studyQ.data ?? [],
     });
   });
@@ -107,6 +122,7 @@ const SyncPayloadSchema = v.object({
   completedModules: v.optional(v.pipe(v.array(v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(10000))), v.maxLength(ARR_MAX))),
   studyTime:        v.optional(v.record(COURSE_ID, v.pipe(v.number(), v.minValue(0), v.maxValue(60 * 60 * 24 * 365)))),
   toolsFavourites:  v.optional(v.pipe(v.array(v.pipe(v.string(), v.maxLength(120))), v.maxLength(ARR_MAX))),
+  toolsFavouritesUpdatedAt: v.optional(v.pipe(v.number(), v.minValue(0))),
   toolsSettings:    v.optional(v.object({
     query:         v.optional(v.pipe(v.string(), v.maxLength(200))),
     categories:    v.optional(v.pipe(v.array(v.pipe(v.string(), v.maxLength(80))), v.maxLength(200))),
@@ -231,6 +247,18 @@ export async function POST(req: Request) {
     if (errors.length > 0) {
       return apiError('internal-error', 500, { errors });
     }
+
+    // Favourites LWW timestamp — written separately + tolerantly so a
+    // not-yet-applied favourites_updated_at column degrades to legacy sync
+    // (any error here is ignored rather than failing the whole push). Runs
+    // after the upsert above so the row already exists.
+    if (body.toolsFavouritesUpdatedAt != null && (body.toolsSettings || body.toolsFavourites)) {
+      await sb
+        .from('tool_settings')
+        .update({ favourites_updated_at: new Date(body.toolsFavouritesUpdatedAt).toISOString() })
+        .eq('user_id', user.id);
+    }
+
     return apiOk({ count: tasks.length });
   });
 }

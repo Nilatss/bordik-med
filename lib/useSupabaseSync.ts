@@ -11,6 +11,7 @@ import {
   requestBackgroundSync,
   type SyncPayload,
 } from './sync-queue';
+import { mergeFavouritesLWW } from './favourites-lww';
 
 /**
  * Cross-device sync between the local Zustand store and Supabase.
@@ -73,11 +74,17 @@ export default function useSupabaseSync() {
           studyTime[row.course_id] = Math.max(prev, row.seconds ?? 0);
         }
 
-        // Merge tool settings (favourites only — filter UI is per-device)
+        // Merge tool settings (favourites only — filter UI is per-device).
+        // LWW by favourites_updated_at so a delete on another device wins
+        // instead of being re-added by a union.
         const tool = data.toolSettings;
-        const toolsFavourites: string[] = tool?.favourites
-          ? Array.from(new Set([...state.toolsFavourites, ...tool.favourites]))
-          : state.toolsFavourites;
+        const fav = mergeFavouritesLWW(
+          state.toolsFavourites,
+          state.toolsFavouritesUpdatedAt ?? 0,
+          tool?.favourites,
+          tool?.favourites_updated_at,
+        );
+        const toolsFavourites = fav.favourites;
 
         // Merge profile
         const profile = data.profile;
@@ -98,6 +105,7 @@ export default function useSupabaseSync() {
           courseTestProgress,
           studyTime,
           toolsFavourites,
+          toolsFavouritesUpdatedAt: fav.updatedAt,
           ...profileUpdates,
         });
       } catch {
@@ -137,6 +145,7 @@ export default function useSupabaseSync() {
           completedModules: s.completedModules,
           studyTime: s.studyTime,
           toolsFavourites: s.toolsFavourites,
+          toolsFavouritesUpdatedAt: s.toolsFavouritesUpdatedAt,
           toolsSettings: {
             query: s.toolsQuery,
             categories: s.toolsCategories,
