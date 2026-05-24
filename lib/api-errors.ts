@@ -50,6 +50,7 @@ export const ERR = {
   invalid_input: 'invalid-input',
   not_found: 'not-found',
   conflict: 'conflict',
+  published_immutable: 'published-immutable',
 
   // AI
   output_blocked: 'output-blocked',

@@ -78,6 +78,14 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
     };
 
     if (action === 'save') {
+      // Defence-in-depth (also enforced by trg_tools_four_eye in
+      // supabase/p1-tools-four-eye.sql): never silently mutate a live
+      // published tool. To edit published content, move it back to review
+      // via submit-review, which un-publishes it and forces re-approval.
+      const { data: cur, error: curErr } = await sb
+        .from('tools').select('status').eq('id', id).maybeSingle();
+      if (curErr) return apiError(curErr.message, 400);
+      if (cur?.status === 'published') return apiError('published-immutable', 409);
       const { error } = await sb.from('tools').update({ ...patch, ...meta }).eq('id', id);
       if (error) return apiError(error.message, 400);
       return apiOk();
@@ -107,8 +115,12 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
       if (existing?.updated_by && existing.updated_by === user.id) {
         return apiError('four-eye-violation', 409);
       }
+      // SECURITY (stage-2 audit): do NOT spread `patch` here. Approve must
+      // publish EXACTLY the row that was reviewed — applying client-supplied
+      // `patch` at approve time let a reviewer inject unreviewed content into
+      // a published medical calculator. Content edits go through
+      // save / submit-review BEFORE approval.
       const { error } = await sb.from('tools').update({
-        ...patch,
         status: 'published',
         reviewed_by: user.id,
         reviewed_on: new Date().toISOString().slice(0, 10),
