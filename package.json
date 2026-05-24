@@ -22,7 +22,7 @@
     "validate:runners": "npx tsx scripts/smoke-runners.mjs",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "prepare": "husky",
+    "prepare": "husky && node scripts/build-curriculum-stats.mjs",
     "prebuild": "node scripts/sync-mediapipe.mjs && node scripts/sync-mediapipe-models.mjs && node scripts/build-curriculum-stats.mjs && node scripts/build-tool-meta.mjs && node scripts/build-content.mjs"
   },
   "lint-staged": {
