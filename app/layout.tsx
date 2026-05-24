@@ -18,6 +18,7 @@ import WebVitalsReporter from '@/components/WebVitalsReporter';
 // быть доступным с любой страницы. Сам компонент `'use client'`,
 // возвращает null до открытия — нет вклада в SSR-payload.
 import { CommandPalette } from '@/components/search/CommandPalette';
+import { jsonLdHtml } from '@/lib/json-ld';
 
 const APP_NAME = 'Bordik';
 const APP_TITLE = 'Bordik - Платформа медицинского обучения';
@@ -123,7 +124,7 @@ export default function RootLayout({
             exist; this root-level entry is the high-value baseline. */}
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          dangerouslySetInnerHTML={{ __html: jsonLdHtml({
             '@context': 'https://schema.org',
             '@type': 'EducationalOrganization',
             name: APP_NAME,

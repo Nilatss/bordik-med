@@ -1,4 +1,5 @@
 import { withSameOrigin, apiError, apiOk } from '@/lib/api-helpers';
+import { identifyAndLimit } from '@/lib/rate-limit';
 import { log } from '@/lib/log';
 
 /**
@@ -33,6 +34,18 @@ export async function POST(req: Request) {
   // P2-NEW-1 — origin guard (раньше open POST). withSameOrigin
   // не требует auth, но блокирует cross-origin запросы.
   return withSameOrigin(req, async () => {
+  // P2-NEW-1b — rate-limit the Telegram sink. This route is unauthenticated,
+  // so identifyAndLimit keys on the hashed client IP (30 req/min, shared via
+  // Upstash when configured; in-memory fallback otherwise). Without it a
+  // script could flood the feedback chat and burn the Bot API quota even
+  // though withSameOrigin already blocks naive cross-origin abuse.
+  const decision = await identifyAndLimit(req, null);
+  if (!decision.ok) {
+    const limited = apiError('rate-limited', 429, { retryAfter: decision.retryAfter });
+    for (const [k, v] of Object.entries(decision.headers)) limited.headers.set(k, v);
+    return limited;
+  }
+
   const TOKEN = process.env.TELEGRAM_BOT_TOKEN;
   const CHAT  = process.env.TELEGRAM_CHAT_ID;
   if (!TOKEN || !CHAT) {

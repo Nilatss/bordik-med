@@ -19,6 +19,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { jsonLdHtml } from '@/lib/json-ld';
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') ?? 'https://bordik-med.vercel.app';
 
@@ -255,7 +256,7 @@ export default async function NeonatologyArticlePage({ params }: PageProps) {
     >
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdHtml(jsonLd) }}
       />
 
       <nav style={{ marginBottom: 24, fontSize: 13 }}>
