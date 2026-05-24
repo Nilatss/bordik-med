@@ -1,4 +1,5 @@
 import { withAuthedSupabase, parseJsonBody, apiError, apiOk } from '@/lib/api-helpers';
+import { identifyAndLimit } from '@/lib/rate-limit';
 import { log } from '@/lib/log';
 
 /**
@@ -25,6 +26,18 @@ export const dynamic = 'force-dynamic';
 export async function POST(req: Request) {
   return withAuthedSupabase(req, async (sb, user) => {
     if (!user.email) return apiError('bad-input', 400, { reason: 'no-email' });
+
+    // Rate-limit OTP-email sends per authenticated user so a client can't
+    // spam the mailbox / burn the Supabase+Resend email quota. Supabase
+    // enforces its own ~1/60s OTP limit; this is defence-in-depth at our
+    // layer (a real user never requests account deletion 60x/min, so the
+    // per-user bucket never trips legitimately).
+    const decision = await identifyAndLimit(req, user.id);
+    if (!decision.ok) {
+      const limited = apiError('rate-limited', 429, { retryAfter: decision.retryAfter });
+      for (const [k, v] of Object.entries(decision.headers)) limited.headers.set(k, v);
+      return limited;
+    }
 
     // Trigger an OTP email - user clicks link, lands on /account/delete-confirm
     // which calls DELETE below. Supabase magic-link as confirmation channel.
