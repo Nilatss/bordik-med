@@ -14,6 +14,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Metadata } from 'next';
 import Icd10Lookup from '@/components/icd10/Icd10Lookup';
+import { jsonLdHtml } from '@/lib/json-ld';
 
 interface Chapter {
   id: string;
@@ -85,7 +86,7 @@ export default function Icd10Page() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdHtml(jsonLd) }}
       />
       <Icd10Lookup
         chapters={bank.chapters}

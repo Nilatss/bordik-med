@@ -33,6 +33,7 @@ import { join } from 'node:path';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import RelatedLinks from '@/components/tools/RelatedLinks';
+import { jsonLdHtml } from '@/lib/json-ld';
 
 interface ToolMeta {
   id: string;
@@ -245,7 +246,7 @@ export default async function ToolLandingPage({ params }: PageProps) {
     >
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdHtml(jsonLd) }}
       />
       <nav style={{ marginBottom: 24, fontSize: 13 }}>
         <a href="/" style={{ color: '#6B7280', textDecoration: 'none' }}>← Все инструменты</a>

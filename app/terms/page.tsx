@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { jsonLdHtml } from '@/lib/json-ld';
 
 /**
  * /terms — Условия использования Bordik Med.
@@ -66,7 +67,7 @@ export default function TermsPage() {
 
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        dangerouslySetInnerHTML={{ __html: jsonLdHtml({
           '@context': 'https://schema.org',
           '@type': 'BreadcrumbList',
           itemListElement: [

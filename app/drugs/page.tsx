@@ -12,6 +12,7 @@
  */
 import type { Metadata } from 'next';
 import DrugChecker from '@/components/drugs/DrugChecker';
+import { jsonLdHtml } from '@/lib/json-ld';
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') ?? 'https://bordik-med.vercel.app';
 
@@ -54,7 +55,7 @@ export default function DrugsPage() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdHtml(jsonLd) }}
       />
       <main className="max-w-[1040px] mx-auto pt-8 px-6 pb-20">
         <DrugChecker />

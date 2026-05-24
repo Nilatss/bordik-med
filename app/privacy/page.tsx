@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { jsonLdHtml } from '@/lib/json-ld';
 
 export const metadata: Metadata = {
   title: 'Политика конфиденциальности',
@@ -44,7 +45,7 @@ export default function PrivacyPage() {
           and improves "where am I" UX in SERP. */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        dangerouslySetInnerHTML={{ __html: jsonLdHtml({
           '@context': 'https://schema.org',
           '@type': 'BreadcrumbList',
           itemListElement: [
