@@ -46,10 +46,19 @@ const FORBIDDEN_TAGS = new Set([
 ]);
 
 const FORBIDDEN_ATTR_PREFIX = /^on/i;       // onclick, onload, onerror, onmouseover, …
+
+// Used for attribute values (href, src, xlink:href): full URI — the value
+// IS the URL, so `^` is correct (only dangerous at the start of a URL).
 const FORBIDDEN_PROTOCOL = /^\s*(javascript|vbscript|data|blob|file):/i;
-// `data:image/...` is technically OK in some markdown contexts but we
-// reject it here because Gemini has no business generating one.
-// `data:text/html,...` is the dangerous form anyway.
+
+// Used for plain-text scanning of the entire decoded output. We ONLY look
+// for javascript: and vbscript: because data:, blob:, file: appear in
+// normal medical sentences ("the data: analysis shows…") and would cause
+// false-positive blocks.  The `^` was previously applied here too, which
+// silently missed embedded URIs like "Learn more at javascript:void(0)" in
+// the middle of a response — the documented intent ("catches even when they
+// appear as plain text") was not met.
+const FORBIDDEN_PROTOCOL_IN_TEXT = /javascript:|vbscript:/i;
 
 const NAMED_ENTITIES: Record<string, string> = {
   amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ',
@@ -106,10 +115,14 @@ export function isOutputSafe(text: string): GuardVerdict {
   // 1 + 2: decode + de-control before any pattern match.
   const decoded = stripControl(decodeEntities(text));
 
-  // 3. Plain-text protocol detection — covers cases where the model
-  // emits `Click here: javascript:alert(1)` as raw text without any
-  // tag wrapping. We still want to reject it.
-  if (FORBIDDEN_PROTOCOL.test(decoded)) {
+  // 3. Plain-text protocol detection — catches `javascript:` / `vbscript:`
+  // anywhere in the decoded output, not just at the start.  This handles
+  // the case where the model embeds a dangerous URI in the middle of an
+  // otherwise normal sentence ("Check this: javascript:alert(1)").
+  // `data:`, `blob:`, `file:` are intentionally excluded from the global
+  // scan — they appear naturally in medical text and would cause false
+  // positives; the tree walk (step 4) handles them in attribute context.
+  if (FORBIDDEN_PROTOCOL_IN_TEXT.test(decoded)) {
     return { safe: false, reason: 'forbidden_protocol_in_text' };
   }
 
