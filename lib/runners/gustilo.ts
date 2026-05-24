@@ -20,7 +20,7 @@ const runner: ScoreTool = {
   ],
   bands: [
     {
-      min: 1, max: 2, label: 'I', color: '#22C55E',
+      min: 1, max: 1, label: 'I', color: '#22C55E',
       description: 'Низкая энергия, риск инфекции 0-2%.',
       details: 'Рана < 1 см, чистая, простой перелом. Обычно «inside-out» - костный фрагмент прокол изнутри.',
       actions: [
@@ -31,7 +31,7 @@ const runner: ScoreTool = {
       ],
     },
     {
-      min: 2, max: 3, label: 'II', color: '#84CC16',
+      min: 2, max: 2, label: 'II', color: '#84CC16',
       description: 'Умеренное повреждение, риск инфекции 2-10%.',
       details: 'Рана 1-10 см, без обширного размозжения или потери ткани. Умеренная контаминация.',
       actions: [
@@ -41,7 +41,7 @@ const runner: ScoreTool = {
       ],
     },
     {
-      min: 3, max: 4, label: 'IIIA', color: '#F59E0B',
+      min: 3, max: 3, label: 'IIIA', color: '#F59E0B',
       description: 'Высокоэнергетическая травма, риск инфекции ~7%.',
       details: 'Обширное повреждение/сегментарный перелом, но кость можно закрыть местными тканями.',
       actions: [
@@ -52,7 +52,7 @@ const runner: ScoreTool = {
       ],
     },
     {
-      min: 4, max: 5, label: 'IIIB', color: '#EF4444',
+      min: 4, max: 4, label: 'IIIB', color: '#EF4444',
       description: 'Риск инфекции 10-50%, часто нужен лоскут.',
       details: 'Периостальный отрыв, обнажение кости; требуется пластика мягких тканей (fasciocutaneous / muscle flap).',
       actions: [

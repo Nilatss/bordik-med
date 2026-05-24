@@ -19,7 +19,7 @@ const runner: ScoreTool = {
   ],
   bands: [
     {
-      min: 1, max: 2, label: 'Garden I', color: '#22C55E',
+      min: 1, max: 1, label: 'Garden I', color: '#22C55E',
       description: 'Неполный перелом, импакция в вальгусном положении. Стабилен, низкий риск аваскулярного некроза (~10%).',
       actions: [
         'Канюлированные винты (3 винта в перевёрнутом треугольнике)',
@@ -28,7 +28,7 @@ const runner: ScoreTool = {
       ],
     },
     {
-      min: 2, max: 3, label: 'Garden II', color: '#84CC16',
+      min: 2, max: 2, label: 'Garden II', color: '#84CC16',
       description: 'Полный перелом без смещения. Риск аваскулярного некроза ~10-15%.',
       actions: [
         'Канюлированные винты или динамический бедренный винт (DHS)',
@@ -36,7 +36,7 @@ const runner: ScoreTool = {
       ],
     },
     {
-      min: 3, max: 4, label: 'Garden III', color: '#F59E0B',
+      min: 3, max: 3, label: 'Garden III', color: '#F59E0B',
       description: 'Полный перелом с частичным смещением. Риск AVN 25-30%, несращения 15-25%.',
       details: 'У пожилых (> 65 лет) - артропластика предпочтительнее остеосинтеза.',
       actions: [

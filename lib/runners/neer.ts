@@ -20,7 +20,7 @@ const runner: ScoreTool = {
   ],
   bands: [
     {
-      min: 1, max: 2, label: '1-part', color: '#22C55E',
+      min: 1, max: 1, label: '1-part', color: '#22C55E',
       description: '80% всех переломов проксимального отдела плеча. Несмещённый/минимально смещённый.',
       actions: [
         'Консервативное ведение: слинг 2-3 нед + ранняя пассивная ROM',
@@ -29,7 +29,7 @@ const runner: ScoreTool = {
       ],
     },
     {
-      min: 2, max: 3, label: '2-part', color: '#84CC16',
+      min: 2, max: 2, label: '2-part', color: '#84CC16',
       description: 'Смещён один фрагмент. Чаще surgical neck или greater tuberosity.',
       actions: [
         'Хирургический шеечный 2-part: ORIF с пластиной/винтами или intramedullary nail',
@@ -38,7 +38,7 @@ const runner: ScoreTool = {
       ],
     },
     {
-      min: 3, max: 4, label: '3-part', color: '#F59E0B',
+      min: 3, max: 3, label: '3-part', color: '#F59E0B',
       description: 'Два смещённых фрагмента. Повышенный риск аваскулярного некроза головки (~25%).',
       actions: [
         'ORIF фиксированной угловой пластиной (locking plate)',
