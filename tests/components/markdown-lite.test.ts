@@ -8,7 +8,16 @@
  * converts these into block structures.
  */
 import { describe, it, expect } from 'vitest';
-import { parseMarkdownLite } from '@/components/ui/MarkdownLite';
+import { createElement, Fragment } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { parseMarkdownLite, normalizeDashes, renderInlineMd } from '@/components/ui/MarkdownLite';
+
+// Unicode dash/minus built via fromCharCode so this source stays ASCII.
+const MINUS = String.fromCharCode(0x2212);
+const ENDASH = String.fromCharCode(0x2013);
+const EMDASH = String.fromCharCode(0x2014);
+const renderInline = (s: string) =>
+  renderToStaticMarkup(createElement(Fragment, null, renderInlineMd(s)));
 
 describe('parseMarkdownLite', () => {
   it('parses ### h3 headings into h3 block', () => {
@@ -79,5 +88,41 @@ describe('parseMarkdownLite', () => {
     const blocks = parseMarkdownLite(md);
     // Expect: h3 (### heading), list, h3, table
     expect(blocks.map((b) => b.kind)).toEqual(['h3', 'list', 'h3', 'table']);
+  });
+});
+
+describe('normalizeDashes', () => {
+  it('collapses a long dash between words to a spaced hyphen', () => {
+    expect(normalizeDashes(`schema ${EMDASH} value`)).toBe('schema - value');
+  });
+
+  it('keeps a numeric range tight', () => {
+    expect(normalizeDashes(`7,35${ENDASH}7,45`)).toBe('7,35-7,45');
+  });
+
+  it('renders a unary minus as a tight negative, not a spaced dash', () => {
+    expect(normalizeDashes(`NFS = ${MINUS}1,675`)).toBe('NFS = -1,675');
+    expect(normalizeDashes(`BE: ${MINUS}5`)).toBe('BE: -5');
+    expect(normalizeDashes(`(${MINUS}3)`)).toBe('(-3)');
+  });
+
+  it('leaves binary subtraction spaced', () => {
+    expect(normalizeDashes(`age ${MINUS} 0,013`)).toBe('age - 0,013');
+  });
+});
+
+describe('renderInlineMd italic flanking', () => {
+  it('does NOT italicise a multiplication between numbers', () => {
+    expect(renderInline('5*10^9/l leukocytes')).not.toContain('<em');
+    expect(renderInline('2 * 3 = 6')).not.toContain('<em');
+  });
+
+  it('still italicises *word*', () => {
+    expect(renderInline('this is *important* text')).toContain('<em');
+  });
+
+  it('still renders **bold** and `code`', () => {
+    expect(renderInline('this is **important**')).toContain('<strong');
+    expect(renderInline('value `x`')).toContain('<code');
   });
 });
