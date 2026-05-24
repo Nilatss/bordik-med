@@ -12,8 +12,13 @@
  *     (smaller blast radius, no third-party CDN trust needed).
  *   - Same-origin fetch ⇒ Service Worker can cache it offline without
  *     extra opaque-response handling.
- *   - integrity.json gives us a ground-truth checksum we can verify at
- *     load time as defence-in-depth (see lib/proctoring/loader.ts).
+ *   - integrity.json records the sha384 of every WASM file we ship: a
+ *     build-time MANIFEST for audit + detecting unexpected version drift
+ *     across builds. NOTE: it is NOT verified at runtime today —
+ *     MediaPipe's FilesetResolver fetches the .wasm internally, so there
+ *     is no SRI hook. Treat it as a forensic record, not an enforced
+ *     control. A real load-time check would have to fetch+digest each
+ *     asset and hand MediaPipe a verified blob URL (not yet implemented).
  *
  * The WASM blobs are NOT committed to git (see .gitignore); they are
  * regenerated from node_modules on every install / build.

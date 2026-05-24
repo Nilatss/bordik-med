@@ -163,8 +163,9 @@ const nextConfig: NextConfig = {
       // P1-SEC-2 — MediaPipe WASM self-hosted under /mediapipe/wasm.
       // Files are versioned by the package version we bake into the
       // build artifact, so they're effectively immutable and can be
-      // cached aggressively. Hashes in /mediapipe/wasm/integrity.json
-      // give us a verifiable supply-chain pin.
+      // cached aggressively. /mediapipe/wasm/integrity.json records the
+      // sha384 of each shipped file as a build-time manifest (audit /
+      // version-drift); it is NOT enforced at runtime (no SRI hook).
       {
         source: '/mediapipe/:path*',
         headers: [

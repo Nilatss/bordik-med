@@ -102,7 +102,8 @@ const serwist = new Serwist({
       }),
     },
     // ── Self-hosted MediaPipe WASM. CacheFirst forever (versioned via
-    // package + sha-pinned by /mediapipe/wasm/integrity.json).
+    // package; integrity.json is a build-time hash manifest, NOT a
+    // runtime-enforced pin — see scripts/sync-mediapipe.mjs).
     {
       matcher: ({ url, sameOrigin }) => sameOrigin && url.pathname.startsWith('/mediapipe/'),
       handler: new CacheFirst({
