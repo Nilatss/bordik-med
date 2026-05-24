@@ -62,6 +62,7 @@ export interface AppState {
   toolsScrollIndex: number;   // Virtuoso startIndex used on re-mount
   toolsScrollOffset: number;  // px offset within that row
   toolsFavourites: string[];  // list of tool ids
+  toolsFavouritesUpdatedAt: number; // ms epoch of last favourites change (cross-device LWW sync)
   /** Per-tool open count — used by stats page to surface kind breakdown */
   toolUsage: Record<string, number>;
   /** Recent tool IDs in MRU order (most recently used first), capped to 10.
@@ -263,6 +264,7 @@ export const useAppStore = create<AppState>()(
       toolsScrollIndex: 0,
       toolsScrollOffset: 0,
       toolsFavourites: [],
+      toolsFavouritesUpdatedAt: 0,
       toolUsage: {},
       recentToolIds: [],
       patientContext: { weightG: 0, gaWeeks: 0, postnatalDay: 0 },
@@ -278,7 +280,7 @@ export const useAppStore = create<AppState>()(
       toggleFavouriteTool: (id) => {
         const favs = get().toolsFavourites;
         const next = favs.includes(id) ? favs.filter((x) => x !== id) : [...favs, id];
-        set({ toolsFavourites: next });
+        set({ toolsFavourites: next, toolsFavouritesUpdatedAt: Date.now() });
       },
 
       // Switch to a course view — also clears other top-level view flags so
@@ -509,7 +511,7 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: 'bordik-progress',
-      version: 3,
+      version: 4,
       // Hardened migrate: tolerant of corrupt or attacker-tampered
       // localStorage. We never trust persisted JSON blindly - every
       // top-level key is type-guarded, anything failing the guard is
@@ -564,6 +566,13 @@ export const useAppStore = create<AppState>()(
         if (isStrArr(raw.toolsCountries))   safe.toolsCountries = raw.toolsCountries;
         if (typeof raw.toolsOnlyAvailable === 'boolean') safe.toolsOnlyAvailable = raw.toolsOnlyAvailable;
         if (isStrArr(raw.toolsFavourites))  safe.toolsFavourites = raw.toolsFavourites;
+        // Favourites LWW timestamp: keep if present, else default to now so an
+        // existing device's local favourites win the first sync (never silently
+        // replaced by an older server set during rollout of this feature).
+        safe.toolsFavouritesUpdatedAt =
+          typeof raw.toolsFavouritesUpdatedAt === 'number' && Number.isFinite(raw.toolsFavouritesUpdatedAt)
+            ? raw.toolsFavouritesUpdatedAt
+            : Date.now();
         if (isObj(raw.toolUsage))           safe.toolUsage = raw.toolUsage;
         if (isStrArr(raw.recentToolIds))    safe.recentToolIds = raw.recentToolIds.slice(0, 10);
 
@@ -610,6 +619,7 @@ export const useAppStore = create<AppState>()(
         toolsCountries: state.toolsCountries,
         toolsOnlyAvailable: state.toolsOnlyAvailable,
         toolsFavourites: state.toolsFavourites,
+        toolsFavouritesUpdatedAt: state.toolsFavouritesUpdatedAt,
         toolUsage: state.toolUsage,
         recentToolIds: state.recentToolIds,
         // Patient context — persists weight/GA/postnatal day for the current
