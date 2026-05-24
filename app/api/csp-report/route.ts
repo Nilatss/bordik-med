@@ -9,10 +9,17 @@
  *   1. Sanitised + length-capped (defends against an attacker stuffing
  *      megabytes of garbage into log fields).
  *   2. Logged to console (Vercel Runtime Logs picks it up).
- *   3. Captured in Sentry as a `warning` event so violations surface in
- *      the Sentry dashboard alongside JS errors. Tags: `csp.directive`,
- *      `csp.disposition`, `csp.blocked-host`, `csp.suspicious`. Filter
- *      by these in Sentry to triage which CSP directive needs widening.
+ *   3. Captured in Sentry with a structured severity ladder so the
+ *      dashboard stays signal-rich as traffic grows:
+ *        - `error`   real injection attempt (looksSuspicious)
+ *        - `info`    known-benign noise — browser-extension / browser-
+ *                    chrome injected scripts that no first-party CSP can
+ *                    allow (looksKnownBenign); tagged `csp.known-benign`
+ *        - `warning` a genuine violation worth triaging
+ *      Tags: `csp.directive`, `csp.disposition`, `csp.blocked-host`,
+ *      `csp.suspicious`, `csp.known-benign`. Filter by these in Sentry to
+ *      triage which CSP directive needs widening (and to hide the
+ *      extension noise behind `csp.known-benign:no`).
  *
  * Never reflect untrusted data back to the caller — return 204
  * unconditionally regardless of report content.
@@ -23,6 +30,7 @@
 import { NextResponse } from 'next/server';
 import * as Sentry from '@sentry/nextjs';
 import { makeRateLimiter, identifyRequest } from '@/lib/rate-limit';
+import { classifyDirective, severityFor } from '@/lib/csp-report-classify';
 
 export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
@@ -93,32 +101,8 @@ export async function POST(req: Request) {
   return new NextResponse(null, { status: 204 });
 }
 
-/**
- * Bucket the directive into a short, stable tag so the Sentry "Issues"
- * view groups violations by their actionable type rather than fanning
- * out one issue per `document-uri`.
- */
-function classifyDirective(violated: string, effective: string): string {
-  const d = effective || violated;
-  // The directive value usually looks like "script-src 'self' ..." — we
-  // just want the first token.
-  const head = d.split(/\s+/)[0]?.toLowerCase() ?? 'unknown';
-  return head || 'unknown';
-}
-
-/**
- * Heuristic for "this looks like a real attack, not a misconfigured
- * allowlist". Inline-script violations with a non-empty
- * `script-sample`, or blocked-uri pointing at a script with the word
- * `eval` / `javascript:` / `data:` lift the severity.
- */
-function looksSuspicious(safe: { blocked: string; sample: string; violated: string }): boolean {
-  const u = safe.blocked.toLowerCase();
-  if (u.startsWith('javascript:') || u.startsWith('data:text/html')) return true;
-  if (u === 'inline' && /eval|new Function|atob/i.test(safe.sample)) return true;
-  if (/script-src/i.test(safe.violated) && safe.sample.length > 0) return true;
-  return false;
-}
+// classifyDirective / looksSuspicious / severityFor live in
+// lib/csp-report-classify.ts (pure + unit-tested).
 
 function captureToSentry(safe: {
   doc: string; violated: string; effective: string;
@@ -126,7 +110,12 @@ function captureToSentry(safe: {
   sample: string; disp?: string | undefined;
 }) {
   const directive = classifyDirective(safe.violated, safe.effective);
-  const suspicious = looksSuspicious(safe);
+  // Noise filter: a structured severity ladder. Real injection attempts
+  // → `error`; known-benign browser-extension / browser-chrome injections
+  // → `info` (kept in Sentry for completeness but demoted so the warning
+  // stream stays signal-rich as real traffic grows); everything else →
+  // `warning`. Tagged `csp.known-benign` so the dashboard can filter.
+  const { level, suspicious, benign } = severityFor(safe);
   // The blocked-uri host is a stable grouping signal — different
   // sub-paths on the same origin all collapse into one issue.
   let blockedHost = '';
@@ -136,11 +125,12 @@ function captureToSentry(safe: {
   const message = `CSP ${safe.disp ?? 'violation'}: ${directive} blocked ${blockedHost || safe.blocked.slice(0, 64) || 'inline'}`;
 
   Sentry.captureMessage(message, {
-    level: suspicious ? 'error' : 'warning',
+    level,
     tags: {
       'csp.directive': directive,
       'csp.disposition': safe.disp ?? 'unknown',
       'csp.suspicious': suspicious ? 'yes' : 'no',
+      'csp.known-benign': benign ? 'yes' : 'no',
       'csp.blocked-host': blockedHost,
     },
     extra: {
@@ -153,8 +143,12 @@ function captureToSentry(safe: {
       scriptSample: safe.sample,
     },
     // Stable fingerprint so identical violations from different users
-    // land in one Sentry issue instead of fanning out per-session.
-    fingerprint: ['csp', directive, blockedHost],
+    // land in one Sentry issue instead of fanning out per-session. All
+    // known-benign noise collapses into a single per-directive issue
+    // (extension ids vary per user, so we drop blockedHost for those).
+    fingerprint: benign
+      ? ['csp', 'known-benign', directive]
+      : ['csp', directive, blockedHost],
   });
 }
 
