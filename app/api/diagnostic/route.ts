@@ -417,7 +417,7 @@ function sanitizeUserField(s: unknown, maxLen = 1000): string {
     .replace(/<\/?system>/gi, '[tag-stripped]')
     // Control chars (включая null, escape, backspace) — стрипаем
     // (часто используются для obfuscation injection-payload'ов).
-    // eslint-disable-next-line no-control-regex
+     
     .replace(/[\x00-\x1F\x7F]/g, ' ')
     .slice(0, maxLen)
     .trim();
@@ -746,12 +746,22 @@ async function postImpl(req: Request): Promise<Response> {
       }
       const validIds = new Set(modules.map((m) => m.id));
       const cleanIds = f.recommendedModuleIds.filter((id) => validIds.has(id)).slice(0, 6);
+      const strengths = Array.isArray(f.strengths) ? f.strengths.slice(0, 5) : [];
+      const weaknesses = Array.isArray(f.weaknesses) ? f.weaknesses.slice(0, 5) : [];
+      // Defence-in-depth: these AI free-form strings are rendered client-side,
+      // so screen them through the same output-guard used for bank questions.
+      // Any hit → safe rule-based synthesis instead of the model output.
+      const freeText = [f.profession, f.professionRationale ?? '', f.studyPlan ?? '', ...strengths, ...weaknesses];
+      if (freeText.some((t) => !isOutputSafeStrict(String(t)).safe)) {
+        log.warn({ event: 'finalize_output_blocked_falling_back' });
+        return apiOk(ruleBasedFinalize(history, modules));
+      }
       return apiOk({
         profession: f.profession,
         professionRationale: f.professionRationale ?? '',
         level: (f.level === 'basic' || f.level === 'advanced') ? f.level : 'intermediate',
-        strengths: Array.isArray(f.strengths) ? f.strengths.slice(0, 5) : [],
-        weaknesses: Array.isArray(f.weaknesses) ? f.weaknesses.slice(0, 5) : [],
+        strengths,
+        weaknesses,
         recommendedModuleIds: cleanIds,
         studyPlan: f.studyPlan ?? '',
       });
@@ -808,18 +818,27 @@ function streamFinalize(history: Turn[], modules: ModuleSummary[]): Response {
         } else {
           const validIds = new Set(modules.map((m) => m.id));
           const cleanIds = f.recommendedModuleIds.filter((id) => validIds.has(id)).slice(0, 6);
-          emit({
-            type: 'done',
-            result: {
-              profession: f.profession,
-              professionRationale: f.professionRationale ?? '',
-              level: (f.level === 'basic' || f.level === 'advanced') ? f.level : 'intermediate',
-              strengths: Array.isArray(f.strengths) ? f.strengths.slice(0, 5) : [],
-              weaknesses: Array.isArray(f.weaknesses) ? f.weaknesses.slice(0, 5) : [],
-              recommendedModuleIds: cleanIds,
-              studyPlan: f.studyPlan ?? '',
-            },
-          });
+          const strengths = Array.isArray(f.strengths) ? f.strengths.slice(0, 5) : [];
+          const weaknesses = Array.isArray(f.weaknesses) ? f.weaknesses.slice(0, 5) : [];
+          // Same output-guard as the non-streaming branch before we emit.
+          const freeText = [f.profession, f.professionRationale ?? '', f.studyPlan ?? '', ...strengths, ...weaknesses];
+          if (freeText.some((t) => !isOutputSafeStrict(String(t)).safe)) {
+            log.warn({ event: 'finalize_stream_output_blocked_falling_back' });
+            emit({ type: 'done', result: ruleBasedFinalize(history, modules) });
+          } else {
+            emit({
+              type: 'done',
+              result: {
+                profession: f.profession,
+                professionRationale: f.professionRationale ?? '',
+                level: (f.level === 'basic' || f.level === 'advanced') ? f.level : 'intermediate',
+                strengths,
+                weaknesses,
+                recommendedModuleIds: cleanIds,
+                studyPlan: f.studyPlan ?? '',
+              },
+            });
+          }
         }
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
