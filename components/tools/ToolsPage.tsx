@@ -10,7 +10,8 @@ import { Virtuoso } from 'react-virtuoso';
 // once when its row mounts; subsequent renders are a no-op.
 import { motion, AnimatePresence } from 'framer-motion';
 import { useT } from '@/lib/i18n';
-import { useCatalog } from '@/lib/catalog-client';
+import { useCatalogState } from '@/lib/catalog-client';
+import { AsyncErrorCard } from '@/components/ui/AsyncErrorCard';
 import {
   buildCategoryCounts,
   buildSubcategoryCounts,
@@ -162,8 +163,12 @@ export default function ToolsPage() {
 
   // Catalog arrives async via fetch /catalog.meta.json. Until it loads we
   // render skeleton placeholders below; treat as empty array for filter
-  // pipeline so all hooks stay mounted in stable order.
-  const tools = useCatalog() ?? EMPTY_CATALOG;
+  // pipeline so all hooks stay mounted in stable order. On failure (Cache
+  // Storage blocked in private mode / low-memory device) `catalog.status`
+  // becomes 'error' and we render a visible retry card instead of a
+  // forever-blank list (offline-first error boundary).
+  const catalog = useCatalogState();
+  const tools = catalog.status === 'ready' ? catalog.data : EMPTY_CATALOG;
 
   // Sort keys are derived from the live catalog (used to be module-scope).
   const sortKeys = useMemo(() => {
@@ -472,13 +477,24 @@ export default function ToolsPage() {
       {/* Виджет «Недавние» — top-5 последних использованных инструментов.
           Стоит после поиска и фильтр-бара (по фидбеку), невидим до
           первого open. P0-A6 из аудита. */}
-      <RecentToolsWidget catalog={tools} onOpen={openToolAction} />
-
-      {rows.length === 0 ? (
-        <div className="py-[60px] px-5 text-center font-[var(--font-body)] text-sm text-[#9CA3AF]">
-          {t('tools.noResults')}
-        </div>
+      {catalog.status === 'error' ? (
+        // Offline-first error boundary: Cache Storage / fetch failed (private
+        // mode, low-memory device). Show a visible retry instead of a blank
+        // tools list — critical for field medics on constrained hardware.
+        <AsyncErrorCard
+          title="Не удалось загрузить каталог инструментов"
+          onRetry={catalog.retry}
+        />
+      ) : rows.length === 0 ? (
+        <>
+          <RecentToolsWidget catalog={tools} onOpen={openToolAction} />
+          <div className="py-[60px] px-5 text-center font-[var(--font-body)] text-sm text-[#9CA3AF]">
+            {t('tools.noResults')}
+          </div>
+        </>
       ) : (
+        <>
+        <RecentToolsWidget catalog={tools} onOpen={openToolAction} />
         <Virtuoso
           // The real scroll container is <main> in app/page.tsx. Using
           // customScrollParent rather than useWindowScroll means Virtuoso
@@ -500,6 +516,7 @@ export default function ToolsPage() {
           computeItemKey={virtuosoComputeKey}
           itemContent={virtuosoItemContent}
         />
+        </>
       )}
       {/* Bulk-cache modal mounted at the bottom; rendered via portal-like
           fixed-position div by the component itself. */}

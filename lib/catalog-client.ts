@@ -20,6 +20,7 @@
  */
 
 import { useEffect, useState } from 'react';
+import { useAsyncInit, type AsyncInitState } from './use-async-init';
 import type { CatalogMetaItem, ToolDetail, ContentManifest } from './schemas/catalog';
 
 export type { CatalogMetaItem, ToolDetail, ContentManifest };
@@ -79,15 +80,23 @@ export function getManifest(): Promise<ContentManifest> {
 
 /** React hook: subscribes to the catalog. Returns `null` until the first
  *  fetch resolves, after which it returns the cached array on every render
- *  (no more network). The component re-renders once on data arrival. */
+ *  (no more network). The component re-renders once on data arrival.
+ *
+ *  Back-compat shim — returns `null` on both loading AND error. Prefer
+ *  `useCatalogState()` for new code so a failed fetch (Cache Storage
+ *  rejecting in private mode / low-memory Android) can surface a visible
+ *  retry instead of a permanently-blank list. */
 export function useCatalog(): readonly CatalogMetaItem[] | null {
-  const [data, setData] = useState<readonly CatalogMetaItem[] | null>(null);
-  useEffect(() => {
-    let cancelled = false;
-    getCatalog().then((rows) => { if (!cancelled) setData(rows); }).catch(() => {});
-    return () => { cancelled = true; };
-  }, []);
-  return data;
+  const s = useCatalogState();
+  return s.status === 'ready' ? s.data : null;
+}
+
+/** React hook: catalog with an explicit loading/ready/error status + retry.
+ *  Wraps `getCatalog()` in `useAsyncInit` so the /tools page can render a
+ *  visible "couldn't load, retry" card when the underlying fetch / Cache
+ *  Storage read fails — the offline-first error-boundary pattern. */
+export function useCatalogState(): AsyncInitState<readonly CatalogMetaItem[]> {
+  return useAsyncInit(getCatalog);
 }
 
 /** React hook: per-tool detail. Returns `null` while loading, an object on
