@@ -40,6 +40,13 @@ export default function useSupabaseSync() {
     const pull = async () => {
       const { data: { session } } = await sb.auth.getSession();
       if (!session) return;
+      // Authenticated → allow pushes from here on, even if the pull below
+      // fails. The server merge is additive (grow-only), so pushing local
+      // state after a failed pull can't destroy server progress. Gating on a
+      // SUCCESSFUL pull meant a single failed GET on a flaky network silently
+      // dropped the whole session's progress — it never even reached the
+      // enqueue path (stage-3 bug audit).
+      pulled.current = true;
       try {
         const res = await fetch('/api/sync', { method: 'GET' });
         if (!res.ok) return;
@@ -93,9 +100,8 @@ export default function useSupabaseSync() {
           toolsFavourites,
           ...profileUpdates,
         });
-        pulled.current = true;
       } catch {
-        // network / parse error — keep local-only mode
+        // network / parse error — keep local-only mode (pushes still allowed)
       }
     };
 

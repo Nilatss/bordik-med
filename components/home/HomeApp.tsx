@@ -481,7 +481,11 @@ export default function HomeApp() {
           {view === 'course' && (
             <div>
               <BackButton onClick={closeCourse} label="Назад" />
-              <CoursePage courseId={currentCourseId!} />
+              {/* key forces a remount on course switch (e.g. Cmd+K jump
+                  between courses) so mount-only state in InlineQuiz /
+                  TabbedLessonViewer (answers, shuffled options, active tab)
+                  can't leak from the previous course. */}
+              <CoursePage key={currentCourseId} courseId={currentCourseId!} />
             </div>
           )}
 
