@@ -249,6 +249,15 @@ import epds       from '@/lib/runners/epds';
 import ottawaAnk  from '@/lib/runners/ottawa-ankle';
 // ADHD
 import vanderbilt from '@/lib/runners/vanderbilt';
+// Orthopaedic / fracture classifiers (single-select grade → single-point band)
+import garden       from '@/lib/runners/garden';
+import weber        from '@/lib/runners/weber';
+import neer         from '@/lib/runners/neer';
+import schatzker    from '@/lib/runners/schatzker';
+import gustilo      from '@/lib/runners/gustilo';
+import rockwood     from '@/lib/runners/rockwood';
+import salterHarris from '@/lib/runners/salter-harris';
+import tscherne     from '@/lib/runners/tscherne';
 
 interface ScoreRunner { bands: ScoreBand[]; maxScore: number }
 
@@ -479,6 +488,17 @@ const SCORE_TOOLS: Array<[string, ScoreRunner]> = [
   ['ottawa-ankle', ottawaAnk as unknown as ScoreRunner],
   // ADHD
   ['vanderbilt', vanderbilt as unknown as ScoreRunner],
+  // Orthopaedic / fracture classifiers — single-select grade maps to a
+  // single-point band. Added after the stage-3 bug audit found overlapping
+  // bands (first-match-wins returned the lower grade → clinical undertriage).
+  ['garden',        garden       as unknown as ScoreRunner],
+  ['weber',         weber        as unknown as ScoreRunner],
+  ['neer',          neer         as unknown as ScoreRunner],
+  ['schatzker',     schatzker    as unknown as ScoreRunner],
+  ['gustilo',       gustilo      as unknown as ScoreRunner],
+  ['rockwood',      rockwood     as unknown as ScoreRunner],
+  ['salter-harris', salterHarris as unknown as ScoreRunner],
+  ['tscherne',      tscherne     as unknown as ScoreRunner],
 ];
 
 describe('score-band integrity', () => {

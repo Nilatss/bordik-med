@@ -21,7 +21,7 @@ const runner: ScoreTool = {
   ],
   bands: [
     {
-      min: 1, max: 2, label: 'Schatzker I', color: '#22C55E',
+      min: 1, max: 1, label: 'Schatzker I', color: '#22C55E',
       description: 'Раскол латерального плато без депрессии. Молодые пациенты (крепкая субхондральная кость).',
       actions: [
         'Если смещение < 4 мм - консервативно (гипс, non-weight-bearing 6 нед)',
@@ -29,7 +29,7 @@ const runner: ScoreTool = {
       ],
     },
     {
-      min: 2, max: 3, label: 'Schatzker II', color: '#84CC16',
+      min: 2, max: 2, label: 'Schatzker II', color: '#84CC16',
       description: 'Раскол + депрессия суставной поверхности. Самый частый тип (~25%).',
       actions: [
         'ORIF: элевация депрессированного фрагмента + костный трансплантат / заменитель + опорная пластина',
@@ -37,7 +37,7 @@ const runner: ScoreTool = {
       ],
     },
     {
-      min: 3, max: 4, label: 'Schatzker III', color: '#F59E0B',
+      min: 3, max: 3, label: 'Schatzker III', color: '#F59E0B',
       description: 'Центральная депрессия плато без cortical split. Чаще у пожилых (остеопороз).',
       actions: [
         'Консервативно при депрессии < 5 мм и стабильном связочном аппарате',
@@ -45,7 +45,7 @@ const runner: ScoreTool = {
       ],
     },
     {
-      min: 4, max: 5, label: 'Schatzker IV', color: '#EF4444',
+      min: 4, max: 4, label: 'Schatzker IV', color: '#EF4444',
       description: 'Медиальный мыщелок. High-energy, часто ассоциирован с knee dislocation и сосудисто-нервным повреждением.',
       details: 'Высокий риск повреждения подколенной артерии и малоберцового нерва.',
       actions: [
@@ -55,7 +55,7 @@ const runner: ScoreTool = {
       ],
     },
     {
-      min: 5, max: 6, label: 'Schatzker V', color: '#EF4444',
+      min: 5, max: 5, label: 'Schatzker V', color: '#EF4444',
       description: 'Бикондилярный перелом с сохранной связью метафиза и диафиза.',
       actions: [
         'Dual-plate ORIF (медиальная + латеральная пластины)',

@@ -18,7 +18,7 @@ const runner: ScoreTool = {
   ],
   bands: [
     {
-      min: 1, max: 2, label: 'Weber A', color: '#22C55E',
+      min: 1, max: 1, label: 'Weber A', color: '#22C55E',
       description: 'Перелом ниже синдесмоза. Синдесмоз интактен. Стабильный перелом.',
       details: 'Механизм: супинация-аддукция (Lauge-Hansen SA). Часто изолированный отрыв верхушки латеральной лодыжки.',
       actions: [
@@ -28,7 +28,7 @@ const runner: ScoreTool = {
       ],
     },
     {
-      min: 2, max: 3, label: 'Weber B', color: '#F59E0B',
+      min: 2, max: 2, label: 'Weber B', color: '#F59E0B',
       description: 'Перелом на уровне синдесмоза. Стабильность вариабельна - зависит от delatoid ligament и медиальной лодыжки.',
       details: 'Механизм: supination-external rotation (SER) - самый частый тип (~70% всех переломов лодыжки).',
       actions: [

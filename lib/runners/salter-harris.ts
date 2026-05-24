@@ -20,7 +20,7 @@ const runner: ScoreTool = {
   ],
   bands: [
     {
-      min: 1, max: 2, label: 'SH I - Slip', color: '#22C55E',
+      min: 1, max: 1, label: 'SH I - Slip', color: '#22C55E',
       description: 'Чистое отделение эпифиза от метафиза через зону провизорной кальцификации. ~6-8% всех физарных переломов.',
       details: 'Чаще у младенцев и маленьких детей. Частые локализации: дистальная лучевая, плюсневые, slipped capital femoral epiphysis (SCFE).',
       actions: [
@@ -30,7 +30,7 @@ const runner: ScoreTool = {
       ],
     },
     {
-      min: 2, max: 3, label: 'SH II - Above', color: '#84CC16',
+      min: 2, max: 2, label: 'SH II - Above', color: '#84CC16',
       description: 'Самый частый тип (~75%). Перелом идёт через физис и уходит в метафиз - треугольник Thurston-Holland.',
       details: 'Чаще в возрасте 10-16 лет. Типичная локализация - дистальная лучевая.',
       actions: [
@@ -40,7 +40,7 @@ const runner: ScoreTool = {
       ],
     },
     {
-      min: 3, max: 4, label: 'SH III - Lower', color: '#F59E0B',
+      min: 3, max: 3, label: 'SH III - Lower', color: '#F59E0B',
       description: '~10%. Внутрисуставной перелом через физис и эпифиз. Риск нарушения роста и артроза.',
       details: 'Tillaux fracture (дистальная б/б у подростков 12-15 лет) - классический пример.',
       actions: [
@@ -50,7 +50,7 @@ const runner: ScoreTool = {
       ],
     },
     {
-      min: 4, max: 5, label: 'SH IV - Through', color: '#EF4444',
+      min: 4, max: 4, label: 'SH IV - Through', color: '#EF4444',
       description: '~10%. Через все три слоя (метафиз → физис → эпифиз). Высокий риск формирования костного мостика и growth arrest.',
       details: 'Triplane fracture дистальной большеберцовой - вариант SH IV.',
       actions: [

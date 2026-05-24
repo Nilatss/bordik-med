@@ -21,7 +21,7 @@ const runner: ScoreTool = {
   ],
   bands: [
     {
-      min: 1, max: 2, label: 'Rockwood I', color: '#22C55E',
+      min: 1, max: 1, label: 'Rockwood I', color: '#22C55E',
       description: 'AC sprain. Связки AC и CC интактны, минимальная болезненность.',
       actions: [
         'Покой, лёд, НПВС, слинг 1-2 недели',
@@ -30,7 +30,7 @@ const runner: ScoreTool = {
       ],
     },
     {
-      min: 2, max: 3, label: 'Rockwood II', color: '#84CC16',
+      min: 2, max: 2, label: 'Rockwood II', color: '#84CC16',
       description: 'Разрыв AC-связок, CC растянуты. Подвывих < 25%.',
       actions: [
         'Консервативно: слинг 2-4 недели + ранняя ROM',
@@ -38,7 +38,7 @@ const runner: ScoreTool = {
       ],
     },
     {
-      min: 3, max: 4, label: 'Rockwood III', color: '#F59E0B',
+      min: 3, max: 3, label: 'Rockwood III', color: '#F59E0B',
       description: 'Полный разрыв AC и CC. Смещение 25-100% (в пределах удвоенного CC-distance).',
       details: 'Тактика остаётся спорной - большинство рекомендаций: консервативное начальное ведение с опцией операции при неуспехе через 3 мес.',
       actions: [
@@ -48,7 +48,7 @@ const runner: ScoreTool = {
       ],
     },
     {
-      min: 4, max: 5, label: 'Rockwood IV', color: '#EF4444',
+      min: 4, max: 4, label: 'Rockwood IV', color: '#EF4444',
       description: 'Заднее смещение дистального конца ключицы в трапецевидную мышцу. Палпируется сзади.',
       actions: [
         'Оперативное лечение - open reduction + CC-reconstruction',
@@ -56,7 +56,7 @@ const runner: ScoreTool = {
       ],
     },
     {
-      min: 5, max: 6, label: 'Rockwood V', color: '#EF4444',
+      min: 5, max: 5, label: 'Rockwood V', color: '#EF4444',
       description: 'Верхнее смещение > 100% нормы. Выраженная деформация, «tenting» кожи, угроза перфорации.',
       actions: [
         'Показано оперативное лечение',
