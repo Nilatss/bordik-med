@@ -109,7 +109,11 @@ const runner: CalculatorTool = {
     // Energy
     const protein_kcal = protein_g * 4;
     const lipid_kcal = lipid_g * 9;
-    const carbs_kcal = gir_today * 1.44 * weight_kg; // 1.44 = (60×24/1000)×4 for GIR mg/kg/min → kcal/kg/day
+    // GIR(mg/kg/min) × 1.44 = g/kg/day dextrose [(60×24)/1000]; × 3.4 kcal/g
+    // (dextrose monohydrate, cf. neo-gir.ts) × weight → kcal/day. The previous
+    // code dropped the 3.4 kcal/g factor, under-counting carb calories ~3.4×
+    // and falsely flagging total energy "below target".
+    const carbs_kcal = gir_today * 1.44 * 3.4 * weight_kg;
     const total_kcal = protein_kcal + lipid_kcal + carbs_kcal;
     const kcal_per_kg = total_kcal / weight_kg;
 
