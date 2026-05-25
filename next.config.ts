@@ -134,11 +134,13 @@ const nextConfig: NextConfig = {
   images: {
     formats: ['image/avif', 'image/webp'],
   },
-  // Source maps must be generated so Sentry's build plugin can upload them.
-  // The Sentry wrapper (`sourcemaps.deleteSourcemapsAfterUpload: true`) wipes
-  // them from the public bundle right after upload, so view-source on prod
-  // still shows minified code only — but Sentry stack traces stay readable.
-  productionBrowserSourceMaps: true,
+  // Source maps are generated ONLY when Sentry can actually upload + delete
+  // them (i.e. SENTRY_AUTH_TOKEN is present). The wrapper's
+  // `deleteSourcemapsAfterUpload: true` only runs as part of a successful
+  // upload — so if the token is missing (a fork, a misconfigured preview),
+  // emitting maps would leave readable .js.map files in the public bundle.
+  // Gating on the token keeps prod source private in that case.
+  productionBrowserSourceMaps: !!process.env.SENTRY_AUTH_TOKEN,
   // PWA / caching headers + global security baseline
   async headers() {
     return [
