@@ -29,7 +29,13 @@ import { FilterDropdown } from '@/components/tools/page/FilterDropdown';
 import EmojiOrFlag from '@/components/ui/EmojiOrFlag';
 import { PrintCardButton } from '@/components/ui/PrintCardButton';
 import { countryMatches, matchCountry } from '@/lib/tool-meta-helpers';
+import { RUNNER_IDS } from '@/lib/tool-meta-data';
 import type { FilterOption } from '@/lib/tools-page/types';
+
+// Set of implemented tool ids — used to filter out dangling
+// `related_calculators` references so an article never links to a /tools/:id
+// that 404s (some article banks reference calculators that don't exist yet).
+const VALID_TOOL_IDS: ReadonlySet<string> = new Set(RUNNER_IDS);
 
 interface Drug {
   id: string;
@@ -2551,13 +2557,18 @@ const ArticleCard = React.memo(function ArticleCard({
                 </p>
               )}
               <ArticleContent content={stripDuplicateArticleSections(article.content)} />
-              {article.related_calculators.length > 0 && (
+              {(() => {
+                // Only link calculators that actually exist — skip dangling
+                // ids so the chip never navigates to a /tools/:id 404.
+                const validCalcs = article.related_calculators.filter((id) => VALID_TOOL_IDS.has(id));
+                if (validCalcs.length === 0) return null;
+                return (
                 <div className="mt-[18px] pt-3.5 border-t border-[#E5E7EB]">
                   <div className="font-[var(--font-mono)] text-[11px] font-bold tracking-[0.06em] uppercase text-[#9CA3AF] mb-2">
                     Связанные калькуляторы
                   </div>
                   <ul className="m-0 p-0 list-none flex flex-wrap gap-1.5">
-                    {article.related_calculators.map((calcId) => (
+                    {validCalcs.map((calcId) => (
                       <li key={calcId}>
                         <a
                           href={`/tools/${calcId}`}
@@ -2569,7 +2580,8 @@ const ArticleCard = React.memo(function ArticleCard({
                     ))}
                   </ul>
                 </div>
-              )}
+                );
+              })()}
               {article.references.length > 0 && (
                 <div className="mt-[18px] pt-3.5 border-t border-[#E5E7EB]">
                   <div className="font-[var(--font-mono)] text-[11px] font-bold tracking-[0.06em] uppercase text-[#9CA3AF] mb-2">
@@ -2978,6 +2990,8 @@ const CLINICAL_TOPIC_LABELS: Record<string, string> = {
   metabolic: 'Метаболизм',
   hepatic: 'Гепатобилиарная',
   screening: 'Скрининг',
+  neonatal: 'Общая неонатология',
+  hematology: 'Гематология',
 };
 
 /** Russian labels for the 20 article `topic` keys used in

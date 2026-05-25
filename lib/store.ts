@@ -603,6 +603,12 @@ export const useAppStore = create<AppState>()(
           }
         }
 
+        // Diagnostic result — persisted in partialize, so it MUST be carried
+        // through migrate too. Without this it was silently dropped on every
+        // version bump (and re-persisted as null), wiping the user's saved
+        // 30-question diagnostic and forcing a retake.
+        if (isObj(raw.lastDiagnosticResult)) safe.lastDiagnosticResult = raw.lastDiagnosticResult;
+
         return safe as unknown as AppState;
       },
       partialize: (state) => ({

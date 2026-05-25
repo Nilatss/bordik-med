@@ -32,19 +32,30 @@ function lockoutKey(type: 'course' | 'module', a: string | number, b?: number): 
 
 function getLockout(key: string): number {
   if (typeof window === 'undefined') return 0;
-  const raw = window.localStorage.getItem(key);
-  if (!raw) return 0;
-  const until = Number(raw);
-  if (!Number.isFinite(until) || until <= Date.now()) {
-    window.localStorage.removeItem(key);
+  // localStorage access can THROW (private mode, sandboxed iframe, blocked
+  // storage). These helpers run during render, so an unguarded throw crashes
+  // the whole test panel — swallow and treat as "no lockout".
+  try {
+    const raw = window.localStorage.getItem(key);
+    if (!raw) return 0;
+    const until = Number(raw);
+    if (!Number.isFinite(until) || until <= Date.now()) {
+      window.localStorage.removeItem(key);
+      return 0;
+    }
+    return until;
+  } catch {
     return 0;
   }
-  return until;
 }
 
 function setLockout(key: string): number {
   const until = Date.now() + LOCKOUT_MS;
-  if (typeof window !== 'undefined') window.localStorage.setItem(key, String(until));
+  try {
+    if (typeof window !== 'undefined') window.localStorage.setItem(key, String(until));
+  } catch {
+    /* storage blocked — lockout just won't persist this session */
+  }
   return until;
 }
 
