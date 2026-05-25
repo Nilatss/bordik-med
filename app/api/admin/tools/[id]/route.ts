@@ -84,10 +84,10 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
       // via submit-review, which un-publishes it and forces re-approval.
       const { data: cur, error: curErr } = await sb
         .from('tools').select('status').eq('id', id).maybeSingle();
-      if (curErr) return apiError(curErr.message, 400);
+      if (curErr) { console.error('[admin/tools] db error:', curErr.message); return apiError('database-error', 400); }
       if (cur?.status === 'published') return apiError('published-immutable', 409);
       const { error } = await sb.from('tools').update({ ...patch, ...meta }).eq('id', id);
-      if (error) return apiError(error.message, 400);
+      if (error) { console.error('[admin/tools] db error:', error.message); return apiError('database-error', 400); }
       return apiOk();
     }
 
@@ -97,7 +97,7 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
         status: 'review',
         ...meta,
       }).eq('id', id);
-      if (error) return apiError(error.message, 400);
+      if (error) { console.error('[admin/tools] db error:', error.message); return apiError('database-error', 400); }
       return apiOk();
     }
 
@@ -111,7 +111,7 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
         .select('updated_by, created_by, version')
         .eq('id', id)
         .maybeSingle();
-      if (readErr) return apiError(readErr.message, 400);
+      if (readErr) { console.error('[admin/tools] db error:', readErr.message); return apiError('database-error', 400); }
       if (existing?.updated_by && existing.updated_by === user.id) {
         return apiError('four-eye-violation', 409);
       }
@@ -126,7 +126,7 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
         reviewed_on: new Date().toISOString().slice(0, 10),
         ...meta,
       }).eq('id', id);
-      if (error) return apiError(error.message, 400);
+      if (error) { console.error('[admin/tools] db error:', error.message); return apiError('database-error', 400); }
 
       const { data: snapshot } = await sb.from('tools').select('*').eq('id', id).maybeSingle();
       if (snapshot) {
@@ -151,7 +151,7 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
         status: 'archived',
         ...meta,
       }).eq('id', id);
-      if (error) return apiError(error.message, 400);
+      if (error) { console.error('[admin/tools] db error:', error.message); return apiError('database-error', 400); }
       return apiOk();
     }
 

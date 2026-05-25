@@ -241,11 +241,13 @@ export async function POST(req: Request) {
   }
 
     const results = await Promise.allSettled(tasks);
-    const errors = results
-      .filter((r): r is PromiseRejectedResult => r.status === 'rejected')
-      .map((r) => String(r.reason));
-    if (errors.length > 0) {
-      return apiError('internal-error', 500, { errors });
+    const rejected = results.filter((r): r is PromiseRejectedResult => r.status === 'rejected');
+    if (rejected.length > 0) {
+      // Log the raw reasons server-side for debugging, but do NOT return them
+      // to the client — PostgREST/driver messages leak schema details
+      // (table/column/constraint names) to any authenticated caller.
+      console.error('[sync] push partial failure', rejected.map((r) => String(r.reason)));
+      return apiError('internal-error', 500, { failed: rejected.length });
     }
 
     // Favourites LWW timestamp — written separately + tolerantly so a

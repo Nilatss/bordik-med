@@ -35,8 +35,6 @@ interface ReadyzResult {
   upstash: 'ok' | 'missing-config' | 'timeout' | 'error';
   upstashLatencyMs?: number;
   ts: number;
-  env: string;
-  sha: string | null;
   reason?: string;
 }
 
@@ -85,8 +83,10 @@ export async function GET(req: Request) {
     }
   }
 
+  // env is used only for the prod-vs-preview decision below — it is NOT
+  // returned in the body (avoid disclosing deployment env / commit sha to
+  // unauthenticated probes; /healthz was already stripped of these).
   const env = process.env.VERCEL_ENV ?? 'development';
-  const sha = process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7) ?? null;
   const ping = await pingUpstash();
 
   // В production отсутствие Upstash — критическая регрессия (rate-limit
@@ -105,8 +105,6 @@ export async function GET(req: Request) {
     ok,
     upstash: upstashStatus,
     ts: Date.now(),
-    env,
-    sha,
     ...(typeof ping.latencyMs === 'number' ? { upstashLatencyMs: ping.latencyMs } : {}),
     ...(ping.reason ? { reason: ping.reason } : {}),
   };
