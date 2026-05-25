@@ -35,7 +35,7 @@
     "@fontsource-variable/montserrat": "^5.2.8",
     "@mediapipe/tasks-vision": "^0.10.34",
     "@sentry/nextjs": "^10.51.0",
-    "@supabase/ssr": "^0.10.2",
+    "@supabase/ssr": "^0.10.3",
     "@supabase/supabase-js": "^2.104.1",
     "@tanstack/react-virtual": "^3.13.24",
     "@upstash/ratelimit": "^2.0.8",
