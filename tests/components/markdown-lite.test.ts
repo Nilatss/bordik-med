@@ -51,6 +51,20 @@ describe('parseMarkdownLite', () => {
     }
   });
 
+  it('strips trailing #s from an ATX-closed heading', () => {
+    const blocks = parseMarkdownLite('## Title ##');
+    expect(blocks[0]?.kind).toBe('h2');
+    if (blocks[0]?.kind === 'h2') expect(blocks[0].text).toBe('Title');
+  });
+
+  it('pads a GFM row that has fewer cells than the header', () => {
+    const blocks = parseMarkdownLite('| A | B | C |\n|---|---|---|\n| 1 | 2 |');
+    expect(blocks[0]?.kind).toBe('table');
+    if (blocks[0]?.kind === 'table') {
+      expect(blocks[0].rows[0]).toEqual(['1', '2', '']);
+    }
+  });
+
   it('preserves **bold** for inline rendering downstream', () => {
     // Bold is rendered inline (by renderInlineMd), but parseMarkdownLite
     // keeps the literal text intact for that downstream pass.

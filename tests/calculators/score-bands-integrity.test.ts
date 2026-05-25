@@ -258,6 +258,9 @@ import gustilo      from '@/lib/runners/gustilo';
 import rockwood     from '@/lib/runners/rockwood';
 import salterHarris from '@/lib/runners/salter-harris';
 import tscherne     from '@/lib/runners/tscherne';
+// Severity grades (added after stage-3 maxScore off-by-one — bar never filled)
+import neoBpdNih    from '@/lib/runners/neo-bpd-nih';
+import straw10      from '@/lib/runners/straw10';
 
 interface ScoreRunner { bands: ScoreBand[]; maxScore: number }
 
@@ -499,6 +502,9 @@ const SCORE_TOOLS: Array<[string, ScoreRunner]> = [
   ['rockwood',      rockwood     as unknown as ScoreRunner],
   ['salter-harris', salterHarris as unknown as ScoreRunner],
   ['tscherne',      tscherne     as unknown as ScoreRunner],
+  // Severity grades — maxScore must equal the top grade or the bar never fills.
+  ['neo-bpd-nih',   neoBpdNih    as unknown as ScoreRunner],
+  ['straw10',       straw10      as unknown as ScoreRunner],
 ];
 
 describe('score-band integrity', () => {
