@@ -23,6 +23,8 @@ export interface AppState {
   /** Courses the user has actively started (clicked «Начать обучение»). Lets us
    *  show an intro/CTA screen on first open and skip it on subsequent visits. */
   startedCourses: string[];
+  /** Per-course list of lesson topic (tab) ids the user has opened. */
+  readTopics: Record<string, string[]>;
   studyTime: Record<string, number>;
   userName: string;
   difficultyFilter: 'all' | 'basic' | 'intermediate' | 'advanced';
@@ -128,6 +130,7 @@ export interface AppState {
   closeModule: () => void;
   markCompleted: (id: string) => void;
   startCourse: (id: string) => void;
+  markTopicRead: (courseId: string, topicId: string) => void;
   setActiveSection: (id: SectionId | null) => void;
   goHome: () => void;
   toggleModule: (id: number) => void;
@@ -229,6 +232,7 @@ export const useAppStore = create<AppState>()(
       openModules: [],
       completedCourses: [],
       startedCourses: [],
+      readTopics: {},
       studyTime: {},
       userName: 'Студент',
       difficultyFilter: 'all',
@@ -312,6 +316,12 @@ export const useAppStore = create<AppState>()(
           set({ startedCourses: [...startedCourses, id] });
         }
       },
+      markTopicRead: (courseId, topicId) =>
+        set((s) => {
+          const cur = s.readTopics[courseId] ?? [];
+          if (cur.includes(topicId)) return s;
+          return { readTopics: { ...s.readTopics, [courseId]: [...cur, topicId] } };
+        }),
 
       submitTest: (courseId, testLevel, answers, questions, violations = 0) => {
         const { score, total, passed } = gradeTest(questions, answers);
@@ -511,7 +521,7 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: 'bordik-progress',
-      version: 4,
+      version: 5,
       // Hardened migrate: tolerant of corrupt or attacker-tampered
       // localStorage. We never trust persisted JSON blindly - every
       // top-level key is type-guarded, anything failing the guard is
@@ -554,6 +564,7 @@ export const useAppStore = create<AppState>()(
         if (isStr(raw.userGoal))       safe.userGoal = raw.userGoal.slice(0, 200);
         if (isStrArr(raw.completedCourses)) safe.completedCourses = raw.completedCourses;
         if (isStrArr(raw.startedCourses))   safe.startedCourses = raw.startedCourses;
+        if (isObj(raw.readTopics))          safe.readTopics = raw.readTopics;
         if (isNumArr(raw.completedModules)) safe.completedModules = raw.completedModules;
         if (isNumArr(raw.openModules))      safe.openModules = raw.openModules;
         if (isObj(raw.studyTime))           safe.studyTime = raw.studyTime;
@@ -604,6 +615,7 @@ export const useAppStore = create<AppState>()(
         userGoal: state.userGoal,
         completedCourses: state.completedCourses,
         startedCourses: state.startedCourses,
+        readTopics: state.readTopics,
         completedModules: state.completedModules,
         openModules: state.openModules,
         studyTime: state.studyTime,

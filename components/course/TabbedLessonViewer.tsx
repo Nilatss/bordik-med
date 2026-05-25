@@ -5,6 +5,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeSanitize from 'rehype-sanitize';
 import { useT } from '@/lib/i18n';
+import { useAppStore } from '@/lib/store';
 import { safeUrlTransform, sanitizeSchema } from '@/lib/safe-markdown';
 // P1-CR-3 — pure helpers + 7 sub-components вынесены в lib/course/ +
 // components/course/lesson/. Главный компонент сжат с 890 LOC до ~150.
@@ -46,6 +47,13 @@ export default function TabbedLessonViewer({ content, courseId, showTests = true
     // eslint-disable-next-line react-hooks/exhaustive-deps -- t() translator re-creates on every lang change; we deliberately want the tab labels to follow lang. Adding `t` to deps would force a memo recompute on every render (t closure isn't stable), defeating the purpose. Re-eval triggers via lang are handled by useLang() at the consumer level.
   }, [content, showTests]);
   const [activeId, setActiveId] = useState(tabs[0]?.id ?? '');
+
+  // Reading progress: mark the active lesson topic as read (the 'tests' tab
+  // isn't lesson content, so skip it). Drives the progress bar in CoursePage.
+  const markTopicRead = useAppStore((s) => s.markTopicRead);
+  useEffect(() => {
+    if (activeId && activeId !== 'tests') markTopicRead(courseId, activeId);
+  }, [activeId, courseId, markTopicRead]);
 
   // P1-PERF-NEW-2 — memoize preprocessContent. Без useMemo функция
   // (em-dash replace + multi-pass scan по строкам таблиц) пересчитывалась

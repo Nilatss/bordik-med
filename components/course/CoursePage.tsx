@@ -22,6 +22,7 @@ export default function CoursePage({ courseId }: CoursePageProps) {
   const startedCourses = useAppStore((s) => s.startedCourses);
   const startCourse = useAppStore((s) => s.startCourse);
   const completedCourses = useAppStore((s) => s.completedCourses);
+  const readTopics = useAppStore((s) => s.readTopics);
 
   // Auto-track time while course is open
   useStudyTimer(courseId);
@@ -69,9 +70,32 @@ export default function CoursePage({ courseId }: CoursePageProps) {
   // Once started (or already completed) — show the lesson viewer (it has its
   // own identical TOC sidebar so layout continuity is preserved).
   if (isStarted || isCompleted) {
+    const contentTabIds = tabs.filter((tb) => tb.id !== 'tests').map((tb) => tb.id);
+    const readSet = new Set(readTopics[courseId] ?? []);
+    const readCount = contentTabIds.filter((id) => readSet.has(id)).length;
+    const readPct = isCompleted
+      ? 100
+      : contentTabIds.length > 0 ? Math.round((readCount / contentTabIds.length) * 100) : 0;
     return (
       <div>
         <CourseHeader courseId={courseId} />
+        {!isCompleted && contentTabIds.length > 0 && (
+          <div className="mb-4 px-1">
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="font-[var(--font-mono)] text-[10.5px] font-bold uppercase tracking-[0.06em] text-[#9CA3AF]">
+                Прогресс чтения
+              </span>
+              <span className="text-[12px] text-[#6B7280] font-medium">{readCount} / {contentTabIds.length}</span>
+            </div>
+            <div className="h-1.5 rounded-full bg-[#EEF0F4] overflow-hidden">
+              <div
+                className="h-full rounded-full bg-[#16A34A] transition-[width] duration-300"
+                // eslint-disable-next-line react/forbid-dom-props -- dynamic width tied to reading progress
+                style={{ width: `${readPct}%` }}
+              />
+            </div>
+          </div>
+        )}
         {isPediatricCalc && (
           <div className="mb-5">
             <PediatricCalculator />
