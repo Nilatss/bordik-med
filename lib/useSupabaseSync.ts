@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { shallow as shallowEqual } from 'zustand/shallow';
-import { useAppStore } from './store';
+import { useAppStore, type AppState } from './store';
 import { getSupabaseBrowserClient } from './supabase/client';
 import {
   enqueueSync,
@@ -88,16 +88,7 @@ export default function useSupabaseSync() {
 
         // Merge profile
         const profile = data.profile;
-        const profileUpdates: Partial<typeof state> = {};
-        if (profile) {
-          if (profile.display_name && !state.userName) profileUpdates.userName = profile.display_name;
-          if (profile.email && !state.userEmail) profileUpdates.userEmail = profile.email;
-          if (profile.country && !state.userCountry) profileUpdates.userCountry = profile.country;
-          if (profile.specialty && !state.userSpecialty) profileUpdates.userSpecialty = profile.specialty;
-          if (profile.language && !state.userLanguage) profileUpdates.userLanguage = profile.language;
-          if (profile.goal && !state.userGoal) profileUpdates.userGoal = profile.goal;
-          if (profile.status && !state.userStatus) profileUpdates.userStatus = profile.status;
-        }
+        const profileUpdates = mergeProfileFromServer(state, profile);
 
         useAppStore.setState({
           completedCourses: Array.from(completed),
@@ -248,4 +239,60 @@ export default function useSupabaseSync() {
       }
     };
   }, []);
+}
+
+// Default store values for profile fields. A fresh-install device has these
+// values before any user interaction. The pull-side merge must treat them as
+// "not set by the user" and allow the server value to overwrite them —
+// otherwise a user who set their name on device A would never see it on a
+// freshly installed device B, because `!state.userName` evaluates to false
+// when the default `'Студент'` is present.
+const DEFAULT_USER_NAME = 'Студент';
+const DEFAULT_LANGUAGE = 'Русский';
+
+export interface ServerProfile {
+  display_name?: string | null;
+  email?: string | null;
+  country?: string | null;
+  specialty?: string | null;
+  language?: string | null;
+  goal?: string | null;
+  status?: string | null;
+}
+
+/**
+ * Merge a server-side profile row into local store fields.
+ *
+ * Rule: server value wins when local is empty OR still at the factory default.
+ * This is the pull-side counterpart to the push's "local is source of truth"
+ * strategy: on an existing device the user has already personalised their
+ * profile (different from default), so we don't overwrite their choices;
+ * on a fresh device the defaults signal "nothing set yet" and we adopt the
+ * server value instead.
+ *
+ * Exported for unit testing; not intended as a public API.
+ */
+export function mergeProfileFromServer(
+  state: Pick<AppState, 'userName' | 'userEmail' | 'userCountry' | 'userSpecialty' | 'userLanguage' | 'userGoal' | 'userStatus'>,
+  profile: ServerProfile | null | undefined,
+): Partial<AppState> {
+  if (!profile) return {};
+  const updates: Partial<AppState> = {};
+
+  if (profile.display_name && (state.userName === '' || state.userName === DEFAULT_USER_NAME))
+    updates.userName = profile.display_name;
+  if (profile.email && !state.userEmail)
+    updates.userEmail = profile.email;
+  if (profile.country && !state.userCountry)
+    updates.userCountry = profile.country;
+  if (profile.specialty && !state.userSpecialty)
+    updates.userSpecialty = profile.specialty;
+  if (profile.language && (state.userLanguage === '' || state.userLanguage === DEFAULT_LANGUAGE))
+    updates.userLanguage = profile.language;
+  if (profile.goal && !state.userGoal)
+    updates.userGoal = profile.goal;
+  if (profile.status && !state.userStatus)
+    updates.userStatus = profile.status;
+
+  return updates;
 }
