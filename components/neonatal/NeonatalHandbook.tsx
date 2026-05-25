@@ -4703,7 +4703,11 @@ const DRUG_CATEGORY_LABELS: Record<EmergencyDrug['category'], string> = {
 };
 
 function DrugDoseCalculator() {
-  const [weightStr, setWeightStr] = useState<string>('3.0');
+  // Pre-seed weight from the shared patient context (grams → kg) if set.
+  const [weightStr, setWeightStr] = useState<string>(() => {
+    const w = useAppStore.getState().patientContext.weightG;
+    return w > 0 ? String(w / 1000) : '3.0';
+  });
   const [filterCategory, setFilterCategory] = useState<EmergencyDrug['category'] | 'all'>('all');
 
   const weight = useMemo(() => {

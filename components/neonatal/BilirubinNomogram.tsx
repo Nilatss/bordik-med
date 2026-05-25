@@ -16,6 +16,7 @@
  */
 
 import { useEffect, useMemo, useState } from 'react';
+import { useAppStore } from '@/lib/store';
 import {
   type BilirubinBank,
   type RiskStratum,
@@ -32,7 +33,11 @@ export default function BilirubinNomogram() {
   const [bank, setBank] = useState<BilirubinBank | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const [gaWeeks, setGaWeeks] = useState<string>('39');
+  const [gaWeeks, setGaWeeks] = useState<string>(() => {
+    // Pre-seed gestational age from the shared patient context if set.
+    const ga = useAppStore.getState().patientContext.gaWeeks;
+    return ga > 0 ? String(ga) : '39';
+  });
   const [hours, setHours] = useState<string>('48');
   const [tsbInput, setTsbInput] = useState<string>('');
   const [unit, setUnit] = useState<Unit>('mg/dL');
