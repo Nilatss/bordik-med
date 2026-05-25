@@ -31,6 +31,7 @@ import { PrintCardButton } from '@/components/ui/PrintCardButton';
 import { countryMatches, matchCountry } from '@/lib/tool-meta-helpers';
 import { RUNNER_IDS } from '@/lib/tool-meta-data';
 import type { FilterOption } from '@/lib/tools-page/types';
+import { stripDuplicateArticleSections } from '@/lib/neonatal/article-format';
 
 // Set of implemented tool ids — used to filter out dangling
 // `related_calculators` references so an article never links to a /tools/:id
@@ -2602,32 +2603,11 @@ const ArticleCard = React.memo(function ArticleCard({
   );
 });
 
-/**
- * stripDuplicateArticleSections — removes the trailing `## Источники`
- * and `## Калькуляторы Bordik` sections from an article's markdown body.
- *
- * Background: many articles in `neonatal-articles.json` end with these
- * two sections in the markdown content AND also populate the structured
- * `article.references[]` + `article.related_calculators[]` arrays. The
- * card renders the structured arrays as proper UI chips/lists below the
- * body, so the duplicate bottom blocks in the body would be shown TWICE
- * to the clinician (audit: 2026-05-19 user feedback on /articles).
- *
- * Strip rules — case-insensitive, matches both Cyrillic and Latin
- * variants seen in the data. Cuts from the first matching heading to
- * end-of-content. Falls back to the full content if no heading is
- * found, so it's safe on articles that legitimately don't include
- * these sections.
- */
-function stripDuplicateArticleSections(content: string): string {
-  // Match `## Heading` on a line by itself (modulo trailing whitespace),
-  // where Heading is exactly one of the dedup'd labels — must NOT continue
-  // with more words ("## Источники инфекции" is a legitimate clinical
-  // heading and stays). Multiline-mode `$` requires end-of-line after
-  // the keyword. Then `[\s\S]*` consumes everything to end of content.
-  const re = /\s*^##\s+(?:Источники|References?|Источник|Калькуляторы\s+Bordik|Related\s+calculators?)\s*$[\s\S]*$/im;
-  return content.replace(re, '').trimEnd();
-}
+// stripDuplicateArticleSections — extracted to `@/lib/neonatal/article-format`
+// (pure + unit-tested) and imported at the top of this file. It strips the
+// trailing `## Источники` / `## Калькуляторы Bordik` blocks that some
+// articles duplicate in their markdown body (the structured arrays render
+// those below the body, so the in-body copies would show twice).
 
 /**
  * ArticleContent — render markdown-like text for articles via the shared

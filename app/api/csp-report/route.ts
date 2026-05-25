@@ -31,6 +31,7 @@ import { NextResponse } from 'next/server';
 import * as Sentry from '@sentry/nextjs';
 import { makeRateLimiter, identifyRequest } from '@/lib/rate-limit';
 import { classifyDirective, severityFor, extractSafeFields, type RawCspReport } from '@/lib/csp-report-classify';
+import { isEmptyCspReport } from '@/lib/csp-report-empty';
 
 export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
@@ -81,7 +82,7 @@ export async function POST(req: Request) {
     // extensions POST empty report bodies that only set `disposition`.
     // Forwarding them to Sentry produces a meaningless "unknown blocked
     // inline" issue that floods the dashboard (232 users, 235 events).
-    if (!safe.doc && !safe.violated && !safe.effective && !safe.blocked && !safe.sourceFile) {
+    if (isEmptyCspReport(safe)) {
       console.warn('[csp-report] skipping empty report (no actionable fields)');
       continue;
     }
