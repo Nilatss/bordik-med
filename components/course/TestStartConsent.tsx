@@ -238,6 +238,7 @@ function MediaCheck({ onReady, onCalibrated }: {
   // Animation tick for the "Проверить" button when it's running, so the
   // user gets visual feedback that something is happening.
   const [envChecking, setEnvChecking] = useState(false);
+  const envCheckTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   // Cross-check signal for the visual headphone detector: only trust
   // visual evidence when audio devices ALSO look suspicious. Without a
   // plausible audio path (multi-output or brand-tokened device), a "dark
@@ -401,8 +402,14 @@ function MediaCheck({ onReady, onCalibrated }: {
       return [...collected, ...fromOtherSources];
     });
     // Spinner stays for a tiny bit so the user perceives the check
-    setTimeout(() => setEnvChecking(false), 350);
+    envCheckTimerRef.current = setTimeout(() => setEnvChecking(false), 350);
   }, [stream]);
+
+  // Clear the envChecking spinner timer on unmount so it can't fire
+  // setEnvChecking on an already-unmounted component.
+  useEffect(() => () => {
+    if (envCheckTimerRef.current) clearTimeout(envCheckTimerRef.current);
+  }, []);
 
   // Run env check on initial stream acquisition + whenever the OS reports
   // a device change (headphone unplugged / plugged in, USB swap, etc.).
@@ -684,7 +691,7 @@ function MediaCheck({ onReady, onCalibrated }: {
       // Clear any residual object-* hints when the effect tears down
       setHints((prev) => prev.filter((h) => !h.id.startsWith('object-')));
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- updateHints is defined inside this effect's scope and only called from the local tick(); its identity is moot for re-firing the effect. Adding it would re-run the RAF loop setup whenever a hint changes — exactly what we want to avoid.
+     
   }, [stream, aiModelStatus]);
 
   // Reset calibration if any object is currently detected - the user has

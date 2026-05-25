@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import { headers } from 'next/headers';
 import './globals.css';
 import CopyProtection from '@/components/CopyProtection';
 import PwaRegistrar from '@/components/PwaRegistrar';
@@ -96,11 +97,17 @@ export const viewport: Viewport = {
   viewportFit: 'cover',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Read the per-request nonce injected by proxy.ts so we can tag the
+  // JSON-LD inline script. Without the nonce attribute, modern browsers
+  // ignore 'unsafe-inline' once a nonce is present in script-src and
+  // report (or block) the script — the source of Sentry issue
+  // JAVASCRIPT-NEXTJS-1H ("CSP report: script-src-elem blocked inline").
+  const nonce = (await headers()).get('x-nonce') ?? undefined;
   return (
     // lang="ru" is the SSR default — the active locale lives in client
     // storage, so <HtmlLangSync> corrects this attribute to ru/en/uz
@@ -128,6 +135,7 @@ export default function RootLayout({
             exist; this root-level entry is the high-value baseline. */}
         <script
           type="application/ld+json"
+          nonce={nonce}
           dangerouslySetInnerHTML={{ __html: jsonLdHtml({
             '@context': 'https://schema.org',
             '@type': 'EducationalOrganization',
