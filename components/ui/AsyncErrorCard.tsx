@@ -13,10 +13,11 @@
  * label, slate primary button.
  */
 import React from 'react';
+import { useT } from '@/lib/i18n';
 
 export function AsyncErrorCard({
-  title = 'Не удалось загрузить данные',
-  description = 'Похоже, браузер заблокировал локальное хранилище (приватный режим, мало памяти или ограничения на общем ПК). Проверьте соединение и попробуйте снова.',
+  title,
+  description,
   onRetry,
   compact = false,
 }: {
@@ -26,6 +27,11 @@ export function AsyncErrorCard({
   /** Tighter padding for inline use inside a tab/section. */
   compact?: boolean;
 }): React.JSX.Element {
+  const t = useT();
+  // Defaults come from the dict so the card follows the active locale;
+  // callers may still pass an explicit (already-translated) title/description.
+  const resolvedTitle = title ?? t('asyncError.title');
+  const resolvedDescription = description ?? t('asyncError.description');
   return (
     <div
       role="alert"
@@ -45,10 +51,10 @@ export function AsyncErrorCard({
         </svg>
       </div>
       <div className="font-[var(--font-display)] text-[16px] font-bold text-[#1A1A1A] mb-1.5 tracking-[-0.01em]">
-        {title}
+        {resolvedTitle}
       </div>
       <p className="mx-auto mb-5 max-w-[420px] text-[13px] leading-[1.55] text-[#6B7280]">
-        {description}
+        {resolvedDescription}
       </p>
       <button
         type="button"
@@ -63,7 +69,7 @@ export function AsyncErrorCard({
           <polyline points="23 4 23 10 17 10" />
           <path d="M20.49 15a9 9 0 11-2.12-9.36L23 10" />
         </svg>
-        Повторить
+        {t('asyncError.retry')}
       </button>
     </div>
   );

@@ -482,7 +482,7 @@ export default function ToolsPage() {
         // mode, low-memory device). Show a visible retry instead of a blank
         // tools list — critical for field medics on constrained hardware.
         <AsyncErrorCard
-          title="Не удалось загрузить каталог инструментов"
+          title={t('asyncError.catalogTitle')}
           onRetry={catalog.retry}
         />
       ) : rows.length === 0 ? (

@@ -18,6 +18,7 @@ import WebVitalsReporter from '@/components/WebVitalsReporter';
 // быть доступным с любой страницы. Сам компонент `'use client'`,
 // возвращает null до открытия — нет вклада в SSR-payload.
 import { CommandPalette } from '@/components/search/CommandPalette';
+import { HtmlLangSync } from '@/components/HtmlLangSync';
 import { jsonLdHtml } from '@/lib/json-ld';
 
 const APP_NAME = 'Bordik';
@@ -101,6 +102,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    // lang="ru" is the SSR default — the active locale lives in client
+    // storage, so <HtmlLangSync> corrects this attribute to ru/en/uz
+    // after hydration.
     <html lang="ru" data-theme="light">
       <head>
         {/* Preconnect: warm up TLS + TCP for the two hottest paths so
@@ -162,6 +166,7 @@ export default function RootLayout({
           element (a section card below the fold) at 3.4 s purely because
           of the skeleton fade.
         */}
+        <HtmlLangSync />
         <PwaRegistrar />
         <CopyProtection />
         <BFCacheGuard />

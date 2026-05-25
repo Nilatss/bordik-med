@@ -84,6 +84,11 @@ const dict: Dict = {
   'common.repeat': 'Повторить',
   'common.close': 'Закрыть',
   'common.allSections': 'Все разделы',
+  // Async error card (offline-first fallback shown when an init promise rejects)
+  'asyncError.title': 'Не удалось загрузить данные',
+  'asyncError.description': 'Похоже, браузер заблокировал локальное хранилище (приватный режим, мало памяти или ограничения на общем ПК). Проверьте соединение и попробуйте снова.',
+  'asyncError.catalogTitle': 'Не удалось загрузить каталог инструментов',
+  'asyncError.retry': 'Повторить',
   // Sections / module / course list
   'home.sections.title': 'Разделы обучения',
   'home.sections.subtitle': 'Выберите раздел для начала',
