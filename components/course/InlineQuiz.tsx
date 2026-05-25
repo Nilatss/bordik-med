@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface Option {
@@ -321,6 +321,12 @@ export default function InlineQuiz({
   });
   // Manually-expanded questions (override auto-collapse)
   const [expanded, setExpanded] = useState<Record<number, boolean>>({});
+  // Pending auto-collapse timers, cleared on unmount so a quiz answered just
+  // before navigating away doesn't setState on an unmounted component.
+  const collapseTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+  useEffect(() => () => {
+    collapseTimersRef.current.forEach(clearTimeout);
+  }, []);
 
   // Tick cooldown label every minute while there is a cooldown
   useEffect(() => {
@@ -341,9 +347,9 @@ export default function InlineQuiz({
     saveState(courseId, { lastAt: now, answers: next });
     setRemainingMs(COOLDOWN_MS);
     // Auto-collapse answered question after a short delay so user sees feedback
-    setTimeout(() => {
+    collapseTimersRef.current.push(setTimeout(() => {
       setExpanded((prev) => ({ ...prev, [qId]: false }));
-    }, 1200);
+    }, 1200));
     // Briefly keep expanded so user sees correct/incorrect feedback
     setExpanded((prev) => ({ ...prev, [qId]: true }));
   };

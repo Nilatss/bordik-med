@@ -101,6 +101,14 @@ export default function ApgarTimer({ onClose }: { onClose: () => void }) {
     }
   }, []);
 
+  // Release the AudioContext on unmount. Browsers cap concurrent contexts
+  // (~6 in Chrome); repeatedly opening/closing the Apgar timer in one
+  // session would otherwise leak them until beeps go silent.
+  useEffect(() => () => {
+    audioCtxRef.current?.close().catch(() => { /* already closed / unsupported */ });
+    audioCtxRef.current = null;
+  }, []);
+
   const triggerMark = useCallback((markSec: number) => {
     triggerHaptic();
     // Different beep frequency for each mark for distinguishability
