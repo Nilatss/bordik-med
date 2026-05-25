@@ -19,6 +19,7 @@ import { useAppStore } from '@/lib/store';
 import type { CalculatorResult, ResultScaleSegment } from '@/lib/tools-runners';
 import { linkify } from './linkify';
 import { MarkdownLite } from '@/components/ui/MarkdownLite';
+import { formatResultForCopy } from './format-result';
 
 /** Detect markdown syntax that warrants block-level rendering. */
 function hasMarkdownSyntax(text: string): boolean {
@@ -42,6 +43,14 @@ export function ResultCard({ result }: { result: CalculatorResult }) {
     openCourse(id);
   };
 
+  const [copied, setCopied] = React.useState(false);
+  const handleCopy = () => {
+    navigator.clipboard?.writeText(formatResultForCopy(result)).then(
+      () => { setCopied(true); setTimeout(() => setCopied(false), 1500); },
+      () => { /* clipboard blocked (insecure context / permission denied) */ },
+    );
+  };
+
   return (
     <div
       className="mt-6 py-5 px-6 rounded-[16px] bg-[var(--result-bg)] border-l-4 border-[var(--result-color)]"
@@ -49,9 +58,19 @@ export function ResultCard({ result }: { result: CalculatorResult }) {
       style={{ ['--result-color' as string]: color, ['--result-bg' as string]: `${color}0F` }}
     >
       {/* Headline */}
-      <p className="font-[var(--font-mono)] text-[10px] font-bold uppercase tracking-[0.1em] m-0 mb-2.5 text-[color:var(--result-color)]">
-        Результат
-      </p>
+      <div className="flex items-center justify-between gap-2 mb-2.5">
+        <p className="font-[var(--font-mono)] text-[10px] font-bold uppercase tracking-[0.1em] m-0 text-[color:var(--result-color)]">
+          Результат
+        </p>
+        <button
+          type="button"
+          onClick={handleCopy}
+          title="Скопировать результат"
+          className="shrink-0 px-2 py-1 rounded-md text-[11px] font-medium text-[#6B7280] hover:text-[#1A1A1A] hover:bg-[#F0F1F5] transition-colors"
+        >
+          {copied ? 'Скопировано' : 'Копировать'}
+        </button>
+      </div>
       <div className="flex items-baseline gap-2.5 flex-wrap">
         <span className="font-[var(--font-display)] text-[44px] font-extrabold tracking-[-0.02em] leading-none text-[color:var(--result-color)]">
           {value}
