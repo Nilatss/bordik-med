@@ -11,7 +11,7 @@ import {
   PASS_THRESHOLD_MODULE, MODULE_TEST_TIME_MS, MAX_TEST_LEVELS,
   TEST_LEVEL_NAMES, getCooldownRemaining, formatCooldown,
 } from '@/lib/quiz';
-import { getTestQuestions, getModuleTestQuestions } from '@/lib/questions';
+import { getTestQuestions, getModuleTestQuestions, hasRealQuestions } from '@/lib/questions';
 import { getModuleForCourse } from '@/lib/curriculum';
 import { Check } from '@/components/icons';
 import TestActiveView from './TestActiveView';
@@ -85,6 +85,12 @@ export default function TestPanel({ courseId }: TestPanelProps) {
     ? isModuleTestUnlocked({ courseTestProgress } as AppState, moduleId)
     : false;
   const modulePassed = moduleId !== undefined ? completedModules.includes(moduleId) : false;
+
+  // Don't serve fake tests: a course with no hand-written / AI / sufficient
+  // (>=20) cloze questions falls back to a passable placeholder (options
+  // literally labelled "Правильный ответ", correctIndex 0). Gate the whole
+  // panel on real questions existing for the course.
+  const hasRealTest = useMemo(() => hasRealQuestions(courseId, 1), [courseId]);
 
   const [pendingTest, setPendingTest] = useState<PendingTest>(null);
   const [activeTest, setActiveTest] = useState<ActiveTest>(null);
@@ -247,6 +253,20 @@ export default function TestPanel({ courseId }: TestPanelProps) {
             {t('common.close')}
           </button>
         </div>
+      </div>
+    );
+  }
+
+  // ═══ NO REAL TEST — show a "preparing" state instead of fake placeholders ═══
+  if (!hasRealTest) {
+    return (
+      <div className="py-8 px-6 bg-[#F5F6F8] rounded-[16px] text-center">
+        <p className="font-[var(--font-mono)] text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-[0.08em] mb-2">
+          {t('test.title')}
+        </p>
+        <p className="font-[var(--font-body)] text-sm text-[#6B7280] m-0 leading-[1.6]">
+          Тесты для этого курса готовятся. Доступны материалы и самопроверка в уроках.
+        </p>
       </div>
     );
   }
@@ -521,7 +541,7 @@ function TestRow({
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.04, duration: 0.3, ease: [0.05, 0.7, 0.1, 1] }}
       className={`rounded-[14px] overflow-hidden transition-[background,border-color,box-shadow] duration-200 ${containerClass}`}
-      // eslint-disable-next-line react/forbid-dom-props -- row accent tied to status
+       
       style={{ ['--row-accent' as string]: meta.rowAccent }}
     >
       <button
