@@ -794,11 +794,24 @@ function streamFinalize(history: Turn[], modules: ModuleSummary[]): Response {
         // не нужен, т.к. на ошибку идём в rule-based (см. catch).
         const model = GEMINI_MODELS[0];
         if (!model) throw new Error('no-models');
+        // Humanized progress stages. We MUST NOT stream the raw model output
+        // to the client — it is JSON, and the UI rendered it verbatim as a
+        // "preview", leaking `{"profession":…` to the user. We keep
+        // accumulating for the final parse, but the chunk text we emit is a
+        // friendly stage label that advances as generation proceeds.
+        const FINALIZE_STAGES = [
+          'Анализирую ваши ответы…',
+          'Определяю сильные и слабые стороны…',
+          'Подбираю профиль и уровень…',
+          'Формирую план обучения…',
+        ];
+        let chunkCount = 0;
         for await (const chunk of streamGemini(buildFinalizePrompt(history, modules), model)) {
           accumulated += chunk;
-          // Emit accumulated text каждые 50ms-equivalent — chunks приходят
-          // достаточно редко чтобы каждый flush был полезным сигналом.
-          emit({ type: 'chunk', text: accumulated.slice(0, 2000) }); // cap preview at 2KB
+          const stage = FINALIZE_STAGES[Math.min(FINALIZE_STAGES.length - 1, Math.floor(chunkCount / 3))]
+            ?? FINALIZE_STAGES[0]!;
+          emit({ type: 'chunk', text: stage });
+          chunkCount++;
         }
 
         // Parse final accumulated text как JSON (с dirty-JSON resilience)
