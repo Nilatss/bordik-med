@@ -81,6 +81,11 @@ const dict: Dict = {
   'common.repeat': 'Retake',
   'common.close': 'Close',
   'common.allSections': 'All sections',
+  // Async error card (offline-first fallback shown when an init promise rejects)
+  'asyncError.title': 'Could not load data',
+  'asyncError.description': 'It looks like the browser blocked local storage (private mode, low memory, or restrictions on a shared PC). Check your connection and try again.',
+  'asyncError.catalogTitle': 'Could not load the tools catalog',
+  'asyncError.retry': 'Retry',
   'home.sections.title': 'Learning sections',
   'home.sections.subtitle': 'Pick a section to start',
   'home.section.cat.education': 'Education & prep',

@@ -13,6 +13,9 @@ import { describe, it, expect, vi, afterEach } from 'vitest';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { AsyncErrorCard } from '@/components/ui/AsyncErrorCard';
+import ru from '@/lib/i18n/ru';
+import en from '@/lib/i18n/en';
+import uz from '@/lib/i18n/uz';
 
 describe('AsyncErrorCard', () => {
   it('renders a default title, description and a retry button', () => {
@@ -34,6 +37,24 @@ describe('AsyncErrorCard', () => {
     );
     expect(html).toContain('Каталог недоступен');
     expect(html).toContain('Проверьте сеть.');
+  });
+
+  // The card resolves its default copy from the active-locale dict. Guard
+  // that every locale defines those keys so a switch to en/uz doesn't
+  // silently fall back to Russian for this offline-first error UI.
+  it('defines its dict keys in every locale', () => {
+    const keys = [
+      'asyncError.title',
+      'asyncError.description',
+      'asyncError.catalogTitle',
+      'asyncError.retry',
+    ];
+    for (const dict of [ru, en, uz]) {
+      for (const key of keys) {
+        expect(typeof dict[key]).toBe('string');
+        expect(dict[key]!.length).toBeGreaterThan(0);
+      }
+    }
   });
 });
 

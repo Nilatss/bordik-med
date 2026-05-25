@@ -81,6 +81,11 @@ const dict: Dict = {
   'common.repeat': 'Qaytarish',
   'common.close': 'Yopish',
   'common.allSections': "Barcha bo'limlar",
+  // Async error card (offline-first fallback shown when an init promise rejects)
+  'asyncError.title': "Ma'lumotlarni yuklab bo'lmadi",
+  'asyncError.description': "Brauzer mahalliy xotirani bloklagan ko'rinadi (maxfiy rejim, xotira kamligi yoki umumiy kompyuterdagi cheklovlar). Aloqani tekshirib, qayta urinib ko'ring.",
+  'asyncError.catalogTitle': "Asboblar katalogini yuklab bo'lmadi",
+  'asyncError.retry': 'Qayta urinish',
   'home.sections.title': "O'qish bo'limlari",
   'home.sections.subtitle': "Boshlash uchun bo'lim tanlang",
   'home.section.cat.education': 'Ta\'lim va tayyorgarlik',
