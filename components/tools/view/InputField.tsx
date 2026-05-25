@@ -241,6 +241,7 @@ export const InputField = React.memo(function InputField({ input, value, onChang
       />
       <input
         type="number"
+        inputMode="decimal"
         value={(value as number) ?? ''}
         onChange={(e) => {
           const n = e.target.value === '' ? '' : Number(e.target.value);
