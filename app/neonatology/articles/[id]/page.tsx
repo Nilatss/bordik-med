@@ -150,7 +150,7 @@ function renderArticleBody(md: string): string {
     if (!line.trim()) { closeListIfOpen(); i++; continue; }
 
     // Headings
-    const h = /^(#{1,6})\s+(.+?)\s*$/.exec(line);
+    const h = /^(#{1,6})\s+(.+?)\s*#*\s*$/.exec(line);
     if (h && h[1] && h[2]) {
       closeListIfOpen();
       const level = Math.min(h[1].length + 1, 6); // # → h2, ## → h3, etc.

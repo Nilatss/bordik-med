@@ -11,7 +11,7 @@ import type {
 
 const runner: ScoreTool = {
   kind: 'score',
-  maxScore: 7,
+  maxScore: 6,
   inputs: [
     {
       id: 'stage',

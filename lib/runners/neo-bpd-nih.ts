@@ -50,7 +50,7 @@ import type { ScoreTool } from '../tools-runners';
 
 const runner: ScoreTool = {
   kind: 'score',
-  maxScore: 4,
+  maxScore: 3,
   countries: 'Международный (NIH 2001 / Jobe-Bancalari, NIH 2018 update)',
   reference:
     'Jobe AH, Bancalari E. AJRCCM 2001;163:1723. Higgins RD et al. J Pediatr 2018;197:300.',
