@@ -131,8 +131,11 @@ async function loadCatalogMeta(): Promise<typeof catalogMeta> {
     return catalogMeta;
   } catch (err) {
     console.warn('[cmdk] catalog meta load failed', err);
-    catalogMeta = new Map();
-    return catalogMeta;
+    // Do NOT cache the empty result: `new Map()` is truthy, so the
+    // `if (catalogMeta)` guard above would return it forever, leaving
+    // tool titles blank in the palette until a full page reload.
+    // Leave catalogMeta null so the next palette open retries the fetch.
+    return new Map();
   }
 }
 
