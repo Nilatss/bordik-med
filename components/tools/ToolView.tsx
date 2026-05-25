@@ -6,6 +6,7 @@ import { useCatalog, type CatalogMetaItem } from '@/lib/catalog-client';
 import { findBand, type CalculatorResult, type ToolRunner } from '@/lib/tools-runners';
 import { loadRunner } from '@/lib/runners';
 import { useAppStore } from '@/lib/store';
+import { seedNeoContext } from '@/lib/neo-context-seed';
 import { reportToolTimeToResult } from '@/lib/analytics/tool-time-to-result';
 import { useT } from '@/lib/i18n';
 import type { Tab } from '@/lib/tool-view/types';
@@ -85,8 +86,12 @@ export default function ToolView({ toolId }: { toolId: string }) {
       else if (inp.type === 'select' && inp.options?.[0]) init[inp.id] = inp.options[0].value;
       else if (inp.type === 'number') init[inp.id] = '' as unknown as number;
     }
-    setValues(init);
-  }, [runner]);
+    // Pre-seed neonatal calculators from the shared patient context (weight/
+    // GA/day from PatientContextBar). Read via getState so the seed reflects
+    // the context at open-time without re-firing on the user's later edits.
+    const seeded = seedNeoContext(toolId, runner.inputs, useAppStore.getState().patientContext);
+    setValues({ ...init, ...seeded });
+  }, [runner, toolId]);
 
   // Reset active tab when switching tools
   useEffect(() => {
