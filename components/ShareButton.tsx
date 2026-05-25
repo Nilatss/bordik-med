@@ -12,7 +12,7 @@
  *
  * No tracking, no third-party SDK. Pure Platform API.
  */
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 interface Props {
   title: string;
@@ -26,6 +26,17 @@ type State = 'idle' | 'copied' | 'error';
 
 export function ShareButton({ title, text, url, className, children }: Props) {
   const [state, setState] = useState<State>('idle');
+  const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Reset the "copied"/"error" affordance back to idle, cancelling any
+  // previous pending reset so a fast double-tap doesn't race.
+  const scheduleIdle = (ms: number) => {
+    if (resetTimerRef.current) clearTimeout(resetTimerRef.current);
+    resetTimerRef.current = setTimeout(() => setState('idle'), ms);
+  };
+  useEffect(() => () => {
+    if (resetTimerRef.current) clearTimeout(resetTimerRef.current);
+  }, []);
 
   async function onClick() {
     const targetUrl = url ?? (typeof location !== 'undefined' ? location.href : '');
@@ -54,13 +65,13 @@ export function ShareButton({ title, text, url, className, children }: Props) {
       if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(targetUrl);
         setState('copied');
-        setTimeout(() => setState('idle'), 1800);
+        scheduleIdle(1800);
         return;
       }
     } catch {/* fall through */}
 
     setState('error');
-    setTimeout(() => setState('idle'), 2200);
+    scheduleIdle(2200);
   }
 
   // P1-CR-4: migrated from inline style to Tailwind utility classes.
