@@ -10,16 +10,12 @@
  * twice to the clinician. This helper strips them at render time so
  * the JSON bank doesn't need a one-off migration.
  *
- * The function is small + pure — duplicating the regex here is OK and
- * makes the test self-contained without exporting the helper out of
- * the 4900-LOC NeonatalHandbook.tsx file.
+ * Imports the REAL helper from `@/lib/neonatal/article-format` (the same
+ * module `NeonatalHandbook.tsx` consumes) so the test guards shipped
+ * behaviour rather than a local copy of the regex.
  */
 import { describe, it, expect } from 'vitest';
-
-function stripDuplicateArticleSections(content: string): string {
-  const re = /\s*^##\s+(?:Источники|References?|Источник|Калькуляторы\s+Bordik|Related\s+calculators?)\s*$[\s\S]*$/im;
-  return content.replace(re, '').trimEnd();
-}
+import { stripDuplicateArticleSections } from '@/lib/neonatal/article-format';
 
 describe('stripDuplicateArticleSections', () => {
   it('removes a trailing "## Источники" section', () => {

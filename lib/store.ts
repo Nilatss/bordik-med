@@ -527,90 +527,11 @@ export const useAppStore = create<AppState>()(
       // top-level key is type-guarded, anything failing the guard is
       // silently dropped (better empty than booby-trapped). Bumped to
       // v3 to also re-run guards on already-migrated v2 stores.
-      migrate: (persistedState: unknown, version: number) => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const raw = (persistedState ?? {}) as Record<string, any>;
-
-        // v1 → v2 schema shift
-        if (version < 2) {
-          delete raw.quizAttempts;
-          delete raw.quizBestScores;
-          raw.testAttempts = {};
-          raw.courseTestProgress = {};
-          raw.moduleTestAttempts = {};
-          raw.completedModules = [];
-        }
-
-        // v2 → v3: re-validate every key. No structural change, just
-        // typing the trash out.
-        const isStr = (v: unknown): v is string => typeof v === 'string';
-        const isStrArr = (v: unknown): v is string[] =>
-          Array.isArray(v) && v.every(isStr);
-        const isNumArr = (v: unknown): v is number[] =>
-          Array.isArray(v) && v.every((x) => typeof x === 'number' && Number.isFinite(x));
-        const isObj = (v: unknown): v is Record<string, unknown> =>
-          typeof v === 'object' && v !== null && !Array.isArray(v);
-
-        // Drop keys that don't match expected shape. Every defaulting
-        // value here matches AppState's initial state, so the store
-        // remains usable even if the entire persisted blob was junk.
-        const safe: Record<string, unknown> = {};
-        if (isStr(raw.userName))       safe.userName = raw.userName.slice(0, 200);
-        if (isStr(raw.userEmail))      safe.userEmail = raw.userEmail.slice(0, 320);
-        if (isStr(raw.userStatus))     safe.userStatus = raw.userStatus.slice(0, 50);
-        if (isStr(raw.userCountry))    safe.userCountry = raw.userCountry.slice(0, 80);
-        if (isStr(raw.userSpecialty))  safe.userSpecialty = raw.userSpecialty.slice(0, 120);
-        if (isStr(raw.userLanguage))   safe.userLanguage = raw.userLanguage.slice(0, 10);
-        if (isStr(raw.userGoal))       safe.userGoal = raw.userGoal.slice(0, 200);
-        if (isStrArr(raw.completedCourses)) safe.completedCourses = raw.completedCourses;
-        if (isStrArr(raw.startedCourses))   safe.startedCourses = raw.startedCourses;
-        if (isObj(raw.readTopics))          safe.readTopics = raw.readTopics;
-        if (isNumArr(raw.completedModules)) safe.completedModules = raw.completedModules;
-        if (isNumArr(raw.openModules))      safe.openModules = raw.openModules;
-        if (isObj(raw.studyTime))           safe.studyTime = raw.studyTime;
-        if (isObj(raw.testAttempts))        safe.testAttempts = raw.testAttempts;
-        if (isObj(raw.courseTestProgress))  safe.courseTestProgress = raw.courseTestProgress;
-        if (isObj(raw.moduleTestAttempts))  safe.moduleTestAttempts = raw.moduleTestAttempts;
-        if (isStr(raw.toolsQuery))          safe.toolsQuery = raw.toolsQuery.slice(0, 200);
-        if (isStrArr(raw.toolsCategories))  safe.toolsCategories = raw.toolsCategories;
-        if (isStrArr(raw.toolsSubcategories)) safe.toolsSubcategories = raw.toolsSubcategories;
-        if (isStrArr(raw.toolsCountries))   safe.toolsCountries = raw.toolsCountries;
-        if (typeof raw.toolsOnlyAvailable === 'boolean') safe.toolsOnlyAvailable = raw.toolsOnlyAvailable;
-        if (isStrArr(raw.toolsFavourites))  safe.toolsFavourites = raw.toolsFavourites;
-        // Favourites LWW timestamp: keep if present, else default to now so an
-        // existing device's local favourites win the first sync (never silently
-        // replaced by an older server set during rollout of this feature).
-        safe.toolsFavouritesUpdatedAt =
-          typeof raw.toolsFavouritesUpdatedAt === 'number' && Number.isFinite(raw.toolsFavouritesUpdatedAt)
-            ? raw.toolsFavouritesUpdatedAt
-            : Date.now();
-        if (isObj(raw.toolUsage))           safe.toolUsage = raw.toolUsage;
-        if (isStrArr(raw.recentToolIds))    safe.recentToolIds = raw.recentToolIds.slice(0, 10);
-
-        // Patient context — defensive hydrate. Clamp every field; reject if
-        // older than 24h (sessions don't carry over between dejours).
-        const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
-        if (isObj(raw.patientContext) && typeof raw.patientContextSetAt === 'number') {
-          const age = Date.now() - raw.patientContextSetAt;
-          if (age >= 0 && age < TWENTY_FOUR_HOURS) {
-            const pc = raw.patientContext as Record<string, unknown>;
-            safe.patientContext = {
-              weightG: clampNum(pc.weightG, 0, 10_000),
-              gaWeeks: clampNum(pc.gaWeeks, 0, 44),
-              postnatalDay: clampNum(pc.postnatalDay, 0, 365),
-            };
-            safe.patientContextSetAt = raw.patientContextSetAt;
-          }
-        }
-
-        // Diagnostic result — persisted in partialize, so it MUST be carried
-        // through migrate too. Without this it was silently dropped on every
-        // version bump (and re-persisted as null), wiping the user's saved
-        // 30-question diagnostic and forcing a retake.
-        if (isObj(raw.lastDiagnosticResult)) safe.lastDiagnosticResult = raw.lastDiagnosticResult;
-
-        return safe as unknown as AppState;
-      },
+      //
+      // Body extracted to the top-level exported `migratePersistedState`
+      // so it can be unit-tested directly (regression guard for the
+      // `lastDiagnosticResult` carry-through, audit2 #139).
+      migrate: migratePersistedState,
       partialize: (state) => ({
         userName: state.userName,
         userEmail: state.userEmail,
@@ -663,6 +584,103 @@ function clampNum(v: unknown, min: number, max: number): number {
   const n = Number(v);
   if (!Number.isFinite(n)) return min;
   return Math.max(min, Math.min(max, n));
+}
+
+/**
+ * Hardened migration for the persisted `bordik-progress` store.
+ *
+ * Tolerant of corrupt or attacker-tampered localStorage: we never trust
+ * persisted JSON blindly — every top-level key is type-guarded and anything
+ * failing the guard is silently dropped (better empty than booby-trapped).
+ *
+ * Exported (rather than inlined into the `persist` config) purely so it can
+ * be unit-tested directly — the inline version was untested and silently
+ * dropped `lastDiagnosticResult` on every version bump until audit2 #139.
+ * Behaviour is identical to the previous inline closure.
+ */
+export function migratePersistedState(persistedState: unknown, version: number): AppState {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const raw = (persistedState ?? {}) as Record<string, any>;
+
+  // v1 → v2 schema shift
+  if (version < 2) {
+    delete raw.quizAttempts;
+    delete raw.quizBestScores;
+    raw.testAttempts = {};
+    raw.courseTestProgress = {};
+    raw.moduleTestAttempts = {};
+    raw.completedModules = [];
+  }
+
+  // v2 → v3: re-validate every key. No structural change, just
+  // typing the trash out.
+  const isStr = (v: unknown): v is string => typeof v === 'string';
+  const isStrArr = (v: unknown): v is string[] =>
+    Array.isArray(v) && v.every(isStr);
+  const isNumArr = (v: unknown): v is number[] =>
+    Array.isArray(v) && v.every((x) => typeof x === 'number' && Number.isFinite(x));
+  const isObj = (v: unknown): v is Record<string, unknown> =>
+    typeof v === 'object' && v !== null && !Array.isArray(v);
+
+  // Drop keys that don't match expected shape. Every defaulting
+  // value here matches AppState's initial state, so the store
+  // remains usable even if the entire persisted blob was junk.
+  const safe: Record<string, unknown> = {};
+  if (isStr(raw.userName))       safe.userName = raw.userName.slice(0, 200);
+  if (isStr(raw.userEmail))      safe.userEmail = raw.userEmail.slice(0, 320);
+  if (isStr(raw.userStatus))     safe.userStatus = raw.userStatus.slice(0, 50);
+  if (isStr(raw.userCountry))    safe.userCountry = raw.userCountry.slice(0, 80);
+  if (isStr(raw.userSpecialty))  safe.userSpecialty = raw.userSpecialty.slice(0, 120);
+  if (isStr(raw.userLanguage))   safe.userLanguage = raw.userLanguage.slice(0, 10);
+  if (isStr(raw.userGoal))       safe.userGoal = raw.userGoal.slice(0, 200);
+  if (isStrArr(raw.completedCourses)) safe.completedCourses = raw.completedCourses;
+  if (isStrArr(raw.startedCourses))   safe.startedCourses = raw.startedCourses;
+  if (isObj(raw.readTopics))          safe.readTopics = raw.readTopics;
+  if (isNumArr(raw.completedModules)) safe.completedModules = raw.completedModules;
+  if (isNumArr(raw.openModules))      safe.openModules = raw.openModules;
+  if (isObj(raw.studyTime))           safe.studyTime = raw.studyTime;
+  if (isObj(raw.testAttempts))        safe.testAttempts = raw.testAttempts;
+  if (isObj(raw.courseTestProgress))  safe.courseTestProgress = raw.courseTestProgress;
+  if (isObj(raw.moduleTestAttempts))  safe.moduleTestAttempts = raw.moduleTestAttempts;
+  if (isStr(raw.toolsQuery))          safe.toolsQuery = raw.toolsQuery.slice(0, 200);
+  if (isStrArr(raw.toolsCategories))  safe.toolsCategories = raw.toolsCategories;
+  if (isStrArr(raw.toolsSubcategories)) safe.toolsSubcategories = raw.toolsSubcategories;
+  if (isStrArr(raw.toolsCountries))   safe.toolsCountries = raw.toolsCountries;
+  if (typeof raw.toolsOnlyAvailable === 'boolean') safe.toolsOnlyAvailable = raw.toolsOnlyAvailable;
+  if (isStrArr(raw.toolsFavourites))  safe.toolsFavourites = raw.toolsFavourites;
+  // Favourites LWW timestamp: keep if present, else default to now so an
+  // existing device's local favourites win the first sync (never silently
+  // replaced by an older server set during rollout of this feature).
+  safe.toolsFavouritesUpdatedAt =
+    typeof raw.toolsFavouritesUpdatedAt === 'number' && Number.isFinite(raw.toolsFavouritesUpdatedAt)
+      ? raw.toolsFavouritesUpdatedAt
+      : Date.now();
+  if (isObj(raw.toolUsage))           safe.toolUsage = raw.toolUsage;
+  if (isStrArr(raw.recentToolIds))    safe.recentToolIds = raw.recentToolIds.slice(0, 10);
+
+  // Patient context — defensive hydrate. Clamp every field; reject if
+  // older than 24h (sessions don't carry over between dejours).
+  const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
+  if (isObj(raw.patientContext) && typeof raw.patientContextSetAt === 'number') {
+    const age = Date.now() - raw.patientContextSetAt;
+    if (age >= 0 && age < TWENTY_FOUR_HOURS) {
+      const pc = raw.patientContext as Record<string, unknown>;
+      safe.patientContext = {
+        weightG: clampNum(pc.weightG, 0, 10_000),
+        gaWeeks: clampNum(pc.gaWeeks, 0, 44),
+        postnatalDay: clampNum(pc.postnatalDay, 0, 365),
+      };
+      safe.patientContextSetAt = raw.patientContextSetAt;
+    }
+  }
+
+  // Diagnostic result — persisted in partialize, so it MUST be carried
+  // through migrate too. Without this it was silently dropped on every
+  // version bump (and re-persisted as null), wiping the user's saved
+  // 30-question diagnostic and forcing a retake.
+  if (isObj(raw.lastDiagnosticResult)) safe.lastDiagnosticResult = raw.lastDiagnosticResult;
+
+  return safe as unknown as AppState;
 }
 
 /** Format seconds to human-readable string */
