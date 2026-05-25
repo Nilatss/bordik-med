@@ -20,12 +20,11 @@ import type { ToolInput, Preset, CalculatorResult } from '@/lib/tools-runners';
 import { InputField } from './InputField';
 import { ResultCard } from './Result';
 
-export function CalculatorBody({ inputs, values, setValues, result }: {
+export function CalculatorBody({ inputs, values, setValues, result, presets }: {
   inputs: ToolInput[];
   values: Record<string, number | boolean | string>;
   setValues: React.Dispatch<React.SetStateAction<Record<string, number | boolean | string>>>;
   result: CalculatorResult | null;
-  // kept в signature для back-compat (unused в текущем рендере)
   presets?: Preset[];
 }) {
   // Group checkboxes visually at the bottom — иначе single checkbox
@@ -53,6 +52,21 @@ export function CalculatorBody({ inputs, values, setValues, result }: {
 
   return (
     <div>
+      {presets && presets.length > 0 && (
+        <div className="mb-4 flex flex-wrap gap-1.5">
+          {presets.map((p, i) => (
+            <button
+              key={i}
+              type="button"
+              title="Заполнить пример"
+              onClick={() => setValues((prev) => ({ ...prev, ...p.values }))}
+              className="px-2.5 py-1 rounded-full border border-[#E2E4EA] bg-[#F5F6F8] text-[12px] text-[#374151] hover:bg-[#ECEEF2] hover:border-[#CBD0DA] transition-colors"
+            >
+              {p.label}
+            </button>
+          ))}
+        </div>
+      )}
       <div className="flex flex-col gap-6">
         {nonCheckboxes.length > 0 && (
           <div className="flex flex-col gap-1.5">
