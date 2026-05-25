@@ -190,6 +190,11 @@ export default function TestsPage() {
                 return m ? `${m[3]}.${m[2]}.${m[1]}` : 'недавно';
               })()}
             </span>
+            {lastDiagnostic.weaknesses.length > 0 && (
+              <span className="font-[var(--font-body)] text-xs text-[#B45309] leading-[1.4]">
+                Слабые темы: {lastDiagnostic.weaknesses.slice(0, 3).join(', ')}
+              </span>
+            )}
           </span>
           <ArrowRight size={14} color="#9CA3AF" />
         </motion.button>
