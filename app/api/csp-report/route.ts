@@ -76,6 +76,16 @@ export async function POST(req: Request) {
     // Read either wire format (kebab from report-uri, camel from the
     // Reporting API) into a flat, length-capped shape.
     const safe = extractSafeFields(r);
+
+    // Skip reports with no actionable data — bots and some browser
+    // extensions POST empty report bodies that only set `disposition`.
+    // Forwarding them to Sentry produces a meaningless "unknown blocked
+    // inline" issue that floods the dashboard (232 users, 235 events).
+    if (!safe.doc && !safe.violated && !safe.effective && !safe.blocked && !safe.sourceFile) {
+      console.warn('[csp-report] skipping empty report (no actionable fields)');
+      continue;
+    }
+
     console.warn('[csp-report]', JSON.stringify(safe));
 
     // Mirror the same report into Sentry so violations are searchable
