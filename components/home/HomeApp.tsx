@@ -49,6 +49,10 @@ const ToolDeepLinkHandler = dynamic(
   () => import('@/components/ToolDeepLinkHandler').then((m) => ({ default: m.ToolDeepLinkHandler })),
   { ssr: false },
 );
+const SectionDeepLinkHandler = dynamic(
+  () => import('@/components/SectionDeepLinkHandler').then((m) => ({ default: m.SectionDeepLinkHandler })),
+  { ssr: false },
+);
 // ────────────────────────────────────────────────────────────────────
 // Lazy-loaded route components.
 // Only the home view (NewsFeed) and the always-visible chrome (Sidebar)
@@ -389,6 +393,7 @@ export default function HomeApp() {
     <div className="flex h-[100dvh] overflow-hidden">
       <SupabaseSyncMounter />
       <ToolDeepLinkHandler />
+      <SectionDeepLinkHandler />
       <Sidebar />
       <div
         className="app-main-wrap flex-1 flex flex-col min-w-0 h-[100dvh] rounded-tl-[32px] rounded-bl-[32px] bg-white overflow-hidden shadow-[0_0_0_1px_#F0F1F5]"
