@@ -65,18 +65,22 @@ export async function flushSyncQueue(
   if (q.length === 0) return { sent: 0, failed: 0 };
   let sent = 0;
   let failed = 0;
-  const remaining: QueueEntry[] = [];
+  const sentTs = new Set<number>();
   for (const entry of q) {
     try {
       const ok = await fetcher(entry.payload);
-      if (ok) sent++;
-      else { failed++; remaining.push(entry); }
+      if (ok) { sent++; sentTs.add(entry.ts); }
+      else failed++;
     } catch {
       failed++;
-      remaining.push(entry);
     }
   }
-  writeQueue(remaining);
+  // Re-read before writing: a payload enqueued DURING this flush (a
+  // concurrent failed push, or a second flush firing from the `online`
+  // event + SW message) must not be clobbered by a stale snapshot. Drop
+  // only the entries we actually sent (matched by ts); keep the rest.
+  const after = readQueue().filter((e) => !sentTs.has(e.ts));
+  writeQueue(after);
   return { sent, failed };
 }
 
