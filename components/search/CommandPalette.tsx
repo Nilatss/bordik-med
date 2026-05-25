@@ -106,8 +106,11 @@ async function loadIcdIndex(): Promise<typeof icdIndex> {
     return icdIndex;
   } catch (err) {
     console.warn('[cmdk] icd index load failed', err);
-    icdIndex = [];
-    return icdIndex;
+    // Do NOT cache the empty result: `icdIndex = []` is truthy, so the
+    // `if (icdIndex)` guard above would return it forever, leaving ICD
+    // search silently empty until a full reload. Leave the cache null so
+    // the next palette open retries the fetch.
+    return [];
   }
 }
 
