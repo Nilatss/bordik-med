@@ -635,10 +635,12 @@ export function migratePersistedState(persistedState: unknown, version: number):
   if (isStr(raw.userGoal))       safe.userGoal = raw.userGoal.slice(0, 200);
   if (isStrArr(raw.completedCourses)) safe.completedCourses = raw.completedCourses;
   if (isStrArr(raw.startedCourses))   safe.startedCourses = raw.startedCourses;
-  if (isObj(raw.readTopics))          safe.readTopics = raw.readTopics;
+  if (isObj(raw.readTopics) && Object.values(raw.readTopics).every(isStrArr))
+    safe.readTopics = raw.readTopics;
   if (isNumArr(raw.completedModules)) safe.completedModules = raw.completedModules;
   if (isNumArr(raw.openModules))      safe.openModules = raw.openModules;
-  if (isObj(raw.studyTime))           safe.studyTime = raw.studyTime;
+  if (isObj(raw.studyTime) && Object.values(raw.studyTime).every((v) => typeof v === 'number' && Number.isFinite(v)))
+    safe.studyTime = raw.studyTime;
   if (isObj(raw.testAttempts))        safe.testAttempts = raw.testAttempts;
   if (isObj(raw.courseTestProgress))  safe.courseTestProgress = raw.courseTestProgress;
   if (isObj(raw.moduleTestAttempts))  safe.moduleTestAttempts = raw.moduleTestAttempts;
