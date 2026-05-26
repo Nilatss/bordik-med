@@ -207,4 +207,76 @@ describe('migratePersistedState', () => {
       expect(out.testAttempts).toEqual({ 'course-1': { level1: { score: 90 } } });
     });
   });
+
+  describe('(e) readTopics deep validation (Bug: inner values were not checked)', () => {
+    it('keeps readTopics when all inner values are string arrays', () => {
+      const out = mig(
+        { readTopics: { 'bio-1': ['tab-1', 'tab-2'] } },
+        5,
+      );
+      expect(out.readTopics).toEqual({ 'bio-1': ['tab-1', 'tab-2'] });
+    });
+
+    it('drops readTopics when any inner value is a non-array (string)', () => {
+      // Before the fix, isObj() let { "bio-1": "bad" } pass through,
+      // causing [...cur, topicId] to spread a string character-by-character.
+      const out = mig(
+        { readTopics: { 'bio-1': 'not-an-array' } },
+        5,
+      );
+      expect(out.readTopics).toBeUndefined();
+    });
+
+    it('drops readTopics when any inner value is a number', () => {
+      const out = mig(
+        { readTopics: { 'bio-1': 42 } },
+        5,
+      );
+      expect(out.readTopics).toBeUndefined();
+    });
+
+    it('drops readTopics when any inner array contains non-strings', () => {
+      const out = mig(
+        { readTopics: { 'bio-1': ['tab-1', 99] } },
+        5,
+      );
+      expect(out.readTopics).toBeUndefined();
+    });
+  });
+
+  describe('(f) studyTime deep validation (Bug: inner values were not checked)', () => {
+    it('keeps studyTime when all inner values are finite numbers', () => {
+      const out = mig(
+        { studyTime: { 'bio-1': 120, 'chem-2': 300 } },
+        5,
+      );
+      expect(out.studyTime).toEqual({ 'bio-1': 120, 'chem-2': 300 });
+    });
+
+    it('drops studyTime when any inner value is a string', () => {
+      // Before the fix, isObj() let { "bio-1": "bad" } pass through,
+      // causing ("bad" || 0) + seconds → string concatenation in addStudyTime.
+      const out = mig(
+        { studyTime: { 'bio-1': 'bad-data' } },
+        5,
+      );
+      expect(out.studyTime).toBeUndefined();
+    });
+
+    it('drops studyTime when any inner value is NaN', () => {
+      const out = mig(
+        { studyTime: { 'bio-1': NaN } },
+        5,
+      );
+      expect(out.studyTime).toBeUndefined();
+    });
+
+    it('drops studyTime when any inner value is Infinity', () => {
+      const out = mig(
+        { studyTime: { 'bio-1': Infinity } },
+        5,
+      );
+      expect(out.studyTime).toBeUndefined();
+    });
+  });
 });
