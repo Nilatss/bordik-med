@@ -414,7 +414,7 @@ export default function HomeApp() {
           </button>
           <picture>
             <source srcSet="/logo-bordik.webp" type="image/webp" />
-            <img src="/logo-bordik.png" alt="Bordik" className="h-[22px] w-auto" />
+            <img src="/logo-bordik.png" alt="Bordik" width={82} height={22} className="h-[22px] w-auto" />
           </picture>
         </div>
         <main id="main-content" className="flex-1 overflow-y-auto bg-white flex flex-col">
