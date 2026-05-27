@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import { headers } from 'next/headers';
 import './globals.css';
 import CopyProtection from '@/components/CopyProtection';
 import PwaRegistrar from '@/components/PwaRegistrar';
@@ -96,11 +97,20 @@ export const viewport: Viewport = {
   viewportFit: 'cover',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Per-request nonce propagated by proxy.ts via x-nonce header.
+  // CSP3: when 'nonce-XYZ' appears in script-src, browsers ignore
+  // 'unsafe-inline' entirely — inline scripts without the matching
+  // nonce are blocked. Reading the header here makes the layout
+  // dynamic (opt-out of static caching), which is required anyway
+  // since every response gets a fresh nonce.
+  const headersList = await headers();
+  const nonce = headersList.get('x-nonce') ?? undefined;
+
   return (
     // lang="ru" is the SSR default — the active locale lives in client
     // storage, so <HtmlLangSync> corrects this attribute to ru/en/uz
@@ -128,6 +138,7 @@ export default function RootLayout({
             exist; this root-level entry is the high-value baseline. */}
         <script
           type="application/ld+json"
+          nonce={nonce}
           dangerouslySetInnerHTML={{ __html: jsonLdHtml({
             '@context': 'https://schema.org',
             '@type': 'EducationalOrganization',

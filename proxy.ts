@@ -149,7 +149,7 @@ export function proxy(req: NextRequest) {
   return res;
 }
 
-function generateNonce(): string {
+export function generateNonce(): string {
   const bytes = new Uint8Array(16);
   crypto.getRandomValues(bytes);
   // base64url, no padding (URL-safe)

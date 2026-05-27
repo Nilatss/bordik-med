@@ -42,6 +42,7 @@
 import { useEffect } from 'react';
 import * as Sentry from '@sentry/nextjs';
 import { onLCP, onCLS, onINP, onFCP, onTTFB, type Metric } from 'web-vitals';
+import { formatVitalsMessage, formatVitalsBreadcrumb } from '@/lib/vitals-format';
 
 // Sample rate for "good" + "needs-improvement" ratings; "poor" always
 // captures. 0.05 → ~5 % of healthy metrics get a Sentry message; the
@@ -95,7 +96,7 @@ function reportMetric(metric: Metric) {
     category: 'web-vitals',
     type: 'info',
     level: metric.rating === 'poor' ? 'warning' : 'info',
-    message: `${metric.name}: ${Math.round(metric.value)} (${metric.rating})`,
+    message: formatVitalsBreadcrumb(metric.name, metric.value, metric.rating),
     data: {
       value: metric.value,
       delta: metric.delta,
@@ -110,7 +111,7 @@ function reportMetric(metric: Metric) {
   if (!shouldCapture) return;
 
   Sentry.captureMessage(
-    `web-vitals · ${metric.name} ${metric.rating} (${Math.round(metric.value)}ms)`,
+    formatVitalsMessage(metric.name, metric.rating, metric.value),
     {
       level: metric.rating === 'poor' ? 'warning' : 'info',
       tags,
