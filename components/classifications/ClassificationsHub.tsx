@@ -802,11 +802,14 @@ function CopyCodeButton({ code }: { code: string }) {
   }, []);
 
   const handleCopy = (): void => {
-    void navigator.clipboard?.writeText(code).then(() => {
-      setCopied(true);
-      if (timerRef.current) clearTimeout(timerRef.current);
-      timerRef.current = setTimeout(() => setCopied(false), 1200);
-    });
+    navigator.clipboard?.writeText(code).then(
+      () => {
+        setCopied(true);
+        if (timerRef.current) clearTimeout(timerRef.current);
+        timerRef.current = setTimeout(() => setCopied(false), 1200);
+      },
+      () => { /* clipboard unavailable or permission denied */ },
+    );
   };
 
   return (
@@ -850,11 +853,14 @@ function NeoplasmCell({ label, code }: { label: string; code?: string | null | u
   }
 
   const handleCopy = (): void => {
-    void navigator.clipboard?.writeText(code).then(() => {
-      setCopied(true);
-      if (timerRef.current) clearTimeout(timerRef.current);
-      timerRef.current = setTimeout(() => setCopied(false), 1200);
-    });
+    navigator.clipboard?.writeText(code).then(
+      () => {
+        setCopied(true);
+        if (timerRef.current) clearTimeout(timerRef.current);
+        timerRef.current = setTimeout(() => setCopied(false), 1200);
+      },
+      () => { /* clipboard unavailable or permission denied */ },
+    );
   };
 
   return (
