@@ -201,7 +201,9 @@ export async function POST(req: Request) {
     ensureRow(id).completed_at = new Date().toISOString();
   }
   for (const [id, lvl] of Object.entries(body.courseTestProgress ?? {})) {
-    ensureRow(id).highest_test_level = lvl;
+    // valibot validated lvl as integer 0-100; cast needed because
+    // Object.entries on `Record<string,number> | {}` loses value precision.
+    ensureRow(id).highest_test_level = lvl as number;
   }
   // Note: completedModules is just a boolean per courseId in our data model;
   // we set it on every course_progress row for that module.

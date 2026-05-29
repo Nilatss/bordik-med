@@ -121,7 +121,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function ToolLandingPage({ params }: PageProps) {
   const { id } = await params;
   const t = readToolMeta(id);
-  if (!t) notFound();
+  if (!t) return notFound();
 
   // schema.org type selection (P0-A7 из аудита):
   //

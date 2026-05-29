@@ -211,7 +211,7 @@ function renderArticleBody(md: string): string {
 export default async function NeonatologyArticlePage({ params }: PageProps) {
   const { id } = await params;
   const a = readArticle(id);
-  if (!a) notFound();
+  if (!a) return notFound();
 
   const topicLabel = TOPIC_LABELS[a.topic] ?? a.topic;
   const levelLabel = LEVEL_LABELS[a.level] ?? a.level;
