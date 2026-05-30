@@ -53,6 +53,9 @@ export default function TestGuard({ active, onViolation, onForceSubmit, violatio
   const [justReturned, setJustReturned] = useState(false);
   const graceTickRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const graceStartRef = useRef<number>(0);
+  // Tracks the 3-second "you returned" banner timeout so the effect cleanup
+  // can clear it on unmount — prevents setState on an unmounted component.
+  const justReturnedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Stop grace countdown helper
   const stopGrace = useCallback(() => {
@@ -93,9 +96,13 @@ export default function TestGuard({ active, onViolation, onForceSubmit, violatio
       graceTickRef.current = null;
       setGraceLeft(0);
       graceStartRef.current = 0;
-      // brief "you returned" banner
+      // brief "you returned" banner — track timer so cleanup can cancel it
       setJustReturned(true);
-      setTimeout(() => setJustReturned(false), 3000);
+      if (justReturnedTimerRef.current) clearTimeout(justReturnedTimerRef.current);
+      justReturnedTimerRef.current = setTimeout(() => {
+        justReturnedTimerRef.current = null;
+        setJustReturned(false);
+      }, 3000);
     };
 
     // Switching tabs / minimising the window / losing focus is now an
@@ -154,6 +161,10 @@ export default function TestGuard({ active, onViolation, onForceSubmit, violatio
       window.removeEventListener('focus', handleFocus);
       window.removeEventListener('keydown', handleKeydown, true);
       stopGrace();
+      if (justReturnedTimerRef.current) {
+        clearTimeout(justReturnedTimerRef.current);
+        justReturnedTimerRef.current = null;
+      }
     };
   }, [active, onViolation, stopGrace]);
 
