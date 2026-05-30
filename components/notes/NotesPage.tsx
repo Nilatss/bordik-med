@@ -150,6 +150,14 @@ export default function NotesPage() {
   }, [editingTitle, editingBody]);
 
   // Audit B-4: flush in-flight edits before switching to another note.
+  // Bug fix: `saveNotes` was called but `setNotes` was not, so React state
+  // stayed stale. Switching back to the note re-seeded editingTitle/Body from
+  // the stale `activeNote` (old values), making the edits appear lost even
+  // though they were already written to localStorage. Fix: also call setNotes
+  // so React state matches localStorage immediately. React state setters are
+  // stable references — safe to call from cleanup.
+  const setNotesRef = useRef(setNotes);
+  setNotesRef.current = setNotes;
   useEffect(() => {
     const outgoingId = activeId;
     return () => {
@@ -166,6 +174,7 @@ export default function NotesPage() {
           : n,
       );
       saveNotes(flushed);
+      setNotesRef.current(flushed);
     };
   }, [activeId]);
 

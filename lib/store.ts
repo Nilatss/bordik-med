@@ -242,7 +242,12 @@ export const useAppStore = create<AppState>()(
       userSpecialty: '',
       userLanguage: 'Русский',
       userGoal: '',
-      showLearning: false,
+      // true so SSR renders SectionCards (eagerly imported, real DOM content)
+      // instead of NewsFeed (dynamic ssr:false) — fixes LCP poor on home route.
+      // showLearning is NOT persisted, so this only affects the initial render
+      // (new users / page reload). Clicking "Главная" calls goHome() which sets
+      // it back to false and shows the news feed.
+      showLearning: true,
       showProfile: false,
       showTools: false,
       showStats: false,
