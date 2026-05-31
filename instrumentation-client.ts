@@ -17,6 +17,7 @@
  * EVERYTHING by default.
  */
 import * as Sentry from '@sentry/nextjs';
+import { isExtensionScriptError, isSwRejectionError } from './lib/sentry-filter';
 
 const enableSentry =
   process.env.NODE_ENV === 'production' || process.env.NEXT_PUBLIC_SENTRY_FORCE_ENABLE === '1';
@@ -93,6 +94,17 @@ if (enableSentry) {
         event.message = event.message.replace(/[\w.+-]+@[\w-]+\.[\w.-]+/g, '[email-redacted]');
       }
 
+      // Bug fix NEXTJS-1F / NEXTJS-19: drop errors whose entire call stack
+      // is inside MetaMask's injected inpage.js — those are extension bugs,
+      // not app bugs, and produce false-positive pages in the Sentry dashboard.
+      if (isExtensionScriptError(event)) return null;
+
+      // Bug fix NEXTJS-12: drop unhandled "Error: Rejected" that originates
+      // from @serwist/window when navigator.serviceWorker.register() is denied
+      // (incognito, CSP, quota). The app degrades gracefully; this rejection
+      // leaks past PwaRegistrar's try/catch via a separate Serwist code path.
+      if (isSwRejectionError(event)) return null;
+
       return event;
     },
 
@@ -110,6 +122,16 @@ if (enableSentry) {
       // Aborted fetches when user navigates away mid-request
       'AbortError',
       'The operation was aborted',
+      // Bug fix NEXTJS-3: React RSC streaming fires "Connection closed." as an
+      // unhandled rejection when the browser closes the streaming connection
+      // (tab close, navigation away, network blip). This is Next.js internals
+      // (react-server-dom-webpack), not app code — the user is already gone.
+      'Connection closed.',
+      // Belt-and-suspenders for MetaMask extension errors (NEXTJS-1F / NEXTJS-19)
+      // The beforeSend frame-filter above handles the structural check; these
+      // string matches handle the rare case where Sentry strips the stack.
+      'Failed to connect to MetaMask',
+      'MetaMask extension not found',
     ],
   });
 }
