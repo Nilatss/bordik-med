@@ -116,6 +116,11 @@ if (enableSentry) {
       // Aborted fetches when user navigates away mid-request
       'AbortError',
       'The operation was aborted',
+      // Bug fix NEXTJS-3: React RSC streaming fires "Connection closed." as an
+      // unhandled rejection when the browser closes the streaming connection
+      // (tab close, navigation away, network blip). This is Next.js internals
+      // (react-server-dom-webpack), not app code — the user is already gone.
+      'Connection closed.',
       // Belt-and-suspenders for MetaMask extension errors (NEXTJS-1F / NEXTJS-19)
       // The beforeSend frame-filter above handles the structural check; these
       // string matches handle the rare case where Sentry strips the stack.
