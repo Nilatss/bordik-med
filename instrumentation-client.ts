@@ -17,7 +17,7 @@
  * EVERYTHING by default.
  */
 import * as Sentry from '@sentry/nextjs';
-import { isExtensionScriptError } from './lib/sentry-filter';
+import { isExtensionScriptError, isSwRejectionError } from './lib/sentry-filter';
 
 const enableSentry =
   process.env.NODE_ENV === 'production' || process.env.NEXT_PUBLIC_SENTRY_FORCE_ENABLE === '1';
@@ -98,6 +98,12 @@ if (enableSentry) {
       // is inside MetaMask's injected inpage.js — those are extension bugs,
       // not app bugs, and produce false-positive pages in the Sentry dashboard.
       if (isExtensionScriptError(event)) return null;
+
+      // Bug fix NEXTJS-12: drop unhandled "Error: Rejected" that originates
+      // from @serwist/window when navigator.serviceWorker.register() is denied
+      // (incognito, CSP, quota). The app degrades gracefully; this rejection
+      // leaks past PwaRegistrar's try/catch via a separate Serwist code path.
+      if (isSwRejectionError(event)) return null;
 
       return event;
     },

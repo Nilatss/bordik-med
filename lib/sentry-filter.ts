@@ -6,6 +6,7 @@
  *
  * Issues fixed:
  *   JAVASCRIPT-NEXTJS-1F / NEXTJS-19 — MetaMask inpage.js extension errors
+ *   JAVASCRIPT-NEXTJS-12             — Serwist SW registration "Rejected"
  */
 
 interface SentryFrame {
@@ -44,5 +45,27 @@ export function isExtensionScriptError(event: SentryEventLike): boolean {
       f.filename?.includes('inpage.js') ||
       f.filename?.startsWith('chrome-extension://') ||
       f.filename?.startsWith('moz-extension://'),
+  );
+}
+
+/**
+ * Returns true for the unhandled "Error: Rejected" that fires when
+ * navigator.serviceWorker.register() is denied (incognito mode, CSP,
+ * quota exhausted). The rejection propagates through @serwist/window
+ * before our PwaRegistrar try/catch can catch it.
+ *
+ * We identify it by: single exception, message === "Rejected", and at
+ * least one frame from @serwist/window.
+ */
+export function isSwRejectionError(event: SentryEventLike): boolean {
+  const exceptions = event.exception?.values ?? [];
+  if (exceptions.length !== 1) return false;
+  if (exceptions[0]?.value !== 'Rejected') return false;
+  const frames = allFrames(event);
+  return frames.some(
+    (f) =>
+      f.filename?.includes('@serwist/window') ||
+      f.filename?.includes('@serwist') ||
+      f.filename?.includes('serwist/window'),
   );
 }

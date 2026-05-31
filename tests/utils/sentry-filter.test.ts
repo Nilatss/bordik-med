@@ -5,7 +5,7 @@
  * and NEXTJS-12 (Serwist SW registration rejection).
  */
 import { describe, it, expect } from 'vitest';
-import { isExtensionScriptError, type SentryEventLike } from '@/lib/sentry-filter';
+import { isExtensionScriptError, isSwRejectionError, type SentryEventLike } from '@/lib/sentry-filter';
 
 // ─── isExtensionScriptError ───────────────────────────────────────────────────
 
@@ -106,5 +106,105 @@ describe('isExtensionScriptError', () => {
       },
     };
     expect(isExtensionScriptError(event)).toBe(false);
+  });
+});
+
+// ─── isSwRejectionError ───────────────────────────────────────────────────────
+
+describe('isSwRejectionError', () => {
+  it('returns true for the canonical Serwist SW registration rejection', () => {
+    const event: SentryEventLike = {
+      exception: {
+        values: [
+          {
+            value: 'Rejected',
+            stacktrace: {
+              frames: [
+                { filename: './node_modules/@serwist/window/dist/index.mjs' },
+                { filename: './node_modules/@serwist/window/dist/index.mjs' },
+                {},
+              ],
+            },
+          },
+        ],
+      },
+    };
+    expect(isSwRejectionError(event)).toBe(true);
+  });
+
+  it('returns false when the message is not exactly "Rejected"', () => {
+    const event: SentryEventLike = {
+      exception: {
+        values: [
+          {
+            value: 'Rejected: quota exceeded',
+            stacktrace: {
+              frames: [
+                { filename: './node_modules/@serwist/window/dist/index.mjs' },
+              ],
+            },
+          },
+        ],
+      },
+    };
+    expect(isSwRejectionError(event)).toBe(false);
+  });
+
+  it('returns false when serwist is not in any frame', () => {
+    const event: SentryEventLike = {
+      exception: {
+        values: [
+          {
+            value: 'Rejected',
+            stacktrace: {
+              frames: [
+                { filename: 'app:///lib/store.ts' },
+              ],
+            },
+          },
+        ],
+      },
+    };
+    expect(isSwRejectionError(event)).toBe(false);
+  });
+
+  it('returns false when there are multiple exceptions', () => {
+    const event: SentryEventLike = {
+      exception: {
+        values: [
+          {
+            value: 'Rejected',
+            stacktrace: {
+              frames: [{ filename: './node_modules/@serwist/window/dist/index.mjs' }],
+            },
+          },
+          {
+            value: 'Rejected',
+            stacktrace: {
+              frames: [{ filename: './node_modules/@serwist/window/dist/index.mjs' }],
+            },
+          },
+        ],
+      },
+    };
+    expect(isSwRejectionError(event)).toBe(false);
+  });
+
+  it('returns false for a normal Rejected promise from app code', () => {
+    const event: SentryEventLike = {
+      exception: {
+        values: [
+          {
+            value: 'Rejected',
+            stacktrace: {
+              frames: [
+                { filename: 'app:///lib/supabase-client.ts' },
+              ],
+            },
+          },
+        ],
+      },
+    };
+    expect(isSwRejectionError(event)).toBe(false);
   });
 });
