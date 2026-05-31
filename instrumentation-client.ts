@@ -17,6 +17,7 @@
  * EVERYTHING by default.
  */
 import * as Sentry from '@sentry/nextjs';
+import { isExtensionScriptError } from './lib/sentry-filter';
 
 const enableSentry =
   process.env.NODE_ENV === 'production' || process.env.NEXT_PUBLIC_SENTRY_FORCE_ENABLE === '1';
@@ -93,6 +94,11 @@ if (enableSentry) {
         event.message = event.message.replace(/[\w.+-]+@[\w-]+\.[\w.-]+/g, '[email-redacted]');
       }
 
+      // Bug fix NEXTJS-1F / NEXTJS-19: drop errors whose entire call stack
+      // is inside MetaMask's injected inpage.js — those are extension bugs,
+      // not app bugs, and produce false-positive pages in the Sentry dashboard.
+      if (isExtensionScriptError(event)) return null;
+
       return event;
     },
 
@@ -110,6 +116,11 @@ if (enableSentry) {
       // Aborted fetches when user navigates away mid-request
       'AbortError',
       'The operation was aborted',
+      // Belt-and-suspenders for MetaMask extension errors (NEXTJS-1F / NEXTJS-19)
+      // The beforeSend frame-filter above handles the structural check; these
+      // string matches handle the rare case where Sentry strips the stack.
+      'Failed to connect to MetaMask',
+      'MetaMask extension not found',
     ],
   });
 }
