@@ -28,22 +28,30 @@ export function BulkOfflineDownload({
 
   useEffect(() => {
     if (!open) return;
+    let cancelled = false;
     setProgress(0);
     setStage('confirm');
     setResult(null);
-    getCacheSizeBytes().then(setEstBytes);
+    getCacheSizeBytes().then((bytes) => {
+      if (!cancelled) setEstBytes(bytes);
+    });
+    return () => { cancelled = true; };
   }, [open]);
 
   const start = async () => {
     setStage('running');
     abortRef.current = new AbortController();
-    const r = await bulkCacheTools(
-      toolIds,
-      (done, total) => setProgress(done / total),
-      abortRef.current.signal,
-    );
-    setResult(r);
-    setStage('done');
+    try {
+      const r = await bulkCacheTools(
+        toolIds,
+        (done, total) => setProgress(done / total),
+        abortRef.current.signal,
+      );
+      setResult(r);
+      setStage('done');
+    } catch {
+      setStage('error');
+    }
   };
 
   const cancel = () => {
@@ -94,6 +102,18 @@ export function BulkOfflineDownload({
             </div>
             <div className="flex justify-end">
               <button onClick={cancel} className={btnSecondaryClass}>Остановить</button>
+            </div>
+          </>
+        )}
+
+        {stage === 'error' && (
+          <>
+            <p className="mt-0 mb-[14px] mx-0 font-[var(--font-body)] text-[13px] text-[#B91C1C] leading-[1.55]">
+              Произошла ошибка при загрузке. Попробуйте ещё раз.
+            </p>
+            <div className="flex justify-end gap-2">
+              <button onClick={onClose} className={btnSecondaryClass}>Закрыть</button>
+              <button onClick={start} className={btnPrimaryClass}>Повторить</button>
             </div>
           </>
         )}
