@@ -16,16 +16,24 @@ export function OfflineBadge({ toolId, label }: { toolId: string; label?: string
 
   useEffect(() => {
     let cancelled = false;
-    isToolCached(toolId).then((c) => {
-      if (!cancelled) setState(c ? 'cached' : 'available');
-    });
+    isToolCached(toolId)
+      .then((c) => {
+        if (!cancelled) setState(c ? 'cached' : 'available');
+      })
+      .catch(() => {
+        if (!cancelled) setState('available');
+      });
     return () => { cancelled = true; };
   }, [toolId]);
 
   const handleSave = async () => {
     setState('saving');
-    const ok = await cacheTool(toolId);
-    setState(ok ? 'cached' : 'available');
+    try {
+      const ok = await cacheTool(toolId);
+      setState(ok ? 'cached' : 'available');
+    } catch {
+      setState('available');
+    }
   };
 
   if (state === 'unknown') return null;
