@@ -82,6 +82,6 @@
     "serwist": "^9.5.11",
     "tailwindcss": "^4",
     "typescript": "^6",
-    "vitest": "^4.1.5"
+    "vitest": "^4.1.7"
   }
 }
