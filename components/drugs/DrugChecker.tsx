@@ -551,7 +551,7 @@ export default function DrugChecker() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3, ease: [0.05, 0.7, 0.1, 1], delay: 0.04 * idx }}
                     className="bg-[#F5F6F8] border border-[#E5E7EB] border-l-[3px] border-l-[var(--sev-accent)] rounded-[14px] overflow-hidden"
-                    // eslint-disable-next-line react/forbid-dom-props -- severity accent for left border
+                     
                     style={{ ['--sev-accent' as string]: meta.accent }}
                   >
                     {hasDetails ? (
@@ -829,11 +829,13 @@ function PoisonCell({ label, code }: { label: string; code?: string | null | und
   }
 
   const handleCopy = (): void => {
-    void navigator.clipboard?.writeText(code).then(() => {
-      setCopied(true);
-      if (timerRef.current) clearTimeout(timerRef.current);
-      timerRef.current = setTimeout(() => setCopied(false), 1200);
-    });
+    void navigator.clipboard?.writeText(code)
+      .then(() => {
+        setCopied(true);
+        if (timerRef.current) clearTimeout(timerRef.current);
+        timerRef.current = setTimeout(() => setCopied(false), 1200);
+      })
+      .catch(() => {});
   };
 
   return (
