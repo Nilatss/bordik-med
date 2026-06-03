@@ -200,7 +200,7 @@ export async function POST(req: Request) {
   for (const id of body.completedCourses ?? []) {
     ensureRow(id).completed_at = new Date().toISOString();
   }
-  for (const [id, lvl] of Object.entries(body.courseTestProgress ?? {})) {
+  for (const [id, lvl] of Object.entries(body.courseTestProgress ?? ({} as Record<string, number>))) {
     ensureRow(id).highest_test_level = lvl;
   }
   // Note: completedModules is just a boolean per courseId in our data model;
