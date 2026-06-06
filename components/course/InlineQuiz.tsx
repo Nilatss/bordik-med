@@ -328,13 +328,16 @@ export default function InlineQuiz({
     collapseTimersRef.current.forEach(clearTimeout);
   }, []);
 
-  // Tick cooldown label every minute while there is a cooldown
+  // Tick cooldown label. Fire at the next 1-minute boundary so the label
+  // stays accurate and the quiz unlocks on time even when less than 60 s
+  // remains (a 60-second fixed interval would overshoot in that case).
   useEffect(() => {
     if (remainingMs <= 0) return;
-    const t = setInterval(() => {
-      setRemainingMs((prev) => Math.max(0, prev - 60_000));
-    }, 60_000);
-    return () => clearInterval(t);
+    const delay = Math.min(remainingMs, 60_000);
+    const t = setTimeout(() => {
+      setRemainingMs((prev) => Math.max(0, prev - delay));
+    }, delay);
+    return () => clearTimeout(t);
   }, [remainingMs]);
 
   const allAnswered = questions.length > 0 && Object.keys(answers).length >= questions.length;
