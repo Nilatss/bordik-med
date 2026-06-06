@@ -486,6 +486,7 @@ export default function Proctoring({
 
       try {
         const lm = await getFaceLandmarker();
+        if (stopped) return;
         const v = videoRef.current;
         if (!v || v.readyState < 2) {
           raf = requestAnimationFrame(loop);
@@ -675,6 +676,7 @@ export default function Proctoring({
 
       try {
         const det = await getObjectDetector();
+        if (stopped) return;
         const v = videoRef.current;
         if (!v || v.readyState < 2) {
           raf = requestAnimationFrame(loop);
