@@ -13,7 +13,7 @@
  * Поддерживает discrete integer bands (CHA₂DS₂-VASc) и continuous
  * cutoffs (BMI / MELD) — auto-detect по integerness.
  */
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useT } from '@/lib/i18n';
 import { useAppStore } from '@/lib/store';
 import type { CalculatorResult, ResultScaleSegment } from '@/lib/tools-runners';
@@ -44,9 +44,17 @@ export function ResultCard({ result }: { result: CalculatorResult }) {
   };
 
   const [copied, setCopied] = React.useState(false);
+  const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => {
+    if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
+  }, []);
   const handleCopy = () => {
     navigator.clipboard?.writeText(formatResultForCopy(result)).then(
-      () => { setCopied(true); setTimeout(() => setCopied(false), 1500); },
+      () => {
+        setCopied(true);
+        if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
+        copyTimerRef.current = setTimeout(() => setCopied(false), 1500);
+      },
       () => { /* clipboard blocked (insecure context / permission denied) */ },
     );
   };

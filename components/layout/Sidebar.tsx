@@ -112,7 +112,7 @@ export default function Sidebar() {
     };
     mq.addEventListener('change', onChange);
     return () => mq.removeEventListener('change', onChange);
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- run-once on mount. The MediaQueryList subscription is global; re-running would attach duplicate listeners.
+     
   }, []);
 
   const activeNav: NavItem = showProfile
@@ -827,6 +827,10 @@ function FeedbackBlock({ t }: { t: (k: string, vars?: Record<string, string | nu
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => {
+    if (resetTimerRef.current) clearTimeout(resetTimerRef.current);
+  }, []);
 
   const addFiles = (incoming: FileList | null) => {
     if (!incoming) return;
@@ -887,7 +891,8 @@ function FeedbackBlock({ t }: { t: (k: string, vars?: Record<string, string | nu
         return;
       }
       setSent(true);
-      setTimeout(reset, 1500);
+      if (resetTimerRef.current) clearTimeout(resetTimerRef.current);
+      resetTimerRef.current = setTimeout(reset, 1500);
     } catch {
       setError(t('sidebar.feedback.errNetwork'));
       setSending(false);
