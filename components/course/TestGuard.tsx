@@ -36,13 +36,10 @@ function isViolationKey(e: KeyboardEvent): boolean {
  * Anti-cheat wrapper for active tests.
  *
  * Flow:
- *  1. `visibilitychange` / window `blur` → start grace countdown (5 s) and
- *     show "away" overlay with timer.
+ *  1. `visibilitychange` / window `blur` → instant violation, show modal.
  *  2. Forbidden keypress (PrintScreen / F12 / Ctrl-C / Ctrl-P / etc.)
  *     → instant violation, no grace.
- *  3. If the user returns before 5 s elapse → cancel timer, no violation.
- *  4. If 5 s elapse away → increment violationCount and show modal.
- *  5. At MAX_VIOLATIONS (3) → call onForceSubmit (test ends with penalty).
+ *  3. At MAX_VIOLATIONS (3) → call onForceSubmit (test ends with penalty).
  *
  * We intentionally do NOT try to go fullscreen in the new design — it clashed
  * with the consent flow and was easy to exit anyway.
@@ -50,7 +47,6 @@ function isViolationKey(e: KeyboardEvent): boolean {
 export default function TestGuard({ active, onViolation, onForceSubmit, violationCount, children }: TestGuardProps) {
   const [showViolation, setShowViolation] = useState(false);
   const [graceLeft, setGraceLeft] = useState(0);   // seconds remaining, 0 = not running
-  const [justReturned, setJustReturned] = useState(false);
   const graceTickRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const graceStartRef = useRef<number>(0);
 
@@ -66,37 +62,6 @@ export default function TestGuard({ active, onViolation, onForceSubmit, violatio
 
   useEffect(() => {
     if (!active) return;
-
-    const startGrace = () => {
-      if (graceTickRef.current) return; // already running
-      graceStartRef.current = Date.now();
-      setGraceLeft(Math.ceil(GRACE_MS / 1000));
-
-      graceTickRef.current = setInterval(() => {
-        const elapsed = Date.now() - graceStartRef.current;
-        const secondsLeft = Math.max(0, Math.ceil((GRACE_MS - elapsed) / 1000));
-        setGraceLeft(secondsLeft);
-        if (elapsed >= GRACE_MS) {
-          // Grace expired → real violation
-          if (graceTickRef.current) clearInterval(graceTickRef.current);
-          graceTickRef.current = null;
-          setGraceLeft(0);
-          onViolation();
-          setShowViolation(true);
-        }
-      }, 200);
-    };
-
-    const cancelGrace = () => {
-      if (!graceTickRef.current) return;
-      clearInterval(graceTickRef.current);
-      graceTickRef.current = null;
-      setGraceLeft(0);
-      graceStartRef.current = 0;
-      // brief "you returned" banner
-      setJustReturned(true);
-      setTimeout(() => setJustReturned(false), 3000);
-    };
 
     // Switching tabs / minimising the window / losing focus is now an
     // instant violation — no grace countdown. The user explicitly asked
