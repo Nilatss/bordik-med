@@ -55,6 +55,7 @@ export default function ApgarTimer({ onClose }: { onClose: () => void }) {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const lastBeepRef = useRef<number>(-1);
+  const beepTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const titleId = useId();
   const scoringTitleId = useId();
 
@@ -104,7 +105,13 @@ export default function ApgarTimer({ onClose }: { onClose: () => void }) {
   // Release the AudioContext on unmount. Browsers cap concurrent contexts
   // (~6 in Chrome); repeatedly opening/closing the Apgar timer in one
   // session would otherwise leak them until beeps go silent.
+  // Also clear any pending delayed-beep timer so it cannot fire after unmount
+  // and create a new AudioContext outside the component's lifecycle.
   useEffect(() => () => {
+    if (beepTimerRef.current !== null) {
+      clearTimeout(beepTimerRef.current);
+      beepTimerRef.current = null;
+    }
     audioCtxRef.current?.close().catch(() => { /* already closed / unsupported */ });
     audioCtxRef.current = null;
   }, []);
@@ -117,7 +124,7 @@ export default function ApgarTimer({ onClose }: { onClose: () => void }) {
     else if (markSec === 300) beep(880, 350); // A5 longer
     else if (markSec === 600) {
       beep(880, 200);
-      setTimeout(() => beep(1100, 400), 250); // C#6 climbing
+      beepTimerRef.current = setTimeout(() => beep(1100, 400), 250); // C#6 climbing
     }
   }, [beep, triggerHaptic]);
 

@@ -58,6 +58,7 @@ export function lmsAt(points: LmsPoint[], age: number): LmsPoint | null {
     const b = points[i];
     if (!a || !b) continue;
     if (age >= a.age && age <= b.age) {
+      if (b.age === a.age) return { age, M: a.M, S: a.S, ...(a.L !== undefined && { L: a.L }) }; // degenerate segment, avoid division by zero
       const t = (age - a.age) / (b.age - a.age);
       return {
         age,

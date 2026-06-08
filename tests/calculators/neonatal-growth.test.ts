@@ -61,6 +61,23 @@ describe('lmsAt — linear interpolation', () => {
   it('returns null on empty array', () => {
     expect(lmsAt([], 30)).toBeNull();
   });
+
+  it('returns finite M and S (not NaN) for degenerate segment with duplicate ages', () => {
+    // If two consecutive points share the same age value, the denominator
+    // (b.age - a.age) is zero. The guard returns a.M / a.S instead of NaN.
+    const degenerate: LmsPoint[] = [
+      { age: 28, M: 1108, S: 0.135 },
+      { age: 32, M: 1782, S: 0.135 },
+      { age: 32, M: 1900, S: 0.140 }, // duplicate age — degenerate segment
+      { age: 40, M: 3496, S: 0.120 },
+    ];
+    const r = lmsAt(degenerate, 32);
+    expect(r).not.toBeNull();
+    expect(Number.isFinite(r!.M)).toBe(true);
+    expect(Number.isFinite(r!.S)).toBe(true);
+    expect(Number.isNaN(r!.M)).toBe(false);
+    expect(Number.isNaN(r!.S)).toBe(false);
+  });
 });
 
 describe('zScoreFromValue / valueFromZ — roundtrip', () => {

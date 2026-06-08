@@ -448,7 +448,7 @@ function buildFinalizePrompt(history: Turn[], modules: ModuleSummary[]): string 
 
 ${USER_DATA_INSTRUCTION}
 
-Статистика: ${correctCount}/${history.length} верных ответов (${Math.round((correctCount / history.length) * 100)}%).
+Статистика: ${correctCount}/${history.length} верных ответов (${history.length > 0 ? Math.round((correctCount / history.length) * 100) : 0}%).
 
 <user_data>
 История ответов:
