@@ -69,6 +69,7 @@ export function thresholdAt(points: ThresholdPoint[], hour: number): number | nu
     const b = points[i];
     if (!a || !b) continue;
     if (hour >= a.hour && hour <= b.hour) {
+      if (b.hour === a.hour) return a.tsb; // degenerate segment, avoid division by zero
       const t = (hour - a.hour) / (b.hour - a.hour);
       return a.tsb + (b.tsb - a.tsb) * t;
     }

@@ -56,6 +56,21 @@ describe('thresholdAt — interpolation', () => {
     expect(thresholdAt([], 24)).toBeNull();
   });
 
+  it('returns finite value (not NaN) for degenerate segment with duplicate hours', () => {
+    // If two consecutive points share the same hour value, the denominator
+    // (b.hour - a.hour) is zero. The guard returns a.tsb instead of NaN.
+    const degenerate: ThresholdPoint[] = [
+      { hour: 0, tsb: 8.0 },
+      { hour: 24, tsb: 12.0 },
+      { hour: 24, tsb: 14.0 }, // duplicate hour — degenerate segment
+      { hour: 48, tsb: 15.0 },
+    ];
+    const result = thresholdAt(degenerate, 24);
+    expect(result).not.toBeNull();
+    expect(Number.isFinite(result!)).toBe(true);
+    expect(Number.isNaN(result)).toBe(false);
+  });
+
   it('produces monotonically non-decreasing values for AAP curves', () => {
     for (let h = 0; h <= 168; h += 6) {
       const v1 = thresholdAt(PT_CURVE, h);
