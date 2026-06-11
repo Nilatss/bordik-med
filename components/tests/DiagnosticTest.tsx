@@ -154,24 +154,28 @@ export default function DiagnosticTest({ onClose }: { onClose: () => void }) {
           const reader = r.body.pipeThrough(new TextDecoderStream()).getReader();
           let buf = '';
           let finalResult: FinalResult | null = null;
-          for (;;) {
-            const { done, value } = await reader.read();
-            if (done) break;
-            buf += value;
-            let idx;
-            while ((idx = buf.indexOf('\n')) >= 0) {
-              const line = buf.slice(0, idx).trim();
-              buf = buf.slice(idx + 1);
-              if (!line) continue;
-              try {
-                const evt = JSON.parse(line) as { type: string; text?: string; result?: FinalResult };
-                if (evt.type === 'chunk' && typeof evt.text === 'string') {
-                  setStreamingPreview(evt.text);
-                } else if (evt.type === 'done' && evt.result) {
-                  finalResult = evt.result;
-                }
-              } catch { /* skip malformed line */ }
+          try {
+            for (;;) {
+              const { done, value } = await reader.read();
+              if (done) break;
+              buf += value;
+              let idx;
+              while ((idx = buf.indexOf('\n')) >= 0) {
+                const line = buf.slice(0, idx).trim();
+                buf = buf.slice(idx + 1);
+                if (!line) continue;
+                try {
+                  const evt = JSON.parse(line) as { type: string; text?: string; result?: FinalResult };
+                  if (evt.type === 'chunk' && typeof evt.text === 'string') {
+                    setStreamingPreview(evt.text);
+                  } else if (evt.type === 'done' && evt.result) {
+                    finalResult = evt.result;
+                  }
+                } catch { /* skip malformed line */ }
+              }
             }
+          } finally {
+            reader.cancel().catch(() => { /* already closed */ });
           }
           if (finalResult) {
             setFinal(finalResult);
@@ -245,7 +249,7 @@ export default function DiagnosticTest({ onClose }: { onClose: () => void }) {
   };
 
   const handleNext = () => {
-    if (!current || picked == null) return;
+    if (phase !== 'reviewing' || !current || picked == null) return;
     const turn: Turn = {
       question: current.question,
       options: current.options,
