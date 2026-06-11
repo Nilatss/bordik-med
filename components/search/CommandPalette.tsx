@@ -75,6 +75,7 @@ const SEARCH_OPTS = {
 let toolsIndex: MiniSearch | null = null;
 let toolsIndexLoading: Promise<MiniSearch | null> | null = null;
 let icdIndex: { code: string; title: string; chapter: string }[] | null = null;
+let icdIndexLoading: Promise<{ code: string; title: string; chapter: string }[] | null> | null = null;
 
 async function loadToolsIndex(): Promise<MiniSearch | null> {
   if (toolsIndex) return toolsIndex;
@@ -98,20 +99,26 @@ async function loadToolsIndex(): Promise<MiniSearch | null> {
 
 async function loadIcdIndex(): Promise<typeof icdIndex> {
   if (icdIndex) return icdIndex;
-  try {
-    const r = await fetch('/icd10-starter.json', { cache: 'force-cache' });
-    if (!r.ok) throw new Error(`HTTP ${r.status}`);
-    const data = await r.json();
-    icdIndex = data.codes ?? [];
-    return icdIndex;
-  } catch (err) {
-    console.warn('[cmdk] icd index load failed', err);
-    // Do NOT cache the empty result: `icdIndex = []` is truthy, so the
-    // `if (icdIndex)` guard above would return it forever, leaving ICD
-    // search silently empty until a full reload. Leave the cache null so
-    // the next palette open retries the fetch.
-    return [];
-  }
+  if (icdIndexLoading) return icdIndexLoading;
+  icdIndexLoading = (async () => {
+    try {
+      const r = await fetch('/icd10-starter.json', { cache: 'force-cache' });
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      const data = await r.json();
+      icdIndex = data.codes ?? [];
+      return icdIndex;
+    } catch (err) {
+      console.warn('[cmdk] icd index load failed', err);
+      // Do NOT cache the empty result: `icdIndex = []` is truthy, so the
+      // `if (icdIndex)` guard above would return it forever, leaving ICD
+      // search silently empty until a full reload. Leave the cache null so
+      // the next palette open retries the fetch.
+      return [];
+    } finally {
+      icdIndexLoading = null;
+    }
+  })();
+  return icdIndexLoading;
 }
 
 // Минимальная карта id калькулятора → краткие метаданные. Грузим только
