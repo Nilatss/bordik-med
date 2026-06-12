@@ -82,7 +82,7 @@ export async function DELETE(req: Request) {
     const cascadeHash = (rpcData as { hash?: string } | null)?.hash;
 
     /* ── 2. Delete auth.users row via admin client (outside RPC transaction). */
-    const errors: string[] = [];
+    let authRowDeleted = true;
     const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
     const SB_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
     if (SERVICE_KEY && SB_URL) {
@@ -90,19 +90,28 @@ export async function DELETE(req: Request) {
         const { createClient } = await import('@supabase/supabase-js');
         const admin = createClient(SB_URL, SERVICE_KEY, { auth: { persistSession: false } });
         const { error: adminErr } = await admin.auth.admin.deleteUser(userId);
-        if (adminErr) errors.push(`auth.users: ${adminErr.message}`);
+        if (adminErr) {
+          authRowDeleted = false;
+          // Log raw reason server-side only — do NOT return Supabase/driver
+          // messages to the client (they may leak table/column names).
+          log.error({ event: 'delete_auth_user_failed', code: adminErr.code, message: adminErr.message?.slice(0, 200) });
+        }
       } catch (err) {
-        errors.push(`auth-client: ${(err as Error).message}`);
+        authRowDeleted = false;
+        log.error({ event: 'delete_auth_client_threw', message: (err as Error).message?.slice(0, 200) });
       }
     } else {
-      errors.push('service-role-key-missing: contact privacy@bordik.app to finish auth row removal');
+      authRowDeleted = false;
+      log.warn({ event: 'delete_auth_skipped', reason: 'service-role-key-missing' });
     }
 
     /* ── 3. Sign session out so cached cookies become invalid. */
     await sb.auth.signOut();
 
-    if (errors.length > 0) {
-      return apiError('internal-error', 207, { partial: true, errors, hash: cascadeHash });
+    if (!authRowDeleted) {
+      // Cascade RPC succeeded (user data wiped), but the auth.users row
+      // could not be removed — user should contact support for full cleanup.
+      return apiError('internal-error', 207, { partial: true, reason: 'auth-row-pending', hash: cascadeHash });
     }
     return apiOk({ hash: cascadeHash });
   });
