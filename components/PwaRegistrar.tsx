@@ -90,6 +90,11 @@ export default function PwaRegistrar() {
     if (process.env.NODE_ENV !== 'production') return;
 
     let checkInterval: ReturnType<typeof setInterval> | null = null;
+    // Keep references so the cleanup can remove the updatefound listener from
+    // the registration object. The reg is created inside the async onReady()
+    // closure, so the effect cleanup can't access it directly without these.
+    let regForCleanup: ServiceWorkerRegistration | null = null;
+    let updateFoundHandler: (() => void) | null = null;
 
     const onWaiting = async (sw: ServiceWorker) => {
       // Decide whether we should actually show the toast based on
@@ -116,12 +121,13 @@ export default function PwaRegistrar() {
           scope: '/',
           updateViaCache: 'none',
         });
+        regForCleanup = reg;
 
         // If there's a waiting worker right now (page reload while new SW is ready)
         if (reg.waiting) onWaiting(reg.waiting);
 
         // Listen for new SWs being installed
-        reg.addEventListener('updatefound', () => {
+        updateFoundHandler = () => {
           const installing = reg.installing;
           if (!installing) return;
           installing.addEventListener('statechange', () => {
@@ -132,7 +138,8 @@ export default function PwaRegistrar() {
               onWaiting(installing);
             }
           });
-        });
+        };
+        reg.addEventListener('updatefound', updateFoundHandler);
 
         // Hourly background check
         checkInterval = setInterval(() => reg.update().catch(() => {}), 60 * 60 * 1000);
@@ -174,6 +181,9 @@ export default function PwaRegistrar() {
       if (checkInterval) clearInterval(checkInterval);
       navigator.serviceWorker.removeEventListener('controllerchange', onControllerChange);
       navigator.serviceWorker.removeEventListener('message', onMessage);
+      if (regForCleanup && updateFoundHandler) {
+        regForCleanup.removeEventListener('updatefound', updateFoundHandler);
+      }
     };
   }, []);
 
