@@ -17,22 +17,27 @@ export default function UserMenu() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let cancelled = false;
     const sb = getSupabaseBrowserClient();
     if (!sb) { setLoading(false); return; }
     sb.auth.getUser()
       .then(({ data: { user } }) => {
+        if (cancelled) return;
         setEmail(user?.email ?? null);
         setLoading(false);
       })
       .catch(() => {
         // Network error or auth service unavailable — settle to signed-out
         // state so `loading` never stays `true` and the sidebar renders.
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       });
     const { data: sub } = sb.auth.onAuthStateChange((_evt, session) => {
       setEmail(session?.user?.email ?? null);
     });
-    return () => sub.subscription.unsubscribe();
+    return () => {
+      cancelled = true;
+      sub.subscription.unsubscribe();
+    };
   }, []);
 
   if (loading) return null;
