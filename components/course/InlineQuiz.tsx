@@ -100,12 +100,16 @@ function loadState(courseId: string): SavedState {
 
 function saveState(courseId: string, state: SavedState) {
   if (typeof window === 'undefined') return;
-  localStorage.setItem(storageKey(courseId), JSON.stringify(state));
+  try {
+    localStorage.setItem(storageKey(courseId), JSON.stringify(state));
+  } catch { /* private mode / quota exceeded — quiz still works, just won't persist */ }
 }
 
 function clearState(courseId: string) {
   if (typeof window === 'undefined') return;
-  localStorage.removeItem(storageKey(courseId));
+  try {
+    localStorage.removeItem(storageKey(courseId));
+  } catch { /* private mode — ignore */ }
 }
 
 /* ═══ Countdown label for cooldown ═══ */
