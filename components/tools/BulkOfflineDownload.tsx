@@ -31,7 +31,7 @@ export function BulkOfflineDownload({
     setProgress(0);
     setStage('confirm');
     setResult(null);
-    getCacheSizeBytes().then(setEstBytes);
+    getCacheSizeBytes().then(setEstBytes).catch(() => { /* Cache API unavailable — estimate stays 0 */ });
   }, [open]);
 
   const start = async () => {
