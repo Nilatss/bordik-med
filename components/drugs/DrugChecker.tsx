@@ -105,6 +105,7 @@ export default function DrugChecker() {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [drugTable, setDrugTable] = useState<DrugTableEntry[] | null>(null);
+  const [drugTableError, setDrugTableError] = useState(false);
   const [showPoisonCodes, setShowPoisonCodes] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -144,12 +145,12 @@ export default function DrugChecker() {
     void (async () => {
       try {
         const r = await fetch('/icd10cm-drug-table.json?v=1.0.0', { cache: 'force-cache' });
-        if (!r.ok) return;
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
         const json = (await r.json()) as DrugTableEntry[];
         if (!cancelled) setDrugTable(json);
       } catch (e) {
-        // Audit B-9: surface silently-swallowed fetch failures.
         log.warn({ event: 'icd10_drug_table_fetch_failed', error: String(e).slice(0, 200) });
+        if (!cancelled) setDrugTableError(true);
       }
     })();
     return () => { cancelled = true; };
@@ -551,7 +552,7 @@ export default function DrugChecker() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3, ease: [0.05, 0.7, 0.1, 1], delay: 0.04 * idx }}
                     className="bg-[#F5F6F8] border border-[#E5E7EB] border-l-[3px] border-l-[var(--sev-accent)] rounded-[14px] overflow-hidden"
-                    // eslint-disable-next-line react/forbid-dom-props -- severity accent for left border
+                     
                     style={{ ['--sev-accent' as string]: meta.accent }}
                   >
                     {hasDetails ? (
@@ -664,7 +665,11 @@ export default function DrugChecker() {
                 className="overflow-hidden"
               >
                 <div className="border-t border-[#E5E7EB] bg-white px-[18px] py-4">
-                  {!drugTable ? (
+                  {drugTableError ? (
+                    <div className="text-[13px] text-[#991B1B]">
+                      Не удалось загрузить CMS Drug Table. Обновите страницу и попробуйте снова.
+                    </div>
+                  ) : !drugTable ? (
                     <div className="text-[13px] text-[#6B7280]">Загружаем CMS Drug Table…</div>
                   ) : (
                     <div className="flex flex-col gap-4">
@@ -833,7 +838,7 @@ function PoisonCell({ label, code }: { label: string; code?: string | null | und
       setCopied(true);
       if (timerRef.current) clearTimeout(timerRef.current);
       timerRef.current = setTimeout(() => setCopied(false), 1200);
-    });
+    }).catch(() => { /* clipboard permission denied — no visual feedback */ });
   };
 
   return (
