@@ -130,7 +130,7 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
 
       const { data: snapshot } = await sb.from('tools').select('*').eq('id', id).maybeSingle();
       if (snapshot) {
-        await sb.from('tools_versions').insert({
+        const { error: versionErr } = await sb.from('tools_versions').insert({
           tool_id: id,
           version: snapshot.version ?? '1.0.0',
           changelog_md: 'Approved via admin UI',
@@ -139,6 +139,9 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
           approved_by: user.id,
           payload: snapshot,
         });
+        if (versionErr) {
+          console.error('[admin/tools] tools_versions insert failed:', versionErr.message);
+        }
       }
       return apiOk();
     }
