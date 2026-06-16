@@ -98,14 +98,36 @@ function loadState(courseId: string): SavedState {
   }
 }
 
-function saveState(courseId: string, state: SavedState) {
+/**
+ * Exported for unit testing only.
+ * Bug fix: missing try-catch caused QuotaExceededError (full storage) to
+ * propagate from the pick() event handler and crash the quiz component.
+ */
+export function saveQuizState(courseId: string, state: SavedState): void {
   if (typeof window === 'undefined') return;
-  localStorage.setItem(storageKey(courseId), JSON.stringify(state));
+  try {
+    localStorage.setItem(storageKey(courseId), JSON.stringify(state));
+  } catch { /* quota exceeded or private-browsing restriction — silently discard */ }
+}
+
+function saveState(courseId: string, state: SavedState) {
+  saveQuizState(courseId, state);
+}
+
+/**
+ * Exported for unit testing only.
+ * Bug fix: missing try-catch caused removeItem to throw in Safari private
+ * browsing, leaving the quiz state inconsistent after a user-initiated reset.
+ */
+export function clearQuizState(courseId: string): void {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.removeItem(storageKey(courseId));
+  } catch { /* private-browsing restriction — silently ignore */ }
 }
 
 function clearState(courseId: string) {
-  if (typeof window === 'undefined') return;
-  localStorage.removeItem(storageKey(courseId));
+  clearQuizState(courseId);
 }
 
 /* ═══ Countdown label for cooldown ═══ */
