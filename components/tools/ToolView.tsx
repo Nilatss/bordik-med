@@ -181,38 +181,44 @@ export default function ToolView({ toolId }: { toolId: string }) {
         return r;
       } catch { return null; }
     }
-    let total = 0;
-    for (const inp of runner.inputs) {
-      if (inp.type === 'checkbox' && values[inp.id] === true && inp.points) {
-        total += inp.points;
-      } else if (inp.type === 'select' && inp.options) {
-        const opt = inp.options.find((o) => String(o.value) === String(values[inp.id]));
-        if (opt?.points) total += opt.points;
+    // Bug #2 fix: wrap score-kind path in try-catch like the calculator-kind
+    // path above. If findBand() throws (e.g. empty bands on a misconfigured
+    // runner), the exception would propagate from useMemo to React and crash
+    // the component tree. Returning null lets the UI stay mounted.
+    try {
+      let total = 0;
+      for (const inp of runner.inputs) {
+        if (inp.type === 'checkbox' && values[inp.id] === true && inp.points) {
+          total += inp.points;
+        } else if (inp.type === 'select' && inp.options) {
+          const opt = inp.options.find((o) => String(o.value) === String(values[inp.id]));
+          if (opt?.points) total += opt.points;
+        }
       }
-    }
-    const band = findBand(runner.bands, total);
-    const sortedBands = [...runner.bands].sort((a, b) => a.min - b.min);
-    return {
-      value: String(total),
-      unit: `из ${runner.maxScore}`,
-      interpretation: `${band.label} · ${band.description}`,
-      color: band.color,
-      scale: {
-        segments: sortedBands.map((b) => ({
-          min: b.min,
-          max: b.max,
-          label: b.label,
-          color: b.color,
-        })),
-        current: total,
+      const band = findBand(runner.bands, total);
+      const sortedBands = [...runner.bands].sort((a, b) => a.min - b.min);
+      return {
+        value: String(total),
         unit: `из ${runner.maxScore}`,
-      },
-      details: band.details,
-      actions: band.actions,
-      caveats: runner.caveats,
-      related: runner.related,
-      relatedCourses: runner.relatedCourses,
-    };
+        interpretation: `${band.label} · ${band.description}`,
+        color: band.color,
+        scale: {
+          segments: sortedBands.map((b) => ({
+            min: b.min,
+            max: b.max,
+            label: b.label,
+            color: b.color,
+          })),
+          current: total,
+          unit: `из ${runner.maxScore}`,
+        },
+        details: band.details,
+        actions: band.actions,
+        caveats: runner.caveats,
+        related: runner.related,
+        relatedCourses: runner.relatedCourses,
+      };
+    } catch { return null; }
   }, [runner, values]);
 
   // P0-A8 «время до результата»: при первом успешном compute для
