@@ -33,7 +33,14 @@ export default async function AdminLayout({ children }: { children: ReactNode })
     );
   }
 
-  const { data: { user } } = await sb.auth.getUser();
+  let user;
+  try {
+    const { data, error } = await sb.auth.getUser();
+    if (error) redirect('/auth/login?next=/admin');
+    user = data.user;
+  } catch {
+    redirect('/auth/login?next=/admin');
+  }
   if (!user) redirect('/auth/login?next=/admin');
 
   // app_metadata can only be set via service-role key, so it's safe to
