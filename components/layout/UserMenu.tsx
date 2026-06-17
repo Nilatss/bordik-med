@@ -61,8 +61,14 @@ export default function UserMenu() {
     // localStorage / IndexedDB / Cache Storage / Service Worker. Critical
     // for shared/clinical devices where the next user must not see prior
     // session data. See lib/full-logout.ts for the full sequence.
-    const { fullLogout } = await import('@/lib/full-logout');
-    await fullLogout();
+    try {
+      const { fullLogout } = await import('@/lib/full-logout');
+      await fullLogout();
+    } catch {
+      // Chunk load failure or unexpected error: force navigation anyway so
+      // the user is never stuck on a "button does nothing" experience.
+      location.replace('/');
+    }
   };
 
   return (
