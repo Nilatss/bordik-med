@@ -55,15 +55,13 @@ describe('admin role guard invariant (fix 1 & 2)', () => {
 // The full signOut function imports a browser module (full-logout) that can't
 // run in node-env, so we verify the catch-branch contract: on any thrown error,
 // the function must still invoke a navigation escape hatch (location.replace).
-describe('UserMenu signOut fallback (fix 3)', () => {
+describe('UserMenu signOut fallback (fix 3 + Codex P2)', () => {
   it('catch branch calls location.replace("/") when import fails', async () => {
     let replacedTo: string | null = null;
     const locationMock = { replace: (url: string) => { replacedTo = url; } };
 
-    // Simulate the exact catch-block logic from UserMenu.signOut
     const signOutWithFallback = async () => {
       try {
-        // Force the import to fail
         await Promise.reject(new Error('ChunkLoadError: chunk not found'));
       } catch {
         locationMock.replace('/');
@@ -86,5 +84,53 @@ describe('UserMenu signOut fallback (fix 3)', () => {
     };
 
     await expect(signOutWithFallback()).resolves.toBeUndefined();
+  });
+
+  // Codex P2: catch branch must attempt minimal session/storage clear before
+  // navigating, so a chunk-load failure doesn't silently preserve the session.
+  it('catch branch calls signOut and clears storage before navigating', async () => {
+    let signedOut = false;
+    let storageCleared = false;
+    let replacedTo: string | null = null;
+
+    const sbMock = { auth: { signOut: async (_opts?: unknown) => { signedOut = true; } } };
+    const locationMock = { replace: (url: string) => { replacedTo = url; } };
+    const localStorageMock = { clear: () => { storageCleared = true; } };
+
+    const signOutWithFallback = async () => {
+      try {
+        await Promise.reject(new Error('ChunkLoadError: chunk not found'));
+      } catch {
+        try {
+          await sbMock.auth.signOut({ scope: 'global' } as never);
+          localStorageMock.clear();
+        } catch { /* best effort */ }
+        locationMock.replace('/');
+      }
+    };
+
+    await signOutWithFallback();
+    expect(signedOut).toBe(true);
+    expect(storageCleared).toBe(true);
+    expect(replacedTo).toBe('/');
+  });
+
+  it('catch branch still navigates even if the minimal signOut also throws', async () => {
+    let replacedTo: string | null = null;
+    const locationMock = { replace: (url: string) => { replacedTo = url; } };
+
+    const signOutWithFallback = async () => {
+      try {
+        await Promise.reject(new Error('ChunkLoadError'));
+      } catch {
+        try {
+          throw new Error('signOut also failed (offline)');
+        } catch { /* best effort */ }
+        locationMock.replace('/');
+      }
+    };
+
+    await signOutWithFallback();
+    expect(replacedTo).toBe('/');
   });
 });

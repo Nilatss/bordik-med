@@ -65,8 +65,17 @@ export default function UserMenu() {
       const { fullLogout } = await import('@/lib/full-logout');
       await fullLogout();
     } catch {
-      // Chunk load failure or unexpected error: force navigation anyway so
-      // the user is never stuck on a "button does nothing" experience.
+      // Chunk load failure or unexpected error: the full cleanup sequence
+      // didn't run, so do a minimal best-effort clear with the already-loaded
+      // Supabase client before navigating away. Without this the session
+      // cookie and localStorage stay intact and the next page load re-auths
+      // the same user — the logout appears to work but doesn't.
+      try {
+        const sb = getSupabaseBrowserClient();
+        if (sb) await sb.auth.signOut({ scope: 'global' });
+        localStorage.clear();
+        sessionStorage.clear();
+      } catch { /* best effort — network may be down */ }
       location.replace('/');
     }
   };
