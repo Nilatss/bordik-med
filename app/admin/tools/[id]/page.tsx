@@ -62,9 +62,18 @@ export default async function AdminToolEditPage({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     .returns<any[]>();
 
-  // Current user role (from JWT app_metadata)
-  const { data: { user } } = await sb.auth.getUser();
-  const role = (user?.app_metadata?.editor_role as string | undefined) ?? '';
+  // Current user role (from JWT app_metadata).
+  // The admin layout already verified auth; this second call is for the role
+  // only. Wrap in try/catch so a transient Supabase error doesn't crash the
+  // server component — the layout's auth gate is the real guard.
+  let role = '';
+  try {
+    const { data: { user } } = await sb.auth.getUser();
+    role = (user?.app_metadata?.editor_role as string | undefined) ?? '';
+  } catch {
+    // auth service temporarily unreachable; layout already verified the
+    // session so we can safely render with empty role (read-only view).
+  }
 
   return (
     <div>
