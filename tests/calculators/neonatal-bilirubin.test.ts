@@ -67,6 +67,89 @@ describe('thresholdAt — interpolation', () => {
   });
 });
 
+/**
+ * Boundary / NaN-guard tests for thresholdAt.
+ *
+ * Audit-3 NaN-guard: a future curve-data edit could insert two anchors
+ * with the same `hour`, making the interpolation denominator zero
+ * (0/0 = NaN, silently propagated into phototherapy/exchange thresholds).
+ * With the current sorted-data + bookend short-circuits the guard is
+ * unreachable through normal flow, but every weird shape we can throw
+ * at the function must still yield a finite number — never NaN.
+ */
+describe('thresholdAt — boundary / NaN-guard', () => {
+  it('single-point curve returns that point for any hour', () => {
+    const single: ThresholdPoint[] = [{ hour: 24, tsb: 12.5 }];
+    expect(thresholdAt(single, 0)).toBe(12.5);
+    expect(thresholdAt(single, 24)).toBe(12.5);
+    expect(thresholdAt(single, 100)).toBe(12.5);
+  });
+
+  it('two-point curve with same hour stays finite (bookend short-circuit)', () => {
+    const flat: ThresholdPoint[] = [
+      { hour: 24, tsb: 12.0 },
+      { hour: 24, tsb: 14.0 },
+    ];
+    const at24 = thresholdAt(flat, 24);
+    expect(at24).not.toBeNull();
+    expect(Number.isFinite(at24!)).toBe(true);
+  });
+
+  it('curve with degenerate middle segment is finite at every query', () => {
+    const degenerate: ThresholdPoint[] = [
+      { hour: 0, tsb: 8.0 },
+      { hour: 24, tsb: 12.0 },
+      { hour: 24, tsb: 14.0 }, // same hour as previous → degenerate
+      { hour: 48, tsb: 15.0 },
+    ];
+    for (const h of [0, 12, 23.99, 24, 24.01, 30, 48]) {
+      const v = thresholdAt(degenerate, h);
+      expect(v).not.toBeNull();
+      expect(Number.isFinite(v!)).toBe(true);
+      expect(Number.isNaN(v)).toBe(false);
+    }
+  });
+
+  it('chain of three consecutive duplicate hours stays finite', () => {
+    const triplet: ThresholdPoint[] = [
+      { hour: 0, tsb: 8.0 },
+      { hour: 24, tsb: 12.0 },
+      { hour: 24, tsb: 13.0 },
+      { hour: 24, tsb: 14.0 },
+      { hour: 48, tsb: 15.0 },
+    ];
+    for (const h of [0, 24, 25, 47, 48]) {
+      const v = thresholdAt(triplet, h);
+      expect(v).not.toBeNull();
+      expect(Number.isFinite(v!)).toBe(true);
+    }
+  });
+
+  it('all-duplicate-hour curve (defensive: bookend returns first)', () => {
+    const allFlat: ThresholdPoint[] = [
+      { hour: 24, tsb: 12.0 },
+      { hour: 24, tsb: 13.0 },
+      { hour: 24, tsb: 14.0 },
+    ];
+    // Bookend `hour <= first.hour` short-circuits for any query <= 24;
+    // `hour >= last.hour` catches the rest. No path through the loop.
+    expect(thresholdAt(allFlat, 24)).toBe(12.0);
+    expect(thresholdAt(allFlat, 0)).toBe(12.0);
+    expect(thresholdAt(allFlat, 100)).toBe(14.0);
+  });
+
+  it('extreme out-of-range queries remain finite and clamp to bookend', () => {
+    expect(thresholdAt(PT_CURVE, Number.NEGATIVE_INFINITY)).toBe(8.0);
+    expect(thresholdAt(PT_CURVE, Number.POSITIVE_INFINITY)).toBe(21.5);
+  });
+
+  it('NaN query returns null (no spurious finite value)', () => {
+    // NaN compares false in every direction — bookends miss, loop misses,
+    // function falls through to its final `return null`.
+    expect(thresholdAt(PT_CURVE, Number.NaN)).toBeNull();
+  });
+});
+
 describe('classifyStratum — GA + risk factors → AAP стратификация', () => {
   it('GA ≥38 без рисков → ge38_norisk', () => {
     expect(classifyStratum(40, [])).toBe('ge38_norisk');

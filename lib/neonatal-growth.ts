@@ -58,6 +58,15 @@ export function lmsAt(points: LmsPoint[], age: number): LmsPoint | null {
     const b = points[i];
     if (!a || !b) continue;
     if (age >= a.age && age <= b.age) {
+      // Defensive guard: see neonatal-bilirubin.ts:thresholdAt for the
+      // rationale. With sorted points + the bookend short-circuits this
+      // branch is unreachable today, but the guard makes the
+      // interpolation safe against future data edits or refactors that
+      // remove the bookends. Without it, 0/0 = NaN propagates into
+      // z-scores and percentiles.
+      if (b.age === a.age) {
+        return { age, M: a.M, S: a.S, ...(a.L !== undefined && { L: a.L }) };
+      }
       const t = (age - a.age) / (b.age - a.age);
       return {
         age,
