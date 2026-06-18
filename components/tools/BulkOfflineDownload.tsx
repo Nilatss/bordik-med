@@ -48,7 +48,10 @@ export function BulkOfflineDownload({
 
   const cancel = () => {
     abortRef.current?.abort();
-    // start() sets result + stage after bulkCacheTools returns; don't race it.
+    // Unblock the modal immediately — start() overwrites with real counts when the
+    // in-flight cache.add() settles (cache.add() does not honour AbortSignal).
+    setResult({ ok: 0, fail: 0 });
+    setStage('done');
   };
 
   if (!open) return null;

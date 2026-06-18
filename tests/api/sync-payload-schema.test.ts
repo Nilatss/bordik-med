@@ -39,6 +39,17 @@ describe('SyncPayloadSchema — toolsFavouritesUpdatedAt', () => {
     expect(r.success).toBe(true);
   });
 
+  it('rejects values above ECMAScript max date (would throw RangeError in toISOString)', () => {
+    // 8_640_000_000_000_001 is one ms past Date's upper bound
+    const r = parse({ toolsFavouritesUpdatedAt: 8_640_000_000_000_001 });
+    expect(r.success).toBe(false);
+  });
+
+  it('accepts ECMAScript max valid date ms exactly', () => {
+    const r = parse({ toolsFavouritesUpdatedAt: 8_640_000_000_000_000 });
+    expect(r.success).toBe(true);
+  });
+
   it('accepts an empty payload (all fields optional)', () => {
     const r = parse({});
     expect(r.success).toBe(true);
