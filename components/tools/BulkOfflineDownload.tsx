@@ -48,7 +48,7 @@ export function BulkOfflineDownload({
 
   const cancel = () => {
     abortRef.current?.abort();
-    setStage('done');
+    // start() sets result + stage after bulkCacheTools returns; don't race it.
   };
 
   if (!open) return null;
