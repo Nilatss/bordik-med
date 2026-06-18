@@ -1,5 +1,7 @@
-import * as v from 'valibot';
 import { withAuthedSupabase, parseJsonBody, apiError, apiOk } from '@/lib/api-helpers';
+import * as v from 'valibot';
+import { SyncPayloadSchema, type SyncPayload } from '@/lib/schemas/sync-payload';
+import { log } from '@/lib/log';
 
 // P1-PERF-NEW-4 — sync route на Edge runtime.
 // /api/sync делает 4 параллельных Supabase-чтения (GET) и до 4
@@ -92,6 +94,14 @@ export async function GET(req: Request) {
       }
     }
 
+    // Log Supabase read errors so production failures are visible in logs/Sentry.
+    // Previously these were silently swallowed: the client received empty data
+    // ([] / null) with a 200 OK and had no indication the query failed.
+    if (profileQ.error)  log.error({ event: 'sync_get_error', table: 'profiles',       code: profileQ.error.code });
+    if (progressQ.error) log.error({ event: 'sync_get_error', table: 'course_progress', code: progressQ.error.code });
+    if (toolsQ.error)    log.error({ event: 'sync_get_error', table: 'tool_settings',   code: toolsQ.error.code });
+    if (studyQ.error)    log.error({ event: 'sync_get_error', table: 'study_time',      code: studyQ.error.code });
+
     return apiOk({
       profile: profileQ.data ?? null,
       courseProgress: progressQ.data ?? [],
@@ -101,46 +111,8 @@ export async function GET(req: Request) {
   });
 }
 
-/**
- * Bounds — щедрые, но конечные. Защищают от payload-bomb и
- * случайно прокинутого огромного state.
- *   COURSE_ID  — UUID-подобный токен, ≤64 симв.
- *   FREE_TEXT  — ник/статус/специальность, ≤200 симв.
- *   ARR        — потолок на список (1000 курсов больше, чем у любого
- *                реального пользователя).
- *   RECORD     — entries не лимитируем напрямую (valibot не умеет),
- *                но ключи и значения каждой пары валидируются.
- */
-const COURSE_ID = v.pipe(v.string(), v.minLength(1), v.maxLength(64));
-const FREE_TEXT = v.pipe(v.string(), v.maxLength(200));
-const ARR_MAX   = 1000;
-
-const SyncPayloadSchema = v.object({
-  completedCourses: v.optional(v.pipe(v.array(COURSE_ID), v.maxLength(ARR_MAX))),
-  startedCourses:   v.optional(v.pipe(v.array(COURSE_ID), v.maxLength(ARR_MAX))),
-  courseTestProgress: v.optional(v.record(COURSE_ID, v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(100)))),
-  completedModules: v.optional(v.pipe(v.array(v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(10000))), v.maxLength(ARR_MAX))),
-  studyTime:        v.optional(v.record(COURSE_ID, v.pipe(v.number(), v.minValue(0), v.maxValue(60 * 60 * 24 * 365)))),
-  toolsFavourites:  v.optional(v.pipe(v.array(v.pipe(v.string(), v.maxLength(120))), v.maxLength(ARR_MAX))),
-  toolsFavouritesUpdatedAt: v.optional(v.pipe(v.number(), v.minValue(0))),
-  toolsSettings:    v.optional(v.object({
-    query:         v.optional(v.pipe(v.string(), v.maxLength(200))),
-    categories:    v.optional(v.pipe(v.array(v.pipe(v.string(), v.maxLength(80))), v.maxLength(200))),
-    subcategories: v.optional(v.pipe(v.array(v.pipe(v.string(), v.maxLength(80))), v.maxLength(500))),
-    countries:     v.optional(v.pipe(v.array(v.pipe(v.string(), v.maxLength(40))), v.maxLength(50))),
-    onlyAvailable: v.optional(v.boolean()),
-  })),
-  profile: v.optional(v.object({
-    displayName: v.optional(FREE_TEXT),
-    status:      v.optional(FREE_TEXT),
-    country:     v.optional(v.pipe(v.string(), v.maxLength(40))),
-    specialty:   v.optional(FREE_TEXT),
-    language:    v.optional(v.pipe(v.string(), v.maxLength(8))),
-    goal:        v.optional(v.pipe(v.string(), v.maxLength(500))),
-  })),
-});
-
-type SyncPayload = v.InferOutput<typeof SyncPayloadSchema>;
+// Schema and SyncPayload type live in lib/schemas/sync-payload.ts so they can
+// be imported by unit tests without pulling in Next.js / Supabase dependencies.
 
 export async function POST(req: Request) {
   // P1-CR-7 — origin/auth/CSRF через withAuthedSupabase
@@ -254,11 +226,17 @@ export async function POST(req: Request) {
     // not-yet-applied favourites_updated_at column degrades to legacy sync
     // (any error here is ignored rather than failing the whole push). Runs
     // after the upsert above so the row already exists.
+    // try/catch enforces the "tolerant" intent: the await can throw if the
+    // Supabase network call fails (distinct from returning { error }).
     if (body.toolsFavouritesUpdatedAt != null && (body.toolsSettings || body.toolsFavourites)) {
-      await sb
-        .from('tool_settings')
-        .update({ favourites_updated_at: new Date(body.toolsFavouritesUpdatedAt).toISOString() })
-        .eq('user_id', user.id);
+      try {
+        await sb
+          .from('tool_settings')
+          .update({ favourites_updated_at: new Date(body.toolsFavouritesUpdatedAt).toISOString() })
+          .eq('user_id', user.id);
+      } catch {
+        // Tolerated: column may not exist yet on older deployments.
+      }
     }
 
     return apiOk({ count: tasks.length });
