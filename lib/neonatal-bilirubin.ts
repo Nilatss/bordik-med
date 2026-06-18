@@ -69,6 +69,13 @@ export function thresholdAt(points: ThresholdPoint[], hour: number): number | nu
     const b = points[i];
     if (!a || !b) continue;
     if (hour >= a.hour && hour <= b.hour) {
+      // Defensive guard: if a future data edit (or a refactor that removes
+      // the bookend short-circuits above) lets the loop reach a segment
+      // where two consecutive anchors share the same hour, the linear
+      // interpolation denominator is zero and 0/0 = NaN propagates into
+      // phototherapy/exchange thresholds. Returning a.tsb is consistent
+      // with "first occurrence wins" and keeps the output finite.
+      if (b.hour === a.hour) return a.tsb;
       const t = (hour - a.hour) / (b.hour - a.hour);
       return a.tsb + (b.tsb - a.tsb) * t;
     }

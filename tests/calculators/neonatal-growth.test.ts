@@ -63,6 +63,94 @@ describe('lmsAt — linear interpolation', () => {
   });
 });
 
+/**
+ * Boundary / NaN-guard tests for lmsAt.
+ *
+ * See neonatal-bilirubin.test.ts for the same NaN-guard rationale: with
+ * sorted Fenton/Intergrowth data the bookend short-circuits make a
+ * degenerate segment unreachable, but the guard inside the loop
+ * protects against future data edits or refactors that drop the
+ * bookend. Every weird shape must yield finite M/S — never NaN that
+ * would silently corrupt z-scores and percentiles.
+ */
+describe('lmsAt — boundary / NaN-guard', () => {
+  it('single-point dataset returns that point for any age', () => {
+    const single: LmsPoint[] = [{ age: 32, M: 1782, S: 0.135 }];
+    expect(lmsAt(single, 20)).toEqual(single[0]);
+    expect(lmsAt(single, 32)).toEqual(single[0]);
+    expect(lmsAt(single, 50)).toEqual(single[0]);
+  });
+
+  it('two-point dataset with same age stays finite (bookend short-circuit)', () => {
+    const flat: LmsPoint[] = [
+      { age: 32, M: 1782, S: 0.135 },
+      { age: 32, M: 1900, S: 0.140 },
+    ];
+    const r = lmsAt(flat, 32);
+    expect(r).not.toBeNull();
+    expect(Number.isFinite(r!.M)).toBe(true);
+    expect(Number.isFinite(r!.S)).toBe(true);
+  });
+
+  it('degenerate middle segment yields finite M and S at every query', () => {
+    const degenerate: LmsPoint[] = [
+      { age: 28, M: 1108, S: 0.135 },
+      { age: 32, M: 1782, S: 0.135 },
+      { age: 32, M: 1900, S: 0.140 }, // same age → degenerate
+      { age: 40, M: 3496, S: 0.120 },
+    ];
+    for (const a of [28, 30, 31.99, 32, 32.01, 36, 40]) {
+      const r = lmsAt(degenerate, a);
+      expect(r).not.toBeNull();
+      expect(Number.isFinite(r!.M)).toBe(true);
+      expect(Number.isFinite(r!.S)).toBe(true);
+      expect(Number.isNaN(r!.M)).toBe(false);
+      expect(Number.isNaN(r!.S)).toBe(false);
+    }
+  });
+
+  it('preserves L field on degenerate-segment fallback when present', () => {
+    // The interpolation path drops L, but the existing bookends and the
+    // new degenerate guard both carry L through when defined. Important
+    // for Intergrowth-style datasets where L != 1.
+    const withL: LmsPoint[] = [
+      { age: 28, M: 1108, S: 0.135, L: 1.2 },
+      { age: 32, M: 1782, S: 0.135, L: 1.0 },
+      { age: 32, M: 1900, S: 0.140, L: 1.0 }, // degenerate
+      { age: 40, M: 3496, S: 0.120, L: 0.9 },
+    ];
+    const r = lmsAt(withL, 28); // hits the `age <= first.age` bookend
+    expect(r?.L).toBe(1.2);
+  });
+
+  it('chain of three consecutive duplicate ages stays finite', () => {
+    const triplet: LmsPoint[] = [
+      { age: 28, M: 1108, S: 0.135 },
+      { age: 32, M: 1782, S: 0.135 },
+      { age: 32, M: 1800, S: 0.140 },
+      { age: 32, M: 1900, S: 0.145 },
+      { age: 40, M: 3496, S: 0.120 },
+    ];
+    for (const a of [28, 32, 36, 40]) {
+      const r = lmsAt(triplet, a);
+      expect(r).not.toBeNull();
+      expect(Number.isFinite(r!.M)).toBe(true);
+      expect(Number.isFinite(r!.S)).toBe(true);
+    }
+  });
+
+  it('extreme out-of-range queries clamp to bookend and stay finite', () => {
+    const lo = lmsAt(POINTS, Number.NEGATIVE_INFINITY);
+    const hi = lmsAt(POINTS, Number.POSITIVE_INFINITY);
+    expect(lo).toEqual(POINTS[0]);
+    expect(hi).toEqual(POINTS[2]);
+  });
+
+  it('NaN age returns null (no spurious finite value)', () => {
+    expect(lmsAt(POINTS, Number.NaN)).toBeNull();
+  });
+});
+
 describe('zScoreFromValue / valueFromZ — roundtrip', () => {
   const lms: LmsPoint = { age: 32, M: 1782, S: 0.135 };
 
