@@ -255,6 +255,14 @@ function MediaCheck({ onReady, onCalibrated }: {
   // callback always sees the current value without changing identity.
   const aiModelStatusRef = useRef(aiModelStatus);
   useEffect(() => { aiModelStatusRef.current = aiModelStatus; }, [aiModelStatus]);
+  // Track component mount state so runEnvCheck's retry path doesn't set
+  // state after the user navigates away mid-load (mirrors the `cancelled`
+  // flag used in the initial model load at mount time).
+  const mountedRef = useRef(true);
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => { mountedRef.current = false; };
+  }, []);
 
   const runEnvCheck = useCallback(async () => {
     if (!stream) return;
@@ -272,12 +280,15 @@ function MediaCheck({ onReady, onCalibrated }: {
         ]);
         resetFaceLandmarker();
         resetObjectDetector();
+        if (!mountedRef.current) return;
         setAiError(null);
         setAiModelStatus('loading');
         try {
           await Promise.all([getFaceLandmarker(), getObjectDetector()]);
+          if (!mountedRef.current) return;
           setAiModelStatus('ready');
         } catch (err: any) {
+          if (!mountedRef.current) return;
           setAiModelStatus('error');
           const msg = err && typeof err === 'object'
             ? String((err as Error).message ?? '')
@@ -684,7 +695,7 @@ function MediaCheck({ onReady, onCalibrated }: {
       // Clear any residual object-* hints when the effect tears down
       setHints((prev) => prev.filter((h) => !h.id.startsWith('object-')));
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- updateHints is defined inside this effect's scope and only called from the local tick(); its identity is moot for re-firing the effect. Adding it would re-run the RAF loop setup whenever a hint changes — exactly what we want to avoid.
+     
   }, [stream, aiModelStatus]);
 
   // Reset calibration if any object is currently detected - the user has
