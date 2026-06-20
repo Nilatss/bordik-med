@@ -13,7 +13,6 @@ import {
 } from '@/lib/quiz';
 import { getTestQuestions, getModuleTestQuestions, hasRealQuestions } from '@/lib/questions';
 import { getModuleForCourse } from '@/lib/curriculum';
-import { Check } from '@/components/icons';
 import TestActiveView from './TestActiveView';
 import TestStartConsent from './TestStartConsent';
 
@@ -80,7 +79,6 @@ export default function TestPanel({ courseId }: TestPanelProps) {
   // with frozen state, so re-renders mid-test are wasted work.
   const testAttempts = useAppStore((s) => s.testAttempts);
   const courseTestProgress = useAppStore((s) => s.courseTestProgress);
-  const moduleTestAttempts = useAppStore((s) => s.moduleTestAttempts);
   const completedModules = useAppStore((s) => s.completedModules);
   const submitTest = useAppStore((s) => s.submitTest);
   const submitModuleTest = useAppStore((s) => s.submitModuleTest);
