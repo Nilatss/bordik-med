@@ -122,7 +122,7 @@ const SyncPayloadSchema = v.object({
   completedModules: v.optional(v.pipe(v.array(v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(10000))), v.maxLength(ARR_MAX))),
   studyTime:        v.optional(v.record(COURSE_ID, v.pipe(v.number(), v.minValue(0), v.maxValue(60 * 60 * 24 * 365)))),
   toolsFavourites:  v.optional(v.pipe(v.array(v.pipe(v.string(), v.maxLength(120))), v.maxLength(ARR_MAX))),
-  toolsFavouritesUpdatedAt: v.optional(v.pipe(v.number(), v.minValue(0))),
+  toolsFavouritesUpdatedAt: v.optional(v.pipe(v.number(), v.minValue(0), v.maxValue(8640000000000000))),
   toolsSettings:    v.optional(v.object({
     query:         v.optional(v.pipe(v.string(), v.maxLength(200))),
     categories:    v.optional(v.pipe(v.array(v.pipe(v.string(), v.maxLength(80))), v.maxLength(200))),
