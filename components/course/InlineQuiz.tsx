@@ -100,12 +100,16 @@ function loadState(courseId: string): SavedState {
 
 function saveState(courseId: string, state: SavedState) {
   if (typeof window === 'undefined') return;
-  localStorage.setItem(storageKey(courseId), JSON.stringify(state));
+  try {
+    localStorage.setItem(storageKey(courseId), JSON.stringify(state));
+  } catch { /* quota exceeded or storage blocked — skip persistence */ }
 }
 
 function clearState(courseId: string) {
   if (typeof window === 'undefined') return;
-  localStorage.removeItem(storageKey(courseId));
+  try {
+    localStorage.removeItem(storageKey(courseId));
+  } catch { /* storage blocked — safe to ignore */ }
 }
 
 /* ═══ Countdown label for cooldown ═══ */

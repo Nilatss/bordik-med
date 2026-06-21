@@ -255,10 +255,12 @@ export async function POST(req: Request) {
     // (any error here is ignored rather than failing the whole push). Runs
     // after the upsert above so the row already exists.
     if (body.toolsFavouritesUpdatedAt != null && (body.toolsSettings || body.toolsFavourites)) {
-      await sb
-        .from('tool_settings')
-        .update({ favourites_updated_at: new Date(body.toolsFavouritesUpdatedAt).toISOString() })
-        .eq('user_id', user.id);
+      try {
+        await sb
+          .from('tool_settings')
+          .update({ favourites_updated_at: new Date(body.toolsFavouritesUpdatedAt).toISOString() })
+          .eq('user_id', user.id);
+      } catch { /* intentionally ignored — degrades to legacy LWW sync */ }
     }
 
     return apiOk({ count: tasks.length });
