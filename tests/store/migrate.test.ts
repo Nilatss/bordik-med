@@ -111,6 +111,37 @@ describe('migratePersistedState', () => {
       expect(out.studyTime).toBeUndefined();
     });
 
+    it('strips non-numeric values from studyTime (corrupt values → NaN in getTotalStudyTime)', () => {
+      // A corrupt studyTime where one value is a string would make getTotalStudyTime()
+      // return NaN and break all study-time displays in ProfilePage / StatisticsPage.
+      const out = mig(
+        { studyTime: { 'course-a': 3600, 'course-b': 'hello', 'course-c': null } },
+        5,
+      );
+      expect(out.studyTime).toEqual({ 'course-a': 3600 });
+    });
+
+    it('strips non-string-array values from readTopics (corrupt values crash new Set())', () => {
+      // readTopics[courseId] is spread into new Set() in CoursePage.tsx.
+      // A non-iterable value like 42 throws TypeError: 42 is not iterable.
+      const out = mig(
+        { readTopics: { 'course-a': ['topic-1', 'topic-2'], 'course-b': 42, 'course-c': ['ok'] } },
+        5,
+      );
+      expect(out.readTopics).toEqual({
+        'course-a': ['topic-1', 'topic-2'],
+        'course-c': ['ok'],
+      });
+    });
+
+    it('keeps a clean readTopics record intact', () => {
+      const out = mig(
+        { readTopics: { 'course-1': ['tab-bio', 'tab-chem'] } },
+        5,
+      );
+      expect(out.readTopics).toEqual({ 'course-1': ['tab-bio', 'tab-chem'] });
+    });
+
     it('returns an essentially empty result for a fully-junk blob', () => {
       const out = mig(
         { userName: 1, userEmail: {}, completedCourses: 'nope', studyTime: [] },

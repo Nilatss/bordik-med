@@ -635,10 +635,26 @@ export function migratePersistedState(persistedState: unknown, version: number):
   if (isStr(raw.userGoal))       safe.userGoal = raw.userGoal.slice(0, 200);
   if (isStrArr(raw.completedCourses)) safe.completedCourses = raw.completedCourses;
   if (isStrArr(raw.startedCourses))   safe.startedCourses = raw.startedCourses;
-  if (isObj(raw.readTopics))          safe.readTopics = raw.readTopics;
+  if (isObj(raw.readTopics)) {
+    // Validate each value is string[] — isObj() alone only checks the container.
+    // A corrupt value like {courseId: 42} causes new Set(42) to throw in CoursePage.
+    const validatedReadTopics: Record<string, string[]> = {};
+    for (const [k, v] of Object.entries(raw.readTopics)) {
+      if (isStrArr(v)) validatedReadTopics[k] = v;
+    }
+    safe.readTopics = validatedReadTopics;
+  }
   if (isNumArr(raw.completedModules)) safe.completedModules = raw.completedModules;
   if (isNumArr(raw.openModules))      safe.openModules = raw.openModules;
-  if (isObj(raw.studyTime))           safe.studyTime = raw.studyTime;
+  if (isObj(raw.studyTime)) {
+    // Validate each value is a finite number — isObj() alone passes through strings
+    // and NaNs, which corrupt getTotalStudyTime() and break study time display.
+    const validatedStudyTime: Record<string, number> = {};
+    for (const [k, v] of Object.entries(raw.studyTime)) {
+      if (typeof v === 'number' && Number.isFinite(v)) validatedStudyTime[k] = v;
+    }
+    safe.studyTime = validatedStudyTime;
+  }
   if (isObj(raw.testAttempts))        safe.testAttempts = raw.testAttempts;
   if (isObj(raw.courseTestProgress))  safe.courseTestProgress = raw.courseTestProgress;
   if (isObj(raw.moduleTestAttempts))  safe.moduleTestAttempts = raw.moduleTestAttempts;

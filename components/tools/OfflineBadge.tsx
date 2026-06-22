@@ -16,9 +16,15 @@ export function OfflineBadge({ toolId, label }: { toolId: string; label?: string
 
   useEffect(() => {
     let cancelled = false;
-    isToolCached(toolId).then((c) => {
-      if (!cancelled) setState(c ? 'cached' : 'available');
-    });
+    isToolCached(toolId)
+      .then((c) => {
+        if (!cancelled) setState(c ? 'cached' : 'available');
+      })
+      .catch(() => {
+        // Cache API unavailable (private mode, storage quota exceeded) — show
+        // the download button so the user can attempt a cache.
+        if (!cancelled) setState('available');
+      });
     return () => { cancelled = true; };
   }, [toolId]);
 
