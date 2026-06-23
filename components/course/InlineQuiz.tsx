@@ -83,16 +83,23 @@ function storageKey(courseId: string) {
   return `bordik:selfcheck:${courseId}`;
 }
 
-function loadState(courseId: string): SavedState {
+/** Exported for unit testing only — not a public API. */
+export function loadState(courseId: string): SavedState {
   if (typeof window === 'undefined') return { lastAt: 0, answers: {} };
   try {
     const raw = localStorage.getItem(storageKey(courseId));
     if (!raw) return { lastAt: 0, answers: {} };
-    const parsed = JSON.parse(raw) as SavedState;
+    const parsed = JSON.parse(raw) as Partial<SavedState>;
     if (!parsed.lastAt || Date.now() - parsed.lastAt > COOLDOWN_MS) {
       return { lastAt: 0, answers: {} };
     }
-    return parsed;
+    // Guard against corrupt blobs where `answers` was not persisted.
+    // Object.keys(undefined) throws, so we must ensure a plain object.
+    const answers: Record<number, string> =
+      parsed.answers != null && typeof parsed.answers === 'object' && !Array.isArray(parsed.answers)
+        ? (parsed.answers as Record<number, string>)
+        : {};
+    return { lastAt: parsed.lastAt, answers };
   } catch {
     return { lastAt: 0, answers: {} };
   }
