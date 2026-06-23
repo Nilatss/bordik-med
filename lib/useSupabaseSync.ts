@@ -35,10 +35,17 @@ export default function useSupabaseSync() {
   // ─── 1. Initial pull on mount (and on auth state change) ────────
   useEffect(() => {
     let cancelled = false;
+    // AbortController lets us cancel an in-flight GET when the user signs out
+    // on another tab. Without it the fetch resolves after SIGNED_OUT and
+    // merges stale server state into the store for the (now) logged-out user.
+    let controller = new AbortController();
     const sb = getSupabaseBrowserClient();
     if (!sb) return; // Backend not configured — local-only mode.
 
     const pull = async () => {
+      // Each call gets a fresh controller so re-pulls after TOKEN_REFRESHED
+      // don't inherit a previously-aborted signal.
+      controller = new AbortController();
       const { data: { session } } = await sb.auth.getSession();
       if (!session) return;
       // Authenticated → allow pushes from here on, even if the pull below
@@ -49,7 +56,7 @@ export default function useSupabaseSync() {
       // enqueue path (stage-3 bug audit).
       pulled.current = true;
       try {
-        const res = await fetch('/api/sync', { method: 'GET' });
+        const res = await fetch('/api/sync', { method: 'GET', signal: controller.signal });
         if (!res.ok) return;
         const data = await res.json();
         if (cancelled) return;
@@ -109,11 +116,17 @@ export default function useSupabaseSync() {
     // Re-pull when user signs in (on a different tab, etc.)
     const { data: sub } = sb.auth.onAuthStateChange((event) => {
       if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') pull();
-      if (event === 'SIGNED_OUT') pulled.current = false;
+      if (event === 'SIGNED_OUT') {
+        // Abort any in-flight pull so server data from this session is never
+        // merged into the store after the user has signed out.
+        controller.abort();
+        pulled.current = false;
+      }
     });
 
     return () => {
       cancelled = true;
+      controller.abort();
       sub.subscription.unsubscribe();
     };
   }, []);

@@ -83,16 +83,23 @@ function storageKey(courseId: string) {
   return `bordik:selfcheck:${courseId}`;
 }
 
-function loadState(courseId: string): SavedState {
+/** Exported for unit testing only — not a public API. */
+export function loadState(courseId: string): SavedState {
   if (typeof window === 'undefined') return { lastAt: 0, answers: {} };
   try {
     const raw = localStorage.getItem(storageKey(courseId));
     if (!raw) return { lastAt: 0, answers: {} };
-    const parsed = JSON.parse(raw) as SavedState;
+    const parsed = JSON.parse(raw) as Partial<SavedState>;
     if (!parsed.lastAt || Date.now() - parsed.lastAt > COOLDOWN_MS) {
       return { lastAt: 0, answers: {} };
     }
-    return parsed;
+    // Guard against corrupt blobs where `answers` was not persisted.
+    // Object.keys(undefined) throws, so we must ensure a plain object.
+    const answers: Record<number, string> =
+      parsed.answers != null && typeof parsed.answers === 'object' && !Array.isArray(parsed.answers)
+        ? (parsed.answers as Record<number, string>)
+        : {};
+    return { lastAt: parsed.lastAt, answers };
   } catch {
     return { lastAt: 0, answers: {} };
   }
@@ -321,12 +328,15 @@ export default function InlineQuiz({
   });
   // Manually-expanded questions (override auto-collapse)
   const [expanded, setExpanded] = useState<Record<number, boolean>>({});
-  // Pending auto-collapse timers, cleared on unmount so a quiz answered just
-  // before navigating away doesn't setState on an unmounted component.
+  // Pending auto-collapse timers. Cleared on unmount and on reset so that a
+  // timer queued before "Сбросить ответы" can't fire after reset and prematurely
+  // collapse a question the user just re-answered.
   const collapseTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
-  useEffect(() => () => {
+  const clearCollapseTimers = () => {
     collapseTimersRef.current.forEach(clearTimeout);
-  }, []);
+    collapseTimersRef.current = [];
+  };
+  useEffect(() => clearCollapseTimers, []);
 
   // Tick cooldown label every minute while there is a cooldown
   useEffect(() => {
@@ -359,6 +369,10 @@ export default function InlineQuiz({
   };
 
   const resetNow = () => {
+    // Cancel pending auto-collapse timers before wiping state. Without this a
+    // timer queued for a question answered just before the reset fires after
+    // the reset and prematurely collapses that question when re-answered.
+    clearCollapseTimers();
     clearState(courseId);
     setAnswers({});
     setExpanded({});
