@@ -328,12 +328,15 @@ export default function InlineQuiz({
   });
   // Manually-expanded questions (override auto-collapse)
   const [expanded, setExpanded] = useState<Record<number, boolean>>({});
-  // Pending auto-collapse timers, cleared on unmount so a quiz answered just
-  // before navigating away doesn't setState on an unmounted component.
+  // Pending auto-collapse timers. Cleared on unmount and on reset so that a
+  // timer queued before "Сбросить ответы" can't fire after reset and prematurely
+  // collapse a question the user just re-answered.
   const collapseTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
-  useEffect(() => () => {
+  const clearCollapseTimers = () => {
     collapseTimersRef.current.forEach(clearTimeout);
-  }, []);
+    collapseTimersRef.current = [];
+  };
+  useEffect(() => clearCollapseTimers, []);
 
   // Tick cooldown label every minute while there is a cooldown
   useEffect(() => {
@@ -366,6 +369,10 @@ export default function InlineQuiz({
   };
 
   const resetNow = () => {
+    // Cancel pending auto-collapse timers before wiping state. Without this a
+    // timer queued for a question answered just before the reset fires after
+    // the reset and prematurely collapses that question when re-answered.
+    clearCollapseTimers();
     clearState(courseId);
     setAnswers({});
     setExpanded({});
