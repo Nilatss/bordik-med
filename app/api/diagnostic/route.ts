@@ -114,7 +114,15 @@ function loadBank(): BankQuestion[] {
     let dropped = 0;
     for (const q of arr) {
       if (!q || typeof q !== 'object') { dropped++; continue; }
-      const fields = [q.question, ...(Array.isArray(q.options) ? q.options : [])];
+      // shuffleOptions hardcodes idx=[0,1,2,3] so we need exactly 4 options;
+      // correctIndex must be in [0,3] or idx.indexOf returns -1.
+      const bq = q as BankQuestion;
+      if (
+        !Array.isArray(bq.options) || bq.options.length !== 4 ||
+        typeof bq.correctIndex !== 'number' || !Number.isInteger(bq.correctIndex) ||
+        bq.correctIndex < 0 || bq.correctIndex >= 4
+      ) { dropped++; continue; }
+      const fields = [bq.question, ...bq.options];
       const allSafe = fields.every((s) => {
         if (typeof s !== 'string') return false;
         const v = isOutputSafeStrict(s);
