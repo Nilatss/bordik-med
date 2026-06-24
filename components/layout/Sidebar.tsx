@@ -112,7 +112,7 @@ export default function Sidebar() {
     };
     mq.addEventListener('change', onChange);
     return () => mq.removeEventListener('change', onChange);
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- run-once on mount. The MediaQueryList subscription is global; re-running would attach duplicate listeners.
+     
   }, []);
 
   const activeNav: NavItem = showProfile
@@ -440,7 +440,7 @@ export default function Sidebar() {
     let cancelled = false;
     import('@/lib/tools-catalog').then((m) => {
       if (!cancelled) setToolCatalog(m.CATALOG_TOOLS);
-    });
+    }).catch(() => { /* chunk load failure — search stays disabled */ });
     return () => { cancelled = true; };
   }, [q, showTools, toolCatalog]);
 
