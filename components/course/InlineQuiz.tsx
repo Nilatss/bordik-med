@@ -100,7 +100,7 @@ function loadState(courseId: string): SavedState {
 
 function saveState(courseId: string, state: SavedState) {
   if (typeof window === 'undefined') return;
-  localStorage.setItem(storageKey(courseId), JSON.stringify(state));
+  try { localStorage.setItem(storageKey(courseId), JSON.stringify(state)); } catch { /* quota / private mode */ }
 }
 
 function clearState(courseId: string) {
