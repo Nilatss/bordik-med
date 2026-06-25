@@ -2,6 +2,12 @@
 
 import { useMemo, useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import {
+  loadInlineQuizState,
+  saveInlineQuizState,
+  clearInlineQuizState,
+  INLINE_QUIZ_COOLDOWN_MS,
+} from '@/lib/course/inline-quiz-storage';
 
 interface Option {
   letter: string;
@@ -16,7 +22,7 @@ interface Question {
   explanation: string;
 }
 
-const COOLDOWN_MS = 24 * 60 * 60 * 1000;
+const COOLDOWN_MS = INLINE_QUIZ_COOLDOWN_MS;
 
 /** Parse markdown of "Тема 8" into structured questions. */
 export function parseQuestions(md: string): Question[] {
@@ -74,39 +80,7 @@ function shuffle<T>(arr: T[]): T[] {
   return copy;
 }
 
-interface SavedState {
-  lastAt: number;
-  answers: Record<number, string>; // questionId -> original option letter
-}
-
-function storageKey(courseId: string) {
-  return `bordik:selfcheck:${courseId}`;
-}
-
-function loadState(courseId: string): SavedState {
-  if (typeof window === 'undefined') return { lastAt: 0, answers: {} };
-  try {
-    const raw = localStorage.getItem(storageKey(courseId));
-    if (!raw) return { lastAt: 0, answers: {} };
-    const parsed = JSON.parse(raw) as SavedState;
-    if (!parsed.lastAt || Date.now() - parsed.lastAt > COOLDOWN_MS) {
-      return { lastAt: 0, answers: {} };
-    }
-    return parsed;
-  } catch {
-    return { lastAt: 0, answers: {} };
-  }
-}
-
-function saveState(courseId: string, state: SavedState) {
-  if (typeof window === 'undefined') return;
-  localStorage.setItem(storageKey(courseId), JSON.stringify(state));
-}
-
-function clearState(courseId: string) {
-  if (typeof window === 'undefined') return;
-  localStorage.removeItem(storageKey(courseId));
-}
+type SavedState = import('@/lib/course/inline-quiz-storage').SavedState;
 
 /* ═══ Countdown label for cooldown ═══ */
 function formatRemaining(ms: number): string {
@@ -313,9 +287,9 @@ export default function InlineQuiz({
 
   // Load saved answers synchronously on first render (so collapsed state is correct from the start,
   // no flash of "expanded then collapses" for previously-answered questions)
-  const [answers, setAnswers] = useState<Record<number, string>>(() => loadState(courseId).answers);
+  const [answers, setAnswers] = useState<Record<number, string>>(() => loadInlineQuizState(courseId).answers);
   const [remainingMs, setRemainingMs] = useState(() => {
-    const s = loadState(courseId);
+    const s = loadInlineQuizState(courseId);
     if (!s.lastAt) return 0;
     return Math.max(0, COOLDOWN_MS - (Date.now() - s.lastAt));
   });
@@ -344,7 +318,7 @@ export default function InlineQuiz({
     setAnswers(next);
     const now = Date.now();
     // Start 24h cooldown when first answer is registered; reset timestamp on every new pick
-    saveState(courseId, { lastAt: now, answers: next });
+    saveInlineQuizState(courseId, { lastAt: now, answers: next });
     setRemainingMs(COOLDOWN_MS);
     // Auto-collapse answered question after a short delay so user sees feedback
     collapseTimersRef.current.push(setTimeout(() => {
@@ -359,7 +333,7 @@ export default function InlineQuiz({
   };
 
   const resetNow = () => {
-    clearState(courseId);
+    clearInlineQuizState(courseId);
     setAnswers({});
     setExpanded({});
     setRemainingMs(0);
