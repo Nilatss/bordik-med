@@ -131,8 +131,9 @@ async function loadCatalogMeta(): Promise<typeof catalogMeta> {
     return catalogMeta;
   } catch (err) {
     console.warn('[cmdk] catalog meta load failed', err);
-    catalogMeta = new Map();
-    return catalogMeta;
+    // Do NOT cache the empty result: new Map() is truthy, so the
+    // `if (catalogMeta)` guard returns it forever without retrying.
+    return new Map();
   }
 }
 
