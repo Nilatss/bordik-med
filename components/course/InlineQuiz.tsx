@@ -100,12 +100,21 @@ function loadState(courseId: string): SavedState {
 
 function saveState(courseId: string, state: SavedState) {
   if (typeof window === 'undefined') return;
-  localStorage.setItem(storageKey(courseId), JSON.stringify(state));
+  try {
+    localStorage.setItem(storageKey(courseId), JSON.stringify(state));
+  } catch {
+    // QuotaExceededError or SecurityError (sandboxed iframe) — ignore; quiz
+    // still works, answers just won't persist across reloads this session.
+  }
 }
 
 function clearState(courseId: string) {
   if (typeof window === 'undefined') return;
-  localStorage.removeItem(storageKey(courseId));
+  try {
+    localStorage.removeItem(storageKey(courseId));
+  } catch {
+    /* storage blocked — ignore */
+  }
 }
 
 /* ═══ Countdown label for cooldown ═══ */
