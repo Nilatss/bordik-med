@@ -32,6 +32,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import MiniSearch from 'minisearch';
 import { expandQuery, normalize } from '@/lib/search/synonyms';
+import { loadIcdIndex } from '@/lib/icd-loader';
 
 interface ToolHit {
   id: string;
@@ -74,7 +75,6 @@ const SEARCH_OPTS = {
 // Сессионный кэш индекса (один раз грузим, дальше живёт до закрытия вкладки).
 let toolsIndex: MiniSearch | null = null;
 let toolsIndexLoading: Promise<MiniSearch | null> | null = null;
-let icdIndex: { code: string; title: string; chapter: string }[] | null = null;
 
 async function loadToolsIndex(): Promise<MiniSearch | null> {
   if (toolsIndex) return toolsIndex;
@@ -96,23 +96,7 @@ async function loadToolsIndex(): Promise<MiniSearch | null> {
   return toolsIndexLoading;
 }
 
-async function loadIcdIndex(): Promise<typeof icdIndex> {
-  if (icdIndex) return icdIndex;
-  try {
-    const r = await fetch('/icd10-starter.json', { cache: 'force-cache' });
-    if (!r.ok) throw new Error(`HTTP ${r.status}`);
-    const data = await r.json();
-    icdIndex = data.codes ?? [];
-    return icdIndex;
-  } catch (err) {
-    console.warn('[cmdk] icd index load failed', err);
-    // Do NOT cache the empty result: `icdIndex = []` is truthy, so the
-    // `if (icdIndex)` guard above would return it forever, leaving ICD
-    // search silently empty until a full reload. Leave the cache null so
-    // the next palette open retries the fetch.
-    return [];
-  }
-}
+// loadIcdIndex is now in lib/icd-loader.ts (with concurrent-request dedup)
 
 // Минимальная карта id калькулятора → краткие метаданные. Грузим только
 // когда есть hits — чтобы один раз вытащить названия и категории для
