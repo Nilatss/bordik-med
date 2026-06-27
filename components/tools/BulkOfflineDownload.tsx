@@ -31,19 +31,23 @@ export function BulkOfflineDownload({
     setProgress(0);
     setStage('confirm');
     setResult(null);
-    getCacheSizeBytes().then(setEstBytes);
+    getCacheSizeBytes().then(setEstBytes).catch(() => {});
   }, [open]);
 
   const start = async () => {
     setStage('running');
     abortRef.current = new AbortController();
-    const r = await bulkCacheTools(
-      toolIds,
-      (done, total) => setProgress(done / total),
-      abortRef.current.signal,
-    );
-    setResult(r);
-    setStage('done');
+    try {
+      const r = await bulkCacheTools(
+        toolIds,
+        (done, total) => setProgress(done / total),
+        abortRef.current.signal,
+      );
+      setResult(r);
+      setStage('done');
+    } catch {
+      setStage('error');
+    }
   };
 
   const cancel = () => {
@@ -94,6 +98,17 @@ export function BulkOfflineDownload({
             </div>
             <div className="flex justify-end">
               <button onClick={cancel} className={btnSecondaryClass}>Остановить</button>
+            </div>
+          </>
+        )}
+
+        {stage === 'error' && (
+          <>
+            <p className="mt-0 mb-[14px] mx-0 font-[var(--font-body)] text-[13px] text-[#B91C1C] leading-[1.55]">
+              Не удалось завершить загрузку. Проверьте соединение и попробуйте снова.
+            </p>
+            <div className="flex justify-end">
+              <button onClick={onClose} className={btnPrimaryClass}>Закрыть</button>
             </div>
           </>
         )}

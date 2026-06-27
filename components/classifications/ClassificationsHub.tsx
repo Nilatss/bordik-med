@@ -806,7 +806,7 @@ function CopyCodeButton({ code }: { code: string }) {
       setCopied(true);
       if (timerRef.current) clearTimeout(timerRef.current);
       timerRef.current = setTimeout(() => setCopied(false), 1200);
-    });
+    }).catch(() => {});
   };
 
   return (
@@ -854,7 +854,7 @@ function NeoplasmCell({ label, code }: { label: string; code?: string | null | u
       setCopied(true);
       if (timerRef.current) clearTimeout(timerRef.current);
       timerRef.current = setTimeout(() => setCopied(false), 1200);
-    });
+    }).catch(() => {});
   };
 
   return (
