@@ -39,8 +39,8 @@ export default function useSupabaseSync() {
     if (!sb) return; // Backend not configured — local-only mode.
 
     const pull = async () => {
-      const { data: { session } } = await sb.auth.getSession();
-      if (!session) return;
+      const authResult = await sb.auth.getSession().catch(() => null);
+      if (!authResult?.data.session) return;
       // Authenticated → allow pushes from here on, even if the pull below
       // fails. The server merge is additive (grow-only), so pushing local
       // state after a failed pull can't destroy server progress. Gating on a
