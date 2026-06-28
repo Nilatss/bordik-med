@@ -122,7 +122,7 @@ const SyncPayloadSchema = v.object({
   completedModules: v.optional(v.pipe(v.array(v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(10000))), v.maxLength(ARR_MAX))),
   studyTime:        v.optional(v.record(COURSE_ID, v.pipe(v.number(), v.minValue(0), v.maxValue(60 * 60 * 24 * 365)))),
   toolsFavourites:  v.optional(v.pipe(v.array(v.pipe(v.string(), v.maxLength(120))), v.maxLength(ARR_MAX))),
-  toolsFavouritesUpdatedAt: v.optional(v.pipe(v.number(), v.minValue(0))),
+  toolsFavouritesUpdatedAt: v.optional(v.pipe(v.number(), v.minValue(0), v.maxValue(Number.MAX_SAFE_INTEGER))),
   toolsSettings:    v.optional(v.object({
     query:         v.optional(v.pipe(v.string(), v.maxLength(200))),
     categories:    v.optional(v.pipe(v.array(v.pipe(v.string(), v.maxLength(80))), v.maxLength(200))),
@@ -255,10 +255,14 @@ export async function POST(req: Request) {
     // (any error here is ignored rather than failing the whole push). Runs
     // after the upsert above so the row already exists.
     if (body.toolsFavouritesUpdatedAt != null && (body.toolsSettings || body.toolsFavourites)) {
-      await sb
-        .from('tool_settings')
-        .update({ favourites_updated_at: new Date(body.toolsFavouritesUpdatedAt).toISOString() })
-        .eq('user_id', user.id);
+      try {
+        await sb
+          .from('tool_settings')
+          .update({ favourites_updated_at: new Date(body.toolsFavouritesUpdatedAt).toISOString() })
+          .eq('user_id', user.id);
+      } catch {
+        // tolerant — LWW column may not be applied yet; degrade gracefully.
+      }
     }
 
     return apiOk({ count: tasks.length });
