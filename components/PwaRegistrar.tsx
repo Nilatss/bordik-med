@@ -90,6 +90,7 @@ export default function PwaRegistrar() {
     if (process.env.NODE_ENV !== 'production') return;
 
     let checkInterval: ReturnType<typeof setInterval> | null = null;
+    let cancelled = false;
 
     const onWaiting = async (sw: ServiceWorker) => {
       // Decide whether we should actually show the toast based on
@@ -111,6 +112,7 @@ export default function PwaRegistrar() {
     };
 
     const onReady = async () => {
+      if (cancelled) return;
       try {
         const reg = await navigator.serviceWorker.register('/sw.js', {
           scope: '/',
@@ -171,7 +173,9 @@ export default function PwaRegistrar() {
     }
 
     return () => {
+      cancelled = true;
       if (checkInterval) clearInterval(checkInterval);
+      window.removeEventListener('load', onReady);
       navigator.serviceWorker.removeEventListener('controllerchange', onControllerChange);
       navigator.serviceWorker.removeEventListener('message', onMessage);
     };
