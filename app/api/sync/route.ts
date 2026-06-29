@@ -92,6 +92,16 @@ export async function GET(req: Request) {
       }
     }
 
+    // Surface Supabase errors instead of silently returning empty data.
+    // Without this check, a DB outage or RLS error causes the handler to
+    // return HTTP 200 with null/[] for every field. The client sees a
+    // successful response and stops retrying, so server progress never merges.
+    const queryError = profileQ.error ?? progressQ.error ?? toolsQ.error ?? studyQ.error;
+    if (queryError) {
+      console.error('[sync] pull query failed', queryError.message?.slice(0, 200));
+      return apiError('internal-error', 500);
+    }
+
     return apiOk({
       profile: profileQ.data ?? null,
       courseProgress: progressQ.data ?? [],
