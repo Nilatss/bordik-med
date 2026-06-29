@@ -100,12 +100,18 @@ function loadState(courseId: string): SavedState {
 
 function saveState(courseId: string, state: SavedState) {
   if (typeof window === 'undefined') return;
-  localStorage.setItem(storageKey(courseId), JSON.stringify(state));
+  // localStorage.setItem throws in private/sandboxed mode and when quota is
+  // exceeded — match the same guard pattern as loadState() above.
+  try {
+    localStorage.setItem(storageKey(courseId), JSON.stringify(state));
+  } catch { /* storage blocked or quota exceeded — progress not persisted this session */ }
 }
 
 function clearState(courseId: string) {
   if (typeof window === 'undefined') return;
-  localStorage.removeItem(storageKey(courseId));
+  try {
+    localStorage.removeItem(storageKey(courseId));
+  } catch { /* storage blocked — safe to ignore, state was never saved */ }
 }
 
 /* ═══ Countdown label for cooldown ═══ */
