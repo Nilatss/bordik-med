@@ -92,6 +92,16 @@ export async function GET(req: Request) {
       }
     }
 
+    // Surface Supabase errors instead of silently returning empty data.
+    // Without this check, a DB outage or RLS error causes the handler to
+    // return HTTP 200 with null/[] for every field. The client sees a
+    // successful response and stops retrying, so server progress never merges.
+    const queryError = profileQ.error ?? progressQ.error ?? toolsQ.error ?? studyQ.error;
+    if (queryError) {
+      console.error('[sync] pull query failed', queryError.message?.slice(0, 200));
+      return apiError('internal-error', 500);
+    }
+
     return apiOk({
       profile: profileQ.data ?? null,
       courseProgress: progressQ.data ?? [],
@@ -122,7 +132,9 @@ const SyncPayloadSchema = v.object({
   completedModules: v.optional(v.pipe(v.array(v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(10000))), v.maxLength(ARR_MAX))),
   studyTime:        v.optional(v.record(COURSE_ID, v.pipe(v.number(), v.minValue(0), v.maxValue(60 * 60 * 24 * 365)))),
   toolsFavourites:  v.optional(v.pipe(v.array(v.pipe(v.string(), v.maxLength(120))), v.maxLength(ARR_MAX))),
-  toolsFavouritesUpdatedAt: v.optional(v.pipe(v.number(), v.minValue(0))),
+  // v.finite() rejects Infinity / -Infinity / NaN — without it,
+  // new Date(Infinity).toISOString() at line ~260 would throw RangeError.
+  toolsFavouritesUpdatedAt: v.optional(v.pipe(v.number(), v.finite(), v.minValue(0))),
   toolsSettings:    v.optional(v.object({
     query:         v.optional(v.pipe(v.string(), v.maxLength(200))),
     categories:    v.optional(v.pipe(v.array(v.pipe(v.string(), v.maxLength(80))), v.maxLength(200))),
