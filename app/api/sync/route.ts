@@ -1,5 +1,6 @@
 import * as v from 'valibot';
 import { withAuthedSupabase, parseJsonBody, apiError, apiOk } from '@/lib/api-helpers';
+import { buildProfileUpsertRow, buildToolSettingsUpsertRow } from '@/lib/sync-row-builders';
 
 // P1-PERF-NEW-4 — sync route на Edge runtime.
 // /api/sync делает 4 параллельных Supabase-чтения (GET) и до 4
@@ -163,16 +164,7 @@ export async function POST(req: Request) {
   // 1. profile upsert
   if (body.profile) {
     tasks.push(
-      sb.from('profiles').upsert({
-        id: user.id,
-        display_name: body.profile.displayName ?? null,
-        status:       body.profile.status ?? null,
-        country:      body.profile.country ?? null,
-        specialty:    body.profile.specialty ?? null,
-        language:     body.profile.language ?? 'ru',
-        goal:         body.profile.goal ?? null,
-        updated_at:   new Date().toISOString(),
-      }),
+      sb.from('profiles').upsert(buildProfileUpsertRow(user.id, body.profile)),
     );
   }
 
@@ -227,16 +219,9 @@ export async function POST(req: Request) {
   // 4. tool_settings
   if (body.toolsSettings || body.toolsFavourites) {
     tasks.push(
-      sb.from('tool_settings').upsert({
-        user_id: user.id,
-        query:           body.toolsSettings?.query ?? '',
-        categories:      body.toolsSettings?.categories ?? [],
-        subcategories:   body.toolsSettings?.subcategories ?? [],
-        countries:       body.toolsSettings?.countries ?? [],
-        only_available:  body.toolsSettings?.onlyAvailable ?? false,
-        favourites:      body.toolsFavourites ?? [],
-        updated_at:      new Date().toISOString(),
-      }),
+      sb.from('tool_settings').upsert(
+        buildToolSettingsUpsertRow(user.id, body.toolsSettings, body.toolsFavourites),
+      ),
     );
   }
 
