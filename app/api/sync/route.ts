@@ -142,6 +142,66 @@ const SyncPayloadSchema = v.object({
 
 type SyncPayload = v.InferOutput<typeof SyncPayloadSchema>;
 
+/**
+ * Builds the `profiles` upsert row, including ONLY the fields actually
+ * present in the request body.
+ *
+ * Bug fixed: the previous version always wrote all 6 profile fields,
+ * defaulting any field absent from `profile` to `null` (or `'ru'` for
+ * language). The route's own docstring promises "everything optional,
+ * partial syncs OK" — but a caller sending only `{ profile: { goal } }`
+ * silently wiped displayName/status/country/specialty back to null.
+ * Omitting unset keys means Postgrest's upsert leaves those columns
+ * untouched on conflict (UPDATE), while INSERT still gets correct
+ * defaults from the schema (language defaults to 'ru').
+ */
+export function buildProfileUpsertRow(
+  userId: string,
+  profile: SyncPayload['profile'],
+): Record<string, unknown> {
+  const row: Record<string, unknown> = {
+    id: userId,
+    updated_at: new Date().toISOString(),
+  };
+  if (profile?.displayName !== undefined) row.display_name = profile.displayName;
+  if (profile?.status !== undefined) row.status = profile.status;
+  if (profile?.country !== undefined) row.country = profile.country;
+  if (profile?.specialty !== undefined) row.specialty = profile.specialty;
+  if (profile?.language !== undefined) row.language = profile.language;
+  if (profile?.goal !== undefined) row.goal = profile.goal;
+  return row;
+}
+
+/**
+ * Builds the `tool_settings` upsert row, including ONLY the fields
+ * actually present in the request body.
+ *
+ * Bug fixed: the previous version always wrote all 5 toolsSettings
+ * columns, defaulting any field absent from `toolsSettings` to ''/[]/
+ * false. Since `toolsFavourites` and `toolsSettings` are independently
+ * optional in SyncPayloadSchema, a caller sending only
+ * `{ toolsFavourites: [...] }` (a single favourite toggle, no search
+ * filters touched) silently reset query/categories/subcategories/
+ * countries/onlyAvailable to their empty defaults.
+ */
+export function buildToolSettingsUpsertRow(
+  userId: string,
+  toolsSettings: SyncPayload['toolsSettings'],
+  toolsFavourites: SyncPayload['toolsFavourites'],
+): Record<string, unknown> {
+  const row: Record<string, unknown> = {
+    user_id: userId,
+    updated_at: new Date().toISOString(),
+  };
+  if (toolsSettings?.query !== undefined) row.query = toolsSettings.query;
+  if (toolsSettings?.categories !== undefined) row.categories = toolsSettings.categories;
+  if (toolsSettings?.subcategories !== undefined) row.subcategories = toolsSettings.subcategories;
+  if (toolsSettings?.countries !== undefined) row.countries = toolsSettings.countries;
+  if (toolsSettings?.onlyAvailable !== undefined) row.only_available = toolsSettings.onlyAvailable;
+  if (toolsFavourites !== undefined) row.favourites = toolsFavourites;
+  return row;
+}
+
 export async function POST(req: Request) {
   // P1-CR-7 — origin/auth/CSRF через withAuthedSupabase
   return withAuthedSupabase(req, async (sb, user) => {
@@ -163,16 +223,7 @@ export async function POST(req: Request) {
   // 1. profile upsert
   if (body.profile) {
     tasks.push(
-      sb.from('profiles').upsert({
-        id: user.id,
-        display_name: body.profile.displayName ?? null,
-        status:       body.profile.status ?? null,
-        country:      body.profile.country ?? null,
-        specialty:    body.profile.specialty ?? null,
-        language:     body.profile.language ?? 'ru',
-        goal:         body.profile.goal ?? null,
-        updated_at:   new Date().toISOString(),
-      }),
+      sb.from('profiles').upsert(buildProfileUpsertRow(user.id, body.profile)),
     );
   }
 
@@ -227,16 +278,9 @@ export async function POST(req: Request) {
   // 4. tool_settings
   if (body.toolsSettings || body.toolsFavourites) {
     tasks.push(
-      sb.from('tool_settings').upsert({
-        user_id: user.id,
-        query:           body.toolsSettings?.query ?? '',
-        categories:      body.toolsSettings?.categories ?? [],
-        subcategories:   body.toolsSettings?.subcategories ?? [],
-        countries:       body.toolsSettings?.countries ?? [],
-        only_available:  body.toolsSettings?.onlyAvailable ?? false,
-        favourites:      body.toolsFavourites ?? [],
-        updated_at:      new Date().toISOString(),
-      }),
+      sb.from('tool_settings').upsert(
+        buildToolSettingsUpsertRow(user.id, body.toolsSettings, body.toolsFavourites),
+      ),
     );
   }
 
