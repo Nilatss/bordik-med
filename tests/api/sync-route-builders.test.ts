@@ -16,7 +16,7 @@
  * first INSERT.
  */
 import { describe, it, expect } from 'vitest';
-import { buildProfileUpsertRow, buildToolSettingsUpsertRow } from '@/app/api/sync/route';
+import { buildProfileUpsertRow, buildToolSettingsUpsertRow } from '@/lib/sync-row-builders';
 
 describe('buildToolSettingsUpsertRow', () => {
   it('only writes favourites when toolsSettings is absent (partial sync)', () => {
