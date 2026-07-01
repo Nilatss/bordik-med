@@ -79,7 +79,7 @@ interface SavedState {
   answers: Record<number, string>; // questionId -> original option letter
 }
 
-function storageKey(courseId: string) {
+export function storageKey(courseId: string) {
   return `bordik:selfcheck:${courseId}`;
 }
 
@@ -98,14 +98,26 @@ function loadState(courseId: string): SavedState {
   }
 }
 
-function saveState(courseId: string, state: SavedState) {
+export function saveState(courseId: string, state: SavedState) {
   if (typeof window === 'undefined') return;
-  localStorage.setItem(storageKey(courseId), JSON.stringify(state));
+  // localStorage.setItem can THROW (private mode, sandboxed iframe, full
+  // quota). This runs synchronously inside the pick() click handler, so an
+  // unguarded throw would crash the whole page — swallow, answer just won't
+  // persist across reloads this session.
+  try {
+    localStorage.setItem(storageKey(courseId), JSON.stringify(state));
+  } catch {
+    /* storage blocked/full — cooldown/answers just won't persist */
+  }
 }
 
 function clearState(courseId: string) {
   if (typeof window === 'undefined') return;
-  localStorage.removeItem(storageKey(courseId));
+  try {
+    localStorage.removeItem(storageKey(courseId));
+  } catch {
+    /* storage blocked — nothing to clean up */
+  }
 }
 
 /* ═══ Countdown label for cooldown ═══ */
