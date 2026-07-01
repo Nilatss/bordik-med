@@ -140,7 +140,7 @@ export default function TestPanel({ courseId }: TestPanelProps) {
     setPendingTest(null);
   }, []);
 
-  const handleComplete = useCallback((answers: number[], violations: number) => {
+  const handleComplete = useCallback((answers: number[], violations: number, timeUsedMs: number) => {
     if (!activeTest) return;
 
     // Set 48h lockout if test ends with a violation penalty (>= MAX violations)
@@ -157,17 +157,17 @@ export default function TestPanel({ courseId }: TestPanelProps) {
       setResult({ ...res, questions, answers });
     } else {
       const questions = getModuleTestQuestions(activeTest.moduleId);
-      const res = submitModuleTest(activeTest.moduleId, answers, questions, 0, violations);
+      const res = submitModuleTest(activeTest.moduleId, answers, questions, timeUsedMs, violations);
       setResult({ ...res, questions, answers });
     }
     setActiveTest(null);
   }, [activeTest, courseId, submitTest, submitModuleTest]);
 
-  const handleCancel = useCallback((partialAnswers: (number | null)[], violations: number) => {
+  const handleCancel = useCallback((partialAnswers: (number | null)[], violations: number, timeUsedMs: number) => {
     if (activeTest?.type === 'course') {
       abortTest(courseId, activeTest.level, partialAnswers, violations);
     } else if (activeTest?.type === 'module') {
-      abortModuleTest(activeTest.moduleId, partialAnswers, 0, violations);
+      abortModuleTest(activeTest.moduleId, partialAnswers, timeUsedMs, violations);
     }
     setActiveTest(null);
   }, [activeTest, courseId, abortTest, abortModuleTest]);

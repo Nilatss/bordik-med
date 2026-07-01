@@ -121,3 +121,11 @@ export function formatTimer(ms: number): string {
   const s = Math.floor((ms % (60 * 1000)) / 1000);
   return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
 }
+
+/** Elapsed ms of a timed test attempt, derived from the countdown state.
+ *  Clamped to [0, totalMs] so a stale/out-of-range timeRemaining (e.g. the
+ *  timer hasn't started yet, or a rounding tick pushes it slightly past
+ *  the total) never produces a negative or overshooting duration. */
+export function computeElapsedMs(totalMs: number, remainingMs: number): number {
+  return Math.min(totalMs, Math.max(0, totalMs - remainingMs));
+}

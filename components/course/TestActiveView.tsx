@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { TestQuestion } from '@/lib/quiz';
-import { formatTimer } from '@/lib/quiz';
+import { formatTimer, computeElapsedMs } from '@/lib/quiz';
 import TestGuard from './TestGuard';
 import Proctoring from './Proctoring';
 
@@ -13,8 +13,8 @@ import Proctoring from './Proctoring';
 interface TestActiveViewProps {
   questions: TestQuestion[];
   timeLimit?: number;  // ms - undefined → defaults to 1 hour (3 600 000 ms)
-  onComplete: (answers: number[], violations: number) => void;
-  onCancel: (partialAnswers: (number | null)[], violations: number) => void;
+  onComplete: (answers: number[], violations: number, timeUsedMs: number) => void;
+  onCancel: (partialAnswers: (number | null)[], violations: number, timeUsedMs: number) => void;
   testLabel: string;   // e.g. "Тест 2" or "Финальный тест модуля"
 }
 
@@ -58,9 +58,9 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
   useEffect(() => {
     if (timeRemaining <= 0 && !completedRef.current) {
       completedRef.current = true;
-      onComplete(selectedAnswers.map((a) => a ?? -1), violations);
+      onComplete(selectedAnswers.map((a) => a ?? -1), violations, effectiveTimeLimit);
     }
-  }, [timeRemaining, selectedAnswers, violations, onComplete]);
+  }, [timeRemaining, selectedAnswers, violations, onComplete, effectiveTimeLimit]);
 
   const handleViolation = useCallback((reason?: string) => {
     setViolations((v) => {
@@ -104,9 +104,9 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
   const handleForceSubmit = useCallback(() => {
     if (!completedRef.current) {
       completedRef.current = true;
-      onComplete(selectedAnswers.map((a) => a ?? -1), violations + 1);
+      onComplete(selectedAnswers.map((a) => a ?? -1), violations + 1, computeElapsedMs(effectiveTimeLimit, timeRemaining));
     }
-  }, [selectedAnswers, violations, onComplete]);
+  }, [selectedAnswers, violations, onComplete, effectiveTimeLimit, timeRemaining]);
 
   /** Camera or microphone went away mid-test — proctoring spec requires
    *  immediate termination, no extra warnings. */
@@ -116,8 +116,8 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
     // Bump violations so the cooldown side-effect in TestPanel.handleComplete
     // (which checks violations >= 3 for the 48h lockout) records this as a
     // serious event.
-    onComplete(selectedAnswers.map((a) => a ?? -1), Math.max(violations + 1, 3));
-  }, [selectedAnswers, violations, onComplete]);
+    onComplete(selectedAnswers.map((a) => a ?? -1), Math.max(violations + 1, 3), computeElapsedMs(effectiveTimeLimit, timeRemaining));
+  }, [selectedAnswers, violations, onComplete, effectiveTimeLimit, timeRemaining]);
 
   /** Soft warning — sustained loud audio etc. Doesn't bump the counter,
    *  just shows a transient banner so the user can correct themselves. */
@@ -147,10 +147,10 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
       // Submit
       if (!completedRef.current) {
         completedRef.current = true;
-        onComplete(selectedAnswers.map((a) => a ?? -1), violations);
+        onComplete(selectedAnswers.map((a) => a ?? -1), violations, computeElapsedMs(effectiveTimeLimit, timeRemaining));
       }
     }
-  }, [currentQ, questions.length, selectedAnswers, violations, onComplete]);
+  }, [currentQ, questions.length, selectedAnswers, violations, onComplete, effectiveTimeLimit, timeRemaining]);
 
   const prevQuestion = useCallback(() => {
     setCurrentQ((q) => Math.max(0, q - 1));
@@ -445,7 +445,7 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
                   Продолжить тест
                 </button>
                 <button
-                  onClick={() => { setConfirmExit(false); onCancel(selectedAnswers, violations); }}
+                  onClick={() => { setConfirmExit(false); onCancel(selectedAnswers, violations, computeElapsedMs(effectiveTimeLimit, timeRemaining)); }}
                   className="py-2.5 px-[18px] rounded-[10px] bg-[#B91C1C] hover:bg-[#991B1B] text-white border-none cursor-pointer font-[var(--font-body)] text-[13px] font-semibold transition-colors duration-[180ms]"
                 >
                   Прервать
