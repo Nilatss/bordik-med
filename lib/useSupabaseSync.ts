@@ -180,14 +180,7 @@ export default function useSupabaseSync() {
     // the selector output changes. Shallow equality compares slice refs
     // per-field — O(1) per field — and skips re-fires for unrelated state.
     const unsub = useAppStore.subscribe(
-      (state) => ({
-        c: state.completedCourses,
-        s: state.startedCourses,
-        ctp: state.courseTestProgress,
-        st: state.studyTime,
-        tf: state.toolsFavourites,
-        un: state.userName,
-      }),
+      selectSyncFields,
       () => queuePush(),
       { equalityFn: shallowEqual },
     );
@@ -239,6 +232,67 @@ export default function useSupabaseSync() {
       }
     };
   }, []);
+}
+
+/**
+ * Selects the exact subset of store fields that the debounced push (above)
+ * sends to /api/sync. Passed to `useAppStore.subscribe` with shallow
+ * equality — the listener only fires when one of THESE fields changes.
+ *
+ * Bug: this originally watched only 6 fields (completedCourses,
+ * startedCourses, courseTestProgress, studyTime, toolsFavourites, userName)
+ * while the push payload sent 17. Editing profile.status/country/specialty/
+ * language/goal, tools filters, or completedModules — without also
+ * touching one of the 6 watched fields in the same tick — never fired
+ * `queuePush()`, so the change silently never reached Supabase: it looked
+ * saved locally but never synced to other devices. Every field the push
+ * payload reads must be listed here.
+ *
+ * Exported for unit testing; not intended as a public API.
+ */
+export function selectSyncFields(
+  state: Pick<
+    AppState,
+    | 'completedCourses'
+    | 'startedCourses'
+    | 'courseTestProgress'
+    | 'completedModules'
+    | 'studyTime'
+    | 'toolsFavourites'
+    | 'toolsFavouritesUpdatedAt'
+    | 'toolsQuery'
+    | 'toolsCategories'
+    | 'toolsSubcategories'
+    | 'toolsCountries'
+    | 'toolsOnlyAvailable'
+    | 'userName'
+    | 'userStatus'
+    | 'userCountry'
+    | 'userSpecialty'
+    | 'userLanguage'
+    | 'userGoal'
+  >,
+) {
+  return {
+    c: state.completedCourses,
+    s: state.startedCourses,
+    ctp: state.courseTestProgress,
+    cm: state.completedModules,
+    st: state.studyTime,
+    tf: state.toolsFavourites,
+    tfu: state.toolsFavouritesUpdatedAt,
+    tq: state.toolsQuery,
+    tc: state.toolsCategories,
+    tsc: state.toolsSubcategories,
+    tco: state.toolsCountries,
+    toa: state.toolsOnlyAvailable,
+    un: state.userName,
+    us: state.userStatus,
+    uc: state.userCountry,
+    usp: state.userSpecialty,
+    ul: state.userLanguage,
+    ug: state.userGoal,
+  };
 }
 
 // Default store values for profile fields. A fresh-install device has these
