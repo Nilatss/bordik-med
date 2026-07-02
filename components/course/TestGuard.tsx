@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { MAX_VIOLATIONS } from '@/lib/quiz';
+import { AwayGuard } from '@/lib/test-guard-away';
 
 interface TestGuardProps {
   active: boolean;
@@ -53,6 +54,10 @@ export default function TestGuard({ active, onViolation, onForceSubmit, violatio
   const [justReturned, setJustReturned] = useState(false);
   const graceTickRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const graceStartRef = useRef<number>(0);
+  // Coalesces window `blur` and `document.visibilitychange` — a single tab
+  // switch fires BOTH events, and each independently called onViolation().
+  // See lib/test-guard-away.ts for why this needs its own class.
+  const awayGuardRef = useRef(new AwayGuard());
 
   // Stop grace countdown helper
   const stopGrace = useCallback(() => {
@@ -66,6 +71,7 @@ export default function TestGuard({ active, onViolation, onForceSubmit, violatio
 
   useEffect(() => {
     if (!active) return;
+    awayGuardRef.current.reset();
 
     const startGrace = () => {
       if (graceTickRef.current) return; // already running
@@ -102,6 +108,7 @@ export default function TestGuard({ active, onViolation, onForceSubmit, violatio
     // instant violation — no grace countdown. The user explicitly asked
     // that tab-switching count toward the cheat counter immediately.
     const fireVisibilityViolation = (reason: string) => {
+      if (!awayGuardRef.current.markDeparture()) return; // already counted this away-episode
       if (graceTickRef.current) {
         clearInterval(graceTickRef.current);
         graceTickRef.current = null;
@@ -113,13 +120,16 @@ export default function TestGuard({ active, onViolation, onForceSubmit, violatio
     };
     const handleVisibility = () => {
       if (document.hidden) fireVisibilityViolation('tab-hidden');
+      else awayGuardRef.current.markReturned(); // visible again — next departure counts
     };
     const handleBlur = () => {
       fireVisibilityViolation('window-blur');
     };
     const handleFocus = () => {
-      // returning to the tab no longer cancels anything — the violation
-      // already fired the moment the user left.
+      // Returning to the tab no longer cancels a pending violation — it
+      // already fired the moment the user left. It DOES re-arm the
+      // away-episode guard so the next departure is counted.
+      awayGuardRef.current.markReturned();
     };
 
     // Forbidden-key listener — instant violation, no grace.
