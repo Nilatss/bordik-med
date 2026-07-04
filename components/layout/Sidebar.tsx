@@ -20,6 +20,7 @@ import type { SearchableCourse } from '@/lib/curriculum';
 // CATALOG_TOOLS (172 kB) is dynamically imported below — lazy until the
 // user actually starts searching while on the Tools view.
 import type { CatalogTool } from '@/lib/tools-catalog';
+import { safeLazyImport } from '@/lib/safe-lazy-import';
 import nextDynamic from 'next/dynamic';
 import Highlight from '@/components/ui/Highlight';
 
@@ -112,7 +113,7 @@ export default function Sidebar() {
     };
     mq.addEventListener('change', onChange);
     return () => mq.removeEventListener('change', onChange);
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- run-once on mount. The MediaQueryList subscription is global; re-running would attach duplicate listeners.
+     
   }, []);
 
   const activeNav: NavItem = showProfile
@@ -418,7 +419,9 @@ export default function Sidebar() {
       if (!searchModuleRef.current) {
         // Dynamic import — first call costs a chunk fetch, after that
         // the function reference is cached on the ref.
-        const mod = await import('@/lib/curriculum');
+        const mod = await safeLazyImport(() => import('@/lib/curriculum'));
+        if (cancelled) return;
+        if (!mod) { setCourseResults({ available: [], locked: [] }); return; }
         searchModuleRef.current = { searchCourses: mod.searchCourses };
       }
       if (cancelled) return;
@@ -438,8 +441,8 @@ export default function Sidebar() {
   useEffect(() => {
     if (!q || q.length < 2 || !showTools || toolCatalog) return;
     let cancelled = false;
-    import('@/lib/tools-catalog').then((m) => {
-      if (!cancelled) setToolCatalog(m.CATALOG_TOOLS);
+    safeLazyImport(() => import('@/lib/tools-catalog')).then((m) => {
+      if (!cancelled && m) setToolCatalog(m.CATALOG_TOOLS);
     });
     return () => { cancelled = true; };
   }, [q, showTools, toolCatalog]);

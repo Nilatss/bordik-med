@@ -195,6 +195,16 @@ export interface AppState {
     timeUsedMs: number,
     violations?: number,
   ) => void;
+
+  /** Reset every field that useSupabaseSync pulls from / pushes to the
+   *  server, back to factory defaults. Call this on a Supabase `SIGNED_OUT`
+   *  auth event (not just on explicit "Выйти") — otherwise a second user
+   *  signing in on the same browser without a full page reload (session
+   *  expiry, token-refresh failure, another tab signing out) inherits the
+   *  previous user's local state. Since the pull-side merge is additive
+   *  ("grow-only"), that stale state then gets pushed back and permanently
+   *  written into the new account. */
+  resetSyncedProgress: () => void;
 }
 
 // P2-PERF-NEW-4 — DECIDED NOT TO FIX (закрыто 2026-05-09).
@@ -409,6 +419,25 @@ export const useAppStore = create<AppState>()(
         const prev = moduleTestAttempts[moduleId] || [];
         set({ moduleTestAttempts: { ...moduleTestAttempts, [moduleId]: [...prev, attempt] } });
       },
+
+      resetSyncedProgress: () => set({
+        completedCourses: [],
+        startedCourses: [],
+        courseTestProgress: {},
+        completedModules: [],
+        studyTime: {},
+        testAttempts: {},
+        moduleTestAttempts: {},
+        toolsFavourites: [],
+        toolsFavouritesUpdatedAt: 0,
+        userName: 'Студент',
+        userEmail: '',
+        userStatus: '',
+        userCountry: '',
+        userSpecialty: '',
+        userLanguage: 'Русский',
+        userGoal: '',
+      }),
 
       setActiveSection: (id) => set({ activeSection: id, activeModuleId: null, currentCourseId: null }),
 
