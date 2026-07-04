@@ -109,7 +109,16 @@ export default function useSupabaseSync() {
     // Re-pull when user signs in (on a different tab, etc.)
     const { data: sub } = sb.auth.onAuthStateChange((event) => {
       if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') pull();
-      if (event === 'SIGNED_OUT') pulled.current = false;
+      if (event === 'SIGNED_OUT') {
+        pulled.current = false;
+        // SIGNED_OUT fires for session expiry / token-refresh failure /
+        // another tab signing out, not just explicit "Выйти" (which already
+        // goes through fullLogout()'s localStorage.clear()). Without this,
+        // a second user signing in on the same browser would have their
+        // pull() additively merge with — and then push back — the previous
+        // user's still-resident local state, corrupting their account.
+        useAppStore.getState().resetSyncedProgress();
+      }
     });
 
     return () => {
