@@ -26,12 +26,18 @@ interface PersonalNote {
   tags: string[];
 }
 
-function loadNotes(): PersonalNote[] {
+// Exported for unit testing; not intended as a public API.
+export function loadNotes(): PersonalNote[] {
   if (typeof window === 'undefined') return [];
   try {
     const raw = window.localStorage.getItem('bordik-neonatal-notes');
     if (!raw) return [];
-    return JSON.parse(raw) as PersonalNote[];
+    const parsed: unknown = JSON.parse(raw);
+    // A parse that succeeds but isn't an array (stale/foreign-format value
+    // under this shared-key, corrupted write, `{}`, `null`...) would crash
+    // the page below on the very first render — `notes.find(...)` and
+    // `[...notes].sort(...)` both assume an array.
+    return Array.isArray(parsed) ? (parsed as PersonalNote[]) : [];
   } catch { return []; }
 }
 
