@@ -149,6 +149,26 @@ describe('decide — 5-tier clinical recommendation', () => {
       expect(r.detail_ru.length).toBeGreaterThan(0);
     }
   });
+
+  it('без displayUnit — рационале печатает mg/dL как раньше (обратная совместимость)', () => {
+    const r = decide(13.0, PT, EX);
+    expect(r.rationale_ru).toContain('mg/dL');
+    expect(r.rationale_ru).not.toContain('µmol/L');
+  });
+
+  it('с displayUnit=µmol/L — rationale/detail печатают µmol/L, не mg/dL', () => {
+    // Regression: guidance text used to always embed raw mg/dL numbers
+    // with a literal "mg/dL" label even when the clinician had switched
+    // the panel to µmol/L (standard unit in Russia) — mixed units in a
+    // single kernicterus-prevention decision panel.
+    const factor = 17.1;
+    const fmtUmol = (v: number) => Math.round(v * factor).toString();
+    const r = decide(13.0, PT, EX, 'umol/L', fmtUmol);
+    expect(r.rationale_ru).toContain('umol/L');
+    expect(r.rationale_ru).not.toContain('mg/dL');
+    // TSB 13.0 mg/dL * 17.1 = 222.3 -> rounds to 222
+    expect(r.rationale_ru).toContain('222 umol/L');
+  });
 });
 
 describe('convert — mg/dL ↔ µmol/L', () => {
