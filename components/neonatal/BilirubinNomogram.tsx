@@ -381,13 +381,12 @@ function ResultPanel({
     );
   }
 
-  const rec = decide(computed.tsbMgdl, computed.ptThr, computed.exThr);
-
   const factor = bank.units.conversionFactor;
   const fmt = (v: number): string => {
     if (unit === 'mg/dL') return v.toFixed(1);
     return Math.round(v * factor).toString();
   };
+  const rec = decide(computed.tsbMgdl, computed.ptThr, computed.exThr, unit, fmt);
 
   const toneBg = {
     ok: '#ECFDF5',
@@ -499,12 +498,12 @@ function ResultPanel({
           <Card
             label="Порог фототерапии"
             value={`${fmt(computed.ptThr)} ${unit}`}
-            sub={`до порога: ${rec.marginToPt > 0 ? '+' : ''}${rec.marginToPt.toFixed(1)} mg/dL`}
+            sub={`до порога: ${rec.marginToPt > 0 ? '+' : ''}${fmt(rec.marginToPt)} ${unit}`}
           />
           <Card
             label="Порог обменного"
             value={`${fmt(computed.exThr)} ${unit}`}
-            sub={`до порога: ${rec.marginToEx > 0 ? '+' : ''}${rec.marginToEx.toFixed(1)} mg/dL`}
+            sub={`до порога: ${rec.marginToEx > 0 ? '+' : ''}${fmt(rec.marginToEx)} ${unit}`}
           />
         </div>
       </div>

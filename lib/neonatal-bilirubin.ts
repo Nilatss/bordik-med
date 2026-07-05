@@ -86,11 +86,28 @@ export function classifyStratum(gaWeeks: number, riskIds: ReadonlyArray<string>)
   return hasNonGaRisk ? 'ge38_risk_or_3537_norisk' : 'ge38_norisk';
 }
 
-/** Принимает решение по AAP 2022 алгоритму. */
-export function decide(tsb: number, ptThreshold: number, exThreshold: number): Recommendation {
+/**
+ * Принимает решение по AAP 2022 алгоритму.
+ *
+ * `tsb`/`ptThreshold`/`exThreshold` are always mg/dL internally (that's
+ * the unit AAP thresholds are tabulated in). `displayUnit`+`fmtValue`
+ * only control how those same mg/dL numbers are *rendered* inside the
+ * returned Russian explanation text — pass the caller's active display
+ * unit (e.g. µmol/L) so the guidance text doesn't silently keep
+ * printing mg/dL numbers/labels while the rest of the UI has switched
+ * units, which would read as mismatched numbers in the same panel.
+ */
+export function decide(
+  tsb: number,
+  ptThreshold: number,
+  exThreshold: number,
+  displayUnit: string = 'mg/dL',
+  fmtValue: (v: number) => string = (v) => v.toFixed(1),
+): Recommendation {
   const marginToPt = ptThreshold - tsb;
   const marginToEx = exThreshold - tsb;
   const REF = 'AAP 2022 — Kemper AR, Newman TB, Slaughter JL, et al. Pediatrics 2022;150(3):e2022058859';
+  const u = (v: number) => `${fmtValue(v)} ${displayUnit}`;
 
   let decision: Decision;
   let label_ru: string;
@@ -102,31 +119,31 @@ export function decide(tsb: number, ptThreshold: number, exThreshold: number): R
     decision = 'exchange';
     label_ru = 'Обменное переливание';
     detail_ru = `Срочно: интенсивная фототерапия (двойная/тройная лампа, расстояние ≤30 см, прозрачный кювет) + подготовка к обменному переливанию (двойной объёмный обмен ОЦК ~160 мл/кг). Перевод в ОРИТН. Контроль TSB через 2 ч после начала интенсивной ФТ; если снижение менее 1–2 mg/dL/ч — выполнять обменное.`;
-    rationale_ru = `TSB ${tsb.toFixed(1)} mg/dL ≥ порога обменного переливания ${exThreshold.toFixed(1)} mg/dL. Согласно AAP 2022 (Table 1, Figure 4), достижение exchange threshold = острый risk билирубиновой энцефалопатии (ОБЭ); intensive PT + обмен показаны без отлагательств.`;
+    rationale_ru = `TSB ${u(tsb)} ≥ порога обменного переливания ${u(exThreshold)}. Согласно AAP 2022 (Table 1, Figure 4), достижение exchange threshold = острый risk билирубиновой энцефалопатии (ОБЭ); intensive PT + обмен показаны без отлагательств.`;
     tone = 'critical';
   } else if (tsb >= exThreshold - 2) {
     decision = 'intensive';
     label_ru = 'Интенсивная фототерапия';
     detail_ru = `Двойная/тройная фототерапия ≥30 µW/cm²/nm на участке кожи, IV-гидратация при необходимости. Повторить TSB через 2–3 ч. Готовиться к обменному переливанию (group&match, типирование, согласие родителей), если рост TSB сохраняется или снижение менее 0.5 mg/dL/ч.`;
-    rationale_ru = `TSB ${tsb.toFixed(1)} mg/dL в пределах 2 mg/dL до обменного переливания (порог ${exThreshold.toFixed(1)} mg/dL). AAP 2022 рекомендует escalation в intensive PT при достижении этой зоны "escalation-of-care threshold".`;
+    rationale_ru = `TSB ${u(tsb)} в пределах ${u(2)} до обменного переливания (порог ${u(exThreshold)}). AAP 2022 рекомендует escalation в intensive PT при достижении этой зоны "escalation-of-care threshold".`;
     tone = 'critical';
   } else if (tsb >= ptThreshold) {
     decision = 'phototherapy';
     label_ru = 'Начать фототерапию';
     detail_ru = `Стандартная фототерапия — голубой свет 460–490 nm, ≥8–10 µW/cm²/nm, расстояние 30–50 см от кожи. Раздеть до подгузника, защитить глаза. Повторить TSB через 4–6 ч после начала, далее каждые 6–12 ч до устойчивого снижения. Прекратить, когда TSB < порога фототерапии минус 2 mg/dL.`;
-    rationale_ru = `TSB ${tsb.toFixed(1)} mg/dL ≥ порога фототерапии ${ptThreshold.toFixed(1)} mg/dL для текущего страта риска. AAP 2022 (Figure 2) — phototherapy threshold для предотвращения нарастания TSB к exchange-уровню.`;
+    rationale_ru = `TSB ${u(tsb)} ≥ порога фототерапии ${u(ptThreshold)} для текущего страта риска. AAP 2022 (Figure 2) — phototherapy threshold для предотвращения нарастания TSB к exchange-уровню.`;
     tone = 'warning';
   } else if (marginToPt <= 3) {
     decision = 'monitor';
     label_ru = 'Близко к порогу — наблюдение';
-    detail_ru = `До фототерапии ${marginToPt.toFixed(1)} mg/dL. Повторить TSB через 4–6 ч (или раньше при клиническом ухудшении); оценить динамику нарастания (rate-of-rise: > 0.3 mg/dL/ч после 24 ч жизни — предиктор пересечения порога), пересмотреть факторы риска нейротоксичности.`;
-    rationale_ru = `TSB ${tsb.toFixed(1)} mg/dL в пределах 3 mg/dL ниже порога фототерапии (${ptThreshold.toFixed(1)} mg/dL). Зона "active monitoring" по AAP 2022 — недостаточно для лечения, но требует усиленного контроля.`;
+    detail_ru = `До фототерапии ${u(marginToPt)}. Повторить TSB через 4–6 ч (или раньше при клиническом ухудшении); оценить динамику нарастания (rate-of-rise: > 0.3 mg/dL/ч после 24 ч жизни — предиктор пересечения порога), пересмотреть факторы риска нейротоксичности.`;
+    rationale_ru = `TSB ${u(tsb)} в пределах ${u(3)} ниже порога фототерапии (${u(ptThreshold)}). Зона "active monitoring" по AAP 2022 — недостаточно для лечения, но требует усиленного контроля.`;
     tone = 'monitor';
   } else {
     decision = 'clear';
     label_ru = 'Ниже порога — рутинное наблюдение';
-    detail_ru = `До фототерапии ${marginToPt.toFixed(1)} mg/dL — комфортный запас. Повторное измерение по клинической ситуации (при выписке — TcB или TSB перед уходом домой; при риске — повторно через 24–48 ч после выписки).`;
-    rationale_ru = `TSB ${tsb.toFixed(1)} mg/dL более чем на 3 mg/dL ниже порога фототерапии (${ptThreshold.toFixed(1)} mg/dL). Это безопасная зона по AAP 2022 для текущего страта риска.`;
+    detail_ru = `До фототерапии ${u(marginToPt)} — комфортный запас. Повторное измерение по клинической ситуации (при выписке — TcB или TSB перед уходом домой; при риске — повторно через 24–48 ч после выписки).`;
+    rationale_ru = `TSB ${u(tsb)} более чем на ${u(3)} ниже порога фототерапии (${u(ptThreshold)}). Это безопасная зона по AAP 2022 для текущего страта риска.`;
     tone = 'ok';
   }
 
