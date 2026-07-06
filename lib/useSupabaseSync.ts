@@ -3,6 +3,8 @@
 import { useEffect, useRef } from 'react';
 import { shallow as shallowEqual } from 'zustand/shallow';
 import { useAppStore, type AppState } from './store';
+import { MODULE_COURSE_IDS } from './curriculum-stats';
+import { deriveCompletedModules } from './module-progress-sync';
 import { getSupabaseBrowserClient } from './supabase/client';
 import {
   enqueueSync,
@@ -68,6 +70,12 @@ export default function useSupabaseSync() {
           courseTestProgress[row.course_id] = Math.max(prev, row.highest_test_level ?? 0);
         }
 
+        const completedModules = deriveCompletedModules(
+          state.completedModules,
+          data.courseProgress ?? [],
+          MODULE_COURSE_IDS,
+        );
+
         // Merge study time
         for (const row of data.studyTime ?? []) {
           const prev = studyTime[row.course_id] ?? 0;
@@ -94,6 +102,7 @@ export default function useSupabaseSync() {
           completedCourses: Array.from(completed),
           startedCourses: Array.from(started),
           courseTestProgress,
+          completedModules: Array.from(completedModules),
           studyTime,
           toolsFavourites,
           toolsFavouritesUpdatedAt: fav.updatedAt,
