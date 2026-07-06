@@ -1,5 +1,7 @@
 import * as v from 'valibot';
 import { withAuthedSupabase, parseJsonBody, apiError, apiOk } from '@/lib/api-helpers';
+import { MODULE_COURSE_IDS } from '@/lib/curriculum-stats';
+import { courseIdsForCompletedModules } from '@/lib/module-progress-sync';
 
 // P1-PERF-NEW-4 — sync route на Edge runtime.
 // /api/sync делает 4 параллельных Supabase-чтения (GET) и до 4
@@ -203,11 +205,14 @@ export async function POST(req: Request) {
   for (const [id, lvl] of Object.entries(body.courseTestProgress ?? {})) {
     ensureRow(id).highest_test_level = lvl;
   }
-  // Note: completedModules is just a boolean per courseId in our data model;
-  // we set it on every course_progress row for that module.
-  // (Frontend sends module ids — but we don't have a course-to-module map
-  //  here without importing curriculum. Skip for now; module_passed updates
-  //  on next test submission instead.)
+  // completedModules is a boolean per courseId in our data model: a passed
+  // module final marks module_passed=true on every course_progress row that
+  // belongs to that module (MODULE_COURSE_IDS gives the mapping). The GET
+  // handler already reads module_passed back; the client pull-merge derives
+  // completedModules from it (lib/useSupabaseSync.ts).
+  for (const courseId of courseIdsForCompletedModules(body.completedModules, MODULE_COURSE_IDS)) {
+    ensureRow(courseId).module_passed = true;
+  }
 
   if (courseRows.size > 0) {
     tasks.push(sb.from('course_progress').upsert(Array.from(courseRows.values())));

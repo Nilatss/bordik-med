@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { MAX_VIOLATIONS } from '@/lib/quiz';
+import { createDepartureGate } from '@/lib/test-guard-departure';
 
 interface TestGuardProps {
   active: boolean;
@@ -101,7 +102,15 @@ export default function TestGuard({ active, onViolation, onForceSubmit, violatio
     // Switching tabs / minimising the window / losing focus is now an
     // instant violation — no grace countdown. The user explicitly asked
     // that tab-switching count toward the cheat counter immediately.
+    //
+    // A single physical "leave the test" action (Ctrl+Tab, Alt+Tab, clicking
+    // another app) commonly fires BOTH `visibilitychange` (hidden) and
+    // window `blur` back to back — they aren't independent departures.
+    // `departureGate` coalesces them into one counted violation per
+    // departure (see lib/test-guard-departure.ts for the bug this fixes).
+    const departureGate = createDepartureGate();
     const fireVisibilityViolation = (reason: string) => {
+      if (!departureGate.depart()) return;
       if (graceTickRef.current) {
         clearInterval(graceTickRef.current);
         graceTickRef.current = null;
@@ -113,13 +122,15 @@ export default function TestGuard({ active, onViolation, onForceSubmit, violatio
     };
     const handleVisibility = () => {
       if (document.hidden) fireVisibilityViolation('tab-hidden');
+      else departureGate.returned();
     };
     const handleBlur = () => {
       fireVisibilityViolation('window-blur');
     };
     const handleFocus = () => {
-      // returning to the tab no longer cancels anything — the violation
-      // already fired the moment the user left.
+      // Returning to the tab doesn't cancel the violation that already
+      // fired — it just re-arms the gate so the NEXT departure counts.
+      departureGate.returned();
     };
 
     // Forbidden-key listener — instant violation, no grace.
