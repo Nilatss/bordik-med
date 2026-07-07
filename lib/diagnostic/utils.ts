@@ -33,6 +33,30 @@ export function levelRu(level: 'basic' | 'intermediate' | 'advanced'): string {
     : 'средний';
 }
 
+export type DiagnosticAction = 'next' | 'finalize';
+
+/**
+ * Which `/api/diagnostic` action a click on "Попробовать снова" should
+ * re-send. Must replay whichever call actually failed — not always
+ * 'next' — otherwise a finalize() failure on the last question retries
+ * with a complete (30-answer) history, which the server rejects outright
+ * (action:'next' 400s once history.length >= total), permanently
+ * trapping the user on the error screen with a finished test they can
+ * never submit.
+ *
+ * `historyLength >= total` is checked independently of `lastFailedAction`
+ * as defense-in-depth: 'next' is never a valid retry once the history is
+ * already complete, regardless of what the caller thinks failed.
+ */
+export function retryAction(
+  lastFailedAction: DiagnosticAction,
+  historyLength: number,
+  total: number,
+): DiagnosticAction {
+  if (historyLength >= total) return 'finalize';
+  return lastFailedAction;
+}
+
 /**
  * Translate a backend error code into a user-actionable message instead
  * of dumping raw "gemini-429: You exceeded your current quota..." strings.

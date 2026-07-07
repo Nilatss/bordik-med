@@ -11,7 +11,7 @@ import type {
   FinalResult,
   Phase,
 } from '@/lib/diagnostic/types';
-import { friendlyError } from '@/lib/diagnostic/utils';
+import { friendlyError, retryAction } from '@/lib/diagnostic/utils';
 import { DiagnosticHeader } from './diagnostic/DiagnosticHeader';
 import { DiagnosticProgress } from './diagnostic/DiagnosticProgress';
 import { LoadingPanel } from './diagnostic/LoadingPanel';
@@ -46,6 +46,13 @@ export default function DiagnosticTest({ onClose }: { onClose: () => void }) {
   const [history, setHistory] = useState<Turn[]>([]);
   const [current, setCurrent] = useState<ServerQuestion | null>(null);
   const [picked, setPicked] = useState<number | null>(null);
+  // Bug fix: ErrorPanel's onRetry used to always call fetchNext(), even
+  // when the failure came from finalize() after the last (30th) question.
+  // The server rejects a 'next' action once history is already complete,
+  // so a finalize failure put the user in a permanent error loop with no
+  // way to retry and their finished test unrecoverable. Track which
+  // action actually failed so retry calls the right one.
+  const [lastAction, setLastAction] = useState<'next' | 'finalize'>('next');
   const [final, setFinal] = useState<FinalResult | null>(
     cachedResult
       ? {
@@ -73,6 +80,7 @@ export default function DiagnosticTest({ onClose }: { onClose: () => void }) {
   const fetchNext = useCallback(async (h: Turn[]) => {
     setPhase('loading');
     setErrorMsg(null);
+    setLastAction('next');
 
     // One automatic retry-with-backoff on transient errors. The diagnostic
     // depends on a chain of API calls; a single 429 from Google's free
@@ -127,6 +135,7 @@ export default function DiagnosticTest({ onClose }: { onClose: () => void }) {
   const finalize = useCallback(async (h: Turn[]) => {
     setPhase('finalizing');
     setErrorMsg(null);
+    setLastAction('finalize');
     setStreamingPreview(''); // P1-PERF-NEW-5 — reset preview on each attempt
     // Same one-shot retry pattern as fetchNext — finalize is a single
     // expensive call that summarises all 30 turns; we'd rather wait 2.5s
@@ -304,7 +313,11 @@ export default function DiagnosticTest({ onClose }: { onClose: () => void }) {
         {phase === 'error' && (
           <ErrorPanel
             errorMsg={errorMsg}
-            onRetry={() => fetchNext(history)}
+            onRetry={() => (
+              retryAction(lastAction, history.length, total) === 'finalize'
+                ? finalize(history)
+                : fetchNext(history)
+            )}
             onClose={onClose}
           />
         )}

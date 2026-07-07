@@ -21,9 +21,25 @@
  */
 import { describe, it, expect } from 'vitest';
 import chads from '@/lib/runners/chads-vasc';
-import { findBand, type ScoreBand } from '@/lib/tools-runners';
+import { findBand, type ScoreBand, type ToolInput } from '@/lib/tools-runners';
 
 const bands = (chads as { bands: ScoreBand[] }).bands;
+const inputs = (chads as { inputs: ToolInput[] }).inputs;
+
+/** Mirrors the generic sum-scoring pipeline in ToolView.tsx (checkbox +
+ * select points), so tests exercise the same math real users see. */
+function sumScore(values: Record<string, number | boolean | string>): number {
+  let total = 0;
+  for (const inp of inputs) {
+    if (inp.type === 'checkbox' && values[inp.id] === true && inp.points) {
+      total += inp.points;
+    } else if (inp.type === 'select' && inp.options) {
+      const opt = inp.options.find((o) => String(o.value) === String(values[inp.id]));
+      if (opt?.points) total += opt.points;
+    }
+  }
+  return total;
+}
 
 describe('chads-vasc · bands', () => {
   it('declares non-empty band list', () => {
@@ -64,5 +80,29 @@ describe('chads-vasc · bands', () => {
       const b = findBand(bands, score);
       expect(b.description.toLowerCase()).toMatch(/антикоагул|поак|варфарин|апиксабан|ривароксабан|дабигатран|edoxaban|nоак/i);
     }
+  });
+
+  it('age is a single mutually-exclusive input — checking every box never exceeds maxScore', () => {
+    // Regression test: age65 + age75 used to be two independent checkboxes
+    // (1 + 2 = 3 pts) instead of one categorical value (max 2 pts), so a
+    // patient with all boxes checked scored 10 — one point above the
+    // declared maxScore of 9 and outside every band, silently falling
+    // back to the "0 points, no anticoagulation" band for the highest-risk
+    // patient possible.
+    const ageInput = inputs.find((i) => i.id === 'age');
+    expect(ageInput, 'age must be modeled as a single select input').toBeDefined();
+    expect(ageInput!.type).toBe('select');
+    expect(inputs.some((i) => i.id === 'age65' || i.id === 'age75')).toBe(false);
+
+    const allChecked: Record<string, number | boolean | string> = { age: 2 };
+    for (const inp of inputs) {
+      if (inp.type === 'checkbox') allChecked[inp.id] = true;
+    }
+    const maxTotal = sumScore(allChecked);
+    expect(maxTotal).toBe((chads as { maxScore: number }).maxScore);
+    expect(maxTotal).toBeLessThanOrEqual(9);
+
+    const b = findBand(bands, maxTotal);
+    expect(b.description.toLowerCase()).toMatch(/антикоагул|поак|варфарин|апиксабан|ривароксабан|дабигатран/i);
   });
 });

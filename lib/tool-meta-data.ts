@@ -2354,7 +2354,7 @@ export const RUNNER_KINDS: Readonly<Record<string, RunnerKind>> = {
   "stanag": "score",
   "stanford": "score",
   "start-civ": "calculator",
-  "start": "score",
+  "start": "calculator",
   "stess": "score",
   "stockley": "calculator",
   "stone": "calculator",
