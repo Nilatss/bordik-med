@@ -66,12 +66,6 @@ const runner: ScoreTool = {
         points: 1
       },
       {
-        id: "age75",
-        label: "Возраст ≥75 лет",
-        type: "checkbox",
-        points: 2
-      },
-      {
         id: "dm",
         label: "Сахарный диабет",
         type: "checkbox",
@@ -90,10 +84,14 @@ const runner: ScoreTool = {
         points: 1
       },
       {
-        id: "age65",
-        label: "Возраст 65-74",
-        type: "checkbox",
-        points: 1
+        id: "age",
+        label: "Возраст",
+        type: "select",
+        options: [
+          { value: 0, label: "< 65 лет", points: 0 },
+          { value: 1, label: "65-74 года", points: 1 },
+          { value: 2, label: "≥ 75 лет", points: 2 }
+        ]
       },
       {
         id: "female",
