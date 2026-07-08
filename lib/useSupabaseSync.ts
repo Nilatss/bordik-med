@@ -28,6 +28,36 @@ import { mergeFavouritesLWW } from './favourites-lww';
  * Failure mode: if the user is signed-out or the request fails, we
  * never touch the local store — Bordik works offline-first regardless.
  */
+/**
+ * Fields whose changes should trigger a debounced push to `/api/sync`.
+ *
+ * Bug: the previous inline selector only tracked 6 fields (completedCourses,
+ * startedCourses, courseTestProgress, studyTime, toolsFavourites, userName)
+ * while the push payload below also sends `completedModules` and the rest
+ * of `profile` (status/country/specialty/language/goal). Changing e.g.
+ * specialty or country on /profile, or finishing a module, silently never
+ * queued a push — it only reached the server if piggy-backed on a later
+ * change to one of the 6 tracked fields.
+ *
+ * Exported for unit testing; not intended as a public API.
+ */
+export function selectSyncFields(state: AppState) {
+  return {
+    completedCourses: state.completedCourses,
+    startedCourses: state.startedCourses,
+    courseTestProgress: state.courseTestProgress,
+    completedModules: state.completedModules,
+    studyTime: state.studyTime,
+    toolsFavourites: state.toolsFavourites,
+    userName: state.userName,
+    userStatus: state.userStatus,
+    userCountry: state.userCountry,
+    userSpecialty: state.userSpecialty,
+    userLanguage: state.userLanguage,
+    userGoal: state.userGoal,
+  };
+}
+
 export default function useSupabaseSync() {
   const pulled = useRef(false);
   const debounce = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -179,18 +209,9 @@ export default function useSupabaseSync() {
     // Post-fix: zustand subscribeWithSelector calls the listener ONLY when
     // the selector output changes. Shallow equality compares slice refs
     // per-field — O(1) per field — and skips re-fires for unrelated state.
-    const unsub = useAppStore.subscribe(
-      (state) => ({
-        c: state.completedCourses,
-        s: state.startedCourses,
-        ctp: state.courseTestProgress,
-        st: state.studyTime,
-        tf: state.toolsFavourites,
-        un: state.userName,
-      }),
-      () => queuePush(),
-      { equalityFn: shallowEqual },
-    );
+    const unsub = useAppStore.subscribe(selectSyncFields, () => queuePush(), {
+      equalityFn: shallowEqual,
+    });
     return () => {
       unsub();
       if (debounce.current) clearTimeout(debounce.current);
