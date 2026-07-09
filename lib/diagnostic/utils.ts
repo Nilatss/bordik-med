@@ -34,6 +34,21 @@ export function levelRu(level: 'basic' | 'intermediate' | 'advanced'): string {
 }
 
 /**
+ * Which API call should the "Попробовать снова" button re-issue?
+ *
+ * The diagnostic test has two distinct failure points — `next` (fetching
+ * question N) and `finalize` (summarising all 30 answers at the end).
+ * If the retry button always re-issues `next`, a `finalize` failure after
+ * the last question is answered becomes unrecoverable: the server
+ * rejects `next` once `history.length >= total` with `test-complete`,
+ * so the retry loop fires the wrong call forever and the user's
+ * completed attempt is stranded (see DiagnosticTest.tsx error phase).
+ */
+export function resolveRetryAction(historyLength: number, total: number): 'next' | 'finalize' {
+  return historyLength >= total ? 'finalize' : 'next';
+}
+
+/**
  * Translate a backend error code into a user-actionable message instead
  * of dumping raw "gemini-429: You exceeded your current quota..." strings.
  * Codes are emitted by the `/api/diagnostic` route — see that file for
