@@ -195,7 +195,11 @@ export function generateContentQuestions(courseId: string): TestQuestion[] {
       .sort((a, b) => b.length - a.length)[0];
     if (!matched) continue;
 
-    const cloze = sentence.replace(matched, '_____');
+    // Blank out EVERY occurrence of the term, not just the first — a plain
+    // `.replace(matched, ...)` only swaps the first hit, so a sentence that
+    // repeats the term (common in enumerations/comparisons) left the answer
+    // sitting in plain text right next to the blank.
+    const cloze = sentence.split(matched).join('_____');
     if (usedClozes.has(cloze)) continue;
     usedSentences.add(sentence);
     usedClozes.add(cloze);
