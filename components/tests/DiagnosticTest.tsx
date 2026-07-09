@@ -11,7 +11,7 @@ import type {
   FinalResult,
   Phase,
 } from '@/lib/diagnostic/types';
-import { friendlyError } from '@/lib/diagnostic/utils';
+import { friendlyError, resolveRetryAction } from '@/lib/diagnostic/utils';
 import { DiagnosticHeader } from './diagnostic/DiagnosticHeader';
 import { DiagnosticProgress } from './diagnostic/DiagnosticProgress';
 import { LoadingPanel } from './diagnostic/LoadingPanel';
@@ -304,7 +304,15 @@ export default function DiagnosticTest({ onClose }: { onClose: () => void }) {
         {phase === 'error' && (
           <ErrorPanel
             errorMsg={errorMsg}
-            onRetry={() => fetchNext(history)}
+            onRetry={() =>
+              // A `finalize` failure (all questions answered) must retry
+              // `finalize`, not `next` — the server rejects `next` once
+              // history is full, which would otherwise strand a completed
+              // attempt in an unrecoverable retry loop.
+              resolveRetryAction(history.length, total) === 'finalize'
+                ? finalize(history)
+                : fetchNext(history)
+            }
             onClose={onClose}
           />
         )}
