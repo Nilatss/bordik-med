@@ -1,7 +1,7 @@
 'use client';
 
 import { create } from 'zustand';
-import { persist, subscribeWithSelector } from 'zustand/middleware';
+import { persist, subscribeWithSelector, createJSONStorage } from 'zustand/middleware';
 import type { SectionId } from './curriculum-types';
 // Use the build-time precomputed module → course IDs map instead of
 // importing the full module objects. This keeps lib/store.ts (eager
@@ -215,6 +215,41 @@ export interface AppState {
 // Sync persist остаётся by design. См. также P2-PERF-NEW-13 в этом же
 // файле — другой пример «WONTFIX из-за конфликта с другим guard'ом».
 // Доку: docs/performance-audit-2026-05.md (P2-PERF-NEW-4 row).
+// Zustand's persist middleware calls `storage.setItem()` synchronously
+// inside `api.setState`/`set()` with no try/catch of its own (see
+// node_modules/zustand/.../middleware.mjs) — a QuotaExceededError,
+// Safari private-mode, or a sandboxed iframe throws straight out of
+// whatever `set()` call the app made, e.g. TestPanel.handleComplete's
+// `submitTest()` — the fullscreen proctored-test overlay is then stuck
+// on screen because the code after that `set()` never runs. Same class
+// of bug already fixed for TestPanel's own ad-hoc localStorage calls in
+// audit2 #139 ("storage crash") — this closes the gap in the store's
+// own persist layer. Exported so the storage-crash path is unit-testable
+// without a DOM (this repo's vitest setup has no jsdom/testing-library).
+export function safeLocalStorage(): Storage {
+  return {
+    getItem: (name: string) => {
+      try {
+        return window.localStorage.getItem(name);
+      } catch {
+        return null;
+      }
+    },
+    setItem: (name: string, value: string) => {
+      try {
+        window.localStorage.setItem(name, value);
+      } catch {
+        /* storage blocked/full — in-memory state stands, just won't persist */
+      }
+    },
+    removeItem: (name: string) => {
+      try {
+        window.localStorage.removeItem(name);
+      } catch { /* ignore */ }
+    },
+  } as Storage;
+}
+
 // Audit B-11: wrap persist with `subscribeWithSelector` so consumers
 // (useSupabaseSync) can use `useAppStore.subscribe(selector, listener,
 // { equalityFn })` instead of the bare `subscribe(listener)` which
@@ -522,6 +557,7 @@ export const useAppStore = create<AppState>()(
     {
       name: 'bordik-progress',
       version: 5,
+      storage: createJSONStorage(safeLocalStorage),
       // Hardened migrate: tolerant of corrupt or attacker-tampered
       // localStorage. We never trust persisted JSON blindly - every
       // top-level key is type-guarded, anything failing the guard is
