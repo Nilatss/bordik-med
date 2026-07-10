@@ -13,6 +13,9 @@ import {
   gradeTest, gradeModuleTest, MAX_TEST_LEVELS,
 } from './quiz';
 
+/** Bump on any persisted-shape change; also passed to `migrate`/`merge` below. */
+const STORE_VERSION = 5;
+
 export interface AppState {
   activeSection: SectionId | null;
   activeModuleId: number | null;
@@ -521,7 +524,7 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: 'bordik-progress',
-      version: 5,
+      version: STORE_VERSION,
       // Hardened migrate: tolerant of corrupt or attacker-tampered
       // localStorage. We never trust persisted JSON blindly - every
       // top-level key is type-guarded, anything failing the guard is
@@ -532,6 +535,15 @@ export const useAppStore = create<AppState>()(
       // so it can be unit-tested directly (regression guard for the
       // `lastDiagnosticResult` carry-through, audit2 #139).
       migrate: migratePersistedState,
+      // `migrate` only runs when the persisted version differs from
+      // STORE_VERSION (zustand's hydrate short-circuits to the default
+      // merge — a raw `{...current, ...persisted}` spread — otherwise).
+      // Since most page loads are same-version, that default path fed
+      // untyped localStorage JSON straight into the live store on every
+      // normal load, bypassing every guard above. Route `merge` through
+      // the same hardened validation so it applies regardless of whether
+      // `migrate` ran this time.
+      merge: mergePersistedState,
       partialize: (state) => ({
         userName: state.userName,
         userEmail: state.userEmail,
@@ -681,6 +693,22 @@ export function migratePersistedState(persistedState: unknown, version: number):
   if (isObj(raw.lastDiagnosticResult)) safe.lastDiagnosticResult = raw.lastDiagnosticResult;
 
   return safe as unknown as AppState;
+}
+
+/**
+ * `persist`'s `merge` option. Zustand only calls `migrate` when the stored
+ * version differs from `STORE_VERSION` — on a matching version (the common
+ * case for a returning user) it instead applies the default `merge`, a raw
+ * `{...current, ...persisted}` spread with no validation at all. Routing
+ * `merge` through `migratePersistedState` closes that gap: corrupt or
+ * hand-edited localStorage (e.g. a malformed `lastDiagnosticResult`) is
+ * type-guarded on every load, not just on a version bump.
+ *
+ * Safe to run on an already-migrated object too — the guards are pure
+ * type checks, so re-validating already-valid data is a no-op.
+ */
+export function mergePersistedState(persistedState: unknown, currentState: AppState): AppState {
+  return { ...currentState, ...migratePersistedState(persistedState, STORE_VERSION) };
 }
 
 /** Format seconds to human-readable string */
