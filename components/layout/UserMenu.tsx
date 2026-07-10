@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { getSupabaseBrowserClient } from '@/lib/supabase/client';
+import { signOutWithFallback } from '@/lib/user-menu-signout';
 
 /**
  * Tiny user-state pill that lives at the bottom of the Sidebar.
@@ -60,9 +61,15 @@ export default function UserMenu() {
     // Use the project-wide fullLogout helper so signing out also clears
     // localStorage / IndexedDB / Cache Storage / Service Worker. Critical
     // for shared/clinical devices where the next user must not see prior
-    // session data. See lib/full-logout.ts for the full sequence.
-    const { fullLogout } = await import('@/lib/full-logout');
-    await fullLogout();
+    // session data. See lib/full-logout.ts for the full sequence. Falls
+    // back to a minimal signOut if the module itself fails to load — see
+    // lib/user-menu-signout.ts for why that matters.
+    await signOutWithFallback({
+      loadFullLogout: () => import('@/lib/full-logout'),
+      getClient: getSupabaseBrowserClient,
+      clearStorage: () => { localStorage.clear(); sessionStorage.clear(); },
+      navigate: () => location.replace('/'),
+    });
   };
 
   return (

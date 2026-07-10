@@ -3,6 +3,7 @@
 import { Suspense, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { getSupabaseBrowserClient } from '@/lib/supabase/client';
+import { sendMagicLink, signInWithGoogle as signInWithGoogleAction } from '@/lib/auth-actions';
 
 // useSearchParams() inside client component requires a Suspense boundary
 // at the page level — Next 15 enforces this so prerender doesn't bail.
@@ -45,14 +46,9 @@ function LoginInner() {
       setPhase('idle');
       return;
     }
-    const { error } = await sb.auth.signInWithOtp({
-      email: email.trim(),
-      options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
-    if (error) {
-      setError(error.message);
+    const result = await sendMagicLink(sb, email.trim(), `${window.location.origin}/auth/callback`);
+    if (!result.ok) {
+      setError(result.error ?? 'Не удалось отправить ссылку.');
       setPhase('idle');
       return;
     }
@@ -65,10 +61,8 @@ function LoginInner() {
       setError('Backend ещё не настроен.');
       return;
     }
-    await sb.auth.signInWithOAuth({
-      provider: 'google',
-      options: { redirectTo: `${window.location.origin}/auth/callback` },
-    });
+    const result = await signInWithGoogleAction(sb, `${window.location.origin}/auth/callback`);
+    if (!result.ok) setError(result.error ?? 'Не удалось войти через Google.');
   };
 
   return (
@@ -87,7 +81,7 @@ function LoginInner() {
       }}>
         <picture>
           <source srcSet="/logo-bordik.webp" type="image/webp" />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
+          { }
           <img src="/logo-bordik.png" alt="Bordik" style={{ height: 28, marginBottom: 28 }} />
         </picture>
 

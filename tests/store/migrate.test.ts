@@ -13,7 +13,7 @@
  * directly; behaviour is identical to the shipped inline closure.
  */
 import { describe, it, expect } from 'vitest';
-import { migratePersistedState } from '@/lib/store';
+import { migratePersistedState, mergePersistedState, type AppState } from '@/lib/store';
 
 // migrate returns only the keys that pass its guards; treat as a loose
 // record for assertions (the production type-cast to AppState is a partial,
@@ -205,6 +205,43 @@ describe('migratePersistedState', () => {
         2,
       );
       expect(out.testAttempts).toEqual({ 'course-1': { level1: { score: 90 } } });
+    });
+  });
+
+  describe('mergePersistedState (same-version hydrate bypass)', () => {
+    // Zustand only calls `migrate` when the stored version differs from
+    // the current one. On a matching version — the common case for a
+    // returning user — it falls back to `merge` instead. Before this fix,
+    // `merge` was left at zustand's default (`{...current, ...persisted}`,
+    // no validation), so a corrupt localStorage value would flow straight
+    // into the live store on every normal load, not just after a version
+    // bump. These tests exercise `merge` directly, standing in for that
+    // "version already matches" hydrate path.
+    const baseState = { userName: 'existing-default' } as unknown as AppState;
+
+    it('drops a malformed lastDiagnosticResult instead of crashing downstream renderers', () => {
+      // A shape like `{}` (missing strengths/weaknesses/...) is exactly what
+      // DonePanel.tsx would explode on (`final.strengths.length`) if it
+      // reached the store unvalidated.
+      const out = mergePersistedState({ lastDiagnosticResult: 'not-an-object' }, baseState);
+      expect(out.lastDiagnosticResult).toBeUndefined();
+    });
+
+    it('falls back to currentState instead of a type-mismatched persisted key', () => {
+      const out = mergePersistedState({ userName: 12345 }, baseState);
+      expect(out.userName).toBe('existing-default');
+    });
+
+    it('keeps valid persisted fields and falls back to currentState for the rest', () => {
+      const out = mergePersistedState({ userName: 'Доктор' }, baseState);
+      expect(out.userName).toBe('Доктор');
+    });
+
+    it('is idempotent on already-migrated (safe) data', () => {
+      const alreadySafe = mig({ userName: 'Анна', completedCourses: ['a'] }, 5);
+      const out = mergePersistedState(alreadySafe, baseState);
+      expect(out.userName).toBe('Анна');
+      expect(out.completedCourses).toEqual(['a']);
     });
   });
 });
