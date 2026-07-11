@@ -3,39 +3,12 @@
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Printer } from '@/components/icons';
-
-interface Drug {
-  name: string;
-  dosePerKg: number;
-  unit: string;
-  concentration: string;
-  route: string;
-  maxDose?: number;
-  notes?: string;
-}
+import { DRUGS, calculateDrugDose } from '@/lib/pediatric-quick-doses';
 
 interface Equipment {
   name: string;
   formula: (weight: number) => string;
 }
-
-const DRUGS: Drug[] = [
-  { name: 'Адреналин (Epinephrine)', dosePerKg: 0.01, unit: 'мг', concentration: '1:10000 (0.1 мг/мл)', route: 'В/В, ВК', maxDose: 1, notes: 'Каждые 3-5 мин' },
-  { name: 'Атропин', dosePerKg: 0.02, unit: 'мг', concentration: '0.1 мг/мл', route: 'В/В', maxDose: 0.5, notes: 'Мин. доза 0.1 мг' },
-  { name: 'Амиодарон', dosePerKg: 5, unit: 'мг', concentration: '50 мг/мл', route: 'В/В', maxDose: 300, notes: 'При VF/pVT' },
-  { name: 'Транексамовая к-та (TXA)', dosePerKg: 15, unit: 'мг', concentration: '100 мг/мл', route: 'В/В', maxDose: 1000, notes: 'За 10 мин' },
-  { name: 'Кетамин', dosePerKg: 1.5, unit: 'мг', concentration: '50 мг/мл', route: 'В/В', notes: 'Анальгезия/седация' },
-  { name: 'Морфин', dosePerKg: 0.1, unit: 'мг', concentration: '10 мг/мл', route: 'В/В', maxDose: 5, notes: 'Титровать по эффекту' },
-  { name: 'Мидазолам', dosePerKg: 0.1, unit: 'мг', concentration: '5 мг/мл', route: 'В/В, ИН', maxDose: 5, notes: 'ИН доза: 0.2 мг/кг' },
-  { name: 'Налоксон', dosePerKg: 0.1, unit: 'мг', concentration: '0.4 мг/мл', route: 'В/В, ВМ, ИН', maxDose: 2, notes: 'При передозировке опиоидов' },
-  { name: 'Дексаметазон', dosePerKg: 0.15, unit: 'мг', concentration: '4 мг/мл', route: 'В/В', maxDose: 10, notes: 'Круп, отёк мозга' },
-  { name: 'Гидрокортизон', dosePerKg: 2, unit: 'мг', concentration: '50 мг/мл', route: 'В/В', maxDose: 100, notes: 'Надпочечниковая недостаточность' },
-  { name: 'Глюкоза 10%', dosePerKg: 5, unit: 'мл', concentration: '10% (0.1 г/мл)', route: 'В/В', notes: '= 0.5 г/кг глюкозы' },
-  { name: 'NaCl 0.9% болюс', dosePerKg: 20, unit: 'мл', concentration: '0.9%', route: 'В/В', notes: 'За 5-20 мин, до 3x' },
-  { name: 'Допамин инфузия', dosePerKg: 10, unit: 'мкг/кг/мин', concentration: 'титровать', route: 'В/В', notes: '2-20 мкг/кг/мин' },
-  { name: 'Норэпинефрин инфузия', dosePerKg: 0.1, unit: 'мкг/кг/мин', concentration: 'титровать', route: 'В/В', notes: '0.05-2 мкг/кг/мин' },
-  { name: 'Фуросемид', dosePerKg: 1, unit: 'мг', concentration: '10 мг/мл', route: 'В/В', maxDose: 40, notes: 'Медленно' },
-];
 
 const EQUIPMENT: Equipment[] = [
   { name: 'ЭТТ (без манжетки)', formula: (w) => { const age = w < 10 ? w / 2 : w < 20 ? (w - 8) / 2 : (w - 10) / 3; return `${Math.max(3, Math.min(Math.round((age / 4 + 4) * 10) / 10, 8)).toFixed(1)} мм`; } },
@@ -56,17 +29,7 @@ const tdClass =
 export default function PediatricCalculator() {
   const [weight, setWeight] = useState(10);
 
-  const calculations = useMemo(() => {
-    return DRUGS.map((drug) => {
-      const rawDose = drug.dosePerKg * weight;
-      const dose = drug.maxDose ? Math.min(rawDose, drug.maxDose) : rawDose;
-      const isMax = drug.maxDose !== undefined && rawDose >= drug.maxDose;
-      let volume = '';
-      const concMatch = drug.concentration.match(/([\d.]+)\s*мг\/мл/);
-      if (concMatch && concMatch[1]) volume = `${(dose / parseFloat(concMatch[1])).toFixed(2)} мл`;
-      return { ...drug, calculatedDose: dose, isMaxed: isMax, volume };
-    });
-  }, [weight]);
+  const calculations = useMemo(() => DRUGS.map((drug) => calculateDrugDose(drug, weight)), [weight]);
 
   const equipmentSizes = useMemo(() => EQUIPMENT.map((eq) => ({ name: eq.name, size: eq.formula(weight) })), [weight]);
 
@@ -122,6 +85,7 @@ export default function PediatricCalculator() {
                   <td className={`${tdClass} font-[var(--font-mono)]`}>
                     {drug.calculatedDose.toFixed(2)} {drug.unit}
                     {drug.isMaxed && <span className="ml-[var(--space-1)] text-[0.5625rem] text-[color:var(--md-sys-color-error)]">(MAX)</span>}
+                    {drug.isMinned && <span className="ml-[var(--space-1)] text-[0.5625rem] text-[color:var(--md-sys-color-error)]">(MIN)</span>}
                   </td>
                   <td className={`${tdClass} font-[var(--font-mono)] text-[color:var(--md-sys-color-secondary)]`}>{drug.volume || '-'}</td>
                   <td className={tdClass}>{drug.route}</td>
