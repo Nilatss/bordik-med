@@ -47,8 +47,14 @@ export function BulkOfflineDownload({
   };
 
   const cancel = () => {
+    // Don't force `stage` to 'done' here - `start()` is still awaiting
+    // `bulkCacheTools()` and will set `result` + `stage` together once the
+    // in-flight cache.add() call settles (the abort signal is only checked
+    // between items, so this can take a moment on a slow connection).
+    // Forcing 'done' early left `result` null, and the 'done' view only
+    // renders when `stage === 'done' && result` - the modal appeared to
+    // freeze with no summary and no Close button.
     abortRef.current?.abort();
-    setStage('done');
   };
 
   if (!open) return null;
