@@ -11,7 +11,7 @@ import type {
   FinalResult,
   Phase,
 } from '@/lib/diagnostic/types';
-import { friendlyError, canRetryNext } from '@/lib/diagnostic/utils';
+import { friendlyError, canRetryNext, resolveDiagnosticScore } from '@/lib/diagnostic/utils';
 import { DiagnosticHeader } from './diagnostic/DiagnosticHeader';
 import { DiagnosticProgress } from './diagnostic/DiagnosticProgress';
 import { LoadingPanel } from './diagnostic/LoadingPanel';
@@ -279,6 +279,10 @@ export default function DiagnosticTest({ onClose }: { onClose: () => void }) {
   const indexNow = current?.index ?? history.length;
   const progressPct = Math.round((indexNow / total) * 100);
   const correctSoFar = history.filter((t) => t.selectedIndex === t.correctIndex).length;
+  // On the 'done' screen this must fall back to the cached score when
+  // returning to a saved result (history is empty then) — see
+  // resolveDiagnosticScore for why.
+  const doneScore = resolveDiagnosticScore(history.length, correctSoFar, cachedResult);
 
   return (
     <motion.div
@@ -331,8 +335,8 @@ export default function DiagnosticTest({ onClose }: { onClose: () => void }) {
         {phase === 'done' && final && (
           <DonePanel
             final={final}
-            correctSoFar={correctSoFar}
-            historyLength={history.length}
+            correctSoFar={doneScore.correct}
+            historyLength={doneScore.total}
             onOpenCourse={openCourse}
             onRestart={restart}
             onClose={onClose}
