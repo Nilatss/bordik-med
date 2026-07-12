@@ -11,7 +11,7 @@ import type {
   FinalResult,
   Phase,
 } from '@/lib/diagnostic/types';
-import { friendlyError } from '@/lib/diagnostic/utils';
+import { friendlyError, canRetryNext } from '@/lib/diagnostic/utils';
 import { DiagnosticHeader } from './diagnostic/DiagnosticHeader';
 import { DiagnosticProgress } from './diagnostic/DiagnosticProgress';
 import { LoadingPanel } from './diagnostic/LoadingPanel';
@@ -304,7 +304,13 @@ export default function DiagnosticTest({ onClose }: { onClose: () => void }) {
         {phase === 'error' && (
           <ErrorPanel
             errorMsg={errorMsg}
-            onRetry={() => fetchNext(history)}
+            // Replay whichever action can still succeed: once history has
+            // reached `total`, the server rejects further `next` calls
+            // (history.length >= TOTAL_QUESTIONS), so only `finalize` can
+            // complete the test. Retrying `next` unconditionally here used
+            // to strand users in an infinite "couldn't load next question"
+            // loop right after finishing the last question.
+            onRetry={() => (canRetryNext(history.length, total) ? fetchNext(history) : finalize(history))}
             onClose={onClose}
           />
         )}

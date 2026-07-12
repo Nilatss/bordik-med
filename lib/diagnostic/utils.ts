@@ -34,6 +34,18 @@ export function levelRu(level: 'basic' | 'intermediate' | 'advanced'): string {
 }
 
 /**
+ * Whether "Попробовать снова" after a `next`-phase failure is safe to send
+ * as another `action: 'next'` call. The server rejects `next` once
+ * `history.length >= totalQuestions` (see app/api/diagnostic/route.ts) —
+ * so once the last question has been answered, only `finalize` can ever
+ * succeed. Retrying `next` at that point would 400 forever, leaving the
+ * user stuck with no way out except abandoning the completed test.
+ */
+export function canRetryNext(historyLength: number, totalQuestions: number): boolean {
+  return historyLength < totalQuestions;
+}
+
+/**
  * Translate a backend error code into a user-actionable message instead
  * of dumping raw "gemini-429: You exceeded your current quota..." strings.
  * Codes are emitted by the `/api/diagnostic` route — see that file for
