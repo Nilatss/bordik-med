@@ -34,6 +34,39 @@ export function levelRu(level: 'basic' | 'intermediate' | 'advanced'): string {
 }
 
 /**
+ * Whether "Попробовать снова" after a `next`-phase failure is safe to send
+ * as another `action: 'next'` call. The server rejects `next` once
+ * `history.length >= totalQuestions` (see app/api/diagnostic/route.ts) —
+ * so once the last question has been answered, only `finalize` can ever
+ * succeed. Retrying `next` at that point would 400 forever, leaving the
+ * user stuck with no way out except abandoning the completed test.
+ */
+export function canRetryNext(historyLength: number, totalQuestions: number): boolean {
+  return historyLength < totalQuestions;
+}
+
+/**
+ * Resolve the "X/Y верных ответов" score shown on the 'done' screen.
+ *
+ * When the user opens a previously-saved diagnostic result, the component
+ * seeds `final` from the cached result but starts `history` empty (no
+ * re-fetch of the 30 answered turns) — so a score derived purely from
+ * `history` always reads "0/0" for a returning user, even though the real
+ * score is sitting in the cached result. Prefer the live `history` while a
+ * test is actually being taken (it's the source of truth then); fall back
+ * to the cached score once `history` is empty.
+ */
+export function resolveDiagnosticScore(
+  historyLength: number,
+  correctInHistory: number,
+  cachedResult: { correct: number; total: number } | null,
+): { correct: number; total: number } {
+  if (historyLength > 0) return { correct: correctInHistory, total: historyLength };
+  if (cachedResult) return { correct: cachedResult.correct, total: cachedResult.total };
+  return { correct: 0, total: 0 };
+}
+
+/**
  * Translate a backend error code into a user-actionable message instead
  * of dumping raw "gemini-429: You exceeded your current quota..." strings.
  * Codes are emitted by the `/api/diagnostic` route — see that file for

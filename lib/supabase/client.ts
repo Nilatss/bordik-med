@@ -25,3 +25,14 @@ export function getSupabaseBrowserClient() {
 export function isSupabaseConfigured(): boolean {
   return !!(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 }
+
+/**
+ * Extract a user-facing message from a Supabase auth call's `{ error }`
+ * result, or `null` on success. `signInWithOAuth`/`signInWithOtp` resolve
+ * normally (they don't throw) even when the provider is misconfigured or
+ * the request fails — callers must check `error` explicitly or the
+ * failure is silently swallowed with no UI feedback at all.
+ */
+export function authErrorMessage(result: { error: { message: string } | null }): string | null {
+  return result.error ? result.error.message : null;
+}
