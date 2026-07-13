@@ -34,7 +34,7 @@ interface LessonContentProps {
 }
 
 // "Useful table" keywords — определяют, надо ли давать PDF-кнопку.
-const USEFUL_KEYWORDS = [
+export const USEFUL_KEYWORDS = [
   // словари / термины
   'корень', 'префикс', 'суффикс', 'термин', 'аббревиат', 'обозначени',
   // нормы и значения
@@ -49,12 +49,23 @@ const USEFUL_KEYWORDS = [
   // анатомия / физиология
   'орган', 'систем', 'функция', 'роль', 'структур', 'ткань',
   // химия / физика
-  'вещество', 'элемент', 'реакци', 'соединени', 'ph\b',
+  'вещество', 'элемент', 'реакци', 'соединени', 'ph\\b',
   // методы и процессы
   'метод', 'процесс', 'применени', 'лечени', 'терапи',
   // статистика / единицы
   'единиц', 'размер', 'масштаб',
 ];
+
+/** Should this table get the "Скачать PDF" button? See CLAUDE.md's
+ *  "PDF-скачивание таблиц" spec: header keyword match, OR a "large"
+ *  table (3+ cols, 4+ rows). `headers` should already be lower-cased. */
+export function isUsefulTable(headers: string[], colCount: number, rowCount: number): boolean {
+  const hasKeyword = headers.some((h) =>
+    USEFUL_KEYWORDS.some((kw) => new RegExp(kw).test(h))
+  );
+  const isLarge = colCount >= 3 && rowCount >= 4;
+  return hasKeyword || isLarge;
+}
 
 export function LessonContent({ body, tabContext }: LessonContentProps) {
   return (
@@ -81,11 +92,7 @@ export function LessonContent({ body, tabContext }: LessonContentProps) {
             const rowCount = tbodyNode?.children?.filter?.((c: any) => c.tagName === 'tr').length || 0;
             const colCount = headers.length;
 
-            const hasKeyword = headers.some((h) =>
-              USEFUL_KEYWORDS.some((kw) => new RegExp(kw).test(h))
-            );
-            const isLarge = colCount >= 3 && rowCount >= 4;
-            const isUseful = hasKeyword || isLarge;
+            const isUseful = isUsefulTable(headers, colCount, rowCount);
 
             if (!isUseful) {
               return (
