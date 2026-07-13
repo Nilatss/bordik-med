@@ -11,7 +11,7 @@ import {
   PASS_THRESHOLD_MODULE, MODULE_TEST_TIME_MS, MAX_TEST_LEVELS,
   TEST_LEVEL_NAMES, getCooldownRemaining, formatCooldown,
 } from '@/lib/quiz';
-import { getTestQuestions, getModuleTestQuestions, hasRealQuestions } from '@/lib/questions';
+import { getTestQuestions, getModuleTestQuestions, hasRealQuestions, hasRealModuleQuestions } from '@/lib/questions';
 import { getModuleForCourse } from '@/lib/curriculum';
 import { Check } from '@/components/icons';
 import TestActiveView from './TestActiveView';
@@ -115,6 +115,10 @@ export default function TestPanel({ courseId }: TestPanelProps) {
   }, []);
 
   const startCourseTest = useCallback((level: TestLevel) => {
+    // Content gate: never start a test level whose question pool isn't
+    // real yet — the row's action button should already be disabled for
+    // this, but guard here too since this runs regardless of UI state.
+    if (!hasRealQuestions(courseId, level)) return;
     // Lockout gate
     const until = getLockout(lockoutKey('course', courseId, level));
     if (until > 0) return;
@@ -124,6 +128,7 @@ export default function TestPanel({ courseId }: TestPanelProps) {
 
   const startModuleTest = useCallback(() => {
     if (moduleId === undefined) return;
+    if (!hasRealModuleQuestions(moduleId)) return;
     const until = getLockout(lockoutKey('module', moduleId));
     if (until > 0) return;
     setResult(null);
@@ -325,13 +330,17 @@ export default function TestPanel({ courseId }: TestPanelProps) {
         const attempts = testAttempts[key] || [];
         const isPassed = highestPassed >= level;
         const isUnlocked = level === 1 || highestPassed >= level - 1;
+        // Content gate: this level's 20-question slice may not have real
+        // (hand-written/AI/sufficient cloze) content yet even though an
+        // earlier level does — never let a content-less level be "current".
+        const hasReal = hasRealQuestions(courseId, level);
         const baseCooldown = !isPassed ? getCooldownRemaining(attempts) : 0;
         const lockoutUntil = !isPassed ? getLockout(lockoutKey('course', courseId, level)) : 0;
         const lockoutCooldown = lockoutUntil > 0 ? lockoutUntil - Date.now() : 0;
         const cooldown = Math.max(baseCooldown, lockoutCooldown);
         const isLockedByViolation = lockoutCooldown > 0;
         const bestScore = attempts.length > 0 ? Math.max(...attempts.map((a) => a.score)) : null;
-        const isCurrent = !isPassed && isUnlocked && cooldown <= 0;
+        const isCurrent = !isPassed && isUnlocked && cooldown <= 0 && hasReal;
 
         // Map state → status (Active / Trial / Cancelled / Past Due / Paused)
         const status: TestStatus = isPassed
@@ -350,9 +359,11 @@ export default function TestPanel({ courseId }: TestPanelProps) {
             ? t('test.detail.coolingDown', { time: formatCooldown(cooldown) })
             : !isUnlocked
               ? t('test.detail.passPrev')
-              : isCurrent
-                ? t('test.detail.questionsLine', { n: QUESTIONS_PER_TEST, pass: PASS_THRESHOLD_TEST, total: QUESTIONS_PER_TEST })
-                : null;
+              : !hasReal
+                ? 'Вопросы этого уровня ещё готовятся'
+                : isCurrent
+                  ? t('test.detail.questionsLine', { n: QUESTIONS_PER_TEST, pass: PASS_THRESHOLD_TEST, total: QUESTIONS_PER_TEST })
+                  : null;
 
         return (
           <TestRow
@@ -399,12 +410,16 @@ export default function TestPanel({ courseId }: TestPanelProps) {
         const moduleLockoutUntil = getLockout(lockoutKey('module', moduleId));
         const moduleLockedByViolation = moduleLockoutUntil > Date.now();
         const moduleLockoutLeft = moduleLockoutUntil - Date.now();
+        // Content gate: the 100-question aggregate pool across the
+        // module's courses may not be real yet even when courses are
+        // individually unlocked — never offer a giveaway-padded final.
+        const moduleHasReal = hasRealModuleQuestions(moduleId);
 
         const moduleStatus: TestStatus = modulePassed
           ? 'passed'
           : moduleLockedByViolation
             ? 'violation'
-            : moduleUnlocked
+            : moduleUnlocked && moduleHasReal
               ? 'available'
               : 'locked';
 
@@ -412,9 +427,11 @@ export default function TestPanel({ courseId }: TestPanelProps) {
           ? t('test.detail.availableInH', { time: formatHours(moduleLockoutLeft) })
           : modulePassed
             ? t('test.detail.passedFull')
-            : moduleUnlocked
-              ? t('test.detail.unlockedDesc', { n: MODULE_TEST_QUESTIONS, p: PASS_THRESHOLD_MODULE })
-              : t('test.detail.lockedPrereq');
+            : !moduleUnlocked
+              ? t('test.detail.lockedPrereq')
+              : moduleHasReal
+                ? t('test.detail.unlockedDesc', { n: MODULE_TEST_QUESTIONS, p: PASS_THRESHOLD_MODULE })
+                : 'Вопросы финального теста ещё готовятся';
 
         return (
           <TestRow
@@ -429,14 +446,14 @@ export default function TestPanel({ courseId }: TestPanelProps) {
               { label: t('test.row.detail.threshold'), value: `${PASS_THRESHOLD_MODULE}%`, icon: 'target' },
             ]}
             {...(
-              !(modulePassed || (moduleUnlocked && !moduleLockedByViolation)) && moduleDetail
+              !(modulePassed || (moduleUnlocked && moduleHasReal && !moduleLockedByViolation)) && moduleDetail
                 ? { description: moduleDetail }
                 : {}
             )}
-            actionLabel={moduleUnlocked && !modulePassed && !moduleLockedByViolation ? t('test.action.startTest') : null}
+            actionLabel={moduleUnlocked && moduleHasReal && !modulePassed && !moduleLockedByViolation ? t('test.action.startTest') : null}
             actionVariant="primary"
             onAction={startModuleTest}
-            disabled={!moduleUnlocked || modulePassed || moduleLockedByViolation}
+            disabled={!moduleUnlocked || !moduleHasReal || modulePassed || moduleLockedByViolation}
             highlight
           />
         );
