@@ -85,7 +85,12 @@ export function t(lang: LangCode, key: string, vars?: Record<string, string | nu
   let str = dict[key] ?? ru[key] ?? key;
   if (vars) {
     for (const [k, v] of Object.entries(vars)) {
-      str = str.replace(new RegExp(`\\{${k}\\}`, 'g'), String(v));
+      // Replacer must be a function: a string replacer interprets `$&`,
+      // `$'`, `` $` ``, `$1`-`$9` in `v` as special patterns instead of
+      // literal text (e.g. a user-supplied filename like "report$'.pdf"
+      // would corrupt the interpolated output).
+      const value = String(v);
+      str = str.replace(new RegExp(`\\{${k}\\}`, 'g'), () => value);
     }
   }
   return str;
