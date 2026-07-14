@@ -11,7 +11,7 @@ import type {
   FinalResult,
   Phase,
 } from '@/lib/diagnostic/types';
-import { friendlyError } from '@/lib/diagnostic/utils';
+import { friendlyError, shouldRetryFinalize } from '@/lib/diagnostic/utils';
 import { DiagnosticHeader } from './diagnostic/DiagnosticHeader';
 import { DiagnosticProgress } from './diagnostic/DiagnosticProgress';
 import { LoadingPanel } from './diagnostic/LoadingPanel';
@@ -304,7 +304,9 @@ export default function DiagnosticTest({ onClose }: { onClose: () => void }) {
         {phase === 'error' && (
           <ErrorPanel
             errorMsg={errorMsg}
-            onRetry={() => fetchNext(history)}
+            onRetry={() =>
+              shouldRetryFinalize(history.length, total) ? finalize(history) : fetchNext(history)
+            }
             onClose={onClose}
           />
         )}

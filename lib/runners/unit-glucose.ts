@@ -22,7 +22,7 @@ const runner: CalculatorTool = {
     inputs: [
       {
         id: "value",
-        hint: 'Глюкоза плазмы. Натощак: 3.9-5.5 ммоль/л',
+        hint: 'Глюкоза плазмы, mg/dL. Натощак: 70-99 mg/dL (3.9-5.5 ммоль/л)',
         label: "Глюкоза",
         type: "number",
         unit: "mg/dL",

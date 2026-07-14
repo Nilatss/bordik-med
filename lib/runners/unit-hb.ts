@@ -22,7 +22,7 @@ const runner: CalculatorTool = {
     inputs: [
       {
         id: "value",
-        hint: 'Гемоглобин. Норма: М 130-170, Ж 120-150 г/л',
+        hint: 'Гемоглобин, g/dL. Норма: М 13.0-17.0, Ж 12.0-15.0 g/dL (130-170 / 120-150 г/л)',
         label: "Гемоглобин",
         type: "number",
         unit: "g/dL",
