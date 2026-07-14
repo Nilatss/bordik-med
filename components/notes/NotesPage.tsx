@@ -16,15 +16,7 @@
  */
 
 import { useState, useEffect, useMemo, useRef } from 'react';
-
-interface PersonalNote {
-  id: string;
-  title: string;
-  body: string;
-  created: number;
-  updated: number;
-  tags: string[];
-}
+import { flushOutgoingNote, type PersonalNote } from '@/lib/notes-flush';
 
 function loadNotes(): PersonalNote[] {
   if (typeof window === 'undefined') return [];
@@ -153,19 +145,20 @@ export default function NotesPage() {
   useEffect(() => {
     const outgoingId = activeId;
     return () => {
-      if (!outgoingId) return;
-      const stagedTitle = editingTitleRef.current;
-      const stagedBody = editingBodyRef.current;
-      const list = notesRef.current;
-      const target = list.find((n) => n.id === outgoingId);
-      if (!target) return;
-      if (target.title === stagedTitle && target.body === stagedBody) return;
-      const flushed = list.map((n) =>
-        n.id === outgoingId
-          ? { ...n, title: stagedTitle, body: stagedBody, updated: Date.now() }
-          : n,
+      const flushed = flushOutgoingNote(
+        notesRef.current,
+        outgoingId,
+        editingTitleRef.current,
+        editingBodyRef.current,
+        Date.now(),
       );
+      if (!flushed) return;
       saveNotes(flushed);
+      // Without this, in-memory `notes` stays stale (pre-flush). The next
+      // saveCurrent() — fired by the 500ms debounce on the *new* active
+      // note — recomputes from that stale `notes` and overwrites
+      // localStorage, silently discarding the edit just flushed above.
+      setNotes(flushed);
     };
   }, [activeId]);
 
