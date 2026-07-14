@@ -34,6 +34,23 @@ export function levelRu(level: 'basic' | 'intermediate' | 'advanced'): string {
 }
 
 /**
+ * Decide which async operation the "Попробовать снова" button on the
+ * error panel must re-run. `fetchNext` is only ever called while
+ * `history.length < total`; `finalize` is only ever called once
+ * `history.length >= total` (see handleNext in DiagnosticTest). So this
+ * same threshold, evaluated at retry time, tells us which of the two
+ * calls actually failed — without needing a separate "what failed" flag.
+ *
+ * Bug this fixes: the retry button used to always call `fetchNext`, so a
+ * `finalize` failure after all 30 questions sent history back to
+ * `/api/diagnostic` with a full history — which the route rejects with
+ * `test-complete` — permanently stranding the user after a finished test.
+ */
+export function shouldRetryFinalize(historyLength: number, total: number): boolean {
+  return historyLength >= total;
+}
+
+/**
  * Translate a backend error code into a user-actionable message instead
  * of dumping raw "gemini-429: You exceeded your current quota..." strings.
  * Codes are emitted by the `/api/diagnostic` route — see that file for
