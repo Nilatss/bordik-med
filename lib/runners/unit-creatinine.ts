@@ -22,7 +22,7 @@ const runner: CalculatorTool = {
     inputs: [
       {
         id: "value",
-        hint: 'Креатинин сыворотки. Норма: М 62-115, Ж 53-97 мкмоль/л',
+        hint: 'Креатинин сыворотки, mg/dL. Норма: М 0.7-1.3, Ж 0.6-1.1 mg/dL (62-115 / 53-97 мкмоль/л)',
         label: "Креатинин",
         type: "number",
         unit: "mg/dL",
