@@ -1,5 +1,6 @@
 import * as v from 'valibot';
 import { withAuthedSupabase, parseJsonBody, apiError, apiOk } from '@/lib/api-helpers';
+import { isFailedSyncTask } from '@/lib/sync-task-result';
 
 // P1-PERF-NEW-4 — sync route на Edge runtime.
 // /api/sync делает 4 параллельных Supabase-чтения (GET) и до 4
@@ -241,13 +242,16 @@ export async function POST(req: Request) {
   }
 
     const results = await Promise.allSettled(tasks);
-    const rejected = results.filter((r): r is PromiseRejectedResult => r.status === 'rejected');
-    if (rejected.length > 0) {
+    const failed = results.filter(isFailedSyncTask);
+    if (failed.length > 0) {
       // Log the raw reasons server-side for debugging, but do NOT return them
       // to the client — PostgREST/driver messages leak schema details
       // (table/column/constraint names) to any authenticated caller.
-      console.error('[sync] push partial failure', rejected.map((r) => String(r.reason)));
-      return apiError('internal-error', 500, { failed: rejected.length });
+      console.error(
+        '[sync] push partial failure',
+        failed.map((r) => (r.status === 'rejected' ? String(r.reason) : (r.value as { error?: unknown }).error)),
+      );
+      return apiError('internal-error', 500, { failed: failed.length });
     }
 
     // Favourites LWW timestamp — written separately + tolerantly so a
