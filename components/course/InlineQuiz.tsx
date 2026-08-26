@@ -98,14 +98,22 @@ function loadState(courseId: string): SavedState {
   }
 }
 
-function saveState(courseId: string, state: SavedState) {
+export function saveState(courseId: string, state: SavedState) {
   if (typeof window === 'undefined') return;
-  localStorage.setItem(storageKey(courseId), JSON.stringify(state));
+  try {
+    localStorage.setItem(storageKey(courseId), JSON.stringify(state));
+  } catch {
+    // Safari private mode / full quota — feedback still renders, just isn't persisted.
+  }
 }
 
-function clearState(courseId: string) {
+export function clearState(courseId: string) {
   if (typeof window === 'undefined') return;
-  localStorage.removeItem(storageKey(courseId));
+  try {
+    localStorage.removeItem(storageKey(courseId));
+  } catch {
+    // same as saveState — non-fatal if storage is unavailable.
+  }
 }
 
 /* ═══ Countdown label for cooldown ═══ */
