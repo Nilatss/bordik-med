@@ -51,3 +51,15 @@ export function friendlyError(code: string): { msg: string; retryable: boolean }
   }
   return { msg: 'Не удалось получить следующий вопрос. Попробуйте ещё раз.', retryable: true };
 }
+
+/**
+ * Which action the error panel's "Попробовать снова" button should
+ * re-run. Retry must replay the SAME action that failed: once all 30
+ * questions are answered, the server rejects a 'next' request with
+ * 'test-complete' (history already full), so retrying 'next' after a
+ * failed 'finalize' loops forever and the user can never actually
+ * retry the recommendation step they were stuck on.
+ */
+export function resolveRetryAction(failedAction: 'next' | 'finalize'): 'next' | 'finalize' {
+  return failedAction === 'finalize' ? 'finalize' : 'next';
+}
