@@ -11,7 +11,7 @@ import type {
   FinalResult,
   Phase,
 } from '@/lib/diagnostic/types';
-import { friendlyError } from '@/lib/diagnostic/utils';
+import { friendlyError, resolveRetryAction } from '@/lib/diagnostic/utils';
 import { DiagnosticHeader } from './diagnostic/DiagnosticHeader';
 import { DiagnosticProgress } from './diagnostic/DiagnosticProgress';
 import { LoadingPanel } from './diagnostic/LoadingPanel';
@@ -39,6 +39,11 @@ export default function DiagnosticTest({ onClose }: { onClose: () => void }) {
   // обнуляет кеш и начинает с loading.
   const [phase, setPhase] = useState<Phase>(cachedResult ? 'done' : 'loading');
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  // Which action produced the current 'error' phase — retry must re-run
+  // the SAME action. Retrying with 'next' after a finalize failure is a
+  // no-op loop: the server rejects 'next' once history is already full
+  // (test-complete), so the user could never actually retry finalize.
+  const [failedAction, setFailedAction] = useState<'next' | 'finalize'>('next');
   // P1-PERF-NEW-5 — streaming preview text (Gemini partial output) для
   // показа пользователю под spinner'ом в "finalizing" phase. Обновляется
   // по мере прихода chunks от /api/diagnostic NDJSON stream.
@@ -104,6 +109,7 @@ export default function DiagnosticTest({ onClose }: { onClose: () => void }) {
         }
         // P2-NEW-12 — структурный лог через lib/log с redaction.
         log.error({ event: 'diagnostic_next_failed', code });
+        setFailedAction('next');
         setErrorMsg(f.msg);
         setPhase('error');
         return;
@@ -117,6 +123,7 @@ export default function DiagnosticTest({ onClose }: { onClose: () => void }) {
           event: 'diagnostic_next_threw',
           message: (err as Error)?.message ?? String(err).slice(0, 200),
         });
+        setFailedAction('next');
         setErrorMsg('Нет связи с сервером. Проверьте интернет.');
         setPhase('error');
         return;
@@ -213,6 +220,7 @@ export default function DiagnosticTest({ onClose }: { onClose: () => void }) {
           await new Promise((res) => setTimeout(res, 2500));
           continue;
         }
+        setFailedAction('finalize');
         setErrorMsg(f.msg);
         setPhase('error');
         return;
@@ -222,6 +230,7 @@ export default function DiagnosticTest({ onClose }: { onClose: () => void }) {
           await new Promise((res) => setTimeout(res, 2500));
           continue;
         }
+        setFailedAction('finalize');
         setErrorMsg('Нет связи с сервером. Проверьте интернет.');
         setPhase('error');
         return;
@@ -304,7 +313,9 @@ export default function DiagnosticTest({ onClose }: { onClose: () => void }) {
         {phase === 'error' && (
           <ErrorPanel
             errorMsg={errorMsg}
-            onRetry={() => fetchNext(history)}
+            onRetry={() =>
+              resolveRetryAction(failedAction) === 'finalize' ? finalize(history) : fetchNext(history)
+            }
             onClose={onClose}
           />
         )}
