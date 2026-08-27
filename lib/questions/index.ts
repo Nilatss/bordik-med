@@ -11,7 +11,7 @@
 
 import type { TestQuestion, TestLevel } from '../quiz';
 import { getCourseById, getModuleById, getModuleForCourse } from '../curriculum';
-import { getCourseTestSlice, getModuleTestSlice, generateContentQuestions } from '../question-generator';
+import { getCourseTestSlice, getModuleTestSlice } from '../question-generator';
 import { AI_COURSE_TESTS, AI_MODULE_SLICES } from './generated';
 
 /* ═══════════════════════════════════════════
@@ -152,11 +152,16 @@ export function getModuleTestQuestions(moduleId: number): TestQuestion[] {
 }
 
 /** Check if real (non-placeholder) questions exist for a course test.
- *  "Real" means hand-written, AI-generated, or sufficient cloze-generated. */
+ *  "Real" means hand-written, AI-generated, or a fully populated (20/20)
+ *  cloze-generated slice for THIS specific level. A course's total cloze
+ *  pool can be large enough to fill early levels while later levels
+ *  (which slice further into the pool — see getCourseTestSlice) run dry
+ *  and fall back to placeholder filler; checking the total pool size
+ *  instead of the per-level slice missed exactly that case. */
 export function hasRealQuestions(courseId: string, testLevel: TestLevel): boolean {
   const moduleId = parseInt(courseId.split('.')[0] ?? '0');
   const data = moduleData[moduleId];
   if (data?.courseQuestions[courseId]?.[testLevel]?.length) return true;
   if (AI_COURSE_TESTS[courseId]?.[testLevel]?.length) return true;
-  return generateContentQuestions(courseId).length >= 20;
+  return getCourseTestSlice(courseId, testLevel).length >= 20;
 }

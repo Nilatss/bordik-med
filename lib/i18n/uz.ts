@@ -174,6 +174,7 @@ const dict: Dict = {
   'test.result.correct': "To'g'ri",
   'test.detail.availableInH': '{time} dan keyin mavjud',
   'test.detail.passPrev': "Avval oldingi darajani o'ting",
+  'test.detail.preparing': 'Bu daraja uchun savollar hali tayyorlanmoqda',
   'test.detail.questionsLine': '{n} ta savol · chegara {pass}/{total}',
   'test.detail.threeHours': '3 soat',
   'feed.welcomeOnBordik': 'Bordikga xush qaytib keldingiz',

@@ -324,7 +324,14 @@ export default function TestPanel({ courseId }: TestPanelProps) {
         const key = `${courseId}-${level}`;
         const attempts = testAttempts[key] || [];
         const isPassed = highestPassed >= level;
-        const isUnlocked = level === 1 || highestPassed >= level - 1;
+        // A course's total question pool can run dry partway through the
+        // 5 levels (early levels get a full 20 real questions, later ones
+        // fall back to placeholder filler). hasRealTest above only checks
+        // level 1, so gate each row individually too — otherwise a level
+        // with zero real questions still shows as "available" and lets a
+        // user "pass" the course on a fully fake test.
+        const levelHasReal = hasRealQuestions(courseId, level);
+        const isUnlocked = levelHasReal && (level === 1 || highestPassed >= level - 1);
         const baseCooldown = !isPassed ? getCooldownRemaining(attempts) : 0;
         const lockoutUntil = !isPassed ? getLockout(lockoutKey('course', courseId, level)) : 0;
         const lockoutCooldown = lockoutUntil > 0 ? lockoutUntil - Date.now() : 0;
@@ -348,11 +355,13 @@ export default function TestPanel({ courseId }: TestPanelProps) {
           ? t('test.detail.availableInH', { time: formatHours(cooldown) })
           : cooldown > 0
             ? t('test.detail.coolingDown', { time: formatCooldown(cooldown) })
-            : !isUnlocked
-              ? t('test.detail.passPrev')
-              : isCurrent
-                ? t('test.detail.questionsLine', { n: QUESTIONS_PER_TEST, pass: PASS_THRESHOLD_TEST, total: QUESTIONS_PER_TEST })
-                : null;
+            : !levelHasReal
+              ? t('test.detail.preparing')
+              : !isUnlocked
+                ? t('test.detail.passPrev')
+                : isCurrent
+                  ? t('test.detail.questionsLine', { n: QUESTIONS_PER_TEST, pass: PASS_THRESHOLD_TEST, total: QUESTIONS_PER_TEST })
+                  : null;
 
         return (
           <TestRow

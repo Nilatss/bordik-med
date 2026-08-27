@@ -181,6 +181,7 @@ const dict: Dict = {
   'test.result.correct': 'Верный',
   'test.detail.availableInH': 'Доступно через {time}',
   'test.detail.passPrev': 'Пройдите предыдущий уровень',
+  'test.detail.preparing': 'Вопросы для этого уровня ещё готовятся',
   'test.detail.questionsLine': '{n} вопросов · порог {pass}/{total}',
   'test.detail.threeHours': '3 часа',
   // News feed

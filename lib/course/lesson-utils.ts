@@ -226,3 +226,37 @@ export function extractText(node: ReactNode): string {
   }
   return '';
 }
+
+/**
+ * "Useful table" keyword list — a table whose header row matches one of
+ * these gets a PDF-download button (see CLAUDE.md → "Стандарты продукта
+ * → PDF-скачивание таблиц"). Callers lowercase headers before matching.
+ */
+export const USEFUL_TABLE_KEYWORDS = [
+  // словари / термины
+  'корень', 'префикс', 'суффикс', 'термин', 'аббревиат', 'обозначени',
+  // нормы и значения
+  'норма', 'референс', 'диапазон', 'показател',
+  // препараты
+  'препарат', 'дозировк', 'доза', 'лекарств', 'действующ',
+  // формулы / классификации
+  'формула', 'классификаци', 'стадия', 'стадии', 'шкала', 'балл', 'градац',
+  // симптомы / диагнозы
+  'симптом', 'синдром', 'критери', 'признак',
+  'этиологи', 'патоген', 'заболеван', 'болезн', 'диагноз', 'диагностик',
+  // анатомия / физиология
+  'орган', 'систем', 'функция', 'роль', 'структур', 'ткань',
+  // химия / физика
+  'вещество', 'элемент', 'реакци', 'соединени', 'ph\\b',
+  // методы и процессы
+  'метод', 'процесс', 'применени', 'лечени', 'терапи',
+  // статистика / единицы
+  'единиц', 'размер', 'масштаб',
+];
+
+/** True if any header matches one of USEFUL_TABLE_KEYWORDS. `headers`
+ *  should already be lowercased by the caller — matching is regex-based
+ *  (not a plain substring check) so patterns like 'ph\\b' work. */
+export function hasUsefulTableKeyword(headers: string[]): boolean {
+  return headers.some((h) => USEFUL_TABLE_KEYWORDS.some((kw) => new RegExp(kw).test(h)));
+}

@@ -166,7 +166,13 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
 
   return (
     <TestGuard
-      active={true}
+      // Gated on proctorReady, same as the countdown timer above: the
+      // native camera/mic permission prompt can blur the browser window
+      // (observed in Firefox/Safari), and TestGuard's blur handler fires
+      // an INSTANT violation with no grace period. Without this gate, a
+      // user could be charged a violation — and after two more, auto-
+      // submitted and locked out for 48h — before ever seeing a question.
+      active={proctorReady}
       onViolation={handleViolation}
       onForceSubmit={handleForceSubmit}
       violationCount={violations}
@@ -184,8 +190,18 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
 
       {/* Fullscreen overlay during test attempt — hides the course header,
            TOC sidebar and any other navigation. The only way out is the
-           "Прервать" confirmation modal that re-uses onCancel. */}
-      <div className={`test-active fixed inset-0 z-50 bg-white overflow-y-auto pt-[clamp(14px,3vw,32px)] px-[clamp(12px,4vw,48px)] pb-[clamp(20px,4vw,32px)] ${proctorReady ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
+           "Прервать" confirmation modal that re-uses onCancel.
+
+           Not mounted at all until proctorReady: Proctoring already draws
+           its own full-screen blocking overlay while it waits for camera/
+           mic permission, so there's nothing to reveal visually either
+           way — but keeping the question text and answer options out of
+           the DOM (rather than merely hiding them with opacity-0 +
+           pointer-events-none) means there's nothing for a user to read
+           via devtools / inspect-element during that window, when
+           TestGuard's blur/keydown detection is also not yet armed. */}
+      {proctorReady && (
+      <div className="test-active fixed inset-0 z-50 bg-white overflow-y-auto pt-[clamp(14px,3vw,32px)] px-[clamp(12px,4vw,48px)] pb-[clamp(20px,4vw,32px)]">
       <div className="max-w-[840px] mx-auto flex flex-col gap-2.5">
         {/* Soft warning banner — shows when proctoring detects a soft
              issue (loud audio etc.). Auto-dismisses after a few seconds. */}
@@ -398,6 +414,7 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
         </div>
       </div>
       </div>
+      )}
 
       {/* Exit confirmation */}
       <AnimatePresence>

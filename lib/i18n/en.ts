@@ -174,6 +174,7 @@ const dict: Dict = {
   'test.result.correct': 'Correct',
   'test.detail.availableInH': 'Available in {time}',
   'test.detail.passPrev': 'Pass the previous level first',
+  'test.detail.preparing': 'Questions for this level are still being prepared',
   'test.detail.questionsLine': '{n} questions · threshold {pass}/{total}',
   'test.detail.threeHours': '3 hours',
   'feed.welcomeOnBordik': 'Welcome back to Bordik',
