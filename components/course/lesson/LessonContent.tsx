@@ -22,7 +22,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeSanitize from 'rehype-sanitize';
 import { safeUrlTransform, sanitizeSchema } from '@/lib/safe-markdown';
-import { extractText, stripLeadingEmoji } from '@/lib/course/lesson-utils';
+import { extractText, stripLeadingEmoji, hasUsefulTableKeyword } from '@/lib/course/lesson-utils';
 import { CourseIllustration } from '../CourseIllustrations';
 import DownloadableTable from '../DownloadableTable';
 
@@ -32,29 +32,6 @@ interface LessonContentProps {
   /** Контекст активной вкладки для table title generation. */
   tabContext: { short?: string; title?: string };
 }
-
-// "Useful table" keywords — определяют, надо ли давать PDF-кнопку.
-const USEFUL_KEYWORDS = [
-  // словари / термины
-  'корень', 'префикс', 'суффикс', 'термин', 'аббревиат', 'обозначени',
-  // нормы и значения
-  'норма', 'референс', 'диапазон', 'показател',
-  // препараты
-  'препарат', 'дозировк', 'доза', 'лекарств', 'действующ',
-  // формулы / классификации
-  'формула', 'классификаци', 'стадия', 'стадии', 'шкала', 'балл', 'градац',
-  // симптомы / диагнозы
-  'симптом', 'синдром', 'критери', 'признак',
-  'этиологи', 'патоген', 'заболеван', 'болезн', 'диагноз', 'диагностик',
-  // анатомия / физиология
-  'орган', 'систем', 'функция', 'роль', 'структур', 'ткань',
-  // химия / физика
-  'вещество', 'элемент', 'реакци', 'соединени', 'ph\b',
-  // методы и процессы
-  'метод', 'процесс', 'применени', 'лечени', 'терапи',
-  // статистика / единицы
-  'единиц', 'размер', 'масштаб',
-];
 
 export function LessonContent({ body, tabContext }: LessonContentProps) {
   return (
@@ -81,9 +58,7 @@ export function LessonContent({ body, tabContext }: LessonContentProps) {
             const rowCount = tbodyNode?.children?.filter?.((c: any) => c.tagName === 'tr').length || 0;
             const colCount = headers.length;
 
-            const hasKeyword = headers.some((h) =>
-              USEFUL_KEYWORDS.some((kw) => new RegExp(kw).test(h))
-            );
+            const hasKeyword = hasUsefulTableKeyword(headers);
             const isLarge = colCount >= 3 && rowCount >= 4;
             const isUseful = hasKeyword || isLarge;
 
