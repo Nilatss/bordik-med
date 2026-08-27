@@ -1,7 +1,8 @@
 /**
- * Regression test for how TestActiveView wires TestGuard's `active` prop.
+ * Regression test for how TestActiveView wires TestGuard's `active` prop
+ * and mounts the question content.
  *
- * Bug: TestGuard was armed with `active={true}` unconditionally from
+ * Bug 1: TestGuard was armed with `active={true}` unconditionally from
  * mount — before Proctoring's getUserMedia() permission prompt resolved
  * (tracked by the `proctorReady` state, already used to gate the
  * countdown timer and hide the test UI). TestGuard's window `blur`
@@ -11,13 +12,20 @@
  * be charged a violation — and after two more, auto-submitted and
  * 48h-locked-out — before ever seeing a question.
  *
+ * Bug 2 (found in review of the bug-1 fix): gating TestGuard's arming on
+ * proctorReady means blur/keydown detection is off while waiting for
+ * permission — but the question text and answer options were still
+ * mounted in the DOM the whole time, merely hidden with
+ * opacity-0/pointer-events-none. A user could stall the permission
+ * prompt and read the (now-undetected) hidden content via devtools /
+ * inspect-element. Fixed by not mounting that content at all until
+ * proctorReady — nothing to inspect, independent of whether TestGuard
+ * is armed.
+ *
  * This project's test suite runs in a Node environment with no jsdom /
- * React Testing Library (see vitest.config.ts), so TestGuard's blur
- * handling can't be exercised by rendering + dispatching a real `blur`
- * event. This instead asserts against the real source that TestGuard's
- * `active` prop is bound to the same `proctorReady` flag that already
- * gates the timer and the test UI's visibility, rather than a hardcoded
- * literal — the exact shape of the regression.
+ * React Testing Library (see vitest.config.ts), so this can't be
+ * exercised by rendering + dispatching real events. This instead
+ * asserts against the real source for both fixes' exact shape.
  */
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -42,5 +50,14 @@ describe('TestActiveView → TestGuard proctoring gate', () => {
     expect(match, 'expected a <TestGuard active={...}> usage in TestActiveView.tsx').not.toBeNull();
     const activeExpr = match?.[1] ?? '';
     expect(activeExpr.trim()).toBe('proctorReady');
+  });
+
+  it('does not mount the question content (test-active overlay) until proctorReady', () => {
+    // The fix wraps the whole overlay block in `{proctorReady && ( ... )}`
+    // instead of always rendering it behind opacity-0/pointer-events-none.
+    expect(SOURCE).toMatch(/\{proctorReady && \(\s*<div className="test-active /);
+    // Guard against reintroducing the old always-mounted + CSS-hidden
+    // pattern, which is exactly what let content leak via devtools.
+    expect(SOURCE).not.toMatch(/opacity-0 pointer-events-none/);
   });
 });
