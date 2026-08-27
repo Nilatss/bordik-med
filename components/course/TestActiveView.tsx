@@ -166,7 +166,13 @@ export default function TestActiveView({ questions, timeLimit, onComplete, onCan
 
   return (
     <TestGuard
-      active={true}
+      // Gated on proctorReady, same as the countdown timer above: the
+      // native camera/mic permission prompt can blur the browser window
+      // (observed in Firefox/Safari), and TestGuard's blur handler fires
+      // an INSTANT violation with no grace period. Without this gate, a
+      // user could be charged a violation — and after two more, auto-
+      // submitted and locked out for 48h — before ever seeing a question.
+      active={proctorReady}
       onViolation={handleViolation}
       onForceSubmit={handleForceSubmit}
       violationCount={violations}
