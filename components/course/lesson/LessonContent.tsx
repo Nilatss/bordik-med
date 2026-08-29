@@ -49,12 +49,28 @@ const USEFUL_KEYWORDS = [
   // анатомия / физиология
   'орган', 'систем', 'функция', 'роль', 'структур', 'ткань',
   // химия / физика
-  'вещество', 'элемент', 'реакци', 'соединени', 'ph\b',
+  'вещество', 'элемент', 'реакци', 'соединени', 'ph',
   // методы и процессы
   'метод', 'процесс', 'применени', 'лечени', 'терапи',
   // статистика / единицы
   'единиц', 'размер', 'масштаб',
 ];
+
+/**
+ * Extracts plain text from a hast node (the `node` prop react-markdown
+ * passes to component overrides — the *pre-React* AST, whose text leaves
+ * are `{ type: 'text', value: '...' }`). This is NOT the same shape as
+ * the `extractText` helper in lesson-utils, which walks *React* children
+ * (`.props.children`) — passing a hast node into that helper always
+ * returns '' because hast nodes have no `.props`.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function hastText(node: any): string {
+  if (!node) return '';
+  if (typeof node.value === 'string') return node.value;
+  if (Array.isArray(node.children)) return node.children.map(hastText).join('');
+  return '';
+}
 
 export function LessonContent({ body, tabContext }: LessonContentProps) {
   return (
@@ -73,7 +89,7 @@ export function LessonContent({ body, tabContext }: LessonContentProps) {
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               ?.filter((c: any) => c.tagName === 'th')
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              ?.map((c: any) => extractText(c.children as never)) || [];
+              ?.map((c: any) => hastText(c)) || [];
             const headers = headersRaw.map((h) => h.toLowerCase());
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const tbodyNode = (node as any)?.children?.find?.((c: any) => c.tagName === 'tbody');

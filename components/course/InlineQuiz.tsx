@@ -79,11 +79,11 @@ interface SavedState {
   answers: Record<number, string>; // questionId -> original option letter
 }
 
-function storageKey(courseId: string) {
+export function storageKey(courseId: string) {
   return `bordik:selfcheck:${courseId}`;
 }
 
-function loadState(courseId: string): SavedState {
+export function loadState(courseId: string): SavedState {
   if (typeof window === 'undefined') return { lastAt: 0, answers: {} };
   try {
     const raw = localStorage.getItem(storageKey(courseId));
@@ -98,14 +98,27 @@ function loadState(courseId: string): SavedState {
   }
 }
 
-function saveState(courseId: string, state: SavedState) {
+export function saveState(courseId: string, state: SavedState) {
   if (typeof window === 'undefined') return;
-  localStorage.setItem(storageKey(courseId), JSON.stringify(state));
+  // localStorage access can THROW (private mode, sandboxed iframe, blocked
+  // storage). This runs inside the click handler that also updates React
+  // state (see `pick`), so an unguarded throw here would abort that handler
+  // mid-way and leave the reveal/cooldown UI stuck — swallow and let the
+  // answer live in memory for the session even if it can't persist.
+  try {
+    localStorage.setItem(storageKey(courseId), JSON.stringify(state));
+  } catch {
+    /* storage blocked — answer stays in React state for this session */
+  }
 }
 
-function clearState(courseId: string) {
+export function clearState(courseId: string) {
   if (typeof window === 'undefined') return;
-  localStorage.removeItem(storageKey(courseId));
+  try {
+    localStorage.removeItem(storageKey(courseId));
+  } catch {
+    /* storage blocked — nothing to clear */
+  }
 }
 
 /* ═══ Countdown label for cooldown ═══ */

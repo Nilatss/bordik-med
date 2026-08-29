@@ -14,6 +14,37 @@ import {
 import { mergeFavouritesLWW } from './favourites-lww';
 
 /**
+ * The subset of store fields the push effect watches. Must cover every
+ * field the debounced POST payload sends (see the `payload` object inside
+ * `queuePush`) — a field missing here can change locally and get pushed
+ * to /api/sync, but the store mutation that changed it never re-fires the
+ * subscribe listener, so the change is silently dropped until some OTHER
+ * watched field also happens to change. Exported so a test can assert this
+ * invariant without rendering the hook.
+ */
+export function syncWatchedFields(state: AppState) {
+  return {
+    c: state.completedCourses,
+    s: state.startedCourses,
+    ctp: state.courseTestProgress,
+    cm: state.completedModules,
+    st: state.studyTime,
+    tf: state.toolsFavourites,
+    un: state.userName,
+    ust: state.userStatus,
+    uc: state.userCountry,
+    usp: state.userSpecialty,
+    ul: state.userLanguage,
+    ug: state.userGoal,
+    tq: state.toolsQuery,
+    tcat: state.toolsCategories,
+    tsub: state.toolsSubcategories,
+    tco: state.toolsCountries,
+    toa: state.toolsOnlyAvailable,
+  };
+}
+
+/**
  * Cross-device sync between the local Zustand store and Supabase.
  *
  * Strategy:
@@ -180,14 +211,7 @@ export default function useSupabaseSync() {
     // the selector output changes. Shallow equality compares slice refs
     // per-field — O(1) per field — and skips re-fires for unrelated state.
     const unsub = useAppStore.subscribe(
-      (state) => ({
-        c: state.completedCourses,
-        s: state.startedCourses,
-        ctp: state.courseTestProgress,
-        st: state.studyTime,
-        tf: state.toolsFavourites,
-        un: state.userName,
-      }),
+      syncWatchedFields,
       () => queuePush(),
       { equalityFn: shallowEqual },
     );
