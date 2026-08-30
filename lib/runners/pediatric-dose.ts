@@ -168,16 +168,28 @@ const runner: CalculatorTool = {
     // clinically-significant rounding for any drug we ship and is
     // larger than IEEE-754 drift on the multiplications we perform.
     //
+    // Compute per-day first — needed below to interpret the fixed-dose case.
+    const dosesPerDay = ind.frequency_hours > 0 ? Math.floor(24 / ind.frequency_hours) : 1;
+
     // mg_per_kg === 0 with a non-zero max_per_dose_mg means the dataset
-    // encodes a fixed, weight-independent dose in max_per_dose_mg (see
-    // above) — use it directly instead of multiplying by zero, which
-    // used to silently print "0 мг" as if that were the real dose.
-    const calcMg = ind.mg_per_kg > 0 ? weight * ind.mg_per_kg : ind.max_per_dose_mg;
+    // encodes a fixed, weight-independent dose (see above) — use it
+    // instead of multiplying by zero, which used to silently print "0 мг"
+    // as if that were the real dose. When the indication is single-shot
+    // (frequency_hours: 0, e.g. budesonide croup "2 мг однократно"),
+    // max_per_dose_mg IS that one dose. But when it recurs (dosesPerDay > 1,
+    // e.g. budesonide maintenance "Низкая доза 200-400 мкг/сут" given
+    // frequency_hours: 12) there's no separate max_per_day_mg field for
+    // these entries, so max_per_dose_mg is the only place the dataset
+    // records the dose — and per its own comment, that's the DAILY total,
+    // not each administration. Divide by dosesPerDay to get the actual
+    // per-administration amount, or the calculator would double the real
+    // daily dose (0.4 мг × 2 р/сут = 0.8 мг/сут vs. the stated 0.2-0.4 мг/сут).
+    const calcMg = ind.mg_per_kg > 0
+      ? weight * ind.mg_per_kg
+      : ind.max_per_dose_mg / dosesPerDay;
     const cappedMg = Math.min(calcMg, ind.max_per_dose_mg);
     const wasCapped = calcMg - ind.max_per_dose_mg > 1e-6;
 
-    // Compute per-day if frequency known
-    const dosesPerDay = ind.frequency_hours > 0 ? Math.floor(24 / ind.frequency_hours) : 1;
     const totalPerDay = cappedMg * dosesPerDay;
     const maxPerDay = ind.max_per_day_mg ?? (ind.max_per_day_mg_per_kg ? ind.max_per_day_mg_per_kg * weight : Infinity);
     const dayCapped = totalPerDay - maxPerDay > 1e-6;
@@ -213,8 +225,11 @@ const runner: CalculatorTool = {
       `**Путь введения:** ${ind.route}`,
       ind.duration ? `**Длительность:** ${ind.duration}` : '',
       ``,
-      ind.frequency_hours > 0 ? `**Суммарная суточная доза:** ${totalPerDay.toFixed(0)} мг (${dosesPerDay} приёмов)` : '',
-      maxPerDay !== Infinity ? `**Максимум суточно:** ${maxPerDay.toFixed(0)} мг ${dayCapped ? '⚠ ПРЕВЫШЕНО' : '✓'}` : '',
+      // formatMg (not .toFixed(0)) — sub-1 mg daily totals are routine for
+      // fixed low-dose indications (e.g. budesonide maintenance, 0.4 мг/сут)
+      // and .toFixed(0) rounded those down to a misleading "0 мг".
+      ind.frequency_hours > 0 ? `**Суммарная суточная доза:** ${formatMg(totalPerDay)} мг (${dosesPerDay} приёмов)` : '',
+      maxPerDay !== Infinity ? `**Максимум суточно:** ${formatMg(maxPerDay)} мг ${dayCapped ? '⚠ ПРЕВЫШЕНО' : '✓'}` : '',
       ``,
       `**Комментарий:** ${ind.comment}`,
     ].filter(Boolean);

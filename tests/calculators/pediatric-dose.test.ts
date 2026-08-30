@@ -247,9 +247,20 @@ describe('pediatric-dose · MVP-30 drugs', () => {
       const r = call('budesonide|0', 30, 72);
       expect(r.value).toMatch(/^2 мг/);
     });
-    it('budesonide asthma maintenance 20 kg → 0.4 mg', () => {
+    // budesonide|1 (frequency_hours: 12, so 2 doses/day) has no separate
+    // max_per_day_mg — its comment ("Низкая доза 200-400 мкг/сут") makes
+    // clear max_per_dose_mg: 0.4 is the DAILY total for this entry, not a
+    // single administration. Reviewer-caught bug: an earlier version of
+    // this fix used max_per_dose_mg directly as the per-dose amount, which
+    // doubled the real daily dose (0.4 mg × 2/day = 0.8 mg/day, above the
+    // stated 0.2-0.4 mg/day range).
+    it('budesonide asthma maintenance 20 kg → 0.2 mg per dose, twice daily (0.4 mg/day total, not 0.8)', () => {
       const r = call('budesonide|1', 20, 48);
-      expect(r.value).toMatch(/^0\.4 мг/);
+      expect(r.value).toMatch(/^0\.2 мг/);
+      // Also guards a sibling bug this fix exposed: totalPerDay (0.4) used
+      // to be truncated to "0 мг" by a raw .toFixed(0) instead of the
+      // smart formatMg() helper used everywhere else in this file.
+      expect(r.details).toMatch(/Суммарная суточная доза:\*\* 0\.4 мг/);
     });
   });
 

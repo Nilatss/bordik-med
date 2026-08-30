@@ -4,17 +4,22 @@
  * Bug being fixed: the push effect subscribes to the store with a selector,
  * and only re-queues a push to /api/sync when the selector's *output*
  * changes (compared with zustand's `shallow` equality). The selector used
- * to watch only 6 fields, but the actual POST payload sends more —
- * completedModules, toolsSettings.* (query/categories/subcategories/
- * countries/onlyAvailable), and profile.status/country/specialty/language/
- * goal. A user who only edited e.g. their specialty on the Profile page,
- * or only passed a module final exam, produced a selector output that was
- * `shallow`-equal to before — no push was ever scheduled, so the change
+ * to watch only 6 fields, but the actual POST payload also sends
+ * profile.status/country/specialty/language/goal. A user who only edited
+ * e.g. their specialty on the Profile page produced a selector output that
+ * was `shallow`-equal to before — no push was ever scheduled, so the change
  * silently never reached Supabase and never appeared on another device.
  *
- * These tests assert that changing each field the payload actually sends
- * also changes what `selectSyncFields` returns (as compared by zustand's
- * `shallow`), i.e. that it would trigger a push.
+ * These tests assert that changing each field with a working end-to-end
+ * round trip (POST persists it AND the pull-side merge reads it back) also
+ * changes what `selectSyncFields` returns, i.e. that it would trigger a
+ * push. completedModules and toolsSettings.* (query/categories/
+ * subcategories/countries/onlyAvailable) are deliberately excluded — see
+ * the "does NOT trigger" tests below and the comment at the subscribe call
+ * site in lib/useSupabaseSync.ts: the POST payload sends them, but neither
+ * the /api/sync POST handler nor the pull-side merge round-trips them yet,
+ * so watching them would only cause no-op network writes (and, for
+ * toolsQuery specifically, one on every search keystroke).
  */
 import { describe, it, expect } from 'vitest';
 import { shallow } from 'zustand/shallow';
@@ -30,11 +35,6 @@ function wouldTriggerPush(before: AppState, after: AppState): boolean {
 
 describe('selectSyncFields (push-sync selector)', () => {
   const base = useAppStore.getState();
-
-  it('triggers a push when completedModules changes', () => {
-    const after = { ...base, completedModules: [...base.completedModules, 3] };
-    expect(wouldTriggerPush(base, after)).toBe(true);
-  });
 
   it('triggers a push when userStatus (profile.status) changes', () => {
     const after = { ...base, userStatus: 'university' };
@@ -61,31 +61,6 @@ describe('selectSyncFields (push-sync selector)', () => {
     expect(wouldTriggerPush(base, after)).toBe(true);
   });
 
-  it('triggers a push when toolsSettings.query changes', () => {
-    const after = { ...base, toolsQuery: 'wells' };
-    expect(wouldTriggerPush(base, after)).toBe(true);
-  });
-
-  it('triggers a push when toolsSettings.categories changes', () => {
-    const after = { ...base, toolsCategories: ['cardiology'] };
-    expect(wouldTriggerPush(base, after)).toBe(true);
-  });
-
-  it('triggers a push when toolsSettings.subcategories changes', () => {
-    const after = { ...base, toolsSubcategories: ['arrhythmia'] };
-    expect(wouldTriggerPush(base, after)).toBe(true);
-  });
-
-  it('triggers a push when toolsSettings.countries changes', () => {
-    const after = { ...base, toolsCountries: ['RU'] };
-    expect(wouldTriggerPush(base, after)).toBe(true);
-  });
-
-  it('triggers a push when toolsSettings.onlyAvailable changes', () => {
-    const after = { ...base, toolsOnlyAvailable: !base.toolsOnlyAvailable };
-    expect(wouldTriggerPush(base, after)).toBe(true);
-  });
-
   // Regression guard for the originally-watched fields — must stay watched.
   it('still triggers a push when completedCourses/startedCourses/courseTestProgress/studyTime/toolsFavourites/userName change', () => {
     expect(wouldTriggerPush(base, { ...base, completedCourses: [...base.completedCourses, '100.1'] })).toBe(true);
@@ -101,5 +76,23 @@ describe('selectSyncFields (push-sync selector)', () => {
     // so we don't debounce-push on every unrelated store tick.
     const after = { ...base, userEmail: 'someone@example.com' };
     expect(wouldTriggerPush(base, after)).toBe(false);
+  });
+
+  // Deliberately-excluded fields: the POST payload sends these, but they
+  // don't complete a round trip yet (see file header), so watching them
+  // would only produce no-op network writes while implying a fix that
+  // isn't actually there. Caught by review on the original version of this
+  // PR (github.com/Nilatss/bordik-med/pull/203) before it merged.
+  it('does NOT trigger a push for completedModules (POST payload sends it, but /api/sync does not persist it and pull does not restore it)', () => {
+    const after = { ...base, completedModules: [...base.completedModules, 3] };
+    expect(wouldTriggerPush(base, after)).toBe(false);
+  });
+
+  it('does NOT trigger a push for toolsSettings.* (query/categories/subcategories/countries/onlyAvailable — per-device by design, pull never merges them)', () => {
+    expect(wouldTriggerPush(base, { ...base, toolsQuery: 'wells' })).toBe(false);
+    expect(wouldTriggerPush(base, { ...base, toolsCategories: ['cardiology'] })).toBe(false);
+    expect(wouldTriggerPush(base, { ...base, toolsSubcategories: ['arrhythmia'] })).toBe(false);
+    expect(wouldTriggerPush(base, { ...base, toolsCountries: ['RU'] })).toBe(false);
+    expect(wouldTriggerPush(base, { ...base, toolsOnlyAvailable: !base.toolsOnlyAvailable })).toBe(false);
   });
 });
