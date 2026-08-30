@@ -179,18 +179,18 @@ export default function useSupabaseSync() {
     // Post-fix: zustand subscribeWithSelector calls the listener ONLY when
     // the selector output changes. Shallow equality compares slice refs
     // per-field — O(1) per field — and skips re-fires for unrelated state.
-    const unsub = useAppStore.subscribe(
-      (state) => ({
-        c: state.completedCourses,
-        s: state.startedCourses,
-        ctp: state.courseTestProgress,
-        st: state.studyTime,
-        tf: state.toolsFavourites,
-        un: state.userName,
-      }),
-      () => queuePush(),
-      { equalityFn: shallowEqual },
-    );
+    //
+    // Bug fixed: the selector originally only watched 6 fields, but the
+    // POST payload built above sends more (completedModules, toolsSettings.*,
+    // profile.status/country/specialty/language/goal). Editing e.g. only
+    // the specialty on the Profile page changed none of the 6 watched
+    // fields, so no push was ever scheduled — the edit sat correctly in
+    // local storage but silently never reached Supabase, so it never
+    // showed up on the user's other devices. The selector must watch
+    // every field the payload actually sends.
+    const unsub = useAppStore.subscribe(selectSyncFields, () => queuePush(), {
+      equalityFn: shallowEqual,
+    });
     return () => {
       unsub();
       if (debounce.current) clearTimeout(debounce.current);
@@ -239,6 +239,33 @@ export default function useSupabaseSync() {
       }
     };
   }, []);
+}
+
+/**
+ * Fields the push effect watches for changes (see effect 2 above), and
+ * whose sync-relevant subset must exactly match the fields sent in the
+ * `/api/sync` POST payload. Exported for unit testing.
+ */
+export function selectSyncFields(state: AppState) {
+  return {
+    c: state.completedCourses,
+    s: state.startedCourses,
+    ctp: state.courseTestProgress,
+    cm: state.completedModules,
+    st: state.studyTime,
+    tf: state.toolsFavourites,
+    un: state.userName,
+    us: state.userStatus,
+    uco: state.userCountry,
+    usp: state.userSpecialty,
+    ul: state.userLanguage,
+    ug: state.userGoal,
+    tq: state.toolsQuery,
+    tc: state.toolsCategories,
+    tsc: state.toolsSubcategories,
+    tco: state.toolsCountries,
+    toa: state.toolsOnlyAvailable,
+  };
 }
 
 // Default store values for profile fields. A fresh-install device has these
