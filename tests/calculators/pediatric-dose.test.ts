@@ -230,4 +230,43 @@ describe('pediatric-dose · MVP-30 drugs', () => {
       expect(r.value).toMatch(/900 мг/);
     });
   });
+
+  // ─── Fixed (weight-independent) doses ────────────────────────────────
+  // Bug: indications with mg_per_kg: 0 encode a fixed dose in
+  // max_per_dose_mg (e.g. budesonide croup = 2 mg regardless of weight).
+  // The dose calc used to always multiply by mg_per_kg, so these silently
+  // printed "0 мг" for every weight while telling the clinician the
+  // (wrong) zero dose was safely within range.
+  describe('fixed-dose indications (mg_per_kg: 0, max_per_dose_mg > 0)', () => {
+    it('budesonide croup 12 kg → 2 mg regardless of weight', () => {
+      const r = call('budesonide|0', 12, 24);
+      expect(r.value).toMatch(/^2 мг/);
+      expect(r.color).toBe('#22C55E');
+    });
+    it('budesonide croup 30 kg → still 2 mg (fixed, not scaled)', () => {
+      const r = call('budesonide|0', 30, 72);
+      expect(r.value).toMatch(/^2 мг/);
+    });
+    it('budesonide asthma maintenance 20 kg → 0.4 mg', () => {
+      const r = call('budesonide|1', 20, 48);
+      expect(r.value).toMatch(/^0\.4 мг/);
+    });
+  });
+
+  // ─── Non-computable (reference-only) indications ──────────────────────
+  // Bug: mg_per_kg: 0 AND max_per_dose_mg: 0 (dosing that isn't mg-based,
+  // e.g. puffs, or explicitly "Справочно (доза не рассчитывается)" —
+  // neonatal reference entries) also fell through the same multiplication
+  // and printed a bogus "0 мг" with a green "within range" checkmark.
+  describe('non-computable indications (mg_per_kg: 0, max_per_dose_mg: 0)', () => {
+    it('salbutamol MDI+spacer does NOT print a bogus 0 mg dose', () => {
+      const r = call('salbutamol|1', 15, 48);
+      expect(r.value).not.toMatch(/^0 мг/);
+      expect(r.value).toBe('См. комментарий');
+    });
+    it('does not claim the (fake) dose is "within range" (no green checkmark)', () => {
+      const r = call('salbutamol|1', 15, 48);
+      expect(r.color).not.toBe('#22C55E');
+    });
+  });
 });

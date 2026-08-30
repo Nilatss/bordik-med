@@ -142,6 +142,22 @@ const runner: CalculatorTool = {
       };
     }
 
+    // Some indications aren't dosed per kilogram at all: a fixed dose
+    // (e.g. budesonide|0 "Круп" — 2 мг однократно regardless of weight)
+    // or a genuinely non-mg dosing form (puffs, infusion titrated at the
+    // bedside) that the dataset marks "Справочно (доза не рассчитывается)".
+    // Both are encoded as `mg_per_kg: 0`; distinguish them by whether
+    // `max_per_dose_mg` also carries a value.
+    if (ind.mg_per_kg === 0 && ind.max_per_dose_mg === 0) {
+      return {
+        value: 'См. комментарий',
+        unit: '',
+        interpretation: `${drug.name_ru} · ${ind.label} · доза не рассчитывается по весу`,
+        color: '#9CA3AF',
+        details: `**Препарат:** ${drug.name_ru} (${drug.name_en}) · ATC ${drug.atc} · ${drug.class_ru}\n\n**Показание:** ${ind.label}\n\n**Путь введения:** ${ind.route}\n\n**Комментарий:** ${ind.comment}`,
+      };
+    }
+
     // Compute per-dose.
     // Audit B-6: epsilon-tolerance on the cap comparison. IEEE-754
     // double-precision multiplication can drift by ~1e-14 on common
@@ -151,7 +167,12 @@ const runner: CalculatorTool = {
     // ceiling. Tolerance of 1e-6 (1 µg at mg scale) is well below
     // clinically-significant rounding for any drug we ship and is
     // larger than IEEE-754 drift on the multiplications we perform.
-    const calcMg = weight * ind.mg_per_kg;
+    //
+    // mg_per_kg === 0 with a non-zero max_per_dose_mg means the dataset
+    // encodes a fixed, weight-independent dose in max_per_dose_mg (see
+    // above) — use it directly instead of multiplying by zero, which
+    // used to silently print "0 мг" as if that were the real dose.
+    const calcMg = ind.mg_per_kg > 0 ? weight * ind.mg_per_kg : ind.max_per_dose_mg;
     const cappedMg = Math.min(calcMg, ind.max_per_dose_mg);
     const wasCapped = calcMg - ind.max_per_dose_mg > 1e-6;
 
@@ -183,7 +204,9 @@ const runner: CalculatorTool = {
       `**Препарат:** ${drug.name_ru} (${drug.name_en}) · ATC ${drug.atc} · ${drug.class_ru}`,
       `**Показание:** ${ind.label}`,
       ``,
-      `**Расчёт по mg/кг:** ${ind.mg_per_kg} мг/кг × ${weight} кг = **${calcMg.toFixed(2)} мг**`,
+      ind.mg_per_kg > 0
+        ? `**Расчёт по mg/кг:** ${ind.mg_per_kg} мг/кг × ${weight} кг = **${calcMg.toFixed(2)} мг**`
+        : `**Фиксированная доза:** ${calcMg.toFixed(2)} мг (не зависит от веса)`,
       wasCapped ? `⚠ Превышает максимальную разовую дозу ${ind.max_per_dose_mg} мг — ограничено до **${cappedMg.toFixed(2)} мг**.` : `Не превышает максимум разовой дозы (${ind.max_per_dose_mg} мг). ✓`,
       ``,
       `**Доза:** ${cappedMg.toFixed(2)} мг ${freqHuman}`,
