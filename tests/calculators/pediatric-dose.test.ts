@@ -230,4 +230,54 @@ describe('pediatric-dose · MVP-30 drugs', () => {
       expect(r.value).toMatch(/900 мг/);
     });
   });
+
+  // ─── Fixed (weight-independent) doses ────────────────────────────────
+  // Bug: indications with mg_per_kg: 0 encode a fixed dose in
+  // max_per_dose_mg (e.g. budesonide croup = 2 mg regardless of weight).
+  // The dose calc used to always multiply by mg_per_kg, so these silently
+  // printed "0 мг" for every weight while telling the clinician the
+  // (wrong) zero dose was safely within range.
+  describe('fixed-dose indications (mg_per_kg: 0, max_per_dose_mg > 0)', () => {
+    it('budesonide croup 12 kg → 2 mg regardless of weight', () => {
+      const r = call('budesonide|0', 12, 24);
+      expect(r.value).toMatch(/^2 мг/);
+      expect(r.color).toBe('#22C55E');
+    });
+    it('budesonide croup 30 kg → still 2 mg (fixed, not scaled)', () => {
+      const r = call('budesonide|0', 30, 72);
+      expect(r.value).toMatch(/^2 мг/);
+    });
+    // budesonide|1 (frequency_hours: 12, so 2 doses/day) has no separate
+    // max_per_day_mg — its comment ("Низкая доза 200-400 мкг/сут") makes
+    // clear max_per_dose_mg: 0.4 is the DAILY total for this entry, not a
+    // single administration. Reviewer-caught bug: an earlier version of
+    // this fix used max_per_dose_mg directly as the per-dose amount, which
+    // doubled the real daily dose (0.4 mg × 2/day = 0.8 mg/day, above the
+    // stated 0.2-0.4 mg/day range).
+    it('budesonide asthma maintenance 20 kg → 0.2 mg per dose, twice daily (0.4 mg/day total, not 0.8)', () => {
+      const r = call('budesonide|1', 20, 48);
+      expect(r.value).toMatch(/^0\.2 мг/);
+      // Also guards a sibling bug this fix exposed: totalPerDay (0.4) used
+      // to be truncated to "0 мг" by a raw .toFixed(0) instead of the
+      // smart formatMg() helper used everywhere else in this file.
+      expect(r.details).toMatch(/Суммарная суточная доза:\*\* 0\.4 мг/);
+    });
+  });
+
+  // ─── Non-computable (reference-only) indications ──────────────────────
+  // Bug: mg_per_kg: 0 AND max_per_dose_mg: 0 (dosing that isn't mg-based,
+  // e.g. puffs, or explicitly "Справочно (доза не рассчитывается)" —
+  // neonatal reference entries) also fell through the same multiplication
+  // and printed a bogus "0 мг" with a green "within range" checkmark.
+  describe('non-computable indications (mg_per_kg: 0, max_per_dose_mg: 0)', () => {
+    it('salbutamol MDI+spacer does NOT print a bogus 0 mg dose', () => {
+      const r = call('salbutamol|1', 15, 48);
+      expect(r.value).not.toMatch(/^0 мг/);
+      expect(r.value).toBe('См. комментарий');
+    });
+    it('does not claim the (fake) dose is "within range" (no green checkmark)', () => {
+      const r = call('salbutamol|1', 15, 48);
+      expect(r.color).not.toBe('#22C55E');
+    });
+  });
 });

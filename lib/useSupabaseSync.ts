@@ -179,18 +179,35 @@ export default function useSupabaseSync() {
     // Post-fix: zustand subscribeWithSelector calls the listener ONLY when
     // the selector output changes. Shallow equality compares slice refs
     // per-field — O(1) per field — and skips re-fires for unrelated state.
-    const unsub = useAppStore.subscribe(
-      (state) => ({
-        c: state.completedCourses,
-        s: state.startedCourses,
-        ctp: state.courseTestProgress,
-        st: state.studyTime,
-        tf: state.toolsFavourites,
-        un: state.userName,
-      }),
-      () => queuePush(),
-      { equalityFn: shallowEqual },
-    );
+    //
+    // Bug fixed: the selector originally only watched 6 fields, but the
+    // POST payload built above also sends profile.status/country/specialty/
+    // language/goal. Editing e.g. only the specialty on the Profile page
+    // changed none of the 6 watched fields, so no push was ever scheduled —
+    // the edit sat correctly in local storage but silently never reached
+    // Supabase, so it never showed up on the user's other devices.
+    //
+    // The selector watches every payload field that has a matching PULL-side
+    // merge (see effect 1 above and mergeProfileFromServer below) — i.e.
+    // every field that actually completes a round trip. It deliberately does
+    // NOT watch completedModules or toolsSettings.* (query/categories/
+    // subcategories/countries/onlyAvailable): the POST payload sends those
+    // too, but the /api/sync POST handler doesn't persist completedModules
+    // (no course→module map available in the edge route) and the pull above
+    // never reads toolsSettings.* back into the store (filter UI is
+    // per-device by design — only favourites round-trip). Watching a field
+    // that can't round-trip buys nothing but wasted debounced network
+    // writes (toolsQuery in particular would fire on every search
+    // keystroke) while implying a fix that isn't actually there.
+    //
+    // TODO: a real fix for module-completion sync needs the POST handler to
+    // resolve each completed module id to its course ids (e.g. via
+    // lib/curriculum's getModuleById) and set course_progress.module_passed
+    // on each, plus a pull-side merge that reconstructs completedModules
+    // from module_passed. Worth its own change, not bundled here.
+    const unsub = useAppStore.subscribe(selectSyncFields, () => queuePush(), {
+      equalityFn: shallowEqual,
+    });
     return () => {
       unsub();
       if (debounce.current) clearTimeout(debounce.current);
@@ -239,6 +256,30 @@ export default function useSupabaseSync() {
       }
     };
   }, []);
+}
+
+/**
+ * Fields the push effect watches for changes (see effect 2 above). Limited
+ * to fields that actually complete a round trip: the POST payload sends
+ * more (completedModules, toolsSettings.*) but neither the POST handler nor
+ * the pull-side merge persists/restores those yet, so watching them would
+ * only trigger no-op network writes — see the comment at the subscribe call
+ * site for the full explanation. Exported for unit testing.
+ */
+export function selectSyncFields(state: AppState) {
+  return {
+    c: state.completedCourses,
+    s: state.startedCourses,
+    ctp: state.courseTestProgress,
+    st: state.studyTime,
+    tf: state.toolsFavourites,
+    un: state.userName,
+    us: state.userStatus,
+    uco: state.userCountry,
+    usp: state.userSpecialty,
+    ul: state.userLanguage,
+    ug: state.userGoal,
+  };
 }
 
 // Default store values for profile fields. A fresh-install device has these
