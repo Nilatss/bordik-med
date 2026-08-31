@@ -11,6 +11,7 @@ import {
   PASS_THRESHOLD_MODULE, MODULE_TEST_TIME_MS, MAX_TEST_LEVELS,
   TEST_LEVEL_NAMES, getCooldownRemaining, formatCooldown,
 } from '@/lib/quiz';
+import { computeModuleTestGate } from '@/lib/module-test-gate';
 import { getTestQuestions, getModuleTestQuestions, hasRealQuestions } from '@/lib/questions';
 import { getModuleForCourse } from '@/lib/curriculum';
 import { Check } from '@/components/icons';
@@ -96,6 +97,20 @@ export default function TestPanel({ courseId }: TestPanelProps) {
     ? isModuleTestUnlocked({ courseTestProgress } as AppState, moduleId)
     : false;
   const modulePassed = moduleId !== undefined ? completedModules.includes(moduleId) : false;
+  // moduleTestAttempts was fetched from the store but never fed into a
+  // cooldown check — unlike the 5 course-test rows below, a failed/aborted
+  // module final exam had ZERO cooldown, letting a user immediately retry
+  // the 100-question "boss fight" while every other test in the app
+  // enforces the 24h/12h cooldown. See lib/module-test-gate.ts for the
+  // shared, tested gate logic.
+  const moduleGate = moduleId !== undefined
+    ? computeModuleTestGate({
+        attempts: moduleTestAttempts[moduleId] ?? [],
+        lockoutUntil: getLockout(lockoutKey('module', moduleId)),
+        modulePassed,
+        moduleUnlocked,
+      })
+    : null;
 
   // Don't serve fake tests: a course with no hand-written / AI / sufficient
   // (>=20) cloze questions falls back to a passable placeholder (options
@@ -122,13 +137,13 @@ export default function TestPanel({ courseId }: TestPanelProps) {
     setPendingTest({ type: 'course', level });
   }, [courseId]);
 
-  const startModuleTest = useCallback(() => {
+  const startModuleTest = () => {
     if (moduleId === undefined) return;
     const until = getLockout(lockoutKey('module', moduleId));
     if (until > 0) return;
     setResult(null);
     setPendingTest({ type: 'module', moduleId });
-  }, [moduleId]);
+  };
 
   const confirmStart = useCallback(() => {
     if (!pendingTest) return;
@@ -395,26 +410,19 @@ export default function TestPanel({ courseId }: TestPanelProps) {
       )}
 
       {/* Module final test row */}
-      {moduleId !== undefined && (() => {
-        const moduleLockoutUntil = getLockout(lockoutKey('module', moduleId));
-        const moduleLockedByViolation = moduleLockoutUntil > Date.now();
-        const moduleLockoutLeft = moduleLockoutUntil - Date.now();
+      {moduleId !== undefined && moduleGate && (() => {
+        const moduleStatus: TestStatus = moduleGate.status;
+        const moduleCurrent = moduleGate.current;
 
-        const moduleStatus: TestStatus = modulePassed
-          ? 'passed'
-          : moduleLockedByViolation
-            ? 'violation'
-            : moduleUnlocked
-              ? 'available'
-              : 'locked';
-
-        const moduleDetail = moduleLockedByViolation
-          ? t('test.detail.availableInH', { time: formatHours(moduleLockoutLeft) })
-          : modulePassed
-            ? t('test.detail.passedFull')
-            : moduleUnlocked
-              ? t('test.detail.unlockedDesc', { n: MODULE_TEST_QUESTIONS, p: PASS_THRESHOLD_MODULE })
-              : t('test.detail.lockedPrereq');
+        const moduleDetail = moduleGate.status === 'violation'
+          ? t('test.detail.availableInH', { time: formatHours(moduleGate.cooldownMs) })
+          : moduleGate.status === 'cooldown'
+            ? t('test.detail.coolingDown', { time: formatCooldown(moduleGate.cooldownMs) })
+            : modulePassed
+              ? t('test.detail.passedFull')
+              : moduleUnlocked
+                ? t('test.detail.unlockedDesc', { n: MODULE_TEST_QUESTIONS, p: PASS_THRESHOLD_MODULE })
+                : t('test.detail.lockedPrereq');
 
         return (
           <TestRow
@@ -429,14 +437,14 @@ export default function TestPanel({ courseId }: TestPanelProps) {
               { label: t('test.row.detail.threshold'), value: `${PASS_THRESHOLD_MODULE}%`, icon: 'target' },
             ]}
             {...(
-              !(modulePassed || (moduleUnlocked && !moduleLockedByViolation)) && moduleDetail
+              !(modulePassed || moduleCurrent) && moduleDetail
                 ? { description: moduleDetail }
                 : {}
             )}
-            actionLabel={moduleUnlocked && !modulePassed && !moduleLockedByViolation ? t('test.action.startTest') : null}
+            actionLabel={moduleCurrent ? t('test.action.startTest') : null}
             actionVariant="primary"
             onAction={startModuleTest}
-            disabled={!moduleUnlocked || modulePassed || moduleLockedByViolation}
+            disabled={!moduleCurrent}
             highlight
           />
         );
