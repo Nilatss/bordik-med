@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { MAX_VIOLATIONS } from '@/lib/quiz';
+import { createViolationCoalescer } from '@/lib/violation-coalesce';
 
 interface TestGuardProps {
   active: boolean;
@@ -53,6 +54,11 @@ export default function TestGuard({ active, onViolation, onForceSubmit, violatio
   const [justReturned, setJustReturned] = useState(false);
   const graceTickRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const graceStartRef = useRef<number>(0);
+  // `visibilitychange` and window `blur` both fire for the SAME real action
+  // (switching tabs, alt-tabbing, minimising) in every mainstream browser —
+  // without this guard one tab switch was counted as 2 violations, kicking
+  // a user out of the test after ~2 switches instead of the advertised 3.
+  const coalescerRef = useRef(createViolationCoalescer());
 
   // Stop grace countdown helper
   const stopGrace = useCallback(() => {
@@ -102,6 +108,10 @@ export default function TestGuard({ active, onViolation, onForceSubmit, violatio
     // instant violation — no grace countdown. The user explicitly asked
     // that tab-switching count toward the cheat counter immediately.
     const fireVisibilityViolation = (reason: string) => {
+      // Coalesce: a single tab switch fires both `visibilitychange` and
+      // `blur` in the same tick — only the first one counts.
+      if (!coalescerRef.current()) return;
+
       if (graceTickRef.current) {
         clearInterval(graceTickRef.current);
         graceTickRef.current = null;
