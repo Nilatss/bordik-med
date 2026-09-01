@@ -83,29 +83,44 @@ function storageKey(courseId: string) {
   return `bordik:selfcheck:${courseId}`;
 }
 
-function loadState(courseId: string): SavedState {
+export function loadState(courseId: string): SavedState {
   if (typeof window === 'undefined') return { lastAt: 0, answers: {} };
   try {
     const raw = localStorage.getItem(storageKey(courseId));
     if (!raw) return { lastAt: 0, answers: {} };
-    const parsed = JSON.parse(raw) as SavedState;
-    if (!parsed.lastAt || Date.now() - parsed.lastAt > COOLDOWN_MS) {
+    const parsed = JSON.parse(raw) as Partial<SavedState> | null;
+    if (!parsed || !parsed.lastAt || Date.now() - parsed.lastAt > COOLDOWN_MS) {
       return { lastAt: 0, answers: {} };
     }
-    return parsed;
+    // Guard against a malformed/foreign shape (corrupted write, old format)
+    // — `answers` seeds useState directly, and downstream code does
+    // `Object.keys(answers)`, which throws on undefined/non-object.
+    const answers = parsed.answers && typeof parsed.answers === 'object' ? parsed.answers : {};
+    return { lastAt: parsed.lastAt, answers };
   } catch {
     return { lastAt: 0, answers: {} };
   }
 }
 
-function saveState(courseId: string, state: SavedState) {
+export function saveState(courseId: string, state: SavedState) {
   if (typeof window === 'undefined') return;
-  localStorage.setItem(storageKey(courseId), JSON.stringify(state));
+  // localStorage access can THROW (private mode, sandboxed iframe, quota
+  // exceeded). This runs from the answer-click handler, so an unguarded
+  // throw here crashes the quiz — swallow it, progress just won't persist.
+  try {
+    localStorage.setItem(storageKey(courseId), JSON.stringify(state));
+  } catch {
+    /* storage blocked — answer stays in memory for this session only */
+  }
 }
 
 function clearState(courseId: string) {
   if (typeof window === 'undefined') return;
-  localStorage.removeItem(storageKey(courseId));
+  try {
+    localStorage.removeItem(storageKey(courseId));
+  } catch {
+    /* storage blocked — nothing to clean up */
+  }
 }
 
 /* ═══ Countdown label for cooldown ═══ */
