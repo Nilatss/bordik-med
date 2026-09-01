@@ -39,7 +39,7 @@ export default function useSupabaseSync() {
     if (!sb) return; // Backend not configured — local-only mode.
 
     const pull = async () => {
-      const { data: { session } } = await sb.auth.getSession();
+      const session = await getSessionSafe(sb.auth);
       if (!session) return;
       // Authenticated → allow pushes from here on, even if the pull below
       // fails. The server merge is additive (grow-only), so pushing local
@@ -249,6 +249,26 @@ export default function useSupabaseSync() {
 // when the default `'Студент'` is present.
 const DEFAULT_USER_NAME = 'Студент';
 const DEFAULT_LANGUAGE = 'Русский';
+
+type SupabaseAuthLike = {
+  getSession: () => Promise<{ data: { session: unknown } }>;
+};
+
+/**
+ * getSession() can reject — e.g. AuthRetryableFetchError when it triggers a
+ * token refresh over a flaky/offline network. It used to be awaited outside
+ * any try/catch, and the caller invokes `pull()` bare (no `.catch()`), so a
+ * rejection became an unhandled promise rejection on effectively every
+ * authenticated page load or tab focus.
+ */
+export async function getSessionSafe(auth: SupabaseAuthLike): Promise<unknown> {
+  try {
+    const { data: { session } } = await auth.getSession();
+    return session ?? null;
+  } catch {
+    return null;
+  }
+}
 
 export interface ServerProfile {
   display_name?: string | null;
