@@ -3,6 +3,7 @@
 import { Suspense, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { getSupabaseBrowserClient } from '@/lib/supabase/client';
+import { attemptGoogleSignIn } from '@/lib/supabase/google-sign-in';
 
 // useSearchParams() inside client component requires a Suspense boundary
 // at the page level — Next 15 enforces this so prerender doesn't bail.
@@ -65,10 +66,8 @@ function LoginInner() {
       setError('Backend ещё не настроен.');
       return;
     }
-    await sb.auth.signInWithOAuth({
-      provider: 'google',
-      options: { redirectTo: `${window.location.origin}/auth/callback` },
-    });
+    const message = await attemptGoogleSignIn(sb, window.location.origin);
+    if (message) setError(message);
   };
 
   return (
@@ -87,7 +86,7 @@ function LoginInner() {
       }}>
         <picture>
           <source srcSet="/logo-bordik.webp" type="image/webp" />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
+          { }
           <img src="/logo-bordik.png" alt="Bordik" style={{ height: 28, marginBottom: 28 }} />
         </picture>
 
